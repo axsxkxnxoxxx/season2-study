@@ -44,17 +44,24 @@ This section is binding. Read it before writing any file.
 
 **Hard rule:** no file containing usernames, user IDs, or individual watch histories may be written to `artifacts/` or `decisions/`. Aggregates and counts only. If unsure whether a file qualifies, write it to `processed/` and ask the Human Lead.
 
+This table also appears in `CLAUDE.md` and in every agent definition. If any two copies ever disagree, `CLAUDE.md` is the source of truth.
+
 ---
 
 ## Standing roles (no steps owned)
 
 ### Second Brain
 
-- [ ] Ingests every artifact, gate decision, red team transcript, and partner verdict
+Second Brain does not observe passively. It is a subagent and runs only when the Human Lead invokes it. Its memory directory does not exist until it first writes.
+
+**Invoke it after every gate approval and after every result step.** Roughly ten times across the build. Skipped invocations mean the decision log has to be reconstructed at the end, which is the failure this role exists to prevent.
+
+- [ ] Ingests every artifact, gate decision, red team transcript, and partner verdict it is given
 - [ ] Maintains a live glossary of terms and thresholds with where each was set
 - [ ] Runs consistency checks across steps
 - [ ] Flags contradictions between what was approved at a gate and what downstream work assumed
 - [ ] Writes only to its own memory directory. Writes nothing to `artifacts/`, `decisions/`, or any project folder.
+- [ ] Carries no usernames, user IDs, or individual watch histories into memory. Project-scope memory is version controlled and public.
 - [ ] Never sits in the critical path and cannot block or break anything
 
 ### Red Team
@@ -76,12 +83,17 @@ Review only. Never produce work. Each fires at its assigned step, not at the end
 **Owner:** Analytics Engineer
 **Mode:** Chained
 
-The Trakt API application is already registered. The Client ID is in `.env` and is loaded at runtime. Never write it into a code file.
+The Trakt API application is already registered. The Client ID is in `.env` and is loaded at runtime. It is never written into a code file, a log, or an artifact.
 
-- [ ] Confirm from docs: rate limit
-- [ ] Confirm from docs: whether public history reads need only a Client ID or a user token
-- [ ] Build resumable client with throttling below the stated limit
-- [ ] Retry with backoff
+The rate limit and the authentication answer are settled and recorded in `CLAUDE.md`. Trakt allows 1000 GET calls per 5 minutes at the application level, which is 200 per minute. Every endpoint this study uses is OAuth Optional and works with the Client ID alone on public profiles.
+
+- [ ] Build a resumable client that throttles at 150 calls per minute, never at the 200 ceiling
+- [ ] Use the Client ID alone. Do not build an OAuth flow.
+- [ ] Log private profiles and move on. They return nothing.
+- [ ] Retry with backoff on transient failures: timeouts, connection errors, and 5xx responses
+- [ ] On a 429, read `Retry-After`, pause that many seconds, then resume. Never retry the same request in a loop. If 429s persist across several consecutive pauses, stop and report.
+- [ ] Log the status, the `X-Ratelimit` object, `Retry-After`, the endpoint, and the method on every rate-limit event
+- [ ] On a 403, hard stop and report. That is a block, not a throttle.
 - [ ] Persist raw responses to `raw/` before parsing
 - [ ] Never re-request what is already on disk
 
@@ -132,7 +144,7 @@ The Trakt API application is already registered. The Client ID is in `.env` and 
 **Owner:** Analytics Engineer
 **Mode:** Chained
 
-- [ ] Channel A: seed a few hundred public profiles, crawl the follower graph outward
+- [ ] Channel A: seed a few hundred public profiles, walk the follower graph outward through the API
 - [ ] Channel B: collect owners of public lists
 - [ ] Tag every username with its source channel. Required, not optional.
 - [ ] Do not harvest usernames from comments on the shows being measured. That selects on the outcome.
@@ -411,7 +423,7 @@ Each entry records:
 - Step 5 blocks Steps 6 and 7. Never derive thresholds on contaminated timestamps.
 - Step 13 must record its tested ranges before Step 16 begins.
 - Step 14 is drafted before Step 15, so the conclusion is written against known limits.
-- Crawls do not run through Sabbath, Friday sunset through Saturday sunset.
+- The Human Lead starts and stops long-running pulls. Agents do not schedule them.
 
 ---
 
