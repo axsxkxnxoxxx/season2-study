@@ -109,7 +109,7 @@ The rate limit and the authentication answer are settled and recorded in `CLAUDE
 
 - [ ] Unit of analysis: one user, one show
 - [ ] Season 1 confirmed complete: watched the S1 finale AND at least 90 percent of S1 episodes
-- [ ] Clock start: the later of the S2 premiere date and the user's own S1 completion date
+- [ ] Clock start: the later of the S2 finale date and the user's own first-pass S1 completion date. Not the premiere.
 - [ ] Define three mutually exclusive outcome states measured at clock start plus W: never started, started and left, continued
 - [ ] Abandonment point: highest S2 episode watched as a fraction of season length
 - [ ] Count distinct episodes, never play events, to exclude rewatches
@@ -242,7 +242,7 @@ Two separate things are defined here and they must not be confused. The **thresh
 - [ ] Assert invariant: outcome states are mutually exclusive and sum to the sample
 - [ ] Assert invariant: filter counts decrease monotonically
 - [ ] Assert invariant: distinct episodes never exceed season length
-- [ ] Assert invariant: no clock start precedes an S2 premiere
+- [ ] Assert invariant, for every row: clock start is on or after the S2 finale date, clock start is on or after the first-pass S1 completion date, and clock start equals one of those two dates. The old invariant, no clock start precedes an S2 premiere, is vacuous under a finale-anchored clock and catches nothing.
 - [ ] Report all invariant results
 - [ ] Write the table to `processed/`. The filter waterfall and invariant report, which are counts only, go to `artifacts/`.
 
@@ -264,7 +264,7 @@ Two separate things are defined here and they must not be confused. The **thresh
 - [ ] Attach confidence intervals
 - [ ] Compute the bound: what the never-started share becomes if every inactivity-excluded user is treated as a decliner
 - [ ] Report as a floor and a ceiling, not a single contestable number
-- [ ] Report the full headline a second time at a 91-day window, which is Netflix's own reporting window, so the result is commensurable with the public argument
+- [ ] Report the full headline a second time at a 91-day window, which is Netflix's own reporting window, so the result is commensurable with the public argument. Anchor this arm on the later of the S2 premiere date and the first-pass S1 completion date, not on the finale, because Netflix's window runs from release. State plainly that this arm sits on a different origin than the primary headline and that the two are therefore not the same measurement at two window lengths.
 
 **Deliver:** headline percentages with intervals and bounds, at both W and 91 days, in `artifacts/`
 **Check:** dual implementation diff
