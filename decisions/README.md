@@ -22,6 +22,8 @@ Step 18 assembles the final log from these files.
 | [0008](0008-step3-seed-source.md) | **Step 3 seeded from movie-comment authors.** Satisfies the task sheet's prohibition but biases the pool toward heavy trackers — **downward on the headline**, compounding with the liveness bias. The highest-consequence agent choice in Step 3. | 2026-08-11 | **Open — needs ratification** |
 | [0009](0009-step4-pull-order.md) | **Step 4 pulls in stratified round-robin order** over ten equal-count forecast-page bins, so any early stop leaves a prefix proportional across the full distribution. Amends an initial median-out instruction, which left a *centered* slice with no heavy users. | 2026-08-11 | Closed |
 | [0010](0010-step4-tail-cap.md) | **Tail cap at 300 forecast pages**, skip whole and never truncate, with an actual-pages guard that discards mid-sweep overruns. Justified as a **circuit breaker on forecast error**, not as protection against a slow user. Excludes 0.93% of the pool; direction **upward** on the headline. | 2026-08-11 | Closed |
+| [0011](0011-pull-date-value.md) | **`pull_date = 2026-08-11`**, `τ_pull = 2026-08-11T00:00:00Z`. Closes the value D11 deferred until Step 4's schedule was known. Constraint satisfied: earliest per-user fetch is 05:01:26Z. | 2026-08-11 | Closed |
+| [0012](0012-sweep-completeness-rule.md) | **Sweep completeness is full `page_count` coverage plus a 2% residual tolerance**, not exact match on `item_count` — which the pilot showed is not an exact record count. Over-count, under-count and genuine cross-page duplicates are counted **separately**. **Amends [0002](0002-step4-history-endpoint.md) and an approved gate artifact.** | 2026-08-11 | Closed |
 
 **A note on authority.** Entries 0001–0004 are Human Lead decisions. **0005–0007 are agent-taken,
 inside a Chained step, and are recorded retrospectively for ratification** — they shaped the
@@ -44,8 +46,8 @@ Five. Nothing downstream of a gate runs without written Human Lead approval at i
 Recorded here so they are not lost between steps. Each is stated in full in the decision file
 that surfaced it.
 
-1. **`pull_date` has no value.** Deliberately deferred to Step 4's scheduling. Blocks any step
-   that right-censors or computes D3, D8 or D9. ([0001](0001-step1-outcome-definition-gate.md))
+1. ~~**`pull_date` has no value.**~~ **CLOSED 2026-08-11** — set to `2026-08-11` as
+   [0011](0011-pull-date-value.md). Right-censoring and D3/D8/D9 are unblocked.
 2. **Step 1 open questions 1 and 3** remain open. The drafted boundary stands until decided.
    ([0001](0001-step1-outcome-definition-gate.md))
 3. **The gap hypothesis is untested** — whether Trakt omits a gapped episode number or lists a
@@ -97,7 +99,11 @@ that surfaced it.
     ([0006](0006-step3-crawl-constants.md))
 14. ~~**The Step 3 seed source has no decision entry.**~~ **CLOSED 2026-08-11** — recorded as
     [0008](0008-step3-seed-source.md).
-15. **`step3_backfill.py --out-dir raw/step3` zeroes the call ledger in `state.json`**, because the
+15. **A rule inside the approved Step 1 gate was amended without Red Team review.**
+    [0012](0012-sweep-completeness-rule.md) changes the completeness test in Step 1 §0. The gate's
+    own approval record says a rule change reopens the gate. Recorded as a Human Lead amendment;
+    **not yet put to Red Team.** Worth settling before results are computed.
+16. **`step3_backfill.py --out-dir raw/step3` zeroes the call ledger in `state.json`**, because the
     offline replay spends no live calls. **This has happened twice** and been restored from
     `logs/step3_run.json` both times; a `ledger_note` in the file records it. Either restore after
     every regeneration or use the script's default out-dir, which does not touch that file. The

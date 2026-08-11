@@ -41,8 +41,11 @@ Transient   Timeouts, connection errors and 5xx: retry with exponential
             meta flag, and as outcome="access_denied" from fetch_all(). A
             caller can never mistake it for an empty 200.
 Pagination  A missing or non-integer pagination header is an error, never a
-            silent stop. Accumulated items are reconciled against the reported
-            item count and a short read is a failure, not data.
+            silent stop. Completeness is judged by decisions/0012: every page
+            reported by X-Pagination-Page-Count must be read, and the residual
+            against X-Pagination-Item-Count must be within 2 percent. Beyond
+            that the sweep is DISCARDED under its own outcome, never truncated
+            and never returned as data.
 Logging     Status, the X-Ratelimit object, Retry-After, endpoint and method are
             logged for every request, not only rate-limit events.
 
@@ -251,6 +254,88 @@ class PaginationError(TraktClientError):
 
 class ShortRead(TraktClientError):
     """Accumulated items did not reconcile against the reported item count."""
+
+
+class ResidualOutOfTolerance(ShortRead):
+    """Every page was read, but the item-count residual is beyond tolerance.
+
+    decisions/0012. Under the adopted completeness rule a sweep is complete
+    when every page reported by X-Pagination-Page-Count has been read AND the
+    residual against X-Pagination-Item-Count is within the tolerance. This is
+    the second half failing.
+
+    It is NOT an error outcome and it is NOT a truncation: the pages already
+    read are DISCARDED, exactly as they are for a mid-sweep 403
+    (decisions/0004) and an over-length sweep (decisions/0010). It is its own
+    exception rather than a bare ShortRead so that fetch_all can hand it back
+    as its own outcome, `discarded_over_tolerance`, which decisions/0012
+    requires to stay separately countable and never folded into `unavailable`,
+    into any skip category, or into an empty result.
+
+    THE RESIDUAL IS COMPUTED ON ACCUMULATED RECORDS, NOT DEDUPLICATED ONES.
+    Cross-page duplicate records are real and a de-duplicated residual is a
+    different number; the completeness test uses the raw accumulated count
+    everywhere, and the de-duplicated figure is reported alongside as a
+    separate quantity rather than substituted for it.
+    """
+
+    def __init__(
+        self,
+        message: str,
+        total_items: int = 0,
+        item_count: int | None = None,
+        residual: int = 0,
+        pages_read: int = 0,
+        tolerance: float = 0.0,
+    ):
+        super().__init__(message)
+        self.total_items = total_items
+        self.item_count = item_count
+        self.residual = residual
+        self.pages_read = pages_read
+        self.tolerance = tolerance
+
+
+class PaginationDrift(TraktClientError):
+    """The pagination headers CHANGED during a sweep.
+
+    This is the mutation detector. A history that grows or shrinks while it is
+    being read cannot be paged consistently — offsets shift under us — so the
+    sweep is not a snapshot of anything and is re-run rather than repaired.
+    """
+
+
+class SweepAborted(TraktClientError):
+    """A multi-page sweep was abandoned part-way through on a caller-set bound.
+
+    Same shape, and the same reason for being an exception, as
+    UserAccessDenied: the pages already read are a partial history and a
+    partial history is indistinguishable from a genuine "never started" once
+    it reaches the analysis table. Raising forces fetch_all to DISCARD them.
+    It is never a truncation, and it is never returned as data.
+
+    Carries `pages_read` and `page_count` so the caller can report the actual
+    size of the sweep it refused. That number is the direct measure of how
+    wrong a page forecast was.
+    """
+
+    def __init__(self, message: str, pages_read: int = 0, page_count: int | None = None):
+        super().__init__(message)
+        self.pages_read = pages_read
+        self.page_count = page_count
+
+
+class SweepTooLong(SweepAborted):
+    """Actual pages exceeded the caller's page cap. decisions/0010, half (b)."""
+
+
+class SweepBudgetExhausted(SweepAborted):
+    """The run's remaining call budget cannot cover this sweep.
+
+    Distinct from SweepTooLong on purpose. A budget stop says nothing about
+    the user; a length skip is a statement about the user, and decisions/0010
+    requires the length count to be reportable on its own.
+    """
 
 
 # ---------------------------------------------------------------------------
@@ -1200,6 +1285,10 @@ class TraktClient:
         params: dict[str, Any] | None = None,
         limit: int = 100,
         max_pages: int | None = None,
+        page_cap: int | None = None,
+        budget_pages: int | None = None,
+        reconcile: str = "exact",
+        residual_tolerance: float = 0.0,
     ) -> Iterator[TraktResponse]:
         """Yield pages, strictly.
 
@@ -1211,11 +1300,54 @@ class TraktClient:
         reconciliation runs only if the generator is consumed to completion; a
         caller that breaks early, or passes max_pages, gets a logged
         truncation and no reconciliation.
+
+        THREE BOUNDS, AND THEY ARE NOT INTERCHANGEABLE.
+
+        `max_pages` TRUNCATES: it stops early and hands back what it has. It is
+        unsafe for any history sweep and Step 4 must never use it, because a
+        truncated sweep reads as a genuine "never started" downstream
+        (artifacts/step1-outcome-definition.md §0). It is kept for probes.
+
+        `page_cap` DISCARDS: if the sweep turns out to be longer than the cap,
+        SweepTooLong is raised before the offending page is yielded, and
+        fetch_all throws away everything already accumulated. Nothing partial
+        is ever returned. This is decisions/0010 half (b), and it deliberately
+        reuses the mid-sweep discard path built for decisions/0004.
+
+        `budget_pages` DISCARDS in the same way but raises
+        SweepBudgetExhausted, so a run that stopped for lack of call budget is
+        never counted as a user skipped for length.
+
+        Both discarding bounds are checked against the server's reported
+        page_count as well as against pages actually read, so a 400-page sweep
+        costs one call to refuse rather than 301.
+
+        RECONCILIATION MODE. `reconcile="page_count"` is the ADOPTED rule,
+        decisions/0012, Human Lead, 2026-08-11: a sweep is complete when every
+        page 1..page_count was fetched, the pagination headers never moved, and
+        the item-count residual is within `residual_tolerance` (2 percent).
+        The residual is reported rather than raised inside the tolerance,
+        because on `/users/:id/history` X-Pagination-Item-Count is not an exact
+        count of the records the endpoint returns — the Step 4 pilot got the
+        identical record set at two different page sizes while the header
+        disagreed with both. Beyond the tolerance the sweep is DISCARDED, via
+        ResidualOutOfTolerance; it is never truncated and never returned.
+
+        `reconcile="exact"` is the superseded rule, kept because the Step 0 and
+        Step 3 evidence was gathered under it and because it is the stricter of
+        the two. It requires the accumulated count to equal the header exactly.
+
+        The residual is computed on ACCUMULATED records, not deduplicated ones.
+        Cross-page duplicates are real on this endpoint and de-duplicating
+        first would move the residual; this test is consistently on the raw
+        accumulated count.
         """
         page = 1
         total_items = 0
         declared_item_count: int | None = None
         page_count: int | None = None
+        first_page_count: int | None = None
+        first_item_count: int | None = None
 
         while True:
             page_params = dict(params or {})
@@ -1252,6 +1384,74 @@ class TraktClient:
 
             page_count = self._require_int(resp.pagination, "page_count", endpoint)
             declared_item_count = self._require_int(resp.pagination, "item_count", endpoint)
+
+            # Checked BEFORE the page is counted or yielded, so the caller
+            # never sees a page from a sweep that is about to be abandoned.
+            for bound, exc_type, label in (
+                (page_cap, SweepTooLong, "page_cap"),
+                (budget_pages, SweepBudgetExhausted, "budget_pages"),
+            ):
+                if bound is None:
+                    continue
+                if page_count > bound or page > bound:
+                    self._log({
+                        "event": "sweep_bound_exceeded",
+                        "method": "GET",
+                        "endpoint": endpoint,
+                        "status": resp.status,
+                        "x_ratelimit": None,
+                        "retry_after": None,
+                        "bound": label,
+                        "bound_value": bound,
+                        "page_count_reported": page_count,
+                        "pages_read": page - 1,
+                    })
+                    raise exc_type(
+                        f"GET {endpoint}: sweep is {page_count} page(s), over the "
+                        f"{label} of {bound} (reached page {page}). The "
+                        f"{page - 1} page(s) already read are discarded, not "
+                        f"truncated: a partial sweep is indistinguishable from a "
+                        f"genuine never-started.",
+                        pages_read=page - 1,
+                        page_count=page_count,
+                    )
+
+            # Did the sweep move under us? Trakt reports page_count and
+            # item_count on every page, so a history that grew or shrank
+            # mid-sweep says so directly. Offsets shift when that happens and
+            # the sweep is no longer a snapshot of anything, so it is abandoned
+            # rather than repaired. This is a direct test where the item-count
+            # reconciliation below was only an indirect one.
+            #
+            # Deliberately AFTER the cap checks. A sweep that grew past the cap
+            # is a user skipped for length under decisions/0010 (b), and that
+            # count has to stay separately reportable; drift is the diagnosis
+            # only for sweeps we still intend to keep.
+            if page == 1:
+                first_page_count = page_count
+                first_item_count = declared_item_count
+            elif page_count != first_page_count or declared_item_count != first_item_count:
+                self._log({
+                    "event": "pagination_drift",
+                    "method": "GET",
+                    "endpoint": endpoint,
+                    "status": resp.status,
+                    "x_ratelimit": None,
+                    "retry_after": None,
+                    "page": page,
+                    "page_count_first": first_page_count,
+                    "page_count_now": page_count,
+                    "item_count_first": first_item_count,
+                    "item_count_now": declared_item_count,
+                })
+                raise PaginationDrift(
+                    f"GET {endpoint}: pagination moved during the sweep — page_count "
+                    f"{first_page_count}->{page_count}, item_count "
+                    f"{first_item_count}->{declared_item_count} by page {page}. The "
+                    f"history changed while it was being read, so the pages already "
+                    f"gathered are not a consistent snapshot and are not returned."
+                )
+
             total_items += len(resp.data)
 
             yield resp
@@ -1272,12 +1472,53 @@ class TraktClient:
                 break
             page += 1
 
-        if declared_item_count is not None and total_items != declared_item_count:
-            raise ShortRead(
-                f"GET {endpoint}: accumulated {total_items} items across {page} page(s) "
-                f"but X-Pagination-Item-Count reported {declared_item_count}. Treating a "
-                f"short read as a failure, not as data."
-            )
+        residual = (
+            total_items - declared_item_count
+            if declared_item_count is not None else 0
+        )
+        if reconcile not in ("exact", "page_count"):
+            raise ValueError(f"unknown reconcile mode {reconcile!r}")
+
+        if reconcile == "exact":
+            if declared_item_count is not None and total_items != declared_item_count:
+                raise ShortRead(
+                    f"GET {endpoint}: accumulated {total_items} items across {page} page(s) "
+                    f"but X-Pagination-Item-Count reported {declared_item_count}. Treating a "
+                    f"short read as a failure, not as data."
+                )
+        else:
+            # ADOPTED, decisions/0012. Completeness rests on having fetched
+            # every page 1..page_count with the headers steady throughout, both
+            # of which are already enforced above. The item-count residual is
+            # reported rather than raised inside the tolerance, because on
+            # /users/:id/history the header is not an exact count of the records
+            # the API returns — see the Step 4 pilot, where the identical record
+            # set came back at two different page sizes while the header
+            # disagreed with both. A residual beyond the tolerance is still a
+            # failure: at that size it is no longer explicable as a header
+            # artefact, and the sweep is DISCARDED rather than truncated.
+            #
+            # The tolerance is exactly what 0012 says it is: a fraction of the
+            # declared item count. There is NO absolute floor. An earlier draft
+            # allowed a residual of 1 unconditionally, which quietly widened the
+            # rule to 4.8% on a 21-record user. Widening it is the Human Lead's
+            # call, not this module's, so the band is measured and reported
+            # instead (`residual_within_one_but_over_tolerance` in Step 4).
+            allowed = abs(residual) <= (residual_tolerance or 0.0) * (declared_item_count or 0)
+            if declared_item_count is not None and not allowed:
+                raise ResidualOutOfTolerance(
+                    f"GET {endpoint}: accumulated {total_items} items across {page} "
+                    f"page(s) against a reported item count of {declared_item_count} "
+                    f"(residual {residual:+d}), beyond the "
+                    f"{residual_tolerance:.1%} tolerance. Too large to be the known "
+                    f"header artefact, so the sweep is discarded, not truncated and "
+                    f"not returned as data.",
+                    total_items=total_items,
+                    item_count=declared_item_count,
+                    residual=residual,
+                    pages_read=page,
+                    tolerance=residual_tolerance or 0.0,
+                )
 
         self._log({
             "event": "pagination_complete",
@@ -1289,6 +1530,8 @@ class TraktClient:
             "pages_read": page,
             "items": total_items,
             "item_count_header": declared_item_count,
+            "item_count_residual": residual,
+            "reconcile": reconcile,
         })
 
     def fetch_all(
@@ -1296,41 +1539,94 @@ class TraktClient:
         endpoint: str,
         params: dict[str, Any] | None = None,
         limit: int = 100,
+        page_cap: int | None = None,
+        budget_pages: int | None = None,
+        reconcile: str = "exact",
+        residual_tolerance: float = 0.0,
     ) -> tuple[list[Any], dict[str, Any]]:
         """Fully consume a paginated endpoint with reconciliation enforced.
 
         Returns (items, info). info['outcome'] is the field callers should
-        branch on, and it has exactly three values:
+        branch on, and it has six values:
 
-          "complete"       a full, reconciled sweep. Only this one is data.
-          "unavailable"    private or absent profile (Trakt's documented 401).
-          "access_denied"  a user-level 403; the user was skipped.
+          "complete"          a full, reconciled sweep. Only this one is data.
+          "unavailable"       private or absent profile (documented 401).
+          "access_denied"     a user-level 403; the user was skipped.
+          "skipped_too_long"  actual pages exceeded page_cap (decisions/0010b).
+          "budget_exhausted"  the caller's remaining page budget was too small.
+          "discarded_over_tolerance"
+                              every page was read but the item-count residual
+                              exceeded the tolerance (decisions/0012). Pages
+                              discarded, never truncated.
 
         info['complete'] is True only for "complete". An empty items list with
         outcome "complete" means the user genuinely has no history; an empty
-        items list under either other outcome means we never saw their history
-        and must not be read as evidence about what they watched.
+        items list under any other outcome means we never saw their history and
+        must not be read as evidence about what they watched. The four
+        not-data outcomes are kept apart from each other as well as from
+        "complete", because they mean different things downstream.
 
-        A mid-sweep 403 is caught here rather than propagated, so an unattended
-        run continues, but the pages already read are discarded rather than
-        returned: partial history is not data. The pages stay in raw/, so a
-        later retry is a resume, not a re-pull.
+        A mid-sweep 403, and a mid-sweep bound breach, are caught here rather
+        than propagated, so an unattended run continues, but the pages already
+        read are discarded rather than returned: partial history is not data.
+        The pages stay in raw/, so a later retry is a resume, not a re-pull.
         """
         items: list[Any] = []
         pages = 0
         unavailable = False
         access_denied = False
         discarded_items = 0
+        aborted: SweepAborted | None = None
+        over_tolerance: ResidualOutOfTolerance | None = None
+        page_count_reported: int | None = None
+        item_count_reported: int | None = None
+        # Per-page record counts, in page order. `items` is extended page by
+        # page, so these are the slice boundaries and they are what lets a
+        # caller tell a CROSS-page duplicate record id from a within-page one.
+        # decisions/0012 requires the cross-page count as its own number.
+        page_item_counts: list[int] = []
         try:
-            for resp in self.get_paginated(endpoint, params, limit=limit):
+            for resp in self.get_paginated(
+                endpoint, params, limit=limit,
+                page_cap=page_cap, budget_pages=budget_pages,
+                reconcile=reconcile, residual_tolerance=residual_tolerance,
+            ):
                 if resp.unavailable:
                     unavailable = True
                     break
                 if resp.access_denied:
                     access_denied = True
                     break
+                if isinstance(resp.pagination.get("page_count"), int):
+                    page_count_reported = resp.pagination["page_count"]
+                if isinstance(resp.pagination.get("item_count"), int):
+                    item_count_reported = resp.pagination["item_count"]
                 pages += 1
-                items.extend(resp.data or [])
+                page_data = resp.data or []
+                page_item_counts.append(len(page_data))
+                items.extend(page_data)
+        except ResidualOutOfTolerance as exc:
+            # Same discard as a mid-sweep 403 and an over-length sweep. The
+            # pages stay in raw/ for a later resume; only the RESULT is
+            # withheld, and it is withheld under its own name.
+            over_tolerance = exc
+            discarded_items = len(items)
+            items = []
+            self._log({
+                "event": "sweep_discarded_over_residual_tolerance",
+                "method": "GET",
+                "endpoint": endpoint,
+                "status": 200,
+                "x_ratelimit": None,
+                "retry_after": None,
+                "pages_read": exc.pages_read,
+                "accumulated_items": exc.total_items,
+                "item_count_header": exc.item_count,
+                "item_count_residual": exc.residual,
+                "residual_tolerance": exc.tolerance,
+                "items_discarded": discarded_items,
+                "detail": str(exc)[:300],
+            })
         except UserAccessDenied as exc:
             access_denied = True
             discarded_items = len(items)
@@ -1346,21 +1642,70 @@ class TraktClient:
                 "items_discarded": discarded_items,
                 "detail": str(exc)[:300],
             })
+        except SweepAborted as exc:
+            # Same discard, same reason, different cause. Nothing partial is
+            # returned and nothing is truncated.
+            aborted = exc
+            discarded_items = len(items)
+            items = []
+            page_count_reported = exc.page_count
+            self._log({
+                "event": "partial_sweep_discarded_on_bound",
+                "method": "GET",
+                "endpoint": endpoint,
+                "status": 200,
+                "x_ratelimit": None,
+                "retry_after": None,
+                "bound": type(exc).__name__,
+                "pages_read_before_bound": pages,
+                "page_count_reported": exc.page_count,
+                "items_discarded": discarded_items,
+                "detail": str(exc)[:300],
+            })
 
-        complete = not (unavailable or access_denied)
+        too_long = isinstance(aborted, SweepTooLong)
+        budget_exhausted = isinstance(aborted, SweepBudgetExhausted)
+        complete = not (
+            unavailable or access_denied or aborted is not None
+            or over_tolerance is not None
+        )
         outcome = (
             "access_denied" if access_denied
             else "unavailable" if unavailable
+            else "skipped_too_long" if too_long
+            else "budget_exhausted" if budget_exhausted
+            else "discarded_over_tolerance" if over_tolerance is not None
             else "complete"
         )
+        if over_tolerance is not None:
+            item_count_reported = over_tolerance.item_count
+            residual: int | None = over_tolerance.residual
+            accumulated = over_tolerance.total_items
+        elif complete and isinstance(item_count_reported, int):
+            residual = len(items) - item_count_reported
+            accumulated = len(items)
+        else:
+            residual = None
+            accumulated = len(items)
         return items, {
             "pages": pages,
             "items": len(items),
             "unavailable": unavailable,
             "access_denied": access_denied,
+            "skipped_too_long": too_long,
+            "budget_exhausted": budget_exhausted,
+            "discarded_over_tolerance": over_tolerance is not None,
             "complete": complete,
             "outcome": outcome,
             "discarded_items": discarded_items,
+            "page_count_reported": page_count_reported,
+            "item_count_reported": item_count_reported,
+            # Accumulated records minus the header, on RAW accumulated records.
+            "item_count_residual": residual,
+            "accumulated_records": accumulated,
+            "page_item_counts": page_item_counts,
+            "residual_tolerance": residual_tolerance,
+            "reconcile": reconcile,
         }
 
     def summary(self) -> dict[str, int]:

@@ -58,6 +58,11 @@ one.** Records return newest-first, so a truncated sweep is **indistinguishable 
 would silently manufacture the result. Enforcement is Step 4's and Step 8's; the dependency is
 recorded in Step 1 §0 because it is the definition that it breaks.
 
+> **Amended 2026-08-11 — [0012](0012-sweep-completeness-rule.md).** The requirement stands; the
+> **test** for it changed. Completeness is full `X-Pagination-Page-Count` coverage plus a residual
+> within 2 percent of `X-Pagination-Item-Count`, not exact equality with that header — which the
+> Step 4 pilot showed is not an exact count of the records the endpoint returns.
+
 ## Files reconciled
 
 `artifacts/step0-access-and-setup.md` §0 and §6, and `artifacts/step1-outcome-definition.md` §0

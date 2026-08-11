@@ -926,9 +926,19 @@ def t_fetch_all_reconciles():
             "items": 5,
             "unavailable": False,
             "access_denied": False,
+            "skipped_too_long": False,
+            "budget_exhausted": False,
+            "discarded_over_tolerance": False,
             "complete": True,
             "outcome": "complete",
             "discarded_items": 0,
+            "page_count_reported": 2,
+            "item_count_reported": 5,
+            "item_count_residual": 0,
+            "accumulated_records": 5,
+            "page_item_counts": [3, 2],
+            "residual_tolerance": 0.0,
+            "reconcile": "exact",
         }
 
 
@@ -1453,6 +1463,1027 @@ def t_step3_backfill_replay_cannot_reach_the_network():
         pass
 
 
+# ==========================================================================
+# Step 4 history pull. decisions/0009 (stratified round-robin order),
+# decisions/0010 (tail cap, both halves), resume and interrupt safety, and the
+# per-user fetch timestamps D11 needs. Every one of these is a path that must
+# not be discovered live on a multi-day unattended run.
+# ==========================================================================
+
+
+def step4_env(tmp: Path):
+    """Point the module's output directories at a temp tree."""
+    import step4_history_pull as s4
+
+    class _Ctx:
+        def __enter__(self):
+            self.saved = (s4.LOGS_DIR, s4.ARTIFACTS_DIR, s4.PROCESSED_DIR)
+            s4.LOGS_DIR = tmp / "logs"
+            s4.ARTIFACTS_DIR = tmp / "artifacts"
+            s4.PROCESSED_DIR = tmp / "processed"
+            for path in (s4.LOGS_DIR, s4.ARTIFACTS_DIR, s4.PROCESSED_DIR):
+                path.mkdir(parents=True, exist_ok=True)
+            return s4
+
+        def __exit__(self, *exc):
+            s4.LOGS_DIR, s4.ARTIFACTS_DIR, s4.PROCESSED_DIR = self.saved
+            return False
+
+    return _Ctx()
+
+
+def fake_pool(tmp: Path, users, name="pool.jsonl") -> Path:
+    """users: iterable of (slug, forecast_pages[, usable])."""
+    path = tmp / name
+    lines = []
+    for item in users:
+        slug, forecast = item[0], item[1]
+        usable = item[2] if len(item) > 2 else True
+        lines.append(json.dumps({
+            "slug": slug,
+            "username": slug,
+            "channel_first": "A",
+            "in_a": True,
+            "in_b": False,
+            "screen": {
+                "usable": usable,
+                "reason": "ok" if usable else "below_episode_floor",
+                "step4_pages_forecast": forecast,
+                "stats_payload_variant": "reduced",
+                "history_plays": forecast * 250,
+            },
+        }))
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return path
+
+
+def history_page(page, page_count, item_count, limit=250, n=1, base_id=0):
+    """A page of episode history records shaped like Trakt's."""
+    records = []
+    for i in range(n):
+        records.append({
+            "id": base_id + i,
+            "watched_at": "2024-05-0%dT12:00:00.000Z" % ((i % 9) + 1),
+            "action": "scrobble",
+            "type": "episode",
+            "episode": {"season": 1, "number": i + 1,
+                        "ids": {"trakt": 900 + i}, "title": "ep"},
+            "show": {"title": "Show", "year": 2020, "aired_episodes": 20,
+                     "ids": {"trakt": 55, "slug": "show"}},
+        })
+    return FakeResponse(200, page_headers(page, page_count, item_count, limit=limit),
+                        json.dumps(records))
+
+
+def step4_puller(tmp: Path, script, pool, **kwargs):
+    import step4_history_pull as s4
+
+    client = make_client(tmp, script)
+    return s4.Step4Puller(
+        client,
+        state_dir=tmp / "processed" / "step4",
+        pool_path=pool,
+        sabbath_window=None,
+        **kwargs,
+    )
+
+
+# -- decisions/0009: the pull order ----------------------------------------
+
+
+def t_step4_order_is_stratified_round_robin_and_deterministic():
+    import step4_history_pull as s4
+
+    users = [(f"u{i:03d}", i + 1) for i in range(100)]
+    shuffled = list(reversed(users))
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        plan_a = s4.build_plan(s4.load_pool(fake_pool(tmp, users, "a.jsonl")))
+        plan_b = s4.build_plan(s4.load_pool(fake_pool(tmp, shuffled, "b.jsonl")))
+    order_a = [e["slug"] for e in plan_a["order"]]
+    order_b = [e["slug"] for e in plan_b["order"]]
+    assert order_a == order_b, "the order depends on input row order"
+    assert sorted(order_a) == sorted(u[0] for u in users), "the order is not a permutation"
+    assert plan_a["bin_sizes"] == [10] * 10
+    # First cycle takes one user from each of the ten bins, cheapest first
+    # within the cycle, so it spans the whole distribution immediately.
+    first_cycle = [e["bin"] for e in plan_a["order"][:10]]
+    assert first_cycle == list(range(10)), first_cycle
+
+
+def t_step4_every_prefix_is_proportional_across_both_tails():
+    import step4_history_pull as s4
+
+    # Deliberately skewed, like the real pool: a long thin tail.
+    users = [(f"u{i:04d}", 1 + (i * i) // 40) for i in range(400)]
+    with tempfile.TemporaryDirectory() as d:
+        plan = s4.build_plan(s4.load_pool(fake_pool(Path(d), users)))
+    result = s4.verify_prefix_proportionality(plan)
+    assert result["holds"], result
+    assert result["max_spread_between_unexhausted_bins"] <= 1
+    assert result["prefixes_checked"] == len(plan["order"])
+    # The claim that matters: a short prefix already contains the heavy end.
+    top_bin = plan["n_bins"] - 1
+    assert any(e["bin"] == top_bin for e in plan["order"][:10])
+
+
+def t_step4_real_pool_order_is_proportional():
+    """The property is checked on the actual pool, not only on a fixture."""
+    import step4_history_pull as s4
+
+    if not s4.POOL_PATH.exists():
+        return
+    plan = s4.build_plan(s4.load_pool(s4.POOL_PATH))
+    result = s4.verify_prefix_proportionality(plan)
+    assert result["holds"], result
+    assert plan["eligible_users"] + plan["skipped_forecast_users"] == plan["usable_users"]
+    assert len(plan["order"]) == plan["eligible_users"]
+
+
+# -- decisions/0010 (a): the forecast cap ----------------------------------
+
+
+def t_step4_forecast_cap_never_starts_the_user():
+    import step4_history_pull as s4
+
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        with step4_env(tmp):
+            pool = fake_pool(tmp, [("small", 1), ("huge", 301)])
+            p = step4_puller(tmp, [history_page(1, 1, 1, n=1)], pool)
+            assert [e["slug"] for e in p.plan["order"]] == ["small"]
+            assert [e["slug"] for e in p.plan["over_cap"]] == ["huge"]
+            p.run()
+            rows = p.latest_outcomes()
+            assert rows["huge"]["outcome"] == "skipped_length_forecast"
+            assert rows["huge"]["live_calls"] == 0, "a capped user was requested"
+            assert rows["huge"]["forecast_pages"] == 301
+            assert "301" in rows["huge"]["detail"]
+            # Not folded into anything else, and not an empty success.
+            assert rows["huge"]["is_data"] is False
+            assert rows["huge"]["outcome"] not in ("unavailable", "access_denied", "complete")
+            assert "huge" not in {c[0].split("/")[1] for c in p.client.session.calls
+                                  if "/users/" in c[0]}
+
+
+def t_step4_a_user_at_exactly_the_cap_is_pulled():
+    import step4_history_pull as s4
+
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        with step4_env(tmp):
+            pool = fake_pool(tmp, [("edge", 300)])
+            p = step4_puller(tmp, [], pool)
+            assert [e["slug"] for e in p.plan["order"]] == ["edge"], \
+                "'exceeds 300' must be strict; a 300-page user is inside the cap"
+            assert p.plan["over_cap"] == []
+
+
+# -- decisions/0010 (b): the actual-pages guard ----------------------------
+
+
+def t_step4_actual_pages_over_cap_discards_and_never_truncates():
+    import step4_history_pull as s4
+
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        with step4_env(tmp):
+            pool = fake_pool(tmp, [("liar", 5)])
+            # Forecast said 5 pages. The server says 400.
+            script = [history_page(1, 400, 100000, n=250)]
+            p = step4_puller(tmp, script, pool)
+            p.run()
+            row = p.latest_outcomes()["liar"]
+            assert row["outcome"] == "skipped_length_actual", row
+            assert row["records"] == 0
+            assert row["parsed_path"] is None, "a discarded sweep left data behind"
+            assert row["page_count_reported"] == 400
+            assert row["forecast_pages"] == 5
+            # One call to refuse a 400-page sweep, not 301.
+            assert row["live_calls"] == 1, row["live_calls"]
+            assert not list((tmp / "processed" / "step4" / "parsed").glob("*.gz"))
+            # Distinct from every other not-data outcome.
+            assert row["outcome"] not in ("unavailable", "access_denied",
+                                          "skipped_length_forecast", "complete")
+            assert row["is_data"] is False
+
+
+def t_step4_a_sweep_that_grows_past_the_cap_is_discarded_whole():
+    """The mis-forecast case 0010 (b) exists for, in its mid-sweep form: pages
+    already read are thrown away and no parsed file survives."""
+    import step4_history_pull as s4
+
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        with step4_env(tmp):
+            pool = fake_pool(tmp, [("grower", 2)])
+            script = [
+                history_page(1, 2, 6, limit=3, n=3, base_id=0),
+                history_page(2, 9, 27, limit=3, n=3, base_id=3),
+            ]
+            p = step4_puller(tmp, script, pool, page_cap=3, page_limit=3)
+            p.run()
+            row = p.latest_outcomes()["grower"]
+            assert row["outcome"] == "skipped_length_actual", row
+            assert row["items_discarded"] == 3, row
+            assert row["records"] == 0 and row["parsed_path"] is None
+            assert not list((tmp / "processed" / "step4" / "parsed").glob("*.gz"))
+
+
+def t_step4_the_two_skip_counts_are_reported_separately():
+    import step4_history_pull as s4
+
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        with step4_env(tmp):
+            pool = fake_pool(tmp, [("liar", 5), ("huge", 999), ("ok", 1)])
+            script = [history_page(1, 400, 100000, n=250),
+                      history_page(1, 1, 1, n=1)]
+            p = step4_puller(tmp, script, pool)
+            p.run()
+            counts = p.counts()
+            assert counts["skipped_length_forecast"] == 1
+            assert counts["skipped_length_actual"] == 1
+            assert counts["by_outcome"]["complete"] == 1
+            assert counts["outcomes_sum_to_decided"]
+            log = json.loads(s4.write_pull_log(p).read_text())
+            assert log["skipped_length_forecast"] == 1
+            assert log["skipped_length_actual"] == 1
+            assert log["success"] == 1
+
+
+def t_step4_page_cap_reuses_the_403_discard_path():
+    """0010 (b) says reuse the mid-sweep discard built for 0004, not write a
+    second one. Both must land in the same fetch_all discard branch and both
+    must return zero items with a not-data outcome."""
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        c = make_client(tmp, [
+            FakeResponse(200, page_headers(1, 3, 7, limit=3), "[1,2,3]"),
+            FakeResponse(403, {}, "forbidden"),
+        ])
+        items, info = c.fetch_all("users/x/history", limit=3)
+        assert items == [] and info["outcome"] == "access_denied"
+        assert info["discarded_items"] == 3
+
+        c2 = make_client(tmp / "b", [history_page(1, 400, 100000, n=250)])
+        items2, info2 = c2.fetch_all("users/y/history", limit=250, page_cap=300)
+        assert items2 == [] and info2["outcome"] == "skipped_too_long"
+        assert info2["page_count_reported"] == 400
+        assert info2["complete"] is False
+
+        # And the case where pages HAVE been accumulated before the bound
+        # fires: the sweep grows under us, which is what happens when the user
+        # logs a play mid-pull. Those pages must be thrown away, not handed
+        # back. Without this the guard would truncate rather than discard.
+        c3 = make_client(tmp / "c", [
+            history_page(1, 2, 6, limit=3, n=3, base_id=0),
+            history_page(2, 9, 27, limit=3, n=3, base_id=3),
+        ])
+        items3, info3 = c3.fetch_all("users/z/history", limit=3, page_cap=3)
+        assert items3 == [], "a partial sweep was returned as data"
+        assert info3["outcome"] == "skipped_too_long"
+        assert info3["discarded_items"] == 3, info3
+        assert info3["pages"] == 1
+
+
+def t_step4_never_uses_the_truncating_bound():
+    """max_pages truncates and hands back data. It must appear nowhere in the
+    Step 4 pull, because a truncated sweep reads as a genuine never-started."""
+    source = (Path(__file__).resolve().parent / "step4_history_pull.py").read_text()
+    for line in source.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("#") or stripped.startswith("*"):
+            continue
+        assert "max_pages" not in stripped, f"max_pages used in Step 4: {line}"
+
+
+def t_step4_budget_stop_is_not_a_length_skip_and_is_not_terminal():
+    import step4_history_pull as s4
+
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        with step4_env(tmp):
+            pool = fake_pool(tmp, [("big", 50)])
+            script = [history_page(1, 50, 12000, n=250)]
+            p = step4_puller(tmp, script, pool, max_calls=3)
+            p.run()
+            assert "big" not in p.latest_outcomes(), \
+                "a user postponed for budget was recorded as decided"
+            assert p.deferred_this_run and \
+                p.deferred_this_run[0]["reason"].startswith("forecast exceeds")
+            assert p.counts()["skipped_length_actual"] == 0
+
+
+# -- resume, interrupt, and the ledger -------------------------------------
+
+
+def t_step4_completed_user_is_not_re_requested():
+    import step4_history_pull as s4
+
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        with step4_env(tmp):
+            pool = fake_pool(tmp, [("u", 2)])
+            script = [history_page(1, 2, 4, n=2, base_id=0),
+                      history_page(2, 2, 4, n=2, base_id=2)]
+            p = step4_puller(tmp, script, pool)
+            p.run()
+            assert p.latest_outcomes()["u"]["outcome"] == "complete"
+            assert p.client.counters["requests_sent"] == 2
+
+            # Second run, same state dir, a session that would raise if used.
+            p2 = step4_puller(tmp, [], pool)
+            p2.run()
+            assert p2.client.counters["requests_sent"] == 0, \
+                "a decided user was re-requested"
+            assert p2.latest_outcomes()["u"]["outcome"] == "complete"
+
+
+def t_step4_interrupt_between_parse_and_ledger_leaves_no_false_completion():
+    """The Step 3 trap in its Step 4 form: never claim a user is done before
+    the data for it is on disk, and never leave a claim without the data."""
+    import step4_history_pull as s4
+
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        with step4_env(tmp):
+            pool = fake_pool(tmp, [("u", 1)])
+            script = [history_page(1, 1, 2, n=2)]
+            p = step4_puller(tmp, script, pool)
+
+            real_append = p._append_ledger
+
+            def die(row):
+                raise KeyboardInterrupt
+
+            p._append_ledger = die  # kill after the parsed file, before the row
+            try:
+                p.run()
+            except KeyboardInterrupt:
+                pass
+            assert p.latest_outcomes() == {}, "an interrupted user looked decided"
+            parsed = list((tmp / "processed" / "step4" / "parsed").glob("*.gz"))
+            assert len(parsed) == 1, "the parsed file should already be on disk"
+            first_bytes = parsed[0].read_bytes()
+
+            # Resume: the user is redone, entirely from cache, and the parsed
+            # file is byte-identical.
+            p2 = step4_puller(tmp, [], pool)
+            p2._append_ledger = real_append.__func__.__get__(p2)
+            p2.run()
+            assert p2.client.counters["requests_sent"] == 0
+            assert p2.latest_outcomes()["u"]["outcome"] == "complete"
+            assert parsed[0].read_bytes() == first_bytes
+
+
+def t_step4_ledger_is_append_only_and_last_row_wins():
+    import step4_history_pull as s4
+
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        with step4_env(tmp):
+            pool = fake_pool(tmp, [("u", 1)])
+            # First attempt is discarded over tolerance; second reconciles.
+            p = step4_puller(tmp, [history_page(1, 1, 99, n=2)], pool)
+            p.run()
+            assert p.latest_outcomes()["u"]["outcome"] == "discarded_over_tolerance"
+            lines_after_first = len(p.ledger_path.read_text().splitlines())
+
+            p2 = step4_puller(tmp, [history_page(1, 1, 2, n=2)], pool,
+                              retry_outcomes=["discarded_over_tolerance"])
+            # The failed page is cached, so the retry must not be served the
+            # stale body: clear that one cache entry the way a human would.
+            body, meta = p2.client.cache_paths(
+                "users/u/history", {"page": 1, "limit": 250})
+            body.unlink()
+            meta.unlink()
+            p2.run()
+            assert len(p2.ledger_path.read_text().splitlines()) > lines_after_first, \
+                "the ledger was rewritten rather than appended to"
+            assert p2.latest_outcomes()["u"]["outcome"] == "complete"
+            # Both attempts really spent calls, so both are counted.
+            assert p2.live_calls_recorded() == 2
+
+
+def t_step4_live_call_ledger_cannot_be_reduced():
+    """The Step 3 trap: an offline replay spends nothing, and the ledger is the
+    only record of what was spent."""
+    import step4_history_pull as s4
+
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        with step4_env(tmp):
+            pool = fake_pool(tmp, [("u", 1)])
+            p = step4_puller(tmp, [history_page(1, 1, 2, n=2)], pool)
+            p.run()
+            assert p.live_calls_recorded() == 1
+            recorded = json.loads(p.state_path.read_text())["live_calls_recorded"]
+            assert recorded == 1
+
+            # A fresh puller over the same state dir with an empty ledger is
+            # exactly what a replay looks like.
+            p2 = step4_puller(tmp, [], pool)
+            p2.ledger_rows = []
+            try:
+                p2._save_state()
+            except s4.LedgerRegression:
+                pass
+            else:
+                raise AssertionError("state accepted a reduced live-call total")
+            assert json.loads(p.state_path.read_text())["live_calls_recorded"] == 1
+
+
+def t_step4_offline_run_refuses_the_canonical_state_dir():
+    import step4_history_pull as s4
+
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        pool = fake_pool(tmp, [("u", 1)])
+        client = make_client(tmp, [])
+        try:
+            s4.Step4Puller(client, state_dir=s4.STATE_DIR, pool_path=pool, offline=True)
+        except s4.OfflineGuard:
+            return
+        raise AssertionError("an offline run was allowed into the canonical state dir")
+
+
+# -- D11: per-user fetch timestamps ----------------------------------------
+
+
+def t_step4_fetch_timestamps_come_from_disk_not_the_wall_clock():
+    import step4_history_pull as s4
+
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        with step4_env(tmp):
+            pool = fake_pool(tmp, [("u", 2)])
+            script = [history_page(1, 2, 4, n=2, base_id=0),
+                      history_page(2, 2, 4, n=2, base_id=2)]
+            p = step4_puller(tmp, script, pool)
+            p.run()
+            row = p.latest_outcomes()["u"]
+            assert row["first_page_fetched_at"] and row["last_page_fetched_at"]
+            assert row["first_page_fetched_at"] <= row["last_page_fetched_at"]
+
+            # Rewrite the meta on disk to a date that cannot be "now", then
+            # redo the user from cache. The reported time must follow the disk.
+            _, meta = p.client.cache_paths("users/u/history", {"page": 1, "limit": 250})
+            payload = json.loads(meta.read_text())
+            payload["fetched_at"] = "2001-01-01T00:00:00+00:00"
+            meta.write_text(json.dumps(payload))
+
+            p2 = step4_puller(tmp, [], pool, retry_errors=True)
+            entry = p2.plan["order"][0]
+            row2 = p2.pull_user(entry)
+            assert row2["first_page_fetched_at"] == "2001-01-01T00:00:00+00:00", row2
+            assert p2.counts()["earliest_first_page_fetched_at"] == \
+                "2001-01-01T00:00:00+00:00"
+
+
+# -- parsing ----------------------------------------------------------------
+
+
+def t_step4_parsed_rows_keep_what_steps_5_7_and_8_need():
+    import step4_history_pull as s4
+
+    rows, stats = s4.parse_history([
+        {"id": 1, "watched_at": "2024-01-02T03:04:05.000Z", "action": "scrobble",
+         "type": "episode",
+         "episode": {"season": 2, "number": 3, "ids": {"trakt": 77}, "title": "t"},
+         "show": {"title": "S", "aired_episodes": 40, "ids": {"trakt": 5, "slug": "s"}}},
+        {"id": 2, "watched_at": "2024-01-03T00:00:00.000Z", "action": "watch",
+         "type": "movie", "movie": {"title": "M", "ids": {"trakt": 9}}},
+        {"id": 1, "watched_at": "2024-01-02T03:04:05.000Z", "action": "scrobble",
+         "type": "episode",
+         "episode": {"season": 2, "number": 3, "ids": {"trakt": 77}},
+         "show": {"ids": {"trakt": 5, "slug": "s"}}},
+    ])
+    assert rows[0] == {"id": 1, "watched_at": "2024-01-02T03:04:05.000Z",
+                       "action": "scrobble", "type": "episode", "season": 2,
+                       "number": 3, "episode_trakt": 77, "show_trakt": 5,
+                       "show_slug": "s"}
+    blob = json.dumps(rows)
+    assert "aired_episodes" not in blob, "Step 1 §0 forbids show.aired_episodes"
+    assert stats["episode_records"] == 2 and stats["movie_records"] == 1
+    # Movies are kept: Step 7 liveness evidence is account-wide.
+    assert rows[1]["type"] == "movie"
+    # Duplicates are counted, never silently dropped: deduplication is a Step 8
+    # definitional act, not a pull-time one.
+    assert stats["duplicate_record_ids"] == 1 and len(rows) == 3
+    assert stats["earliest_watched_at"] == "2024-01-02T03:04:05.000Z"
+
+
+# -- errors and privacy -----------------------------------------------------
+
+
+def t_step4_short_read_is_a_user_level_failure_not_a_run_stop():
+    """Under the SUPERSEDED exact rule. Kept because the rule is still
+    selectable and because a per-user failure must never stop the run."""
+    import step4_history_pull as s4
+
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        with step4_env(tmp):
+            pool = fake_pool(tmp, [("bad", 1), ("good", 1)])
+            script = [history_page(1, 1, 99, n=2), history_page(1, 1, 2, n=2)]
+            p = step4_puller(tmp, script, pool, reconcile="exact",
+                             residual_tolerance=0.0)
+            p.run()
+            rows = p.latest_outcomes()
+            assert rows["bad"]["outcome"] == "error_short_read"
+            assert rows["good"]["outcome"] == "complete", "the run did not continue"
+            assert rows["bad"]["is_data"] is False
+            failures = (tmp / "logs" / "step4_failures.ndjson").read_text()
+            assert "error_short_read" in failures
+
+
+def t_step4_mid_sweep_403_stays_distinct_from_a_length_skip():
+    import step4_history_pull as s4
+
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        with step4_env(tmp):
+            pool = fake_pool(tmp, [("u", 3)])
+            script = [history_page(1, 3, 7, n=3), FakeResponse(403, {}, "no")]
+            p = step4_puller(tmp, script, pool)
+            p.run()
+            row = p.latest_outcomes()["u"]
+            assert row["outcome"] == "access_denied"
+            assert row["records"] == 0 and row["parsed_path"] is None
+            assert row["items_discarded"] == 3
+
+
+def t_step4_artifact_carries_no_usernames():
+    import step4_history_pull as s4
+
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        with step4_env(tmp):
+            pool = fake_pool(tmp, [("distinctiveslug1", 1)])
+            p = step4_puller(tmp, [history_page(1, 1, 2, n=2)], pool)
+            p.run()
+            paths = s4.write_artifact(p, "unit")
+            text = paths[0].read_text()
+            assert "distinctiveslug1" not in text
+            assert json.loads(text)["counts"]["by_outcome"]["complete"] == 1
+            # And the guard actually fires when a name is present.
+            try:
+                s4.names_in({"who": "distinctiveslug1"}, {"distinctiveslug1"})
+            except Exception:
+                raise
+            assert s4.names_in({"who": "distinctiveslug1"}, {"distinctiveslug1"}) \
+                == ["distinctiveslug1"]
+
+
+def t_step4_pagination_drift_is_caught_and_named():
+    """A history that grows mid-sweep changes the headers. That is the direct
+    mutation test; the item-count reconciliation was only an indirect one."""
+    from trakt_client import PaginationDrift
+
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        c = make_client(tmp, [
+            FakeResponse(200, page_headers(1, 3, 9, limit=3), "[1,2,3]"),
+            FakeResponse(200, page_headers(2, 4, 10, limit=3), "[4,5,6]"),
+        ])
+        try:
+            list(c.get_paginated("users/x/history", limit=3))
+        except PaginationDrift as exc:
+            assert "9" in str(exc) and "10" in str(exc)
+        else:
+            raise AssertionError("a history that moved mid-sweep was accepted")
+
+        # Steady headers must NOT be read as drift.
+        c2 = make_client(tmp / "b", [
+            FakeResponse(200, page_headers(1, 2, 6, limit=3), "[1,2,3]"),
+            FakeResponse(200, page_headers(2, 2, 6, limit=3), "[4,5,6]"),
+        ])
+        items, info = c2.fetch_all("users/y/history", limit=3)
+        assert info["outcome"] == "complete" and len(items) == 6
+
+
+def t_step4_adopted_completeness_rule_is_the_default():
+    """decisions/0012, adopted 2026-08-11: page_count with a 2 percent residual
+    tolerance IS the default. A run with no flags must use it.
+
+    The client's own function default stays at the SUPERSEDED exact rule on
+    purpose. 0012 amends decisions/0002 and Step 1 §0, which govern the history
+    sweep; it does not speak for the follower and list endpoints Step 3 swept,
+    whose evidence was gathered under exact. Exact is strictly the stricter of
+    the two, so a caller that does not ask gets the stricter rule, and the
+    adopted rule is applied deliberately at the layer 0012 governs."""
+    import inspect
+
+    import step4_history_pull as s4
+    from trakt_client import TraktClient
+
+    assert s4.COMPLETENESS_RULE == "page_count"
+    assert s4.RESIDUAL_TOLERANCE == 0.02
+    assert inspect.signature(s4.Step4Puller.__init__).parameters["reconcile"].default \
+        == "page_count"
+    assert inspect.signature(
+        s4.Step4Puller.__init__).parameters["residual_tolerance"].default == 0.02
+    # The library default is the stricter, superseded rule. Deliberate.
+    assert inspect.signature(TraktClient.fetch_all).parameters["reconcile"].default \
+        == "exact"
+    assert inspect.signature(TraktClient.get_paginated).parameters["reconcile"].default \
+        == "exact"
+
+    parser_defaults = {}
+    import argparse as _argparse
+
+    real_parse = _argparse.ArgumentParser.parse_args
+
+    def capture(self, argv=None, namespace=None):
+        ns = real_parse(self, argv, namespace)
+        parser_defaults.update(vars(ns))
+        raise SystemExit(0)
+
+    _argparse.ArgumentParser.parse_args = capture
+    try:
+        try:
+            s4.main([])
+        except SystemExit:
+            pass
+    finally:
+        _argparse.ArgumentParser.parse_args = real_parse
+    assert parser_defaults["completeness_rule"] == "page_count", parser_defaults
+    assert parser_defaults["residual_tolerance"] == 0.02
+
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        with step4_env(tmp):
+            pool = fake_pool(tmp, [("u", 1)])
+            p = step4_puller(tmp, [], pool)
+            assert p.reconcile == "page_count"
+            assert p.residual_tolerance == 0.02
+    for bad in ("loose", "", "page-count"):
+        try:
+            with tempfile.TemporaryDirectory() as d2:
+                tmp2 = Path(d2)
+                with step4_env(tmp2):
+                    step4_puller(tmp2, [], fake_pool(tmp2, [("u", 1)]), reconcile=bad)
+        except ValueError:
+            continue
+        raise AssertionError(f"an unknown completeness rule {bad!r} was accepted")
+
+
+def t_step4_adopted_rule_tolerates_the_header_artefact_but_not_a_real_gap():
+    """Under the adopted rule the pilot's observed residuals pass and a
+    genuine gap still fails. Both halves matter: a rule that accepted anything
+    would put a fabricated never-started in the headline."""
+    from trakt_client import ResidualOutOfTolerance
+
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        # The real shape from the pilot: 1459 records against a header of 1460.
+        c = make_client(tmp, [
+            FakeResponse(200, page_headers(1, 2, 1460, limit=1000),
+                         json.dumps(list(range(1000)))),
+            FakeResponse(200, page_headers(2, 2, 1460, limit=1000),
+                         json.dumps(list(range(1000, 1459)))),
+        ])
+        items, info = c.fetch_all("users/x/history", limit=1000,
+                                  reconcile="page_count", residual_tolerance=0.02)
+        assert info["outcome"] == "complete"
+        assert len(items) == 1459
+        assert info["item_count_residual"] == -1
+
+        # A real half-missing sweep is discarded, and it is discarded WHOLE.
+        c2 = make_client(tmp / "b", [
+            FakeResponse(200, page_headers(1, 1, 1000, limit=1000),
+                         json.dumps(list(range(400)))),
+        ])
+        items2, info2 = c2.fetch_all("users/y/history", limit=1000,
+                                     reconcile="page_count", residual_tolerance=0.02)
+        assert info2["outcome"] == "discarded_over_tolerance"
+        assert info2["complete"] is False
+        assert items2 == [], "a partial sweep was returned as data"
+        assert info2["discarded_items"] == 400
+        assert info2["item_count_residual"] == -600
+
+        # get_paginated still raises, so no caller can consume it as a sweep.
+        c3 = make_client(tmp / "c", [
+            FakeResponse(200, page_headers(1, 1, 1000, limit=1000),
+                         json.dumps(list(range(400)))),
+        ])
+        try:
+            list(c3.get_paginated("users/z/history", limit=1000,
+                                  reconcile="page_count", residual_tolerance=0.02))
+        except ResidualOutOfTolerance as exc:
+            assert "tolerance" in str(exc)
+            assert isinstance(exc, ShortRead)
+            return
+        raise AssertionError("a 400-of-1000 sweep passed the adopted rule")
+
+
+def t_step4_tolerance_boundary_is_exactly_two_percent():
+    """The boundary is inclusive at the tolerance and fails just past it, and
+    there is NO absolute floor: 0012 says 2 percent, so a residual of 1 on a
+    21-record user is over tolerance and is discarded.
+
+    The floor matters because an earlier draft had one, and it silently widened
+    the rule to 4.8 percent on small histories."""
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        # 980 of 1000: residual -20, exactly 2.0 percent. Inclusive -> complete.
+        at = make_client(tmp / "at", [
+            FakeResponse(200, page_headers(1, 1, 1000, limit=1000),
+                         json.dumps(list(range(980)))),
+        ])
+        _, info_at = at.fetch_all("users/a/history", limit=1000,
+                                  reconcile="page_count", residual_tolerance=0.02)
+        assert info_at["outcome"] == "complete", "the boundary is not inclusive"
+        assert info_at["item_count_residual"] == -20
+
+        # 979 of 1000: residual -21, 2.1 percent. Just past -> discarded.
+        past = make_client(tmp / "past", [
+            FakeResponse(200, page_headers(1, 1, 1000, limit=1000),
+                         json.dumps(list(range(979)))),
+        ])
+        _, info_past = past.fetch_all("users/b/history", limit=1000,
+                                      reconcile="page_count", residual_tolerance=0.02)
+        assert info_past["outcome"] == "discarded_over_tolerance"
+
+        # No absolute floor: 20 of 21 is 4.8 percent and is discarded.
+        small = make_client(tmp / "small", [
+            FakeResponse(200, page_headers(1, 1, 21, limit=1000),
+                         json.dumps(list(range(20)))),
+        ])
+        _, info_small = small.fetch_all("users/c/history", limit=1000,
+                                        reconcile="page_count", residual_tolerance=0.02)
+        assert info_small["outcome"] == "discarded_over_tolerance", \
+            "an absolute +/-1 floor has crept back in"
+
+        # And the over-count direction is tested on the same boundary.
+        over = make_client(tmp / "over", [
+            FakeResponse(200, page_headers(1, 1, 1000, limit=1000),
+                         json.dumps(list(range(1020)))),
+        ])
+        _, info_over = over.fetch_all("users/d/history", limit=1000,
+                                      reconcile="page_count", residual_tolerance=0.02)
+        assert info_over["outcome"] == "complete"
+        assert info_over["item_count_residual"] == 20
+
+
+def t_step4_over_tolerance_user_is_discarded_and_stays_distinguishable():
+    """decisions/0012: the same treatment access_denied gets. Its own outcome,
+    never folded into unavailable, never into a skip, never into an error, and
+    never represented by an empty result. Only `complete` means the user
+    watched nothing."""
+    import step4_history_pull as s4
+
+    assert "discarded_over_tolerance" in s4.TERMINAL_OUTCOMES
+    assert "discarded_over_tolerance" not in s4.ERROR_OUTCOMES
+    assert "discarded_over_tolerance" not in s4.DATA_OUTCOMES
+
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        with step4_env(tmp):
+            pool = fake_pool(tmp, [("bad", 1), ("empty", 1), ("good", 1)])
+            script = [
+                history_page(1, 1, 99, n=2),     # residual -97 on 99: discarded
+                history_page(1, 1, 0, n=0),      # genuinely watched nothing
+                history_page(1, 1, 2, n=2),      # ordinary complete user
+            ]
+            p = step4_puller(tmp, script, pool)
+            p.run()
+            rows = p.latest_outcomes()
+            assert rows["bad"]["outcome"] == "discarded_over_tolerance"
+            assert rows["empty"]["outcome"] == "complete"
+            assert rows["good"]["outcome"] == "complete", "the run did not continue"
+
+            # Discarded, not truncated: nothing partial was kept.
+            assert rows["bad"]["is_data"] is False
+            assert rows["bad"]["records"] == 0
+            assert rows["bad"]["parsed_path"] is None
+            assert rows["bad"]["items_discarded"] == 2
+            assert not list((tmp / "processed" / "step4" / "parsed").glob("bad*"))
+
+            # A zero-episode `complete` and a discard are not the same object.
+            assert rows["empty"]["is_data"] is True
+            assert rows["empty"]["records"] == 0
+
+            # Counted on its own, and not inside any other bucket.
+            counts = p.counts()
+            assert counts["by_outcome"]["discarded_over_tolerance"] == 1
+            assert counts["by_outcome"].get("unavailable", 0) == 0
+            assert counts["by_outcome"].get("error_short_read", 0) == 0
+            assert counts["by_outcome"].get("skipped_length_actual", 0) == 0
+            log = json.loads((tmp / "logs" / "step4_pull_log.json").read_text()) \
+                if (tmp / "logs" / "step4_pull_log.json").exists() else None
+            log = log or json.loads(
+                s4.write_pull_log(p, tmp / "logs" / "pl.json").read_text())
+            assert log["discarded_over_tolerance"] == 1
+            assert log["errors"] == 0
+            assert log["private_or_absent"] == 0
+            failures = (tmp / "logs" / "step4_failures.ndjson").read_text()
+            assert "discarded_over_tolerance" in failures
+
+
+def t_step4_three_way_classification_is_counted_separately():
+    """decisions/0012 is explicit that the tolerance must not absorb three
+    different phenomena. Header over-count, header under-count and genuine
+    cross-page duplicate records are classified per user, counted separately,
+    and NOT assumed mutually exclusive."""
+    import step4_history_pull as s4
+
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        with step4_env(tmp):
+            # Residuals are kept small relative to the header on purpose: these
+            # users are inside the 2 percent tolerance, which is the whole
+            # point. The tolerance accepts them; the classification still has
+            # to say which of the three things each one is.
+            # Names are ordered so the deterministic pull order (forecast, then
+            # slug) matches the scripted responses below.
+            pool = fake_pool(tmp, [("a_over", 2), ("b_under", 2), ("c_dup", 2)])
+            script = [
+                # over-count: header claims 200, endpoint returns 199
+                history_page(1, 2, 200, n=100, base_id=0),
+                history_page(2, 2, 200, n=99, base_id=100),
+                # under-count: header claims 200, endpoint returns 201
+                history_page(1, 2, 200, n=100, base_id=1000),
+                history_page(2, 2, 200, n=101, base_id=1100),
+                # duplicate: ids 2098 and 2099 come back on BOTH pages, AND the
+                # header under-counts, so this user is in two categories at once
+                history_page(1, 2, 199, n=100, base_id=2000),
+                history_page(2, 2, 199, n=100, base_id=2098),
+            ]
+            p = step4_puller(tmp, script, pool)
+            p.run()
+            rows = p.latest_outcomes()
+            assert all(r["outcome"] == "complete" for r in rows.values())
+
+            cls = {k: r["parse"]["classification"] for k, r in rows.items()}
+            assert cls["a_over"]["header_over_count"] is True
+            assert cls["a_over"]["header_under_count"] is False
+            assert cls["a_over"]["residual_on_accumulated"] == -1
+            assert cls["b_under"]["header_under_count"] is True
+            assert cls["b_under"]["residual_on_accumulated"] == 1
+
+            # The duplicate is CROSS-page and is reported as its own number.
+            assert cls["c_dup"]["cross_page_duplicate_ids"] == 2
+            assert cls["c_dup"]["cross_page_duplicate_records"] == 2
+            assert cls["c_dup"]["accumulated_records"] == 200
+            assert cls["c_dup"]["distinct_record_ids"] == 198
+            # Not mutually exclusive: the same user is also a header case.
+            assert cls["c_dup"]["header_under_count"] is True
+
+            # The two residuals are different quantities and both are carried.
+            assert cls["c_dup"]["residual_on_accumulated"] == 1
+            assert cls["c_dup"]["residual_on_distinct_ids"] == -1
+            assert cls["c_dup"]["residual_basis"] == "accumulated_records"
+
+            agg = p.classification_counts()
+            assert agg["header_over_count"]["users"] == 1
+            assert agg["header_under_count"]["users"] == 2
+            assert agg["cross_page_duplicate_records"]["affected_users"] == 1
+            assert agg["cross_page_duplicate_records"]["affected_records"] == 2
+            assert agg["users_with_both_a_header_residual_and_duplicates"] == 1
+            assert agg["totals"]["accumulated_records"] == 600
+            assert agg["totals"]["distinct_record_ids"] == 598
+            assert agg["totals"]["duplicate_records_total"] == 2
+
+
+def t_step4_within_page_duplicates_are_not_counted_as_cross_page():
+    """The cross-page number is the one 0012 asks for, so a repeat that never
+    crossed a page boundary must not inflate it."""
+    import step4_history_pull as s4
+
+    items = [{"id": 1}, {"id": 1}, {"id": 2}, {"id": 3}, {"id": 2}]
+    # pages: [1,1,2] then [3,2]. id 1 repeats WITHIN page 1; id 2 crosses.
+    cls = s4.classify_sweep(items, [3, 2], 5)
+    assert cls["cross_page_duplicate_ids"] == 1
+    assert cls["cross_page_duplicate_records"] == 1
+    assert cls["within_page_duplicate_records"] == 1
+    assert cls["duplicate_records_total"] == 2
+    assert cls["distinct_record_ids"] == 3
+
+    # Without page attribution the cross-page figures are None, not a guess.
+    blind = s4.classify_sweep(items, None, 5)
+    assert blind["page_attribution_available"] is False
+    assert blind["cross_page_duplicate_ids"] is None
+    assert blind["cross_page_duplicate_records"] is None
+    assert blind["duplicate_records_total"] == 2
+
+    # Slices that do not tile the record list are refused rather than trusted.
+    bad = s4.classify_sweep(items, [3, 99], 5)
+    assert bad["page_attribution_available"] is False
+
+
+def t_step4_residual_distribution_covers_discarded_users_too():
+    """0012 asks for the residual distribution across the pool so the 2 percent
+    tolerance can be judged. A distribution of survivors only cannot say
+    whether the threshold is in the right place, so the discarded users are in
+    it."""
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        with step4_env(tmp):
+            pool = fake_pool(tmp, [("a", 1), ("b", 1), ("c", 1)])
+            script = [
+                history_page(1, 1, 100, n=100, base_id=0),    # residual 0
+                history_page(1, 1, 100, n=99, base_id=200),   # residual -1, 1%
+                history_page(1, 1, 100, n=50, base_id=400),   # residual -50, discarded
+            ]
+            p = step4_puller(tmp, script, pool)
+            p.run()
+            dist = p.residual_distribution()
+            assert dist["users_measured"] == 3, dist
+            assert dist["includes_discarded_users"] is True
+            assert dist["signed_residual"]["min"] == -50
+            assert dist["signed_residual"]["zero"] == 1
+            assert dist["signed_residual"]["negative_header_over_count"] == 2
+            assert dist["abs_share_of_item_count"]["users_over_tolerance"] == 1
+            assert dist["abs_share_of_item_count"]["users_within_tolerance"] == 2
+            assert sum(dist["bands_by_abs_share"].values()) == 3
+            assert dist["basis"].startswith("accumulated records")
+
+
+def t_step4_consecutive_over_tolerance_discards_trip_a_tripwire():
+    """A discard is not an error and does not move the error breaker, which
+    would otherwise leave a systemic residual fault free to discard the whole
+    pool one benign-looking user at a time. And the stop is not exit 0."""
+    import step4_history_pull as s4
+
+    n = s4.MAX_CONSECUTIVE_OVER_TOLERANCE
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        with step4_env(tmp):
+            users = [(f"u{i:03d}", 1) for i in range(n + 5)]
+            pool = fake_pool(tmp, users)
+            script = [history_page(1, 1, 999, n=1) for _ in range(n + 5)]
+            p = step4_puller(tmp, script, pool)
+            p.run()
+            assert p.consecutive_over_tolerance >= n
+            assert p.abnormal_stop is True
+            assert "consecutive users discarded" in (p.stop_reason or "")
+            decided = p.latest_outcomes()
+            assert len(decided) == n, \
+                f"the tripwire did not stop the walk: {len(decided)} decided"
+            assert p.consecutive_errors == 0, "a discard moved the error breaker"
+
+
+def t_step4_progress_file_is_pollable_and_carries_no_usernames():
+    """A 22-hour unattended run has to be checkable without attaching to it,
+    and the progress file is in logs/ but is still counts only."""
+    import step4_history_pull as s4
+
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        with step4_env(tmp):
+            pool = fake_pool(tmp, [("gravedigger", 1), ("umbrellastand", 1)])
+            script = [history_page(1, 1, 2, n=2, base_id=0),
+                      history_page(1, 1, 2, n=2, base_id=10)]
+            p = step4_puller(tmp, script, pool)
+            p.run()
+            payload = json.loads(p.progress_path.read_text())
+            assert payload["pid"] == os.getpid()
+            assert payload["users_decided_total"] == 2
+            assert payload["finished"] is True
+            assert payload["completeness_rule"] == "page_count"
+            assert payload["residual_tolerance"] == 0.02
+            assert payload["by_outcome"]["complete"] == 2
+            blob = payload_text = p.progress_path.read_text()
+            for name in ("gravedigger", "umbrellastand"):
+                assert name not in blob, f"the progress file leaked {name}"
+            assert s4.names_in(payload, s4.pool_names(p)) == []
+            assert "TRAKT" not in payload_text
+            # and it is readable back by the status reader
+            assert s4.print_status(p.progress_path) == 0
+
+
+def t_step4_sabbath_window_is_honoured():
+    import step4_history_pull as s4
+    from datetime import datetime as dt
+
+    window = s4.parse_sabbath_window("FRI 17:30-SAT 20:30")
+    assert s4.parse_sabbath_window("off") is None
+    assert s4.in_sabbath(dt(2026, 8, 14, 18, 0), window)      # Friday evening
+    assert s4.in_sabbath(dt(2026, 8, 15, 12, 0), window)      # Saturday midday
+    assert not s4.in_sabbath(dt(2026, 8, 14, 16, 0), window)  # Friday afternoon
+    assert not s4.in_sabbath(dt(2026, 8, 15, 21, 0), window)  # Saturday night
+    assert not s4.in_sabbath(dt(2026, 8, 11, 18, 0), window)  # Tuesday
+
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        with step4_env(tmp):
+            pool = fake_pool(tmp, [("u", 1)])
+            p = step4_puller(tmp, [history_page(1, 1, 2, n=2)], pool)
+            p.sabbath_window = window
+            import step4_history_pull as mod
+            saved = mod.in_sabbath
+            mod.in_sabbath = lambda now, w: True
+            try:
+                p.run()
+            finally:
+                mod.in_sabbath = saved
+            assert p.latest_outcomes() == {}
+            assert p.client.counters["requests_sent"] == 0
+            assert "Sabbath" in (p.stop_reason or "")
+
+
 def main() -> int:
     print("offline behaviour checks")
     checks = [
@@ -1521,6 +2552,40 @@ def main() -> int:
         ("the stopping thresholds are unchanged", t_step3_stopping_thresholds_are_unchanged),
         ("the plateau margin is reported without moving the rule", t_step3_plateau_margin_is_reported_without_moving_the_rule),
         ("the backfill replay cannot reach the network", t_step3_backfill_replay_cannot_reach_the_network),
+        # -- Step 4 history pull -------------------------------------------
+        ("step4 order is stratified round-robin and deterministic", t_step4_order_is_stratified_round_robin_and_deterministic),
+        ("every prefix is proportional across both tails", t_step4_every_prefix_is_proportional_across_both_tails),
+        ("the real pool's order is proportional at every prefix", t_step4_real_pool_order_is_proportional),
+        ("a forecast over the cap is never started", t_step4_forecast_cap_never_starts_the_user),
+        ("a user at exactly the cap is pulled", t_step4_a_user_at_exactly_the_cap_is_pulled),
+        ("actual pages over the cap discard, never truncate", t_step4_actual_pages_over_cap_discards_and_never_truncates),
+        ("a sweep that grows past the cap is discarded whole", t_step4_a_sweep_that_grows_past_the_cap_is_discarded_whole),
+        ("the two skip counts are reported separately", t_step4_the_two_skip_counts_are_reported_separately),
+        ("the page cap reuses the 403 discard path", t_step4_page_cap_reuses_the_403_discard_path),
+        ("step4 never uses the truncating bound", t_step4_never_uses_the_truncating_bound),
+        ("a budget stop is neither a length skip nor terminal", t_step4_budget_stop_is_not_a_length_skip_and_is_not_terminal),
+        ("a completed user is not re-requested", t_step4_completed_user_is_not_re_requested),
+        ("an interrupt leaves no false completion", t_step4_interrupt_between_parse_and_ledger_leaves_no_false_completion),
+        ("the ledger is append-only and last row wins", t_step4_ledger_is_append_only_and_last_row_wins),
+        ("the live-call ledger cannot be reduced", t_step4_live_call_ledger_cannot_be_reduced),
+        ("an offline run refuses the canonical state dir", t_step4_offline_run_refuses_the_canonical_state_dir),
+        ("fetch timestamps come from disk, not the wall clock", t_step4_fetch_timestamps_come_from_disk_not_the_wall_clock),
+        ("parsed rows keep what Steps 5, 7 and 8 need", t_step4_parsed_rows_keep_what_steps_5_7_and_8_need),
+        ("a short read is a user failure, not a run stop", t_step4_short_read_is_a_user_level_failure_not_a_run_stop),
+        ("a mid-sweep 403 stays distinct from a length skip", t_step4_mid_sweep_403_stays_distinct_from_a_length_skip),
+        ("the step4 artifact carries no usernames", t_step4_artifact_carries_no_usernames),
+        ("pagination drift is caught and named", t_step4_pagination_drift_is_caught_and_named),
+        # -- decisions/0012: the adopted completeness rule -------------------
+        ("the adopted completeness rule is the default", t_step4_adopted_completeness_rule_is_the_default),
+        ("the adopted rule tolerates the artefact, not a real gap", t_step4_adopted_rule_tolerates_the_header_artefact_but_not_a_real_gap),
+        ("the tolerance boundary is exactly 2 percent, with no floor", t_step4_tolerance_boundary_is_exactly_two_percent),
+        ("an over-tolerance user is discarded and stays distinguishable", t_step4_over_tolerance_user_is_discarded_and_stays_distinguishable),
+        ("the three behaviours are counted separately, not absorbed", t_step4_three_way_classification_is_counted_separately),
+        ("a within-page repeat is not counted as cross-page", t_step4_within_page_duplicates_are_not_counted_as_cross_page),
+        ("the residual distribution includes the discarded users", t_step4_residual_distribution_covers_discarded_users_too),
+        ("consecutive over-tolerance discards trip a tripwire", t_step4_consecutive_over_tolerance_discards_trip_a_tripwire),
+        ("the progress file is pollable and carries no usernames", t_step4_progress_file_is_pollable_and_carries_no_usernames),
+        ("the Sabbath window is honoured", t_step4_sabbath_window_is_honoured),
     ]
     failures = []
     for name, fn in checks:

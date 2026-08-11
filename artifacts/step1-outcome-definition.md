@@ -138,6 +138,20 @@ estimated in pages.
   would land in the headline. The "never started" state is only meaningful if the pull for
   that user is known complete; enforcement is Step 4's and Step 8's, but the dependency is
   recorded here because it is this definition that it breaks.
+
+  > **Amended 2026-08-11 by the Human Lead — `decisions/0012-sweep-completeness-rule.md`.**
+  > **The requirement above is unchanged. The *test* for it has changed.** Completeness is judged
+  > by **full `X-Pagination-Page-Count` coverage plus a residual within 2 percent** of
+  > `X-Pagination-Item-Count`, not by exact equality with that header. The Step 4 pilot showed
+  > `X-Pagination-Item-Count` is not an exact count of the records this endpoint returns: seven of
+  > ten users mismatched, in **both** directions (−97 to +20), while page and item headers stayed
+  > identical across every page and two different page sizes returned the identical record set. A
+  > user outside the tolerance is **discarded and logged, never truncated**, and stays
+  > distinguishable downstream the way `access_denied` does.
+  >
+  > **This is a rule change inside an approved gate artifact.** Per the approval record at the head
+  > of this document, an edit that changes a rule reopens the gate; this one does. It is recorded as
+  > a Human Lead amendment and **has not been put to Red Team.**
 - **The endpoint mixes `type: episode` with `type: movie`.** For outcome measurement, only
   `type: episode` records belonging to the show in question are used. **Liveness (Step 7) draws
   on the whole sweep but is evaluated per pair.** Its *evidence* is not restricted to the show

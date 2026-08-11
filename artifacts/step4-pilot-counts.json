@@ -1,0 +1,259 @@
+{
+  "step": 4,
+  "label": "pilot",
+  "generated_at": "2026-08-11T05:43:41.372019+00:00",
+  "source_decisions": [
+    "0002",
+    "0004",
+    "0009",
+    "0010",
+    "0011",
+    "0012"
+  ],
+  "page_limit": 250,
+  "page_cap": 300,
+  "completeness_rule": {
+    "rule": "page_count",
+    "residual_tolerance": 0.02,
+    "decision": "decisions/0012, adopted by the Human Lead 2026-08-11",
+    "test": "every page reported by X-Pagination-Page-Count read, headers steady across the sweep, and |accumulated - X-Pagination-Item-Count| within the tolerance",
+    "residual_basis": "accumulated records, never de-duplicated ones",
+    "outside_the_tolerance": "discarded and logged under its own outcome `discarded_over_tolerance`; never truncated, never folded into unavailable, a skip or an error, never an empty result"
+  },
+  "plan": {
+    "usable_users": 4088,
+    "eligible_users": 4050,
+    "skipped_forecast_users": 38,
+    "skipped_forecast_pages": 15123,
+    "eligible_forecast_pages": 195377,
+    "bin_sizes": [
+      405,
+      405,
+      405,
+      405,
+      405,
+      405,
+      405,
+      405,
+      405,
+      405
+    ],
+    "bin_forecast_ranges": [
+      [
+        1,
+        6
+      ],
+      [
+        6,
+        13
+      ],
+      [
+        13,
+        20
+      ],
+      [
+        20,
+        28
+      ],
+      [
+        28,
+        36
+      ],
+      [
+        36,
+        45
+      ],
+      [
+        45,
+        57
+      ],
+      [
+        57,
+        74
+      ],
+      [
+        74,
+        105
+      ],
+      [
+        105,
+        292
+      ]
+    ]
+  },
+  "proportionality": {
+    "prefixes_checked": 4050,
+    "max_spread_between_unexhausted_bins": 1,
+    "at_prefix_length": 1,
+    "holds": true,
+    "statement": "at every prefix length, the number of users taken from any two bins that still have members differs by at most one"
+  },
+  "realized_page_distribution": {
+    "users_decided_in_order": 20,
+    "decided_set_is_a_contiguous_prefix_of_the_order": true,
+    "pulled_prefix": {
+      "n": 20,
+      "mean": 38.5,
+      "min": 1,
+      "p25": 13,
+      "median": 36,
+      "p75": 57,
+      "p95": 105,
+      "max": 105
+    },
+    "eligible_pool": {
+      "n": 4050,
+      "mean": 48.24,
+      "min": 1,
+      "p25": 17,
+      "median": 36,
+      "p75": 64,
+      "p95": 142,
+      "max": 292
+    },
+    "prefix_bin_counts": {
+      "0": 2,
+      "1": 2,
+      "2": 2,
+      "3": 2,
+      "4": 2,
+      "5": 2,
+      "6": 2,
+      "7": 2,
+      "8": 2,
+      "9": 2
+    }
+  },
+  "counts": {
+    "users_in_pool_usable": 4088,
+    "users_eligible_after_forecast_cap": 4050,
+    "users_decided": 58,
+    "by_outcome": {
+      "skipped_length_forecast": 38,
+      "complete": 19,
+      "discarded_over_tolerance": 1
+    },
+    "outcomes_sum_to_decided": true,
+    "skipped_length_forecast": 38,
+    "skipped_length_actual": 0,
+    "pages_read_total": 772,
+    "live_calls_recorded_all_runs": 772,
+    "live_calls_this_run": 385,
+    "records_parsed": 188263,
+    "episode_records": 173728,
+    "movie_records": 14535,
+    "duplicate_record_ids": 5,
+    "earliest_first_page_fetched_at": "2026-08-11T05:01:26.447766+00:00",
+    "latest_last_page_fetched_at": "2026-08-11T05:43:41.086361+00:00",
+    "forecast_error": {
+      "users_with_actual_page_count": 20,
+      "mean_actual_over_forecast": 0.998,
+      "max_actual_over_forecast": 1.077,
+      "min_actual_over_forecast": 0.833,
+      "users_where_actual_exceeds_forecast": 3
+    },
+    "item_count_residual": {
+      "users_measured": 20,
+      "users_with_a_nonzero_residual": 15,
+      "max_abs_share_of_item_count": 0.11707,
+      "note": "accumulated records minus X-Pagination-Item-Count. On /users/:id/history the header is not an exact count of the records the API returns; the pilot proved this by getting the identical record set at two page sizes while the header disagreed with both."
+    },
+    "header_and_duplicate_classification": {
+      "users_classified": 19,
+      "users_with_a_measurable_residual": 19,
+      "header_over_count": {
+        "definition": "accumulated records < X-Pagination-Item-Count",
+        "status": "benign for this study",
+        "users": 11,
+        "records_the_header_over_claimed": 568
+      },
+      "header_under_count": {
+        "definition": "accumulated records > X-Pagination-Item-Count",
+        "status": "benign, and in the safe direction",
+        "users": 3,
+        "records_beyond_the_header": 157
+      },
+      "header_exact": {
+        "users": 5
+      },
+      "cross_page_duplicate_records": {
+        "definition": "the same record id returned on more than one page",
+        "status": "real data behaviour, not a header artefact; handled downstream by Step 1 \u00a72.2 distinct-episode counting, reported here rather than absorbed",
+        "users_with_page_attribution": 19,
+        "affected_users": 0,
+        "affected_records": 0,
+        "affected_record_ids": 0,
+        "max_affected_records_on_one_user": 0
+      },
+      "within_page_duplicate_records": {
+        "definition": "the same record id twice on the SAME page",
+        "affected_records": 5
+      },
+      "users_with_both_a_header_residual_and_duplicates": 0,
+      "not_mutually_exclusive": "a user can be a header over- or under-count AND carry cross-page duplicates; each category counts it, and the overlap is given above",
+      "totals": {
+        "accumulated_records": 188263,
+        "distinct_record_ids": 188258,
+        "duplicate_records_total": 5,
+        "records_missing_an_id": 0
+      }
+    },
+    "residual_distribution": {
+      "basis": "accumulated records minus X-Pagination-Item-Count",
+      "users_measured": 20,
+      "includes_discarded_users": true,
+      "signed_residual": {
+        "min": -191,
+        "p05": -128,
+        "median": -1,
+        "p95": 101,
+        "max": 131,
+        "negative_header_over_count": 11,
+        "zero": 5,
+        "positive_header_under_count": 4
+      },
+      "abs_share_of_item_count": {
+        "median": 0.001384,
+        "p90": 0.010433,
+        "p95": 0.014227,
+        "p99": 0.117069,
+        "max": 0.117069,
+        "tolerance": 0.02,
+        "users_within_tolerance": 19,
+        "users_over_tolerance": 1
+      },
+      "bands_by_abs_share": {
+        "exactly 0": 5,
+        "0.0100%-0.1000%": 4,
+        "0.1000%-0.5000%": 5,
+        "0.5000%-1.0000%": 3,
+        "1.0000%-2.0000%": 2,
+        "2.0000%-5.0000%": 0,
+        "5.0000%-10.0000%": 0,
+        "10.0000%-100.0000%": 1
+      },
+      "residual_within_one_but_over_tolerance": 0,
+      "residual_within_one_note": "users a \u00b11 absolute floor would have rescued. The rule as adopted has no such floor. Reported so the Human Lead can see what a floor would buy; not adopted here."
+    },
+    "completeness_rule": "page_count",
+    "residual_tolerance": 0.02,
+    "by_channel_outcome": {
+      "B|skipped_length_forecast": 19,
+      "A|skipped_length_forecast": 19,
+      "B|complete": 8,
+      "A|complete": 11,
+      "A|discarded_over_tolerance": 1
+    },
+    "deferred_this_run": 0
+  },
+  "pull_date_D11": {
+    "pull_date": "2026-08-11",
+    "tau_pull": "2026-08-11T00:00:00Z",
+    "source": "decisions/0011, set by the Human Lead 2026-08-11",
+    "earliest_first_page_fetched_at": "2026-08-11T05:01:26.447766+00:00",
+    "latest_last_page_fetched_at": "2026-08-11T05:43:41.086361+00:00",
+    "constraint_pull_date_no_later_than_earliest_fetch": true,
+    "note": "D11 constrains pull_date to be no later than the earliest per-user fetch date. The first-page timestamp is the conservative anchor: history returns newest-first, so a sweep is known complete only for records older than the instant it started. Records at or after tau_pull are discarded at Step 8, not here: this step does not filter the pull."
+  },
+  "stop_reason": "reached --max-users 10"
+}
