@@ -37,7 +37,28 @@ and `task-sheet.md` "Gate summary". Verified.
 
 ---
 
-## Step 3 — no decision file, and why that is right but incomplete
+## Step 3 — `0005` now exists; two more were commissioned 2026-08-11
+
+**`decisions/0005-step3-stopping-rule.md`** records the stopping-rule substitution.
+**Status: Open — awaiting ratification at the Step 3 checkpoint.** It is the first entry in
+`decisions/` recorded as **agent-taken rather than Human Lead-decided**, and it establishes the
+pattern: *Taken by* names the agent, *Authority* says "Not a Human Lead decision … recorded here
+for ratification, because it departs from `task-sheet.md`."
+
+**A precedent worth carrying:** a Chained step's owner can take a decision that needs recording
+without any approval having been owed at the time. Recording and ratifying are separate acts. Two
+more were commissioned on 2026-08-11 — the crawl constants and the Channel A/B allocation — and I
+handed the assembled text to the Human Lead. I do not write these files.
+
+**One misattribution risk I flagged in that handover:** `0005` credits Engineering's HOLD with the
+position that "stating plainly that the plateau would not fire is better than manufacturing one."
+That sentence is **the agent's own, pre-registered** at `src/step3_user_discovery.py:76` before the
+run — "Saying that plainly is worth more than manufacturing a plateau." Engineering's distinct
+contribution was that it **should have gone to the Human Lead before the run**. The docstring at
+lines 73-76 pre-registers the exact outcome that occurred. Do not let the log credit the reviewer
+with the agent's foresight, or the agent with the reviewer's objection.
+
+## The original coverage gap, kept for the reasoning
 
 Step 3 is **Chained with a Human Lead checkpoint**, not a gate. `CLAUDE.md` requires a decision
 file only where the Human Lead decides; Step 3's four open positions (§9 of the write-up) are

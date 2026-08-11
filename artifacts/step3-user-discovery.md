@@ -209,10 +209,23 @@ Lead's call.
   users who will contribute analysis rows, since a row requires completing some show's S1 within
   the Step 2 frame.
 
-**A note on Channel A's cost.** It consumed 89 percent of discovery calls for 61 percent of the
-eligible users, at 5× the cost per user of Channel B. That is defensible if the reason is arm
-independence for Step 11 — two channels selecting differently is the point — but the trade was
-never stated, and on cost alone it is the opposite of what one would choose.
+**A note on Channel A's cost, and a correction to it.** Over the whole run Channel A consumed 89
+percent of discovery calls for 61 percent of the eligible users, at 5× Channel B's cost per user.
+An earlier version of this section concluded that "on cost alone it is the opposite of what one
+would choose."
+
+**That conclusion does not survive the margin.** Over rounds 25–36 — the period identified above as
+Channel B's exhaustion — **Channel A was the *cheaper* channel: 5.31 new eligible users per call
+against Channel B's 4.06.** Reallocating toward B would have bought less than its whole-run rate of
+18.0 implies, because that rate was collapsing against a list universe known from the outset to be
+bounded.
+
+The qualification is that Channel A's marginal advantage is high-variance: rounds 26, 29 and 27
+supply 853 of those 1,528 users — **56 percent from a quarter of the rounds.** A's *expected*
+marginal rate beat B's; its *reliability* did not, which is the same hub-luck fact from §3 seen from
+the cost side. The arm-independence defence for the split (two channels must select differently or
+Step 11's comparison is worthless) stands on its own and is recorded in
+`decisions/0007-step3-channel-cost-trade.md`.
 
 ---
 
@@ -272,13 +285,15 @@ question at all. It was backfilled from cached bodies at zero live calls.
 > it counts a mutual follow as reciprocal only if the crawl happened to expand both endpoints,
 > which is why its reciprocity is ~5× lower and meaningless as a clustering signal.
 >
-> **One figure is unresolved.** `artifacts/step3-yield-curve.json` reports
-> `reciprocal_pairs: 1353` where recomputation from `edges.jsonl` gives **1,172**. The two do not
-> reconcile and `distinct_directed_pairs: 7103` agrees exactly, so the discrepancy is isolated to
-> the reciprocity statistic. It is flagged rather than silently resolved, and **Step 11 should
-> recompute reciprocity from `edges.jsonl` rather than reading it from the yield curve.** An
-> earlier version of this write-up quoted the traversal figures without saying which reading they
-> were, which is the error this note exists to prevent.
+> **One figure was a bug, now diagnosed.** `artifacts/step3-yield-curve.json` reports
+> `reciprocal_pairs: 1353`; the correct value is **1,172**. `src/step3_backfill.py` adds each pair
+> to its seen-set *before* testing for the reverse, and counts **per record** rather than per
+> distinct pair — so each of the 323 duplicate records whose reverse was already seen increments
+> again. Executing both algorithms against `edges.jsonl` reproduces 1,353 and 1,172 exactly.
+> `distinct_directed_pairs: 7103` is unaffected. **Until the JSON is regenerated, Step 11 should
+> recompute reciprocity from `edges.jsonl`.** An earlier version of this write-up also quoted the
+> traversal figures without saying which reading they were, which is the error this note exists to
+> prevent.
 
 ---
 

@@ -26,31 +26,59 @@
 **Channel A cost 5× per user and returned under two-thirds of the eligible pool.** On cost alone
 the split is the opposite of what one would choose. 324 users were reached by both channels.
 
-## The defence, stated now because it was not stated then
+The factor of 2 is real: expansion reads both `users/:id/followers` and `users/:id/following` per
+user. 27 discovery calls × 36 rounds = **972**, matching `logs/step3_run.json` → `calls.discovery`
+exactly.
 
-**Step 11 needs two channels that select differently.** The whole purpose of the tagging requirement
-is a discovery-bias check, and a check comparing two arms is worthless if one arm is a rounding
-error. Buying Channel A's users at 5× is therefore purchasing *arm independence*, not users — which
-makes cost-per-user the wrong yardstick.
+## Why, in the agent's own pre-run words
 
-**That is a coherent rationale and it is probably the right one. It was never written down.** No
-comparison was made, no alternative split was costed, and the trade appears nowhere in the code
-comments or the plan docstring. It is being reconstructed after the fact, which is why it is
-recorded as needing ratification rather than as settled.
+*(An earlier version of this entry said the rationale "was never written down" and reconstructed it.
+That was wrong: it is pre-registered in the module docstring of `src/step3_user_discovery.py`,
+written before the run. Corrected 2026-08-11 — it was documented in the wrong place, not absent.)*
 
-## What the split cannot be defended against
+On reading both endpoints: *"Outbound follows reach different communities than inbound ones, so using
+both widens the walk."*
 
-**Its rigidity.** The allocation never responded to what the channels were doing, and by the end
-they were doing opposite things:
+On Channel B's ceiling: *"`lists/trending` and `lists/popular`, paged at limit=100. **Both report the
+same 20,211-list universe**, so they are two orderings of one pool and are deduped by list id."*
 
-- **Channel B exhausted itself.** List dedup climbed from 0.20 at round 1 to 0.74–0.89 from round 25
-  on; new eligible users fell from 125 per round to 6–24. It was still being given 3 calls a round
-  at the end, buying almost nothing.
-- **Channel A never converged.** Yield swung between 0.04 and 15.08 per call with no trend,
-  depending on whether a round happened to expand a high-degree account.
+**Channel B was known in advance to be drawing from a single bounded pool.** That is the strongest
+available justification for capping it at 3 calls a round — and it is not stated as such anywhere.
+No rationale is recorded for 12 and 3 specifically.
 
-A split that adapted would have moved calls away from B once dedup crossed some threshold. Whether
-that is worth building is a question for any future discovery run, not for this pool.
+**Step 11 needs two channels that select differently.** A discovery-bias check comparing two arms is
+worthless if one arm is a rounding error, so buying Channel A's users at a higher unit price is
+purchasing *arm independence* rather than users. That is a coherent defence and probably the right
+one, but it is inferred from the design rather than stated in it.
+
+## The cost argument against the split does not survive the margin
+
+`artifacts/step3-user-discovery.md` §5 argues the allocation is "on cost alone … the opposite of what
+one would choose," on whole-run averages of 3.6 users per call for A against 18.0 for B.
+
+**Those averages invert at the margin.** Recomputed from the per-round record over rounds 25–36 — the
+period the write-up itself identifies as Channel B's exhaustion:
+
+| Rounds 25–36 | New eligible | Discovery calls | Per call |
+| :--- | ---: | ---: | ---: |
+| Channel A | 1,528 | 288 | **5.31** |
+| Channel B | 146 | 36 | **4.06** |
+
+**Over the last third of the run, Channel A was the cheaper channel.** Reallocating toward B would
+have bought less than its headline 18.0 rate implies, because that rate was collapsing against a
+20,211-list universe known to be bounded from the outset.
+
+**The honest qualification:** Channel A's marginal advantage is high-variance. Three rounds — 26, 29
+and 27 — supply **853 of those 1,528 users, 56 percent from a quarter of the rounds**. A's *expected*
+marginal rate beat B's; its *reliability* did not. This finding and §3's "hub-luck, not convergence"
+are the same fact from two sides.
+
+## What the split still cannot be defended against
+
+**Its rigidity.** The allocation never responded to what the channels were doing. Channel B was still
+drawing 3 calls a round at dedup 0.89, buying almost nothing. A split that adapted would have moved
+calls away from B once dedup crossed a threshold. Whether that is worth building is a question for a
+future discovery run, not for this pool.
 
 ## Consequences, not decisions
 
@@ -66,10 +94,18 @@ all outcomes observed after the fact. Only the 24:3 allocation was decided.
 only when the crawl happened to expand both endpoints, so its reciprocity is an artifact of walk
 order.
 
-**One figure is unresolved:** `artifacts/step3-yield-curve.json` reports `reciprocal_pairs: 1353`
-where recomputation from `edges.jsonl` gives **1,172**; `distinct_directed_pairs: 7103` agrees
-exactly. **Step 11 should recompute reciprocity from `edges.jsonl` rather than read it from the
-yield curve**, until the discrepancy is resolved.
+**One figure was a bug and is now resolved. The correct value is 1,172 reciprocal pairs; the
+`reciprocal_pairs: 1353` in `artifacts/step3-yield-curve.json` is wrong.**
+
+`src/step3_backfill.py` adds each pair to the seen-set *before* checking whether its reverse is
+present, and increments **per record** rather than per distinct pair. `edges.jsonl` holds
+`7,426 − 7,103 = 323` duplicate records, so every duplicate of an edge whose reverse was already
+seen increments again. Reproduced by executing both algorithms against `edges.jsonl`: the
+add-then-check per-record form returns **exactly 1,353**; correct distinct-pair counting returns
+**1,172**. `distinct_directed_pairs: 7103` is unaffected and correct.
+
+The same pattern inflates the traversal-reading figure of 235 by the same mechanism. Until the
+yield-curve JSON is regenerated, **Step 11 should recompute reciprocity from `edges.jsonl`.**
 
 ## For the Human Lead
 

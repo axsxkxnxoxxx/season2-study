@@ -207,6 +207,34 @@ tail is a function of sweep span, the span is now 2.4× the assumed one, and `�
 UTC midnight, so the discard can reach a full day beyond the sweep. Nobody has costed it. It is
 also the argument *for* one of §9's positions (sampling the pool down) that §9 does not make.
 
+### S9. The stated warrant for `MIN_EPISODES_USABLE = 10` rests on a premise Step 1 does not grant
+
+- `src/step3_user_discovery.py:43-45`: "The floor of 10 episodes is deliberately far below anything
+  the study needs: **a user with fewer than 10 episodes logged cannot have completed any season 1**,
+  so this pre-applies the frame rather than biasing it."
+- `artifacts/step1-outcome-definition.md` §7: **`L2 = 1` shows are excluded; `L1 = 1` is retained.**
+  Nothing in Step 1 or in `task-sheet.md` Step 2 sets a minimum S1 length. The S1 completion rule is
+  `|D1| ≥ ceil(0.90 × L1)`, so a show with `L1 = 6` is completed at 6 distinct episodes.
+
+If the Step 2 frame contains **any** show with `L1 ≤ 9`, the floor excludes genuine S1 completers,
+and it removed **232** accounts. The claim is stated as a certainty ("cannot") and is not one.
+
+This is the exact failure mode in [[withdrawn-claims-register]] — *asserting a property that does
+not follow from the definitions actually given* — and it is the seventh instance. It is cheaply
+checkable the moment Step 2 exists: **`min(L1)` over the frame, ≥ 10 or not.** Until then the
+warrant is unverified, not wrong. Direction if it fails: light trackers excluded, i.e. **downward**
+on the never-started share, compounding with S6.
+
+### S10. `decisions/README.md` has not been updated for `0005`
+
+- `decisions/0005-step3-stopping-rule.md` exists, **Status: Open — awaiting ratification**.
+- `decisions/README.md` index table ends at `0004`; the open-items list ends at item 9; nothing
+  records that a decision is awaiting ratification.
+
+The README is the index Step 18 assembles from. An Open decision that the index does not list is
+the one most likely to be missed. Also still stale there: item 9's "first live exercise will be
+during Step 3 or Step 4" — Step 3 is done and saw zero 403s.
+
 ### S8. 1,027 eligible users were discovered and never screened
 
 `5,347 eligible − 4,320 screened = 1,027`. Not stated in the write-up, though its funnel implies

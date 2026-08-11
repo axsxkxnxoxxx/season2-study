@@ -350,7 +350,6 @@ def write_provenance(crawler: Step3Crawler, out_dir: Path) -> dict[str, Any]:
     lists_per_owner = Counter(per_owner.values())
     edges = 0
     edge_pairs: set[tuple[str, str]] = set()
-    reciprocal = 0
     edge_path = out_dir / "edges.jsonl"
     if edge_path.exists():
         for line in edge_path.read_text(encoding="utf-8").splitlines():
@@ -358,10 +357,20 @@ def write_provenance(crawler: Step3Crawler, out_dir: Path) -> dict[str, Any]:
                 continue
             e = json.loads(line)
             edges += 1
-            pair = (e["follower"], e["followee"])
-            edge_pairs.add(pair)
-            if (pair[1], pair[0]) in edge_pairs:
-                reciprocal += 1
+            edge_pairs.add((e["follower"], e["followee"]))
+
+    # Count distinct MUTUAL FOLLOWS, once each.
+    #
+    # The previous version added each pair to the set and then asked whether the
+    # reverse was present, incrementing once PER RECORD. Two bugs compounded:
+    # a pair was visible to its own reverse-test, and duplicate records of the
+    # same edge each incremented again. edges.jsonl holds 7426 records over 7103
+    # distinct pairs, so the 323 duplicates inflated the count to 1353 against a
+    # true 1172. The figure reached a published artifact.
+    #
+    # Count over the deduplicated set, and halve: a mutual follow is ONE pair,
+    # seen from both ends. Self-follows would break the halving, so drop them.
+    reciprocal = sum(1 for a, b in edge_pairs if a != b and (b, a) in edge_pairs) // 2
     return {
         "seed_provenance": {
             "seeds_with_provenance": len(seeds),

@@ -18,7 +18,8 @@ Step 18 assembles the final log from these files.
 | [0004](0004-403-handling.md) | **A 403 on a user resource skips that user and continues**, bounded by two circuit breakers; any other 403 still hard stops; ambiguity resolves strict. Amends `CLAUDE.md` API discipline. | 2026-08-10 | Closed |
 | [0005](0005-step3-stopping-rule.md) | **Step 3 stopped on `TARGET_USABLE = 4000`, not on the plateau rule `task-sheet.md` names.** The plateau rule ran 36 rounds and never fired. Agent-taken; departs from the task sheet. | 2026-08-11 | **Open — needs ratification** |
 | [0006](0006-step3-crawl-constants.md) | **The twelve Step 3 crawl constants**, none of which appear in `task-sheet.md`. Two carry known consequences: the usable floor and a FIFO screening-order artifact. Agent-taken. | 2026-08-11 | **Open — needs ratification** |
-| [0007](0007-step3-channel-cost-trade.md) | **Channel A took 89 percent of discovery calls at 5× the cost per user.** Defensible as buying Step 11 arm independence, but the rationale was never stated at the time. Agent-taken. | 2026-08-11 | **Open — needs ratification** |
+| [0007](0007-step3-channel-cost-trade.md) | **Channel A took 89 percent of discovery calls at 5× the cost per user** on whole-run averages — though it was the *cheaper* channel over the last third. Defensible as buying Step 11 arm independence. Agent-taken. | 2026-08-11 | **Open — needs ratification** |
+| [0008](0008-step3-seed-source.md) | **Step 3 seeded from movie-comment authors.** Satisfies the task sheet's prohibition but biases the pool toward heavy trackers — **downward on the headline**, compounding with the liveness bias. The highest-consequence agent choice in Step 3. | 2026-08-11 | **Open — needs ratification** |
 
 **A note on authority.** Entries 0001–0004 are Human Lead decisions. **0005–0007 are agent-taken,
 inside a Chained step, and are recorded retrospectively for ratification** — they shaped the
@@ -80,7 +81,19 @@ that surfaced it.
 11. **Step 4 costs ~210,500 calls and ~23.4 hours** of pure throttled time at the current pool,
     roughly 2.4× an earlier sampled estimate that inherited a `total_plays` bug. Whether to accept
     that or sample the pool down is unsettled. ([0006](0006-step3-crawl-constants.md))
-12. **`reciprocal_pairs` is unresolved between two artifacts** — 1,353 in
-    `artifacts/step3-yield-curve.json` against 1,172 recomputed from `raw/step3/edges.jsonl`, while
-    `distinct_directed_pairs` agrees exactly at 7,103. Step 11 should recompute from `edges.jsonl`.
-    ([0007](0007-step3-channel-cost-trade.md))
+12. ~~**`reciprocal_pairs: 1353` is a counting bug.**~~ **CLOSED 2026-08-11.** Fixed in
+    `src/step3_backfill.py` and regenerated: `artifacts/step3-yield-curve.json` now reports
+    **1,172**, matching an independent recount from `raw/step3/edges.jsonl`.
+    `distinct_directed_pairs: 7103` was always correct. ([0007](0007-step3-channel-cost-trade.md))
+13. **`MIN_EPISODES_USABLE = 10`'s warrant is unverified.** It assumes no S1 in the frame is shorter
+    than 10 episodes, but Step 1 §7 retains `L1 = 1` and no minimum S1 length is set anywhere.
+    **Checkable as soon as Step 2 exists: `min(L1)` over the frame.** If it fails, the excluded users
+    are light trackers — downward on the headline, compounding with the seeding bias.
+    ([0006](0006-step3-crawl-constants.md))
+14. ~~**The Step 3 seed source has no decision entry.**~~ **CLOSED 2026-08-11** — recorded as
+    [0008](0008-step3-seed-source.md).
+15. **`step3_backfill.py --out-dir raw/step3` zeroes the call ledger in `state.json`**, because the
+    offline replay spends no live calls. **This has happened twice** and been restored from
+    `logs/step3_run.json` both times; a `ledger_note` in the file records it. Either restore after
+    every regeneration or use the script's default out-dir, which does not touch that file. The
+    ledger is the only record of Step 3's spend against the API budget and it is gitignored.

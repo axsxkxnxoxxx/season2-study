@@ -30,13 +30,16 @@ estimation sample (D14), `0004` 403 handling. D-numbers live in
 `artifacts/step1-outcome-definition.md` §10.0. A term tagged **D14** or **D15** below post-dates
 the Step 1 gate and was decided separately.
 
-## Step 3 crawl constants — SET BY AN AGENT, NO GATE, NO DECISION FILE
+## Step 3 crawl constants — agent-set, pre-registered in code, partly ratified
 
-Source: `artifacts/step3-yield-curve.json` → `plan`, and `logs/step3_run.json` → `plan`. Run
-2026-08-11 01:44Z→03:40Z. **None of these appears in `task-sheet.md`.** Step 3 is Chained with a
-Human Lead checkpoint, so no approval was owed — but each of these bounds the pool that every
-downstream number rests on, and none has an entry in `decisions/`. Status of all: **SET IN CODE,
-UNRATIFIED.**
+**Authoritative source: `src/step3_user_discovery.py:169-191`**, one block, quotable. Mirrored into
+`artifacts/step3-yield-curve.json` → `plan` and `logs/step3_run.json` → `plan`. Run 2026-08-11.
+
+**None of these appears in `task-sheet.md`**, but they were **not undocumented**: the module
+docstring (lines 10-82) carries an affirmative rationale for nearly every one, written **before the
+run** — "all chosen in advance", "all three committed in advance". Quote the docstring, not a
+reconstruction. Status: **agent-taken under Chained latitude.** `TARGET_USABLE` is recorded in
+`decisions/0005` and is **Open — awaiting ratification**; the rest are unrecorded as of 2026-08-11.
 
 | Constant | Value | Note |
 | :--- | :--- | :--- |
