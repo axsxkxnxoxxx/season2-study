@@ -16,6 +16,15 @@ Step 18 assembles the final log from these files.
 | [0002](0002-step4-history-endpoint.md) | **Step 4 source is `GET /users/:id/history`, unfiltered, one sweep per user.** Replaces `/users/:id/watched/shows`, which returns no per-episode timestamps. | 2026-08-10 | Closed |
 | [0003](0003-w-estimation-sample.md) | **W is estimated on bucket C1 (all-at-once) shows only**, per D12, and applied to all shows. Closes Step 1 open question 2. | 2026-08-10 | Closed |
 | [0004](0004-403-handling.md) | **A 403 on a user resource skips that user and continues**, bounded by two circuit breakers; any other 403 still hard stops; ambiguity resolves strict. Amends `CLAUDE.md` API discipline. | 2026-08-10 | Closed |
+| [0005](0005-step3-stopping-rule.md) | **Step 3 stopped on `TARGET_USABLE = 4000`, not on the plateau rule `task-sheet.md` names.** The plateau rule ran 36 rounds and never fired. Agent-taken; departs from the task sheet. | 2026-08-11 | **Open — needs ratification** |
+| [0006](0006-step3-crawl-constants.md) | **The twelve Step 3 crawl constants**, none of which appear in `task-sheet.md`. Two carry known consequences: the usable floor and a FIFO screening-order artifact. Agent-taken. | 2026-08-11 | **Open — needs ratification** |
+| [0007](0007-step3-channel-cost-trade.md) | **Channel A took 89 percent of discovery calls at 5× the cost per user.** Defensible as buying Step 11 arm independence, but the rationale was never stated at the time. Agent-taken. | 2026-08-11 | **Open — needs ratification** |
+
+**A note on authority.** Entries 0001–0004 are Human Lead decisions. **0005–0007 are agent-taken,
+inside a Chained step, and are recorded retrospectively for ratification** — they shaped the
+population every downstream number rests on, and a constant that shapes the population is a decision
+whether or not it was treated as one at the time. They are listed here so the distinction between
+"decided" and "defaulted into" stays visible.
 
 ## Gates
 
@@ -57,7 +66,21 @@ that surfaced it.
    is 0, which falls in bucket C2 — harmless only because those shows are excluded, and the
    order that makes it harmless is not recorded.
 8. **The gap hypothesis still has no owning step** — see item 3. Visibility is not ownership.
-9. **The 403 rule's live behaviour is unobserved.** No live 403 has ever been seen; the
-   discriminator is inferred from endpoint path, not observed. First live exercise will be
-   during Step 3 or Step 4 and should be treated as a test of the rule, not as routine.
-   ([0004](0004-403-handling.md))
+9. **The 403 rule's live behaviour is still unobserved — Step 3 did not exercise it.** 5,300 calls
+   produced zero 403s and zero 429s, so both 403 branches and the 429 path remain untested against
+   the live API. **Step 4 is now the first exercise.** What Step 3 *did* exercise, nine times and
+   successfully, is the retry-with-backoff branch (16 HTTP 5xx, 1 transport error, all recovered).
+   One of the three failure paths is live-tested; two are not. ([0004](0004-403-handling.md))
+10. **The pool is biased toward heavy, currently-active trackers**, direction **downward on the
+    never-started share**, compounding with the liveness-exclusion bias rather than cancelling it.
+    Step 11 as written cannot detect it: both channels select on public-facing activity, so
+    agreement between them is not evidence of unbiasedness. Either Step 11's brief gains an
+    activity-stratified diagnostic — computable from `raw/step3/` at zero further live calls — or
+    Step 14 states the limitation. ([0005](0005-step3-stopping-rule.md), `artifacts/step3-user-discovery.md` §4)
+11. **Step 4 costs ~210,500 calls and ~23.4 hours** of pure throttled time at the current pool,
+    roughly 2.4× an earlier sampled estimate that inherited a `total_plays` bug. Whether to accept
+    that or sample the pool down is unsettled. ([0006](0006-step3-crawl-constants.md))
+12. **`reciprocal_pairs` is unresolved between two artifacts** — 1,353 in
+    `artifacts/step3-yield-curve.json` against 1,172 recomputed from `raw/step3/edges.jsonl`, while
+    `distinct_directed_pairs` agrees exactly at 7,103. Step 11 should recompute from `edges.jsonl`.
+    ([0007](0007-step3-channel-cost-trade.md))

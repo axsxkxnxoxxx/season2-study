@@ -22,17 +22,70 @@ The log shows the judgment."
 
 ---
 
-## What `decisions/` holds, as of 2026-08-10
+## What `decisions/` holds, as of 2026-08-11
 
 | File | Covers | Five-field completeness |
 | :--- | :--- | :--- |
-| `README.md` | Index, gate checklist, four open items carried forward | n/a — index |
+| `README.md` | Index, gate checklist, nine open items carried forward (item 4 struck as closed) | n/a — index |
 | `0001-step1-outcome-definition-gate.md` | The Step 1 gate as a whole; **D10** `H = 91` by name, **D12** thresholds by name, **D11** `pull_date` in form with value deferred, **B2 overruled** | Full on the gate and on those four |
 | `0002-step4-history-endpoint.md` | **D15** — `GET /users/:id/history`, unfiltered, one sweep per user | Full |
 | `0003-w-estimation-sample.md` | **D14** — W estimated on bucket C1 only, applied to all shows | Full |
+| `0004-403-handling.md` | A 403 on a user resource skips that user, bounded by two circuit breakers; any other 403 hard stops; ambiguity resolves strict. Amends `CLAUDE.md` | Full, including where it misfires in both directions |
 
 **Gate checklist:** Step 1 closed. Steps 5, 6, 7, 8 open. Consistent across `decisions/README.md`
 and `task-sheet.md` "Gate summary". Verified.
+
+---
+
+## Step 3 — no decision file, and why that is right but incomplete
+
+Step 3 is **Chained with a Human Lead checkpoint**, not a gate. `CLAUDE.md` requires a decision
+file only where the Human Lead decides; Step 3's four open positions (§9 of the write-up) are
+undecided, so there is nothing yet to record. **Producing no decision file was correct.**
+
+What is incomplete is the other direction. Step 3 **already took** decisions that have alternatives,
+costs and a named reviewer disagreement, and they live only inside a write-up. Step 18's format
+exists for exactly these. Assembled below; the Human Lead decides whether any of it ever becomes a
+file.
+
+**Substituting the stopping rule.** *Decided:* stop on `TARGET_USABLE = 4000`.
+*Alternative:* the rule `task-sheet.md` Step 3 actually names — "run until usable-user yield
+plateaus" — which never fired and finished at **0.314 of peak against a 0.20 trigger**.
+*Why:* the target was reached and the budget was not exhausted; continuing had no stated stopping
+condition. *Costs:* the pool is a **convenience sample, not a saturated one**. The frontier grew
+monotonically 496 → 2,970 and never emptied in 36 rounds; depth 3 was never reached; only 432 of
+5,694 users were ever expanded. Reachable users were left undiscovered in a quantity comparable to
+the pool itself, so no claim about "the reachable Trakt population" is available — only about
+4,088 sampled users. *Disagreement:* Engineering returned **HOLD** on the crawl code before
+completion; six defects were closed, round metrics backfilled by offline replay at zero live calls
+(0 mismatches over 36 rounds × 12 fields), and the edge list — previously a **spanning tree**,
+acyclic by construction and therefore unable to answer Step 11's clique question at all — was
+rebuilt. Resolved before the write-up. *Live caveat:* the rebuilt edge list is reported with two
+different pair counts in two public artifacts ([[open-items-and-contradictions]] S3).
+
+**Eleven crawl constants set inside a chained step.** *Decided:* `TARGET_USABLE`,
+`MIN_EPISODES_USABLE = 10`, the 6,500 budget, the three plateau parameters, 300 seeds, depth 3,
+100 neighbours, and the per-round expansion/list/screen caps — full table in
+[[glossary-terms-and-thresholds]]. *Alternative:* none stated. *Why:* not recorded anywhere.
+*Costs:* `MIN_EPISODES_USABLE = 10` is the one the write-up itself flags — it makes "4,088 usable"
+a weak sufficiency claim, and it removed **232** screened accounts, not the 6 the funnel prints.
+*Disagreement:* none recorded. The Human Lead's own established pattern is that a threshold two
+isolated instances must obey goes into `task-sheet.md`; these bind no isolated instance, but they
+bind every downstream number.
+
+**Spending 89 % of discovery calls on Channel A for 61 % of the users.** *Decided:* 864 Channel A
+calls to 108 Channel B, at **5× the cost per user** (3.6 vs 18.0 users/call). *Alternative:*
+weighting toward B. *Why:* the write-up's own reading — "defensible if the reason is arm
+independence for Step 11 … but the trade was never stated, and on cost alone it is the opposite of
+what one would choose." *Costs:* Channel B is now **exhausted** (list dedup 0.20 → 0.74–0.89 from
+round 25, new eligible down to 6–24/round) — the only genuine exhaustion signal in the run — so the
+cheap channel is gone and the expensive one is hub-luck, swinging 0.04 to 15.08 per call with no
+trend. *Disagreement:* none recorded; the write-up raises it against itself.
+
+**Four positions explicitly NOT taken** — §9, and they are the Human Lead's at the checkpoint:
+Step 4's ~23-hour cost; Step 11 diagnostic vs Step 14 statement; population claim vs sampled-users
+claim; and whether sufficiency should be expressed in analysis rows rather than usable accounts.
+Whichever way each goes, each is a five-field entry.
 
 ---
 
@@ -175,23 +228,21 @@ Hand to the Human Lead. It is theirs to write, edit, or reject. Status is the lo
 > **Provenance.** The run is now reproducible at zero live calls: `src/step0_history_probe.py`,
 > `logs/step0_history_probe.json`, write-up at `artifacts/step0-history-endpoint-probe.md`.
 
-**Two corrections the Human Lead may want to fold into the same edit** (my flags, their call —
-[[open-items-and-contradictions]] N3 and N5):
-
-1. `decisions/README.md` open item 4 and `0001`'s "does NOT close" bullet 4 both still describe
-   the provenance gap as open with "no run record and no probe script in `src/`". Both now exist.
-2. `0001`'s Standing record says the artifact carries "six claims withdrawn as false, plus this
-   accepted risk". The table carries **eleven** withdrawn or corrected claims plus the accepted
-   risk; six of the eleven are the false-by-construction subset.
+**Both corrections I flagged alongside this text are now made** — `0001` bullet 4 is struck as
+CLOSED with the three reproduction paths, and the Standing record reads twelve rows / eleven
+withdrawn or corrected / plus B2, with a footnote recording the earlier conflation. Nothing
+outstanding on either.
 
 ---
 
 ## Still with no decision file at all
 
-1. **`pull_date`'s value**, when set. Deferred, not omitted.
+1. **`pull_date`'s value**, when set. Deferred, not omitted. Now actionable — Step 4's size is
+   known ([[open-items-and-contradictions]] S7).
 2. **§10.1 open questions 1 and 3**, when ruled — the Continued boundary and the right-censoring
    rule. Each carries a Data Scientist recommendation and a decision from nobody.
 3. **The gap hypothesis**, if and when it is assigned an owner.
+4. **Step 3's four checkpoint positions**, when ruled, and the three already-taken judgments above.
 
 Related: [[gate-step1-outcome-definition]], [[glossary-terms-and-thresholds]],
 [[open-items-and-contradictions]], [[withdrawn-claims-register]], [[step1-open-questions]].

@@ -1,6 +1,6 @@
 ---
 name: glossary-terms-and-thresholds
-description: Live glossary of every term, threshold and constant in the Season 2 abandonment study, each tagged with the step and gate that fixed it and whether it is set, deferred, or still open
+description: Live glossary of every term, threshold and constant in the Season 2 abandonment study, each tagged with the step and gate that fixed it and whether it is set, deferred, or still open — includes the Step 3 crawl constants, which were set by an agent inside a chained step with no gate
 metadata:
   type: reference
 ---
@@ -26,8 +26,53 @@ Status vocabulary: **FIXED** (set and gate closed) · **DEFERRED** (form fixed, 
 ## Decision numbering — where a term was fixed on the public record
 
 `decisions/` is the log of record: `0001` Step 1 gate, `0002` Step 4 endpoint (D15), `0003` W
-estimation sample (D14). D-numbers live in `artifacts/step1-outcome-definition.md` §10.0. A term
-tagged **D14** or **D15** below post-dates the Step 1 gate and was decided separately.
+estimation sample (D14), `0004` 403 handling. D-numbers live in
+`artifacts/step1-outcome-definition.md` §10.0. A term tagged **D14** or **D15** below post-dates
+the Step 1 gate and was decided separately.
+
+## Step 3 crawl constants — SET BY AN AGENT, NO GATE, NO DECISION FILE
+
+Source: `artifacts/step3-yield-curve.json` → `plan`, and `logs/step3_run.json` → `plan`. Run
+2026-08-11 01:44Z→03:40Z. **None of these appears in `task-sheet.md`.** Step 3 is Chained with a
+Human Lead checkpoint, so no approval was owed — but each of these bounds the pool that every
+downstream number rests on, and none has an entry in `decisions/`. Status of all: **SET IN CODE,
+UNRATIFIED.**
+
+| Constant | Value | Note |
+| :--- | :--- | :--- |
+| `TARGET_USABLE` | **4,000** | The rule that actually stopped the run |
+| `MIN_EPISODES_USABLE` | **10** | Account-wide episode floor. A **weak** definition of "usable" — a row still requires completing some show's S1 inside the Step 2 frame |
+| `call_budget` | 6,500 | 5,300 spent, 1,200 unspent |
+| Plateau rule | 3-round MA of new eligible per discovery call ≤ **0.20** of running peak, on **2** consecutive rounds, after **≥10** rounds | **Never fired.** Final ratio **0.314**, closest ever **0.193** |
+| `n_seeds_target` | 300 | Movie-comment authors: 218 `comments/recent/all/movies`, 82 `comments/trending/all/movies`, 172 distinct films |
+| `max_depth` | 3 | **Never reached.** Exit frontier was depth 1 and 2 only |
+| `neighbours_per_user` | 100 | |
+| `expand_users_per_round` | 12 | 432 of 5,694 users ever expanded |
+| `list_pages_per_round` / `screen_calls_per_round` | 3 / 120 | |
+| `step4_page_limit` | 250 | Matches the `limit=250` in D15 / decision `0002` |
+
+**The pool: 4,088 usable users**, 5,694 discovered, 347 private, 5,347 eligible, 4,320 screened.
+**1,027 eligible users were never screened** — a reserve costing ~1,027 calls, not stated as such
+in the write-up. Channel split of usable: 2,306 Channel A / 1,782 Channel B.
+
+**Stop reason: `sufficiency`, not plateau.** `task-sheet.md` Step 3 says "run until usable-user
+yield plateaus." It did not. See [[open-items-and-contradictions]] S4.
+
+## Step 4 cost — the number the Step 3 checkpoint exists to produce
+
+**210,500 pages ≈ 210,500 calls ≈ 23.4 h** of pure throttled time at 150/min, over 4,088 users.
+Mean **51.5** pages/user (sd 58.8), median 36, p75 66, p90 109, p95 151, p99 289, max 1,034. Top
+decile of users holds 35.2 % of pages. Basis `pages = ceil((episodes.plays + movies.plays) / 250)`,
+floor 1.
+
+**Supersedes ~86,000 calls.** The earlier figure divided `total_plays`, **absent from 77 % of
+`users/:id/stats` bodies** (Trakt returns two payload shapes), so most users forecast as exactly
+1 page. Corrected figure is ~**2.4×**. `episodes.plays + movies.plays` matched `total_plays` in
+549/549 bodies carrying both.
+
+**Corroborates the D15 probe.** Decision `0002` cited ~64 pages/user from **one** profile. 64 sits
+near p75 of the real distribution — mildly heavy, not an outlier. The n=1 figure held up. It is
+still not a rate ([[open-items-and-contradictions]]).
 
 ## Data source — FIXED, D15 / decision `0002`
 
