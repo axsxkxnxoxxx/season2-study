@@ -221,7 +221,7 @@ Two separate things are defined here and they must not be confused. The **thresh
 - [ ] Plot the distribution of gaps between consecutive logged events per user
 - [ ] Set the threshold well beyond the normal gap
 - [ ] State where and why
-- [ ] Write the resulting rule: a user counts as live if they show logged activity after clock start plus W, with gaps under the threshold
+- [ ] Write the resulting rule: a **user-show pair** counts as live if the account shows logged activity after that pair's clock start plus W, with gaps under the threshold. Liveness **evidence** is account-wide — the whole sweep, other shows and movies included, not restricted to the show under study — but the **test** is clock-start-relative and clock start is pair-specific, so **liveness is a pair-level filter**. One account can be live for one show and not for another. Do not drop a user wholesale on a liveness test.
 
 **Deliver:** gap distribution chart, chosen threshold, rule statement, all in `artifacts/`
 **Check:** dual implementation diff
@@ -262,7 +262,7 @@ Two separate things are defined here and they must not be confused. The **thresh
 - [ ] Compute the share who started and left
 - [ ] Compute the share who continued
 - [ ] Attach confidence intervals
-- [ ] Compute the bound: what the never-started share becomes if every inactivity-excluded user is treated as a decliner
+- [ ] Compute the bound: what the never-started share becomes if every inactivity-excluded **pair** is treated as a decliner. Liveness is a pair-level filter (Step 7), so the excluded set is a set of user-show pairs, not of users.
 - [ ] Report as a floor and a ceiling, not a single contestable number
 - [ ] Report the full headline a second time at a 91-day window, which is Netflix's own reporting window, so the result is commensurable with the public argument. Anchor this arm on the later of the S2 premiere date and the first-pass S1 completion date, not on the finale, because Netflix's window runs from release. State plainly that this arm sits on a different origin than the primary headline and that the two are therefore not the same measurement at two window lengths.
 
@@ -431,7 +431,7 @@ Each entry records:
 
 Five gates. Nothing proceeds without written approval from the Human Lead at each.
 
-- [ ] Step 1: outcome definition
+- [x] Step 1: outcome definition — **APPROVED by the Human Lead, 2026-08-10.** `H = 91 days` and the D12 cadence thresholds adopted by name; `pull_date` adopted in form with its value deliberately deferred to Step 4's schedule; Red Team's B2 overruled and recorded as accepted risk. See `artifacts/step1-outcome-definition.md`.
 - [ ] Step 5: contamination exclusion rule
 - [ ] Step 6: window W
 - [ ] Step 7: liveness threshold

@@ -1,11 +1,30 @@
 # Step 1: Outcome Definition
 
 **Owner:** Data Scientist (drafts) · **Mode:** GATE · **Reviewer:** Red Team (hold / proceed)
-**Status:** DRAFT — PROPOSED, NOT ADOPTED. Requires written approval from the Human Lead.
-**Date:** 2026-08-10 · **Revised three times, 2026-08-10:** Human Lead decisions, then the
-authorized revision following Red Team's first HOLD, then this revision following Red Team's
-**second HOLD**
+**Status:** **APPROVED — ADOPTED.** Written approval given by the Human Lead on **2026-08-10**,
+in session, at the Step 1 gate. This document is now the operative definition. Steps downstream
+of the Step 1 gate are unblocked; the four remaining gates (Steps 5, 6, 7, 8) are unaffected and
+still bind.
+**Date:** 2026-08-10 · **Revised four times, 2026-08-10:** Human Lead decisions, then the
+authorized revision following Red Team's first HOLD, then the revision following the second,
+then this revision following Red Team's **third HOLD**
 **W is not set in this document.** No code was written or run to produce it.
+
+> **Approval record — Human Lead decision, 2026-08-10.**
+> **Step 1 is approved.** Approval covers this document as a whole, including the items that
+> entered it as proposals: **D8, D9** (second revision, Section 10.0b) and **D10 through D13**
+> (third revision, Section 10.0c). They are adopted; the "proposed and unadopted" framing that
+> attached to them while the gate was open no longer applies.
+> Two were adopted by name at approval: **`H = 91 days` (D10)** and **the D12 cadence
+> thresholds** as proposed. **`pull_date` (D11)** is adopted in *form* only — its *value* is
+> **deliberately deferred** until Step 4's schedule is known. That deferral is a decision, not
+> an omission or an oversight: the constraint `pull_date ≤ earliest per-user fetch date` cannot
+> be honoured by a value chosen before the pull is scheduled. Setting `pull_date` is a Human
+> Lead act and no agent performs it.
+> **Red Team returned HOLD on B2 and was overruled** — recorded as accepted risk in the table
+> at the head of this document, with the objection, the ruling, and the reason.
+> Approval was given by the Human Lead in writing in this session. No agent recorded it on its
+> own authority, and no agent adopted its own proposal.
 
 This document defines what is being measured, on one user-show pair, from episode-level
 watch history alone. It fixes the population, the clock, the three outcome states, the
@@ -13,26 +32,52 @@ abandonment point, and every counting rule needed to compute them deterministica
 does not set W, does not set the liveness threshold, and does not set the contamination
 exclusion rule. Those are Steps 6, 7, and 5.
 
-**Red Team returned HOLD twice. Both revisions were authorized in response.** Seven settled
-items — Human Lead decisions and items already closed in `task-sheet.md` — are recorded in
-Section 10.0 and incorporated into the body of the document rather than appended to it. Two
-further required outputs, added by this revision in response to Red Team's second round, are in
-Section 10.0b. Three open questions remain in Section 10.1, each carrying a recommendation that
-the Human Lead decides.
+**Red Team returned HOLD three times. All three revisions were authorized in response.** Seven
+settled items — Human Lead decisions and items already closed in `task-sheet.md` — are recorded
+in Section 10.0 and incorporated into the body of the document rather than appended to it. Two
+required outputs added by the second revision are in Section 10.0b; four added by this revision
+are in Section 10.0c. Three open questions remain in Section 10.1, each carrying a
+recommendation that the Human Lead decides.
 
 **What the second HOLD changed.** Three blocking findings and five secondary ones. The
-structural change is in **Sections 3, 4 and 7**: season membership is now defined by the
+structural change was in **Sections 3, 4 and 7**: season membership is defined by the
 season's **listed episode-number set**, not by the numeric range `1..F`. That single change is
 what makes `|D1| ≤ L1`, `|A| ≤ L2` and `p ∈ (0, 1]` true by construction rather than by
-assertion. It has a precondition attached — the listed set has to come from somewhere, and
-Section 3 now names the source and flags that the source is **unconfirmed under
-Client-ID-only auth**. Section 10.0b adds the missing post-window diagnostic for the
-**Never started** category, which is the one the study is named after.
+assertion. Section 10.0b added the missing post-window diagnostic for the **Never started**
+category, which is the one the study is named after.
 
-**Six claims from earlier drafts are withdrawn as false, and each is marked as such where
-it appeared** rather than quietly deleted:
+**What the third HOLD changed.** Four blocking findings, all of them about objects this
+document names but never made operational. In order of how much they move a number:
 
-| Withdrawn claim | Where | Replaced by |
+1. **A fixed post-window horizon `H` now exists (Section 6, D10).** The previous draft claimed
+   right-censoring at `T0 + max(W, 91) ≤ pull date` guaranteed every retained pair 91 days of
+   post-window observation. It does not: the guarantee is `max(W, 91) − W = max(0, 91 − W)`
+   days, which is 61 at `W = 30` and **zero** at any `W ≥ 91`, and Step 6 has not run so this
+   document cannot know which side of 91 `W` falls on. Worse, D3 and D8 measured "to the pull
+   date" carry exposure that varies by a factor of six across the frame, so they were never
+   rates at all. Both are now measured over a constant `H`.
+2. **The window boundary is now a UTC-instant comparison (Section 2.4, D13).** "On or before
+   `T1`" compared a full timestamp against a date and admitted two faithful implementations one
+   day apart. This is the operator that assigns every outcome state and it feeds the
+   dual-implementation diffs at Steps 8 and 9.
+3. **`pull_date` is now a single global frozen cutoff (Section 0, D11).** Step 4 is a multi-day
+   unattended pull, so per-user fetch date would make right-censoring user-dependent and the
+   diagnostics non-comparable.
+4. **The cadence classifier has numeric thresholds and is exhaustive (Section 10.0, D12).** "On
+   the order of" and "near zero" are not thresholds, and they left hiatus and multi-drop seasons
+   in neither bucket. The classifier gates the Step 6 estimation sample, a required Step 9
+   stratum, and a mandatory Step 12 candidate; two isolated Step 6 instances reading the old
+   sentence could legitimately have produced different `W`s.
+
+Separately, **the Section 3.3 precondition is CLOSED**: the Step 0 probe
+(`artifacts/step0-episode-listing-endpoint-probe.md`) confirms the listed episode-number set is
+obtainable on the Client ID alone. Sections 3.3, 9 and 11 are updated. Two limits from that
+probe are carried rather than overread, and Section 3 must **not** be read as "gaps handled."
+
+**Claims from earlier drafts that are withdrawn as false, and one objection accepted as a
+known risk. Each is marked where it appeared** rather than quietly deleted:
+
+| Withdrawn or accepted claim | Where | Disposition |
 | :--- | :--- | :--- |
 | Entry and exit are symmetric | Section 7 | They are not — S1 completion is evaluated over all time, S2 completion within `W`. The asymmetry is now stated as a bias with a known direction, and D3 measures it. |
 | Right-censoring costs zero rows | Sections 6, 10.1 Q3 | `S1_completion_date` is uncapped, so it removes recent S1 completers, who are disproportionately likely to continue. It moves the headline **up**. |
@@ -40,11 +85,18 @@ it appeared** rather than quietly deleted:
 | `p ∈ (0, 1]` follows from `p = m / L2` | Section 7 | It does not when `F2 > L2`. |
 | **Rank-based `p` is safe because out-of-set episodes are dropped upstream** | Section 7 (2nd draft) | **False.** The old drop rule dropped `number > F`, `number < 1`, and missing fields — an episode numbered *inside* `1..F` but *absent* from the listed set survived all three, which is exactly the numbering-gap case. Membership is now defined by **set**, so the drop rule does the work the claim assumed. Section 3. |
 | **Liveness is a statement about the account** | Sections 0, 1, 9 (both drafts) | **Mis-scoped.** The evidence is account-wide, but the test is `activity after T0 + W` and `T0` is pair-specific, so the same account can be live for one show and not another. Liveness is a **pair-level** filter. Sections 0, 1, 9. |
+| **Right-censoring at `T0 + max(W, 91)` guarantees 91 days of post-window observation** | Section 10.0b (3rd draft) | **False by subtraction.** The window closes at `T1 = T0 + W`, so the guarantee is `max(W, 91) − W = max(0, 91 − W)` days: 61 at `W = 30`, **zero** at `W ≥ 91`, and true as written only at `W = 0`. Replaced by an explicit horizon `H` declared in Section 6 (D10). |
+| **D3 and D8 measured "to the pull date" are rates** | Section 10.0, 10.0b (3rd draft) | **They were exposure-weighted mixtures whose weight is show recency.** A 2016 title gets ~10 years of post-window observation, a title whose S2 finale aired 31 Dec 2024 gets ~18 months. Direction: **D8 systematically understates later-starting for recent titles, so "never" looks most true exactly where the frame is newest.** Replaced by a constant horizon `H` (D10). |
+| **"On or before `T1`" is a single unambiguous operator** | Section 7 (2nd, 3rd drafts) | **Ambiguous by one day.** `T1` is a date and the canonical timestamp is a UTC instant; `date(watched_at) ≤ T1` and `watched_at ≤ T1T00:00:00Z` are both faithful readings of the old text and disagree on every evening watch. Replaced by the half-open instant interval in Section 2.4 (D13). |
+| **"Pull date" needs no definition** | Sections 6, 10.0, 10.0b (all drafts) | **Undefined and load-bearing.** Step 4 fetches each user on a different day, so per-user fetch date makes right-censoring user-dependent and the diagnostics non-comparable, while a global cutoff is a different rule on a different population. Replaced by a single global frozen cutoff (D11, Section 0). |
+| **A show is weekly when its span is "on the order of" `(L2 − 1) × 7` days and binge when it is "near zero"** | Section 10.0 (3rd draft) | **Not thresholds, and not exhaustive.** A weekly season with a mid-season hiatus, a two-episode premiere, or a two-per-week drop lands in neither bucket, and a required stratum with unassigned members gets silently pooled. Replaced by the five-bucket numeric classifier in Section 10.0 (D12). |
+| **ACCEPTED RISK — not withdrawn: the liveness bound is inflated** | Section 10.0, Step 9 | **Objection (Red Team):** a pair that binged all of S2 inside `W` and then left Trakt is excluded by the Step 7 liveness filter as not-live, and the Step 9 bound then relabels every inactivity-excluded pair "never started" — so a demonstrable continuer is counted as a decliner and the bound is inflated. **Ruling (Human Lead): overruled, do not fix.** **Reason:** the liveness bound is deliberately worst-case. It is not an estimate and is not presented as one; it is the ceiling of the reported floor-and-ceiling pair, and its whole function is to answer "what if every excluded pair were a decliner." A bound that quietly reclassified the pairs it could explain away would no longer be a bound. The inflation is real, is in the direction the bound is built to run, and is stated wherever the bound appears. |
 
-**One sourcing claim is corrected rather than withdrawn.** The previous draft said Step 0 had
-confirmed the season-length source. Step 0 confirmed `GET /shows/:id/seasons?extended=full`
-returns per-season **counts**. A count is not a list, and this document now needs the list.
-Section 3 states the source, the requirement, and the untested precondition.
+**One sourcing claim is corrected rather than withdrawn, and is now closed.** An early draft
+said Step 0 had confirmed the season-length source; Step 0 had confirmed only that
+`GET /shows/:id/seasons?extended=full` returns per-season **counts**, and a count is not a
+list. The Step 0 episode-listing probe has since supplied the list. Section 3.3 records the
+precondition as **CLOSED** and names the recommended endpoint variant.
 
 ---
 
@@ -82,6 +134,37 @@ user. Each record carries `id`, `watched_at`, `action`, `type`, and for episodes
 UTC timestamp**; date reduction applies to clock arithmetic only — `T0`, `T1`, lags, and
 gaps are whole numbers of days, because W is a number of days — and never to sequencing, so
 the tiebreak in Section 2.2 fires only when two full timestamps are exactly equal.
+
+**That ruling settles ordering and arithmetic. It does not settle the boundary test**, which
+compares a full timestamp against a date — and that comparison is what assigns every outcome
+state. **Section 2.4 defines it, once, as a UTC-instant comparison**, and Sections 6, 7 and
+10.0b use no other form.
+
+**The pull cutoff `pull_date` is a single global constant, not the day a given user was
+fetched.** Step 4 is a multi-day unattended pull: each user's history is fetched on a
+different day. An earlier draft used the phrase "pull date" without defining it, while
+right-censoring (Section 6), D3, D8 and D9 all lean on it. Per-user fetch date is the wrong
+object twice over — right-censoring would remove different pairs depending on the accident of
+scheduling order, and a user fetched early would show an empty tail that a user fetched late
+would not, which makes the diagnostics non-comparable across exactly the axis they are
+supposed to be constant on.
+
+> **D11.** `pull_date` is **one calendar date, fixed as a constant for the whole study**. It
+> defines the frozen cutoff instant `τ_pull := pull_date at 00:00:00Z`. **Every record with
+> `watched_at ≥ τ_pull` is discarded from every computation in this document, whether or not
+> it was fetched.** No computation anywhere uses a per-user fetch date.
+>
+> **Constraint on its value:** `pull_date` must be **no later than the earliest per-user fetch
+> date in the whole Step 4 sweep**. Otherwise a user fetched on day 1 is credited with an
+> absence of activity that was never observed.
+>
+> **Who sets it:** the Human Lead, as a single declared value, once Step 4's schedule is
+> known. Step 1 fixes the *form* of the constant and its constraint, not its value — Step 4 has
+> not run.
+>
+> **Required in the waterfall:** the value of `pull_date`, the earliest and latest per-user
+> fetch dates, and the count of records discarded for `watched_at ≥ τ_pull`. The last of those
+> is the visible price of freezing the cutoff, and it is reported rather than absorbed.
 
 **`first_aired` is UTC too, and that is not free.** Air dates enter this document through the
 S2 finale date in `T0` (Section 6). Trakt's `first_aired` is a UTC instant. A US primetime
@@ -190,6 +273,61 @@ is exactly what the Step 5 contamination rule is for. Step 1 does not filter on 
 it requires that `action` be **retained as a column** in the Step 8 table so Step 5 can use
 it and Step 13 can run a sensitivity arm on it (Section 9).
 
+### 2.4 Instant boundaries: how a date bound becomes a timestamp test
+
+**This rule was added under Red Team blocking finding B3 and it is the single most
+consequential line in the document, because it is the operator that assigns every outcome
+state and it feeds the dual-implementation diffs at Steps 8 and 9.**
+
+The defect: `T1` is a **date** (`T0 + W` days, Section 6), the canonical timestamp (2.2) is a
+full **UTC instant**, and Section 7 compared them with the words "on or before `T1`."
+Section 0's ruling that date reduction applies to clock arithmetic and never to sequencing
+covers neither object. So `watched_at = 2024-03-14T21:00:00Z` against `T1 = 2024-03-14` is
+**included** under `date(watched_at) ≤ T1` and **excluded** under
+`watched_at ≤ T1T00:00:00Z`, and both were faithful readings of the old text. Two isolated
+implementations could differ on a large share of rows and neither would be wrong.
+
+> **D13. Every date bound in this document is expanded to a UTC instant at midnight, and every
+> membership test is a half-open interval on instants: closed on the left, open on the right.**
+>
+> Write `⟦d⟧` for the instant `d at 00:00:00Z`. Then:
+>
+> | Object | Instant form | Test |
+> | :--- | :--- | :--- |
+> | Clock start | `τ0 := ⟦T0⟧` | — |
+> | Window close | `τ1 := τ0 + W × 24h` (identically `⟦T0 + W days⟧ = ⟦T1⟧`) | — |
+> | In-window (Section 7, set `A`) | `(−∞, τ1)` — **no lower bound**, per the one-sided rule in Section 7 | **`watched_at < τ1`** |
+> | Post-window horizon (D3, D8) | `[τ1, τ1 + H × 24h)` | **`τ1 ≤ watched_at < τ1 + H × 24h`** |
+> | Right-censoring (Section 6) | — | **`τ0 + (max(W, 91) + H) × 24h ≤ τ_pull`** |
+> | Frozen cutoff (Section 0) | `τ_pull := ⟦pull_date⟧` | **`watched_at < τ_pull`** |
+>
+> No other comparison form appears anywhere in this document, and no implementation of it may
+> use one. In particular `date(watched_at) ≤ T1` is **withdrawn** and must not be written.
+
+Four properties, stated because each of them is why this form was chosen:
+
+- **The window is exactly `W` days long.** `[τ0, τ1)` spans `W × 24h`, so "a window of `W`
+  days" means `W` days. The inclusive reading spans `W + 1` calendar days, which is a silent
+  off-by-one against the number Step 6 derives and against every lag Step 6 measures.
+- **The window and the horizon tile without gap or overlap.** `[…, τ1)` then `[τ1, τ1 + H×24h)`
+  partition the timeline at `τ1`. Under any other convention an event at the boundary is
+  either counted twice or lost, and D3 and D8 are precisely counts of events just past that
+  boundary.
+- **It is one comparison, and it is `<`.** No `≤` on a timestamp, no date casting, no
+  `23:59:59` sentinel. A sentinel would reintroduce the ambiguity at sub-second precision,
+  which Trakt timestamps do carry.
+- **The direction of the change is named, as everything else here is.** Relative to the
+  inclusive reading, this removes one calendar day from the window, which moves the
+  never-started share marginally **up**. It runs opposite to — and is of the same magnitude as
+  — the one-day UTC finale skew in Section 0, which moves it **down**. Neither is corrected
+  against the other; both are stated. Both are small against any plausible `W` of tens of days.
+
+**One further one-day effect follows from `τ0 := ⟦T0⟧` and is named here.** `T0` is a date, so
+a user who completed S1 at 21:00 has a clock that opens at 00:00 the same day, up to 24 hours
+before the completion instant. That grants marginally more window and moves the never-started
+share **down**. It is not corrected, for the same reason as the finale skew: the alternative is
+a mixed date/instant clock, and a consistent convention beats a half-corrected one.
+
 ---
 
 ## 3. Season membership: the listed episode-number set
@@ -252,35 +390,57 @@ which is precisely the bug this revision exists to prevent, so it is worth keepi
 describing accurately. It is a code check, not a data check. The data check is the drop count
 below.
 
-### 3.3 Where `E` comes from — the precondition, stated as a blocker
+### 3.3 Where `E` comes from — the precondition, now CLOSED
 
-**`E` has no confirmed source today, and everything in Sections 3, 4 and 7 depends on it.**
-Step 2 collects S1 and S2 episode **counts**. Step 0 confirmed only
-`GET /shows/:id/seasons?extended=full`, which returns per-season `episode_count` /
-`aired_episodes`. **A count is not a list.** Neither `E`, nor `F`, nor `p` is derivable from a
-count. The previous draft asserted this was already sourced; it was not.
+**Status: CLOSED.** The previous draft carried this as a blocker: `E` had no confirmed source,
+and everything in Sections 3, 4 and 7 depends on it. Step 2 collects episode **counts**, and a
+count is not a list. That has since been tested — see
+**`artifacts/step0-episode-listing-endpoint-probe.md`** — and the answer is yes on the Client
+ID alone.
 
-> **Requirement.** `E1` and `E2` must be supplied as a **listed episode-number set per season**
-> from a **single episode-listing endpoint** — `GET /shows/:id/seasons/:season`, or
-> `GET /shows/:id/seasons?extended=episodes` — and `E`, `L` and `F` must all be derived from
-> **that same payload, for that show, from that pull**, so they cannot disagree with each other.
+> **Requirement, unchanged.** `E1` and `E2` must be supplied as a **listed episode-number set
+> per season**, and `E`, `L` and `F` must all be derived from **that same payload, for that
+> show, from that pull**, so they cannot disagree with each other.
 >
-> **Precondition, unconfirmed.** Neither endpoint variant was tested under Client-ID-only auth
-> at Step 0. **Confirming that one of them returns per-episode listings on Client ID alone is a
-> precondition of this definition**, and it must be settled before any code computes `L`, `F`,
-> `p`, or the 90 percent test. It is one test call.
+> **Precondition, CLOSED.** The probe called both candidate variants live with the Client ID
+> and no OAuth and got **HTTP 200 on both**. Every episode object carries an integer `number`
+> and an integer `season`, so `E` is read directly and `L := |E|`, `F := max(E)` follow from
+> that one list.
 >
-> Whether the set is added as a required Step 2 field or pulled separately is the **Human
+> **Recommended variant, from the probe:
+> `GET /shows/:id/seasons?extended=episodes,full`.** One call per show covers both seasons, and
+> it is the only variant that returns season-level `episode_count` and `aired_episodes` **on the
+> same payload as the episode list**, which is what makes the 3.4 disagreement check possible
+> without a second source. `GET /shows/:id/seasons/:season` costs two calls per show for the
+> same information minus the counts. The probe also records: **no pagination headers on any
+> variant** (a paginated helper will raise), and **season 0 is returned and must be filtered**
+> before `E` is built, per 3.1.
+>
+> Whether the set is added as a required Step 2 field or pulled separately remains the **Human
 > Lead's** call, since Step 2 is theirs. Step 1 states the requirement, not the plan.
 
-**Fallback, if the precondition fails.** If no episode listing is available on Client ID alone,
-the fallback is to define `E := {1, …, L}`, i.e. `F := L`, **state in the write-up that
-numbering gaps are unhandled**, and **delete the gap machinery** — the set rule collapses to
-the old range rule, and `p` reverts to `m / L2` with its range holding only under the
-contiguity assumption. That is a worse definition, honestly labelled, and it is preferable to a
-guarantee resting on an object nothing supplies. **It is not assumed here and must not be
-implemented pre-emptively.** The primary path above is the specified path; the fallback is
-adopted only if the precondition fails, and only by the Human Lead.
+**Two limits from the probe, carried rather than overread.**
+
+1. **The gap hypothesis remains UNTESTED, and Section 3 must not be read as "gaps handled."**
+   The probe covered **one show with contiguous numbering**. It confirms the *shape* of the
+   payload and the *auth*; it does not confirm how Trakt represents a numbering gap. The set
+   machinery in 3.1 and 3.2 is correct **if and only if** Trakt represents a gap by **omitting
+   the missing number from the listed set**. If Trakt instead lists a **placeholder episode
+   object** at that number, the number is a member of `E`, the drop rule readmits exactly the
+   case the set rule was built to exclude, and `L := |E|` counts an episode that does not
+   exist. That is not an auth question and cannot be settled by another probe call on a
+   contiguous show. **It is settled by finding an in-frame show with a known numbering gap and
+   inspecting its payload**, which belongs wherever `E` is first pulled at scale, and it must be
+   reported. Until then, what Section 3 buys is that `D1 ⊆ E1` and `A ⊆ E2` **relative to
+   whatever `E` Trakt lists** — a real and sufficient guarantee for the invariants in 3.2 and
+   for `p ∈ (0, 1]`, and **not** a claim that gapped seasons are measured correctly.
+2. **Listed can exceed aired.** See 3.4, which the probe changed materially.
+
+**Fallback, retained but no longer the auth contingency.** `E := {1, …, L}`, i.e. `F := L`, with
+the write-up stating that numbering gaps are unhandled and the gap machinery deleted. It is no
+longer reachable by an auth failure. It remains written down for the case where a specific
+show's payload returns no episode list, and it is adopted — per show or at all — only by the
+Human Lead. **It is not assumed here and must not be implemented pre-emptively.**
 
 ### 3.4 What gets counted when records are dropped
 
@@ -298,9 +458,36 @@ Two counts, not one. The previous draft required only the first.
    direction as D4 and D9.
 
 Shows where the source's `episode_count`, its `aired_episodes`, and `|E|` disagree for S1 or S2
-are flagged and counted. Given the Step 2 frame requires S2 to have finished airing on or before
-31 Dec 2024, all three should agree; a disagreement means the show is not what the frame thinks
-it is, and `L := |E|` is what this document uses regardless.
+are flagged and counted. `L := |E|` is what this document uses regardless.
+
+**Third, and this is a direction the previous draft failed to name.** That draft said all three
+counts "should agree" for in-frame seasons, on the reasoning that the frame caps S2 at 31 Dec
+2024. **That is an expectation derived from the frame, not a verified property of the data, and
+the probe found the opposite on the first show it tried.** Season 0 of the probe show returned
+`episode_count = 10`, `aired_episodes = 8`, `|E| = 10` — **the listed set exceeded the aired
+set by two.** Specials are excluded from `E` (3.1), so that particular case does not reach the
+population, but it establishes that Trakt lists unaired episodes in the same array as aired
+ones, on an ordinary show, with nothing in the payload marking them apart other than the count
+mismatch. Nothing makes S1 or S2 immune.
+
+The consequence is mechanical, because 3.1 fixes `L := |E|` regardless:
+
+- **A listed-but-unaired episode inside S1 raises `L1`, which tightens `ceil(0.90 × L1)`.** A
+  user who watched every episode that exists can then fail the completion test. **The population
+  shrinks, and it shrinks specifically on shows with messy metadata** — not at random. The
+  direction on the headline is not signed here, because who is removed depends on the show; the
+  **size** of the removal is reported and the non-randomness is stated in the limits.
+- **A listed-but-unaired episode inside S2 raises `L2`, which tightens `ceil(0.90 × L2)`.** That
+  direction *is* signed: pairs that would have been **Continued** are pushed into **Started and
+  left**, so it **overstates abandonment**. `F2 = max(E2)` may also be an episode that never
+  aired, in which case `F2 ∈ A` is unsatisfiable and **no pair on that show can ever score
+  Continued**.
+
+> **Required, therefore, and not merely "flagged":** the count of in-frame shows where
+> `episode_count`, `aired_episodes` and `|E|` disagree for S1 or for S2; the count of **pairs**
+> on those shows; and, separately, the count of shows where `aired_episodes < |E|` for S2,
+> which is the subset where Continued may be unreachable. The check is one comparison on a
+> payload already being fetched (3.3), so there is no cost argument for skipping it.
 
 ---
 
@@ -447,7 +634,9 @@ never-started share marginally **down**. Small against a `W` of tens of days, on
 and named here rather than corrected, because the frame carries no per-show broadcast timezone
 and a partial correction would be worse than a consistent convention.
 
-The window closes at **`T1 = T0 + W days`**. W is set in Step 6 and is not set here.
+The window closes at **`T1 = T0 + W days`**, evaluated as the instant `τ1 = ⟦T0⟧ + W × 24h`
+with the half-open test in Section 2.4 — the window is `[⟦T0⟧, τ1)` and is exactly `W` days
+long. W is set in Step 6 and is not set here.
 
 ### Why the finale, and not the premiere
 
@@ -492,28 +681,102 @@ This is a confound in the headline, not a presentational detail. Two consequence
 both are required, not suggested:
 
 - **Cadence is a required reported stratum of the Step 9 headline.** The pooled number is a
-  weighted average over the frame's cadence mix, so it moves if the mix moves. Weekly and
-  binge must be reported separately alongside it, with intervals, so a reader can see how
-  much of any difference is exposure.
+  weighted average over the frame's cadence mix, so it moves if the mix moves. **Every bucket
+  of the D12 classifier is reported separately alongside it** — all five, not just weekly and
+  binge — with intervals, so a reader can see how much of any difference is exposure.
 - **Cadence is a mandatory entry on the Step 12 candidate list**, alongside origin, gap
   length, S1 episode count, and user tenure — and it is the one candidate with a known
   mechanical driver, which must be said when its result is reported so a mechanical artifact
   is not read as an audience finding.
+
+The classification itself is **D12 in Section 10.0**, with numeric thresholds and an exhaustive
+bucket list. The previous draft described it in two words — "on the order of" and "near zero" —
+which were not thresholds and left hiatus and multi-drop seasons unassigned.
 
 D1 is still the right call: premiere anchoring has the opposite and worse defect, scoring a
 user who waits for a full season as a decliner, and it puts Continued out of reach inside W.
 The exposure asymmetry is the price, and it is paid openly by stratifying rather than by
 hoping the pooled number is fair.
 
-**Right-censoring.** A pair whose window has not closed by the data pull date cannot be
-classified. Proposed rule: **require `T0 + max(W, 91) days ≤ pull date`**, using 91 rather
-than W alone so that the primary headline and the 91-day arm in Step 9 run on the **same
-population**.
+### The post-window horizon `H`, and right-censoring
 
-**This is not a free guard, and an earlier draft of this document was wrong to call it one.**
+**A pair whose window has not closed by the pull cutoff cannot be classified.** That is the
+first job of right-censoring. The second job — added here under Red Team blocking finding B1 —
+is to guarantee a **constant amount of observation after the window closes**, because D3 and D8
+are measured there.
+
+**The previous draft's guarantee was false.** It asserted that `T0 + max(W, 91) ≤ pull date`
+gives every retained pair at least 91 days of post-window observation. Do the subtraction: the
+window closes at `T1 = T0 + W`, so the guaranteed post-window observation is
+`max(W, 91) − W = max(0, 91 − W)` days. That is 61 days at `W = 30`, **zero at `W = 91`, and
+zero at every `W > 91`**. The sentence is true only at `W = 0`, and **Step 6 has not run, so
+this document cannot know which side of 91 `W` lands on.**
+
+**The larger problem is exposure, not arithmetic.** D3 and D8 were both defined as "any further
+S2 episode watched after `T1` and before the pull date." That denominator is not constant. A
+pair on a 2016 show gets roughly ten years of post-window observation; a pair on a show whose
+S2 finale aired 31 Dec 2024 gets roughly eighteen months. **Pooled, D3 and D8 were not rates —
+they were exposure-weighted mixtures whose weight is show recency.** The direction matters and
+is bad: **D8 systematically understates later-starting for recent titles, so "never" looks most
+true exactly where the frame is newest**, which is exactly where the public argument is loudest.
+
+> **D10. A fixed post-window horizon `H` is declared here: `H = 91 days`.**
+>
+> **Right-censoring rule:** retain a pair only if
+> **`⟦T0⟧ + (max(W, 91) + H) × 24h ≤ τ_pull`**, with `τ_pull` the frozen cutoff from Section 0
+> and the comparison per Section 2.4.
+>
+> **D3 and D8 are measured over `[τ1, τ1 + H × 24h)` — the `H` days immediately following the
+> window close — and never "to the pull date."** Exposure is then constant across every
+> retained pair and the shares are rates that can be compared across shows and pooled.
+
+**Why the rule takes that form.** Two requirements conjoin. B1 requires `T0 + W + H ≤ pull` so
+the horizon is fully observed. Open question 3 requires `T0 + max(W, 91) ≤ pull` so the primary
+headline and the 91-day arm share a population — an argument this revision does not disturb.
+The 91-day arm reports the same diagnostics, so its close needs `H` behind it too. Taking the
+conjunction and giving both closes their horizon gives `max(W, 91) + H`. The guarantee sentence
+is now true by construction rather than decoratively: **every retained pair has exactly `H`
+observed days after `T1`, at any `W`.**
+
+**And it covers the 91-day arm too, which is worth one line of arithmetic rather than an
+assumption.** The arm is premiere-anchored (D5): `T0' = max(S2_premiere, S1_completion)`. Since
+the premiere never falls after the finale, `T0' ≤ T0`, so
+`T0' + 91 + H ≤ T0 + 91 + H ≤ T0 + max(W, 91) + H ≤ pull_date`. The arm's window close and its
+`H` days of horizon are both inside observed time for every pair the primary headline retains,
+which is the same population — as open question 3 requires.
+
+**Why `H = 91`.** It is the same quarter as the Netflix reporting window the Step 9 arm exists
+to be commensurable with, so "how many of the 'never started' started within a quarter of the
+window closing" is a question with an existing public meaning rather than an arbitrary one. It
+is declared **here, before Step 6 runs, and is not a function of `W`** — which is the property
+that makes it a fixed horizon rather than a second free parameter. Step 13 may vary `W`; `H` is
+held constant across those arms, or D3 and D8 stop being comparable between them.
+
+**What `H` costs in retained rows, relative to the previous rule.** The requirement moves from
+`max(W, 91)` days of clearance to `max(W, 91) + 91`. The cost falls **entirely on the
+`S1_completion_date` term of `T0`**, not on the show term: the frame caps the S2 finale at
+31 Dec 2024, and 31 Dec 2024 plus 182 days is mid-2025, comfortably inside any 2026 pull, so no
+show is lost. What is lost is pairs whose **first-pass S1 completion date falls in the `H`-day
+band immediately before the old cutoff** — roughly, the most recent 91 days of S1 completions
+that the previous rule would have kept. In a pull dated around Aug 2026 and `W ≤ 91`, that moves
+the effective S1-completion cutoff from about May 2026 to about Feb 2026.
+
+**And it costs them in the flattering direction, which is why the count is not optional.** These
+are the same people right-censoring already removes and for the same reason: recent S1
+completers, who found an old show lately, have the whole series available, and are
+disproportionately likely to roll straight into S2. **Removing more of them moves the
+never-started share further up.**
+
+> **Required in the Step 8 waterfall:** the right-censoring removal reported as **two lines, not
+> one** — pairs removed by the `max(W, 91)` term, and the **incremental** pairs removed by the
+> `+ H` term — each with the upward direction of its effect named on the same line. A single
+> combined figure would hide the price of `H` inside a removal that predates it.
+
+**Right-censoring is not a free guard, and an earlier draft of this document was wrong to call
+it one.**
 The frame caps the S2 finale at 31 Dec 2024, but `S1_completion_date` is **uncapped** — a
 user can finish S1 of a 2019 show in 2026. Since `T0 = max(...)`, those users have a `T0`
-near the pull date and are removed by right-censoring. They are not a random slice:
+near `τ_pull` and are removed by right-censoring. They are not a random slice:
 
 - They are people who **found an old show recently**. The entire series is already available
   to them, they arrived by choice rather than by marketing, and there is no inter-season wait
@@ -528,7 +791,8 @@ Two requirements follow:
 
 1. **The right-censoring removal count is reported unconditionally in the Step 8 waterfall**,
    never suppressed as "expected to be zero," with the upward direction of its effect named
-   in the same line.
+   in the same line — and split into the `max(W, 91)` term and the incremental `+ H` term, per
+   D10 above.
 2. **Ordering constraint: the Step 5 contamination exclusion runs *before* right-censoring,
    not after.** A bulk import stamps a recent `watched_at` on old viewing, which produces a
    spuriously recent first-pass S1 completion date and therefore a recent `T0`. If censoring
@@ -543,19 +807,28 @@ The rule itself remains open question 3 in Section 10.1.
 
 ## 7. The three outcome states
 
-Measured at `T1 = T0 + W`, from distinct S2 episodes only.
+Measured at the window close `τ1`, from distinct S2 episodes only.
 
 Let `A` = the set of **distinct** S2 episodes for that user and show **whose number is a member
-of `E2`** (Section 3.2), whose canonical timestamp (2.2) is **on or before `T1`**. Let
-`m = max(A)` when `A` is non-empty. Membership is by **set**, not by the range `1..F2`; the
+of `E2`** (Section 3.2), whose canonical timestamp (2.2) satisfies **`watched_at < τ1`**, where
+`τ1 = ⟦T0⟧ + W × 24h` is the window-close **instant** defined in Section 2.4. Let
+`m = max(A)` when `A` is non-empty.
+
+**The phrase "on or before `T1`" from earlier drafts is withdrawn and must not be reinstated.**
+`T1` is a date and `watched_at` is a UTC instant, so that phrase admitted two faithful and
+incompatible implementations one day apart — `date(watched_at) ≤ T1` and
+`watched_at ≤ T1T00:00:00Z` — on the one operator that assigns every row's outcome state and
+feeds the dual-implementation diffs at Steps 8 and 9. **The test is `watched_at < τ1`. It is a
+strict inequality between two instants, it is stated once in Section 2.4, and the same
+convention governs D3, D8 and right-censoring so no second reading survives anywhere.** Membership is by **set**, not by the range `1..F2`; the
 range form was the F1 defect and is withdrawn. `A ⊆ E2` by construction, so `|A| ≤ L2` and
 `m ∈ E2`.
 
 | State | Condition |
 | :--- | :--- |
-| **Never started** | `|A| = 0` |
-| **Continued** | `|A| ≥ 1` **and** `F2 ∈ A` **and** `|A| ≥ ceil(0.90 × L2)` |
-| **Started and left** | `|A| ≥ 1` **and not** the Continued condition |
+| **Never started** | `\|A\| = 0` |
+| **Continued** | `\|A\| ≥ 1` **and** `F2 ∈ A` **and** `\|A\| ≥ ceil(0.90 × L2)` |
+| **Started and left** | `\|A\| ≥ 1` **and not** the Continued condition |
 
 **Mutually exclusive and exhaustive by construction.** The partition is
 `A = ∅` / `(A ≠ ∅ ∧ C)` / `(A ≠ ∅ ∧ ¬C)`, so no eligible pair can fall in two states or in
@@ -583,8 +856,8 @@ distribution, and it follows from `p` being a fraction of a season, not a count 
 
 Three properties worth stating:
 
-- **The bound is one-sided, and under finale anchoring that is load-bearing.** "On or before
-  `T1`" has no lower bound, so a user who watched S2 episodes *before* their clock started is
+- **The bound is one-sided, and under finale anchoring that is load-bearing.** The interval
+  `(−∞, τ1)` has no lower bound, so a user who watched S2 episodes *before* their clock started is
   correctly counted as **started**, not as never started. With `T0` anchored on the S2 finale
   (Section 6), every user who watched a weekly season while it was airing falls into this
   case. The one-sided bound is what keeps the finale-anchoring decision from misclassifying
@@ -673,8 +946,8 @@ Any other treatment would misclassify the live-viewing audience of every weekly 
 start to first S2 episode; for this group that lag is **negative**, and after D1 the negative
 mass is not a tail — for a weekly show it is most of the started population. That is why the
 question is no longer "what do we do with the negatives" but "which shows can W honestly be
-estimated on at all," and my recommendation in Section 10.1 is the binge-only estimation
-sample rather than any repair applied to the negatives. W must be defensible out loud, and a
+estimated on at all," and my recommendation in Section 10.1 is the **C1-only** estimation
+sample (D12) rather than any repair applied to the negatives. W must be defensible out loud, and a
 number whose value depends on the frame's cadence mix is not.
 
 ---
@@ -683,27 +956,49 @@ number whose value depends on the frame's cadence mix is not.
 
 Recorded here so nothing is reconstructed later from memory.
 
-- **A precondition before anything runs.** The listed episode-number set `E` has no confirmed
-  source (Section 3.3). One test call settles whether
-  `GET /shows/:id/seasons/:season` or `seasons?extended=episodes` returns per-episode listings
-  under Client-ID-only auth. **Until it is settled, `L`, `F`, `p` and the 90 percent test are
-  not computable as defined**, and the alternative is the labelled fallback, which is the Human
-  Lead's to adopt and no one else's. Whether `E` becomes a Step 2 field is likewise theirs.
+- **The `E` precondition is CLOSED.** The listed episode-number set is obtainable on the Client
+  ID alone; see `artifacts/step0-episode-listing-endpoint-probe.md`. The recommended variant is
+  **`GET /shows/:id/seasons?extended=episodes,full`**, which returns `E` and the season-level
+  counts on one payload, one call per show. `L`, `F`, `p` and the 90 percent test are computable
+  as defined, and the labelled fallback is no longer an auth contingency. **Two limits travel
+  with this:** the probe covered one show with contiguous numbering, so **the gap hypothesis —
+  that Trakt represents a numbering gap by omitting the number rather than listing a placeholder
+  — is UNTESTED, and Section 3 must not be read as "gaps handled"**; and **listed can exceed
+  aired** (Section 3.4), which shrinks the population on shows with messy metadata. Whether `E`
+  becomes a Step 2 field remains the Human Lead's.
+- **One value is still needed from the Human Lead, and it is not Step 1's to set:** the value of
+  the global frozen cutoff `pull_date` (D11), **deliberately deferred** until Step 4's schedule
+  is known. `H = 91 days` (D10) and the D12 cadence thresholds were **approved by name** at the
+  Step 1 gate on 2026-08-10 and are no longer outstanding.
 - **Step 5** receives: `action` is not filtered on at Step 1, so manual and imported
   timestamps are still in the data when Step 5 runs, which is the correct order. Step 5's
   exclusion must also be applied **before** right-censoring, so an import-stamped S1 completion
   date is counted as contamination rather than laundered into a censoring drop (Section 6).
 - **Step 6** receives: `T0` anchored on the S2 finale per D1 (Section 6), the first-S2-watch
-  date on distinct episodes, and the open question about how negative lags enter the lag
-  distribution (open question 2). Because `T0` and the Step 6 lag now share the same origin, W
+  date on distinct episodes, the **D12 cadence classifier** — which, under open question 2's
+  recommendation, *is* the estimation sample, so it must be applied as written rather than
+  paraphrased — and the open question about how negative lags enter the lag distribution
+  (open question 2). Because `T0` and the Step 6 lag now share the same origin, W
   is derived and applied against one clock rather than two.
 - **Step 7** receives, and this is the corrected version: liveness **evidence** is account-wide
   — the whole sweep, other shows and movies included, **not** restricted to the show under
   study — but the liveness **test** is `T0 + W`-relative and `T0` is pair-specific, so
   **liveness is a pair-level filter**. One account can be live for one show and not for another.
-  The earlier "statement about the account" phrasing is withdrawn (Sections 0, 1). Both isolated
-  Step 7 instances receive this same wording, so a diff on scope would be a genuine divergence
-  rather than a paraphrase artifact. Whether the gap distribution is built on raw play events or
+  The earlier "statement about the account" phrasing is withdrawn (Sections 0, 1). Where Step 7's
+  rule says "after clock start plus W," the boundary it means is the instant `τ1` of Section 2.4,
+  tested as `watched_at ≥ τ1` — the complement of the in-window test, so no event falls on both
+  sides or neither.
+  **Both isolated Step 7 instances receive the pair-level wording.** This is now a claim of fact
+  and the repo backs it: the Human Lead has amended `task-sheet.md` Step 7, which is the file the
+  two isolated instances actually read, so that the rule is written on a **user-show pair**, the
+  account-wide-evidence / pair-specific-test distinction is stated there, and dropping a user
+  wholesale on a liveness test is explicitly forbidden. `task-sheet.md` Step 9's bound is likewise
+  now written over inactivity-excluded **pairs**, not users. The pair-level scoping therefore no
+  longer reaches the instances only through this document, and a divergence on scope between them
+  would be a **bug rather than a spec ambiguity**. An earlier draft of this section asserted the
+  same claim while the task sheet still said "user"; that assertion was unbacked when made and was
+  withdrawn, and it is restated here only because the underlying file changed.
+  Whether the gap distribution is built on raw play events or
   on deduplicated episodes remains Step 7's analysis to run; Step 1 takes no position.
 - **Step 8** receives: the filter order is Step 8's, but these are its responsibility to
   enforce — the **set-membership** drop rule (Section 3.2), which is now an implementation check
@@ -712,26 +1007,44 @@ Recorded here so nothing is reconstructed later from memory.
   shows (Section 7); the **required** negative-lag report split by binding term (D2); the
   **required** resumption-rate report (D3); the **required** never-started post-window
   diagnostic (D8, Section 10.0b); the **required** split-artifact counts (D9, Section 10.0b);
-  the unconditional right-censoring removal count with its direction named, and the ordering
-  constraint that Step 5 contamination exclusion runs *before* right-censoring (Section 6); and
+  the right-censoring removal reported as **two lines** — the `max(W, 91)` term and the
+  **incremental `+ H` term** — each with its upward direction named (D10, Section 6); the
+  ordering constraint that Step 5 contamination exclusion runs *before* right-censoring
+  (Section 6); `pull_date`, the earliest and latest per-user fetch dates, and the count of
+  records discarded for `watched_at ≥ τ_pull` (D11, Section 0); **per-bucket show and pair
+  counts for all five D12 cadence buckets** plus the count of shows within 1 day of a bucket
+  boundary (Section 10.0); the **metadata-disagreement counts** of Section 3.4, including the
+  subset where `aired_episodes < |E|` for S2; and
   retention of `action` as a column. The three-part clock-start invariant in `task-sheet.md`
   should compute the first-pass S1 completion date **independently**, not read back the
-  pipeline's value, or its equality clause proves nothing (Section 5).
-- **Step 9** receives: the cadence stratum requirement (Section 6); the S3-without-S2 bound
-  (D4) and the **split-artifact bound (D9)** reported alongside the liveness bound; the
-  **never-started post-window diagnostic (D8)**, which moves the headline **down** and must be
+  pipeline's value, or its equality clause proves nothing (Section 5). Every boundary test is
+  the half-open instant form of Section 2.4; `date(watched_at) ≤ T1` must not appear anywhere
+  in the implementation.
+- **Step 9** receives: the cadence stratum requirement, now **all five D12 buckets reported
+  separately** (Section 6, Section 10.0); the S3-without-S2 bound
+  (D4) and the **split-artifact bound (D9)** reported alongside the liveness bound, with the
+  liveness bound's inflation recorded as an **accepted risk** by Human Lead ruling rather than
+  repaired; the
+  **never-started post-window diagnostic (D8)** measured over the fixed horizon `H` and not to
+  the pull date, which moves the headline **down** and must be
   reported with the bounds that move it up; and the 91-day arm's separate origin (D5), which
-  must be stated in the write-up and not smoothed over.
+  must be stated in the write-up and not smoothed over. Both the primary and the 91-day arm run
+  on the same right-censored population, `max(W, 91) + H` (D10).
 - **Step 10** receives: `p` is a fraction of a season, so bins are not comparable across shows
   with very different `L2` (Section 7); the `p = 1.0` residual is its own named category and is
   not merged into "near-finale."
-- **Step 12** receives: cadence as a mandatory candidate on the list, flagged as the one
+- **Step 12** receives: cadence as a mandatory candidate on the list, **classified by D12 into
+  five buckets rather than two**, and flagged as the one
   candidate with a known mechanical driver (Section 6).
 - **Step 13** receives two required robustness arms from this document, in addition to the
   ones already in its own step: **(i)** S1 completion date as last-observed rather than
   first-pass, per Section 5; **(ii)** an `action`-type arm excluding `checkin`-only and
   manual-`watch`-only evidence, per Section 2.3. Both exist because a permissive choice was
-  made here and the permissiveness should be shown not to be load-bearing.
+  made here and the permissiveness should be shown not to be load-bearing. **`H` is held
+  constant across every arm that varies `W`** (D10) — otherwise D3 and D8 are not comparable
+  between arms — and because the right-censoring rule contains `W`, **each `W` arm re-censors
+  the population**, so the arms do not share a denominator and the retained-row count must be
+  reported per arm.
 
 ---
 
@@ -750,18 +1063,77 @@ None of these are mine to re-propose. All are incorporated into the body of this
 | **D5** | **The Step 9 91-day arm is re-anchored on `max(S2_premiere_date, first-pass S1 completion)`**, not the finale, because Netflix's window runs from release. | Section 10.0, handoff in Section 9 |
 | **D6** | **The vacuous Step 8 invariant is replaced** by the three-part clock-start check now written into `task-sheet.md` Step 8. | Section 5 |
 | **D7** | **Cadence is a required Step 9 stratum and a mandatory Step 12 candidate**; right-censoring removals are reported unconditionally with their direction named; Step 5 contamination exclusion runs before right-censoring. | Section 6 |
+| **D10** | **`H = 91 days` is adopted as the post-window horizon** (Human Lead, 2026-08-10, at approval). Right-censoring is `⟦T0⟧ + (max(W, 91) + H) × 24h ≤ τ_pull`; D3 and D8 measure over `[τ1, τ1 + H)`. Proposed in Section 10.0c, adopted by name. | Sections 6, 10.0b, 10.0c |
+| **D11** | **`pull_date` is a single global frozen cutoff** — adopted in **form**. Its **value is deliberately deferred** to Step 4's schedule (Human Lead, 2026-08-10). Not an omission: the constraint `pull_date ≤ earliest per-user fetch date` cannot be honoured by a value fixed before the pull is scheduled. | Section 0, 10.0c |
+| **D12** | **The cadence classifier thresholds are adopted as proposed** (Human Lead, 2026-08-10, at approval): five exhaustive buckets `C0`–`C4`, numeric thresholds, first-match ordering. | Section 10.0, 10.0c |
+| **D13** | **Half-open UTC-instant boundaries** (`watched_at < τ1`, applied identically to `A`, D3, D8 and right-censoring) are adopted with the document. | Section 2.4, 10.0c |
 
-Cadence classification needs no new field: the Step 2 frame already carries S2 premiere date,
-S2 finale date, and S2 episode count, so a show is weekly-release when the premiere-to-finale
-span is on the order of `(L2 − 1) × 7` days and all-at-once when that span is near zero.
+**D12, the cadence classifier, stated as thresholds.** *The previous draft's version —
+"weekly-release when the premiere-to-finale span is on the order of `(L2 − 1) × 7` days and
+all-at-once when that span is near zero" — is withdrawn.* Those are not thresholds, and the
+pair of them is not exhaustive: a weekly season with a mid-season hiatus, a two-episode
+premiere, or a two-per-week drop lands in **neither** bucket. That is not a cosmetic gap. This
+classifier gates the **Step 6 estimation sample** (open question 2 recommends estimating `W` on
+binge shows only, which makes `W` itself a function of the classifier), a **required Step 9
+stratum**, and a **mandatory Step 12 candidate** — and a required stratum with unassigned
+members gets silently pooled into whichever bucket an implementation happens to prefer. Two
+isolated Step 6 instances given the old sentence could legitimately produce different `W`s,
+which would show up as a spurious dual-implementation divergence.
+
+Classification still needs no new field. The Step 2 frame carries the S2 premiere date `P`, the
+S2 finale date `F_d`, and `L2 = |E2|` from Section 3. Let
+
+> `span := F_d − P`, in whole UTC calendar days (Section 0), and
+> `weekly_span := (L2 − 1) × 7`.
+
+> **Buckets are evaluated in the order listed, first match wins.** That ordering is part of the
+> definition, not an implementation note: it is what makes the classification exhaustive **and**
+> mutually exclusive even where bands would otherwise overlap at small `L2`.
+>
+> | # | Bucket | Condition | In the Step 6 estimation sample? |
+> | :--- | :--- | :--- | :--- |
+> | **C0** | **Unclassifiable** | `P`, `F_d` or `L2` missing, or `span < 0` | No |
+> | **C1** | **All-at-once (binge)** | `span ≤ 1` | **Yes — and only this bucket** |
+> | **C2** | **Weekly** | `abs(span − weekly_span) ≤ 3` | No |
+> | **C3** | **Faster than weekly** | `1 < span < weekly_span − 3` | No |
+> | **C4** | **Slower than weekly** | `span > weekly_span + 3` | No |
+>
+> **Every in-frame season lands in exactly one bucket.** C0 absorbs missing and impossible
+> data; C1–C4 partition `span ≥ 0` given the first-match rule.
+
+**What the extra buckets are for, named so they cannot be absorbed.** C3 is where a
+two-episode premiere, a two-per-week drop, and a split-batch "part 1 / part 2" release land.
+C4 is where a mid-season hiatus and irregular scheduling land. **Neither may be folded into C1
+or C2**, because the exposure asymmetry that makes cadence a confound at all (Section 6) scales
+with `span`, and C3 and C4 have `span` values that belong to neither of the two clean cases.
+**C0, C1, C2, C3 and C4 are each reported as their own line** in the Step 8 waterfall (shows and
+pairs) and in the Step 9 cadence stratum (headline with intervals). Where a bucket is too small
+to support an interval, **report the count and say so** — do not pool it.
+
+**The thresholds are conventions, and they are stated as such.** `span ≤ 1` rather than
+`span = 0` for binge, because a same-day drop can straddle midnight UTC (Section 0). `± 3` days
+for weekly, because it absorbs a mid-season change of broadcast day and the same one-day UTC
+skew without reaching a full week's slip, which is a genuinely different release pattern.
+**Required with the counts: the number of shows falling within 1 day of any bucket boundary**,
+so the classifier's fragility is a visible number rather than an assumption. If that count is
+large, the thresholds are load-bearing and Step 13 should carry an arm on them; if it is small,
+they are not, and that is worth knowing before `W` is derived on top of them.
 
 **D3, stated in full.** Symmetric in purpose to D2: D2 measures what the clock's *start*
 hides, D3 measures what the window's *close* hides.
 
-> Of user-show pairs scored **Started and left** at `T1`, report: **(i)** the share with any
-> further distinct S2 episode watched after `T1` and before the pull date, and **(ii)** the
-> share satisfying the Continued condition — `F2 ∈ A` and `|A| ≥ ceil(0.90 × L2)` — at **any**
-> time before the pull date. Counts and shares only, to `artifacts/`.
+> Of user-show pairs scored **Started and left** at `τ1`, report: **(i)** the share with any
+> further distinct S2 episode whose canonical timestamp falls in **`[τ1, τ1 + H × 24h)`** — the
+> fixed horizon `H = 91 days` from D10 — and **(ii)** the share satisfying the Continued
+> condition — `F2 ∈ A_H` and `|A_H| ≥ ceil(0.90 × L2)`, where `A_H` is the set `A` recomputed
+> with the bound moved from `τ1` to `τ1 + H × 24h` — over that same horizon. Counts and shares
+> only, to `artifacts/`.
+
+**The horizon replaces "before the pull date," and that is a correction, not a tightening.**
+Measured to the pull date, D3's denominator ran from eighteen months to ten years depending on
+when the show aired, so the pooled figure was an exposure-weighted mixture rather than a rate
+(Section 6, D10). Over a constant `H` it is a rate, comparable across shows and poolable. Right
+censoring guarantees the horizon is fully observed for every retained pair.
 
 This is the measurement of the entry/exit asymmetry named in Section 7. Started-and-left is
 scored inside `W` while S1 completion is scored over all time, so some unknown portion of that
@@ -778,6 +1150,15 @@ category — so it is not a footnote and not a contingent Step 13 arm.
 
 > **Step 9 reports it as a bound**, alongside the liveness bound: what the never-started share
 > becomes when every S3-without-S2 pair is removed from that category. Counts and shares only.
+
+**The liveness bound is a deliberate worst case, and that is recorded as an accepted risk
+rather than argued here.** Red Team objected that it is inflated: a pair that binged all of S2
+inside `W` and then left Trakt is excluded by the Step 7 liveness filter and then relabelled
+"never started" by the bound. The Human Lead **overruled** the objection — the bound's function
+is to answer "what if every excluded pair were a decliner," and a bound that reclassified the
+pairs it could explain away would stop being a bound. The objection, the ruling and the reason
+are in the accepted-claims table at the head of this document. The inflation is real, runs in
+the direction the bound is built to run, and is stated wherever the bound appears.
 
 Bounds in both directions, all reported: the liveness bound moves the never-started share
 **up** by treating inactivity-excluded pairs as decliners; the S3-without-S2 bound (D4), the
@@ -797,11 +1178,12 @@ to whoever reads the definition rather than only to whoever reads Step 9.
 
 ### 10.0b Required outputs added by this revision
 
-**Provenance, stated so it is not mistaken for an approval.** D1–D7 above are Human Lead
-decisions or `task-sheet.md` closures. **D8 and D9 are neither. They are Red Team blocking
-finding F3 and secondary finding 1, written into the definition under the authorization to
-revise.** Like the rest of this document they are proposed and unadopted; the gate is
-unchanged.
+**Provenance, and their status now.** D1–D7 above are Human Lead decisions or `task-sheet.md`
+closures. **D8 and D9 are neither in origin: they are Red Team blocking finding F3 and secondary
+finding 1**, written into the definition under the authorization to revise. They entered as
+proposals and **are now adopted** by the Human Lead's approval of Step 1 on 2026-08-10. The
+provenance is kept on the record so it stays clear that they were drafted by the Data Scientist
+and adopted by the Human Lead, never self-adopted.
 
 | # | Required output | Direction on the headline |
 | :--- | :--- | :--- |
@@ -812,16 +1194,27 @@ unchanged.
 asked the same question of **Never started** — which is the category that gets published as
 "never," and the one word in the headline a reader will take most literally.
 
-> Of user-show pairs scored **Never started** at `T1`, report: **(i)** the count and share with
-> any distinct S2 episode watched after `T1` and before the pull date, and **(ii)** the count
-> and share satisfying the Continued condition — `F2 ∈ A` and `|A| ≥ ceil(0.90 × L2)` — at
-> **any** time before the pull date. Counts and shares only, to `artifacts/`.
+> Of user-show pairs scored **Never started** at `τ1`, report: **(i)** the count and share with
+> any distinct S2 episode whose canonical timestamp falls in **`[τ1, τ1 + H × 24h)`**, `H = 91`
+> days per D10, and **(ii)** the count and share satisfying the Continued condition —
+> `F2 ∈ A_H` and `|A_H| ≥ ceil(0.90 × L2)` — over that same horizon. Counts and shares only,
+> to `artifacts/`.
+
+**The fixed horizon matters most here, and the previous draft had it backwards.** Measured to
+the pull date, D8 gave a 2016 title ten years in which its never-starters could be caught
+starting late and a 31 Dec 2024 title about eighteen months. Pooled, that **understates
+later-starting for recent titles** — so "never" looked most true exactly where the frame is
+newest, which is exactly where the public argument is loudest. Over `[τ1, τ1 + H)` every pair
+gets the same 91 days and the share is a rate.
 
 Three things make this cheap and non-optional:
 
-- **It is computable for the whole population.** Right-censoring at `T0 + max(W, 91) ≤ pull
-  date` (Section 6) guarantees every retained pair at least 91 days of post-window observation,
-  so there is no subgroup for which the question is unanswerable.
+- **It is computable for the whole population, and now that claim is true.** The previous draft
+  justified it with a guarantee that does not hold: right-censoring at
+  `T0 + max(W, 91) ≤ pull date` gives `max(0, 91 − W)` days of post-window observation, which is
+  zero at any `W ≥ 91`. The rule is now `⟦T0⟧ + (max(W, 91) + H) × 24h ≤ τ_pull` (D10), which
+  guarantees exactly `H` observed days after `τ1` **at every value of `W`**, so there is no
+  subgroup for which the question is unanswerable.
 - **It is the same query as D3 with the state filter changed.** No new data, no new join.
 - **It moves the headline down**, and that is exactly why it belongs. Section 10.0 argues that
   reporting only bounds which move the headline **up** would present the study's uncertainty as
@@ -866,16 +1259,52 @@ and modest: **count first, reconcile only if the count justifies it.** But the c
 bound are no longer conditional on anything, because "we did not measure it" is not an available
 answer for a row that lands in the published category.
 
+### 10.0c Definitions and required outputs added by this revision
+
+**Provenance, and their status now.** D10 through D13 originate as **Red Team blocking findings
+B1, B4, B5 and B3**, written into the definition under the authorization to revise. They entered
+this document as proposals. **They are now adopted**, by the Human Lead's approval of Step 1 on
+2026-08-10: `H = 91` (D10) and the D12 thresholds were adopted **by name** at approval, and D13
+was adopted with the document. **D11 is adopted in form only** — `pull_date`'s **value** is
+deliberately deferred to Step 4's schedule and remains a Human Lead act. The provenance is kept
+on the record deliberately: these four are Red Team findings that the Data Scientist drafted and
+the Human Lead adopted, and no agent adopted its own proposal at any point.
+
+| # | What it fixes | Where it lives | Effect on a reported number |
+| :--- | :--- | :--- | :--- |
+| **D10** | **Fixed post-window horizon `H = 91 days`.** Right-censoring tightened to `⟦T0⟧ + (max(W, 91) + H) × 24h ≤ τ_pull`; D3 and D8 measured over `[τ1, τ1 + H)` instead of "to the pull date." | Section 6, D3, D8 | Removes an exposure confound whose weight was show recency; costs the most recent `H` days of S1 completers, which moves the headline **up** |
+| **D11** | **`pull_date` is a single global frozen cutoff**, not per-user fetch date. `τ_pull := ⟦pull_date⟧`; records at or after it are discarded. Value set by the Human Lead, constrained to be no later than the earliest per-user fetch date. | Section 0 | Makes right-censoring and every diagnostic comparable across users instead of dependent on pull scheduling order |
+| **D12** | **Cadence classifier with numeric thresholds, five exhaustive buckets, first-match ordering.** | Section 10.0 | Makes the Step 6 estimation sample, the Step 9 stratum and the Step 12 candidate deterministic; removes a real source of spurious dual-implementation divergence in `W` |
+| **D13** | **Half-open UTC-instant boundaries.** `watched_at < τ1` and nothing else, applied identically to `A`, D3, D8 and right-censoring. | Section 2.4 | Removes a one-day ambiguity on the operator that assigns **every** outcome state; the window is now exactly `W` days, which moves the headline marginally **up** |
+
+**Two of these four change numbers on their own, and both directions are already named in the
+body rather than here**: D10's incremental censoring removal moves the never-started share up
+(Section 6), and D13's one-day tightening moves it up while the Section 0 finale skew moves it
+down by a comparable amount. D11 and D12 do not move a number by themselves; they remove
+degrees of freedom that would otherwise let two faithful implementations disagree.
+
+**What D10, D11 and D12 needed, and what is still outstanding.** `H` needed approval, not input:
+**approved at 91 days**. The D12 thresholds needed approval: **approved as proposed** — they are
+conventions, and the count of shows near a boundary (Section 10.0) is still the thing that tells
+anyone whether the convention was load-bearing, so that count remains required. **One item is
+still outstanding and it is the only one:** `pull_date` needs a **value** from the Human Lead
+once Step 4's schedule is known. Step 1 fixes its form and its constraint. Any step that
+right-censors, or that computes D3, D8 or D9, is blocked on that value — not on this gate.
+
 ### 10.1 Open questions, each with a recommendation
 
-Three remain — the fourth, show splits, is resolved as D9 above. **These are recommendations.
-The Human Lead decides them; I have adopted none of them, and the document stands unapproved.**
+Three remain — the fourth, show splits, is resolved as D9 above. **These are still open, and
+Step 1's approval did not close them.** Approval covers the definition as written, including the
+*drafted* boundary each question sits next to; it is not a ruling on the alternatives. Each
+carries a recommendation from the Data Scientist and a decision from nobody. The Human Lead
+decides them, and until then the drafted boundary is what the document says and what any
+implementation follows.
 
 | # | Question | My recommendation | Why, in one line |
 | :--- | :--- | :--- | :--- |
 | **1** | Continued boundary: S2 finale **plus** ≥ 90 percent, or finale alone? | **Finale plus 90 percent** | Finale-alone would score a user who watched 2 of 13 episodes and skipped to the end as having continued, which understates abandonment in the direction that flatters the headline. |
-| **2** | How is W estimated when most started users have negative lags? | **Estimate W on binge-release shows only, then apply it to all shows** | On a binge show premiere and finale coincide, so every lag is a genuine post-availability delay and W is a property of viewer behaviour rather than of the frame's cadence mix. |
-| **3** | Right-censoring at `T0 + max(W, 91) ≤ pull date`, or `T0 + W`? | **`max(W, 91)`** | It costs real pairs, not zero, but it is the only version under which the primary and the 91-day arm share a denominator — and D5 already makes those two hard enough to compare. |
+| **2** | How is W estimated when most started users have negative lags? | **Estimate W on bucket C1 (all-at-once) only, then apply it to all shows** | On a C1 show premiere and finale coincide, so every lag is a genuine post-availability delay and W is a property of viewer behaviour rather than of the frame's cadence mix. |
+| **3** | Right-censoring on `max(W, 91)`, or on `W` alone? | **`max(W, 91)`, now carried as `max(W, 91) + H` per D10** | It costs real pairs, not zero, but it is the only version under which the primary and the 91-day arm share a denominator — and D5 already makes those two hard enough to compare. The `+ H` term is a separate requirement and does not touch that argument. |
 | ~~4~~ | ~~Trakt show merges and splits~~ | **Closed. Now D9 (Section 10.0b).** | Splits do not merely miscount, they manufacture rows in the headline category and silently delete their counterparts, so counting and a bound are required rather than deferred. |
 
 Detail where the one-liner is not enough:
@@ -908,8 +1337,11 @@ an artifact of the frame's cadence composition rather than a fact about viewers.
 show mix, change W, with no change in behaviour. That is not defensible out loud, which is the
 bar Step 6 has to clear.
 
-*Recommendation: estimate W on binge-release shows only, then apply the resulting W to all
-shows.* On a binge show the premiere and finale coincide, so `T0` is the moment the whole
+*Recommendation: estimate W on **bucket C1 (all-at-once)** shows only, per the D12 classifier,
+then apply the resulting W to all shows.* **C1 is the estimation sample and C0, C2, C3 and C4
+are not** — stated as a bucket name rather than as the words "binge shows" precisely because
+the two isolated Step 6 instances must select the same rows from the same frame without
+consulting each other. On a C1 show the premiere and finale coincide, so `T0` is the moment the whole
 season became available, every lag is non-negative by construction, and the lag measures the
 one thing W is supposed to capture: how long a viewer takes to start something that is sitting
 there available. That is a clean estimation sample for a quantity that is then applied
@@ -917,9 +1349,9 @@ uniformly.
 
 What it costs, stated so it is not discovered later: it assumes the delay-to-start behaviour
 of binge viewers transfers to weekly viewers, which is an assumption and not a finding. Two
-things should accompany it — the binge-only and all-shows lag distributions plotted together
+things should accompany it — the C1-only and all-shows lag distributions plotted together
 so the reader can see how different they are, and a Step 13 arm varying W over the range the
-two distributions imply. Whether the binge-only estimation sample is large enough to support
+two distributions imply. Whether the C1 estimation sample is large enough to support
 the percentile is a question for Step 6 with the data in hand, not for Step 1.
 
 **3. Right-censoring.** *The "expected cost is zero rows" claim from the previous draft is
@@ -952,14 +1384,35 @@ Reconciliation logic remains unwritten, and that part of the old recommendation 
   recommendation from me and a decision from nobody.
 - It does not add a field or a filter to **Step 2**, which is the Human Lead's. Section 3.3
   states what this definition *requires* — the listed episode-number set — and names the
-  candidate endpoints. Whether that requirement is met as a Step 2 field, as a separate pull, or
+  recommended endpoint. Whether that requirement is met as a Step 2 field, as a separate pull, or
   not at all is theirs to decide.
-- It does not confirm the Section 3.3 precondition, and **no call was made to test it.** No code
-  was written or run for this document, per the gate.
+- **It does not set `pull_date`, and that is deliberate.** D11 fixes the form of the constant and
+  the constraint on its value. The **value is deferred by Human Lead decision** until Step 4's
+  schedule is known — recorded as a deferral, not as an omission, because the constraint
+  `pull_date ≤ earliest per-user fetch date` cannot be honoured by a value chosen before the pull
+  is scheduled. This is the **only** item this document leaves outstanding that downstream
+  computation blocks on.
+- **It does not test the gap hypothesis.** The Section 3.3 precondition is closed, but the probe
+  covered one show with contiguous numbering. Whether Trakt represents a numbering gap by
+  **omitting** the number or by **listing a placeholder** is untested, and Section 3 is not a
+  claim that gaps are handled. Settling it requires a show with a known gap, at the point where
+  `E` is first pulled at scale.
+- **No code was written or run for this document, per the gate.** The Step 0 episode-listing
+  probe it now cites was run by the Analytics Engineer as Step 0 infrastructure, not by me and
+  not for this document; the earlier line here — "no call was made to test it" — described this
+  document's own conduct and still does.
 - It does not adopt the **Section 3.3 fallback** (`F := L`, gaps unhandled). The fallback is
   written down so it is not improvised later; adopting it is a decision, not a default.
-- It does not adopt itself. Everything in Section 10.0 came from the Human Lead or from
-  `task-sheet.md` and is recorded as theirs; **D8 and D9 in Section 10.0b are mine, written
-  under the authorization to revise, and are proposed rather than adopted like everything else
-  here.** Nothing downstream of this gate runs until the Human Lead approves this document in
-  writing, and no approval is recorded by me.
+- The **task-sheet wording dependency** formerly flagged here is **closed**, and not by this
+  document: the Human Lead amended `task-sheet.md` Steps 7 and 9 to pair-level scoping directly.
+  Step 1 recorded the gap; the Human Lead resolved it in their own file. Section 9 now states the
+  pair-level claim as fact rather than as an open dependency.
+- **It did not adopt itself, and that record stands even though it is now adopted.** Everything
+  in Section 10.0 came from the Human Lead or from `task-sheet.md` and is recorded as theirs.
+  **D8 and D9 (Section 10.0b) and D10 through D13 (Section 10.0c) were drafted by the Data
+  Scientist** under the authorization to revise, and were held as proposals until the Human Lead
+  approved them — `H = 91` and the D12 thresholds **by name**, the rest with the document, on
+  **2026-08-10**. The Human Lead also **overruled Red Team on B2**, recorded as accepted risk in
+  the table at the head of the document. **The approval is the Human Lead's and was given in
+  writing in this session; no agent recorded its own approval at any point.** The approval record
+  is at the head of this document.
