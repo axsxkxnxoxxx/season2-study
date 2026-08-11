@@ -2,8 +2,9 @@
 
 **Owner:** Data Scientist (drafts) · **Mode:** GATE · **Reviewer:** Red Team (hold / proceed)
 **Status:** DRAFT — PROPOSED, NOT ADOPTED. Requires written approval from the Human Lead.
-**Date:** 2026-08-10 · **Revised twice, 2026-08-10:** Human Lead decisions, then the
-authorized revision following Red Team's HOLD
+**Date:** 2026-08-10 · **Revised three times, 2026-08-10:** Human Lead decisions, then the
+authorized revision following Red Team's first HOLD, then this revision following Red Team's
+**second HOLD**
 **W is not set in this document.** No code was written or run to produce it.
 
 This document defines what is being measured, on one user-show pair, from episode-level
@@ -12,13 +13,23 @@ abandonment point, and every counting rule needed to compute them deterministica
 does not set W, does not set the liveness threshold, and does not set the contamination
 exclusion rule. Those are Steps 6, 7, and 5.
 
-**Red Team returned HOLD on the previous draft. This revision was authorized in response.**
-Seven settled items — Human Lead decisions and items already closed in `task-sheet.md` — are
-recorded in Section 10.0 and incorporated into the body of the document rather than appended
-to it. Four open questions remain in Section 10.1, each carrying a recommendation that the
-Human Lead decides.
+**Red Team returned HOLD twice. Both revisions were authorized in response.** Seven settled
+items — Human Lead decisions and items already closed in `task-sheet.md` — are recorded in
+Section 10.0 and incorporated into the body of the document rather than appended to it. Two
+further required outputs, added by this revision in response to Red Team's second round, are in
+Section 10.0b. Three open questions remain in Section 10.1, each carrying a recommendation that
+the Human Lead decides.
 
-**Four claims from the previous draft are withdrawn as false, and each is marked as such where
+**What the second HOLD changed.** Three blocking findings and five secondary ones. The
+structural change is in **Sections 3, 4 and 7**: season membership is now defined by the
+season's **listed episode-number set**, not by the numeric range `1..F`. That single change is
+what makes `|D1| ≤ L1`, `|A| ≤ L2` and `p ∈ (0, 1]` true by construction rather than by
+assertion. It has a precondition attached — the listed set has to come from somewhere, and
+Section 3 now names the source and flags that the source is **unconfirmed under
+Client-ID-only auth**. Section 10.0b adds the missing post-window diagnostic for the
+**Never started** category, which is the one the study is named after.
+
+**Six claims from earlier drafts are withdrawn as false, and each is marked as such where
 it appeared** rather than quietly deleted:
 
 | Withdrawn claim | Where | Replaced by |
@@ -26,7 +37,14 @@ it appeared** rather than quietly deleted:
 | Entry and exit are symmetric | Section 7 | They are not — S1 completion is evaluated over all time, S2 completion within `W`. The asymmetry is now stated as a bias with a known direction, and D3 measures it. |
 | Right-censoring costs zero rows | Sections 6, 10.1 Q3 | `S1_completion_date` is uncapped, so it removes recent S1 completers, who are disproportionately likely to continue. It moves the headline **up**. |
 | Truncating negative lags at zero | 10.1 Q2 | W estimated on binge-release shows only, then applied to all. |
-| `p ∈ (0, 1]` follows from `p = m / L2` | Section 7 | It does not when `F2 > L2`. `p` is now rank-based, and the range holds by construction. |
+| `p ∈ (0, 1]` follows from `p = m / L2` | Section 7 | It does not when `F2 > L2`. |
+| **Rank-based `p` is safe because out-of-set episodes are dropped upstream** | Section 7 (2nd draft) | **False.** The old drop rule dropped `number > F`, `number < 1`, and missing fields — an episode numbered *inside* `1..F` but *absent* from the listed set survived all three, which is exactly the numbering-gap case. Membership is now defined by **set**, so the drop rule does the work the claim assumed. Section 3. |
+| **Liveness is a statement about the account** | Sections 0, 1, 9 (both drafts) | **Mis-scoped.** The evidence is account-wide, but the test is `activity after T0 + W` and `T0` is pair-specific, so the same account can be live for one show and not another. Liveness is a **pair-level** filter. Sections 0, 1, 9. |
+
+**One sourcing claim is corrected rather than withdrawn.** The previous draft said Step 0 had
+confirmed the season-length source. Step 0 confirmed `GET /shows/:id/seasons?extended=full`
+returns per-season **counts**. A count is not a list, and this document now needs the list.
+Section 3 states the source, the requirement, and the untested precondition.
 
 ---
 
@@ -50,16 +68,33 @@ user. Each record carries `id`, `watched_at`, `action`, `type`, and for episodes
   that user is known complete; enforcement is Step 4's and Step 8's, but the dependency is
   recorded here because it is this definition that it breaks.
 - **The endpoint mixes `type: episode` with `type: movie`.** For outcome measurement, only
-  `type: episode` records belonging to the show in question are used. **Liveness (Step 7) is
-  not restricted to the show under study**: it is a statement about the account, so it is
-  evaluated across the user's whole sweep, other shows and movies included. Whether the gap
-  distribution is built on raw play events or on deduplicated episodes is **Step 7's analysis
-  to run**, and Step 1 does not decide it.
+  `type: episode` records belonging to the show in question are used. **Liveness (Step 7) draws
+  on the whole sweep but is evaluated per pair.** Its *evidence* is not restricted to the show
+  under study — other shows and movies count as logged activity. Its *test*, per Step 7, is
+  activity after `T0 + W`, and `T0` is pair-specific (Section 6), so **liveness is a pair-level
+  filter and the same account can be live for one show and not for another**. The previous
+  draft called it "a statement about the account" in three places; that was wrong and is
+  corrected here, in Section 1, and in Section 9, so the two isolated Step 7 instances do not
+  diff on it. Whether the gap distribution is built on raw play events or on deduplicated
+  episodes is **Step 7's analysis to run**, and Step 1 does not decide it.
 
 **Timezone and granularity.** `watched_at` is ISO 8601 UTC. **Ordering is always on the full
 UTC timestamp**; date reduction applies to clock arithmetic only — `T0`, `T1`, lags, and
 gaps are whole numbers of days, because W is a number of days — and never to sequencing, so
 the tiebreak in Section 2.2 fires only when two full timestamps are exactly equal.
+
+**`first_aired` is UTC too, and that is not free.** Air dates enter this document through the
+S2 finale date in `T0` (Section 6). Trakt's `first_aired` is a UTC instant. A US primetime
+broadcast — 21:00 ET is 01:00 UTC the following day — therefore carries a **UTC date one day
+after its US air date**. For most US weekly shows `T0`, and hence `T1`, is systematically **up
+to one day late**. The effect is small against any plausible `W` of tens of days, but it is
+**one-directional, not noise**: a later `T1` grants one extra day of the one-sided inclusion
+test in Section 7, so it moves the never-started share marginally **down**. It is named rather
+than corrected, because correcting it would require a per-show broadcast timezone that the
+frame does not carry, and because a half-corrected mix of UTC and local dates would be worse
+than a consistent one. **The rule is: air dates and `watched_at` are both reduced to UTC
+calendar dates and compared on that basis. No local-timezone conversion is applied anywhere,
+in either direction** — the viewer's own timezone is unknown and unknowable from this data.
 
 ---
 
@@ -75,10 +110,16 @@ the Step 7 liveness rule.
 Filter order, sample size after each filter, and the invariant checks are Step 8's, not
 this document's. What Step 1 fixes is *what each filter is testing*.
 
-**Liveness is an eligibility filter, not an outcome state.** Outcome states are assigned
-only among users who pass it. This matters for Step 9: the bound is computed by moving the
-inactivity-*excluded* users into "never started," which is only coherent because they were
-never assigned a state in the first place.
+**Liveness is an eligibility filter, not an outcome state, and it operates on pairs.** Outcome
+states are assigned only among pairs that pass it. It is **not** a filter on accounts: because
+Step 7's test is activity after `T0 + W` and `T0` differs by show (Section 6), one account can
+pass for a show whose window closed in 2021 and fail for a show whose window closed in 2024.
+Any implementation that drops a *user* wholesale on a liveness test is doing something this
+document does not define. This matters for Step 9: the bound is computed by moving the
+inactivity-*excluded* **pairs** into "never started," which is only coherent because they were
+never assigned a state in the first place. Phrases like "inactivity-excluded users" are
+replaced throughout by "inactivity-excluded pairs"; the unit is the pair everywhere in this
+document, without exception.
 
 ---
 
@@ -151,44 +192,115 @@ it and Step 13 can run a sensitivity arm on it (Section 9).
 
 ---
 
-## 3. Where season length comes from
+## 3. Season membership: the listed episode-number set
 
-**S1 and S2 lengths come from the Step 2 show frame**, which collects S1 and S2 episode
-counts as fields. Where the frame is not yet available, the same numbers come from
-`GET /shows/:id/seasons` (per-season `episode_count` / `aired_episodes`), which is the
-source the frame itself draws on. Step 0's test pull already confirmed that endpoint returns
-per-season S1 and S2 counts under Client-ID-only auth.
+This section was rewritten under Red Team findings F1 and F2. The previous version defined
+season membership by the numeric **range** `1..F` and claimed a drop rule that did not drop
+what it needed to. Membership is now defined by **set**, and the set now has a named source.
 
-**Never `show.aired_episodes`** from the history payload, for the reason in Section 0.
+### 3.1 The primitive object is a set, not a count
 
-Definitions, per show:
+Per show, per season, the primitive is:
 
 | Symbol | Meaning |
 | :--- | :--- |
-| `L1` | number of episodes listed for season 1, excluding season 0 |
-| `F1` | the S1 finale: the **highest** episode number listed for season 1 |
-| `L2` | number of episodes listed for season 2, excluding season 0 |
-| `F2` | the S2 finale: the highest episode number listed for season 2 |
+| `E1` | the **listed episode-number set** for season 1: the set of `number` values of the episodes the source lists for season 1 |
+| `L1` | the size of `E1` — the S1 episode count |
+| `F1` | `max(E1)` — the S1 finale number |
+| `E2`, `L2`, `F2` | the same three objects for season 2 |
 
-`L1` is a **count** and `F1` is a **maximum**. For contiguously numbered seasons they are
-equal. They are kept separate so that a season with a numbering gap does not silently break
-the 90 percent denominator, and so that the Step 8 invariant "distinct episodes never exceed
-season length" is testing the count against the count.
+`L` and `F` are both **derived from `E`**, in that order, and are never obtained
+independently of it. That is the point: three numbers that could disagree are replaced by one
+object they are both computed from, so disagreement is not representable.
 
-**Specials are season 0 and are excluded** from `L1`, `L2`, from the completion test, and
-from the abandonment point. They still count as logged activity for liveness.
+**`F := L` is forbidden.** Setting the finale number equal to the episode count is exactly the
+assumption that a numbering gap violates, and it is the assumption that produced the withdrawn
+`p ∈ (0, 1]` claim. `F` is `max(E)`. It is not `L`, not `episode_count`, and not
+`aired_episodes`. The single exception is the fallback in 3.3, which is a different rule
+adopted knowingly and only by decision of the Human Lead.
 
-**Out-of-range episode records** — `number` greater than the highest listed number for that
-season, or `number` less than 1, or a missing `season` or `number` — are dropped from the
-counts and **counted separately per show**. A show with many such drops has a stale or wrong
-frame entry, and that is what the count is there to reveal. This drop rule is what makes the
-Step 8 invariant "distinct episodes never exceed season length" enforceable rather than
-merely hopeful.
+**Never `show.aired_episodes`** from the history payload, for the reason in Section 0.
 
-Shows where `episode_count` and `aired_episodes` disagree for S1 or S2 are flagged and
-counted. Given the Step 2 frame requires S2 to have finished airing on or before
-31 Dec 2024, they should agree; a disagreement means the show is not what the frame thinks
-it is.
+**Specials are season 0 and are excluded** from `E1`, `E2`, from the completion test, and from
+the abandonment point. They still count as logged activity for liveness.
+
+### 3.2 Membership rule, replacing the out-of-range rule
+
+> **An episode record counts toward a season if and only if its `number` is a member of that
+> season's listed set.** A record is **dropped** when its `season`/`number` is missing, or when
+> `number ∉ E` for the season it claims.
+
+This replaces the previous rule, which dropped only `number > F`, `number < 1`, and missing
+fields. **That rule let through exactly the case the gap machinery existed for**: an episode
+numbered inside `1..F` but absent from `E` passed all three tests and survived. Two things
+broke as a result, and both are repaired by the set rule:
+
+- `|D1|` and `|A|` were defined over the range and could **exceed** `L1` and `L2`, so the Step
+  8 invariant that Section 3 claimed to make enforceable was not, and `ceil(0.90 × L2)` could
+  be satisfied by episodes that are not in the season.
+- `m = max(A)` need not have been listed, so the rank-based `p` could have an **empty**
+  numerator and return `p = 0`, outside its own stated range.
+
+Under the set rule, `D1 ⊆ E1` and `A ⊆ E2` by construction, therefore `|D1| ≤ L1`,
+`|A| ≤ L2`, and `m ∈ E2` whenever `A ≠ ∅`. **Section 7's `p ∈ (0, 1]` now holds for the reason
+it claims.**
+
+**Honest note on the Step 8 invariant.** Because `|D| ≤ L` is now true by construction, the
+invariant "distinct episodes never exceed season length" no longer tests the data — it tests
+the **implementation**. It fails only if an implementation filtered by range instead of by set,
+which is precisely the bug this revision exists to prevent, so it is worth keeping and worth
+describing accurately. It is a code check, not a data check. The data check is the drop count
+below.
+
+### 3.3 Where `E` comes from — the precondition, stated as a blocker
+
+**`E` has no confirmed source today, and everything in Sections 3, 4 and 7 depends on it.**
+Step 2 collects S1 and S2 episode **counts**. Step 0 confirmed only
+`GET /shows/:id/seasons?extended=full`, which returns per-season `episode_count` /
+`aired_episodes`. **A count is not a list.** Neither `E`, nor `F`, nor `p` is derivable from a
+count. The previous draft asserted this was already sourced; it was not.
+
+> **Requirement.** `E1` and `E2` must be supplied as a **listed episode-number set per season**
+> from a **single episode-listing endpoint** — `GET /shows/:id/seasons/:season`, or
+> `GET /shows/:id/seasons?extended=episodes` — and `E`, `L` and `F` must all be derived from
+> **that same payload, for that show, from that pull**, so they cannot disagree with each other.
+>
+> **Precondition, unconfirmed.** Neither endpoint variant was tested under Client-ID-only auth
+> at Step 0. **Confirming that one of them returns per-episode listings on Client ID alone is a
+> precondition of this definition**, and it must be settled before any code computes `L`, `F`,
+> `p`, or the 90 percent test. It is one test call.
+>
+> Whether the set is added as a required Step 2 field or pulled separately is the **Human
+> Lead's** call, since Step 2 is theirs. Step 1 states the requirement, not the plan.
+
+**Fallback, if the precondition fails.** If no episode listing is available on Client ID alone,
+the fallback is to define `E := {1, …, L}`, i.e. `F := L`, **state in the write-up that
+numbering gaps are unhandled**, and **delete the gap machinery** — the set rule collapses to
+the old range rule, and `p` reverts to `m / L2` with its range holding only under the
+contiguity assumption. That is a worse definition, honestly labelled, and it is preferable to a
+guarantee resting on an object nothing supplies. **It is not assumed here and must not be
+implemented pre-emptively.** The primary path above is the specified path; the fallback is
+adopted only if the precondition fails, and only by the Human Lead.
+
+### 3.4 What gets counted when records are dropped
+
+Two counts, not one. The previous draft required only the first.
+
+1. **Per show:** the number of dropped episode records, and the number of distinct dropped
+   `(season, number)` pairs. A show with many drops has a stale or wrong `E`, and that is what
+   this count exists to reveal.
+2. **Per outcome, and this is the one that was missing:** the number of **pairs whose entire S2
+   evidence was dropped** — pairs with at least one dropped S2 record and `|A| = 0` after the
+   drop rule. Counting drops per show hides the consequence that matters. If a show's `E2` is
+   stale-low, a user's only S2 evidence is dropped and **the pair scores Never started**: a
+   metadata error lands directly in the headline category. Reported as a count and as a share of
+   the Never started group, with its direction named — it **inflates** Never started, the same
+   direction as D4 and D9.
+
+Shows where the source's `episode_count`, its `aired_episodes`, and `|E|` disagree for S1 or S2
+are flagged and counted. Given the Step 2 frame requires S2 to have finished airing on or before
+31 Dec 2024, all three should agree; a disagreement means the show is not what the frame thinks
+it is, and `L := |E|` is what this document uses regardless.
 
 ---
 
@@ -199,9 +311,12 @@ it is.
 
 Made exact:
 
-- Let `D1` = the set of **distinct** S1 episodes for that user and show, in range `1..F1`,
-  per Sections 2.1 and 3.
+- Let `D1` = the set of **distinct** S1 episodes for that user and show **whose number is a
+  member of `E1`**, per Sections 2.1 and 3.2. Membership is by **set**, not by the range
+  `1..F1`; the range form was the F1 defect and is withdrawn.
 - **Required:** `F1 ∈ D1` **and** `|D1| ≥ ceil(0.90 × L1)`.
+- `D1 ⊆ E1` by construction, so `|D1| ≤ L1` and the 90 percent test cannot be satisfied by
+  episodes that are not in the season.
 
 `ceil` is the strict reading of "at least 90 percent." For `L1 = 10` it requires 9. For
 `L1 = 8` it requires 8, i.e. all of them, because 7 of 8 is 87.5 percent. The threshold is
@@ -324,6 +439,14 @@ S2-finale-term mass, which would defeat the purpose of asking for it.
 finale air date taken from the Step 2 show frame — which already collects it as a field — and
 the S1 completion date from Section 5.
 
+**Both terms are UTC calendar dates and the finale term carries a known one-day skew.** Trakt's
+`first_aired` is a UTC instant, so a US primetime finale dates one day later in UTC than in its
+broadcast market (Section 0). For most US weekly shows `T0` and `T1` are therefore up to one
+day late, which grants one extra day of the one-sided test in Section 7 and moves the
+never-started share marginally **down**. Small against a `W` of tens of days, one-directional,
+and named here rather than corrected, because the frame carries no per-show broadcast timezone
+and a partial correction would be worse than a consistent convention.
+
 The window closes at **`T1 = T0 + W days`**. W is set in Step 6 and is not set here.
 
 ### Why the finale, and not the premiere
@@ -422,8 +545,11 @@ The rule itself remains open question 3 in Section 10.1.
 
 Measured at `T1 = T0 + W`, from distinct S2 episodes only.
 
-Let `A` = the set of **distinct** S2 episodes for that user and show, in range `1..F2`, whose
-canonical timestamp (2.2) is **on or before `T1`**. Let `m = max(A)` when `A` is non-empty.
+Let `A` = the set of **distinct** S2 episodes for that user and show **whose number is a member
+of `E2`** (Section 3.2), whose canonical timestamp (2.2) is **on or before `T1`**. Let
+`m = max(A)` when `A` is non-empty. Membership is by **set**, not by the range `1..F2`; the
+range form was the F1 defect and is withdrawn. `A ⊆ E2` by construction, so `|A| ≤ L2` and
+`m ∈ E2`.
 
 | State | Condition |
 | :--- | :--- |
@@ -433,7 +559,27 @@ canonical timestamp (2.2) is **on or before `T1`**. Let `m = max(A)` when `A` is
 
 **Mutually exclusive and exhaustive by construction.** The partition is
 `A = ∅` / `(A ≠ ∅ ∧ C)` / `(A ≠ ∅ ∧ ¬C)`, so no eligible pair can fall in two states or in
-none. This is what satisfies the Step 8 invariant that the states sum to the sample.
+none. This is what satisfies the Step 8 invariant that the states sum to the sample. It holds
+for any well-defined `A`, and Section 3.2 is what makes `A` well-defined.
+
+### The degenerate case: `L2 = 1`
+
+**Stated here rather than pushed to the frame, because Step 2 is the Human Lead's and Step 1
+does not add filters to it.** When `L2 = 1`, `E2 = {F2}` and `ceil(0.90 × 1) = 1`, so
+`|A| ≥ 1 ⟺ F2 ∈ A ⟺` the Continued condition. **Continued becomes equivalent to Started,
+Started-and-left is empty by construction, and `p` — defined only on Started-and-left — is
+never defined.** The three-state partition degenerates to two, and a two-state row cannot
+contribute to a headline that splits started-and-left from continued.
+
+> **Rule: pairs on shows with `L2 = 1` are excluded from the headline population at Step 8, and
+> the count of shows and of pairs excluded is reported in the waterfall.**
+
+`L1 = 1` is not degenerate in the same way — completion is simply "watched the one episode" —
+and such pairs are retained. Small `L2` is not excluded either, but it is coarse: at `L2 = 2`,
+`ceil(0.90 × 2) = 2`, so Started-and-left is exactly "watched one of the two," and `p` takes
+one of two values. **Step 10 must not read a `p` histogram across shows with very different
+`L2` as if the bins were comparable**; that is a presentation constraint on the abandonment
+distribution, and it follows from `p` being a fraction of a season, not a count of episodes.
 
 Three properties worth stating:
 
@@ -468,18 +614,30 @@ separate precisely because they can differ, and the range claim quietly assumed 
 
 **Resolved by making `p` rank-based rather than a raw number ratio:**
 
-> `p = |{ listed S2 episode numbers ≤ m }| / L2`
+> `p = |{ e ∈ E2 : e ≤ m }| / L2`
 
 That is, the position of the highest watched episode within the season's actual episode list,
-over the length of that list. Both numerator and denominator now count listed episodes, so
-`p ∈ (0, 1]` **holds by construction**: the numerator is at least 1 since `m` is itself
-listed, and at most `L2`. For a contiguously numbered season — which is nearly all of them —
-this is identical to `m / L2`, so the fix changes no ordinary case and closes the pathological
-one. Defined **only for the Started-and-left group**, computed on distinct episodes so a
-rewatch cannot move it.
+over the length of that list. Both numerator and denominator count listed episodes, so
+`p ∈ (0, 1]`.
 
-Episodes with numbers not in the season's listed set are already dropped upstream by the
-out-of-range rule in Section 3, which is what lets the numerator be well-defined here.
+**The second draft justified that range with a false premise, and Red Team was right to hold on
+it.** It claimed episodes outside the listed set were "already dropped upstream by the
+out-of-range rule in Section 3." They were not: the old rule dropped `number > F2`,
+`number < 1`, and missing fields, and a number inside `1..F2` but absent from `E2` — the
+numbering-gap case the fix existed for — passed all three. So `m` need not have been listed; if
+`E2` began above `m`, the numerator was **0** and `p = 0`, outside the stated range.
+
+**What actually secures the range is the set-membership rule in Section 3.2**, adopted in this
+revision: `A ⊆ E2`, therefore `m ∈ E2`, therefore `m` itself is in the numerator set and the
+numerator is at least 1; and the numerator counts a subset of `E2`, so it is at most `L2`.
+`p ∈ (0, 1]` **now holds by construction, for the reason claimed.** Under the 3.3 fallback,
+where `E2 := {1, …, L2}`, this reduces to `m / L2` and the range holds by the contiguity
+assumption that the fallback explicitly labels as unhandled.
+
+For a contiguously numbered season — which is nearly all of them — the rank form is identical
+to `m / L2`, so the fix changes no ordinary case and closes the pathological one. Defined
+**only for the Started-and-left group**, computed on distinct episodes so a rewatch cannot move
+it.
 
 `p` can equal exactly 1.0 for a Started-and-left user: someone who watched the S2 finale but
 fewer than 90 percent of S2. That is a real behaviour — skipping ahead — and not the same
@@ -525,6 +683,12 @@ number whose value depends on the frame's cadence mix is not.
 
 Recorded here so nothing is reconstructed later from memory.
 
+- **A precondition before anything runs.** The listed episode-number set `E` has no confirmed
+  source (Section 3.3). One test call settles whether
+  `GET /shows/:id/seasons/:season` or `seasons?extended=episodes` returns per-episode listings
+  under Client-ID-only auth. **Until it is settled, `L`, `F`, `p` and the 90 percent test are
+  not computable as defined**, and the alternative is the labelled fallback, which is the Human
+  Lead's to adopt and no one else's. Whether `E` becomes a Step 2 field is likewise theirs.
 - **Step 5** receives: `action` is not filtered on at Step 1, so manual and imported
   timestamps are still in the data when Step 5 runs, which is the correct order. Step 5's
   exclusion must also be applied **before** right-censoring, so an import-stamped S1 completion
@@ -533,22 +697,34 @@ Recorded here so nothing is reconstructed later from memory.
   date on distinct episodes, and the open question about how negative lags enter the lag
   distribution (open question 2). Because `T0` and the Step 6 lag now share the same origin, W
   is derived and applied against one clock rather than two.
-- **Step 7** receives: liveness is a statement about the **account**, so it is evaluated over
-  the user's whole sweep and is **not restricted to the show under study**. Whether the gap
-  distribution is built on raw play events or on deduplicated episodes is Step 7's analysis to
-  run; Step 1 takes no position.
-- **Step 8** receives: the filter order is Step 8's, but five things here are its
-  responsibility to enforce — the out-of-range drop rule (Section 3) that makes the
-  season-length invariant meaningful; the **required** negative-lag report split by binding
-  term (D2); the **required** resumption-rate report (D3); the unconditional right-censoring
-  removal count with its direction named, and the ordering constraint that Step 5 contamination
-  exclusion runs *before* right-censoring (Section 6); and retention of `action` as a column.
-  The new three-part clock-start invariant in `task-sheet.md` should compute the first-pass S1
-  completion date **independently**, not read back the pipeline's value, or its equality clause
-  proves nothing (Section 5).
+- **Step 7** receives, and this is the corrected version: liveness **evidence** is account-wide
+  — the whole sweep, other shows and movies included, **not** restricted to the show under
+  study — but the liveness **test** is `T0 + W`-relative and `T0` is pair-specific, so
+  **liveness is a pair-level filter**. One account can be live for one show and not for another.
+  The earlier "statement about the account" phrasing is withdrawn (Sections 0, 1). Both isolated
+  Step 7 instances receive this same wording, so a diff on scope would be a genuine divergence
+  rather than a paraphrase artifact. Whether the gap distribution is built on raw play events or
+  on deduplicated episodes remains Step 7's analysis to run; Step 1 takes no position.
+- **Step 8** receives: the filter order is Step 8's, but these are its responsibility to
+  enforce — the **set-membership** drop rule (Section 3.2), which is now an implementation check
+  rather than a data check; **both** drop counts, per show and **per outcome**, the second being
+  pairs whose entire S2 evidence was dropped (Section 3.4); exclusion and counting of `L2 = 1`
+  shows (Section 7); the **required** negative-lag report split by binding term (D2); the
+  **required** resumption-rate report (D3); the **required** never-started post-window
+  diagnostic (D8, Section 10.0b); the **required** split-artifact counts (D9, Section 10.0b);
+  the unconditional right-censoring removal count with its direction named, and the ordering
+  constraint that Step 5 contamination exclusion runs *before* right-censoring (Section 6); and
+  retention of `action` as a column. The three-part clock-start invariant in `task-sheet.md`
+  should compute the first-pass S1 completion date **independently**, not read back the
+  pipeline's value, or its equality clause proves nothing (Section 5).
 - **Step 9** receives: the cadence stratum requirement (Section 6); the S3-without-S2 bound
-  (D4) reported alongside the liveness bound; and the 91-day arm's separate origin (D5), which
+  (D4) and the **split-artifact bound (D9)** reported alongside the liveness bound; the
+  **never-started post-window diagnostic (D8)**, which moves the headline **down** and must be
+  reported with the bounds that move it up; and the 91-day arm's separate origin (D5), which
   must be stated in the write-up and not smoothed over.
+- **Step 10** receives: `p` is a fraction of a season, so bins are not comparable across shows
+  with very different `L2` (Section 7); the `p = 1.0` residual is its own named category and is
+  not merged into "near-finale."
 - **Step 12** receives: cadence as a mandatory candidate on the list, flagged as the one
   candidate with a known mechanical driver (Section 6).
 - **Step 13** receives two required robustness arms from this document, in addition to the
@@ -603,10 +779,11 @@ category — so it is not a footnote and not a contingent Step 13 arm.
 > **Step 9 reports it as a bound**, alongside the liveness bound: what the never-started share
 > becomes when every S3-without-S2 pair is removed from that category. Counts and shares only.
 
-Two bounds, two directions, both reported: the liveness bound moves the never-started share
-**up** by treating inactivity-excluded users as decliners; the S3-without-S2 bound moves it
-**down** by removing pairs that are probably logging artifacts. Reporting only the first would
-present the study's uncertainty as if it ran one way.
+Bounds in both directions, all reported: the liveness bound moves the never-started share
+**up** by treating inactivity-excluded pairs as decliners; the S3-without-S2 bound (D4), the
+split-artifact bound (D9), and the dropped-S2-evidence count (Section 3.4) all move it **down**
+by removing pairs that are probably logging or metadata artifacts. Reporting only the first
+would present the study's uncertainty as if it ran one way.
 
 **D5, and why it must be said out loud.** The 91-day arm exists to be commensurable with
 Netflix's public window, which runs from **release**, so it is anchored on the premiere while
@@ -618,17 +795,88 @@ window-length effect with an origin effect that cannot be separated after the fa
 requires this to be stated plainly at Step 9; it is recorded here so the requirement is visible
 to whoever reads the definition rather than only to whoever reads Step 9.
 
+### 10.0b Required outputs added by this revision
+
+**Provenance, stated so it is not mistaken for an approval.** D1–D7 above are Human Lead
+decisions or `task-sheet.md` closures. **D8 and D9 are neither. They are Red Team blocking
+finding F3 and secondary finding 1, written into the definition under the authorization to
+revise.** Like the rest of this document they are proposed and unadopted; the gate is
+unchanged.
+
+| # | Required output | Direction on the headline |
+| :--- | :--- | :--- |
+| **D8** | **Never-started post-window diagnostic.** The symmetric counterpart to D3, for the category the study is named after. | **Down** |
+| **D9** | **Split-artifact counts and bound.** Trakt show splits manufacture Never started rows; treated as a known misclassification, not as a counting nuisance. | **Down**, plus an unmeasured denominator loss |
+
+**D8, stated in full.** D3 asks what the window's close hides for **Started and left**. Nothing
+asked the same question of **Never started** — which is the category that gets published as
+"never," and the one word in the headline a reader will take most literally.
+
+> Of user-show pairs scored **Never started** at `T1`, report: **(i)** the count and share with
+> any distinct S2 episode watched after `T1` and before the pull date, and **(ii)** the count
+> and share satisfying the Continued condition — `F2 ∈ A` and `|A| ≥ ceil(0.90 × L2)` — at
+> **any** time before the pull date. Counts and shares only, to `artifacts/`.
+
+Three things make this cheap and non-optional:
+
+- **It is computable for the whole population.** Right-censoring at `T0 + max(W, 91) ≤ pull
+  date` (Section 6) guarantees every retained pair at least 91 days of post-window observation,
+  so there is no subgroup for which the question is unanswerable.
+- **It is the same query as D3 with the state filter changed.** No new data, no new join.
+- **It moves the headline down**, and that is exactly why it belongs. Section 10.0 argues that
+  reporting only bounds which move the headline **up** would present the study's uncertainty as
+  if it ran one way. Publishing "never started" without ever checking how many of them started
+  later would be that failure in its purest form: a pair that started S2 on day `W + 1` is
+  called "never" by this document, and D8 is what makes the size of that group a number instead
+  of an objection.
+
+The direction is reported alongside the figure. D8 is a **diagnostic**, not a reclassification:
+no pair moves state on account of it. If (i) or (ii) is large, the honest response is a
+statement in the limits and a Step 13 arm on `W`, not a silent redefinition of "never."
+
+**D9, stated in full. This replaces the previous draft's open question 4, which was wrong to
+treat splits as a counting nuisance.** The pair key is `show.ids.trakt`. If Trakt **split** a
+show's metadata between a user's viewing and our pull, S1 records key to `ID_A` and S2 records
+to `ID_B`. Then:
+
+- Pair `(user, ID_A)` has a complete S1 and `|A| = 0`. **It scores Never started.** The user
+  watched S2. The row is fabricated, and it is fabricated directly into the headline category.
+- Pair `(user, ID_B)` fails the S1 completion test and **disappears from the population
+  entirely**, unreported, as though it had never been considered.
+
+That is structurally identical to D4 — a known misclassification with a known direction — and
+it gets D4's treatment, not a deferral:
+
+> **Step 8 reports both counts**: (a) pairs scored Never started that carry a split signature,
+> and (b) pairs dropped at S1 completion that carry the same signature, which is the silent
+> half. **Step 9 reports the split-artifact bound** alongside the liveness bound and D4: what
+> the never-started share becomes when every split-signature pair is removed from that
+> category. Counts and shares only.
+
+**Signature.** A candidate is a `(user, show_id)` pair where the user's sweep contains episodes
+of another show ID whose season coverage is complementary — one ID carrying S1 and not S2, the
+other S2 and not S1 — and whose show titles or `ids` indicate the same title. **Detection is
+imperfect and the count is a lower bound; that is stated wherever the number appears.** Merges
+are the mirror case and are less dangerous: they combine two IDs into one, which can only add
+evidence to a pair, not remove it. They are counted with the same query and reported separately.
+
+What remains open is only whether **reconciliation logic** is written — that is, whether split
+pairs are merged back into one row rather than merely counted. My recommendation is unchanged
+and modest: **count first, reconcile only if the count justifies it.** But the counting and the
+bound are no longer conditional on anything, because "we did not measure it" is not an available
+answer for a row that lands in the published category.
+
 ### 10.1 Open questions, each with a recommendation
 
-Four remain. **These are recommendations. The Human Lead decides them; I have adopted none of
-them, and the document stands unapproved.**
+Three remain — the fourth, show splits, is resolved as D9 above. **These are recommendations.
+The Human Lead decides them; I have adopted none of them, and the document stands unapproved.**
 
 | # | Question | My recommendation | Why, in one line |
 | :--- | :--- | :--- | :--- |
 | **1** | Continued boundary: S2 finale **plus** ≥ 90 percent, or finale alone? | **Finale plus 90 percent** | Finale-alone would score a user who watched 2 of 13 episodes and skipped to the end as having continued, which understates abandonment in the direction that flatters the headline. |
 | **2** | How is W estimated when most started users have negative lags? | **Estimate W on binge-release shows only, then apply it to all shows** | On a binge show premiere and finale coincide, so every lag is a genuine post-availability delay and W is a property of viewer behaviour rather than of the frame's cadence mix. |
-| **3** | Right-censoring at `T0 + max(W, 91) ≤ pull date`, or `T0 + W`? | **`max(W, 91)`** | It costs real users, not zero, but it is the only version under which the primary and the 91-day arm share a denominator — and D5 already makes those two hard enough to compare. |
-| **4** | Trakt show merges and splits across the pair key `show.ids.trakt` | **Count at Step 8, build nothing yet** | Reconciliation logic written against an unmeasured problem is speculative; the count is nearly free and settles whether the problem exists. |
+| **3** | Right-censoring at `T0 + max(W, 91) ≤ pull date`, or `T0 + W`? | **`max(W, 91)`** | It costs real pairs, not zero, but it is the only version under which the primary and the 91-day arm share a denominator — and D5 already makes those two hard enough to compare. |
+| ~~4~~ | ~~Trakt show merges and splits~~ | **Closed. Now D9 (Section 10.0b).** | Splits do not merely miscount, they manufacture rows in the headline category and silently delete their counterparts, so counting and a bound are required rather than deferred. |
 
 Detail where the one-liner is not enough:
 
@@ -684,11 +932,13 @@ origins D5 already introduces, and two differences at once cannot be attributed.
 count is reported unconditionally either way, with its direction named, and if it is large the
 right response is to say so in the limits rather than to switch rules to shrink it.
 
-**4. Show merges and splits.** The pair key is `show.ids.trakt`. If Trakt merged or split a
-show's metadata between a user's watch and our pull, one user's viewing could key to two show
-IDs and appear as two pairs. *Recommendation: count occurrences at Step 8 and report; write no
-reconciliation logic until the count justifies it.* Expected volume is low, the count is nearly
-free, and the cost of being wrong is bounded and visible in a reported number.
+**4. Show merges and splits — closed, see D9.** *The "count at Step 8, build nothing yet"
+framing is withdrawn.* It treated a split as a counting nuisance of unknown size. It is not: a
+split gives one pair a complete S1 and no S2 evidence, which **scores Never started**, while
+its counterpart fails S1 completion and leaves the population unrecorded. A fabricated row in
+the published category is a misclassification with a direction, and that is D4's situation, so
+it gets D4's treatment. Counting and the bound are now required outputs (Section 10.0b).
+Reconciliation logic remains unwritten, and that part of the old recommendation stands.
 
 ---
 
@@ -698,8 +948,18 @@ free, and the cost of being wrong is bounded and visible in a reported number.
 - It does not set the **liveness threshold** or the liveness rule. Step 7.
 - It does not set the **contamination exclusion rule**. Step 5.
 - It does not set the **filter order**. Step 8.
-- It does not resolve the **four open questions in Section 10.1**. Each carries a
+- It does not resolve the **three open questions in Section 10.1**. Each carries a
   recommendation from me and a decision from nobody.
+- It does not add a field or a filter to **Step 2**, which is the Human Lead's. Section 3.3
+  states what this definition *requires* — the listed episode-number set — and names the
+  candidate endpoints. Whether that requirement is met as a Step 2 field, as a separate pull, or
+  not at all is theirs to decide.
+- It does not confirm the Section 3.3 precondition, and **no call was made to test it.** No code
+  was written or run for this document, per the gate.
+- It does not adopt the **Section 3.3 fallback** (`F := L`, gaps unhandled). The fallback is
+  written down so it is not improvised later; adopting it is a decision, not a default.
 - It does not adopt itself. Everything in Section 10.0 came from the Human Lead or from
-  `task-sheet.md` and is recorded as theirs. Nothing downstream of this gate runs until the
-  Human Lead approves this document in writing, and no approval is recorded by me.
+  `task-sheet.md` and is recorded as theirs; **D8 and D9 in Section 10.0b are mine, written
+  under the authorization to revise, and are proposed rather than adopted like everything else
+  here.** Nothing downstream of this gate runs until the Human Lead approves this document in
+  writing, and no approval is recorded by me.
