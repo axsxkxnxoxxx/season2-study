@@ -52,11 +52,19 @@ Losing Trakt access would end this study, so these rules outrank speed.
 
 **On a 429:** read the `Retry-After` header, pause that many seconds, then resume. Never retry the same request in a loop. If 429s persist across several consecutive pauses, stop and report. Log the status, the `X-Ratelimit` object, `Retry-After`, the endpoint, and the method every time.
 
-**On a 403:** hard stop and report. That is a block, not a throttle.
+**On a 403:** classify it before acting. Amended by the Human Lead, 2026-08-10; the earlier rule was "hard stop, always," which would halt an unattended Step 4 pull on a single private profile.
+
+- **On a user resource:** skip that user, log it with full headers, and continue. Bounded by two circuit breakers: **5** consecutive unconfirmed user-403s with no intervening 2xx hard stops, and **200** user-403s in a run hard stops. Only a 2xx resets the streak — a 401 or 404 does not.
+- **Not on a user resource** — or on a user resource where `X-Private-User` is present and false-like, or present and unrecognized: **hard stop and report.** That is a block, not a throttle.
+- **Ambiguity resolves strict.** A false hard stop costs wall-clock but no API budget and no data, because the client resumes from disk. A false skip risks the study's access.
+
+`X-Private-User` is **positive confirmation only.** It is absent from every captured response on the endpoint family Step 4 uses, so its absence carries no information and must never be read as "not private." The endpoint path is the primary discriminator.
+
+A skipped user is **not** a user with no history. It is recorded as `access_denied` and must stay distinguishable downstream — a skipped user silently read as empty becomes a false "never started" in the headline. Rule and evidence in `artifacts/step0-access-and-setup.md` §7.
 
 **On timeouts, connection errors, and 5xx:** retry with backoff.
 
-**Authentication.** Every endpoint this study uses is OAuth Optional and works with the Client ID alone on public profiles. Do not build an OAuth flow. Private profiles return nothing; log them and move on. Dropped status is OAuth Required and unavailable, so the three outcome states are inferred from episode-level history, never from a drop flag.
+**Authentication.** Every endpoint this study uses is OAuth Optional and works with the Client ID alone on public profiles. Do not build an OAuth flow. Private profiles return nothing; log them and move on — Trakt documents 401 for these, but see the 403 rule above, which exists because a private profile may return 403 instead. Dropped status is OAuth Required and unavailable, so the three outcome states are inferred from episode-level history, never from a drop flag.
 
 **The Client ID** lives in .env and is loaded at runtime. It is never written into a code file, a log, or an artifact.
 

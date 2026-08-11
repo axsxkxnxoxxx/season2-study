@@ -3,8 +3,11 @@
 **Owner:** Analytics Engineer · **Mode:** Chained · **Reviewer:** Engineering
 **Status:** Engineering verdict was proceed. Three blockers and four should-fixes
 were authorized and are closed. The finding that blocked the Step 4 pull design is
-**closed by the Human Lead, 2026-08-10** — see Section 0.
-**Dates:** first cut and Engineering review 2026-08-10; fixes and endpoint decision same day.
+**closed by the Human Lead, 2026-08-10** — see Section 0. The 403 ambiguity that would have
+halted Step 4 on one private user is **closed by an authorized Human Lead amendment,
+2026-08-10** — see Section 7.
+**Dates:** first cut and Engineering review 2026-08-10; fixes and endpoint decision same day;
+403 amendment same day.
 
 Three things were due: a working resumable client, one successful test pull, and the
 documented rate limit. All three are below, followed by the review fixes and the
@@ -148,7 +151,10 @@ pauses for any single request, so the same request is never retried in a loop. T
 stop conditions: consecutive pauses, a cumulative per-run budget (fix 7), and a
 `Retry-After` above 900s, which stops immediately rather than sleeping through it.
 
-**403:** immediate hard stop, no retry, after the evidence is persisted. See fix 2.
+**403:** classified, then acted on, after the evidence is persisted either way. An
+application-level 403 is an immediate hard stop with no retry; a 403 on a single user
+resource skips that user and the run continues, under two circuit breakers. See fix 2
+and Section 7.
 
 **Logging.** Status, the `X-Ratelimit` object, `Retry-After`, endpoint and method are
 written to `logs/api_requests.ndjson` for **every** request, not only rate-limit
@@ -207,8 +213,9 @@ in the same place: a stop-restart livelock that repeatedly requests into somethi
 just blocked us. The full response header set, the endpoint, the params, `X-Ratelimit`,
 `Retry-After` and a body excerpt are now appended to `logs/blocked_endpoints.ndjson`
 **before** raising. That file is loaded at construction, and a request to a recorded
-endpoint raises without a network call. The hard stop is unchanged and deliberately so.
-To retry a resolved block, clear that file.
+endpoint raises without a network call. To retry a resolved block, clear that file.
+**Superseded in part by Section 7:** the record is now written for both branches of the
+403 rule, not only for hard stops, and each record carries an `outcome` field.
 
 The captured headers include **`X-Private-User`**, which is the block-versus-private-profile
 disambiguation flagged as missing in the first cut. Confirmed against `raw/`: Trakt lists
@@ -282,12 +289,15 @@ alongside it rather than replacing it. Both are tested, including an explicit
 
 `src/test_client_behaviour.py` exercises every failure path against a scripted fake
 session. The paths that matter are precisely the ones we must never provoke on the live
-API. **27 of 27 checks pass.**
+API. **44 of 44 checks pass** (27 before the Section 7 amendment; 17 added by it).
 
 | Group | Checks |
 | :--- | :--- |
 | Throttle | below ceiling; blocks at cap; survives restart; shared between siblings; unreadable state is conservative |
-| 403 | hard stops and records full headers incl. `X-Private-User`; resumed run does not re-request |
+| 403, block branch | non-user resource hard stops and records full headers; reserved/bare `users` path hard stops; `X-Private-User: false` hard stops; unrecognised header value hard stops; resumed run does not re-request; legacy log record reads as a hard stop |
+| 403, skip branch | `X-Private-User: true` skips and continues; header absent skips and continues; skipped user is not re-requested and stays `access_denied`; skip index survives a cleared cache; pre-amendment cache meta reads `access_denied` False |
+| 403, circuit breakers | consecutive user 403s escalate; an intervening 2xx resets the streak; a 401 does not reset it; confirmed-private 403s do not trip breaker A; the cumulative budget stops the run |
+| 403, completeness | a mid-sweep 403 never returns partial history; a skipped user is distinguishable from one with no history; a first-page 403 is move-on |
 | 429 | pauses for `Retry-After`; consecutive stop; alternating 429/200 trips the cumulative budget |
 | Transient | 5xx and transport errors back off then succeed; exhausted backoff raises |
 | Cache | prevents a second request; unavailable recorded and not re-requested; raw written before parse; meta carries schema version; stale-schema entry re-fetched |
@@ -307,19 +317,157 @@ Cross-process locking is additionally verified against two real OS processes.
    sweep is indistinguishable from "never started" and lands in the headline — and throughput
    must be estimated in **pages, not users** (~64 pages per user at `limit=250` on the probe
    profile).
-2. **403 on a user endpoint remains ambiguous, by design.** The rule says a 403 is a
-   block and stops the run. Trakt's documented behaviour for a private profile is 401,
-   which the client treats as unavailable-and-move-on. If Trakt returns 403 for a
-   private profile, one private user would halt a Step 4 pull — but it will now halt
-   with the headers captured and the endpoint recorded, so the cause is diagnosable
-   from `logs/blocked_endpoints.ndjson` and a resume will not hammer it.
+2. ~~**403 on a user endpoint remains ambiguous, by design.**~~ **CLOSED by the Human Lead,
+   2026-08-10**, as an authorized amendment to the `CLAUDE.md` 403 rule, implemented before
+   Step 4. See Section 7. A 403 on a **user resource** now skips that user, logs it with full
+   headers, and continues; a 403 that indicates an **application-level block** still hard
+   stops. `X-Private-User` is used where available. One private user can no longer halt a
+   multi-day unattended pull.
 3. **No Sabbath or wall-clock scheduling is built in**, and none was added here. Start
    and stop remain manual, per the task sheet.
 4. **No live 429 or 403 has been observed.** Those paths are proven against a fake
-   session only. Their first live exercise will be during Step 3 or Step 4.
+   session only. Their first live exercise will be during Step 3 or Step 4. This is the
+   standing caveat on Section 7: the 403 classifier has never met a real 403, which is why
+   its inferences and assumptions are labelled as such and why every ambiguous case resolves
+   to a hard stop.
 5. **The throttle ring uses wall-clock time**, since it must be shared across processes
    and survive restarts. A backwards system-clock jump would make it over-cautious,
    never over-permissive. Flagging the direction of the failure, which is the safe one.
+
+---
+
+## 7. 403 handling: the two cases, separated
+
+**Authorized amendment to the `CLAUDE.md` 403 rule, Human Lead, 2026-08-10.** Resolves
+Section 6 open item 2 before Step 4. `CLAUDE.md` says "On a 403: hard stop and report."
+That is retained for application-level 403s and narrowed for user resources, because under
+the unamended rule **one private user halts a multi-day unattended pull**. `CLAUDE.md` is
+the Human Lead's file and has not been edited by me; the text there and the behaviour here
+now differ, and that divergence is flagged rather than resolved unilaterally.
+
+### 7.1 The evidence this rule is built on
+
+**No live 403 has ever been observed by this project.** `logs/api_requests.ndjson` holds
+25 × 200 and 2 transport errors: no 401, no 403, no 429. So the classifier is stated
+against labelled evidence rather than against expected behaviour.
+
+| Claim | Standing | Basis |
+| :--- | :--- | :--- |
+| Trakt's published status table gives 403 one meaning: invalid API key or unapproved app. It attaches no user-level meaning to 403. | **Documented** | Trakt status-code table |
+| The documented status for a profile not visible to an app-only request is **401**. | **Documented** | Trakt status-code table; already how the client treats 401 |
+| `X-Private-User` exists and is advertised in `access-control-expose-headers`. | **Documented, and confirmed on 12 of 12 captured responses** | `raw/**/*.meta.json` |
+| `X-Private-User` is emitted with a real value on `GET /users/:id` only (`false` for a public profile). | **Observed** | 1 of 12 captured responses |
+| `X-Private-User` is **absent on every captured `/users/:id/history` and `/users/:id/watched/shows` response** — 0 of 11. | **Observed** | `raw/**/*.meta.json` |
+| An application-level block is a property of the Client ID, so it would refuse every endpoint rather than one user. | **Inferred** | from the documented meaning of 403 |
+| Trakt does not return 403-without-the-header for a private profile on a history endpoint. | **Assumed** | unobserved either way |
+
+**The decisive observation is the fifth row.** `X-Private-User` is missing from the exact
+endpoint family Step 4 uses, even on a 200 for a public user. So **absence of the header
+carries no information** and cannot be read as "not a private user". Any rule that keys on
+presence would misfire on essentially every real user 403. The header is therefore used
+**only as positive confirmation**, never as the primary discriminator. The primary
+discriminator is the endpoint path, backed by circuit breakers.
+
+### 7.2 The rule as implemented
+
+Applied in order, in `TraktClient._classify_403`:
+
+| # | Condition | Decision |
+| :-- | :--- | :--- |
+| 1 | Endpoint is not a user resource | **HARD STOP** |
+| 2 | User resource, `X-Private-User` present and false-like | **HARD STOP** — Trakt says this profile is not private, so the refusal is not explained by privacy |
+| 3 | User resource, `X-Private-User` present but unrecognised | **HARD STOP** — not guessed at |
+| 4 | User resource, `X-Private-User` true-like | **SKIP**, confirmed private |
+| 5 | User resource, header absent (the expected live case) | **SKIP**, unconfirmed, counted against both breakers |
+
+"User resource" means `users/<id>` or `users/<id>/...`. A bare `users`, any non-`users`
+path, and the reserved authenticated-account segments (`me`, `settings`, `requests`,
+`hidden`, `likes`, `saved_filters`, `follows`) are **not** user resources and hard stop.
+
+Two circuit breakers bound the skip path:
+
+- **A, consecutive.** 5 unconfirmed user-403s with no intervening 2xx → hard stop. An
+  app-level block refuses everything, so an intervening 2xx is evidence we are not blocked;
+  **only a 2xx resets the streak** — a 401 or 404 does not. Confirmed-private 403s neither
+  increment nor reset it. Exposure after a real block that first surfaces on a user endpoint
+  is therefore bounded at **5 requests**, and no request is ever repeated.
+- **B, cumulative.** 200 user-403s in one run → hard stop. Not a discriminator, a tripwire:
+  reaching it would mean 403-for-private is real and common, which contradicts the documented
+  model, and a human should see the evidence before thousands more calls rest on it. Both
+  limits are constructor arguments.
+
+### 7.3 Where the rule misfires, in each direction
+
+- **Too permissive.** If an app-level block returned 403 *only* on user endpoints and the
+  pull kept receiving 2xx in between, breaker A would keep resetting and the block would be
+  absorbed as skips until breaker B fired. Cost: up to 200 requests into a block. Judged
+  unlikely, since a key-level block is not resource-scoped, but it is the residual risk and
+  it is why breaker B exists at all.
+- **Too strict.** If Trakt returns 403 with `X-Private-User: false` for some non-privacy
+  user-level refusal — a deleted or suspended account, say — the run hard stops on one user.
+  Cost: wall-clock until a human looks. Likewise a genuine cluster of five consecutive
+  private users, plausible under the Channel A follower-graph crawl, trips breaker A.
+
+**The asymmetry is deliberate.** Wrong in the permissive direction risks the study's API
+access. Wrong in the strict direction costs wall-clock but **no API budget and no data**:
+every response is already on disk and the run resumes exactly where it stopped. That is why
+every ambiguous case resolves to a hard stop.
+
+**Considered and rejected: a live canary.** On a user 403, issue one request to a global
+endpoint; a 403 there proves an app-level block. It rests on the same unverified inference
+as the path test, and breaker A extracts the same evidence from the pull's own traffic at no
+extra call. Not built.
+
+**Also rejected as a discriminator: the response body.** No 403 body has ever been captured,
+and a key-level block may be served by the edge rather than the API, so body shape is
+unverified. A 500-character excerpt is logged as evidence; nothing branches on it.
+
+### 7.4 A skipped user is counted and recoverable, not dropped
+
+Step 1 §0 makes sweep completeness a correctness requirement: a missing or truncated user is
+indistinguishable from a genuine "never started" and lands in the headline. Four mechanisms
+keep a skipped user distinguishable downstream:
+
+1. **`TraktResponse.access_denied`** is its own field. It is never folded into `unavailable`
+   and never into an empty 200.
+2. **`fetch_all()` returns `outcome`** with exactly three values — `complete`, `unavailable`,
+   `access_denied` — plus `complete: bool`. All three can carry zero items; only `complete`
+   is data. An empty `complete` is a real user with no history. The other two are absence of
+   evidence, not evidence of absence.
+3. **The raw cache meta carries `access_denied: true`**, so the per-user state is on disk and
+   survives a restart without consulting any log. A resumed run does not re-request the user
+   and does not degrade the outcome to a fresh pull.
+4. **`logs/blocked_endpoints.ndjson` is the index.** The existing 403-evidence convention is
+   **extended, not replaced**: it now receives a record for *both* branches, each carrying
+   `outcome` (`hard_stop` / `skip_confirmed_private` / `skip_unconfirmed`),
+   `decision_reason`, `is_user_resource`, method, endpoint, status, full response headers,
+   `X-Private-User`, `X-Ratelimit`, `Retry-After`, a body excerpt, and both breaker counters.
+   `TraktClient.access_denied_endpoints()` reads it back. **Step 4 should reconcile its user
+   list against it**: every discovered user must land in exactly one of parsed history,
+   unavailable, access-denied, or error, and the four counts must sum to the users attempted.
+   A legacy record with no `outcome` field is read as a hard stop, since every record written
+   before this amendment was one.
+
+A **mid-sweep** 403 is the sharpest case: pages 1–2 succeed, page 3 is refused. The pages
+already read are a partial history, so `get_paginated` raises `UserAccessDenied` and
+`fetch_all` **discards them** and reports `access_denied` with `discarded_items`. Partial
+history is never returned as data. The pages stay in `raw/`, so a later retry is a resume
+rather than a re-pull.
+
+### 7.5 One consequence for the Human Lead to note
+
+`CLAUDE.md` still reads "On a 403: hard stop and report. That is a block, not a throttle."
+The client no longer behaves that way for user resources. **I have not edited `CLAUDE.md`** —
+it is the Human Lead's file. If the amendment is to be the standing rule, that line needs
+updating to match, and the Human Lead is the only one who can do it. Until then this section
+is the operative description and the divergence is deliberate and recorded.
+
+`SCHEMA_VERSION` was **not** bumped for the new `access_denied` meta field. The field is
+absent on every pre-amendment cache entry and all of those are 200s, so the `False` default
+is correct for them; bumping would force a re-fetch of the probe responses that
+`artifacts/step0-history-endpoint-probe.md` and the `step1-outcome-definition.md` addendum
+cite as evidence, changing that evidence underneath approved documents. A check pins the
+default so the omission cannot rot silently.
 
 ---
 
@@ -328,7 +476,7 @@ Cross-process locking is additionally verified against two real OS processes.
 | Path | Contents | Git |
 | :--- | :--- | :--- |
 | `src/trakt_client.py` | The client | tracked, no secrets |
-| `src/test_client_behaviour.py` | Offline behaviour checks, 27/27 pass | tracked |
+| `src/test_client_behaviour.py` | Offline behaviour checks, 44/44 pass | tracked |
 | `src/step0_test_pull.py` | The test pull | tracked |
 | `src/step0_watched_endpoint_probe.py` | Endpoint confirmation, username is an argument | tracked |
 | `artifacts/step0-access-and-setup.md` | This document | tracked, public |

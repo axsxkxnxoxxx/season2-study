@@ -32,7 +32,9 @@ from trakt_client import (  # noqa: E402
     ShortRead,
     TraktClient,
     TransientFailure,
+    UserAccessDenied,
     DOCUMENTED_CEILING_PER_MIN,
+    MAX_CONSECUTIVE_USER_403,
     SCHEMA_VERSION,
     THROTTLE_PER_MIN,
 )
@@ -72,16 +74,24 @@ class FakeSession:
         return item
 
 
-def make_client(tmp: Path, script, no_throttle=True):
+def make_client(tmp: Path, script, no_throttle=True, **kwargs):
     client = TraktClient(
         raw_dir=tmp / "raw",
         logs_dir=tmp / "logs",
         run_label="offline-test",
         session=FakeSession(script),
+        **kwargs,
     )
     if no_throttle:
         client.throttle.wait_for_slot = lambda: 0.0  # type: ignore[assignment]
     return client
+
+
+def blocked_records(tmp: Path):
+    path = tmp / "logs" / "blocked_endpoints.ndjson"
+    if not path.exists():
+        return []
+    return [json.loads(l) for l in path.read_text().splitlines() if l.strip()]
 
 
 def no_sleep():
@@ -190,46 +200,93 @@ def t_throttle_unreadable_state_is_conservative():
 
 
 # ==========================================================================
-# 403
+# 403 — application-level block branch
+#
+# The rule these check is the Human Lead's amendment of 2026-08-10: a 403 on a
+# user resource skips that user, a 403 that indicates an application-level
+# block still hard stops. Every ambiguous case resolves to the hard stop.
 # ==========================================================================
 
 
-def t_403_hard_stops_and_records_headers():
+def t_403_on_non_user_resource_hard_stops_and_records_headers():
     with tempfile.TemporaryDirectory() as d:
         tmp = Path(d)
         headers = {
             "X-Ratelimit": '{"name":"UNAUTHED_API_GET_LIMIT"}',
-            "X-Private-User": "true",
             "access-control-expose-headers": "X-Private-User",
         }
         c = make_client(tmp, [FakeResponse(403, headers, '{"error":"blocked"}')])
         try:
-            c.get("users/redacted/watched/shows")
+            c.get("shows/breaking-bad/seasons")
         except AccessBlocked:
             assert len(c.session.calls) == 1, "403 was retried"
-            blocked_file = tmp / "logs" / "blocked_endpoints.ndjson"
-            assert blocked_file.exists(), "403 raised before anything was written to logs/"
-            rec = json.loads(blocked_file.read_text().splitlines()[0])
-            assert rec["endpoint"] == "users/redacted/watched/shows"
-            assert rec["x_private_user"] == "true", "X-Private-User not captured"
+            recs = blocked_records(tmp)
+            assert recs, "403 raised before anything was written to logs/"
+            rec = recs[0]
+            assert rec["endpoint"] == "shows/breaking-bad/seasons"
+            assert rec["outcome"] == "hard_stop"
+            assert rec["is_user_resource"] is False
             assert rec["response_headers"]["access-control-expose-headers"]
+            assert rec["decision_reason"]
             assert "hard_stop_403" in (tmp / "logs" / "api_requests.ndjson").read_text()
             return
-        raise AssertionError("403 did not hard stop")
+        raise AssertionError("an application-level 403 did not hard stop")
 
 
-def t_403_endpoint_not_rerequested_on_resume():
+def t_403_on_reserved_user_segment_hard_stops():
+    """`users/me/...` and `users/settings` are not third-party profiles, so a
+    403 on them cannot be a private user. Also a bare `users`."""
+    for endpoint in ("users/me/history", "users/settings", "users"):
+        with tempfile.TemporaryDirectory() as d:
+            tmp = Path(d)
+            c = make_client(tmp, [FakeResponse(403, {}, "")])
+            try:
+                c.get(endpoint)
+            except AccessBlocked:
+                assert blocked_records(tmp)[0]["outcome"] == "hard_stop"
+                continue
+            raise AssertionError(f"403 on {endpoint} was treated as a skippable user")
+
+
+def t_403_with_private_user_false_hard_stops():
+    """Trakt says this profile is NOT private, yet refuses it. That is not
+    explained by privacy, so it is treated as a block."""
     with tempfile.TemporaryDirectory() as d:
         tmp = Path(d)
-        first = make_client(tmp, [FakeResponse(403, {"X-Private-User": "true"})])
+        c = make_client(tmp, [FakeResponse(403, {"X-Private-User": "false"}, "")])
         try:
-            first.get("users/redacted/watched/shows")
+            c.get("users/redacted/history")
+        except AccessBlocked as exc:
+            assert "not explained by privacy" in str(exc)
+            assert blocked_records(tmp)[0]["x_private_user"] == "false"
+            return
+        raise AssertionError("a contradicted 403 was skipped instead of stopping the run")
+
+
+def t_403_with_unrecognised_private_user_value_hard_stops():
+    """Do not guess at a header value we have never seen."""
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        c = make_client(tmp, [FakeResponse(403, {"X-Private-User": "maybe"}, "")])
+        try:
+            c.get("users/redacted/history")
+        except AccessBlocked as exc:
+            assert "unrecognised" in str(exc)
+            return
+        raise AssertionError("an unrecognised X-Private-User value was guessed at")
+
+
+def t_403_hard_stop_endpoint_not_rerequested_on_resume():
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        first = make_client(tmp, [FakeResponse(403, {}, "")])
+        try:
+            first.get("shows/breaking-bad/seasons")
         except AccessBlocked:
             pass
-        # resumed run: same logs dir, new client, no scripted responses
         resumed = make_client(tmp, [FakeResponse(200, {}, "[]")])
         try:
-            resumed.get("users/redacted/watched/shows")
+            resumed.get("shows/breaking-bad/seasons")
         except AccessBlocked:
             assert len(resumed.session.calls) == 0, "resumed run re-requested a blocked endpoint"
             assert "blocked_endpoint_not_requested" in (
@@ -237,6 +294,306 @@ def t_403_endpoint_not_rerequested_on_resume():
             ).read_text()
             return
         raise AssertionError("resumed run did not stop on a recorded block")
+
+
+def t_legacy_403_record_without_outcome_is_read_as_hard_stop():
+    """Every record written before the amendment was a hard stop. A legacy line
+    has no `outcome` field, and the strict reading is the safe one."""
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        (tmp / "logs").mkdir(parents=True)
+        (tmp / "logs" / "blocked_endpoints.ndjson").write_text(
+            json.dumps({"event": "hard_stop_403", "endpoint": "users/redacted/history"}) + "\n"
+        )
+        c = make_client(tmp, [FakeResponse(200, {}, "[]")])
+        try:
+            c.get("users/redacted/history")
+        except AccessBlocked:
+            assert len(c.session.calls) == 0
+            return
+        raise AssertionError("a legacy 403 record was downgraded to a skip")
+
+
+# ==========================================================================
+# 403 — user-resource skip branch
+# ==========================================================================
+
+
+def t_403_on_user_resource_with_private_header_skips_and_continues():
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        headers = {
+            "X-Private-User": "true",
+            "access-control-expose-headers": "X-Private-User",
+            "X-Request-Id": "abc123",
+        }
+        c = make_client(tmp, [
+            FakeResponse(403, headers, '{"error":"forbidden"}'),
+            FakeResponse(200, {}, "[1,2]"),
+        ])
+        denied = c.get("users/redacted-a/history")
+        assert denied.access_denied is True
+        assert denied.ok is False
+        assert denied.unavailable is False, "a skip must not masquerade as the 401 path"
+        assert denied.data is None
+        assert c.counters["user_403_skipped"] == 1
+
+        # the run continues
+        nxt = c.get("users/redacted-b/history")
+        assert nxt.ok and nxt.data == [1, 2]
+
+        rec = blocked_records(tmp)[0]
+        assert rec["outcome"] == "skip_confirmed_private"
+        assert rec["is_user_resource"] is True
+        assert rec["x_private_user"] == "true"
+        assert rec["response_headers"]["X-Request-Id"] == "abc123", "full headers not logged"
+        assert rec["method"] == "GET" and rec["status"] == 403
+        assert rec["decision_reason"]
+        assert "user_403_skipped" in (tmp / "logs" / "api_requests.ndjson").read_text()
+
+
+def t_403_on_user_resource_without_header_skips_and_continues():
+    """The case the evidence says is the likely one: X-Private-User was absent
+    on every captured history response, so a live 403 there probably carries no
+    header either. Absence must not force a hard stop on one private user."""
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        c = make_client(tmp, [
+            FakeResponse(403, {"access-control-expose-headers": "X-Private-User"}, ""),
+            FakeResponse(200, {}, "[1]"),
+        ])
+        denied = c.get("users/redacted-a/history")
+        assert denied.access_denied and not denied.ok and not denied.unavailable
+        assert c.get("users/redacted-b/history").ok, "run did not continue past a skip"
+        rec = blocked_records(tmp)[0]
+        assert rec["outcome"] == "skip_unconfirmed"
+        assert rec["x_private_user"] is None
+        assert rec["consecutive_user_403"] == 1
+
+
+def t_skipped_user_is_not_rerequested_and_stays_access_denied():
+    """Resume via the cache: the skip is on disk, so no network call, and the
+    outcome that comes back is still access_denied, not an empty success."""
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        c = make_client(tmp, [FakeResponse(403, {"X-Private-User": "true"}, "")])
+        c.get("users/redacted/history")
+        assert len(c.session.calls) == 1
+
+        resumed = make_client(tmp, [FakeResponse(200, {}, "[1,2,3]")])
+        again = resumed.get("users/redacted/history")
+        assert len(resumed.session.calls) == 0, "a skipped user was re-requested"
+        assert again.access_denied and again.from_cache
+        assert again.data is None, "a skipped user came back carrying data"
+
+
+def t_skipped_user_index_survives_a_cleared_cache():
+    """Even with raw/ gone, the log is the index: no network call, and the
+    access_denied outcome is preserved rather than degrading to a fresh pull."""
+    import shutil
+
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        c = make_client(tmp, [FakeResponse(403, {"X-Private-User": "true"}, "")])
+        c.get("users/redacted/history")
+        shutil.rmtree(tmp / "raw")
+
+        resumed = make_client(tmp, [FakeResponse(200, {}, "[1,2,3]")])
+        assert "users/redacted/history" in resumed.access_denied_endpoints()
+        again = resumed.get("users/redacted/history")
+        assert len(resumed.session.calls) == 0, "a skipped user was re-requested"
+        assert again.access_denied and again.data is None
+        assert resumed.counters["user_403_skipped"] == 1
+        assert "access_denied_endpoint_not_requested" in (
+            tmp / "logs" / "api_requests.ndjson"
+        ).read_text()
+
+
+def t_old_cache_meta_without_access_denied_reads_false():
+    """The field was added without a SCHEMA_VERSION bump, because a bump would
+    force a re-fetch of probe responses that approved artifacts cite. Every
+    pre-amendment entry was a 200, so the default must be False."""
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        c = make_client(tmp, [FakeResponse(200, {}, "[1]")])
+        c.get("shows/x")
+        _, meta_path = c.cache_paths("shows/x", {})
+        meta = json.loads(meta_path.read_text())
+        del meta["access_denied"]
+        meta_path.write_text(json.dumps(meta))
+
+        c2 = make_client(tmp, [])
+        r = c2.get("shows/x")
+        assert r.from_cache and r.ok and r.access_denied is False
+        assert len(c2.session.calls) == 0, "an unrelated entry was invalidated"
+
+
+# ==========================================================================
+# 403 — circuit breakers on the skip path
+# ==========================================================================
+
+
+def t_consecutive_user_403s_escalate_to_hard_stop():
+    """An application-level block that first surfaces on a user endpoint must
+    not be absorbed as an endless series of skips."""
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        c = make_client(tmp, [FakeResponse(403, {}, "") for _ in range(20)])
+        try:
+            for i in range(20):
+                c.get(f"users/redacted-{i}/history")
+        except AccessBlocked as exc:
+            assert "circuit breaker A" in str(exc)
+            assert len(c.session.calls) == MAX_CONSECUTIVE_USER_403, (
+                f"exposure after a block was {len(c.session.calls)} requests, "
+                f"expected {MAX_CONSECUTIVE_USER_403}"
+            )
+            outcomes = [r["outcome"] for r in blocked_records(tmp)]
+            assert outcomes[-1] == "hard_stop"
+            assert outcomes.count("skip_unconfirmed") == MAX_CONSECUTIVE_USER_403 - 1
+            return
+        raise AssertionError("consecutive user 403s never escalated to a hard stop")
+
+
+def t_intervening_success_resets_the_streak():
+    """Scattered private users in a normal pull must never trip breaker A."""
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        script = []
+        for _ in range(10):
+            script.append(FakeResponse(403, {}, ""))
+            script.append(FakeResponse(200, {}, "[1]"))
+        c = make_client(tmp, script)
+        for i in range(10):
+            assert c.get(f"users/redacted-{i}/history").access_denied
+            assert c.get(f"users/ok-{i}/history").ok
+        assert c.counters["user_403_skipped"] == 10
+        assert c._consecutive_user_403 == 0
+
+
+def t_401_does_not_reset_the_streak():
+    """A 401 is not proof the application is unblocked, so it must not clear
+    the breaker. Only a 2xx does."""
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        script = [FakeResponse(403, {}, "") for _ in range(3)]
+        script.append(FakeResponse(401, {}, ""))
+        script += [FakeResponse(403, {}, "") for _ in range(5)]
+        c = make_client(tmp, script)
+        try:
+            for i in range(3):
+                c.get(f"users/a{i}/history")
+            assert c.get("users/private/history").unavailable
+            for i in range(5):
+                c.get(f"users/b{i}/history")
+        except AccessBlocked as exc:
+            assert "circuit breaker A" in str(exc)
+            assert c._consecutive_user_403 == MAX_CONSECUTIVE_USER_403
+            return
+        raise AssertionError("a 401 reset the user-403 circuit breaker")
+
+
+def t_confirmed_private_403s_do_not_trip_breaker_a():
+    """Trakt explicitly saying `X-Private-User: true` is positive evidence that
+    it is answering us normally, so those skips do not feed the streak."""
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        c = make_client(tmp, [FakeResponse(403, {"X-Private-User": "true"}, "")
+                              for _ in range(12)])
+        for i in range(12):
+            assert c.get(f"users/redacted-{i}/history").access_denied
+        assert c.counters["user_403_skipped"] == 12
+        assert c._consecutive_user_403 == 0
+
+
+def t_cumulative_user_403_budget_stops_the_run():
+    """Breaker B is a tripwire, not a discriminator: 403-for-private at volume
+    contradicts the documented model and a human must see it."""
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        script = []
+        for _ in range(30):
+            script.append(FakeResponse(403, {"X-Private-User": "true"}, ""))
+            script.append(FakeResponse(200, {}, "[1]"))
+        c = make_client(tmp, script, max_user_403_per_run=6)
+        try:
+            for i in range(30):
+                c.get(f"users/redacted-{i}/history")
+                c.get(f"users/ok-{i}/history")
+        except AccessBlocked as exc:
+            assert "circuit breaker B" in str(exc)
+            assert c._consecutive_user_403 == 0, "breaker A was doing the work"
+            assert c._total_user_403 == 6
+            return
+        raise AssertionError("the cumulative user-403 budget never fired")
+
+
+# ==========================================================================
+# 403 — completeness of the sweep
+# ==========================================================================
+
+
+def t_mid_sweep_403_never_returns_partial_history():
+    """The Step 1 §0 correctness requirement: a truncated sweep is
+    indistinguishable from a genuine never-started, so partial is not data."""
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        script = [
+            FakeResponse(200, page_headers(1, 3, 7, limit=3), "[1,2,3]"),
+            FakeResponse(200, page_headers(2, 3, 7, limit=3), "[4,5,6]"),
+            FakeResponse(403, {}, ""),
+        ]
+        c = make_client(tmp, script)
+        try:
+            list(c.get_paginated("users/redacted/history", limit=3))
+        except UserAccessDenied as exc:
+            assert "page 3" in str(exc)
+        else:
+            raise AssertionError("a mid-sweep 403 was treated as the end of the data")
+
+        # fetch_all absorbs it so the run continues, but discards the partial.
+        c2 = make_client(tmp, [FakeResponse(403, {}, "")])
+        items, info = c2.fetch_all("users/redacted/history", limit=3)
+        assert items == [], "a partial history was returned as data"
+        assert info["outcome"] == "access_denied"
+        assert info["complete"] is False
+        assert info["discarded_items"] == 6
+        assert info["pages"] == 2
+        assert "partial_sweep_discarded_on_user_403" in (
+            tmp / "logs" / "api_requests.ndjson"
+        ).read_text()
+
+
+def t_skipped_user_is_distinguishable_from_a_user_with_no_history():
+    """Three empty results, three different outcomes. This is the property the
+    headline number depends on."""
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        c = make_client(tmp, [
+            FakeResponse(200, page_headers(1, 1, 0), "[]"),   # genuinely empty
+            FakeResponse(401, {}, ""),                        # private per docs
+            FakeResponse(403, {}, ""),                        # refused
+        ])
+        empty = c.fetch_all("users/a/history")[1]
+        private = c.fetch_all("users/b/history")[1]
+        denied = c.fetch_all("users/c/history")[1]
+
+        assert empty["outcome"] == "complete" and empty["complete"] is True
+        assert private["outcome"] == "unavailable" and private["complete"] is False
+        assert denied["outcome"] == "access_denied" and denied["complete"] is False
+        assert len({empty["outcome"], private["outcome"], denied["outcome"]}) == 3
+        assert empty["items"] == private["items"] == denied["items"] == 0, (
+            "the three cases must be told apart by outcome, not by item count"
+        )
+
+
+def t_first_page_403_is_move_on_not_error():
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        c = make_client(tmp, [FakeResponse(403, {}, "")])
+        pages = list(c.get_paginated("users/redacted/history"))
+        assert len(pages) == 1 and pages[0].access_denied
+        assert not pages[0].unavailable
 
 
 # ==========================================================================
@@ -562,7 +919,15 @@ def t_fetch_all_reconciles():
         c = make_client(tmp, script)
         items, info = c.fetch_all("users/redacted/history", limit=3)
         assert items == [1, 2, 3, 4, 5]
-        assert info == {"pages": 2, "items": 5, "unavailable": False}
+        assert info == {
+            "pages": 2,
+            "items": 5,
+            "unavailable": False,
+            "access_denied": False,
+            "complete": True,
+            "outcome": "complete",
+            "discarded_items": 0,
+        }
 
 
 def main() -> int:
@@ -573,8 +938,25 @@ def main() -> int:
         ("throttle survives restart, no post-crash burst", t_throttle_survives_restart),
         ("sibling processes share one budget", t_throttle_shared_between_siblings),
         ("unreadable throttle state is treated conservatively", t_throttle_unreadable_state_is_conservative),
-        ("403 hard stops and records full headers incl. X-Private-User", t_403_hard_stops_and_records_headers),
-        ("resumed run does not re-request a blocked endpoint", t_403_endpoint_not_rerequested_on_resume),
+        ("403 on a non-user resource hard stops and records full headers", t_403_on_non_user_resource_hard_stops_and_records_headers),
+        ("403 on a reserved/bare users path hard stops", t_403_on_reserved_user_segment_hard_stops),
+        ("403 with X-Private-User false hard stops", t_403_with_private_user_false_hard_stops),
+        ("403 with an unrecognised X-Private-User value hard stops", t_403_with_unrecognised_private_user_value_hard_stops),
+        ("resumed run does not re-request a blocked endpoint", t_403_hard_stop_endpoint_not_rerequested_on_resume),
+        ("a legacy 403 log record is read as a hard stop", t_legacy_403_record_without_outcome_is_read_as_hard_stop),
+        ("user 403 with X-Private-User true skips and the run continues", t_403_on_user_resource_with_private_header_skips_and_continues),
+        ("user 403 with the header absent skips and the run continues", t_403_on_user_resource_without_header_skips_and_continues),
+        ("a skipped user is not re-requested and stays access_denied", t_skipped_user_is_not_rerequested_and_stays_access_denied),
+        ("the skip index survives a cleared cache", t_skipped_user_index_survives_a_cleared_cache),
+        ("pre-amendment cache meta reads access_denied False", t_old_cache_meta_without_access_denied_reads_false),
+        ("consecutive user 403s escalate to a hard stop", t_consecutive_user_403s_escalate_to_hard_stop),
+        ("an intervening 2xx resets the user-403 streak", t_intervening_success_resets_the_streak),
+        ("a 401 does not reset the user-403 streak", t_401_does_not_reset_the_streak),
+        ("confirmed-private 403s do not trip breaker A", t_confirmed_private_403s_do_not_trip_breaker_a),
+        ("the cumulative user-403 budget stops the run", t_cumulative_user_403_budget_stops_the_run),
+        ("a mid-sweep 403 never returns partial history", t_mid_sweep_403_never_returns_partial_history),
+        ("a skipped user is distinguishable from one with no history", t_skipped_user_is_distinguishable_from_a_user_with_no_history),
+        ("a first-page 403 is move-on, not error", t_first_page_403_is_move_on_not_error),
         ("429 pauses for Retry-After then resumes", t_429_pauses_then_resumes),
         ("consecutive 429s stop the run", t_429_consecutive_stops),
         ("alternating 429/200 trips the cumulative budget", t_429_alternating_trips_cumulative_budget),

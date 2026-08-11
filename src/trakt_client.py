@@ -26,15 +26,85 @@ Transient   Timeouts, connection errors and 5xx: retry with exponential
             is never retried in a loop. The run stops on several consecutive
             pauses, and also on a cumulative per-run budget, so an alternating
             429/200 pattern cannot hide sustained saturation.
-403         Hard stop and report (AccessBlocked). That is a block, not a
-            throttle. Full response headers, including X-Private-User, are
-            written to logs/ BEFORE raising, and the endpoint is recorded so a
-            resumed run stops without re-requesting the blocked resource.
+403         Two cases, distinguished. A 403 on an *application-level* resource
+            is a block: hard stop and report (AccessBlocked). A 403 on a *user*
+            resource skips that user, is counted, and the run continues. Both
+            write full response headers to logs/blocked_endpoints.ndjson BEFORE
+            acting, and both record the endpoint so a resumed run does not
+            re-request it. The skip path is bounded by two circuit breakers so
+            an application-level block that first appears on a user endpoint
+            cannot be absorbed as a long series of skips. See the "403" section
+            below and artifacts/step0-access-and-setup.md §6 item 2.
+
+            A skipped user is NOT the same object as a user with no history:
+            it surfaces as TraktResponse.access_denied, as a distinct cache
+            meta flag, and as outcome="access_denied" from fetch_all(). A
+            caller can never mistake it for an empty 200.
 Pagination  A missing or non-integer pagination header is an error, never a
             silent stop. Accumulated items are reconciled against the reported
             item count and a short read is a failure, not data.
 Logging     Status, the X-Ratelimit object, Retry-After, endpoint and method are
             logged for every request, not only rate-limit events.
+
+403: what is documented, what is inferred, what is assumed
+---------------------------------------------------------
+Amendment authorized by the Human Lead, 2026-08-10. CLAUDE.md as written says
+"On a 403: hard stop and report." That is retained for application-level 403s
+and narrowed for user resources, because under the unamended rule a single
+private user would halt a multi-day unattended Step 4 pull.
+
+No live 403 has ever been observed by this project. logs/api_requests.ndjson
+holds 200s and transport errors only; no 401, 403 or 429. So the classifier
+below rests on the following, labelled honestly:
+
+DOCUMENTED  Trakt's published status-code table gives 403 one meaning:
+            forbidden, i.e. invalid API key or unapproved application. It
+            attaches no user-level meaning to 403. The documented status for a
+            profile that is not visible to an app-only request is 401.
+DOCUMENTED  X-Private-User exists and Trakt advertises it in
+            access-control-expose-headers on every response captured so far
+            (12 of 12).
+OBSERVED    X-Private-User is emitted with a real value on GET /users/:id only
+            (value "false" for a public profile). It was NOT emitted on any
+            /users/:id/history or /users/:id/watched/shows response, which is
+            the endpoint family Step 4 uses. Therefore ABSENCE OF THE HEADER
+            CARRIES NO INFORMATION and cannot be read as "not a private user".
+            This is why the header is used only as positive confirmation and is
+            never the primary discriminator.
+INFERRED    An application-level block is a property of the Client ID, not of
+            one resource, so it would 403 every endpoint rather than one user.
+            This is the warrant for both the path test and the streak breaker.
+ASSUMED     That Trakt does not return 403, with no X-Private-User header, for
+            a private profile on a history endpoint. If that assumption is
+            wrong the skip path is the correct behaviour anyway; the cumulative
+            tripwire exists to surface it to a human either way.
+
+Decision procedure for a 403, in order:
+  1. Endpoint is not a user resource        -> HARD STOP. An app-level block.
+  2. X-Private-User present and false-like  -> HARD STOP. Trakt says this user
+                                               is not private, so the refusal
+                                               is not explained by privacy.
+  3. X-Private-User present, unrecognised   -> HARD STOP. Do not guess.
+  4. X-Private-User present and true-like   -> SKIP, confirmed private.
+  5. User resource, header absent           -> SKIP, unconfirmed, and count it
+                                               against both circuit breakers.
+
+Circuit breakers on the skip path:
+  A. MAX_CONSECUTIVE_USER_403 unconfirmed user-403s with no intervening 2xx
+     -> HARD STOP. An app-level block 403s everything, so an intervening 2xx is
+     evidence we are not blocked; only a 2xx resets the streak. Exposure after
+     a real block that first appears on a user endpoint is therefore bounded at
+     MAX_CONSECUTIVE_USER_403 requests, and no request is ever repeated.
+  B. MAX_USER_403_PER_RUN in one run -> HARD STOP. Not a discriminator: a
+     tripwire. Reaching it would mean 403-for-private-profile is real and
+     common, which contradicts the documented model, and a human should see the
+     evidence before thousands more calls are spent on that assumption.
+
+Cost asymmetry, stated deliberately. Wrong in the permissive direction risks
+the study's API access. Wrong in the strict direction costs wall-clock on an
+unattended run but costs no API budget and no data, because every response is
+already on disk and the run resumes where it stopped. That asymmetry is why
+every ambiguous case above resolves to HARD STOP.
 """
 
 from __future__ import annotations
@@ -99,6 +169,36 @@ LOGS_DIR = PROJECT_ROOT / "logs"
 # They are recorded, not retried, and not re-requested.
 UNAVAILABLE_STATUSES = (401, 404, 405, 423)
 
+# --- 403 classification ----------------------------------------------------
+# See the "403" section of the module docstring for the evidence behind these.
+
+# A 403 is eligible to be treated as a user-level skip only if its endpoint is
+# a user resource: "users/<id>" or "users/<id>/...". Everything else, including
+# a bare "users" and the reserved segments below, hard stops.
+USER_PATH_ROOT = "users"
+
+# Segments that appear where a username would but are not a username. These are
+# the authenticated-account endpoints; this study does not use them, and a 403
+# on one of them is not a private third-party profile. Strict side on purpose.
+RESERVED_USER_SEGMENTS = frozenset({
+    "me", "settings", "requests", "hidden", "likes", "saved_filters", "follows",
+})
+
+# X-Private-User is a string header. Only these exact tokens are recognised; an
+# unrecognised value hard stops rather than being guessed at.
+PRIVATE_USER_TRUE = frozenset({"true", "1", "yes"})
+PRIVATE_USER_FALSE = frozenset({"false", "0", "no"})
+
+# Circuit breakers on the user-403 skip path.
+MAX_CONSECUTIVE_USER_403 = 5    # unconfirmed user-403s with no intervening 2xx
+MAX_USER_403_PER_RUN = 200      # cumulative tripwire, never resets
+
+# Decisions returned by _classify_403.
+DECISION_HARD_STOP = "hard_stop"
+DECISION_SKIP_CONFIRMED = "skip_confirmed_private"
+DECISION_SKIP_UNCONFIRMED = "skip_unconfirmed"
+SKIP_DECISIONS = (DECISION_SKIP_CONFIRMED, DECISION_SKIP_UNCONFIRMED)
+
 
 # ---------------------------------------------------------------------------
 # Exceptions. All of these stop the run.
@@ -110,7 +210,22 @@ class TraktClientError(Exception):
 
 
 class AccessBlocked(TraktClientError):
-    """403. A block, not a throttle. Hard stop and report."""
+    """An application-level 403. A block, not a throttle. Hard stop and report.
+
+    Raised only for a 403 that the classifier could not attribute to a single
+    user resource, and for a user-403 that tripped a circuit breaker.
+    """
+
+
+class UserAccessDenied(TraktClientError):
+    """A user-resource 403 that arrived part-way through a multi-page pull.
+
+    Not a hard stop: the run continues and the user is skipped. It is an
+    exception rather than a return value because the pages already accumulated
+    are a partial history, and a partial history is indistinguishable from a
+    genuine "never started" once it reaches the analysis table. The caller must
+    handle this explicitly; it can never be silently returned as data.
+    """
 
 
 class RateLimitPersistent(TraktClientError):
@@ -153,6 +268,12 @@ class TraktResponse:
     from_cache: bool
     raw_path: Path | None
     pagination: dict[str, Any] = field(default_factory=dict)
+    # A user-resource 403 that was skipped rather than hard stopped. Kept as a
+    # field of its own, never folded into `unavailable`, so that downstream code
+    # can tell "we were refused access to this user" apart from both "this user
+    # does not exist / is private per Trakt's documented 401" and "this user has
+    # no history". All three are empty; only one of them is data.
+    access_denied: bool = False
 
 
 # ---------------------------------------------------------------------------
@@ -319,6 +440,8 @@ class TraktClient:
         throttle: SharedThrottle | None = None,
         session: requests.Session | None = None,
         env_path: Path | None = None,
+        max_consecutive_user_403: int = MAX_CONSECUTIVE_USER_403,
+        max_user_403_per_run: int = MAX_USER_403_PER_RUN,
     ):
         self._client_id = _load_client_id(env_path)
         self.raw_dir = Path(raw_dir)
@@ -335,9 +458,14 @@ class TraktClient:
         )
         self.session = session or requests.Session()
 
-        self._blocked = self._load_blocked()
+        self.max_consecutive_user_403 = max_consecutive_user_403
+        self.max_user_403_per_run = max_user_403_per_run
+
+        self._blocked, self._access_denied = self._load_403_index()
         self._consecutive_429_pauses = 0
         self._total_429_pauses = 0
+        self._consecutive_user_403 = 0
+        self._total_user_403 = 0
         self.counters = {
             "requests_sent": 0,
             "served_from_cache": 0,
@@ -346,6 +474,7 @@ class TraktClient:
             "transient_retries": 0,
             "rate_limit_pauses": 0,
             "stale_cache_entries": 0,
+            "user_403_skipped": 0,
             "errors": 0,
         }
 
@@ -417,51 +546,139 @@ class TraktClient:
         except (TypeError, ValueError):
             return None
 
-    # -- blocked endpoints -------------------------------------------------
+    # -- 403 classification and evidence -----------------------------------
 
-    def _load_blocked(self) -> set[str]:
-        """Endpoints that previously returned 403. A resumed run must not
-        request them again: repeatedly requesting into something that just
-        blocked us is the stop-restart livelock this set exists to prevent.
-        The hard stop is preserved; only the network call is skipped.
-        Clear logs/blocked_endpoints.ndjson to retry a resolved block.
+    @staticmethod
+    def _is_user_resource(endpoint: str) -> bool:
+        """True iff the endpoint addresses one named third-party user.
+
+        "users/<id>" and "users/<id>/anything" qualify. A bare "users", any
+        non-users path, and the reserved authenticated-account segments do not:
+        a 403 on those cannot be one private profile, so it hard stops.
+        """
+        parts = [p for p in endpoint.strip("/").split("/") if p]
+        if len(parts) < 2 or parts[0].lower() != USER_PATH_ROOT:
+            return False
+        return parts[1].lower() not in RESERVED_USER_SEGMENTS
+
+    @staticmethod
+    def _private_user_header(headers: dict[str, Any]) -> Any:
+        for key, value in headers.items():
+            if key.lower() == "x-private-user":
+                return value
+        return None
+
+    def _classify_403(
+        self, endpoint: str, headers: dict[str, Any]
+    ) -> tuple[str, str, Any]:
+        """Decide whether a 403 is an application-level block or one user.
+
+        Returns (decision, reason, raw X-Private-User value). Every ambiguous
+        case resolves to a hard stop; see the module docstring for what is
+        documented, what is inferred and what is assumed. The circuit breakers
+        are applied by the caller, not here, because they depend on run state.
+        """
+        raw = self._private_user_header(headers)
+        token = raw.strip().lower() if isinstance(raw, str) else None
+
+        if not self._is_user_resource(endpoint):
+            return (
+                DECISION_HARD_STOP,
+                "403 on a non-user resource. An application-level block is a "
+                "property of the Client ID, not of one profile, so this cannot "
+                "be a private third-party user.",
+                raw,
+            )
+        if token in PRIVATE_USER_FALSE:
+            return (
+                DECISION_HARD_STOP,
+                "403 on a user resource with X-Private-User explicitly false. "
+                "Trakt states this profile is not private, so the refusal is "
+                "not explained by privacy and is treated as a block.",
+                raw,
+            )
+        if token in PRIVATE_USER_TRUE:
+            return (
+                DECISION_SKIP_CONFIRMED,
+                "403 on a user resource with X-Private-User true. Trakt's own "
+                "statement that the profile is private. Skip this user.",
+                raw,
+            )
+        if token is not None:
+            return (
+                DECISION_HARD_STOP,
+                f"403 on a user resource with an unrecognised X-Private-User "
+                f"value ({raw!r}). Not guessed at.",
+                raw,
+            )
+        return (
+            DECISION_SKIP_UNCONFIRMED,
+            "403 on a user resource with X-Private-User absent. Absence is the "
+            "observed norm on the history endpoints (0 of 11 non-profile "
+            "responses carried it), so it is not evidence either way. Skipped "
+            "under the consecutive and cumulative circuit breakers.",
+            raw,
+        )
+
+    def _load_403_index(self) -> tuple[set[str], set[str]]:
+        """Replay logs/blocked_endpoints.ndjson into two sets.
+
+        Endpoints that previously hard stopped must not be requested again: a
+        resumed run that re-requests into something that just blocked us is the
+        stop-restart livelock this set exists to prevent. Endpoints that were
+        skipped as a user-level 403 must not be re-requested either, but they
+        do not stop the run.
+
+        A legacy record with no `outcome` field is read as a hard stop. Every
+        record written before this amendment was a hard stop, and the strict
+        reading is the safe one. Clear the file to retry a resolved block.
         """
         blocked: set[str] = set()
+        denied: set[str] = set()
         if not self.blocked_log_path.exists():
-            return blocked
+            return blocked, denied
         for line in self.blocked_log_path.read_text(encoding="utf-8").splitlines():
             if not line.strip():
                 continue
             try:
-                blocked.add(json.loads(line)["endpoint"])
+                record = json.loads(line)
+                endpoint = record["endpoint"]
             except (ValueError, KeyError):
                 continue
-        return blocked
+            if record.get("outcome") in SKIP_DECISIONS:
+                denied.add(endpoint)
+            else:
+                blocked.add(endpoint)
+        return blocked, denied
 
-    def _record_block(
+    def _record_403(
         self,
         endpoint: str,
         params: dict[str, Any],
         resp: requests.Response | None,
         xrl: Any,
         retry_after: float | None,
-    ) -> str | None:
-        """Persist the whole 403 before raising, so the evidence survives the
-        hard stop and a resumed run knows not to re-hit this endpoint.
+        decision: str,
+        reason: str,
+        private_user: Any,
+    ) -> None:
+        """Persist the whole 403 before acting on it.
 
-        X-Private-User is the block-versus-private-profile disambiguation.
-        Trakt advertises it in access-control-expose-headers.
+        Written for BOTH branches, and written before the raise or the skip, so
+        the evidence survives a hard stop and a skipped user is never silently
+        dropped. logs/blocked_endpoints.ndjson is the existing convention for
+        403 evidence and is extended rather than replaced: every record now
+        carries `outcome` and `decision_reason`, and the file is now the
+        authoritative index of both blocks and skips.
         """
         headers = dict(resp.headers) if resp is not None else {}
-        private_user = None
-        for key, value in headers.items():
-            if key.lower() == "x-private-user":
-                private_user = value
-                break
         record = {
             "ts": datetime.now(timezone.utc).isoformat(),
             "run": self.run_label,
-            "event": "hard_stop_403",
+            "event": "hard_stop_403" if decision == DECISION_HARD_STOP else "user_403_skipped",
+            "outcome": decision,
+            "decision_reason": reason,
+            "is_user_resource": self._is_user_resource(endpoint),
             "method": "GET",
             "endpoint": endpoint,
             "params": params,
@@ -471,13 +688,23 @@ class TraktClient:
             "retry_after": retry_after,
             "response_headers": headers,
             "body_excerpt": (resp.text[:500] if resp is not None else None),
+            "consecutive_user_403": self._consecutive_user_403,
+            "total_user_403_this_run": self._total_user_403,
         }
         line = json.dumps(self._redact(record), sort_keys=True, default=str)
         self._refuse_if_secret(line, str(self.blocked_log_path))
         with self.blocked_log_path.open("a", encoding="utf-8") as fh:
             fh.write(line + "\n")
-        self._blocked.add(endpoint)
-        return private_user
+        if decision == DECISION_HARD_STOP:
+            self._blocked.add(endpoint)
+        else:
+            self._access_denied.add(endpoint)
+
+    def access_denied_endpoints(self) -> set[str]:
+        """Endpoints skipped by a user-level 403, this run and every previous
+        one recorded in the log. Step 4 reconciles its user list against this
+        so a skipped user is accounted for, not missing."""
+        return set(self._access_denied)
 
     # -- cache -------------------------------------------------------------
 
@@ -521,7 +748,7 @@ class TraktClient:
                 data = json.loads(body_path.read_text(encoding="utf-8"))
             except (ValueError, OSError):
                 return None
-        elif meta.get("status") not in UNAVAILABLE_STATUSES:
+        elif meta.get("status") not in UNAVAILABLE_STATUSES and not meta.get("access_denied"):
             return None
         return TraktResponse(
             endpoint=meta.get("endpoint", endpoint),
@@ -532,6 +759,12 @@ class TraktClient:
             from_cache=True,
             raw_path=body_path if body_path.exists() else None,
             pagination=meta.get("pagination", {}) or {},
+            # Absent on every entry written before the 403 amendment, and every
+            # one of those was a 200, so the default is correct for them. This
+            # is why the field was added without a SCHEMA_VERSION bump: a bump
+            # would force a re-fetch of probe responses that approved artifacts
+            # cite as evidence, and would change that evidence under them.
+            access_denied=bool(meta.get("access_denied")),
         )
 
     def _write_cache(
@@ -546,6 +779,7 @@ class TraktClient:
         text: str | None,
         headers: dict[str, Any],
         pagination: dict[str, Any],
+        access_denied: bool = False,
     ) -> Any:
         """Persist raw to raw/ BEFORE parsing. Returns parsed JSON or None.
 
@@ -568,6 +802,7 @@ class TraktClient:
             "status": status,
             "ok": ok,
             "unavailable": unavailable,
+            "access_denied": access_denied,
             "fetched_at": datetime.now(timezone.utc).isoformat(),
             "pagination": pagination,
             "x_ratelimit": headers.get("_x_ratelimit"),
@@ -627,10 +862,31 @@ class TraktClient:
                 "retry_after": None,
             })
             raise AccessBlocked(
-                f"GET {endpoint} previously returned 403 and is recorded in "
-                f"{self.blocked_log_path}. Not re-requested. The run stops here. "
-                f"Inspect the recorded headers, including X-Private-User, then clear "
-                f"that file to retry."
+                f"GET {endpoint} previously returned an application-level 403 and is "
+                f"recorded in {self.blocked_log_path}. Not re-requested. The run stops "
+                f"here. Inspect the recorded headers, including X-Private-User, then "
+                f"clear that file to retry."
+            )
+
+        if endpoint in self._access_denied:
+            # Previously skipped as a user-level 403, and the cached body has
+            # since been cleared. Do not re-request: requesting into a refusal
+            # again is the behaviour the block rules exist to avoid. Return the
+            # same access_denied outcome so the user stays counted and stays
+            # distinguishable from a user with no history.
+            self.counters["user_403_skipped"] += 1
+            self._log({
+                "event": "access_denied_endpoint_not_requested",
+                "method": "GET",
+                "endpoint": endpoint,
+                "status": 403,
+                "x_ratelimit": None,
+                "retry_after": None,
+                "recorded_in": str(self.blocked_log_path),
+            })
+            return TraktResponse(
+                endpoint=endpoint, status=403, ok=False, unavailable=False,
+                data=None, from_cache=True, raw_path=None, access_denied=True,
             )
 
         url = f"{API_BASE}/{endpoint.lstrip('/')}"
@@ -672,25 +928,88 @@ class TraktClient:
                 "error_detail": err_detail,
             })
 
-            # --- 403: a block, not a throttle. Record, then hard stop. -----
+            # --- 403: block, or one user? Classify, record, then act. ------
             if status == 403:
-                self.counters["errors"] += 1
-                private_user = self._record_block(endpoint, params, resp, xrl, retry_after)
+                resp_headers = dict(resp.headers) if resp is not None else {}
+                decision, reason, private_user = self._classify_403(endpoint, resp_headers)
+
+                if decision in SKIP_DECISIONS:
+                    self._total_user_403 += 1
+                    if decision == DECISION_SKIP_UNCONFIRMED:
+                        # Only unconfirmed 403s feed the streak. A confirmed
+                        # private profile is positive evidence that Trakt is
+                        # answering us normally, so it is not evidence of a
+                        # block; it does not reset the streak either.
+                        self._consecutive_user_403 += 1
+                    if self._consecutive_user_403 >= self.max_consecutive_user_403:
+                        decision = DECISION_HARD_STOP
+                        reason = (
+                            f"circuit breaker A: {self._consecutive_user_403} consecutive "
+                            f"user-resource 403s with no intervening 2xx. An "
+                            f"application-level block refuses every endpoint, so a run of "
+                            f"user-403s uninterrupted by a success is treated as a block "
+                            f"that first surfaced on a user endpoint, not as a run of "
+                            f"private profiles."
+                        )
+                    elif self._total_user_403 >= self.max_user_403_per_run:
+                        decision = DECISION_HARD_STOP
+                        reason = (
+                            f"circuit breaker B: {self._total_user_403} user-resource 403s "
+                            f"in this run. Trakt documents 401, not 403, for a profile "
+                            f"that is not visible to an app-only request, so 403 at this "
+                            f"volume contradicts the documented model and a human must see "
+                            f"the evidence before more calls are spent on it."
+                        )
+
+                self._record_403(
+                    endpoint, params, resp, xrl, retry_after, decision, reason, private_user
+                )
                 self._log({
-                    "event": "hard_stop_403",
+                    "event": "hard_stop_403" if decision == DECISION_HARD_STOP else "user_403_skipped",
+                    "outcome": decision,
+                    "decision_reason": reason,
+                    "is_user_resource": self._is_user_resource(endpoint),
                     "method": "GET",
                     "endpoint": endpoint,
+                    "params": params,
                     "status": 403,
                     "x_ratelimit": xrl,
                     "retry_after": retry_after,
                     "x_private_user": private_user,
+                    "response_headers": resp_headers,
+                    "consecutive_user_403": self._consecutive_user_403,
+                    "total_user_403_this_run": self._total_user_403,
                     "recorded_to": str(self.blocked_log_path),
                 })
-                raise AccessBlocked(
-                    f"403 on GET {endpoint}. This is a block, not a throttle. Run "
-                    f"stopped. X-Private-User={private_user!r} X-Ratelimit={xrl!r} "
-                    f"Retry-After={retry_after!r}. Full headers written to "
-                    f"{self.blocked_log_path}; this endpoint will not be re-requested."
+
+                if decision == DECISION_HARD_STOP:
+                    self.counters["errors"] += 1
+                    raise AccessBlocked(
+                        f"403 on GET {endpoint}. Treated as an application-level block, "
+                        f"not a single user. Run stopped. Reason: {reason} "
+                        f"X-Private-User={private_user!r} X-Ratelimit={xrl!r} "
+                        f"Retry-After={retry_after!r}. Full headers written to "
+                        f"{self.blocked_log_path}; this endpoint will not be re-requested."
+                    )
+
+                # Skip path: this user only, run continues. Persist the outcome
+                # so a resumed run neither re-requests it nor loses the fact
+                # that the user was refused rather than empty.
+                self.counters["user_403_skipped"] += 1
+                self._write_cache(
+                    body_path, meta_path, endpoint, params, 403, False, False,
+                    None,
+                    {
+                        "_x_ratelimit": xrl,
+                        "_retry_after": retry_after,
+                        "_all": resp_headers,
+                    },
+                    {},
+                    access_denied=True,
+                )
+                return TraktResponse(
+                    endpoint=endpoint, status=403, ok=False, unavailable=False,
+                    data=None, from_cache=False, raw_path=None, access_denied=True,
                 )
 
             # --- 429: pause exactly Retry-After, then resume. -------------
@@ -777,6 +1096,13 @@ class TraktClient:
             self._consecutive_429_pauses = 0
             ok = 200 <= status < 300
             unavailable = status in UNAVAILABLE_STATUSES
+
+            # Only a 2xx resets the user-403 streak. A 401 or 404 is not proof
+            # that the application is unblocked, so it does not clear it: the
+            # conservative reading costs at most a stopped run, which resumes
+            # from disk at no API cost.
+            if ok:
+                self._consecutive_user_403 = 0
 
             pagination = {}
             if resp is not None:
@@ -875,11 +1201,21 @@ class TraktClient:
             resp = self.get(endpoint, page_params)
 
             if not resp.ok:
-                if page == 1 and resp.unavailable:
+                if page == 1 and (resp.unavailable or resp.access_denied):
                     # Private or absent profile on the first page is the
-                    # documented log-and-move-on case, not a truncation.
+                    # documented log-and-move-on case, not a truncation. A
+                    # user-level 403 on the first page is the same shape: no
+                    # data was accumulated, so nothing can be truncated.
                     yield resp
                     return
+                if resp.access_denied:
+                    raise UserAccessDenied(
+                        f"GET {endpoint}: page {page} returned a user-level 403 after "
+                        f"{page - 1} successful page(s). The user is skipped and the run "
+                        f"continues, but the {page - 1} page(s) already read are a partial "
+                        f"history and are not returned as data: a truncated sweep is "
+                        f"indistinguishable from a genuine never-started."
+                    )
                 raise PaginationError(
                     f"GET {endpoint}: page {page} returned HTTP {resp.status} after "
                     f"{page - 1} successful page(s). A partial multi-page read is a "
@@ -941,19 +1277,69 @@ class TraktClient:
     ) -> tuple[list[Any], dict[str, Any]]:
         """Fully consume a paginated endpoint with reconciliation enforced.
 
-        Returns (items, info). info['unavailable'] is True for a private or
-        absent profile, which is the one non-error empty result.
+        Returns (items, info). info['outcome'] is the field callers should
+        branch on, and it has exactly three values:
+
+          "complete"       a full, reconciled sweep. Only this one is data.
+          "unavailable"    private or absent profile (Trakt's documented 401).
+          "access_denied"  a user-level 403; the user was skipped.
+
+        info['complete'] is True only for "complete". An empty items list with
+        outcome "complete" means the user genuinely has no history; an empty
+        items list under either other outcome means we never saw their history
+        and must not be read as evidence about what they watched.
+
+        A mid-sweep 403 is caught here rather than propagated, so an unattended
+        run continues, but the pages already read are discarded rather than
+        returned: partial history is not data. The pages stay in raw/, so a
+        later retry is a resume, not a re-pull.
         """
         items: list[Any] = []
         pages = 0
         unavailable = False
-        for resp in self.get_paginated(endpoint, params, limit=limit):
-            if resp.unavailable:
-                unavailable = True
-                break
-            pages += 1
-            items.extend(resp.data or [])
-        return items, {"pages": pages, "items": len(items), "unavailable": unavailable}
+        access_denied = False
+        discarded_items = 0
+        try:
+            for resp in self.get_paginated(endpoint, params, limit=limit):
+                if resp.unavailable:
+                    unavailable = True
+                    break
+                if resp.access_denied:
+                    access_denied = True
+                    break
+                pages += 1
+                items.extend(resp.data or [])
+        except UserAccessDenied as exc:
+            access_denied = True
+            discarded_items = len(items)
+            items = []
+            self._log({
+                "event": "partial_sweep_discarded_on_user_403",
+                "method": "GET",
+                "endpoint": endpoint,
+                "status": 403,
+                "x_ratelimit": None,
+                "retry_after": None,
+                "pages_read_before_denial": pages,
+                "items_discarded": discarded_items,
+                "detail": str(exc)[:300],
+            })
+
+        complete = not (unavailable or access_denied)
+        outcome = (
+            "access_denied" if access_denied
+            else "unavailable" if unavailable
+            else "complete"
+        )
+        return items, {
+            "pages": pages,
+            "items": len(items),
+            "unavailable": unavailable,
+            "access_denied": access_denied,
+            "complete": complete,
+            "outcome": outcome,
+            "discarded_items": discarded_items,
+        }
 
     def summary(self) -> dict[str, int]:
         return dict(self.counters)
