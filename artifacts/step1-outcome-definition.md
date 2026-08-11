@@ -25,6 +25,16 @@ then this revision following Red Team's **third HOLD**
 > at the head of this document, with the objection, the ruling, and the reason.
 > Approval was given by the Human Lead in writing in this session. No agent recorded it on its
 > own authority, and no agent adopted its own proposal.
+>
+> **Post-approval addendum, 2026-08-10 — evidence only, no rule changed.** One finding was added
+> to **Section 5** after approval, on Human Lead instruction: the probe profile's S1/S2 overlap
+> **inverts** under the Section 2.2 dedup, from 41.31 days of overlap to 360.73 days of
+> separation, making it a rewatch artifact and making definition (a) produce a **negative clock
+> start** on a real profile. It is recorded as **strengthening the existing warrant** for
+> first-pass completion and for the **D2** diagnostic. **No rule, threshold, definition or
+> required output changed, and the gate remains approved.** Source:
+> `artifacts/step0-history-endpoint-probe.md`. Any future edit that changes a *rule* reopens the
+> gate; this one does not.
 
 This document defines what is being measured, on one user-show pair, from episode-level
 watch history alone. It fixes the population, the clock, the three outcome states, the
@@ -529,6 +539,32 @@ This is the second Step 0 finding and it must be resolved here because clock sta
 on it. On the probe profile, **the first S2 watch preceded the last S1 watch by six weeks**:
 histories are not monotonic, because people rewatch.
 
+> **The overlap inverts under dedup, and that is the sharper finding.** Added 2026-08-10 from
+> `artifacts/step0-history-endpoint-probe.md`, which made this run reproducible. **This
+> strengthens the existing warrant for first-pass completion and for the D2 negative-lag
+> diagnostic. It is not a new decision, it changes no rule, and the gate remains approved.**
+>
+> The six-week overlap is computed over **all S1 play records** — which is definition (a)
+> below, the definition this section argues against. Recomputed on the same profile after the
+> Section 2.2 earliest-per-distinct-episode collapse, the comparison reverses: **the first S2
+> watch *follows* the last S1 watch by 360.73 days.** Precisely: 41.31 days of overlap under
+> (a), 360.73 days of separation under (b).
+>
+> So the overlap is **entirely a rewatch artifact**. It is not evidence that this viewer watched
+> S2 out of order; it is evidence that the last-observed timestamp is measuring a rewatch. That
+> distinction is the whole argument of this section, and it is now observed rather than
+> asserted.
+>
+> **What it costs to get wrong, on a real profile rather than a hypothetical.** Under definition
+> (a) this profile's S1 completion date lands *after* its first S2 watch, so the clock start it
+> produces is later than the event the clock is meant to time — **a negative clock start on a
+> real, non-hypothetical profile.** The Step 8 clock-start invariant (D6) catches it, and D2
+> counts pairs in this condition as a required output. This profile is one such pair, and it is
+> the first observed instance of the failure D2 exists to measure.
+>
+> **Scope, stated so this is not overread.** One profile, one show. It establishes that the
+> failure mode is real and reachable, not how common it is — that is what D2's count is for.
+
 Two candidate definitions of "the user's own S1 completion date":
 
 | | Definition | Behaviour |
@@ -557,6 +593,12 @@ first-pass date, not the date of a rewatch years later. And it is **biased by en
 under (a), the heavier a rewatcher a user is, the later their clock starts and the more time
 they are granted to start S2. That grants the longest windows to exactly the most engaged
 users, which is a bias running straight into the headline.
+
+**A third way, now observed rather than argued.** On the probe profile definition (a) is not
+merely biased, it is **arithmetically impossible**: it places the S1 completion date 360.73 days
+after the first S2 watch, so the clock starts after the event it exists to time. See the box at
+the head of this section. An argument about bias can be traded off against something; a clock
+start that runs backwards cannot.
 
 ### The consequence for clock start, stated plainly
 
@@ -950,14 +992,23 @@ separately for exactly this reason.
 one-sided bound in Section 7 already does, and it is correct — they demonstrably did start.
 Any other treatment would misclassify the live-viewing audience of every weekly show.
 
-**Their treatment in the Step 6 lag distribution is a separate question and stays open**
-(open question 2). Step 6 restricts to users who did start S2 and plots the lag from clock
-start to first S2 episode; for this group that lag is **negative**, and after D1 the negative
-mass is not a tail — for a weekly show it is most of the started population. That is why the
-question is no longer "what do we do with the negatives" but "which shows can W honestly be
-estimated on at all," and my recommendation in Section 10.1 is the **C1-only** estimation
-sample (D12) rather than any repair applied to the negatives. W must be defensible out loud, and a
-number whose value depends on the frame's cadence mix is not.
+**Their treatment in the Step 6 lag distribution was a separate question. It is now DECIDED as
+D14** (Human Lead, 2026-08-10; formerly open question 2). Step 6 restricts to users who did
+start S2 and plots the lag from clock start to first S2 episode; for this group that lag is
+**negative**, and after D1 the negative mass is not a tail — for a weekly show it is most of the
+started population. That is why the question was never "what do we do with the negatives" but
+"which shows can W honestly be estimated on at all," and the answer adopted is the **C1-only**
+estimation sample (D12) rather than any repair applied to the negatives. W must be defensible
+out loud, and a number whose value depends on the frame's cadence mix is not.
+
+**D14 removes the negatives from the *estimation* sample only, and that is not the whole
+problem.** `task-sheet.md` Step 6 also requires the **all-shows** lag distribution to be plotted
+alongside the C1-only one, so the transfer assumption is visible. That all-shows plot still
+carries the negative mass. Step 6 is a **dual-implementation gate**, and Step 13's required
+W range is defined off that same plot, so two instances treating the negatives differently would
+diverge and the divergence would propagate into the tested range. **`task-sheet.md` Step 6
+therefore carries an explicit rule for the all-shows plot; it is Step 6's spec, not Step 1's, and
+this document takes no position on it beyond recording that the gap was real.**
 
 ---
 
@@ -1070,7 +1121,7 @@ None of these are mine to re-propose. All are incorporated into the body of this
 | # | Settled item | Where it lands |
 | :--- | :--- | :--- |
 | **D1** | **Clock start is anchored on the S2 finale air date, not the S2 premiere.** `T0 = max(S2_finale_air_date, S1_completion_date)`. Rationale and cost in Section 6. Binge shows are unaffected. | Sections 6, 7, 8 |
-| **D2** | **Negative-lag diagnostic, required output.** Count of pairs whose first S2 watch precedes `T0`, split by which term of the `max()` binds. Counts only, to `artifacts/`. | Section 5 |
+| **D2** | **Negative-lag diagnostic, required output.** Count of pairs whose first S2 watch precedes `T0`, split by which term of the `max()` binds. Counts only, to `artifacts/`. **Warrant strengthened 2026-08-10, no change to the rule:** the probe profile's S1/S2 overlap inverts under the Section 2.2 dedup — 41.31 days of overlap on all play records, 360.73 days of separation on distinct episodes — so it is a rewatch artifact, and definition (a) would give that profile a **negative clock start**. First observed instance of the failure D2 counts. | Section 5 |
 | **D3** | **Resumption-rate diagnostic, required output.** See below. Counts only, to `artifacts/`. | Sections 7, 10.0 |
 | **D4** | **S3-without-S2 is a reported bound at Step 9**, alongside the liveness bound. Not a Step 13 arm, not conditional on a trigger. | Section 10.0, handoff in Section 9 |
 | **D5** | **The Step 9 91-day arm is re-anchored on `max(S2_premiere_date, first-pass S1 completion)`**, not the finale, because Netflix's window runs from release. | Section 10.0, handoff in Section 9 |

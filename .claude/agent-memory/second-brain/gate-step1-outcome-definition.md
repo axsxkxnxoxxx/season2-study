@@ -1,6 +1,6 @@
 ---
 name: gate-step1-outcome-definition
-description: Full arc of the Step 1 outcome-definition gate — three Red Team HOLDs, four revisions, what approval on 2026-08-10 did and did not cover
+description: Full arc of the Step 1 outcome-definition gate — three Red Team HOLDs, four revisions, what approval on 2026-08-10 did and did not cover, and the post-approval addendum that did not reopen it
 metadata:
   type: project
 ---
@@ -14,11 +14,11 @@ on 2026-08-10. `task-sheet.md` "Gate summary" carries the checked box. The docum
 **Why this arc is worth carrying:** the gate took four drafts and three Red Team HOLDs, and
 the interesting part is not the final text — that is in the repo — but *what the process
 proved about how this study fails*. It fails by naming objects it never makes operational,
-and by asserting properties that do not follow from the definitions given. Six such claims
-were caught and withdrawn. See [[withdrawn-claims-register]].
+and by asserting properties that do not follow from the definitions given. Eleven such claims
+were caught and withdrawn or corrected. See [[withdrawn-claims-register]].
 
 **How to apply:** treat Step 1 as settled and downstream of it as unblocked. Do **not** treat
-the three open questions in §10.1, or `pull_date`, as settled by it. The four remaining gates
+the remaining open questions in §10.1 — **1 and 3** — or `pull_date`, as settled by it. The four remaining gates
 (5, 6, 7, 8) are unaffected and still bind.
 
 ## The arc, in order
@@ -40,7 +40,20 @@ the three open questions in §10.1, or `pull_date`, as settled by it. The four r
 | `pull_date` (D11) | Adopted in **form only**. Value **deliberately deferred** to Step 4's schedule |
 | D8, D9, D13 | Adopted **with the document** |
 | Red Team B2 | **Overruled**, recorded as accepted risk |
-| §10.1 open questions 1, 2, 3 | **Not closed.** Approval covers the drafted boundary each sits beside, not a ruling on the alternatives |
+| §10.1 open questions 1, 2, 3 | **Not closed by approval.** It covers the drafted boundary each sits beside, not a ruling on the alternatives. **Q2 was decided separately later the same day** as D14 / decision `0003` |
+
+## After approval, same day — what moved without reopening the gate
+
+| Event | Effect on the gate |
+| :--- | :--- |
+| **D15 / `0002`** — Step 4 source is `GET /users/:id/history` | None. Closes a Step 0 blocker; Step 1 §0 already presupposed it |
+| **D14 / `0003`** — W estimated on bucket C1 only | Closes §10.1 Q2. Two obligations written into `task-sheet.md` Steps 6 and 13 |
+| **Provenance closed** — `artifacts/step0-history-endpoint-probe.md` | None. Both cited figures reproduce at zero live calls |
+| **Section 5 post-approval addendum** | **None. Evidence only.** The S1/S2 overlap inverts under the §2.2 dedup — 41.31 days of overlap under definition (a), **360.73 days of separation** under (b) — so it is a rewatch artifact and (a) yields a **negative clock start on a real profile**. Strengthens the existing warrant for first-pass completion and for D2. No rule, threshold, definition or required output changed; **the gate remains APPROVED** |
+
+**The standing rule this established, and it generalises:** an edit that changes a **rule**
+reopens the gate; an edit that adds **evidence** for a rule already adopted does not. It is stated
+in the approval record itself. Apply it at the remaining four gates.
 
 **The `pull_date` deferral is a decision, not an omission.** The reason is structural: the
 constraint `pull_date ≤ earliest per-user fetch date` cannot be honoured by a value chosen

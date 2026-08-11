@@ -7,10 +7,16 @@ metadata:
 
 # Withdrawn-claims register
 
-**Fact:** ten claims were marked withdrawn-or-accepted in the table at the head of
-`artifacts/step1-outcome-definition.md`. Six of them were withdrawn **as false** across the
-revisions (the rest are corrections of framing or the one accepted risk). The table is a
-standing record of what this study has already gotten wrong and it must not be lost.
+**Fact, recounted against the file 2026-08-10:** the table at the head of
+`artifacts/step1-outcome-definition.md` has **twelve rows — eleven withdrawn or corrected claims
+plus one accepted risk.** Six of the eleven are false-by-construction; the other five are framing
+corrections, and at least three of those are described in the body as withdrawn *because they were
+false*. The table is a standing record of what this study has already gotten wrong and it must not
+be pruned.
+
+**Note for the Human Lead:** `decisions/0001` "Standing record" says "six claims withdrawn as
+false, plus this accepted risk", which reads as a seven-row table. That is a description error in
+the log of record, not a decision error. See [[open-items-and-contradictions]] N5.
 
 **Why:** every one of these was asserted confidently in a draft and survived at least one
 review. The failure mode is consistent and worth naming: **asserting a property that does not
@@ -48,10 +54,23 @@ document. Check every named object for a numeric threshold. Do not accept "on th
 The liveness bound is inflated, and it stays that way by Human Lead ruling. Full objection,
 ruling and reason in [[gate-step1-outcome-definition]].
 
-## One live provenance gap, not a withdrawn claim
+## The provenance gap — CLOSED 2026-08-10, and one claim it strengthened
 
-Two figures in the approved public document — the **28 percent play-event inflation** in §2.1
-and the **six-week S1/S2 overlap** in §5 — are numerically correct but cite "the Step 0 probe"
-and appear in **neither** public Step 0 artifact. See [[open-items-and-contradictions]].
+Both figures now reproduce from one cached response at zero live calls:
+`artifacts/step0-history-endpoint-probe.md`, `src/step0_history_probe.py`,
+`logs/step0_history_probe.json`. "28 percent" is 28.125 %; "six weeks" is 5.90 weeks / 41.31 days.
+Rounding differences only, both in the rounder direction.
+
+**One claim moved from asserted to observed rather than being withdrawn.** The six-week overlap
+was computed under definition **(a)** — the definition §5 argues against. Under the §2.2 dedup it
+**inverts to 360.73 days of separation**, so the overlap is entirely a rewatch artifact and (a)
+produces a **negative clock start on a real profile**. Recorded as a post-approval addendum:
+**evidence only, no rule changed, gate still approved.** n = 1 — it establishes the failure mode
+is reachable, not how common it is.
+
+**One premise remains asserted and unobserved:** that Trakt metadata merges and splits make
+`episode.ids.trakt` disagree with `(season, number)`. Zero disagreements on the probe profile —
+not contradicted, untested. The same mechanism underwrites D9's split signature.
+[[open-items-and-contradictions]] N4.
 
 Related: [[glossary-terms-and-thresholds]], [[gate-step1-outcome-definition]].

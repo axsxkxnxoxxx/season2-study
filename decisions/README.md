@@ -38,7 +38,21 @@ that surfaced it.
 3. **The gap hypothesis is untested** — whether Trakt omits a gapped episode number or lists a
    placeholder. Section 3 is not a claim that gaps are handled. Not yet assigned to a step.
    ([0001](0001-step1-outcome-definition-gate.md))
-4. **Provenance gap:** the 28 percent inflation figure and the six-week overlap cited in Step 1
-   §2.1 and §5 trace only to an undocumented run in a machine-local log, with no run record and
-   no script in `src/`. Numerically correct; not reproducible from the repo. No rule depends on
-   them. ([0001](0001-step1-outcome-definition-gate.md))
+4. ~~**Provenance gap:** the 28 percent inflation figure and the six-week overlap cited in Step 1
+   §2.1 and §5 are not reproducible from the repo.~~ **CLOSED 2026-08-10** — reproducible at zero
+   live calls via `src/step0_history_probe.py`, with a run record and a public write-up. Both
+   figures reproduce (28.125 percent, 5.90 weeks). It also produced a post-approval addendum to
+   Step 1 §5. ([0001](0001-step1-outcome-definition-gate.md))
+5. **An unobserved premise inside an approved rule:** Step 1 §2.1 asserts `episode.ids.trakt` may
+   disagree with `(season, number)`; the probe shows 96 IDs, 96 pairs, zero disagreements. Not
+   contradicted, unobserved — but it is the mechanism **D9's split signature** depends on.
+   ([0001](0001-step1-outcome-definition-gate.md))
+6. **D2 cannot size the failure the §5 addendum names.** D2 runs on the operative first-pass
+   clock, where the artifact does not appear. **Expect zero, and zero is not evidence of
+   rarity.** Sizing it requires D2 inside the Step 13 last-observed arm.
+   ([0001](0001-step1-outcome-definition-gate.md))
+7. **The `L2 = 1` / cadence-classification ordering is written nowhere.** Classification is
+   available from Step 2; the `L2 = 1` exclusion happens at Step 8. At `L2 = 1` the weekly span
+   is 0, which falls in bucket C2 — harmless only because those shows are excluded, and the
+   order that makes it harmless is not recorded.
+8. **The gap hypothesis still has no owning step** — see item 3. Visibility is not ownership.

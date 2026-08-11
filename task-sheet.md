@@ -204,6 +204,13 @@ W is a number of days. It is derived here and used everywhere downstream.
 - [ ] Set W at the percentile where the curve flattens
 - [ ] **Apply the resulting W to ALL shows, not only to C1.** Estimation sample and application population are deliberately different.
 - [ ] **Plot the C1-only and all-shows lag distributions together**, so the reader can see how far the transfer assumption is being stretched
+
+**Rule for the negative mass in the all-shows plot.** Human Lead decision, 2026-08-10. D14 removes negatives from the *estimation* sample only; the all-shows plot still carries them, and for a weekly show the negative mass is most of the started population rather than a tail. This step is dual implementation and Step 13's tested range is derived from this plot, so the handling is fixed here rather than left to each instance.
+
+- [ ] **Plot the all-shows distribution SIGNED and UNTRUNCATED.** Negative lags appear at their actual values. **Do not truncate at zero, do not clip, do not take absolute values, and do not drop negative rows.** Truncation was withdrawn as indefensible: it maps every live weekly viewer to a point mass at zero whose height is set by the frame's cadence mix, making W an artifact of the frame rather than a fact about viewers
+- [ ] **Never read W, or any percentile used to set W, off the all-shows curve.** W is read off the C1 curve only. The all-shows curve is descriptive: it exists to show the size of the transfer assumption, not to estimate anything
+- [ ] **Report the negative mass as a count and a share of the started population, split by all five D12 buckets.** That split is the evidence that the negative mass is a cadence artifact and not viewer behaviour
+- [ ] **Derive Step 13's W range deterministically from the two curves:** take the same percentile used to set W on C1, read it on the C1 curve and on the all-shows curve, and report both values. That interval is the minimum range Step 13 must cover. Stating the percentile once and reading it on both curves is what keeps two instances from producing different ranges
 - [ ] State the percentile and the reason in one sentence
 - [ ] State whether the C1 sample was large enough to support the percentile. That is a Step 6 question with the data in hand.
 
@@ -239,14 +246,34 @@ Two separate things are defined here and they must not be confused. The **thresh
 **Owner:** Analytics Engineer, dual implementation
 **Mode:** GATE. Requires written approval from the Human Lead.
 
-- [ ] Apply frame, contamination exclusions, S1 completion rule, W, and liveness rule in a fixed documented order
+Step 1 §9 hands this step a set of obligations that used to live only in that document. They are written out here, because this is the file the two isolated instances read.
+
+**Filters and order**
+
+- [ ] Apply frame, contamination exclusions, S1 completion rule, W, liveness rule, **right-censoring**, and the **`L2 = 1` exclusion** in a fixed documented order
+- [ ] **Contamination exclusion runs BEFORE right-censoring**, so an import-stamped S1 completion date is counted as contamination rather than laundered into a censoring drop
+- [ ] **Exclude `L2 = 1` shows from the headline population** and count them in the waterfall. At `L2 = 1`, Continued is equivalent to Started, Started-and-left is empty by construction, and `p` is never defined
+- [ ] **Enforce the set-membership drop rule**: an episode whose `number` is not in the season's listed set `E` is dropped. This is an implementation check, not a data check — under set membership `|D| ≤ L` holds by construction
+- [ ] **Every boundary test is the half-open UTC-instant form** of Step 1 §2.4. `date(watched_at) <= T1` must not appear anywhere in the implementation
 - [ ] Build one row per user-show pair
-- [ ] Include per row: outcome state, abandonment point, discovery channel, and all Step 2 show fields
+- [ ] Include per row: outcome state, abandonment point, discovery channel, and all Step 2 show fields. **Retain `action` as a column** — Step 13 has an arm that needs it
 - [ ] Record sample size after each filter
+
+**Required counts, all to `artifacts/`, counts and aggregates only**
+
+- [ ] **Both drop counts**: per show, and **per outcome** — the second being pairs whose entire S2 evidence was dropped, reported as a share of Never started
+- [ ] **Negative-lag report (D2)**, split by which term of the `max()` binds
+- [ ] **Resumption-rate report (D3)**, measured over the fixed horizon `H`
+- [ ] **Never-started post-window diagnostic (D8)**, measured over `H`, not to the pull date
+- [ ] **Split-artifact counts (D9)**, both halves: the fabricated never-started row and the silently deleted S1-failing counterpart
+- [ ] **Right-censoring removal as TWO lines** — the `max(W, 91)` term and the incremental `+ H` term — each with its upward direction on the headline named
+- [ ] **`pull_date`, the earliest and latest per-user fetch dates, and the count of records discarded for `watched_at >= pull_date`**
+- [ ] **Per-bucket show and pair counts for all five D12 cadence buckets**, plus the count of shows within 1 day of a bucket boundary
+- [ ] **Metadata-disagreement counts**, including the subset where `aired_episodes < |E|` for S2. Listed exceeding aired tightens the 90 percent threshold and pushes real completers out — name that direction
 - [ ] Assert invariant: outcome states are mutually exclusive and sum to the sample
 - [ ] Assert invariant: filter counts decrease monotonically
 - [ ] Assert invariant: distinct episodes never exceed season length
-- [ ] Assert invariant, for every row: clock start is on or after the S2 finale date, clock start is on or after the first-pass S1 completion date, and clock start equals one of those two dates. The old invariant, no clock start precedes an S2 premiere, is vacuous under a finale-anchored clock and catches nothing.
+- [ ] Assert invariant, for every row: clock start is on or after the S2 finale date, clock start is on or after the first-pass S1 completion date, and clock start equals one of those two dates. The old invariant, no clock start precedes an S2 premiere, is vacuous under a finale-anchored clock and catches nothing. **This check must compute the first-pass S1 completion date INDEPENDENTLY, not read back the pipeline's value** — otherwise its equality clause proves nothing.
 - [ ] Report all invariant results
 - [ ] Write the table to `processed/`. The filter waterfall and invariant report, which are counts only, go to `artifacts/`.
 
@@ -326,10 +353,13 @@ Two separate things are defined here and they must not be confused. The **thresh
 **Owner:** Data Scientist
 **Mode:** Chained
 
-- [ ] Vary W above and below the derived value. **Cover at least the range implied by the gap between the C1-only and all-shows lag distributions from Step 6** — that gap is the size of the transfer assumption Q2 accepted, so it is the range that tests it.
+- [ ] Vary W above and below the derived value. **Cover at least the range Step 6 reports** — the same percentile read on the C1 curve and on the all-shows curve. That gap is the size of the transfer assumption D14 accepted, so it is the range that tests it.
 - [ ] **Report the retained-row count for every W arm.** The right-censoring rule contains W, so each arm re-censors the population and the arms do NOT share a denominator.
+- [ ] **Hold `H` constant across every arm that varies W.** Otherwise D3 and D8 are not comparable between arms
 - [ ] Vary the liveness threshold
-- [ ] Vary the S1 completion rule at 100 percent and at 90 percent
+- [ ] Vary the S1 completion rule at 100 percent and at 90 percent. **That is the threshold, not the date definition — the two arms below are separate and neither is covered by it**
+- [ ] **Arm: S1 completion DATE as last-observed rather than first-pass**, per Step 1 §5. Required by Step 1 §9, and it does more than test a choice: **recompute D2 inside this arm.** D2 on the operative first-pass clock cannot see the rewatch artifact the Step 1 §5 addendum documents — a rewatch cannot move a first-pass clock start, so the primary D2 count will read zero for that failure mode, and **a zero there is not evidence it is rare.** This arm is the only place its frequency is measurable
+- [ ] **Arm: `action`-type, excluding `checkin`-only and manual-`watch`-only evidence**, per Step 1 §2.3. Requires the `action` column retained at Step 8. Exists because Step 1 made a permissive choice and the permissiveness should be shown not to be load-bearing
 - [ ] Report which conclusions survive all variations
 - [ ] Report which do not
 - [ ] Record the tested ranges. Step 16 needs them.

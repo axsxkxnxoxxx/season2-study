@@ -111,16 +111,64 @@ the bound appears.
   placeholder** is unknown. Section 3 must not be read as "gaps handled." Settling it needs a
   show with a known gap, at the point where `E` is first pulled at scale — which is not yet
   assigned to a step.
-- **A provenance gap on a public artifact.** Two figures cited in Sections 2.1 and 5 — a 28
-  percent play-record inflation figure and a six-week S1/S2 overlap — are numerically correct
-  but trace only to an undocumented run tagged `step0-history-probe` in a machine-local log.
-  There is no run record and no probe script in `src/`, unlike the other two Step 0 probes, so
-  the run is not reproducible from the repo. Neither rule depends on the figure. Open.
+- ~~**A provenance gap on a public artifact.** Two figures cited in Sections 2.1 and 5 — a 28
+  percent play-record inflation figure and a six-week S1/S2 overlap — trace only to an
+  undocumented run with no run record and no probe script in `src/`, so the run is not
+  reproducible from the repo.~~ **CLOSED 2026-08-10.** The run is now reproducible at **zero
+  live calls**: `src/step0_history_probe.py`, `logs/step0_history_probe.json`, write-up at
+  `artifacts/step0-history-endpoint-probe.md`. Both figures reproduce, with rounding differences
+  only — **28.125 percent** rather than "28 percent", **5.90 weeks** rather than "six weeks."
+  Neither rule depends on the figure and neither changed. See the post-approval addendum below.
+
+- **One premise inside an approved rule is unobserved.** Section 2.1 asserts that
+  `episode.ids.trakt` may disagree with `(season, number)` after Trakt metadata merges and
+  splits. The probe profile shows **96 IDs, 96 pairs, zero disagreements** — not contradicted,
+  just unobserved. Not load-bearing for §2.1 itself, but it is the **same mechanism D9's split
+  signature depends on**, so if the mechanism is rarer or differently shaped than assumed, D9's
+  lower bound is weaker than its wording implies. Open.
+
+---
+
+## Post-approval addendum — 2026-08-10
+
+**Status: evidence only. No rule, threshold, definition or required output changed. The gate
+remains APPROVED.** An edit that changed a *rule* would reopen the gate; this one does not.
+
+**What was added.** Step 1 Section 5 now records a finding from
+`artifacts/step0-history-endpoint-probe.md`. The six-week S1/S2 overlap cited there was computed
+over **all S1 play records** — definition **(a)**, the definition Section 5 argues against.
+Recomputed after the Section 2.2 earliest-per-distinct-episode collapse, the comparison
+**inverts**: **41.31 days of overlap under (a), 360.73 days of separation under (b).**
+
+**What it establishes.** The overlap is **entirely a rewatch artifact**. Under (a) this
+profile's S1 completion date lands *after* its first S2 watch — a **negative clock start on a
+real, non-hypothetical profile**. It is the first observed instance of the failure the D2
+negative-lag diagnostic exists to count.
+
+**What it changes.** Nothing. It **strengthens the existing warrant** for two things already
+adopted on the merits: first-pass completion (Section 5) and D2.
+
+**Scope limit.** One profile, one show. The failure mode is real and reachable. How common it is
+remains unmeasured.
+
+**A correction to how the addendum was first described, which matters for whoever computes D2.**
+It was said that the frequency question is "what D2's count is for." **That is wrong.** D2 is
+computed on the operative clock, and under first-pass completion a rewatch cannot move clock
+start — this profile's lag under (b) is **+360.73 days**. It will **not** appear in the primary
+D2 count, and neither will any other (a)-style artifact. **Whoever computes D2 should expect
+zero of this failure mode, and a zero there is not evidence that it is rare.** Sizing it requires
+D2 recomputed inside the **Step 13 last-observed S1 arm**, which is now written into
+`task-sheet.md` Step 13.
 
 ---
 
 ## Standing record
 
-The document carries a table of **six claims withdrawn as false** across the three revisions,
-plus this accepted risk. That table is the study's record of what it has already gotten wrong
-and is not to be pruned.
+The document carries a table at its head with **twelve rows: eleven claims withdrawn or
+corrected** across the three revisions, **plus the one accepted risk** (B2). Six of the eleven
+are the false-by-construction subset — claims that were not merely imprecise but provably wrong.
+That table is the study's record of what it has already gotten wrong, and **the row count is how
+anyone checks it has not been pruned**, so it is stated here deliberately.
+
+*(An earlier version of this line said "six claims withdrawn," conflating the false-by-construction
+subset with the whole table. Corrected 2026-08-10.)*

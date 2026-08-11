@@ -58,6 +58,30 @@ share a denominator.
 Whether the C1 sample is large enough to support the chosen percentile is a Step 6 question with
 the data in hand, not a Step 1 question. `task-sheet.md` Step 6 requires that answer be stated.
 
+## Addendum, 2026-08-10 — the negative mass in the all-shows plot
+
+**D14 removes negatives from the estimation sample only.** The all-shows plot required above
+still carries them, and for a weekly show the negative mass is most of the started population
+rather than a tail. Step 6 is a **dual-implementation gate** and Step 13's tested range is
+derived from that plot, so two instances handling the negatives differently would diverge and
+the divergence would propagate into the tested range. A rule was therefore added to
+`task-sheet.md` Step 6:
+
+- **Plot the all-shows distribution signed and untruncated.** No truncation at zero, no clipping,
+  no absolute values, no dropping of negative rows — truncation is the approach this decision
+  already withdrew as indefensible.
+- **Never read W, or the percentile that sets W, off the all-shows curve.** W comes off the C1
+  curve. The all-shows curve is descriptive.
+- **Report the negative mass as a count and a share of the started population, split by all five
+  D12 buckets** — the split is what shows it is a cadence artifact rather than viewer behaviour.
+- **Derive Step 13's range deterministically:** take the percentile used to set W on C1, read it
+  on both curves, report both values. That interval is Step 13's minimum range. Stating the
+  percentile once and reading it on both curves is what stops two instances producing different
+  ranges.
+
+This is Step 6 spec, not a change to D14. `artifacts/step1-outcome-definition.md` §8 records that
+the gap was real and takes no position on the rule.
+
 ## Files reconciled
 
 `task-sheet.md` Step 6 and Step 13, and `artifacts/step1-outcome-definition.md` §9, §10.0 (D14)

@@ -1,134 +1,210 @@
 ---
 name: open-items-and-contradictions
-description: Live register of open items, blockers and cross-step contradictions in the Season 2 study, with the two conflicting sources named for each — as of the Step 1 gate close 2026-08-10
+description: Live register of open items and cross-step contradictions in the Season 2 study, each with its two conflicting sources named — re-verified against the files 2026-08-10 after decisions 0001-0003 and the Step 5 post-approval addendum
 metadata:
   type: project
 ---
 
-# Open items and contradictions — as of 2026-08-10, Step 1 gate closed
+# Open items and contradictions — re-verified 2026-08-10
 
 **Why this file exists:** Second Brain surfaces contradictions and names the two things that
-conflict. It does not decide, arbitrate, or fix. Every entry below names its two sources so
-the Human Lead can rule without re-reading the corpus.
+conflict. It does not decide, arbitrate, or fix. Every entry names its two sources so the Human
+Lead can rule without re-reading the corpus.
 
-**How to apply:** re-check each entry against the files before raising it — several will be
-closed by ordinary progress rather than by a decision. Status as of 2026-08-10.
+**How to apply:** re-check each entry against the files before raising it. Several close by
+ordinary progress rather than by a decision — three did on 2026-08-10.
+
+**The decision log of record is `decisions/`.** It now holds `README.md`, `0001`, `0002`,
+`0003`. Where a decision file and this memory differ, `decisions/` governs on who decided what
+and when; the deliverable it approves governs on substance. I never edit `decisions/` — I report.
 
 ---
 
-## C1. The Step 4 endpoint decision is open in one artifact and presupposed in another
+## Closed on 2026-08-10 — recorded so they are not re-raised
 
-- `artifacts/step0-access-and-setup.md` §0 and §6 item 1: `/users/:id/watched/shows` returns a **show-level aggregate with no per-episode timestamps** under Client-ID-only auth, and it paginates (`limit` silently clamped at 250). The Analytics Engineer stopped rather than substituting an endpoint. The endpoint decision is listed as **open and blocking Step 4**.
-- `artifacts/step1-outcome-definition.md` §0, first line: "**Source, decided by the Human Lead:** `GET /users/:id/history`, unfiltered, one sweep per user."
+| Was | Item | How it closed |
+| :--- | :--- | :--- |
+| C1 | Step 4 endpoint decided in Step 1 but listed as open-and-blocking in Step 0 | Human Lead ruled `GET /users/:id/history`, unfiltered, one sweep per user. **D15**, decision **0002**. `artifacts/step0-access-and-setup.md` §0 and §6.1 now carry a resolution box and a struck-through open item; Step 1 §0 agrees. Verified. |
+| C2 | Two figures in an approved public artifact had no public source | `src/step0_history_probe.py`, `logs/step0_history_probe.json`, and `artifacts/step0-history-endpoint-probe.md` exist. Both figures reproduce from one cached response at **zero live calls**. Verified all three paths. |
+| C5 | Step 6 estimation sample specified two ways on a dual-implementation gate | Human Lead ruled **C1 bucket only**, applied to all shows. **D14**, decision **0003**. `task-sheet.md` Step 6 now carries it by bucket name, so both isolated instances read it from the file they actually read. Verified at `task-sheet.md` Step 6 and Step 13. |
 
-Step 1's entire definition is built on a source that the Step 0 artifact still lists as an
-undecided, blocking question. Either Step 0's open-items list is stale, or Step 1 records a
-decision that exists nowhere in writing. **Nothing in `decisions/` records it** — that folder
-holds only `.gitkeep`. Either way this is a missing Step 18 entry: the Step 4 endpoint choice
-has no decision-log record, and it is one of the larger decisions taken so far.
+---
 
-## C2. Two figures in an approved public artifact have no public source
+## OPEN — carried forward
 
-- `artifacts/step1-outcome-definition.md` §2.1: "The Step 0 probe found **123 records covering 96 distinct `(season, number)` pairs** on a single profile — 28 percent inflation, with 25 episodes appearing more than once." §5: "On the probe profile, **the first S2 watch preceded the last S1 watch by six weeks**."
-- Neither figure appears in `artifacts/step0-access-and-setup.md` or in `artifacts/step0-episode-listing-endpoint-probe.md`. Those are the only two public Step 0 documents, and both cite their own run records.
+### O1. `pull_date` has no value (was C3)
 
-The only trace is `logs/api_requests.ndjson`, which carries **two GET calls tagged
-`run: step0-history-probe` at 2026-08-10T21:02Z** — one per-show-filtered history call and one
-unfiltered history call, both HTTP 200. `logs/` is gitignored and never leaves the machine.
-Unlike the other two Step 0 probes there is **no run record JSON** and **no probe script in
-`src/`**, so the run is not reproducible from the repo.
+Adopted in **form** (D11), value **deliberately deferred** to Step 4's schedule. Human Lead act;
+no agent performs it. Constraint: `pull_date ≤ earliest per-user fetch date in the whole Step 4
+sweep`. **Any step that right-censors, or computes D3, D8 or D9, is blocked on this value.**
+Carried in `decisions/README.md` open item 1. Still the one outstanding item from Step 1.
 
-Arithmetic verified: `(123 − 96) / 96 = 28.1%`. The figures are correct. The problem is
-sourcing, on a public artifact, in support of two definitional choices — distinct-episode
-counting (§2.1) and first-pass completion (§5).
+### O2. The gap hypothesis is untested and belongs to no step (was C4)
 
-Mitigating, and worth stating when this is raised: **neither rule depends on the figure.**
-"Count distinct episodes, never play events" is independently in the `task-sheet.md` Step 1
-checklist, and first-pass completion is defended in §5 on the merits, explicitly *not* on the
-result. The figures are rhetorically load-bearing, not logically load-bearing.
+Whether Trakt represents a numbering gap by **omitting** the number or by **listing a
+placeholder** is unknown. If it lists a placeholder, `number ∈ E` for a non-existent episode,
+the drop rule readmits the exact case the set rule was built to exclude, and `L := |E|` counts
+an episode that does not exist. **Section 3 must not be read as "gaps handled."** Step 1 §3.3
+assigns it to "wherever `E` is first pulled at scale", which is not a step and has no owner.
+`decisions/README.md` open item 3 now carries it — registered, still unowned.
 
-## C3. `pull_date` has no value — the one outstanding blocker from Step 1
+### O3. Step 1 obligations that reach a step only through Step 1's handoff list (was C6, widened)
 
-Adopted in **form** (D11), value **deliberately deferred** to Step 4's schedule. Human Lead
-act; no agent performs it. Constraint: `pull_date ≤ earliest per-user fetch date in the whole
-Step 4 sweep`. **Any step that right-censors, or that computes D3, D8 or D9, is blocked on
-this value** — not on the Step 1 gate, which is closed.
+The Human Lead's established pattern is: **if two isolated instances must obey a rule, write it
+into `task-sheet.md`**, the file they actually read. That pattern was applied at Step 7, Step 9
+(pair-level liveness), Step 6 and Step 13 (D14). **It has not been applied to Step 8.**
 
-## C4. The gap hypothesis is untested and belongs to no step
+- `task-sheet.md` Step 8 enumerates filters as "frame, contamination exclusions, S1 completion
+  rule, W, and liveness rule". **Right-censoring is not named as a filter at all**, though Step 1
+  §6 imposes an ordering constraint on it (contamination *before* censoring) and requires its
+  removal reported as **two lines**. The **`L2 = 1` exclusion** is likewise absent. So are D2, D3,
+  D8, D9, both drop counts, the five cadence-bucket lines, the boundary-proximity count, the
+  metadata-disagreement counts, the `pull_date` reporting trio, and `action` retention.
+- `artifacts/step1-outcome-definition.md` §9 (Step 8 handoff) is the only place all of that
+  exists.
 
-`artifacts/step1-outcome-definition.md` §3.3 and §11, and the probe's own §7: the episode-listing
-probe covered **one show with contiguous numbering**. It confirms payload shape and auth, not
-how Trakt represents a numbering gap. If Trakt lists a **placeholder** at the missing number
-rather than omitting it, then `number ∈ E` for a non-existent episode, the drop rule readmits
-exactly the case the set rule was built to exclude, and `L := |E|` counts an episode that does
-not exist.
+Step 8 is a **dual-implementation gate**. Whether the two instances receive §9 depends entirely
+on what the Step 8 spec file contains when it is dispatched.
 
-**Section 3 must not be read as "gaps handled."** What it buys is `D1 ⊆ E1` and `A ⊆ E2`
-*relative to whatever `E` Trakt lists* — sufficient for the §3.2 invariants and for
-`p ∈ (0, 1]`, and **not** a claim that gapped seasons are measured correctly.
+Same shape, lower stakes, at **Step 13** (not dual-implementation): `task-sheet.md` Step 13 was
+amended on 2026-08-10 for D14's two obligations but still does not carry Step 1 §9's two
+**required** robustness arms — **(i)** S1 completion date as last-observed rather than first-pass,
+and **(ii)** the `action`-type arm excluding `checkin`-only and manual-`watch`-only evidence.
+"Vary the S1 completion rule at 100 and 90 percent" is the *threshold*, not the *date definition*,
+so it is not arm (i).
 
-The contradiction of ownership: the document assigns settling it to "wherever `E` is first
-pulled at scale", which is not a step in `task-sheet.md` and has no owner. It requires finding
-an in-frame show with a known numbering gap and inspecting its payload.
+### O4. `L2 = 1` classifies into C2 "weekly" before it is excluded
 
-## C5. Step 6's estimation sample is specified two different ways, on a dual-implementation gate
+At `L2 = 1`, `weekly_span = 0`, so `span ∈ {2, 3}` falls through C1 and lands in **C2 weekly**
+under D12 first-match ordering. Harmless **only because** `L2 = 1` shows are excluded from the
+headline population (§7) — but the exclusion happens at **Step 8** while the classification is
+available from **Step 2** onward. Anyone who classifies before excluding sees nonsense weekly
+buckets. The order matters and is written down nowhere.
 
-- `task-sheet.md` Step 6: "Restrict to users who did start S2" and "Anchor the lag on the S2 finale date, not the premiere, **for weekly-release shows**" — i.e. all shows, weekly ones included.
-- `artifacts/step1-outcome-definition.md` §9 (handoff to Step 6): the D12 classifier, "which, under open question 2's recommendation, *is* the estimation sample, so it must be applied as written rather than paraphrased." §10.1 Q2 recommends **C1 (all-at-once) only**.
-- `artifacts/step1-outcome-definition.md` §10.1 also states these questions are **not closed by approval**, and §8 states the treatment of negative lags in the Step 6 lag distribution "stays open."
+### O5. Critical path, for sequencing awareness (was C7)
 
-So Q2 is the one open question with **no drafted default in the body to fall back on**. §10.1's
-own fallback rule — "until then the drafted boundary is what the document says" — has nothing
-to point at for Q2.
+`Steps 3 and 4` are unblocked as of decision 0002 and are the long pole — `task-sheet.md` says
+start them first. **`pull_date` (O1) is now the next structural blocker**, and it cannot be set
+until Step 4's schedule exists. Then: Step 5 gate → Steps 6 and 7 gates → Step 8 gate.
 
-**Why this is urgent rather than tidy:** Step 6 is a gate *and* runs dual implementation. The
-two isolated instances read `task-sheet.md`, which says all shows. Step 1 §9 says C1-only. The
-two instances could produce different `W` values from faithful readings, and the diff would
-prove nothing — which is precisely the failure the dual-implementation rule exists to prevent.
-The document itself names this risk for the *old* cadence wording; the same risk now sits on
-the estimation sample. **This wants a Human Lead ruling on Q2 before Step 6 is dispatched.**
+---
 
-## C6. Two Step 8 obligations from Step 1 are not in Step 8's own checklist
+## NEW — surfaced 2026-08-10
 
-`task-sheet.md` Step 8 enumerates the filters as "frame, contamination exclusions, S1
-completion rule, W, and liveness rule". Step 1 adds two things that land at Step 8 and appear
-in neither that list nor Step 8's checklist:
+### N1. Section 8 still reads as though question 2 were open, and the residue is real
 
-1. **Right-censoring.** Step 1 §6 imposes an ordering constraint on it (Step 5 contamination exclusion runs **before** right-censoring) and requires its removal reported as **two lines** in the waterfall — the `max(W, 91)` term and the incremental `+ H` term. But right-censoring is not named as a filter in Step 8 at all.
-2. **The `L2 = 1` exclusion.** Step 1 §7 excludes those pairs from the headline population at Step 8 with counts reported. Not in Step 8's checklist.
+- `artifacts/step1-outcome-definition.md` **§8**: "Their treatment in the Step 6 lag distribution
+  is a separate question and **stays open** (open question 2) … my **recommendation** in Section
+  10.1 is the C1-only estimation sample."
+- **§9, §10.1 and §11** of the same document: question 2 is **decided** as D14; "the negative-lag
+  question that travelled with it is **closed** by the same decision."
 
-Both reach Step 8 only through Step 1 §9's handoff list. Step 8 is a dual-implementation gate,
-so the same divergence logic as C5 applies, more weakly.
+§8 was not updated when D14 landed. That is the stale half. **The live half is that D14 does not
+actually close the negatives everywhere:** it makes every lag in the *estimation sample*
+non-negative by construction, but `task-sheet.md` Step 6 also requires the **all-shows** lag
+distribution to be plotted alongside, and for a weekly show the negative mass is most of the
+started population. Nothing states how negatives are treated in that plot.
 
-## C7. Critical path, for sequencing awareness
+Why this is not cosmetic: **Step 6 is a dual-implementation gate**, and `task-sheet.md` Step 13
+defines the required robustness range as "the range implied by the gap between the C1-only and
+all-shows lag distributions". If the two isolated instances handle the negative mass differently,
+they diverge on the all-shows plot and the divergence **propagates into Step 13's tested range** —
+the same class of failure D12 and D13 were written to prevent.
 
-`Step 4 endpoint decision (C1)` → Steps 3 and 4 → **`pull_date` value (C3)** → Step 5 gate →
-Steps 6 and 7 gates → Step 8 gate. `task-sheet.md` says Steps 3 and 4 are the long pole and
-should start first; `artifacts/step0-access-and-setup.md` says Step 4 cannot be built until
-C1 is resolved. The long pole is behind an unrecorded decision.
+### N2. D2 is computed on definition (b), so it cannot count the failure the addendum points at
+
+- `artifacts/step1-outcome-definition.md` **§5 addendum** (added post-approval): the probe profile
+  is "the first observed instance of the failure D2 exists to measure", and "It establishes the
+  failure mode is real and reachable, **not how common it is — that is what D2's count is for.**"
+- **D2 as defined** (§5 required output, §10.0 D2 row, §9 Step 8 handoff): it counts pairs whose
+  first S2 watch precedes **their clock start**, and clock start is built on **definition (b)**,
+  first-pass completion, which a rewatch cannot move.
+
+Under (b) this profile's lag is **+360.73 days**. It will **not** appear in the primary D2 count —
+by construction, no (a)-style rewatch artifact can. D2 under (b) measures genuine parallel viewing,
+which is a different quantity and a useful one, but it is not a frequency estimate for the
+(a)-failure. That frequency would be D2 recomputed inside the **Step 13 arm (i)** last-observed
+run, and **no step requires D2 in that arm** — arm (i) is not even in `task-sheet.md` Step 13 (O3).
+
+Consequence to state when it is raised: whoever computes D2 should **expect zero** instances of
+this profile's failure mode in the primary run, and should not read that zero as evidence the
+failure is rare.
+
+### N3. Two records of the provenance gap are now stale
+
+- `decisions/README.md` open item 4 and `decisions/0001` "What this decision does NOT close",
+  bullet 4: the two figures "trace only to an undocumented run in a machine-local log, with **no
+  run record and no probe script in `src/`** … not reproducible from the repo. **Open.**"
+- `src/step0_history_probe.py`, `logs/step0_history_probe.json` and
+  `artifacts/step0-history-endpoint-probe.md` all exist and reproduce both figures at zero live
+  calls.
+
+The item is closed in fact and open on the record. The Human Lead owns both files.
+
+### N4. An unobserved premise sits inside an approved rule
+
+- `artifacts/step1-outcome-definition.md` §2.1: `episode.ids.trakt` "should agree with
+  `(show, season, number)`; where it disagrees — **which happens after Trakt metadata merges and
+  splits** — `(show, season, number)` wins … Disagreements are counted and logged."
+- `artifacts/step0-history-endpoint-probe.md` §2: 96 distinct episode Trakt IDs against 96
+  distinct pairs, **zero disagreements**, no pair mapping to more than one ID. "Not contradicted;
+  simply **untested** by this profile."
+
+Not load-bearing for the rule — `(show, season, number)` wins either way — but the *mechanism*
+asserted (merges and splits reassign episode IDs) is the **same mechanism D9's split signature
+depends on**. If the mechanism is rarer or shaped differently than assumed, the D9 lower bound is
+weaker than its wording implies. One profile is not evidence either way; it is the absence of
+evidence, and it is now on the public record as such.
+
+### N5. `decisions/0001` undercounts the withdrawn-claims table
+
+- `decisions/0001` "Standing record": "a table of **six claims withdrawn as false** across the
+  three revisions, plus this accepted risk."
+- The table at the head of `artifacts/step1-outcome-definition.md`: **twelve rows — eleven
+  withdrawn or corrected claims plus the one accepted risk.** Six of the eleven are false-by-
+  construction; the other five are framing corrections, and at least three of those are described
+  in the body as withdrawn *because they were false*.
+
+A description error in the log of record, not a decision error. Worth folding into any edit the
+Human Lead is already making to `0001`, since the table "is not to be pruned" and the count is
+how anyone checks that.
+
+### N6. Minor — the Step 0 file index is stale
+
+`artifacts/step0-access-and-setup.md` "Files" table lists `step0_test_pull.py` and
+`step0_watched_endpoint_probe.py` but not `src/step1_episode_listing_probe.py`,
+`src/step0_history_probe.py`, or their run records. Each has its own write-up, so nothing is
+lost; the index is just no longer complete.
 
 ---
 
 ## Checks that PASS — recorded so they are not re-litigated
 
-Verified against `artifacts/step1-outcome-definition.md` on 2026-08-10:
+Verified 2026-08-10 against the current files:
 
-- **Censoring clearance does not cost any show.** 31 Dec 2024 (frame cap on the S2 finale) + `max(W,91) + H` = +182 days at `W ≤ 91` ≈ mid-2025, inside a 2026 pull. Correct as §6 states.
-- **The `+H` cost estimate is right.** An Aug 2026 pull moves the effective S1-completion cutoff from about May 2026 to about Feb 2026.
-- **The 91-day arm sits inside the primary censored population.** `T0' + 91 + H ≤ T0 + 91 + H ≤ T0 + max(W,91) + H ≤ pull_date`, since premiere ≤ finale and `91 ≤ max(W,91)`. Holds.
-- **D12 is exhaustive and mutually exclusive** for `span ≥ 0` under first-match ordering; C0 absorbs missing and `span < 0`. Verified by case split.
-- **`(123 − 96)/96 = 28.1%`** — the §2.1 figure is arithmetically right (its sourcing is C2).
-- **The boundary convention is used consistently.** `watched_at < τ1` in §2.4, §7, D3, D8, and the complement `watched_at ≥ τ1` for the Step 7 liveness test in §9. No second reading survives anywhere in the document. `date(watched_at) ≤ T1` appears only where it is being withdrawn.
-- **Directions are declared in both senses.** The two one-day effects offset: D13's half-open window moves the never-started share **up**, the §0 UTC finale skew and the `τ0 := ⟦T0⟧` effect move it **down**. Neither is corrected against the other; both are stated. Consistent across §0, §2.4, §6.
-- **Privacy boundary is intact.** `.gitignore` covers `.env`, `raw/`, `processed/`, `logs/`. No username, user ID or individual watch history appears in any file in `artifacts/` or `decisions/`. One username does appear in an endpoint path in `logs/api_requests.ndjson`, which is correct — that folder is machine-local.
-
-## One edge case, harmless today, noted so it is not discovered later
-
-At `L2 = 1`, `weekly_span = 0`, so `span ∈ {2, 3}` falls through C1 and lands in **C2
-"weekly"** under D12. Harmless **only because** `L2 = 1` shows are excluded from the headline
-population (§7). But the exclusion happens at Step 8 and the classification is available from
-Step 2 onward, so anyone classifying before excluding will see nonsense weekly buckets. Order
-matters here and is not written down anywhere.
+- **Both probe figures reproduce.** 123 records, 96 distinct pairs, 25 episodes duplicated, 27
+  surplus records, 64 pages at `limit=250` — all exact. "28 percent" is 28.125 %; "six weeks" is
+  5.90 weeks (41.31 days). Rounding only, both in the direction that makes the printed number
+  rounder rather than larger.
+- **27 surplus records and 25 duplicated episodes are both correct and are different questions.**
+  Two episodes appear three times. Do not "correct" one to the other.
+- **The 96 is derived from history, not from `show.aired_episodes`** — which also reads 96 on that
+  payload. Coincidence of a completionist profile. §2.1's rule stands independently, and §0
+  forbids `aired_episodes` outright.
+- **The §5 addendum changes no rule.** Verified line by line: §4, §5's definition (b), §6, §7,
+  §2.2, D2's requirement text and the §9 handoff lists are unchanged. The addendum adds evidence
+  and a scope limit. The gate remains approved and the approval record says so.
+- **`task-sheet.md` Step 6 carries D14 by bucket name**, not as "binge shows", and Step 13 carries
+  both the range obligation and the per-arm retained-row count.
+- **Privacy boundary intact.** No username, user ID, or watch history in `artifacts/` or
+  `decisions/`. The new probe write-up names neither profile nor show and keeps episode-level
+  material in `logs/` and `raw/`. The username is a script argument, not hard-coded.
+- **Zero live API calls were spent on the reproduction.** `requests_sent: 0`,
+  `served_from_cache: 2`.
+- Previously verified and still true: censoring clearance costs no show; the `+H` cost estimate;
+  the 91-day arm sits inside the primary censored population; D12 is exhaustive and mutually
+  exclusive under first-match; the boundary convention is used consistently and no second reading
+  survives; both one-day directions are declared and neither is netted off.
 
 Related: [[glossary-terms-and-thresholds]], [[gate-step1-outcome-definition]],
-[[decision-log-step18]], [[withdrawn-claims-register]].
+[[decision-log-step18]], [[withdrawn-claims-register]], [[step1-open-questions]].

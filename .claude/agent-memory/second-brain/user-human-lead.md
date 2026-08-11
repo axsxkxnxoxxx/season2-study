@@ -19,6 +19,13 @@ names them as owner, no agent acts on it — not draft it, not prepare it, not o
 - **They fix the source file rather than routing around it.** When Step 1 flagged a scoping dependency it could not resolve, they amended `task-sheet.md` Steps 7 and 9 directly — the file the isolated instances actually read — which converted a future spec ambiguity into a future bug.
 - **They keep provenance visible.** Sections 10.0b and 10.0c preserve which items came from Red Team, who drafted them, and who adopted them, so no agent can be read as having self-adopted.
 
+## The pattern, confirmed again on 2026-08-10
+
+- **Every decision that two isolated instances must obey goes into `task-sheet.md`**, not only into the artifact that reasoned about it. Done for pair-level liveness (Steps 7, 9), then again for D14 (Steps 6 and 13). The artifact keeps the warrant; the task sheet carries the rule. **Step 8 is the one place this has not yet been done** — see [[open-items-and-contradictions]] O3.
+- **They close a provenance gap by making the run reproducible rather than by deleting the figure.** The undocumented probe became a script, a run record and a public write-up at zero live calls.
+- **They distinguish an evidence edit from a rule edit on an approved artifact**, and say so in the approval record: a rule change reopens the gate, added evidence does not.
+- **They keep the log of record and the working memory separate.** `decisions/` is the artifact; agent memory is continuity and consistency checking against it, and never edits it.
+
 ## What they want from Second Brain
 
 The Step 18 decision log, assembled continuously and handed to them as text — they write the

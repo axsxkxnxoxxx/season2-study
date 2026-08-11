@@ -17,11 +17,56 @@ Status vocabulary: **FIXED** (set and gate closed) · **DEFERRED** (form fixed, 
 
 | Term | Value / status | Where set | Gate |
 | :--- | :--- | :--- | :--- |
-| **`W`** — the window, in days | **OPEN. Not set.** Step 1 §11 states explicitly that it does not set it. | Step 6 | Step 6 gate, **not approved** |
+| **`W`** — the window, in days | **Value OPEN. Estimation sample FIXED.** Step 1 §11 does not set the value. The sample it is derived from is **bucket C1 (all-at-once) only**, per D12, and the result is **applied to all shows** — D14, decision `0003`, Human Lead 2026-08-10. Carried in `task-sheet.md` Steps 6 and 13, so both isolated instances read it. | Value: Step 6. Sample: Step 1 §10.1 Q2 → D14 | Step 6 gate, **not approved** |
 | **Liveness threshold** | **OPEN. Not set.** A gap length derived from data; Step 7 must derive it without using `W` as an input. | Step 7 | Step 7 gate, **not approved** |
 | **S1 completion rule** | **FIXED.** `F1 ∈ D1` **and** `\|D1\| ≥ ceil(0.90 × L1)`, on distinct episodes, membership by the listed set `E1`. `ceil`, stated in episodes not percent. Failing pairs never enter the population — they are not "never started". | Step 1 §4 | **Step 1 gate, APPROVED 2026-08-10** |
 | **Contamination exclusion rule** | **OPEN. Not set.** Step 1 fixes exactly one thing about it: it runs **before** right-censoring, so an import-stamped S1 completion date is counted as contamination rather than laundered into a censoring drop. | Step 5 proposes; ordering constraint from Step 1 §6 | Step 5 gate, **not approved** |
 | **Filter order** | **OPEN. Not set.** Step 1 §11 disclaims it; Step 8 owns it. The only ordering Step 1 imposes is contamination-before-censoring. | Step 8 | Step 8 gate, **not approved** |
+
+## Decision numbering — where a term was fixed on the public record
+
+`decisions/` is the log of record: `0001` Step 1 gate, `0002` Step 4 endpoint (D15), `0003` W
+estimation sample (D14). D-numbers live in `artifacts/step1-outcome-definition.md` §10.0. A term
+tagged **D14** or **D15** below post-dates the Step 1 gate and was decided separately.
+
+## Data source — FIXED, D15 / decision `0002`
+
+**`GET /users/:id/history`, unfiltered, one sweep per user.** Human Lead, 2026-08-10. Replaces
+`/users/:id/watched/shows`, which returns a show-level aggregate with **no per-episode
+timestamps** under Client-ID-only auth. Two conditions are part of the decision:
+
+- **"One sweep" is one logical pass, NOT one call.** ~**64 pages per user at `limit=250`** on the
+  probe profile. Step 4 throughput is estimated in **pages, not users**.
+- **The sweep must be COMPLETE.** Records return newest-first, so a truncated sweep is
+  **indistinguishable from a genuine "never started"** and lands in the headline. Enforcement is
+  Step 4's and Step 8's.
+
+Unfiltered because the endpoint mixes `type: episode` with `type: movie` and Step 7 liveness needs
+the whole sweep as account-wide evidence; episode filtering happens locally, after the sweep.
+
+## Standing rule — when a post-approval edit reopens a gate
+
+Fixed 2026-08-10 in the approval record at the head of `artifacts/step1-outcome-definition.md`:
+**an edit that changes a *rule* reopens the gate; an edit that adds *evidence* for a rule already
+adopted does not.** The Section 5 addendum is the worked example — it inverted a cited figure and
+changed no rule, threshold, definition or required output, and the gate remained approved. Apply
+this test to any future amendment of an approved artifact.
+
+## Probe figures — n = 1, existence proofs, NOT rates
+
+From `artifacts/step0-history-endpoint-probe.md`, one profile and one show, reproduced at zero
+live calls. **Nothing downstream may read these as population quantities.**
+
+| Figure | Printed in Step 1 | Actual |
+| :--- | :--- | :--- |
+| Play-record inflation | "28 percent" | **28.125 %** — 123 records, 96 distinct pairs, 27 surplus records, **25** episodes duplicated (two appear three times; 27 and 25 answer different questions and are both right) |
+| S1/S2 overlap under definition (a) | "six weeks" | **41.31 days = 5.90 weeks** |
+| Same comparison under definition (b), after the §2.2 collapse | — | **inverts to 360.73 days of separation** — the overlap is entirely a rewatch artifact |
+| Pages per user at `limit=250` | "roughly 64" | 64 |
+
+Untested rather than confirmed on this profile: `episode.ids.trakt` disagreeing with
+`(season, number)` — 96 IDs against 96 pairs, zero disagreements. See
+[[open-items-and-contradictions]] N4.
 
 ## Liveness scoping — fixed at Step 1, and it moved
 
@@ -99,7 +144,7 @@ the ordering is part of the definition.
 | # | Bucket | Condition | In Step 6 estimation sample? |
 | :--- | :--- | :--- | :--- |
 | C0 | Unclassifiable | `P`, `F_d` or `L2` missing, or `span < 0` | No |
-| C1 | All-at-once (binge) | `span ≤ 1` | **Yes — and only this bucket**, under the §10.1 Q2 *recommendation*, which is **not decided** |
+| C1 | All-at-once (binge) | `span ≤ 1` | **Yes — and only this bucket. DECIDED**, D14 / decision `0003`, 2026-08-10 |
 | C2 | Weekly | `abs(span − weekly_span) ≤ 3` | No |
 | C3 | Faster than weekly | `1 < span < weekly_span − 3` | No |
 | C4 | Slower than weekly | `span > weekly_span + 3` | No |
@@ -118,7 +163,7 @@ convention's fragility is a number rather than an assumption.
 
 | ID | Output | Direction on the headline |
 | :--- | :--- | :--- |
-| D2 | Negative-lag count, **split by which term of the `max()` binds** | diagnostic |
+| D2 | Negative-lag count, **split by which term of the `max()` binds**. Computed on the operative clock, i.e. **definition (b)** — so no (a)-style rewatch artifact can appear in it. A zero here is not evidence the (a)-failure is rare ([[open-items-and-contradictions]] N2) | diagnostic |
 | D3 | Resumption rate for Started-and-left, over `[τ1, τ1 + H)` | diagnostic |
 | D4 | S3-without-S2 reported as a bound at Step 9 | **down** |
 | D8 | Never-started post-window diagnostic, over `[τ1, τ1 + H)` | **down** |

@@ -1,18 +1,19 @@
 # Second Brain — memory index
 
-Season 2 abandonment study. Continuity role: glossary, consistency checks, Step 18 decision log.
+Season 2 abandonment study. Continuity role: glossary, consistency checks, coverage of the
+decision log. `decisions/` is the artifact of record; this memory never duplicates or edits it.
 
 ## Standing artifacts I maintain
 
-- [Glossary — terms and thresholds](glossary-terms-and-thresholds.md) — every term, threshold and constant, tagged with the step and gate that fixed it.
-- [Step 18 decision log — running assembly](decision-log-step18.md) — entries in the five-field format, ready to hand to the Human Lead. `decisions/` is still empty.
-- [Open items and contradictions](open-items-and-contradictions.md) — live register of blockers and cross-step conflicts, each with its two conflicting sources named.
-- [Withdrawn-claims register](withdrawn-claims-register.md) — the study's own error log: ten claims asserted then withdrawn or accepted as risk.
+- [Glossary — terms and thresholds](glossary-terms-and-thresholds.md) — every term, threshold and constant, tagged with the step, decision and gate that fixed it.
+- [Decision log coverage and pending text](decision-log-step18.md) — what `decisions/` covers, the five-field entries it does not, and text awaiting handoff.
+- [Open items and contradictions](open-items-and-contradictions.md) — live register, each entry naming its two conflicting sources. Re-verified 2026-08-10.
+- [Withdrawn-claims register](withdrawn-claims-register.md) — the study's own error log: eleven claims withdrawn or corrected, plus one accepted risk.
 
 ## Gates and decisions
 
-- [Step 1 gate — outcome definition](gate-step1-outcome-definition.md) — APPROVED 2026-08-10 after three Red Team HOLDs; what approval did and did not cover.
-- [Step 1's three open questions](step1-open-questions.md) — §10.1 was NOT closed by approval; Q2 is a live divergence risk on the Step 6 gate.
+- [Step 1 gate — outcome definition](gate-step1-outcome-definition.md) — APPROVED 2026-08-10 after three Red Team HOLDs; plus the addendum that added evidence without reopening it.
+- [Step 1's §10.1 open questions](step1-open-questions.md) — Q2 decided as D14; Q1 and Q3 still open and not closed by approval.
 
 ## Working context
 

@@ -1,342 +1,197 @@
 ---
 name: decision-log-step18
-description: Running assembly of the Step 18 decision log — entries in the five-field format, ready to hand to the Human Lead to write into decisions/. Covers the Step 1 gate as of 2026-08-10.
+description: Coverage map of the decision log of record in decisions/, the five-field entries it does not yet carry, and assembled text pending handoff to the Human Lead
 metadata:
   type: project
 ---
 
-# Step 18 decision log — running assembly
+# Step 18 decision log — coverage map and pending text
 
-**Ownership:** the Human Lead owns this log and writes the files in `decisions/`. Second Brain
-assembles the text and hands it over. **Never write to `decisions/` directly.** As of
-2026-08-10 that folder holds only `.gitkeep` — **no gate has a decision file yet, including
-the one that closed**.
+**`decisions/` is the artifact of record. This memory is not the decision log and must not
+duplicate it.** Step 18 assembles from `decisions/`. My job is coverage and consistency: which
+judgments have a file, which do not, and whether the files still match the artifacts.
 
-**Why the format is fixed:** `task-sheet.md` Step 18 requires five fields per entry — what was
-decided, what the alternatives were, why this one, what it costs, and where the Red Team or a
-partner reviewer disagreed and how it was resolved. "This is the primary artifact. The analysis
-shows the work. The log shows the judgment."
+**Ownership:** the Human Lead writes every file in `decisions/`. I hand over assembled text and
+stop. I never write there and never edit an entry there — if I think one is wrong or incomplete
+I report it (see [[open-items-and-contradictions]] N3, N5).
 
-**How to apply:** when the Human Lead asks for the Step 1 decision file, hand them the text
-below. Update this file after every gate and every result step rather than reconstructing at
-the end — reconstruction is the failure this role exists to prevent.
-
----
-
-## Entry 0 — the gate itself
-
-**Decided.** Step 1, the outcome definition, is approved and adopted. `artifacts/step1-outcome-definition.md`
-is the operative definition. First of five gates to close. Approved in writing by the Human
-Lead, in session, 2026-08-10.
-
-**Alternatives.** Approve as drafted; approve with named carve-outs; hold for a fourth
-revision. Red Team had returned HOLD three times and each revision was authorized in response.
-
-**Why this one.** The third revision made operational the four objects the document had named
-but never defined — `H`, `pull_date`, the cadence classifier, and the boundary operator. With
-those closed, the remaining disagreements were about *choices*, not about *undefined terms*,
-and choices belong to the Human Lead rather than to another review round.
-
-**Costs.** Three open questions in §10.1 remain undecided, and approval does not close them.
-One value — `pull_date` — is deliberately left outstanding. The gap hypothesis is untested.
-Approval was given with all three on the record rather than resolved.
-
-**Disagreement and resolution.** Red Team HOLD ×3, all three revisions authorized and
-completed. Red Team's B2 objection was **overruled** — see Entry 10.
+**Format, from `task-sheet.md` Step 18 — five fields per entry:** what was decided, what the
+alternatives were, why this one, what it costs, and where the Red Team or a partner reviewer
+disagreed and how it was resolved. "This is the primary artifact. The analysis shows the work.
+The log shows the judgment."
 
 ---
 
-## Entry 1 — clock start anchored on the S2 finale (D1)
+## What `decisions/` holds, as of 2026-08-10
 
-**Decided.** `T0 = max(S2_finale_air_date, first-pass S1_completion_date)`. Human Lead.
+| File | Covers | Five-field completeness |
+| :--- | :--- | :--- |
+| `README.md` | Index, gate checklist, four open items carried forward | n/a — index |
+| `0001-step1-outcome-definition-gate.md` | The Step 1 gate as a whole; **D10** `H = 91` by name, **D12** thresholds by name, **D11** `pull_date` in form with value deferred, **B2 overruled** | Full on the gate and on those four |
+| `0002-step4-history-endpoint.md` | **D15** — `GET /users/:id/history`, unfiltered, one sweep per user | Full |
+| `0003-w-estimation-sample.md` | **D14** — W estimated on bucket C1 only, applied to all shows | Full |
 
-**Alternatives.** Premiere anchoring: `T0 = max(S2_premiere_date, S1_completion_date)`.
-
-**Why this one.** Three reasons. Step 6 already anchors the lag on the finale, so premiere
-anchoring would derive `W` on one origin and apply it on another. Under premiere anchoring
-"Continued" is unreachable inside any `W` shorter than the airing span — roughly 84 days for a
-13-episode weekly season — so the state would be an artifact of release cadence. And premiere
-anchoring scores a viewer who waits for a full season and then watches it as a decliner, which
-collapses "declined" and "waiting to binge" into one number — the exact conflation this study
-exists to break.
-
-**Costs.** Unequal exposure. Elapsed opportunity to start S2 by `τ1` is `airing_span + W` for
-a weekly show and `W` for a binge show, so **the never-started share is mechanically lower for
-weekly titles, by construction rather than by behaviour**, and the gap scales with season
-length. Paid openly: cadence becomes a required Step 9 stratum reported across all five D12
-buckets, and a mandatory Step 12 candidate flagged as the one candidate with a known
-mechanical driver. Binge shows are unaffected — premiere and finale coincide.
-
-**Disagreement and resolution.** No Red Team objection to D1 itself. The consequence — that
-most started users on weekly shows now have *negative* lags — became §10.1 open question 2 and
-is **still open**.
+**Gate checklist:** Step 1 closed. Steps 5, 6, 7, 8 open. Consistent across `decisions/README.md`
+and `task-sheet.md` "Gate summary". Verified.
 
 ---
 
-## Entry 2 — season membership by listed set, not numeric range
+## Judgments with NO file of their own — I hold the assembled text
 
-**Decided.** An episode counts toward a season iff its `number` is a member of that season's
-**listed episode-number set `E`**. `L := |E|`, `F := max(E)`, all from one payload.
-`F := L` is forbidden. Data Scientist drafted under authorization; adopted with the document.
+These are adopted and operative but are covered in `0001` only as "approved with the document".
+Each is a real judgment with alternatives and a cost, so each needs its own Step 18 entry. Hand
+these over when the Human Lead next writes to `decisions/`.
 
-**Alternatives.** The previous rule: membership by the range `1..F`, dropping `number > F`,
-`number < 1`, and missing fields.
+**D1 — clock start anchored on the S2 finale, not the premiere.**
+*Decided:* `T0 = max(S2_finale_air_date, first-pass S1_completion_date)`, Human Lead.
+*Alternative:* premiere anchoring.
+*Why:* Step 6 already anchors the lag on the finale, so premiere anchoring would derive W on one
+origin and apply it on another; under premiere anchoring "Continued" is unreachable inside any W
+shorter than the airing span (~84 days for a 13-episode weekly season), making the state an
+artifact of cadence; and it scores a viewer who waits for a full season then binges as a decliner,
+collapsing "declined" and "waiting to binge" — the exact conflation the study exists to break.
+*Costs:* unequal exposure. Opportunity to start S2 by `τ1` is `airing_span + W` for weekly and `W`
+for binge, so **the never-started share is mechanically lower for weekly titles by construction**,
+and the gap scales with season length. Paid openly: cadence becomes a required Step 9 stratum
+across all five D12 buckets and a mandatory Step 12 candidate flagged as the one candidate with a
+known mechanical driver. Binge shows are unaffected.
+*Disagreement:* no Red Team objection to D1 itself. Its consequence became open question 2, since
+decided as D14 / `0003`.
 
-**Why this one.** The range rule let through exactly the case the gap machinery existed for —
-an episode numbered *inside* `1..F` but *absent* from the listed set passed all three tests.
-Two things broke as a result: `|D1|` and `|A|` could exceed `L1` and `L2`, and `m = max(A)`
-need not have been listed, so rank-based `p` could return 0, outside its own stated range.
-Under the set rule `D1 ⊆ E1` and `A ⊆ E2` by construction, so `|D1| ≤ L1`, `|A| ≤ L2` and
-`p ∈ (0, 1]` are **true by construction rather than by assertion**.
+**Season membership by listed set, not numeric range.**
+*Decided:* an episode counts toward a season iff its `number` ∈ that season's listed set `E`;
+`L := |E|`, `F := max(E)`, all from one payload; `F := L` forbidden.
+*Alternative:* the previous rule, membership by the range `1..F`.
+*Why:* the range rule let through exactly the case the gap machinery existed for — an episode
+numbered inside `1..F` but absent from `E` passed all three drop tests. `|D1|` and `|A|` could
+exceed `L1`/`L2`, and `m = max(A)` need not have been listed, so rank-based `p` could return 0,
+outside its own stated range. Under the set rule `D1 ⊆ E1` and `A ⊆ E2` **by construction**.
+*Costs:* the Step 8 invariant "distinct episodes never exceed season length" stops being a data
+check and becomes an **implementation** check. Kept and relabelled. The real data check is the
+drop count.
+*Disagreement:* Red Team second HOLD, findings F1 and F2. Accepted in full. Two prior claims
+withdrawn as false in the process.
 
-**Costs.** The Step 8 invariant "distinct episodes never exceed season length" stops being a
-data check and becomes an **implementation** check — it now fails only if someone filtered by
-range instead of set. Kept and relabelled rather than dropped. The real data check is the drop
-count.
-
-**Disagreement and resolution.** Red Team second HOLD, findings F1 and F2. Accepted in full
-and rewritten. Two prior claims withdrawn as false in the process.
-
----
-
-## Entry 3 — first-pass S1 completion date, not last-observed
-
-**Decided.** The S1 completion date is the earliest date at which the §4 test is satisfied,
-computed by a forward walk over distinct episodes.
-
-**Alternatives.** (a) the last observed S1 timestamp, `max watched_at` over all S1 records.
-
-**Why this one.** (a) measures the wrong event — the question is when the choice to continue
-became available, not when a rewatch happened years later — and it is **biased by engagement**:
-the heavier a rewatcher, the later the clock starts and the more time granted to start S2.
-That grants the longest windows to the most engaged users.
-
-**Costs.** Stated out loud rather than discovered: `(b) ≤ (a)` always, so first-pass produces
-an earlier clock start, an earlier close, and therefore a **higher never-started share** — the
-direction that strengthens the study's own headline. Two mitigations: the choice is defended
-on the merits and not on the result, and **Step 13 must carry (a) as a robustness arm**.
-
-**Disagreement and resolution.** Red Team pressed on whether the replacement Step 8 invariant
-actually tests anything. Conceded and narrowed in the text: the two inequalities are vacuous,
-the **equality clause** is what catches a last-observed implementation, and only if the check
-computes the first-pass date **independently** rather than reading back the pipeline's value.
-The real test of this decision is the D2 negative-lag count split by binding term, not the
+**First-pass S1 completion date, not last-observed.**
+*Decided:* the earliest date at which the §4 test is satisfied, by forward walk over distinct
+episodes.
+*Alternative:* (a) `max watched_at` over all S1 records.
+*Why:* (a) measures the wrong event — the question is when the choice to continue became
+available, not when a rewatch happened — and it is **biased by engagement**: the heavier the
+rewatcher, the later the clock starts and the more time granted to start S2.
+*Costs:* `(b) ≤ (a)` always, so first-pass gives an earlier clock start and therefore a **higher
+never-started share** — the direction that strengthens the study's own headline. Mitigations: the
+choice is defended on the merits, not on the result, and **Step 13 must carry (a) as a robustness
+arm** (which `task-sheet.md` Step 13 still does not name — [[open-items-and-contradictions]] O3).
+*Disagreement:* Red Team pressed on whether the replacement Step 8 invariant tests anything.
+Conceded and narrowed: the two inequalities are vacuous, the **equality clause** does the work,
+and only if the check computes the first-pass date **independently**. The real test is D2, not the
 invariant.
+*Post-approval:* strengthened 2026-08-10 by observed evidence — see the pending addendum below.
+
+**D13 — half-open UTC-instant boundaries.** Adopted with the document; `0001` does not break it
+out. *Decided:* every date bound expands to a UTC midnight instant; every membership test is
+half-open, closed left, open right; the in-window test is `watched_at < τ1` and nothing else.
+*Alternatives:* `date(watched_at) ≤ T1`; a `23:59:59` sentinel. *Why:* "on or before `T1`"
+admitted two faithful implementations one day apart on the single operator that assigns every
+outcome state and feeds the Step 8 and Step 9 diffs; the half-open form makes the window exactly
+`W` days and makes window and horizon tile at `τ1` without gap or overlap, which matters because
+D3 and D8 are counts of events just past that boundary; a sentinel reintroduces the ambiguity at
+sub-second precision, which Trakt timestamps carry. *Costs:* removes one calendar day, moving the
+never-started share marginally **up**; named, not netted against the two opposing one-day effects.
+*Disagreement:* Red Team third HOLD, B3. Accepted in full.
+
+**D8 — never-started post-window diagnostic.** *Decided:* for pairs scored Never started at `τ1`,
+report count and share with any distinct S2 episode in `[τ1, τ1 + H×24h)`, and the count and share
+meeting the Continued condition over that horizon. Diagnostic only; no pair moves state.
+*Alternative:* report nothing for that category, as the prior draft did. *Why:* "never" is the one
+word in the headline a reader takes most literally, and a pair that started on day `W+1` is called
+"never"; it is the same query as D3 with the state filter changed. *Costs:* it moves the headline
+**down**, which is why it belongs. *Disagreement:* Red Team second HOLD, F3. Accepted; entered as
+a proposal, held, adopted by the Human Lead — not self-adopted.
+
+**D9 — show splits as a known misclassification, with a bound.** *Decided:* Step 8 reports both
+halves; Step 9 reports the bound alongside the liveness bound and D4. *Alternative:* the prior
+framing — a counting nuisance, count and build nothing. *Why:* a split gives `(user, ID_A)` a
+complete S1 and `|A| = 0`, **fabricating a row directly into the published category**, while
+`(user, ID_B)` fails S1 completion and disappears unrecorded. Structurally identical to D4, so it
+gets D4's treatment. *Costs:* detection is imperfect and the count is a **lower bound**, stated
+wherever it appears; reconciliation logic stays unwritten — count first, reconcile only if the
+count justifies it. *Disagreement:* Red Team second HOLD, secondary finding 1. Accepted; prior
+open question 4 closed and replaced. *Live caveat:* the split mechanism is asserted, not observed
+— [[open-items-and-contradictions]] N4.
+
+**Liveness is a pair-level filter (scope correction).** *Decided:* evidence account-wide, test
+`τ1`-relative and `τ1` pair-specific, so the filter is pair-level; dropping a user wholesale is
+forbidden; the Step 9 bound is over inactivity-excluded **pairs**. *Alternative:* the prior
+reading, "a statement about the account", which appeared in three places across two drafts. *Why:*
+it was simply mis-scoped and would have removed whole accounts on a test that only ever applied to
+one of their shows. *Costs:* none to the definition; the cost was procedural — Step 1 could not fix
+it alone because the isolated Step 7 instances read `task-sheet.md`. **The Human Lead amended
+`task-sheet.md` Steps 7 and 9 directly.** Consequence: a scope divergence between the two Step 7
+instances is now a **bug, not a spec ambiguity**. *Disagreement:* raised in review, accepted,
+closed in the file the implementers read. Step 1 had earlier asserted this as fact while the task
+sheet still said "user"; that assertion was unbacked, was withdrawn, and was restated only after
+the file changed.
 
 ---
 
-## Entry 4 — fixed post-window horizon, `H = 91 days` (D10)
+## PENDING — assembled text for a post-approval addendum to `0001`
 
-**Decided.** `H = 91 days`, adopted **by name** at approval. Right-censoring becomes
-`⟦T0⟧ + (max(W, 91) + H) × 24h ≤ τ_pull`. D3 and D8 are measured over `[τ1, τ1 + H × 24h)` and
-never "to the pull date". `H` is declared before Step 6 runs and is **not a function of `W`**.
+Hand to the Human Lead. It is theirs to write, edit, or reject. Status is the load-bearing part:
+**evidence, not a decision.**
 
-**Alternatives.** Keep the prior rule, `T0 + max(W, 91) ≤ pull date`, with diagnostics measured
-to the pull date.
+> ## Post-approval addendum — 2026-08-10
+> **Status: evidence only. No rule, threshold, definition or required output changed. The gate
+> remains APPROVED.** An edit that changed a *rule* would reopen the gate. This one does not.
+>
+> **What was added.** `artifacts/step1-outcome-definition.md` Section 5 now records a finding
+> from `artifacts/step0-history-endpoint-probe.md`. The six-week S1/S2 overlap cited in that
+> section was computed over **all S1 play records** — definition **(a)**, the definition Section 5
+> argues against. Recomputed after the Section 2.2 earliest-per-distinct-episode collapse, the
+> comparison **inverts**: **41.31 days of overlap under (a), 360.73 days of separation under (b).**
+>
+> **What it establishes.** The overlap is **entirely a rewatch artifact**. Under definition (a)
+> this profile's S1 completion date lands *after* its first S2 watch — **a negative clock start on
+> a real, non-hypothetical profile**, not a constructed example. It is the first observed instance
+> of the failure the D2 negative-lag diagnostic exists to count.
+>
+> **What it changes.** Nothing. It **strengthens the existing warrant** for two things already
+> decided and already in the document: first-pass completion (definition (b), Section 5) and the
+> D2 negative-lag diagnostic. Both were adopted on the merits before this was observed. The D2
+> row in Section 10.0 is annotated "warrant strengthened, no change to the rule."
+>
+> **Scope limit, carried so it is not overread.** **One profile, one show.** It establishes that
+> the failure mode is real and reachable. It does **not** establish how common it is.
+>
+> **One consequence worth recording for whoever computes D2.** D2 is computed on the operative
+> clock, which is definition (b), and under (b) a rewatch cannot move the clock start. This
+> profile's lag under (b) is **+360.73 days**, so it will **not** appear in the primary D2 count,
+> and neither will any other (a)-style rewatch artifact. D2 under (b) measures genuine parallel
+> viewing, which is a different and useful quantity. **A zero in the primary D2 count is not
+> evidence that this failure mode is rare.** Sizing it would require D2 recomputed inside the
+> Step 13 last-observed arm, which no step currently requires.
+>
+> **Provenance.** The run is now reproducible at zero live calls: `src/step0_history_probe.py`,
+> `logs/step0_history_probe.json`, write-up at `artifacts/step0-history-endpoint-probe.md`.
 
-**Why this one.** The prior guarantee was **false by subtraction**: it delivers
-`max(0, 91 − W)` days of post-window observation — 61 at `W = 30`, **zero at any `W ≥ 91`** —
-and Step 6 had not run, so the document could not know which side of 91 `W` falls on. Worse,
-measuring to the pull date made D3 and D8 **exposure-weighted mixtures whose weight is show
-recency** — ten years for a 2016 title, eighteen months for one whose S2 finale aired 31 Dec
-2024. Direction: D8 understated later-starting for recent titles, so "never" looked most true
-exactly where the frame is newest. 91 was chosen because it is the same quarter as the Netflix
-reporting window the Step 9 arm exists to be commensurable with.
+**Two corrections the Human Lead may want to fold into the same edit** (my flags, their call —
+[[open-items-and-contradictions]] N3 and N5):
 
-**Costs.** Clearance moves from `max(W, 91)` to `max(W, 91) + 91`. No show is lost — 31 Dec
-2024 + 182 days is mid-2025. What is lost is pairs whose first-pass S1 completion falls in the
-`H`-day band before the old cutoff: in an Aug 2026 pull at `W ≤ 91`, the effective cutoff moves
-from about May 2026 to about Feb 2026. **These are recent S1 completers, disproportionately
-likely to continue, so removing them moves the headline further up** — the flattering
-direction. Priced openly: the waterfall reports the censoring removal as **two lines**, the
-`max(W, 91)` term and the incremental `+ H` term, each with its direction named.
-
-**Disagreement and resolution.** Red Team third HOLD, blocking finding B1. Accepted in full.
-
----
-
-## Entry 5 — `pull_date` as a single global frozen cutoff, value deferred (D11)
-
-**Decided.** `pull_date` is one calendar date, constant for the whole study;
-`τ_pull := ⟦pull_date⟧`; every record with `watched_at ≥ τ_pull` is discarded whether or not
-it was fetched. Adopted in **form**. **Value deliberately deferred** to Step 4's schedule.
-
-**Alternatives.** Per-user fetch date. Or setting a value now.
-
-**Why this one.** Step 4 is a multi-day unattended pull. Per-user fetch date makes
-right-censoring depend on the accident of scheduling order, and a user fetched early shows an
-empty tail a user fetched late does not — non-comparable across exactly the axis the
-diagnostics must be constant on. The deferral is structural, not an oversight: the constraint
-`pull_date ≤ earliest per-user fetch date` **cannot be honoured by a value chosen before the
-pull is scheduled**.
-
-**Costs.** Records fetched but discarded for `watched_at ≥ τ_pull`. That count is required in
-the waterfall alongside `pull_date` and the earliest and latest per-user fetch dates — it is
-the visible price of freezing the cutoff and is reported rather than absorbed. And: **every
-step that right-censors or computes D3, D8 or D9 is blocked until the value exists.**
-
-**Disagreement and resolution.** Red Team third HOLD, blocking finding B5. Accepted. The
-deferral of the value was the Human Lead's own call at approval and is recorded as a decision.
+1. `decisions/README.md` open item 4 and `0001`'s "does NOT close" bullet 4 both still describe
+   the provenance gap as open with "no run record and no probe script in `src/`". Both now exist.
+2. `0001`'s Standing record says the artifact carries "six claims withdrawn as false, plus this
+   accepted risk". The table carries **eleven** withdrawn or corrected claims plus the accepted
+   risk; six of the eleven are the false-by-construction subset.
 
 ---
 
-## Entry 6 — cadence classifier with numeric thresholds (D12)
+## Still with no decision file at all
 
-**Decided.** Five exhaustive buckets C0–C4, numeric thresholds, **first-match ordering as part
-of the definition**. Adopted **by name**, as proposed. `span := F_d − P`;
-`weekly_span := (L2 − 1) × 7`. C0 unclassifiable · C1 `span ≤ 1` · C2 `|span − weekly_span| ≤ 3`
-· C3 `1 < span < weekly_span − 3` · C4 `span > weekly_span + 3`.
-
-**Alternatives.** The prior wording — weekly when the span is "on the order of" `(L2−1)×7`,
-binge when "near zero".
-
-**Why this one.** Those are not thresholds and the pair is not exhaustive: a hiatus season, a
-two-episode premiere, or a two-per-week drop lands in **neither** bucket. This classifier gates
-the Step 6 estimation sample, a required Step 9 stratum, and a mandatory Step 12 candidate — and
-a required stratum with unassigned members gets silently pooled. **Two isolated Step 6
-instances reading the old sentence could legitimately produce different `W`s**, which would
-surface as a spurious dual-implementation divergence.
-
-**Costs.** The thresholds are conventions and are labelled as such — `≤ 1` rather than `= 0`
-for binge because a same-day drop can straddle midnight UTC; `± 3` days for weekly because it
-absorbs a change of broadcast day without reaching a full week's slip. Required alongside the
-counts: **the number of shows within 1 day of any bucket boundary**, so the convention's
-fragility is a visible number. C3 and C4 may not be folded into C1 or C2, and a bucket too
-small for an interval is reported as a count rather than pooled.
-
-**Disagreement and resolution.** Red Team third HOLD, blocking finding B4. Accepted in full.
-
----
-
-## Entry 7 — half-open UTC-instant boundaries (D13)
-
-**Decided.** Every date bound expands to a UTC instant at midnight; every membership test is
-half-open, closed left, open right. The in-window test is **`watched_at < τ1`** and nothing
-else, applied identically to `A`, D3, D8 and right-censoring. `date(watched_at) ≤ T1` is
-withdrawn and must not be written.
-
-**Alternatives.** `date(watched_at) ≤ T1`; or a `23:59:59` sentinel.
-
-**Why this one.** The old phrase "on or before `T1`" compared a full timestamp against a date
-and admitted **two faithful implementations one day apart**, on the single operator that
-assigns every outcome state and feeds the Step 8 and Step 9 dual-implementation diffs. The
-half-open form also makes the window exactly `W` days rather than `W + 1` calendar days, and
-makes the window and the horizon tile at `τ1` without gap or overlap — which matters because
-D3 and D8 are precisely counts of events just past that boundary. A sentinel would reintroduce
-the ambiguity at sub-second precision, which Trakt timestamps carry.
-
-**Costs.** Removes one calendar day from the window, moving the never-started share marginally
-**up**. Named, not corrected against the two opposing one-day effects — the UTC finale skew and
-`τ0 := ⟦T0⟧` — which move it **down** by comparable amounts. All three are stated; none is
-netted off. All are small against any plausible `W` of tens of days.
-
-**Disagreement and resolution.** Red Team third HOLD, blocking finding B3. Accepted in full.
-
----
-
-## Entry 8 — never-started post-window diagnostic (D8)
-
-**Decided.** For pairs scored **Never started** at `τ1`, report the count and share with any
-distinct S2 episode in `[τ1, τ1 + H × 24h)`, and the count and share satisfying the Continued
-condition over that horizon. Diagnostic only — **no pair moves state on account of it**.
-
-**Alternatives.** Report nothing for the never-started category, as the prior draft did — D3
-covered Started-and-left and nothing asked the same question of the category the study is
-named after.
-
-**Why this one.** "Never" is the one word in the headline a reader will take most literally,
-and a pair that started S2 on day `W + 1` is called "never" by this definition. It is the same
-query as D3 with the state filter changed — no new data, no new join.
-
-**Costs.** It moves the headline **down**, which is why it belongs: reporting only bounds that
-move the headline up would present the study's uncertainty as if it ran one way.
-
-**Disagreement and resolution.** Red Team second HOLD, blocking finding F3. Accepted. Entered
-as a proposal, held, and adopted by the Human Lead with the document on 2026-08-10 — not
-self-adopted.
-
----
-
-## Entry 9 — show splits as a known misclassification, with a bound (D9)
-
-**Decided.** Step 8 reports both halves — pairs scored Never started carrying a split
-signature, and pairs dropped at S1 completion carrying the same signature. Step 9 reports the
-split-artifact bound alongside the liveness bound and D4.
-
-**Alternatives.** The prior framing: treat splits as a counting nuisance, count at Step 8,
-build nothing.
-
-**Why this one.** A split does not merely miscount. If Trakt split a show's metadata between a
-user's viewing and our pull, pair `(user, ID_A)` has a complete S1 and `|A| = 0` and **scores
-Never started** — a fabricated row **directly into the published category** — while
-`(user, ID_B)` fails S1 completion and disappears from the population unrecorded. That is
-structurally identical to D4, so it gets D4's treatment.
-
-**Costs.** Detection is imperfect and the count is a **lower bound**, stated wherever the
-number appears. Reconciliation logic — merging split pairs back into one row — remains
-unwritten: count first, reconcile only if the count justifies it. Merges are the mirror case,
-less dangerous, counted with the same query and reported separately.
-
-**Disagreement and resolution.** Red Team second HOLD, secondary finding 1. Accepted; the
-prior open question 4 was closed and replaced by this.
-
----
-
-## Entry 10 — the liveness bound stays inflated (Red Team B2 overruled)
-
-**Decided.** **Overruled. Do not fix.** Recorded as an accepted risk in the table at the head
-of `artifacts/step1-outcome-definition.md`.
-
-**Alternatives.** Reclassify inactivity-excluded pairs that show complete in-window S2 viewing,
-so the bound does not count demonstrable continuers as decliners.
-
-**Why this one.** The bound is deliberately worst-case. It is not an estimate and is not
-presented as one; it is the ceiling of the reported floor-and-ceiling pair, and its whole
-function is to answer "what if every excluded pair were a decliner." **A bound that quietly
-reclassified the pairs it could explain away would no longer be a bound.**
-
-**Costs.** The inflation is real. It runs in the direction the bound is built to run, and it is
-stated wherever the bound appears. Counterweight: Step 9 also reports bounds that move the
-headline **down** — D4, D9, and the dropped-S2-evidence count — so the study's uncertainty is
-not presented as running one way.
-
-**Disagreement and resolution.** This *is* the disagreement. Red Team returned HOLD on B2; the
-Human Lead overruled and recorded the objection, the ruling, and the reason on the public
-record rather than deleting the objection.
-
----
-
-## Entry 11 — liveness is a pair-level filter (scope correction)
-
-**Decided.** Liveness **evidence** is account-wide; the liveness **test** is `τ1`-relative and
-`τ1` is pair-specific, so liveness is a **pair-level** filter. One account can be live for one
-show and not another. Dropping a user wholesale is forbidden. The Step 9 bound is over
-inactivity-excluded **pairs**, not users.
-
-**Alternatives.** The prior reading — liveness as "a statement about the account", which
-appeared in three places across two drafts.
-
-**Why this one.** It was simply mis-scoped, and the mis-scoping would have removed whole
-accounts on a test that only ever applied to one of their shows.
-
-**Costs.** None to the definition. The cost was procedural: Step 1 could not fix it alone,
-because the two isolated Step 7 instances read `task-sheet.md`, not the definition. **The Human
-Lead amended `task-sheet.md` Steps 7 and 9 directly on 2026-08-10.** Consequence worth
-recording: a scope divergence between the two Step 7 instances is now a **bug, not a spec
-ambiguity**.
-
-**Disagreement and resolution.** Raised in review, accepted, and closed in the file the
-implementers actually read. Step 1 had earlier asserted this as fact while the task sheet still
-said "user"; that assertion was unbacked when made, was withdrawn, and was restated only after
-the underlying file changed.
-
----
-
-## Entries still missing — flag when the Human Lead next writes to `decisions/`
-
-1. **The Step 4 endpoint choice.** `artifacts/step1-outcome-definition.md` §0 records `GET /users/:id/history` as decided by the Human Lead; `artifacts/step0-access-and-setup.md` §6 still lists that decision as open and blocking. Nothing in `decisions/`. See [[open-items-and-contradictions]] C1.
-2. **The three §10.1 open questions**, when ruled — the Continued boundary, the Step 6 estimation sample, and the right-censoring rule. Each currently carries a Data Scientist recommendation and a decision from nobody.
-3. **`pull_date`'s value**, when set.
+1. **`pull_date`'s value**, when set. Deferred, not omitted.
+2. **§10.1 open questions 1 and 3**, when ruled — the Continued boundary and the right-censoring
+   rule. Each carries a Data Scientist recommendation and a decision from nobody.
+3. **The gap hypothesis**, if and when it is assigned an owner.
 
 Related: [[gate-step1-outcome-definition]], [[glossary-terms-and-thresholds]],
-[[open-items-and-contradictions]], [[withdrawn-claims-register]].
+[[open-items-and-contradictions]], [[withdrawn-claims-register]], [[step1-open-questions]].
