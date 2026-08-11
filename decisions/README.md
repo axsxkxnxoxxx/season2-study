@@ -20,6 +20,8 @@ Step 18 assembles the final log from these files.
 | [0006](0006-step3-crawl-constants.md) | **The twelve Step 3 crawl constants**, none of which appear in `task-sheet.md`. Two carry known consequences: the usable floor and a FIFO screening-order artifact. Agent-taken. | 2026-08-11 | **Open — needs ratification** |
 | [0007](0007-step3-channel-cost-trade.md) | **Channel A took 89 percent of discovery calls at 5× the cost per user** on whole-run averages — though it was the *cheaper* channel over the last third. Defensible as buying Step 11 arm independence. Agent-taken. | 2026-08-11 | **Open — needs ratification** |
 | [0008](0008-step3-seed-source.md) | **Step 3 seeded from movie-comment authors.** Satisfies the task sheet's prohibition but biases the pool toward heavy trackers — **downward on the headline**, compounding with the liveness bias. The highest-consequence agent choice in Step 3. | 2026-08-11 | **Open — needs ratification** |
+| [0009](0009-step4-pull-order.md) | **Step 4 pulls in stratified round-robin order** over ten equal-count forecast-page bins, so any early stop leaves a prefix proportional across the full distribution. Amends an initial median-out instruction, which left a *centered* slice with no heavy users. | 2026-08-11 | Closed |
+| [0010](0010-step4-tail-cap.md) | **Tail cap at 300 forecast pages**, skip whole and never truncate, with an actual-pages guard that discards mid-sweep overruns. Justified as a **circuit breaker on forecast error**, not as protection against a slow user. Excludes 0.93% of the pool; direction **upward** on the headline. | 2026-08-11 | Closed |
 
 **A note on authority.** Entries 0001–0004 are Human Lead decisions. **0005–0007 are agent-taken,
 inside a Chained step, and are recorded retrospectively for ratification** — they shaped the
@@ -79,8 +81,11 @@ that surfaced it.
     activity-stratified diagnostic — computable from `raw/step3/` at zero further live calls — or
     Step 14 states the limitation. ([0005](0005-step3-stopping-rule.md), `artifacts/step3-user-discovery.md` §4)
 11. **Step 4 costs ~210,500 calls and ~23.4 hours** of pure throttled time at the current pool,
-    roughly 2.4× an earlier sampled estimate that inherited a `total_plays` bug. Whether to accept
-    that or sample the pool down is unsettled. ([0006](0006-step3-crawl-constants.md))
+    roughly 2.4× an earlier sampled estimate that inherited a `total_plays` bug.
+    **Partly addressed:** [0009](0009-step4-pull-order.md) makes an early stop survivable and
+    [0010](0010-step4-tail-cap.md) trims 1.7 hours, but the run is still not expected to finish the
+    pool in one window. Whether to sample the pool down remains unsettled.
+    ([0006](0006-step3-crawl-constants.md))
 12. ~~**`reciprocal_pairs: 1353` is a counting bug.**~~ **CLOSED 2026-08-11.** Fixed in
     `src/step3_backfill.py` and regenerated: `artifacts/step3-yield-curve.json` now reports
     **1,172**, matching an independent recount from `raw/step3/edges.jsonl`.
