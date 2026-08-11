@@ -2,17 +2,47 @@
 
 **Owner:** Analytics Engineer · **Mode:** Chained · **Reviewer:** Engineering
 **Status:** Engineering verdict was proceed. Three blockers and four should-fixes
-were authorized and are closed. One new finding blocks the Step 4 pull design and
-needs the Human Lead.
-**Dates:** first cut and Engineering review 2026-08-10; fixes same day.
+were authorized and are closed. The finding that blocked the Step 4 pull design is
+**closed by the Human Lead, 2026-08-10** — see Section 0.
+**Dates:** first cut and Engineering review 2026-08-10; fixes and endpoint decision same day.
 
 Three things were due: a working resumable client, one successful test pull, and the
-documented rate limit. All three are below, followed by the review fixes and one
-finding that Step 4 cannot proceed past without a decision.
+documented rate limit. All three are below, followed by the review fixes and the
+endpoint finding, which is now resolved.
 
 ---
 
-## 0. Finding that needs a decision before Step 4
+## 0. Finding that needed a decision before Step 4 — **CLOSED**
+
+> **RESOLVED by the Human Lead, 2026-08-10.** The replacement source is
+> **`GET /users/:id/history`, unfiltered, one sweep per user.** `/users/:id/watched/shows`
+> is **not** used by this study for outcome measurement, for the reasons set out below.
+>
+> **"One sweep" means one logical pass per user, not one call.** The unfiltered history
+> endpoint paginates exactly as `watched/shows` does, and more heavily: a probe profile
+> returned `item_count = 15812` at `page_count = 1582` with `limit=10`, which is roughly
+> **64 pages at `limit=250`** for a single user. Any Step 4 throughput estimate must be
+> built on pages, not on users. The one-call-per-user assumption that this section
+> disproved for `watched/shows` must not be reintroduced for `history`.
+>
+> **The sweep must be complete, and that is a correctness requirement rather than a
+> performance one.** Records come back newest-first, so a truncated sweep is
+> indistinguishable from a genuine "never started" and lands directly in the study's
+> headline category. Capping pages at Step 4 would silently manufacture the result.
+> `artifacts/step1-outcome-definition.md` §0 records the same dependency from the other
+> side; the two files agree.
+>
+> **What the decision fixes:** unfiltered (the endpoint mixes `type: episode` with
+> `type: movie`, and Step 7 liveness draws on the whole sweep as account-wide evidence, so
+> filtering server-side would destroy the liveness input); per-episode `watched_at`
+> timestamps, which is the property `watched/shows` lacked and the reason it was rejected;
+> and `action` retained rather than filtered, since Step 5 contamination diagnostics run on
+> it.
+>
+> Recorded in `decisions/`. The original finding is preserved unedited below, because it is
+> the warrant for the decision.
+
+**Original finding, as written when it was open:**
 
 The design decision was to pull histories with **one call per user** to
 `/users/:id/watched/shows`, returning the full watched library **with per-episode
@@ -270,7 +300,13 @@ Cross-process locking is additionally verified against two real OS processes.
 
 ## 6. Open items for the Human Lead
 
-1. **The Step 4 endpoint decision above.** The blocking one.
+1. ~~**The Step 4 endpoint decision above.** The blocking one.~~ **CLOSED by the Human Lead,
+   2026-08-10:** the source is `GET /users/:id/history`, unfiltered, one sweep per user.
+   See the resolution box in Section 0 and the entry in `decisions/`. Step 4 is unblocked on
+   this item. **Two conditions travel with it:** the sweep must be **complete** — a truncated
+   sweep is indistinguishable from "never started" and lands in the headline — and throughput
+   must be estimated in **pages, not users** (~64 pages per user at `limit=250` on the probe
+   profile).
 2. **403 on a user endpoint remains ambiguous, by design.** The rule says a 403 is a
    block and stops the run. Trakt's documented behaviour for a private profile is 401,
    which the client treats as unavailable-and-move-on. If Trakt returns 403 for a

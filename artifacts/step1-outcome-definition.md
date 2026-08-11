@@ -36,7 +36,8 @@ exclusion rule. Those are Steps 6, 7, and 5.
 settled items — Human Lead decisions and items already closed in `task-sheet.md` — are recorded
 in Section 10.0 and incorporated into the body of the document rather than appended to it. Two
 required outputs added by the second revision are in Section 10.0b; four added by this revision
-are in Section 10.0c. Three open questions remain in Section 10.1, each carrying a
+are in Section 10.0c. **Two** open questions remain in Section 10.1 — question 2 was decided by
+the Human Lead on 2026-08-10 as D14 — each carrying a
 recommendation that the Human Lead decides.
 
 **What the second HOLD changed.** Three blocking findings and five secondary ones. The
@@ -102,9 +103,17 @@ precondition as **CLOSED** and names the recommended endpoint variant.
 
 ## 0. Data source and what may not be used
 
-**Source, decided by the Human Lead:** `GET /users/:id/history`, unfiltered, one sweep per
-user. Each record carries `id`, `watched_at`, `action`, `type`, and for episodes an
+**Source, decided by the Human Lead, 2026-08-10:** `GET /users/:id/history`, unfiltered, one
+sweep per user. Each record carries `id`, `watched_at`, `action`, `type`, and for episodes an
 `episode` object (`season`, `number`, `title`, `ids`) plus a `show` object.
+
+This decision closes the blocking finding in `artifacts/step0-access-and-setup.md` §0, which
+established that `/users/:id/watched/shows` returns a show-level aggregate with **no
+per-episode timestamps** and therefore cannot support S1 completion, the abandonment point,
+or distinct-episode counting. It is recorded in `decisions/`, and the Step 0 artifact and this
+one agree. **"One sweep" is one logical pass, not one call:** the endpoint paginates at
+roughly **64 pages per user at `limit=250`** on the probe profile, so Step 4 throughput is
+estimated in pages.
 
 **Everything in this definition is computed from those records.** Specifically:
 
@@ -975,11 +984,15 @@ Recorded here so nothing is reconstructed later from memory.
   exclusion must also be applied **before** right-censoring, so an import-stamped S1 completion
   date is counted as contamination rather than laundered into a censoring drop (Section 6).
 - **Step 6** receives: `T0` anchored on the S2 finale per D1 (Section 6), the first-S2-watch
-  date on distinct episodes, the **D12 cadence classifier** — which, under open question 2's
-  recommendation, *is* the estimation sample, so it must be applied as written rather than
-  paraphrased — and the open question about how negative lags enter the lag distribution
-  (open question 2). Because `T0` and the Step 6 lag now share the same origin, W
-  is derived and applied against one clock rather than two.
+  date on distinct episodes, and the **D12 cadence classifier**, which under **D14 (Human Lead,
+  2026-08-10) *is* the estimation sample** — bucket **C1 only**, applied as written rather than
+  paraphrased, with the resulting W applied to all shows. **This is no longer an open question;
+  it is decided, and `task-sheet.md` Step 6 carries it**, so both isolated instances receive it
+  from the file they read rather than from this document. The negative-lag question that
+  travelled with it is closed by the same decision: on a C1 show premiere and finale coincide,
+  so every lag in the estimation sample is non-negative by construction and there is nothing to
+  truncate. Because `T0` and the Step 6 lag now share the same origin, W is derived and applied
+  against one clock rather than two.
 - **Step 7** receives, and this is the corrected version: liveness **evidence** is account-wide
   — the whole sweep, other shows and movies included, **not** restricted to the show under
   study — but the liveness **test** is `T0 + W`-relative and `T0` is pair-specific, so
@@ -1067,6 +1080,8 @@ None of these are mine to re-propose. All are incorporated into the body of this
 | **D11** | **`pull_date` is a single global frozen cutoff** — adopted in **form**. Its **value is deliberately deferred** to Step 4's schedule (Human Lead, 2026-08-10). Not an omission: the constraint `pull_date ≤ earliest per-user fetch date` cannot be honoured by a value fixed before the pull is scheduled. | Section 0, 10.0c |
 | **D12** | **The cadence classifier thresholds are adopted as proposed** (Human Lead, 2026-08-10, at approval): five exhaustive buckets `C0`–`C4`, numeric thresholds, first-match ordering. | Section 10.0, 10.0c |
 | **D13** | **Half-open UTC-instant boundaries** (`watched_at < τ1`, applied identically to `A`, D3, D8 and right-censoring) are adopted with the document. | Section 2.4, 10.0c |
+| **D14** | **Open question 2 is decided (Human Lead, 2026-08-10): W is estimated on bucket C1 (all-at-once) shows ONLY, per D12, and applied to all shows.** Estimation sample and application population differ deliberately. Two obligations travel with it, both now in `task-sheet.md`: Step 6 plots the C1-only and all-shows lag distributions together, and Step 13 varies W over at least the range those two imply. The transfer assumption — that binge viewers' delay-to-start behaviour carries to weekly viewers — is an assumption, not a finding, and is stated as such. | Section 10.1 Q2, `task-sheet.md` Steps 6 and 13 |
+| **D15** | **The Step 4 source is `GET /users/:id/history`, unfiltered, one sweep per user** (Human Lead, 2026-08-10), closing the blocking finding in `artifacts/step0-access-and-setup.md` §0. "One sweep" is one logical pass, **not** one call: ~64 pages per user at `limit=250`. The sweep must be **complete** — truncation is indistinguishable from "never started." | Section 0, `artifacts/step0-access-and-setup.md` §0 and §6 |
 
 **D12, the cadence classifier, stated as thresholds.** *The previous draft's version —
 "weekly-release when the premiere-to-finale span is on the order of `(L2 − 1) × 7` days and
@@ -1293,7 +1308,10 @@ right-censors, or that computes D3, D8 or D9, is blocked on that value — not o
 
 ### 10.1 Open questions, each with a recommendation
 
-Three remain — the fourth, show splits, is resolved as D9 above. **These are still open, and
+**Two remain.** Of the original four: show splits is resolved as D9, and **question 2 is decided
+as D14** (Human Lead, 2026-08-10) — its text is kept below, marked as decided, because the
+reasoning is the warrant for the decision and Step 6 needs it. **Questions 1 and 3 are still
+open, and
 Step 1's approval did not close them.** Approval covers the definition as written, including the
 *drafted* boundary each question sits next to; it is not a ruling on the alternatives. Each
 carries a recommendation from the Data Scientist and a decision from nobody. The Human Lead
@@ -1330,16 +1348,23 @@ grounds that do hold:
 it together with D3.* If D3 returns a high resumption share, revisit this boundary and the
 value of W together, since they are the same problem seen from two ends.
 
-**2. Estimating W under D1.** *The truncate-at-zero recommendation from the previous draft is
+**2. Estimating W under D1. — DECIDED, no longer open. See D14 in Section 10.0.** The
+Human Lead adopted the recommendation below on 2026-08-10: **W is estimated on bucket C1
+(all-at-once) shows only, per the D12 classifier, and the resulting W is applied to all
+shows.** `task-sheet.md` Step 6 now carries this, so both isolated Step 6 instances receive it
+from the file they actually read. The reasoning is retained below as the warrant, including
+what the decision costs.
+
+*The truncate-at-zero recommendation from an earlier draft is
 withdrawn.* Truncation maps every live weekly viewer to a point mass at zero, and the height
 of that mass is set by how many weekly shows the frame happens to contain — so W would become
 an artifact of the frame's cadence composition rather than a fact about viewers. Change the
 show mix, change W, with no change in behaviour. That is not defensible out loud, which is the
 bar Step 6 has to clear.
 
-*Recommendation: estimate W on **bucket C1 (all-at-once)** shows only, per the D12 classifier,
-then apply the resulting W to all shows.* **C1 is the estimation sample and C0, C2, C3 and C4
-are not** — stated as a bucket name rather than as the words "binge shows" precisely because
+*Adopted (was: recommendation): estimate W on **bucket C1 (all-at-once)** shows only, per the
+D12 classifier, then apply the resulting W to all shows.* **C1 is the estimation sample and C0,
+C2, C3 and C4 are not** — stated as a bucket name rather than as the words "binge shows" precisely because
 the two isolated Step 6 instances must select the same rows from the same frame without
 consulting each other. On a C1 show the premiere and finale coincide, so `T0` is the moment the whole
 season became available, every lag is non-negative by construction, and the lag measures the
@@ -1348,11 +1373,14 @@ there available. That is a clean estimation sample for a quantity that is then a
 uniformly.
 
 What it costs, stated so it is not discovered later: it assumes the delay-to-start behaviour
-of binge viewers transfers to weekly viewers, which is an assumption and not a finding. Two
-things should accompany it — the C1-only and all-shows lag distributions plotted together
-so the reader can see how different they are, and a Step 13 arm varying W over the range the
-two distributions imply. Whether the C1 estimation sample is large enough to support
-the percentile is a question for Step 6 with the data in hand, not for Step 1.
+of binge viewers transfers to weekly viewers, which is an assumption and not a finding. **Two
+things accompany the decision and are now required rather than suggested**, both written into
+`task-sheet.md` — the C1-only and all-shows lag distributions plotted together at Step 6 so the
+reader can see how far the transfer assumption is stretched, and a Step 13 arm varying W over
+**at least** the range those two distributions imply, since that gap is the size of the
+assumption and therefore the range that tests it. Whether the C1 estimation sample is large
+enough to support the percentile is a question for Step 6 with the data in hand, not for
+Step 1; `task-sheet.md` Step 6 now requires that answer be stated.
 
 **3. Right-censoring.** *The "expected cost is zero rows" claim from the previous draft is
 withdrawn; it was false on this document's own definitions.* The frame caps the S2 finale but
@@ -1376,12 +1404,14 @@ Reconciliation logic remains unwritten, and that part of the old recommendation 
 
 ## 11. What this document does not do
 
-- It does not set **W**. Step 6.
+- It does not set **W**. Step 6. It does now fix the **estimation sample** W is derived from —
+  bucket C1 only, per D14 — but the value is Step 6's and remains a gate.
 - It does not set the **liveness threshold** or the liveness rule. Step 7.
 - It does not set the **contamination exclusion rule**. Step 5.
 - It does not set the **filter order**. Step 8.
-- It does not resolve the **three open questions in Section 10.1**. Each carries a
-  recommendation from me and a decision from nobody.
+- It does not resolve the **two open questions remaining in Section 10.1** — questions 1 and 3.
+  Each carries a recommendation from the Data Scientist and a decision from nobody. Question 2
+  was decided by the Human Lead as D14; question 4 was resolved as D9.
 - It does not add a field or a filter to **Step 2**, which is the Human Lead's. Section 3.3
   states what this definition *requires* — the listed episode-number set — and names the
   recommended endpoint. Whether that requirement is met as a Step 2 field, as a separate pull, or

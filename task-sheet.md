@@ -198,10 +198,14 @@ TV Time shut down 15 July 2026 and users bulk-imported into Trakt. Imported time
 W is a number of days. It is derived here and used everywhere downstream.
 
 - [ ] Restrict to users who did start S2
+- [ ] **Estimate W on bucket C1 (all-at-once) shows ONLY, per the D12 classifier in Step 1 §10.0. C1 is the estimation sample; C0, C2, C3 and C4 are not.** Human Lead decision, 2026-08-10. Use the bucket name, not the words "binge shows" — both isolated instances must select the same rows from the same frame without consulting each other. On a C1 show the premiere and finale coincide, so every lag is non-negative by construction and the lag measures the one thing W is meant to capture.
 - [ ] Anchor the lag on the S2 finale date, not the premiere, for weekly-release shows
 - [ ] Plot the lag distribution from clock start to first S2 episode
 - [ ] Set W at the percentile where the curve flattens
+- [ ] **Apply the resulting W to ALL shows, not only to C1.** Estimation sample and application population are deliberately different.
+- [ ] **Plot the C1-only and all-shows lag distributions together**, so the reader can see how far the transfer assumption is being stretched
 - [ ] State the percentile and the reason in one sentence
+- [ ] State whether the C1 sample was large enough to support the percentile. That is a Step 6 question with the data in hand.
 
 **Deliver:** lag distribution chart, chosen W, one-sentence justification, all in `artifacts/`
 **Check:** two isolated instances run the same spec. The Human Lead diffs the numbers before reviewing.
@@ -322,7 +326,8 @@ Two separate things are defined here and they must not be confused. The **thresh
 **Owner:** Data Scientist
 **Mode:** Chained
 
-- [ ] Vary W above and below the derived value
+- [ ] Vary W above and below the derived value. **Cover at least the range implied by the gap between the C1-only and all-shows lag distributions from Step 6** — that gap is the size of the transfer assumption Q2 accepted, so it is the range that tests it.
+- [ ] **Report the retained-row count for every W arm.** The right-censoring rule contains W, so each arm re-censors the population and the arms do NOT share a denominator.
 - [ ] Vary the liveness threshold
 - [ ] Vary the S1 completion rule at 100 percent and at 90 percent
 - [ ] Report which conclusions survive all variations
