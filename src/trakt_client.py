@@ -476,6 +476,18 @@ class TraktClient:
             "stale_cache_entries": 0,
             "user_403_skipped": 0,
             "errors": 0,
+            # Failure and sleep accounting. A caller that samples these before
+            # and after a unit of work can say how much of its wall-clock time
+            # was throttle, how much was a 429 pause, how much was backoff, and
+            # how much was neither. Without that, a machine suspend and a
+            # sustained throttle are the same number to a reader, and one of
+            # those is a stall and the other is the system working.
+            "http_5xx": 0,
+            "transport_errors": 0,
+            "throttle_sleep_seconds": 0.0,
+            "rate_limit_sleep_seconds": 0.0,
+            "backoff_sleep_seconds": 0.0,
+            "request_seconds": 0.0,
         }
 
     # -- secret hygiene ----------------------------------------------------
@@ -894,10 +906,13 @@ class TraktClient:
         transient_attempt = 0
 
         while True:
-            self.throttle.wait_for_slot()
+            self.counters["throttle_sleep_seconds"] += (
+                self.throttle.wait_for_slot() or 0.0
+            )
             resp = None
             err_kind = None
             err_detail = None
+            sent_at = time.time()
             try:
                 self.counters["requests_sent"] += 1
                 resp = self.session.get(
@@ -912,6 +927,11 @@ class TraktClient:
                 err_kind = type(exc).__name__
                 err_detail = str(exc)[:300]
                 status = None
+            self.counters["request_seconds"] += time.time() - sent_at
+            if status is None:
+                self.counters["transport_errors"] += 1
+            elif 500 <= status < 600:
+                self.counters["http_5xx"] += 1
 
             xrl = self._ratelimit_object(resp)
             retry_after = self._retry_after(resp)
@@ -1057,6 +1077,7 @@ class TraktClient:
                     "consecutive_pauses": self._consecutive_429_pauses,
                     "total_pauses_this_run": self._total_429_pauses,
                 })
+                self.counters["rate_limit_sleep_seconds"] += pause
                 time.sleep(pause)
                 self.throttle.note_external_pause(pause)
                 continue
@@ -1086,6 +1107,7 @@ class TraktClient:
                     "attempt": transient_attempt,
                     "sleep_seconds": round(delay, 2),
                 })
+                self.counters["backoff_sleep_seconds"] += delay
                 time.sleep(delay)
                 continue
 

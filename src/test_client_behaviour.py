@@ -69,7 +69,9 @@ class FakeSession:
     def get(self, url, headers=None, params=None, timeout=None):
         self.calls.append((url, dict(params or {})))
         item = self.script.pop(0) if self.script else FakeResponse(200)
-        if isinstance(item, Exception):
+        # BaseException, not Exception: a scripted KeyboardInterrupt is how the
+        # Ctrl-C paths are exercised, and KeyboardInterrupt is not an Exception.
+        if isinstance(item, BaseException):
             raise item
         return item
 
@@ -930,6 +932,527 @@ def t_fetch_all_reconciles():
         }
 
 
+# ==========================================================================
+# Step 3 crawler. Added after engineering review returned HOLD on the first
+# run. Each of these covers a defect that was found in production behaviour,
+# so each is written to fail against the code as it was.
+# ==========================================================================
+
+
+def step3_env(tmp: Path):
+    """Point the module's output directories at a temp tree."""
+    import step3_user_discovery as s3
+
+    class _Ctx:
+        def __enter__(self):
+            self.saved = (s3.LOGS_DIR, s3.ARTIFACTS, s3.RAW_STEP3)
+            s3.LOGS_DIR = tmp / "logs"
+            s3.ARTIFACTS = tmp / "artifacts"
+            s3.RAW_STEP3 = tmp / "raw" / "step3"
+            for path in (s3.LOGS_DIR, s3.ARTIFACTS, s3.RAW_STEP3):
+                path.mkdir(parents=True, exist_ok=True)
+            return s3
+
+        def __exit__(self, *exc):
+            s3.LOGS_DIR, s3.ARTIFACTS, s3.RAW_STEP3 = self.saved
+            return False
+
+    return _Ctx()
+
+
+def step3_constants(**overrides):
+    """Temporarily shrink the round sizes so a test round is a few calls.
+
+    The stopping thresholds are never touched by this: only the per-round work
+    sizes, and every test that cares asserts the thresholds separately.
+    """
+    import step3_user_discovery as s3
+
+    class _Ctx:
+        def __enter__(self):
+            self.saved = {k: getattr(s3, k) for k in overrides}
+            for k, v in overrides.items():
+                setattr(s3, k, v)
+            return s3
+
+        def __exit__(self, *exc):
+            for k, v in self.saved.items():
+                setattr(s3, k, v)
+            return False
+
+    return _Ctx()
+
+
+def seeded_crawler(tmp: Path, script, seeds=("alpha",), state_name="state"):
+    """A crawler with its seeds planted directly, so a test does not have to
+    script the comment feeds to reach the behaviour it is about."""
+    import step3_user_discovery as s3
+
+    client = make_client(tmp, script)
+    crawler = s3.Step3Crawler(client, resume=False, state_dir=tmp / state_name)
+    crawler.write_artifact = False
+    for slug in seeds:
+        crawler.users[slug] = {
+            "username": slug, "trakt_id": None, "channel_first": "A",
+            "in_a": True, "in_b": False, "edge": "seed", "depth": 0,
+            "origin_seed": slug, "parent": None, "private": False,
+            "deleted": False, "vip": False, "joined_at": None,
+            "first_seen_round": 0, "seed_provenance": None, "lists_owned": [],
+            "expansion": None, "screen": None,
+        }
+        crawler.seed_order.append(slug)
+        crawler._enqueue_frontier(slug, 0, slug)
+    crawler._journal = s3._RoundJournal()
+    return crawler
+
+
+def user_payload(slug):
+    return json.dumps([{"user": {"username": slug, "ids": {"slug": slug, "trakt": 1}}}])
+
+
+def stats_payload(episode_plays, movie_plays=0, include_total=False):
+    body = {
+        "movies": {"plays": movie_plays, "watched": movie_plays},
+        "shows": {"watched": 5},
+        "seasons": {},
+        "episodes": {"plays": episode_plays, "watched": episode_plays},
+        "network": {"followers": 1, "following": 1},
+        "ratings": {"total": 0},
+    }
+    if include_total:
+        body["total_plays"] = episode_plays + movie_plays
+        body["progress"] = {"started": 1, "finished": 1, "dropped": 0}
+    return json.dumps(body)
+
+
+def t_step3_exit_code_is_nonzero_on_access_blocked():
+    """`step3 && step4` must not read a 403 block as success."""
+    import step3_user_discovery as s3
+
+    for exc, expected in (
+        (AccessBlocked("blocked"), s3.EXIT_ACCESS_BLOCKED),
+        (RateLimitPersistent("saturated"), s3.EXIT_RATE_LIMIT_PERSISTENT),
+        (TransientFailure("exhausted"), s3.EXIT_TRANSIENT_EXHAUSTED),
+        (KeyboardInterrupt(), s3.EXIT_INTERRUPTED),
+        (ValueError("bug"), s3.EXIT_UNEXPECTED),
+    ):
+        with tempfile.TemporaryDirectory() as d:
+            tmp = Path(d)
+            with step3_env(tmp) as mod:
+                original_run = mod.Step3Crawler.run
+                original_client = mod.TraktClient
+                mod.TraktClient = lambda **kw: make_client(tmp, [])
+                mod.Step3Crawler.run = lambda self: (_ for _ in ()).throw(exc)
+                try:
+                    code = mod.main(["--state-dir", str(tmp / "st")])
+                finally:
+                    mod.Step3Crawler.run = original_run
+                    mod.TraktClient = original_client
+                assert code == expected, f"{type(exc).__name__}: {code} != {expected}"
+
+
+def t_step3_run_record_is_written_on_every_exit_path():
+    """The old code skipped logs/step3_run.json entirely on TransientFailure,
+    which is the exit where a reader most needs it."""
+    import step3_user_discovery as s3
+
+    for exc in (TransientFailure("exhausted"), ValueError("bug"), None):
+        with tempfile.TemporaryDirectory() as d:
+            tmp = Path(d)
+            with step3_env(tmp) as mod:
+                original_run = mod.Step3Crawler.run
+                original_client = mod.TraktClient
+                mod.TraktClient = lambda **kw: make_client(tmp, [])
+                if exc is None:
+                    mod.Step3Crawler.run = lambda self: setattr(
+                        self, "stop_reason", "done")
+                else:
+                    mod.Step3Crawler.run = lambda self: (_ for _ in ()).throw(exc)
+                try:
+                    mod.main(["--state-dir", str(tmp / "st")])
+                finally:
+                    mod.Step3Crawler.run = original_run
+                    mod.TraktClient = original_client
+                record = tmp / "logs" / "step3_run.json"
+                assert record.exists(), f"no run record after {exc!r}"
+                payload = json.loads(record.read_text())
+                assert "exit_code" in payload and "counts" in payload
+
+
+def t_step3_clean_stop_exits_zero():
+    import step3_user_discovery as s3
+
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        with step3_env(tmp) as mod:
+            original_run = mod.Step3Crawler.run
+            original_client = mod.TraktClient
+            mod.TraktClient = lambda **kw: make_client(tmp, [])
+            mod.Step3Crawler.run = lambda self: setattr(
+                self, "stop_reason", "budget: hit the Step 3 call cap")
+            try:
+                assert mod.main(["--state-dir", str(tmp / "st")]) == s3.EXIT_OK
+            finally:
+                mod.Step3Crawler.run = original_run
+                mod.TraktClient = original_client
+
+
+def t_step3_run_record_redacts_the_client_id():
+    """logs/step3_run.json was the one write in the project that went out
+    through a bare json.dumps with no credential guard."""
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        with step3_env(tmp) as mod:
+            client = make_client(tmp, [])
+            crawler = mod.Step3Crawler(client, resume=False, state_dir=tmp / "st")
+            crawler.stop_reason = f"stopped while calling with key {client._client_id}"
+            path = mod.write_run_record(crawler, client, None, 0)
+            text = path.read_text()
+            assert client._client_id not in text
+            assert "<REDACTED>" in text
+
+
+def t_step3_pool_write_is_atomic():
+    """The old writer opened with "w", so a kill mid-write left a truncated
+    file that is indistinguishable from a smaller complete pool."""
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        crawler = seeded_crawler(tmp, [], seeds=("a", "b", "c"))
+        crawler.write_pool()
+        assert len(crawler.pool_path.read_text().splitlines()) == 3
+
+        real_write = Path.write_text
+
+        def explode(self, *args, **kwargs):
+            if self.name.endswith(".part"):
+                raise OSError("killed mid-write")
+            return real_write(self, *args, **kwargs)
+
+        crawler.users["d"] = dict(crawler.users["a"])
+        Path.write_text = explode
+        try:
+            try:
+                crawler.write_pool()
+            except OSError:
+                pass
+        finally:
+            Path.write_text = real_write
+        lines = crawler.pool_path.read_text().splitlines()
+        assert len(lines) == 3, f"truncated to {len(lines)} lines"
+        for line in lines:
+            json.loads(line)
+
+
+def t_step3_deliverables_land_at_the_round_boundary():
+    """Not in a finally. A SIGKILL must not be able to leave thousands of
+    calls spent and no pool on disk."""
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        with step3_constants(EXPAND_USERS_PER_ROUND=1, LIST_PAGES_PER_ROUND=1,
+                             SCREEN_CALLS_PER_ROUND=2, TARGET_USABLE=10 ** 9,
+                             CALL_BUDGET=10 ** 9):
+            crawler = seeded_crawler(tmp, [
+                FakeResponse(200, {}, user_payload("kid")),
+                FakeResponse(200, {}, "[]"),
+                FakeResponse(200, {}, "[]"),
+                FakeResponse(200, {}, stats_payload(500)),
+                FakeResponse(200, {}, stats_payload(500)),
+            ])
+            crawler.max_rounds = 1
+            crawler.run()
+        assert crawler.pool_path.exists() and crawler.curve_path.exists()
+        assert len(crawler.curve_path.read_text().splitlines()) == 1
+        assert len(crawler.pool_path.read_text().splitlines()) >= 2
+
+
+def t_step3_interrupted_round_is_discarded_whole():
+    """A half-persisted round left users marked expanded whose followers were
+    never read; resume never revisited them."""
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        with step3_constants(EXPAND_USERS_PER_ROUND=2, LIST_PAGES_PER_ROUND=1,
+                             SCREEN_CALLS_PER_ROUND=2, TARGET_USABLE=10 ** 9,
+                             CALL_BUDGET=10 ** 9):
+            crawler = seeded_crawler(tmp, [
+                FakeResponse(200, {}, user_payload("kid")),
+                KeyboardInterrupt(),
+            ], seeds=("alpha", "beta"))
+            frontier_before = {k: list(v) for k, v in crawler.frontier.items()}
+            users_before = set(crawler.users)
+            try:
+                crawler.run()
+            except KeyboardInterrupt:
+                pass
+        assert crawler.expanded == set(), f"left expanded: {crawler.expanded}"
+        assert set(crawler.users) == users_before, "a discarded round left users behind"
+        assert {k: list(v) for k, v in crawler.frontier.items()} == frontier_before
+        assert crawler.rounds == []
+        assert len(crawler.discarded_rounds) == 1
+        assert crawler.discarded_rounds[0]["reason"] == "KeyboardInterrupt"
+
+
+def t_step3_user_is_expanded_only_after_both_edge_calls():
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        crawler = seeded_crawler(tmp, [
+            FakeResponse(200, {}, user_payload("kid")),
+            KeyboardInterrupt(),
+        ])
+        try:
+            crawler.expand_channel_a(1)
+        except KeyboardInterrupt:
+            pass
+        assert "alpha" not in crawler.expanded, (
+            "marked expanded before its edges were read; resume would skip it")
+
+
+def t_step3_403_expansion_is_not_a_zero_follower_user():
+    """The conflation decisions/0004-403-handling.md exists to prevent,
+    reintroduced at the discovery layer by a bare `continue`."""
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        crawler = seeded_crawler(tmp, [
+            FakeResponse(403, {"X-Private-User": "true"}, ""),   # alpha followers
+            FakeResponse(403, {"X-Private-User": "true"}, ""),   # alpha following
+            FakeResponse(200, {}, "[]"),                          # beta followers
+            FakeResponse(200, {}, "[]"),                          # beta following
+        ], seeds=("alpha", "beta"))
+        stats = crawler.expand_channel_a(2)
+        denied = crawler.users["alpha"]["expansion"]
+        empty = crawler.users["beta"]["expansion"]
+        assert denied["followers_outcome"] == "access_denied"
+        assert denied["followers_returned"] is None
+        assert denied["complete"] is False
+        assert empty["followers_outcome"] == "ok"
+        assert empty["followers_returned"] == 0
+        assert empty["complete"] is True
+        assert stats["expansions_access_denied"] == 2
+        assert crawler.counts()["expansions_access_denied"] == 1
+
+
+def t_step3_access_denied_counts_users_not_endpoints():
+    """One user refused on followers, following and stats is one denied user,
+    and a cache replay must not add another."""
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        crawler = seeded_crawler(tmp, [
+            FakeResponse(403, {"X-Private-User": "true"}, ""),
+            FakeResponse(403, {"X-Private-User": "true"}, ""),
+        ])
+        crawler.expand_channel_a(1)
+        assert crawler.access_denied_users == 1, crawler.access_denied_users
+        assert crawler.access_denied_endpoint_hits == 2
+        assert crawler.access_denied_live_hits == 2
+        # Replay the same two endpoints from cache: still one user.
+        crawler.expanded.clear()
+        crawler._enqueue_frontier("alpha", 0, "alpha")
+        crawler.expand_channel_a(1)
+        assert crawler.access_denied_users == 1
+        assert crawler.access_denied_live_hits == 2, "cache replays were counted as spend"
+
+
+def t_step3_round_record_separates_a_plateau_from_a_stall():
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        with step3_constants(EXPAND_USERS_PER_ROUND=1, LIST_PAGES_PER_ROUND=1,
+                             SCREEN_CALLS_PER_ROUND=1, TARGET_USABLE=10 ** 9,
+                             CALL_BUDGET=10 ** 9):
+            crawler = seeded_crawler(tmp, [
+                FakeResponse(200, {}, user_payload("kid")),
+                FakeResponse(200, {}, "[]"),
+                FakeResponse(200, {}, "[]"),
+                FakeResponse(200, {}, stats_payload(500)),
+            ])
+            crawler.max_rounds = 1
+            crawler.run()
+        record = crawler.rounds[0]
+        for field in ("channel_a_new_eligible", "channel_b_new_eligible",
+                      "channel_a_yield_per_call", "channel_b_yield_per_call",
+                      "frontier_size", "frontier_seeds_nonempty", "frontier_by_depth",
+                      "expanded_this_round", "expanded_total", "neighbours_returned",
+                      "neighbours_new", "neighbours_already_known",
+                      "neighbour_dedup_rate", "lists_duplicate", "list_dedup_rate",
+                      "rate_limit_pauses", "transient_retries",
+                      "sleep_seconds_throttle", "sleep_seconds_rate_limit",
+                      "sleep_seconds_backoff", "unaccounted_seconds",
+                      "max_inter_request_gap_seconds", "stall_suspected",
+                      "margin_above_trigger"):
+            assert field in record, f"round record is missing {field}"
+        assert record["channel_a_new_eligible"] == 1
+        assert record["expanded_this_round"] == 1
+
+
+def t_step3_stall_is_flagged_and_throttling_is_not():
+    """2796 seconds with no 429 is a suspended machine, and the first run
+    recorded it identically to 2796 seconds of throttling."""
+    import step3_user_discovery as s3
+
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        crawler = seeded_crawler(tmp, [])
+        before = dict(crawler.client.counters)
+        stalled = crawler._time_decomposition(2796.0, before)
+        assert stalled["stall_suspected"] is True
+        assert stalled["unaccounted_seconds"] > 2000
+
+        crawler.client.counters["rate_limit_sleep_seconds"] += 2780.0
+        crawler.client.counters["rate_limit_pauses"] += 3
+        throttled = crawler._time_decomposition(2796.0, before)
+        assert throttled["stall_suspected"] is False
+        assert throttled["sleep_seconds_rate_limit"] == 2780.0
+        assert throttled["unaccounted_seconds"] < s3.STALL_UNACCOUNTED_SECONDS
+
+
+def t_step3_forecast_is_aggregated_and_not_based_on_a_missing_field():
+    """users/:id/stats omits total_plays on 77 percent of payloads, so the old
+    forecast divided a missing field read as zero and returned one page."""
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        crawler = seeded_crawler(tmp, [
+            FakeResponse(200, {}, stats_payload(1000, 250, include_total=False)),
+            FakeResponse(200, {}, stats_payload(2000, 0, include_total=True)),
+        ], seeds=("alpha", "beta"))
+        crawler.screen(2)
+        a = crawler.users["alpha"]["screen"]
+        b = crawler.users["beta"]["screen"]
+        assert a["stats_payload_variant"] == "reduced"
+        assert a["total_plays_reported"] is None
+        assert a["history_plays"] == 1250
+        assert a["step4_pages_forecast"] == 5, a["step4_pages_forecast"]
+        assert b["stats_payload_variant"] == "full"
+        assert b["total_plays_reported"] == 2000
+        assert b["step4_pages_forecast"] == 8
+        forecast = crawler.step4_forecast()
+        assert forecast["usable_users"] == 2
+        assert forecast["total_pages"] == 13, forecast["total_pages"]
+        assert forecast["max"] == 8 and forecast["min"] == 5
+        assert forecast["mean_pages_per_user"] == 6.5
+        assert forecast["extrapolated_to_target_usable"]["calls"] == 26000
+
+
+def t_step3_full_edge_list_is_recorded_not_a_spanning_tree():
+    """Keeping only the first parent leaves a tree, and a tree is acyclic by
+    construction, so it cannot answer whether the pool is one clique."""
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        crawler = seeded_crawler(tmp, [
+            FakeResponse(200, {}, user_payload("shared")),   # alpha followers
+            FakeResponse(200, {}, "[]"),
+            FakeResponse(200, {}, user_payload("shared")),   # beta followers
+            FakeResponse(200, {}, "[]"),
+        ], seeds=("alpha", "beta"))
+        crawler.expand_channel_a(2)
+        crawler._flush_edges()
+        edges = [json.loads(l) for l in crawler.edges_path.read_text().splitlines()]
+        assert len(edges) == 2, edges
+        assert {e["src"] for e in edges} == {"alpha", "beta"}
+        assert crawler.users["shared"]["parent"] == "alpha"   # tree keeps one
+        assert edges[0]["follower"] == "shared" and edges[0]["followee"] == "alpha"
+
+
+def t_step3_seed_and_channel_b_provenance_are_recorded():
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        crawler = seeded_crawler(tmp, [FakeResponse(200, {}, json.dumps([{
+            "list": {"ids": {"trakt": 7, "slug": "l"}, "item_count": 3,
+                     "user": {"username": "owner", "ids": {"slug": "owner"}}},
+        }]))])
+        crawler.expand_channel_b(1)
+        owned = crawler.users["owner"]["lists_owned"]
+        assert len(owned) == 1
+        assert owned[0]["list_id"] == 7
+        assert owned[0]["feed"] in ("lists/trending", "lists/popular")
+        crawler._record_user({"username": "s", "ids": {"slug": "s"}}, "A", "seed",
+                             depth=0, origin_seed="s",
+                             seed_provenance={"feed": "comments/recent/all/movies",
+                                              "movie_trakt_id": 42, "page": 1})
+        assert crawler.users["s"]["seed_provenance"]["movie_trakt_id"] == 42
+
+
+def t_step3_artifact_refuses_usernames_but_not_ordinary_prose():
+    """The guard has to be usable. A bare substring sweep fires on slugs like
+    "any" and "sean" inside English words, and a check that always fires is a
+    check that gets deleted."""
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        crawler = seeded_crawler(tmp, [], seeds=("any", "sean", "longuserslug99"))
+        clean = {"note": "seasonal viewers rarely finish any season",
+                 "counts": {"users": 3}}
+        assert crawler._names_present_in(clean) == []
+        assert crawler._names_present_in({"pool": ["longuserslug99"]}) == ["longuserslug99"]
+        assert crawler._names_present_in({"error": "GET users/sean/stats failed"}) == ["sean"]
+        assert crawler._names_present_in({"channel": "any"}) == ["any"]
+
+
+def t_step3_yield_curve_artifact_is_counts_only():
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        with step3_env(tmp) as mod:
+            crawler = seeded_crawler(tmp, [], seeds=("longuserslug99",))
+            crawler.write_artifact = True
+            path = crawler.write_yield_curve_artifact()
+            text = path.read_text()
+            assert "longuserslug99" not in text
+            assert (tmp / "artifacts" / "step3-yield-curve.csv").exists()
+            crawler.stop_reason = "stopped at users/longuserslug99/followers"
+            try:
+                crawler.write_yield_curve_artifact()
+                raise AssertionError("wrote a username to artifacts/")
+            except ValueError:
+                pass
+
+
+def t_step3_stopping_thresholds_are_unchanged():
+    """Making the metrics honest is in scope. Changing what the run would
+    decide is not. This pins the numbers the plan committed to."""
+    import step3_user_discovery as s3
+
+    assert s3.MIN_ROUNDS_BEFORE_PLATEAU == 10
+    assert s3.PLATEAU_FRACTION_OF_PEAK == 0.20
+    assert s3.PLATEAU_CONSECUTIVE_ROUNDS == 2
+    assert s3.TARGET_USABLE == 4000
+    assert s3.MIN_EPISODES_USABLE == 10
+    assert s3.CALL_BUDGET == 6500
+    assert s3.N_SEEDS == 300
+    assert s3.MAX_DEPTH == 3
+    assert s3.NEIGHBOURS_PER_USER == 100
+    assert s3.STEP4_PAGE_LIMIT == 250
+
+
+def t_step3_plateau_margin_is_reported_without_moving_the_rule():
+    import step3_user_discovery as s3
+
+    with tempfile.TemporaryDirectory() as d:
+        tmp = Path(d)
+        crawler = seeded_crawler(tmp, [])
+        crawler.rounds = [{"yield_per_discovery_call": y} for y in
+                          [12.33, 4.48, 5.07, 7.96, 4.19, 2.70, 2.15, 4.78, 1.56, 2.19]]
+        state = crawler.plateau_state()
+        assert state["plateaued"] is False
+        assert 0.22 < state["ratio_to_peak"] < 0.24
+        assert state["margin_above_trigger"] == round(
+            state["ratio_to_peak"] - 0.20, 4)
+        # These are the real yields from rounds 1-10 of the first run. The
+        # moving average never actually crossed the 0.20 trigger, so the count
+        # of rounds below it is zero: the run came within about three
+        # percentage points and then rebounded. That margin is the whole point
+        # of reporting it, and it was invisible in the old round record.
+        assert state["rounds_below_threshold_so_far"] == 0
+        assert state["rounds_until_rule_is_eligible"] == 0
+        assert 0.02 < state["margin_above_trigger"] < 0.04
+
+
+def t_step3_backfill_replay_cannot_reach_the_network():
+    import step3_backfill as bf
+
+    session = bf.FrozenSession()
+    try:
+        session.get("https://api.trakt.tv/users/x/followers")
+        raise AssertionError("the offline guard let a request through")
+    except bf.OfflineViolation:
+        pass
+
+
 def main() -> int:
     print("offline behaviour checks")
     checks = [
@@ -977,6 +1500,27 @@ def main() -> int:
         ("mid-pull failure raises", t_mid_pull_failure_raises),
         ("private first page is move-on, not error", t_first_page_private_is_move_on_not_error),
         ("fetch_all reconciles item counts", t_fetch_all_reconciles),
+        # -- Step 3 crawler ------------------------------------------------
+        ("step3 exits non-zero on every loud failure", t_step3_exit_code_is_nonzero_on_access_blocked),
+        ("step3 writes a run record on every exit path", t_step3_run_record_is_written_on_every_exit_path),
+        ("step3 exits zero only on a committed stopping rule", t_step3_clean_stop_exits_zero),
+        ("the step3 run record redacts the Client ID", t_step3_run_record_redacts_the_client_id),
+        ("the user pool is written atomically", t_step3_pool_write_is_atomic),
+        ("deliverables land at the round boundary, not in a finally", t_step3_deliverables_land_at_the_round_boundary),
+        ("an interrupted round is discarded whole", t_step3_interrupted_round_is_discarded_whole),
+        ("a user is expanded only after both edge calls", t_step3_user_is_expanded_only_after_both_edge_calls),
+        ("a 403 expansion is not a zero-follower user", t_step3_403_expansion_is_not_a_zero_follower_user),
+        ("access_denied counts users, not endpoints or cache replays", t_step3_access_denied_counts_users_not_endpoints),
+        ("the round record separates a plateau from a stall", t_step3_round_record_separates_a_plateau_from_a_stall),
+        ("a stall is flagged and throttling is not", t_step3_stall_is_flagged_and_throttling_is_not),
+        ("the Step 4 forecast is aggregated and not built on a missing field", t_step3_forecast_is_aggregated_and_not_based_on_a_missing_field),
+        ("the full edge list is recorded, not a spanning tree", t_step3_full_edge_list_is_recorded_not_a_spanning_tree),
+        ("seed and Channel B provenance are recorded", t_step3_seed_and_channel_b_provenance_are_recorded),
+        ("the privacy guard catches usernames and not ordinary prose", t_step3_artifact_refuses_usernames_but_not_ordinary_prose),
+        ("the yield curve artifact is counts only", t_step3_yield_curve_artifact_is_counts_only),
+        ("the stopping thresholds are unchanged", t_step3_stopping_thresholds_are_unchanged),
+        ("the plateau margin is reported without moving the rule", t_step3_plateau_margin_is_reported_without_moving_the_rule),
+        ("the backfill replay cannot reach the network", t_step3_backfill_replay_cannot_reach_the_network),
     ]
     failures = []
     for name, fn in checks:
