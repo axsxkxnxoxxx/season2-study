@@ -26,8 +26,13 @@ Step 18 assembles the final log from these files.
 | [0012](0012-sweep-completeness-rule.md) | **Sweep completeness is full `page_count` coverage plus a 2% residual tolerance**, not exact match on `item_count` — which the pilot showed is not an exact record count. Over-count, under-count and genuine cross-page duplicates are counted **separately**. **Amends [0002](0002-step4-history-endpoint.md) and an approved gate artifact.** | 2026-08-11 | Closed |
 | [0013](0013-step2-execution-delegation.md) | **Step 2 execution is delegated to an agent; the selection rules stay with the Human Lead.** Judgment is which shows belong and on what criterion; execution is fetching seasons and applying a written rule. **Amends the `CLAUDE.md` Human Lead ownership rule, for Step 2 only.** Three conditions: no concurrent live-API agents, candidate set recomputed on the full pool, underspecified rules reported not resolved. | 2026-08-11 | Closed |
 | [0014](0014-no-content-filters-structural-fields.md) | **No content-category filters in the Step 2 frame.** The anime and daily-strip/soap exclusions are dropped before first use — the concern was release structure, not genre, and genre is a lossy proxy for it in both directions. Release structure is recorded as **fields**; thresholds set by the Human Lead after the distributions are visible. | 2026-08-11 | **Open — thresholds not yet set** |
+| [0015](0015-step2-unaired-s2-exclusion.md) | **A listed-but-unaired season 2 is not a season 2 for the frame.** 12 shows excluded, all reporting `aired_episodes = 0`. Recorded as its own ledger step rather than folded into the date cutoff, which removed 60 — collapsing them would have made the ledger say 72. Resolves the one case the selection rules did not decide. | 2026-08-12 | Closed |
+| [0016](0016-per-season-network-dropped.md) | **Per-season network dropped as a field; platform fragmentation is not a variable in this study.** 0.71% populated across 6,645 season objects; one show in 2,094 carries two distinct values, read as noise and not as fragmentation. **Closes the first open problem in [0014](0014-no-content-filters-structural-fields.md); the second survives and now attaches to the show-level network**, a present-day value that must not be read as release-time availability. | 2026-08-12 | Closed |
+| [0017](0017-air-period-definition.md) | **Air period := calendar year of the S2 finale, bucketed pre-2020 / 2020–2022 / 2023–2025**, bracketing the production shutdown and claiming nothing finer. Carries a confound that travels with it: **air period and cadence are strongly collinear** on this frame and are not independent cuts. | 2026-08-12 | Closed |
+| [0018](0018-size-quintile-base.md) | **The title size quintile is cut over the 1,226-show frame, not the 2,094 candidates** — the quintile cuts results, and results exist only in-frame. The rejected base gave unequal bins labelled as quintiles. A quintile label is **not a stable identifier**: rebuild the frame and every boundary moves. | 2026-08-12 | Closed |
+| [0019](0019-pool-completers-recomputed.md) | **`pool_completers` recomputed on real season lengths; the max-observed proxy is superseded and no result may use it.** Changes nothing on this frame — proxy `L1_hat` equals real `\|E1\|` on 1,225 of 1,226 shows — which is not a rehabilitation of the proxy generally. **Corrects the stated premise of [0013](0013-step2-execution-delegation.md) condition 2:** counts do not only rise; 118 long-tail shows fell between pool sizes. | 2026-08-12 | Closed |
 
-**A note on authority.** Entries 0001–0004 are Human Lead decisions. **0005–0007 are agent-taken,
+**A note on authority.** Entries 0001–0004 and 0013–0019 are Human Lead decisions. **0005–0007 are agent-taken,
 inside a Chained step, and are recorded retrospectively for ratification** — they shaped the
 population every downstream number rests on, and a constant that shapes the population is a decision
 whether or not it was treated as one at the time. They are listed here so the distinction between
@@ -71,7 +76,10 @@ that surfaced it.
 7. **The `L2 = 1` / cadence-classification ordering is written nowhere.** Classification is
    available from Step 2; the `L2 = 1` exclusion happens at Step 8. At `L2 = 1` the weekly span
    is 0, which falls in bucket C2 — harmless only because those shows are excluded, and the
-   order that makes it harmless is not recorded.
+   order that makes it harmless is not recorded. **Does not arise on the current frame
+   (2026-08-12): `min(L2) = 2` and zero in-frame shows have `L2 = 1`,** so no show is
+   misclassified by the ordering today. The ordering is still unwritten and the frame will change
+   if the pull resumes, so this stays open. ([0019](0019-pool-completers-recomputed.md))
 8. **The gap hypothesis still has no owning step** — see item 3. Visibility is not ownership.
 9. **The 403 rule's live behaviour is still unobserved — Step 3 did not exercise it.** 5,300 calls
    produced zero 403s and zero 429s, so both 403 branches and the 429 path remain untested against
@@ -94,11 +102,34 @@ that surfaced it.
     `src/step3_backfill.py` and regenerated: `artifacts/step3-yield-curve.json` now reports
     **1,172**, matching an independent recount from `raw/step3/edges.jsonl`.
     `distinct_directed_pairs: 7103` was always correct. ([0007](0007-step3-channel-cost-trade.md))
-13. **`MIN_EPISODES_USABLE = 10`'s warrant is unverified.** It assumes no S1 in the frame is shorter
-    than 10 episodes, but Step 1 §7 retains `L1 = 1` and no minimum S1 length is set anywhere.
-    **Checkable as soon as Step 2 exists: `min(L1)` over the frame.** If it fails, the excluded users
-    are light trackers — downward on the headline, compounding with the seeding bias.
-    ([0006](0006-step3-crawl-constants.md))
+13. ~~**`MIN_EPISODES_USABLE = 10`'s warrant is unverified.**~~ **CLOSED 2026-08-12 — checked against
+    the frame and the retained screen records, and ACCEPTED by the Human Lead.** Verified facts, in
+    the order they were asked for:
+    - **What it counted.** `src/step3_user_discovery.py:953–954`, `ep_watched =
+      int(episodes.get("watched") or 0); usable = ep_watched >= MIN_EPISODES_USABLE` — the
+      `episodes.watched` field of `GET /users/:id/stats`, an **account-wide count of distinct
+      episodes across all shows**. Not play records: the same block reads `episodes.plays`
+      separately. Across all 4,319 cached stats bodies `watched < plays` in 3,523 and
+      `watched == plays` in 796, **never greater**. It is **not per-show** — ten episodes across ten
+      shows passes, nine inside one show fails.
+    - **What it removed.** **232 accounts, and nothing else removed any.** Over 4,320 screened:
+      `ok` 4,088, `below_episode_floor` **232**, `access_denied` 0, `unavailable_*` 0, `status_*` 0.
+      Corroborated by `logs/step3_run.json` and `artifacts/step3-user-discovery.md` §1.
+    - **What those accounts held. 210 of the 232 have `episodes_watched = 0`.** Only 22 have any
+      episodes at all, the maximum being 6 (counts: 0→210, 1→5, 2→3, 3→5, 4→4, 5→1, 6→4).
+    - **The warrant is still not literally true**, and that is what is being accepted rather than
+      denied: `min(L1) = 1` over the frame and 159 in-frame shows have `L1 ≤ 6`, so a 6-episode
+      account is not arithmetically barred from having completed an in-frame S1. **The exposure is
+      at most 22 accounts, 0.5% of the 4,320 screened**, not the 232 the floor rejected.
+    - **The removed accounts are fully recoverable** — slug and complete screen record for all 232
+      in `raw/step3/user_pool.jsonl` and `raw/step3/state.json`, with their stats bodies already
+      cached under `raw/users/*/stats/`. Recovering them costs **0 live calls**; a full history pull
+      of all 232 would cost **296 pages** (30 for just the 22 with any episodes), and the forecast is
+      exact at that size — observed users with a 1-page forecast read exactly 1.00 pages, 2-page
+      exactly 2.00.
+    - **Not recoverable:** what the crawl would have found had those accounts remained in the
+      frontier as expansion sources. That path was not taken and is not reconstructible from disk.
+    ([0006](0006-step3-crawl-constants.md), `artifacts/step2-frame-ledger-and-distributions.md` §3.2)
 14. ~~**The Step 3 seed source has no decision entry.**~~ **CLOSED 2026-08-11** — recorded as
     [0008](0008-step3-seed-source.md).
 15. **A rule inside the approved Step 1 gate was amended without Red Team review.**
@@ -117,12 +148,24 @@ that surfaced it.
     candidate set happens to hold, including the ones the dropped content filters were reaching for.
     Usable for diagnostics and for seeing the distributions; not the study's result.
     ([0014](0014-no-content-filters-structural-fields.md))
-18. **Platform fragmentation is unverified and may not be measurable.** Two problems, the second
-    surviving the first: (a) it is not established whether Trakt exposes a **per-season** network or
-    only one network per show — if the latter, "seasons split across services" has no representation
-    in the data; (b) fragmented titles frequently **consolidate later**, so a present-day field
-    describes availability in 2026, not availability at release, which is the thing that would have
-    affected viewing. **If it cannot be measured it is dropped as a field and the limitation is
-    stated** — in the frame write-up and again wherever a structural threshold is justified without
-    it. Not silently omitted, and not approximated with a present-day value presented as a
-    release-time one. ([0014](0014-no-content-filters-structural-fields.md))
+18. **Platform fragmentation — problem (a) CLOSED 2026-08-12, problem (b) still open and relocated.**
+    ~~(a) it is not established whether Trakt exposes a **per-season** network.~~ **Measured: it does,
+    and it is empty — 0.71% populated across 6,645 season objects, one show in 2,094 with two
+    distinct values.** Dropped as a field per 0014's own resolution rule, recorded as
+    [0016](0016-per-season-network-dropped.md). **Platform fragmentation is not a variable in this
+    study**; no result may control for it, stratify on it, or rule it out.
+    **(b) survives, and now attaches to a different field.** The show-level `network` pulled on
+    2026-08-12 is 100% populated with 150 distinct values, and it records **today's** network — a
+    title that moved services between seasons shows only its current one. **`show_network` must not
+    be used as a release-time availability measure.** Retained as a descriptive field only.
+    ([0014](0014-no-content-filters-structural-fields.md), [0016](0016-per-season-network-dropped.md))
+19. **The Step 2 frame is built on a stopped pull, and every frame-derived boundary moves if it
+    resumes.** The candidate set rests on 2,549 users, 62.9% of plan. The stop is proportional across
+    all ten strata (decided share 69.6–70.1%), but the *analysed* cohort is proportional only to
+    within 6.1 points, because the [0012](0012-sweep-completeness-rule.md) discard rate varies by
+    stratum (complete share 59.3% in bin 5 to 65.4% in bin 7). Consequences that are not yet
+    decisions: the ≥50 candidate rule was applied to **proxy** counts and has not been re-applied to
+    the recomputed ones ([0019](0019-pool-completers-recomputed.md)); **size quintile boundaries are
+    valid only against the frame they were cut on** ([0018](0018-size-quintile-base.md)); and the
+    frame is systematically older than the catalogue, 66.6% of it with an S2 finale before 2020
+    ([0015](0015-step2-unaired-s2-exclusion.md)).
