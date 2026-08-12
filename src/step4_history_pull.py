@@ -729,6 +729,7 @@ class Step4Puller:
         run_label: str = "step4",
         reconcile: str = COMPLETENESS_RULE,
         residual_tolerance: float = RESIDUAL_TOLERANCE,
+        exclude_slugs: Iterable[str] | None = None,
     ):
         self.client = client
         self.state_dir = Path(state_dir or STATE_DIR)
@@ -768,6 +769,14 @@ class Step4Puller:
             raise ValueError(f"unknown reconcile mode {reconcile!r}")
         self.reconcile = reconcile
         self.residual_tolerance = residual_tolerance
+        # Slugs the Human Lead has placed OUT OF SCOPE for this run. They are
+        # not decided, not skipped by any rule in decisions/0004, 0010 or 0012,
+        # and no ledger row is written for them: the run simply does not touch
+        # them, and they stay exactly as they were for a later run. This is a
+        # scope bound on a resumed run, NOT a study rule, so it is counted in
+        # the run record and never turned into an outcome.
+        self.exclude_slugs = set(exclude_slugs or ())
+        self.excluded_this_run: list[str] = []
 
         self.state_path = self.state_dir / "state.json"
         self.ledger_path = self.state_dir / "pull_ledger.jsonl"
@@ -916,6 +925,9 @@ class Step4Puller:
             "users_decided_total": len(latest),
             "users_remaining_in_plan": remaining,
             "users_attempted_this_run": attempted,
+            # Count only. The slugs themselves are never written here.
+            "users_out_of_scope_this_run": len(self.exclude_slugs),
+            "users_skipped_as_out_of_scope": len(self.excluded_this_run),
             "by_outcome": dict(by_outcome),
             "live_calls_this_run": live,
             "live_calls_recorded_all_runs": self.live_calls_recorded(),
@@ -1264,13 +1276,18 @@ class Step4Puller:
         # length users in the ledger up front rather than at whatever point the
         # run happens to reach them.
         for entry in self.plan["over_cap"]:
-            if entry["slug"] in decided:
+            if entry["slug"] in decided or entry["slug"] in self.exclude_slugs:
                 continue
             self.pull_user(entry)
         decided = self.latest_outcomes()
 
         consecutive_deferrals = 0
         for entry in self.plan["order"]:
+            # Out of scope for this run by instruction. Left undecided on
+            # purpose: no ledger row, no outcome, no state change at all.
+            if entry["slug"] in self.exclude_slugs:
+                self.excluded_this_run.append(entry["slug"])
+                continue
             prior = decided.get(entry["slug"])
             if prior is not None:
                 if prior["outcome"] not in self.retry_outcomes:
@@ -1627,7 +1644,14 @@ def write_run_record(
             "bin_sizes": puller.plan["bin_sizes"],
             "bin_forecast_ranges": puller.plan["bin_forecast_ranges"],
         },
-        "bounds": {"max_users": puller.max_users, "max_calls": puller.max_calls},
+        "bounds": {
+            "max_users": puller.max_users,
+            "max_calls": puller.max_calls,
+            # A scope bound set for this run, not a study rule. Counts only:
+            # this file is read alongside artifacts, so no slug goes in it.
+            "users_placed_out_of_scope": len(puller.exclude_slugs),
+            "users_skipped_as_out_of_scope": len(puller.excluded_this_run),
+        },
         "proportionality": verify_prefix_proportionality(puller.plan),
         "counts": puller.counts(),
         "client_counters": client.summary(),
@@ -1827,10 +1851,26 @@ def main(argv: list[str] | None = None) -> int:
                         help="write artifacts/step4-<label>-counts.json")
     parser.add_argument("--plan-only", action="store_true",
                         help="build and verify the pull order; make no calls")
+    parser.add_argument("--exclude-slugs-file", default=None,
+                        help="path to a newline-delimited list of slugs this run "
+                             "must not touch. They are left UNDECIDED: no ledger "
+                             "row, no outcome, no state change. A scope bound on "
+                             "one run, never a study rule. The file carries user "
+                             "identifiers, so it belongs in processed/, and the "
+                             "flag exists so no slug is ever typed into a code "
+                             "file or a command line.")
     args = parser.parse_args(argv)
 
     if args.status:
         return print_status()
+
+    exclude_slugs: list[str] = []
+    if args.exclude_slugs_file:
+        exclude_slugs = [
+            line.strip()
+            for line in Path(args.exclude_slugs_file).read_text(encoding="utf-8").splitlines()
+            if line.strip() and not line.lstrip().startswith("#")
+        ]
 
     client = TraktClient(run_label="step4_history_pull")
     puller = Step4Puller(
@@ -1846,6 +1886,7 @@ def main(argv: list[str] | None = None) -> int:
         sabbath_window=parse_sabbath_window(args.sabbath),
         reconcile=args.completeness_rule,
         residual_tolerance=args.residual_tolerance,
+        exclude_slugs=exclude_slugs,
     )
 
     if args.plan_only:

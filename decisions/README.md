@@ -24,6 +24,8 @@ Step 18 assembles the final log from these files.
 | [0010](0010-step4-tail-cap.md) | **Tail cap at 300 forecast pages**, skip whole and never truncate, with an actual-pages guard that discards mid-sweep overruns. Justified as a **circuit breaker on forecast error**, not as protection against a slow user. Excludes 0.93% of the pool; direction **upward** on the headline. | 2026-08-11 | Closed |
 | [0011](0011-pull-date-value.md) | **`pull_date = 2026-08-11`**, `τ_pull = 2026-08-11T00:00:00Z`. Closes the value D11 deferred until Step 4's schedule was known. Constraint satisfied: earliest per-user fetch is 05:01:26Z. | 2026-08-11 | Closed |
 | [0012](0012-sweep-completeness-rule.md) | **Sweep completeness is full `page_count` coverage plus a 2% residual tolerance**, not exact match on `item_count` — which the pilot showed is not an exact record count. Over-count, under-count and genuine cross-page duplicates are counted **separately**. **Amends [0002](0002-step4-history-endpoint.md) and an approved gate artifact.** | 2026-08-11 | Closed |
+| [0013](0013-step2-execution-delegation.md) | **Step 2 execution is delegated to an agent; the selection rules stay with the Human Lead.** Judgment is which shows belong and on what criterion; execution is fetching seasons and applying a written rule. **Amends the `CLAUDE.md` Human Lead ownership rule, for Step 2 only.** Three conditions: no concurrent live-API agents, candidate set recomputed on the full pool, underspecified rules reported not resolved. | 2026-08-11 | Closed |
+| [0014](0014-no-content-filters-structural-fields.md) | **No content-category filters in the Step 2 frame.** The anime and daily-strip/soap exclusions are dropped before first use — the concern was release structure, not genre, and genre is a lossy proxy for it in both directions. Release structure is recorded as **fields**; thresholds set by the Human Lead after the distributions are visible. | 2026-08-11 | **Open — thresholds not yet set** |
 
 **A note on authority.** Entries 0001–0004 are Human Lead decisions. **0005–0007 are agent-taken,
 inside a Chained step, and are recorded retrospectively for ratification** — they shaped the
@@ -108,3 +110,19 @@ that surfaced it.
     `logs/step3_run.json` both times; a `ledger_note` in the file records it. Either restore after
     every regeneration or use the script's default out-dir, which does not touch that file. The
     ledger is the only record of Step 3's spend against the API budget and it is gitignored.
+17. **The Step 2 structural thresholds are deferred, not skipped.** Until the Human Lead sets them,
+    the frame carries **no exclusion on gap length and no exclusion on season size**. Consequence,
+    stated now rather than discovered later: **any headline computed before those thresholds are set
+    is provisional** — it runs over a population still containing whatever release structures the
+    candidate set happens to hold, including the ones the dropped content filters were reaching for.
+    Usable for diagnostics and for seeing the distributions; not the study's result.
+    ([0014](0014-no-content-filters-structural-fields.md))
+18. **Platform fragmentation is unverified and may not be measurable.** Two problems, the second
+    surviving the first: (a) it is not established whether Trakt exposes a **per-season** network or
+    only one network per show — if the latter, "seasons split across services" has no representation
+    in the data; (b) fragmented titles frequently **consolidate later**, so a present-day field
+    describes availability in 2026, not availability at release, which is the thing that would have
+    affected viewing. **If it cannot be measured it is dropped as a field and the limitation is
+    stated** — in the frame write-up and again wherever a structural threshold is justified without
+    it. Not silently omitted, and not approximated with a present-day value presented as a
+    release-time one. ([0014](0014-no-content-filters-structural-fields.md))
