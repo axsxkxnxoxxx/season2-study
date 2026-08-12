@@ -43,8 +43,9 @@ Step 18 assembles the final log from these files.
 | [0029](0029-step7-threshold-rule-and-w-propagation.md) | **`W = 108` propagated to its consuming steps; Step 7's threshold rule and Step 8's filter order fixed.** `W` appeared in neither Step 7 nor Step 8, while the two Step 6 artifacts state **107** and **107.7135** — a contradiction with two different wrong answers, into which two dual instances could have resolved differently. Step 7's *"set the threshold well beyond the normal gap"* withdrawn for a named percentile — **proposed at the 99th, not adopted** — with the gap as a **continuous insertion-instant difference** and the threshold rounded **up**. Step 8's filter order fixed, because the row set commutes but the required per-filter waterfall does not. | 2026-08-12 | **Open — the Step 7 percentile is proposed, not ruled** |
 | [0030](0030-frame-field-corrections.md) | **The 2024/2025 contradiction corrected by addendum, and three frame field changes.** Step 1 relied on a 2024 cap that Step 2 had moved to 2025, and its horizon assumed `W ≤ 91` against the adopted 108 — **the gate is not reopened**, both figures corrected by post-approval addendum. Margin is **24 days**, zero shows lost, but censoring is **cohort-asymmetric** (2023–2025 loses 10.3% of pairs at `W = 213` against 2.7% pre-2020). **`show_network` dropped** — it errs in both directions and has no stable semantics; **`rating`/`votes`/`comment_count`/`subgenres`/`airs_day` added**, giving the frame a reception axis it lacked; **`size_quintile`** is now within-cohort rank, per-year having over-corrected worse than raw under-corrected. | 2026-08-12 | Closed |
 | [0031](0031-the-50-completer-floor.md) | **The ≥50 S1-completer floor stands, and now has the warrant it never had.** The largest population rule in the study — 44,617 shows to 2,094 — and the only one with no entry and no sensitivity curve. Published: ≥25 gives +81% candidates, ≥100 gives −50%, and **there is no break in the distribution at 50**. Justified on cost, not on shape: shows near the floor are 42% of the frame by count but **15% by pairs**. **The frame at ≥25 is not computable without 1,699 API calls** and no claim is made about it. | 2026-08-12 | Closed |
+| [0032](0032-step4-deliverable-regeneration.md) | **Step 4's deliverables regenerated at zero API calls; the pull stopped SAFELY, not cleanly; the resume cost restated.** `step4_run.json` and `step4_pull_log.json` were written by a `--max-users 3` run and reported **2,137 complete against 2,549** — stale by 464 decided users and 23,410 calls, because the record-writers fire only from `main()`'s `finally` and neither long run reached it. Fixed with `--max-users 0`, verified at an unchanged request-log line count. The pull's ledger, progress file and raw cache all held and nothing was lost, but `finished: false`, `stop_reason: null` and no exit line means **"exited cleanly" was never supported**. Resume costs **~70,000 calls and ~7.8 hours**, not 4.28 — that figure came from 8 users over 100 seconds, 123 of whose pages were free, and is user-count based so blind to the untouched users being the heavier half of every bin. | 2026-08-12 | Closed |
 
-**A note on authority.** Entries 0001–0004 and 0013–0031 are Human Lead decisions. **0005–0008 are agent-taken,
+**A note on authority.** Entries 0001–0004 and 0013–0032 are Human Lead decisions. **0005–0008 are agent-taken,
 inside a Chained step, and are recorded retrospectively for ratification** — they shaped the
 population every downstream number rests on, and a constant that shapes the population is a decision
 whether or not it was treated as one at the time. They are listed here so the distinction between
@@ -305,3 +306,18 @@ that surfaced it.
     though it covers them**. The floor is also a higher bar for recent titles, making the 2023–2025
     cohort differently selected rather than merely smaller.
     ([0031](0031-the-50-completer-floor.md))
+
+36. **Two Step 4 record defects are carried as Step 14 limitations rather than fixed**, because both
+    are provenance defects and neither moves a result. **(a)** The live-call ledger **under-counts by
+    246** — a run killed mid-sweep never writes its row while its calls have already been sent, and
+    the three documented guards all address replay *zeroing* rather than this. **`api_requests.ndjson`
+    is the authoritative spend figure.** **(b)** `step4_failures.ndjson` reads **301 against 287**
+    terminal discards, carrying 14 duplicate rows from an offline replay, because `OfflineGuard`
+    does not partition the failure log or the API log by `--state-dir`. **Read failure counts from
+    the ledger.** ([0032](0032-step4-deliverable-regeneration.md))
+37. **The resume is unpriced in the file that would be used to price it.** `step4_progress.json`
+    still reports `projected_hours_remaining: 4.28` against a measured **~7.8 hours and ~70,000
+    calls**. The exact figure is one summation over `pull_order.jsonl` at zero API calls and **has
+    not been computed.** Resume hazards also stand unaddressed: an exclude file with no expiry, disk
+    unmeasured anywhere, and a 27-hour Sabbath window a 7.8-hour run does not fit before a
+    Friday-evening start. ([0032](0032-step4-deliverable-regeneration.md))
