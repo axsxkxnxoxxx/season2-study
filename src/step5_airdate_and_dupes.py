@@ -75,10 +75,14 @@ def main():
     n_groups = 0
     top_hour = 0
     checked = 0
+    max_accounts = 0
     for i in cand:
         a, e = b[i], b[i + 1]
-        if len(np.unique(U[a:e])) < MIN_ACCOUNTS:
+        n_acc = len(np.unique(U[a:e]))
+        if n_acc < MIN_ACCOUNTS:
             continue
+        if n_acc > max_accounts:
+            max_accounts = n_acc
         n_groups += 1
         mode3[a:e] = True
         if checked < 20000:
@@ -91,6 +95,7 @@ def main():
     out["mode3_airdate_stamp"] = {
         "min_accounts": MIN_ACCOUNTS,
         "groups": n_groups,
+        "max_accounts_per_group": max_accounts,
         "records": n_mode3,
         "share_of_dated_episode_records": round(n_mode3 / total_ep_dated, 6),
         "share_of_all_records": round(n_mode3 / len(user), 6),
