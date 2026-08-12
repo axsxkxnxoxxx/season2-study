@@ -1,25 +1,28 @@
-# Step 5 — Red Team reviews, rounds 1 and 2
+# Step 5 — Red Team reviews, all four rounds
 
-**What this is:** the record of both adversarial reviews fired at the Step 5 gate. The `red-team`
-agent is review-only and **wrote no files**; its findings existed solely in the session transcript
-and would have been lost. They are transcribed here at the Human Lead's instruction, **before the
-D1 ruling**, so that the ruling is made against a durable record rather than a conversation.
+**What this is:** the record of all four adversarial reviews fired at the Step 5 gate. The
+`red-team` agent is review-only and **wrote no files**; its findings existed solely in the session
+transcript and would have been lost. Rounds 1 and 2 were transcribed at the Human Lead's
+instruction **before the D1 ruling**, so that the ruling was made against a durable record rather
+than a conversation. Rounds 3 and 4 were added afterwards for the same reason.
 
-**Both rounds returned HOLD. The Step 5 gate is open.** Steps 6 and 7 remain blocked. Nothing in
-this document approves, adopts, or proposes anything; the Red Team recommends and only the Human
-Lead approves, in writing.
+**Rounds 1, 2 and 3 returned HOLD; round 4 returned PROCEED** with four corrections, all since
+applied. **The gate is not recorded as approved** — approval is the Human Lead's, in writing, and no
+agent records it. Nothing in this document approves, adopts, or proposes anything.
 
 **Aggregates, counts and reasoning only.** No usernames, user IDs or individual watch histories.
 
 | | |
 | :--- | :--- |
 | Round 1 | reviewed **revision 1** — the four-layer proposal, 32.4% exclusion. **HOLD**, B1–B3 blocking, C1–C5 corrections |
-| Round 2 | reviewed **revision 3** — the adopted rule after Human Lead rulings. **HOLD**, D1–D3 blocking, E1–E6 corrections |
+| Round 2 | reviewed **revision 3** — the adopted rule after the first Human Lead rulings. **HOLD**, D1–D3 blocking, E1–E6 corrections |
+| Round 3 | reviewed **revision 4** — after the D1 ruling. **HOLD**, F1–F3 blocking, described as a narrow hold not touching the rule |
+| Round 4 | reviewed **revision 6** — after adoption 3 was dropped. **PROCEED**, four corrections, all since applied |
 | Artifact under review | `artifacts/step5-contamination-diagnostics.md` |
 | Reviewer constraints | Read, Grep, Glob only. Cannot execute code |
 
 **Transcription note.** These are the Red Team's findings, reorganised for the page but not
-softened. Where a claim was independently verified by the main session, that is marked in §3 and
+softened. Where a claim was independently verified by the main session, that is marked in §5 and
 kept separate from the review itself, so the reviewer's record stays unaltered.
 
 ---
@@ -298,7 +301,160 @@ this section.
 
 ---
 
-## 3. Independent verification by the main session
+## 3. Round 3 — against revision 4
+
+**Verdict: HOLD.** F1, F2 and F3 each independently blocking. **A narrow hold** — the reviewer stated
+that the rule was by then substantially right, that the D1 ruling was correct, and that none of the
+three findings touched the core of the rule.
+
+Revision 4 followed the Human Lead's D1 ruling: Step 1 §7 stands, gate 1 stays closed, adoption 1
+narrowed to option (b), adoption 2 re-ruled onto the censoring rationale, the 720 affirmed.
+
+**Round 2 findings verified as resolved:** D1 (principle withdrawn, §0 restates Step 1 §7 verbatim
+and cites D8, gate 1 not reopened), D2 (re-ruled on censoring, method published and matching
+`revision4.json`), E2, E3 (invariance correctly withdrawn — 128,099 for None/P/R1b/R1n but **131,043
+for R3**, self-reported against the artifact's own prior claim), E4, E5, E6. D3 only partly.
+
+### F1 — a population change and an estimator bias were netted into one direction
+
+§13 concluded *"the net direction is down: the never-started share this study reports is a floor."*
+The three rows are not commensurable. The 1,542 and the 16,665 are **exact counts of pairs removed**,
+each with a known state — they change *what is being estimated*. The 46,642 counts retained pairs
+**exposed** to a contaminated first S2 watch; a pair flips only if its true watch fell outside the
+window and the fabricated date falls inside, so it is an **estimator bias on a fixed population**,
+and an upper bound rather than a count.
+
+`revision4.json` computed `ratio_retention_to_exclusion: 30.2` as 46,642/1,542, **ignoring the
+16,665**, which runs the opposite way and is 10.8× the 1,542. Against the net exclusion the ratio is
+**3.1**. "Thirty times larger" and "dominant" were not established.
+
+Named remedy: split the statement in two, and bound the flip count with the instrument the revision
+already built — a contaminated record's true watch is ≤ its insert, so a pair whose first S2 watch
+has `τ_ins < τ1` was inside the window anyway and **cannot flip**.
+
+### F2 — 2,352 of the 7,340 were closeable without `W`, and shape 3's real cost was unnamed
+
+§12 declared the whole 7,340 partly-air-date population unanswerable until `W` exists. True for 4,988
+of them; **false for the other 2,352**. For a pair whose *first* S2 watch is clean, `c < s ≤ S2
+finale ≤ T0 < τ1`, so the clean record lands in `A` at any `W` and the stamp is redundant. **The open
+population is 4,988 (2.3%), not 7,340 (3.6%).** The artifact computed the split, printed it, and then
+declared the whole set open.
+
+Two costs of shape 3 the artifact did not name:
+
+1. It leaves the gate closing **without a determinate population**. Step 8's filter order puts
+   contamination exclusion before right-censoring and outcome assignment; a `W`-dependent test cannot
+   occupy that slot, because `W` is produced two gates downstream.
+2. **It corrupts the dual-implementation control.** Steps 6, 8 and 9 run twice and the Human Lead
+   diffs the numbers. If the analysis population is a function of `W` and the two Step 6 instances
+   return different `W` — the entire reason for running it twice — then the two Step 8 instances
+   classify **different populations**, and the diff confounds an implementation difference with a
+   population difference.
+
+The reviewer also noted that adoption 1's "entirely" boundary has no basis in the mechanism: the rule
+excludes on a guarantee while retaining pairs that carry it. F2's split reduces the inconsistency
+from 7,340 pairs to 4,988 without removing it.
+
+### F3 — the reproducibility certification was false, third occurrence
+
+§16 stated *"Every figure in this revision is written by committed code into
+`processed/step5/revision4.json`."* §10 made the same claim for its C5 rows. Both false: nine figures
+— 3,610 / 153.4 / 4,916.2 / 4,724 / 76.5, §8's 57,594 / 21,653 / 42,019, and §12's 4,988 — appeared
+in no committed output, and two of them were **the same rows D3 was raised about**, still uncommitted
+and now affirmatively certified as committed.
+
+> A gate artifact that falsely certifies its own reproducibility is worse than one that makes no such
+> claim — the false certificate defeats the check the Human Lead would otherwise run.
+
+---
+
+## 4. Round 4 — against revision 6
+
+**Verdict: PROCEED, with four required corrections.** The first non-HOLD of the sequence.
+
+Scoped by the Human Lead to two items: verify F3 is genuinely closed by grep against
+`src/step5_revision5.py`, and confirm F1's recomputation.
+
+Revision 5 addressed F1–F3; revision 6 implemented the Human Lead's ruling **dropping adoption 3**.
+
+### F3 — closed on substance
+
+The reviewer ran both halves of the check — that the script computes and writes the key, and that the
+artifact's number matches the JSON value — on all thirteen figures, including the four the
+analytics-engineer found beyond the nine originally named (8,001,189, 8,831,718, 3,115,531,
+2,185,696). All thirteen passed. The two §10 C5 rows are now derivable line-by-line.
+
+**But the certification text overclaimed a fourth time**, in four ways: §16 mis-routed §9.2's figures
+to `revision5.json` when they live in `revision4.json` `insert_time_bound`; the blanket sentence *"No
+figure in this artifact is produced outside `src/`"* was falsified by §4's "up to 164 accounts share
+one instant", which appeared in no committed output; §8.1's 38.2% was mis-routed; and "four
+revisions" described the sixth.
+
+### F1 — recomputation correct
+
+Verified against `F1_population_change` and `F1_flip_upper_bound`: the withdrawn 30.2 recorded as
+withdrawn; 16,665 − 1,542 = 15,123 up; `ratio_against_net_exclusion` 3.1; the flip bound at
+30/60/91/120/180 with ruled-out rising monotonically; the waterfall 201,900 → 178,165 → 155,131 →
+152,126 → 128,099 with every subtraction checking. The two effects are in separate sections with an
+explicit "these must not be netted." The floor is derived from the retention row alone. The weak
+bound feeds no exclusion, population or sample.
+
+### The gap inside F1's derivation
+
+§13.2 rested the floor on *"contaminated timestamps are written earlier than truth, and that error is
+one-directional."* That is **guaranteed for two classes and assumed for the third**:
+
+| Class | Retained pairs | Status |
+| :--- | ---: | :--- |
+| Air-date-stamped — the stamp is the broadcast instant, nobody watches before broadcast | 4,988 | **Guaranteed** |
+| Corrupt pre-1990 — precedes any true watch | 3,384 | **Guaranteed** |
+| **Backfilled >180 d** | **42,019 (90.1%)** | **Assumed, not guaranteed** |
+
+The `backfilled` tag means claimed ≪ **insert**, not claimed < **true**. A user who watched in 2015,
+imports in 2026, and whose import writes 2018 produces a backfilled record whose claimed date is
+*later* than truth — pushing the record out of the window, converting Started → Never started, and
+running **against** the floor.
+
+The reviewer noted the conflation precisely: §7 applies the early-skew premise to the **observed
+claimed date versus the finale**, which is on disk and checkable; §13.2 applies it to **claimed
+versus true**, and the true date is what the contamination destroyed.
+
+### Other items confirmed in round 4
+
+- **E3 closed by the ruling, not by argument.** With adoption 3 dropped, R3 is not a candidate
+  reading, so there is no second W sample. 128,099 is determinate. The artifact's own wording —
+  "removed by the ruling, not resolved by argument, because nothing about the data changed" — was
+  endorsed as the honest description.
+- **The R3-coincidence distinction holds, and is stronger than stated.** Both the adopted rule and R3
+  remove exactly `all_air | the1542`, so the retained *sets* are identical, not merely the counts.
+  The methods differ — R3 rewrites timestamps, the adopted rule only tags them — so both E4
+  objections are avoided: §2.2 is untouched and no −198.7-day re-dating shift is introduced.
+- **F2 as ruled** — 2,352 closed, 4,988 carried as a limitation, shape 3 rejected with the
+  dual-implementation cost named.
+- **§5's 11.3% was wrong** — 2,941,531 / 27,656,631 = **10.6%**; the 11.3% is the share of the full
+  wave. Present since revision 1.
+
+### Round 4 position
+
+> I said in round 3 I would not object to the adopted rule on its merits, and nothing in this pass
+> changes that. … Every one of those numbers now traces to a line in committed code and a key in
+> committed JSON, and I checked them. Dropping adoption 3 was right and it closed E3 cleanly rather
+> than by argument.
+>
+> **PROCEED.** Four corrections are required before the artifact travels to Step 14, none needing
+> recomputation. … I would not hold a fourth time on these. The rule is sound, the population is
+> determinate, and every residual is a sentence rather than a number — with the single exception of
+> "164", which is decorative. Holding here would be scrupulosity, not review.
+
+**All four corrections were applied.** Committing the decorative "164" revealed it was also
+**wrong** — the true maximum is **198**, the 164 having been the maximum over the first 4,000 of
+155,626 groups in an exploratory shell. An uncommitted figure was also an unverified one, which is
+what B3, D3 and F3 were about. `mode3_flags.npz` is byte-identical after recomputation, so nothing
+downstream moved.
+
+---
+
+## 5. Independent verification by the main session
 
 Kept separate from the reviews so the reviewer's record stands unaltered. Each item below was
 checked directly against the repository, not taken on the reviewer's word.
@@ -375,24 +531,32 @@ analytics-engineer.** Recorded because one of them entered a ruling:
 
 ---
 
-## 4. What is outstanding at the time of writing
+## 6. What is outstanding
 
-**The gate is open.** Steps 6 and 7 are blocked.
+**Round 4 returned PROCEED and all four of its corrections have been applied.** The reviewer raised
+no further objection to the adopted rule on its merits at rounds 3 or 4.
 
-1. **D1 — the definitional conflict.** Not a Step 5 question. Amend Step 1 §7 to an ever-started
-   definition, which reopens gate 1, or narrow adoption 1 to pairs whose S2 evidence can bear the
-   `watched_at < τ1` test.
-2. **D2 — re-rule adoption 2** on the censoring rationale rather than the evaluability one, and
-   account for the 295 unexplained C5 pairs.
-3. **D3 — commit the derivation** behind §10 or withdraw its figures.
-4. **E1 — state the retention bias** alongside the exclusion bias, for Step 14.
-5. **E2, E3, E6 — arithmetic and baseline corrections.**
-6. **E4, E5 — the four readings of adoption 3**, their differing bias directions, and whether
-   adoption 3 should exist at all.
+**The gate is not recorded as approved.** Approval is the Human Lead's, in writing, and no agent
+records it.
 
----
+Four items travel forward as **stated limitations, not pending decisions**:
 
-## 5. Files
+1. **4,988 partly-air-date pairs** (2.27%) carry the same deterministic guarantee that excluded the
+   16,665, and cannot be resolved until `W` exists. Shape 3 was rejected because a `W`-dependent
+   analysis population would corrupt the dual-implementation control. Carried to Step 14.
+2. **The floor qualifier** — guaranteed for 8,372 pairs, assumed for 42,019. Step 14 publishes the
+   direction and must publish the qualifier with it.
+3. **The flip bound is weak** — 0 to 44,458 at `W = 60`, ruling out only ~5% of candidates, because
+   a backfilled record is by definition written long after the date it claims. No point estimate
+   exists and none should be inferred.
+4. **Adoption 1's "entirely" boundary** has no basis in the §0.1 mechanism. The 2,352 closure
+   reduces the inconsistency from 7,340 pairs to 4,988 without removing it.
+
+Handoffs: **Step 6** takes the 128,099 estimation sample and applies D14 on top; **Step 7** takes the
+play-`id` calibration as a required input under the insertion-time liveness ruling; **Step 8** takes
+the 201,900 population and the Layer 1 record tags.
+
+## 7. Files
 
 | File | Contents |
 | :--- | :--- |
