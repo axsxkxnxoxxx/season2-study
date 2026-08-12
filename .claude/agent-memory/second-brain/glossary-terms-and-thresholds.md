@@ -1,224 +1,288 @@
 ---
 name: glossary-terms-and-thresholds
-description: Live glossary of every term, threshold and constant in the Season 2 abandonment study, each tagged with the step and gate that fixed it and whether it is set, deferred, or still open — includes the Step 3 crawl constants, which were set by an agent inside a chained step with no gate
+description: Live glossary of every term, threshold and constant in the Season 2 abandonment study, each tagged with the step, decision and gate that fixed it and whether it is set, deferred, or still open — current through Steps 2, 3, 4 and Step 5 revision 6 (2026-08-12)
 metadata:
   type: reference
 ---
 
 # Glossary — terms, thresholds, and where each was set
 
-Authoritative text is `artifacts/step1-outcome-definition.md`. This is an index, not a
-substitute. Verify against the file before acting on any row.
+**Current through 2026-08-12**, after Steps 3, 4, 2 and Step 5 revision 6. This is an index, not a
+substitute for the artifacts. Verify against the file before acting on any row.
 
 Status vocabulary: **FIXED** (set and gate closed) · **DEFERRED** (form fixed, value owed)
-· **OPEN** (gate has not run).
+· **OPEN** (gate has not run) · **PROPOSED** (agent produced it, gate not approved).
 
 ## The five items the Human Lead named as glossary-critical
 
 | Term | Value / status | Where set | Gate |
 | :--- | :--- | :--- | :--- |
-| **`W`** — the window, in days | **Value OPEN. Estimation sample FIXED.** Step 1 §11 does not set the value. The sample it is derived from is **bucket C1 (all-at-once) only**, per D12, and the result is **applied to all shows** — D14, decision `0003`, Human Lead 2026-08-10. Carried in `task-sheet.md` Steps 6 and 13, so both isolated instances read it. | Value: Step 6. Sample: Step 1 §10.1 Q2 → D14 | Step 6 gate, **not approved** |
-| **Liveness threshold** | **OPEN. Not set.** A gap length derived from data; Step 7 must derive it without using `W` as an input. | Step 7 | Step 7 gate, **not approved** |
-| **S1 completion rule** | **FIXED.** `F1 ∈ D1` **and** `\|D1\| ≥ ceil(0.90 × L1)`, on distinct episodes, membership by the listed set `E1`. `ceil`, stated in episodes not percent. Failing pairs never enter the population — they are not "never started". | Step 1 §4 | **Step 1 gate, APPROVED 2026-08-10** |
-| **Contamination exclusion rule** | **OPEN. Not set.** Step 1 fixes exactly one thing about it: it runs **before** right-censoring, so an import-stamped S1 completion date is counted as contamination rather than laundered into a censoring drop. | Step 5 proposes; ordering constraint from Step 1 §6 | Step 5 gate, **not approved** |
-| **Filter order** | **OPEN. Not set.** Step 1 §11 disclaims it; Step 8 owns it. The only ordering Step 1 imposes is contamination-before-censoring. | Step 8 | Step 8 gate, **not approved** |
+| **`W`** — the window, in days | **Value OPEN.** Estimation sample now **two-factor and both factors are fixed**: cadence bucket **C1 only** (D14 / `0003`) applied on top of a **provenance-clean sample of 128,099 pairs** (Step 5 ruling 1, §14). Result applied to all shows and all provenances. | Value: Step 6. Cadence factor: D14. Provenance factor: Step 5 §14 | Step 6 gate **not approved**; the provenance factor rides on the **Step 5 gate, also not approved** |
+| **Liveness threshold** | **OPEN. Not set.** A gap length derived from data; Step 7 must derive it without using `W` as an input. **Basis moved:** Step 5 ruling 2 says liveness runs on **record insertion time**, not claimed `watched_at`, making the play-`id` calibration a required Step 7 input. **That ruling is not in `task-sheet.md`** — see [[open-items-and-contradictions]] X1 | Step 7; basis from Step 5 ruling 2 | Step 7 gate, **not approved** |
+| **S1 completion rule** | **FIXED.** `F1 ∈ D1` **and** `\|D1\| ≥ ceil(0.90 × L1)`, distinct episodes, membership by the listed set `E1`. Now applied against **real** `E1` from the Step 2 frame, not a proxy (`0019`). | Step 1 §4 | **Step 1 gate, APPROVED 2026-08-10** |
+| **Contamination exclusion rule** | **PROPOSED, not approved.** Step 5 revision 6: exclude **16,665** pairs whose S2 evidence is *entirely* air-date-stamped, plus **1,542** with a contaminated binding `T0` and no S2 evidence. Total **18,207**; retains **201,900** of 220,107 (91.73%). Red Team round 4 returned **PROCEED**. **No decision file exists and the gate box is unchecked.** | Step 5 §9, revision 6 | Step 5 gate, **NOT approved** |
+| **Filter order** | **OPEN. Not set.** Step 8 owns it. `task-sheet.md` Step 8 names the members — frame, contamination, S1 completion, W, liveness, right-censoring, `L2 = 1` — and one ordering constraint: **contamination before right-censoring**. The order among the rest is Step 8's. | Step 8 | Step 8 gate, **not approved** |
 
-## Decision numbering — where a term was fixed on the public record
+## Decision numbering on the public record — `decisions/`
 
-`decisions/` is the log of record: `0001` Step 1 gate, `0002` Step 4 endpoint (D15), `0003` W
-estimation sample (D14), `0004` 403 handling. D-numbers live in
-`artifacts/step1-outcome-definition.md` §10.0. A term tagged **D14** or **D15** below post-dates
-the Step 1 gate and was decided separately.
+`0001` Step 1 gate · `0002` Step 4 endpoint (D15) · `0003` W estimation sample (D14) · `0004` 403
+handling · `0005` Step 3 stopping rule · `0006` Step 3 crawl constants · `0007` Step 3 channel cost
+· `0008` Step 3 seed source · `0009` Step 4 pull order · `0010` Step 4 tail cap · `0011` `pull_date`
+· `0012` sweep completeness · `0013` Step 2 delegation · `0014` no content filters · `0015` unaired
+S2 · `0016` per-season network dropped · `0017` air period · `0018` size quintile base · `0019`
+`pool_completers` recomputed · `0020` structural thresholds.
 
-## Step 3 crawl constants — agent-set, pre-registered in code, partly ratified
+**Authority split.** `0001–0004` and `0009–0020` are Human Lead. **`0005–0008` are agent-taken and
+still Open, awaiting ratification.** (The README's own authority note says "0005–0007" and omits
+0008 — [[open-items-and-contradictions]] X4.) **No Step 5 entry exists and none should be written
+until the Human Lead approves the gate.**
 
-**Authoritative source: `src/step3_user_discovery.py:169-191`**, one block, quotable. Mirrored into
-`artifacts/step3-yield-curve.json` → `plan` and `logs/step3_run.json` → `plan`. Run 2026-08-11.
-
-**None of these appears in `task-sheet.md`**, but they were **not undocumented**: the module
-docstring (lines 10-82) carries an affirmative rationale for nearly every one, written **before the
-run** — "all chosen in advance", "all three committed in advance". Quote the docstring, not a
-reconstruction. Status: **agent-taken under Chained latitude.** `TARGET_USABLE` is recorded in
-`decisions/0005` and is **Open — awaiting ratification**; the rest are unrecorded as of 2026-08-11.
-
-| Constant | Value | Note |
-| :--- | :--- | :--- |
-| `TARGET_USABLE` | **4,000** | The rule that actually stopped the run |
-| `MIN_EPISODES_USABLE` | **10** | Account-wide episode floor. A **weak** definition of "usable" — a row still requires completing some show's S1 inside the Step 2 frame |
-| `call_budget` | 6,500 | 5,300 spent, 1,200 unspent |
-| Plateau rule | 3-round MA of new eligible per discovery call ≤ **0.20** of running peak, on **2** consecutive rounds, after **≥10** rounds | **Never fired.** Final ratio **0.314**, closest ever **0.193** |
-| `n_seeds_target` | 300 | Movie-comment authors: 218 `comments/recent/all/movies`, 82 `comments/trending/all/movies`, 172 distinct films |
-| `max_depth` | 3 | **Never reached.** Exit frontier was depth 1 and 2 only |
-| `neighbours_per_user` | 100 | |
-| `expand_users_per_round` | 12 | 432 of 5,694 users ever expanded |
-| `list_pages_per_round` / `screen_calls_per_round` | 3 / 120 | |
-| `step4_page_limit` | 250 | Matches the `limit=250` in D15 / decision `0002` |
-
-**The pool: 4,088 usable users**, 5,694 discovered, 347 private, 5,347 eligible, 4,320 screened.
-**1,027 eligible users were never screened** — a reserve costing ~1,027 calls, not stated as such
-in the write-up. Channel split of usable: 2,306 Channel A / 1,782 Channel B.
-
-**Stop reason: `sufficiency`, not plateau.** `task-sheet.md` Step 3 says "run until usable-user
-yield plateaus." It did not. See [[open-items-and-contradictions]] S4.
-
-## Step 4 cost — the number the Step 3 checkpoint exists to produce
-
-**210,500 pages ≈ 210,500 calls ≈ 23.4 h** of pure throttled time at 150/min, over 4,088 users.
-Mean **51.5** pages/user (sd 58.8), median 36, p75 66, p90 109, p95 151, p99 289, max 1,034. Top
-decile of users holds 35.2 % of pages. Basis `pages = ceil((episodes.plays + movies.plays) / 250)`,
-floor 1.
-
-**Supersedes ~86,000 calls.** The earlier figure divided `total_plays`, **absent from 77 % of
-`users/:id/stats` bodies** (Trakt returns two payload shapes), so most users forecast as exactly
-1 page. Corrected figure is ~**2.4×**. `episodes.plays + movies.plays` matched `total_plays` in
-549/549 bodies carrying both.
-
-**Corroborates the D15 probe.** Decision `0002` cited ~64 pages/user from **one** profile. 64 sits
-near p75 of the real distribution — mildly heavy, not an outlier. The n=1 figure held up. It is
-still not a rate ([[open-items-and-contradictions]]).
-
-## Data source — FIXED, D15 / decision `0002`
-
-**`GET /users/:id/history`, unfiltered, one sweep per user.** Human Lead, 2026-08-10. Replaces
-`/users/:id/watched/shows`, which returns a show-level aggregate with **no per-episode
-timestamps** under Client-ID-only auth. Two conditions are part of the decision:
-
-- **"One sweep" is one logical pass, NOT one call.** ~**64 pages per user at `limit=250`** on the
-  probe profile. Step 4 throughput is estimated in **pages, not users**.
-- **The sweep must be COMPLETE.** Records return newest-first, so a truncated sweep is
-  **indistinguishable from a genuine "never started"** and lands in the headline. Enforcement is
-  Step 4's and Step 8's.
-
-Unfiltered because the endpoint mixes `type: episode` with `type: movie` and Step 7 liveness needs
-the whole sweep as account-wide evidence; episode filtering happens locally, after the sweep.
-
-## Standing rule — when a post-approval edit reopens a gate
-
-Fixed 2026-08-10 in the approval record at the head of `artifacts/step1-outcome-definition.md`:
-**an edit that changes a *rule* reopens the gate; an edit that adds *evidence* for a rule already
-adopted does not.** The Section 5 addendum is the worked example — it inverted a cited figure and
-changed no rule, threshold, definition or required output, and the gate remained approved. Apply
-this test to any future amendment of an approved artifact.
-
-## Probe figures — n = 1, existence proofs, NOT rates
-
-From `artifacts/step0-history-endpoint-probe.md`, one profile and one show, reproduced at zero
-live calls. **Nothing downstream may read these as population quantities.**
-
-| Figure | Printed in Step 1 | Actual |
-| :--- | :--- | :--- |
-| Play-record inflation | "28 percent" | **28.125 %** — 123 records, 96 distinct pairs, 27 surplus records, **25** episodes duplicated (two appear three times; 27 and 25 answer different questions and are both right) |
-| S1/S2 overlap under definition (a) | "six weeks" | **41.31 days = 5.90 weeks** |
-| Same comparison under definition (b), after the §2.2 collapse | — | **inverts to 360.73 days of separation** — the overlap is entirely a rewatch artifact |
-| Pages per user at `limit=250` | "roughly 64" | 64 |
-
-Untested rather than confirmed on this profile: `episode.ids.trakt` disagreeing with
-`(season, number)` — 96 IDs against 96 pairs, zero disagreements. See
-[[open-items-and-contradictions]] N4.
-
-## Liveness scoping — fixed at Step 1, and it moved
-
-Liveness **evidence** is account-wide (whole sweep, other shows and movies included).
-Liveness **test** is `watched_at ≥ τ1`, and `τ1` is pair-specific, so **liveness is a
-pair-level filter**. One account can be live for one show and not another. Dropping a user
-wholesale is forbidden. The earlier "statement about the account" phrasing is a withdrawn
-claim — see [[withdrawn-claims-register]]. Backed in the repo: the Human Lead amended
-`task-sheet.md` Steps 7 and 9 on 2026-08-10, so both isolated Step 7 instances read the
-pair-level wording from the file they actually read. A scope divergence between them is now a
-**bug, not a spec ambiguity**.
-
-## Clock, window, horizon
+## Clock, window, horizon — unchanged from Step 1 except `pull_date`
 
 | Symbol | Definition | Where | Status |
 | :--- | :--- | :--- | :--- |
-| `T0` | `max(S2_finale_air_date, first-pass S1_completion_date)` — finale-anchored, not premiere | Step 1 §6, D1 | FIXED |
-| `τ0` | `⟦T0⟧`, i.e. `T0` at `00:00:00Z` | §2.4, D13 | FIXED |
-| `τ1` | `τ0 + W × 24h`. Window is `[τ0, τ1)`, exactly `W` days | §2.4, D13 | FIXED in form; numeric only once `W` exists |
-| In-window test | **`watched_at < τ1`**. Strict, half-open, instants only. `date(watched_at) ≤ T1` is withdrawn and must not be written anywhere | §2.4, D13 | FIXED |
-| `H` | **91 days**, fixed post-window horizon. Not a function of `W`. Held constant across every Step 13 arm that varies `W` | §6, D10 | **FIXED — adopted by name at approval** |
-| Post-window horizon interval | `[τ1, τ1 + H × 24h)` — where D3 and D8 are measured. Never "to the pull date" | §6, D3, D8 | FIXED |
-| Right-censoring | retain iff **`⟦T0⟧ + (max(W, 91) + H) × 24h ≤ τ_pull`** | §6, D10 | FIXED |
-| `pull_date` / `τ_pull` | Single **global frozen cutoff**, `τ_pull := ⟦pull_date⟧`; every record with `watched_at ≥ τ_pull` is discarded. Never a per-user fetch date | §0, D11 | **DEFERRED — value outstanding.** See [[open-items-and-contradictions]] |
+| `T0` | `max(S2_finale_air_date, first-pass S1_completion_date)` | Step 1 §6, D1 | FIXED |
+| `τ0` / `τ1` | `⟦T0⟧` / `τ0 + W × 24h`; window `[τ0, τ1)` | §2.4, D13 | FIXED in form |
+| In-window test | **`watched_at < τ1`**. Strict, half-open, instants only | §2.4, D13 | FIXED |
+| `H` | **91 days**, fixed, not a function of `W` | §6, D10 | FIXED |
+| Right-censoring | retain iff **`⟦T0⟧ + (max(W, 91) + H) × 24h ≤ τ_pull`** | §6, D10 | FIXED in form |
+| **`pull_date` / `τ_pull`** | **`pull_date = 2026-08-11`, `τ_pull = 2026-08-11T00:00:00Z`.** Every record with `watched_at ≥ τ_pull` is discarded. | **`0011`, Human Lead 2026-08-11** | **FIXED — D11's deferred value is now closed** |
 
-`pull_date` constraint: must be **no later than the earliest per-user fetch date in the whole
-Step 4 sweep**. Human Lead sets it, once Step 4's schedule is known. This is the only item
-Step 1 leaves outstanding that downstream computation blocks on.
+`0011`'s constraint check: earliest per-user fetch instant **2026-08-11T05:01:26Z ≥ τ_pull** ✓.
+Consequence carried in `0011`: the discarded tail is ~1 day for early-fetched users and ~2 for
+late-fetched ones, so **the discarded-record count is not evenly distributed across the pool.**
 
-## Season membership
+## Step 2 frame — the population every result is computed on
 
-`E` = the **listed episode-number set** for a season. `L := |E|`. `F := max(E)`. All three from
-one payload, one show, one pull. **`F := L` is forbidden.** Specials (season 0) excluded from
-`E` but still count as logged activity for liveness. Membership is by **set**, never by the
-range `1..F` — that range form is a withdrawn claim.
+**Owner Human Lead, execution delegated to an agent under `0013`.** Artifact:
+`artifacts/step2-frame-ledger-and-distributions.md`.
 
-Source, closed by the Step 0 probe: **`GET /shows/:id/seasons?extended=episodes,full`**, one
-call per show, both seasons plus the season-level counts on one payload. Client ID alone,
-HTTP 200, no pagination headers, season 0 returned and must be filtered.
-(`artifacts/step0-episode-listing-endpoint-probe.md`.)
+**Frame: 1,138 shows, 220,107 S1-completer pairs.** Candidate set 2,094 shows (≥50 completers).
+Exclusion ledger, in the order the rules were written:
 
-`show.aired_episodes` from the history payload is **never** used — it is show-wide, not
-per-season.
+| # | Rule | Removed | Remaining |
+| :-- | :--- | ---: | ---: |
+| 0 | Candidate set, ≥50 S1 completers | — | 2,094 |
+| 3 | No real season 2 | 796 | 1,298 |
+| 4 | S2 listed but unaired (`aired_episodes = 0`) — **`0015`** | 12 | 1,286 |
+| 5 | S2 finale aired after 2025-12-31 (`first_aired < 2026-01-01T00:00:00Z`, half-open per D13) | 60 | **1,226** |
+| 6 | Season over **26 episodes** (S1 or S2) — **`0020`** | 51 | 1,175 |
+| 7 | Gap over **1,095 days** (S1 finale → S2 premiere) — **`0020`** | 37 | **1,138** |
 
-## Outcome states, measured at `τ1` on distinct S2 episodes
+Rules 1, 2 and 8 removed 0. Rules 6 and 7 overlap on exactly 1 show, so order is immaterial.
+**Season 0 is filtered inside every show, never used to exclude one** — 878 candidates carried one.
 
-`A` = distinct S2 episodes with `number ∈ E2` and `watched_at < τ1`. The interval is
-`(−∞, τ1)` — **one-sided, no lower bound**, which is what keeps the live-viewing audience of
-every weekly show from being scored never-started under finale anchoring.
+### Structural thresholds — `0020`, Human Lead 2026-08-12
 
-| State | Condition |
-| :--- | :--- |
-| Never started | `\|A\| = 0` |
-| Continued | `\|A\| ≥ 1` and `F2 ∈ A` and `\|A\| ≥ ceil(0.90 × L2)` |
-| Started and left | `\|A\| ≥ 1` and not Continued |
+- **No minimum season size.** `ceil(0.90 × L1)` already scales per show. `L1 = 1` and `L1 = 2` are
+  retained; `min(L1) = 1`, `min(L2) = 2`, so **no in-frame show has `L2 = 1`**.
+- **Max 26 episodes** on either season. 26 is the traditional full broadcast season; the cut is
+  insensitive from 26 to 40 (1.1–2.4% of pairs). **22 was rejected** at 196 shows / 13.8% of pairs.
+- **Max 1,095-day gap** (3 years). The empty `3 y+` bucket is the cap made visible.
+- Combined cost **88 shows, 12,851 pairs, 5.5%.**
+- **The size cap is partly a cadence threshold: 44 of its 51 shows are C4.** C4 falls 476 → 425.
+  A C4 result is computed on a population stripped of its longest-running titles.
 
-Mutually exclusive and exhaustive by construction.
+### Other Step 2 definitions
 
-**Abandonment point** `p = |{ e ∈ E2 : e ≤ m }| / L2` where `m = max(A)` — rank-based, not
-`m / L2`. `p ∈ (0, 1]` by construction under the set rule. Defined **only** for Started-and-left.
-`p = 1.0` is its own named residual category at Step 10 and is not merged into "near-finale".
-
-## Counting rules
-
-- **Distinct episodes, never play events.** Dedup key `(show.ids.trakt, episode.season, episode.number)`, scoped to the user. `episode.ids.trakt` is not canonical; disagreements are counted and logged.
-- **Canonical timestamp = minimum `watched_at`** across a distinct episode's records. Ordering on full UTC timestamps, ties broken by episode number then smallest history event `id`.
-- **All `action` values count as watching**, `checkin` included. `action` is retained as a column for Step 5 and a Step 13 arm.
-- Date reduction applies to clock arithmetic only, never to sequencing.
-
-## D12 cadence classifier — adopted by name, 2026-08-10
-
-`span := F_d − P` in whole UTC days; `weekly_span := (L2 − 1) × 7`. **First match wins**, and
-the ordering is part of the definition.
-
-| # | Bucket | Condition | In Step 6 estimation sample? |
-| :--- | :--- | :--- | :--- |
-| C0 | Unclassifiable | `P`, `F_d` or `L2` missing, or `span < 0` | No |
-| C1 | All-at-once (binge) | `span ≤ 1` | **Yes — and only this bucket. DECIDED**, D14 / decision `0003`, 2026-08-10 |
-| C2 | Weekly | `abs(span − weekly_span) ≤ 3` | No |
-| C3 | Faster than weekly | `1 < span < weekly_span − 3` | No |
-| C4 | Slower than weekly | `span > weekly_span + 3` | No |
-
-Checked: C1–C4 partition `span ≥ 0` under first-match, and C0 absorbs missing/impossible. All
-five are reported as their own line in the Step 8 waterfall and the Step 9 cadence stratum.
-Required alongside: **the count of shows within 1 day of any bucket boundary**, so the
-convention's fragility is a number rather than an assumption.
-
-## Population rules Step 1 added that the task sheet does not carry
-
-- **`L2 = 1` shows are excluded from the headline population at Step 8**, with the show and pair counts reported. At `L2 = 1` the three-state partition degenerates to two and `p` is never defined. `L1 = 1` is retained.
-- Step 10 must not compare `p` bins across shows with very different `L2`.
-
-## Required diagnostics fixed at Step 1
-
-| ID | Output | Direction on the headline |
+| Term | Definition | Where |
 | :--- | :--- | :--- |
-| D2 | Negative-lag count, **split by which term of the `max()` binds**. Computed on the operative clock, i.e. **definition (b)** — so no (a)-style rewatch artifact can appear in it. A zero here is not evidence the (a)-failure is rare ([[open-items-and-contradictions]] N2) | diagnostic |
-| D3 | Resumption rate for Started-and-left, over `[τ1, τ1 + H)` | diagnostic |
-| D4 | S3-without-S2 reported as a bound at Step 9 | **down** |
-| D8 | Never-started post-window diagnostic, over `[τ1, τ1 + H)` | **down** |
-| D9 | Split-artifact counts (both halves) plus a Step 9 bound | **down**, plus unmeasured denominator loss |
-| Liveness bound | inactivity-excluded **pairs** treated as decliners | **up** |
-| Right-censoring removal | reported as **two lines** — `max(W, 91)` term and incremental `+ H` term | **up** |
-| Dropped-S2-evidence count | pairs with `\|A\| = 0` only after the drop rule | **up** on Never started |
+| **Air period** | **Calendar year of the S2 finale**, bucketed **pre-2020 / 2020–2022 / 2023–2025**, bracketing the production shutdown. Frame: 757 / 213 / 168. **Strongly collinear with cadence — not an independent cut.** | `0017` |
+| **Size quintile** | Cut over **the frame**, not the 2,094 candidates, on the **recomputed** `pool_completers`. Frame bins **238 / 221 / 224 / 227 / 228**. **A quintile label is not a stable identifier** — rebuild the frame and every boundary moves. | `0018` (see [[open-items-and-contradictions]] X3: `0018` still publishes the superseded 1,226-frame bins) |
+| **`pool_completers`** | Step 1 §4 applied against **real** `E1`, `L1 = \|E1\|`, `F1 = max(E1)`. **The max-observed proxy is superseded and no result may use it.** Changes nothing on this frame (proxy = real on 1,225 of 1,226). | `0019` |
+| **No content filters** | Anime and daily-strip/soap exclusions **dropped before first use.** The concern was release structure, not genre. Release structure is recorded as **fields**, thresholds set separately. The jp shows that left (92 → 60) left via the 26-episode cap, not by genre or country. | `0014`, Closed 2026-08-12 |
+| **Per-season network** | **DROPPED as a field.** 47 of 6,645 season objects populated (0.71%); one show in 2,094 with two distinct values, read as noise. **Platform fragmentation is not a variable in this study** — no result may control for it, stratify on it, or rule it out. | `0016` |
+| **`show_network`** | Show-level, 100% populated, 150 distinct — but it records **today's** network. **Must not be used as a release-time availability measure.** Descriptive only. | `0016`, README open item 18(b), still open |
 
-Related: [[gate-step1-outcome-definition]], [[withdrawn-claims-register]],
-[[open-items-and-contradictions]], [[decision-log-step18]].
+**D12 as applied on the real frame:** C0 **0** · C1 206 (18.1%) · C2 340 (29.9%) · C3 167 (14.7%)
+· C4 425 (37.3%). **Fragility count: 7 shows within one day of a bucket boundary, 0.6%** — by
+D12's own test the thresholds are **not load-bearing** and a Step 13 arm on them is not indicated.
+(238 sit within three days, but 220 of those are same-day drops at distance exactly 2 by
+construction. **The one-day figure is the meaningful one.**)
+
+## Step 5 — contamination vocabulary. PROPOSED, gate not approved.
+
+**Artifact `artifacts/step5-contamination-diagnostics.md`, revision 6, FINAL.** Reviews in
+`artifacts/step5-red-team-reviews.md`. See [[gate-step5-contamination]] for the arc.
+
+### Layer 1 record tags — no rows dropped. Required by Step 7 and Step 8.
+
+| Tag | Definition |
+| :--- | :--- |
+| `corrupt` | `watched_at` absent or pre-1990 |
+| `backfilled` | `τ_ins(id) − watched_at > 180 d` |
+| `airdate_stamped` | `(show, season, episode, instant)` tuple shared by **≥5 unrelated accounts** |
+| `postdated` | `watched_at` more than **30 d after** insert |
+| `clean` | none of the above |
+
+**The 180-day threshold is a conservative judgment, not a data-determined break.** Per-day density
+is monotone decreasing throughout; revision 1's "trough" was a bin-width artifact (Red Team C1).
+**The only real break after 1 day is at 7 days.**
+
+### The instrument — the play-`id` insert-time calibration
+
+The Trakt play `id` is a global auto-increment assigned at **write** time, so it orders records by
+insertion regardless of what `watched_at` claims. Fitted on `checkin` and `scrobble` only (a bulk
+import mints `watch` rows), monotonised by **isotonic regression (PAVA)**, not a cumulative max.
+**Held-out validation** (fit on even-indexed accounts, test on 2,185,696 real-time records of
+odd-indexed accounts, no account in both): **median lag +0.003 d, 90.5% within one day.** Residual
+error runs slightly **early**, so the diagnostic **under-flags**. Zero API calls.
+Artefacts: `processed/step5/calibration.npz`, `record_lag.npz`.
+
+### The insert-time bound
+
+*A viewer cannot log an episode before watching it*, so a record's insert instant is an **upper
+bound** on when it was truly watched. Latest defensible clock start:
+`T0_latest = max(S2_finale_date, date(max τ_ins over the S1 completion evidence))`.
+**Correct basis: the completion prefix, with the `max()` in force.**
+
+| Population | Pairs | Median elapsed at `T0_latest` | Open at `W = 60` |
+| :--- | ---: | ---: | ---: |
+| The **1,542** (excluded) | 1,542 | **40.0 d** | **58.6%** |
+| The **720** (C5, no S2, retained) | 720 | **1,738 d** | **7.92%** |
+| — the 425, two-class | 425 | 1,717 | 13.4% |
+| — the 295, air-date class | 295 | 1,762 | 0.0% |
+| Every pair with no S2 evidence | 25,277 | 1,532 | 11.3% |
+
+**`1,738 d / 7.92%` is the figure to use for the 720.** "Median 2,150 d / 8.1%" is **withdrawn** —
+it came from a unit bug plus the wrong basis. See [[withdrawn-claims-register]].
+
+### The two populations — Step 5 ruling 1
+
+> **W is derived from clean records only, then applied to everyone.**
+
+| Population | Pairs | Who reads it |
+| :--- | ---: | :--- |
+| **Analysis population** | **201,900** | Step 8 classifies these |
+| **W estimation sample** | **128,099. Determinate.** | Step 6, which applies D14's C1 restriction **on top** |
+
+Waterfall, monotone by construction: 201,900 → has S2 evidence 178,165 → `T0` not contaminated
+155,131 → completing record not post-dated 152,126 → **first S2 watch clean 128,099**.
+
+The analysis population **deliberately** retains 23,067 pairs with a fabricated `T0`, 46,642 whose
+first S2 watch is contaminated, and 3,296 whose completing record is post-dated.
+
+### Post-dating — the four readings, and why they are moot
+
+**Adoption 3 was DROPPED (revision 6).** No pair is deleted for post-dating; records are tagged and
+kept out of the W sample. The four readings are four ways to apply a rule that no longer exists.
+Recorded because the **directions differ and a table ordered by retention alone hides that**:
+
+| Reading | Retained | Bias direction |
+| :--- | ---: | :--- |
+| **Adopted — tag only, delete nothing** | **201,900** | neutral |
+| P, delete the pair | 198,604 | never-started **down** |
+| R1b, drop every post-dated S1 record | 198,817 | down |
+| R1n, drop only the completing record | 199,957 | down |
+| R3, re-date to insertion time | 201,900 | never-started **up** (median completion shift **−198.7 d**) |
+
+The adopted rule coincides with R3 in **retained set**, not in method: R3 rewrites timestamps, the
+adopted rule only tags them. That distinction is what avoids E4 — §2.2 (canonical timestamp = the
+**minimum `watched_at`**) is untouched, and no re-dating bias is introduced. R3 would also have been
+a **selective** re-dating: if `τ_ins` were trustworthy for 3,307 post-dated records it would be
+trustworthy for 8,001,189 backfilled ones, where substitution moves completion much **later**.
+
+### Contamination scale, for reference
+
+| Class | Records | Share of 27,656,631 |
+| :--- | ---: | ---: |
+| Backfill >180 d | 8,001,189 | 28.9% |
+| Air-date-stamped (mode 3) | 2,021,537 | 7.3% |
+| Corrupt, pre-1990 (369,590 at exactly 1970-01-01) | 690,774 | 2.5% |
+| Undated | 379 | 0.001% |
+| **Union** | **8,831,718** | **31.9%** |
+
+**Mode 3, air-date stamping**, was not previously identified: exact top of hour, seven days apart,
+00:00–05:00 UTC, **up to 198 accounts sharing a single instant** (corrected from an uncommitted and
+wrong "164"). **TV Time is a minority of the problem** — only 31.7% of backfill was written after
+2026-06-01; the rest is eleven years of ordinary onboarding backfill. The shutdown wave is
+3,115,531 records over four weeks (11.3% of the store) against a ~174,000 baseline, an **excess of
+2.94 M records = 10.6%**.
+
+## Step 3 crawl constants — agent-set, `0006`, Open awaiting ratification
+
+**Source `src/step3_user_discovery.py:169-191`.** Full table retained; the load-bearing ones:
+
+| Constant | Value | Note |
+| :--- | :--- | :--- |
+| `TARGET_USABLE` | **4,000** | The rule that actually stopped the run — **not** the plateau rule `task-sheet.md` names, which ran 36 rounds and never fired (final ratio 0.314 against a 0.20 trigger). `0005` |
+| **`MIN_EPISODES_USABLE`** | **10** | `episodes.watched` from `GET /users/:id/stats` — an **account-wide** distinct-episode count, **not per-show**. Ten episodes across ten shows passes; nine inside one show fails. Removed **232** accounts and nothing else removed any. **Warrant accepted as not literally true** (README item 13, closed 2026-08-12): `min(L1) = 1` and 152 in-frame shows have `L1 ≤ 6`, so exposure is **at most 22 accounts, 0.5% of the 4,320 screened** — 210 of the 232 had zero episodes. All 232 recoverable at **0 live calls** |
+| `call_budget` / plateau rule | 6,500 / 3-round MA ≤ 0.20 of peak on 2 consecutive rounds after ≥10 | budget 5,300 spent; plateau never fired |
+| `n_seeds_target` / `max_depth` | 300 / 3 | Seeds = **movie-comment authors**, 172 distinct films, `0008`. Depth 3 never reached |
+| `step4_page_limit` | 250 | matches `limit=250` in `0002` |
+
+## Step 4 — the pull, and the rules that governed it
+
+**Source: `GET /users/:id/history`, unfiltered, one sweep per user** (D15 / `0002`). One sweep is
+one logical **pass**, not one call; throughput is estimated in **pages**.
+
+| Term | Value | Where |
+| :--- | :--- | :--- |
+| **Pull order** | **Stratified round-robin** over ten equal-count forecast-page bins, one user per bin in turn, deterministic within bins. Amends an initial **median-out** instruction, which left a *centered* slice with **no user above 73 pages** at ten hours in a pool reaching 1,034. Cost: **~12% fewer users/hour**, accepted explicitly. | `0009` |
+| **Tail cap** | **300 forecast pages**, skip whole, never truncate — **plus an actual-pages guard** that discards mid-sweep overruns. Excludes **38 users, 0.93%**, keeps 92.8% of pages. Justified as a **circuit breaker on forecast error**, not as protection against a slow user. Direction **upward** on the headline. | `0010` |
+| **Sweep completeness rule** | **Full `X-Pagination-Page-Count` coverage plus a residual within 2% of `X-Pagination-Item-Count`.** Exact equality is **not** required — the pilot failed 7 of 10 on residuals from −97 to +20, and under exact equality the study would discard ~70% of its pool. **Amends `0002` condition 2 and Step 1 §0 — a rule inside an approved gate.** | `0012` |
+| **Over-tolerance users** | Pages **discarded, logged, never truncated**, and must stay distinguishable downstream exactly as `access_denied` does | `0012` |
+
+**`0012` requires three behaviours counted separately, never collapsed into the tolerance:** header
+**over-count** (benign), header **under-count** (benign, safe direction), and **genuine cross-page
+duplicate records** (real API behaviour — handled downstream by distinct-episode counting, but
+"already handled" is not a reason to stop measuring it).
+
+**Proof that the residuals are not truncation:** page-count and item-count headers were identical on
+every page of every sweep; and re-sweeping one user at `limit=100` returned the **identical record
+set in identical order** as the cached `limit=250` sweep — 1,459 distinct records both ways, while
+both headers reported 1,460.
+
+## The population chain — every number a result rests on
+
+See [[population-chain-steps-2-3-4]] for the reconciliations. Headline figures:
+
+**4,088 usable users** → 4,050 in plan after the 38 over-cap → **pull stopped at 2,836 decided
+(70.0%)** → **2,549 `complete`** (287 discarded over tolerance) → 44,617 shows with an S1 record →
+**2,094 candidates** at ≥50 completers → **1,138-show frame, 220,107 pairs** → Step 5 proposes
+**201,900 analysis population** and **128,099 W estimation sample**.
+
+## Standing rule — when a post-approval edit reopens a gate
+
+**An edit that changes a *rule* reopens the gate; an edit that adds *evidence* for a rule already
+adopted does not.** Fixed 2026-08-10 in the Step 1 approval record. **`0012` is the first edit that
+fails this test and was recorded as a Human Lead amendment anyway** — README open item 15 flags it
+as not yet put to Red Team.
+
+## Probe figures — n = 1, existence proofs, NOT rates
+
+Play-record inflation **28.125%** (123 records, 96 distinct pairs, 27 surplus records, **25**
+episodes duplicated — 27 and 25 answer different questions and are both right). S1/S2 overlap
+**41.31 d under definition (a)**, inverting to **360.73 d of separation under (b)**. 64 pages per
+user at `limit=250`. `episode.ids.trakt` disagreement with `(season, number)`: **untested**, not
+confirmed — and the Step 2 frame's four absolute-numbering shows have since been removed by the
+26-episode cap, though their finding stands (100% overlap on all four; the **withdrawn `1..F`
+range form would have failed on all four**).
+
+## Season membership, outcome states, counting rules
+
+Unchanged from Step 1 and still governing.
+
+`E` = the **listed episode-number set**; `L := |E|`; `F := max(E)`. **`F := L` is forbidden**
+except by Human Lead adoption of the §3.3 fallback. Source `GET /shows/:id/seasons?extended=
+episodes,full`, one call per show. `show.aired_episodes` is **never** used.
+
+`A` = distinct S2 episodes with `number ∈ E2` and `watched_at < τ1`, over `(−∞, τ1)` — **one-sided,
+no lower bound**. Never started ⇔ `|A| = 0`. Continued ⇔ `|A| ≥ 1` and `F2 ∈ A` and
+`|A| ≥ ceil(0.90 × L2)`. Started-and-left is the remainder. Abandonment point
+`p = |{e ∈ E2 : e ≤ m}| / L2` where `m = max(A)` — rank-based, defined only for Started-and-left.
+
+Counting: **distinct episodes, never play events**, dedup key `(show.ids.trakt, season, number)`
+scoped to the user; **canonical timestamp = minimum `watched_at`**; **all `action` values count as
+watching**, `checkin` included, with `action` retained as a column.
+
+## Required diagnostics fixed at Step 1 — unchanged
+
+D2 negative-lag split by binding term · D3 resumption over `[τ1, τ1 + H)` · D4 S3-without-S2 bound ·
+D8 never-started post-window · D9 split-artifact counts · liveness bound (**up**) · right-censoring
+removal as **two lines** · dropped-S2-evidence count. `L2 = 1` shows excluded at Step 8 (**moot on
+the current frame — `min(L2) = 2`**).
+
+Related: [[gate-step1-outcome-definition]], [[gate-step5-contamination]],
+[[population-chain-steps-2-3-4]], [[open-items-and-contradictions]], [[withdrawn-claims-register]],
+[[decision-log-step18]].

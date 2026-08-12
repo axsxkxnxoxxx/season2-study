@@ -32,8 +32,9 @@ Step 18 assembles the final log from these files.
 | [0018](0018-size-quintile-base.md) | **The title size quintile is cut over the 1,226-show frame, not the 2,094 candidates** — the quintile cuts results, and results exist only in-frame. The rejected base gave unequal bins labelled as quintiles. A quintile label is **not a stable identifier**: rebuild the frame and every boundary moves. | 2026-08-12 | Closed |
 | [0019](0019-pool-completers-recomputed.md) | **`pool_completers` recomputed on real season lengths; the max-observed proxy is superseded and no result may use it.** Changes nothing on this frame — proxy `L1_hat` equals real `\|E1\|` on 1,225 of 1,226 shows — which is not a rehabilitation of the proxy generally. **Corrects the stated premise of [0013](0013-step2-execution-delegation.md) condition 2:** counts do not only rise; 118 long-tail shows fell between pool sizes. | 2026-08-12 | Closed |
 | [0020](0020-step2-structural-thresholds.md) | **The Step 2 structural thresholds: no minimum season size, max 26 episodes on either season, max 1,095-day gap.** 26 is the traditional full broadcast season and the cut is insensitive from 26 to 40 (1.1–2.4% of pairs); 22 was rejected at 196 shows and 13.8% of pairs, reaching into normal network drama. **The size cap is partly a cadence threshold** — 44 of its 51 shows are C4, the bucket where abandonment is most likely exposure-driven. Frame **1,226 → 1,138 shows, 220,107 pairs. Closes [0014](0014-no-content-filters-structural-fields.md).** | 2026-08-12 | Closed |
+| [0021](0021-step5-contamination-gate.md) | **Step 5 contamination exclusion rule APPROVED** (gate 2 of 5). Exclude 16,665 pairs whose S2 evidence is entirely air-date-stamped, on a deterministic mechanism; exclude 1,542 with no S2 evidence and a fabricated binding clock start, on a censoring defect; **retain 201,900 of 220,107**, derive `W` on **128,099**. Four rulings inside the gate — **D1 keeps Step 1 §7 and does not reopen gate 1**, adoption 1 narrowed, adoption 2 re-ruled onto censoring, adoption 3 dropped. Two standing rulings outlive it: `W` derived on clean records and applied to all, and **liveness on insertion time**, making the play-`id` calibration a required Step 7 input. Red Team: four rounds, PROCEED at the fourth. | 2026-08-12 | Closed |
 
-**A note on authority.** Entries 0001–0004 and 0013–0020 are Human Lead decisions. **0005–0007 are agent-taken,
+**A note on authority.** Entries 0001–0004 and 0013–0021 are Human Lead decisions. **0005–0007 are agent-taken,
 inside a Chained step, and are recorded retrospectively for ratification** — they shaped the
 population every downstream number rests on, and a constant that shapes the population is a decision
 whether or not it was treated as one at the time. They are listed here so the distinction between
@@ -44,7 +45,7 @@ whether or not it was treated as one at the time. They are listed here so the di
 Five. Nothing downstream of a gate runs without written Human Lead approval at it.
 
 - [x] **Step 1** outcome definition — approved 2026-08-10 ([0001](0001-step1-outcome-definition-gate.md))
-- [ ] Step 5 contamination exclusion rule
+- [x] **Step 5** contamination exclusion rule — approved 2026-08-12 ([0021](0021-step5-contamination-gate.md))
 - [ ] Step 6 window W
 - [ ] Step 7 liveness threshold
 - [ ] Step 8 analysis table
@@ -171,3 +172,25 @@ that surfaced it.
     valid only against the frame they were cut on** ([0018](0018-size-quintile-base.md)); and the
     frame is systematically older than the catalogue, 66.6% of it with an S2 finale before 2020
     ([0015](0015-step2-unaired-s2-exclusion.md)).
+
+20. **Four Step 5 limitations travel to Step 14**, as stated limitations and not pending decisions
+    ([0021](0021-step5-contamination-gate.md)). **(a)** The **4,988 partly-air-date pairs** (2.27%)
+    carry the same deterministic guarantee that excluded the 16,665 — a single stamped S2 record
+    forces `|A| ≥ 1` — and cannot be resolved until `W` exists; a `W`-dependent test was rejected
+    because it would make the analysis population a function of `W` and **corrupt the
+    dual-implementation control**. **(b)** The **floor claim is guaranteed for 8,372 pairs and
+    assumed for 42,019**, because `backfilled` means claimed ≪ *insert*, not claimed < *true*;
+    Step 14 publishes the direction and must publish the qualifier with it. **(c)** The **flip bound
+    is 0 to 44,458** at `W = 60` and rules out only ~5% of candidates — no point estimate exists.
+    **(d)** The exclusion's **population change is net up by 15,123 pairs** while the estimator bias
+    runs down; the two are different kinds of quantity and **must not be netted**.
+21. **The play-`id` insert-time calibration is now a required Step 7 input**, not a Step 5
+    diagnostic, under the standing ruling that liveness runs on record insertion time rather than
+    claimed watch date ([0021](0021-step5-contamination-gate.md)). Step 7 cannot be specified
+    without it.
+22. **An uncommitted figure is also an unverified one.** Figures printed in a gate artifact with no
+    committed code behind them recurred **three times** inside Step 5, twice inside the sections
+    written to close the defect. When the last one was finally committed it proved **wrong as well
+    as uncited** — a maximum of 198, not the 164 printed, the 164 having come from the first 4,000
+    of 155,626 groups in an exploratory shell. Worth a standing check at every remaining gate.
+    ([0021](0021-step5-contamination-gate.md))
