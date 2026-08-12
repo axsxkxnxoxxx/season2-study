@@ -1,5 +1,16 @@
 # Pool coverage check — Step 4 data on disk
 
+> **SUPERSEDED SNAPSHOT — header added 2026-08-12.** This diagnostic was run while the Step 4 pull
+> was still in flight and describes **2,134 complete users, 235 discarded, ~58% of the plan.** The
+> pull was later stopped deliberately at **2,549 complete, 287 discarded, 62.9% of the plan**, and
+> every count below is a floor on a superseded snapshot rather than a description of the data on
+> disk. **Do not quote a figure from this file as current.**
+>
+> Current equivalents: `artifacts/s1-completer-diagnostic.md` (re-run on the full pulled pool, with
+> its own §1.1 before/after diff) and `artifacts/step2-frame-ledger-and-distributions.md` §1.
+> Retained because the coverage question it answers is not re-asked elsewhere, and because its
+> single-user-show finding is cited downstream.
+
 **What this is:** a read-only diagnostic requested by the Human Lead. It is **not a numbered step
 and not a gate**. Nothing here is a proposal, and no rule is adopted.
 

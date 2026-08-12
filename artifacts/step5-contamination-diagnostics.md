@@ -3,7 +3,7 @@
 **Owner:** Analytics Engineer. **Mode:** GATE.
 **Revision 6, 2026-08-12. FINAL — the adopted rule is complete and no decision is outstanding.**
 Adoption 3 was dropped on 2026-08-12, which was the last item that could move the rule.
-**Red Team reviews this revision.** Steps 6 and 7 remain blocked pending that review.
+**Red Team returned PROCEED on this revision** at its fourth round, with four corrections since applied. **The gate was approved by the Human Lead on 2026-08-12** — `decisions/0021-step5-contamination-gate.md`. Steps 6, 7 and 8 are unblocked and each remains an unapproved gate of its own.
 
 **Every remaining item in this document is a stated limitation, not a pending choice.** §17 says
 which is which. Nothing below asks the Human Lead to decide anything further.
@@ -765,4 +765,4 @@ Four items remain, and every one is a **limitation to be stated**, not a choice 
 the play-`id` calibration as a required input under ruling 2 (§3). Step 8 takes the 201,900 analysis
 population and the Layer 1 record tags (§9).
 
-Red Team reviews this revision. Steps 6 and 7 stay blocked pending that review.
+Red Team returned PROCEED on this revision at its fourth round; its four corrections are applied above. The gate was approved by the Human Lead on 2026-08-12 (`decisions/0021-step5-contamination-gate.md`). Steps 6, 7 and 8 are unblocked and each remains an unapproved gate of its own.

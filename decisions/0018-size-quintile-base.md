@@ -48,3 +48,25 @@ required the candidate set be recomputed for.
 Consequence: **a quintile label is not a stable identifier for a show.** It is valid against the
 frame it was cut on and must be recomputed, not carried forward, if the frame is rebuilt. Any result
 reported by quintile should name the frame it was cut against.
+
+---
+
+## Superseded figures — note added 2026-08-12
+
+**The bins published above are for the 1,226-show frame and no longer describe the study
+population.** [0020](0020-step2-structural-thresholds.md) set the structural thresholds hours later
+the same day, taking the frame to **1,138 shows**. Recut on that frame, the quintiles are:
+
+| Q1 | Q2 | Q3 | Q4 | Q5 |
+| ---: | ---: | ---: | ---: | ---: |
+| **238** | **221** | **224** | **227** | **228** |
+
+**The original figures are left in place deliberately** — they record what was decided against at
+the time, and this entry's whole argument is about which population the cut is made over.
+
+**The decision itself is unaffected.** The principle — cut over the frame, not the candidate set —
+holds, and the frame it names is whatever the frame currently is. This is precisely the dependency
+the entry's closing section predicted: *"a quintile label is not a stable identifier for a show …
+recompute, not carry forward, if the frame is rebuilt."* It was rebuilt.
+
+Live figures: `processed/step2/frame.csv`, column `size_quintile`.

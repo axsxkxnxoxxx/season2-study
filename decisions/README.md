@@ -33,8 +33,9 @@ Step 18 assembles the final log from these files.
 | [0019](0019-pool-completers-recomputed.md) | **`pool_completers` recomputed on real season lengths; the max-observed proxy is superseded and no result may use it.** Changes nothing on this frame — proxy `L1_hat` equals real `\|E1\|` on 1,225 of 1,226 shows — which is not a rehabilitation of the proxy generally. **Corrects the stated premise of [0013](0013-step2-execution-delegation.md) condition 2:** counts do not only rise; 118 long-tail shows fell between pool sizes. | 2026-08-12 | Closed |
 | [0020](0020-step2-structural-thresholds.md) | **The Step 2 structural thresholds: no minimum season size, max 26 episodes on either season, max 1,095-day gap.** 26 is the traditional full broadcast season and the cut is insensitive from 26 to 40 (1.1–2.4% of pairs); 22 was rejected at 196 shows and 13.8% of pairs, reaching into normal network drama. **The size cap is partly a cadence threshold** — 44 of its 51 shows are C4, the bucket where abandonment is most likely exposure-driven. Frame **1,226 → 1,138 shows, 220,107 pairs. Closes [0014](0014-no-content-filters-structural-fields.md).** | 2026-08-12 | Closed |
 | [0021](0021-step5-contamination-gate.md) | **Step 5 contamination exclusion rule APPROVED** (gate 2 of 5). Exclude 16,665 pairs whose S2 evidence is entirely air-date-stamped, on a deterministic mechanism; exclude 1,542 with no S2 evidence and a fabricated binding clock start, on a censoring defect; **retain 201,900 of 220,107**, derive `W` on **128,099**. Four rulings inside the gate — **D1 keeps Step 1 §7 and does not reopen gate 1**, adoption 1 narrowed, adoption 2 re-ruled onto censoring, adoption 3 dropped. Two standing rulings outlive it: `W` derived on clean records and applied to all, and **liveness on insertion time**, making the play-`id` calibration a required Step 7 input. Red Team: four rounds, PROCEED at the fourth. | 2026-08-12 | Closed |
+| [0022](0022-step5-rulings-written-into-task-sheet.md) | **The two Step 5 standing rulings are written into `task-sheet.md`.** They lived only in the decision log and the Step 5 artifact, while the specs the two isolated instances actually read said nothing about them — and **the dual-implementation diff cannot catch what the spec omits**, because both instances read the same silence. Step 6 now names the **128,099** estimation sample and its composition with D14; Step 7 names **insertion time** as the clock and the play-`id` calibration as a required input that **neither instance refits**. Found by `second-brain`. | 2026-08-12 | Closed |
 
-**A note on authority.** Entries 0001–0004 and 0013–0021 are Human Lead decisions. **0005–0008 are agent-taken,
+**A note on authority.** Entries 0001–0004 and 0013–0022 are Human Lead decisions. **0005–0008 are agent-taken,
 inside a Chained step, and are recorded retrospectively for ratification** — they shaped the
 population every downstream number rests on, and a constant that shapes the population is a decision
 whether or not it was treated as one at the time. They are listed here so the distinction between
@@ -194,3 +195,11 @@ that surfaced it.
     as uncited** — a maximum of 198, not the 164 printed, the 164 having come from the first 4,000
     of 155,626 groups in an exploratory shell. Worth a standing check at every remaining gate.
     ([0021](0021-step5-contamination-gate.md))
+
+23. **When a gate ruling changes what a downstream step computes, propagate it to `task-sheet.md` at
+    the time of the ruling, not at the time the step launches.** Step 5's two standing rulings lived
+    only in `decisions/0021` and the Step 5 artifact for a day; the Step 6 and Step 7 specs the two
+    isolated instances read said nothing about them. **The dual-implementation diff cannot catch a
+    spec omission** — both instances read the same silence and agree on the wrong answer. Fixed as
+    [0022](0022-step5-rulings-written-into-task-sheet.md). Three gates remain and each will produce
+    rulings with downstream reach. ([0022](0022-step5-rulings-written-into-task-sheet.md))
