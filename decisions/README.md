@@ -44,8 +44,9 @@ Step 18 assembles the final log from these files.
 | [0030](0030-frame-field-corrections.md) | **The 2024/2025 contradiction corrected by addendum, and three frame field changes.** Step 1 relied on a 2024 cap that Step 2 had moved to 2025, and its horizon assumed `W ≤ 91` against the adopted 108 — **the gate is not reopened**, both figures corrected by post-approval addendum. Margin is **24 days**, zero shows lost, but censoring is **cohort-asymmetric** (2023–2025 loses 10.3% of pairs at `W = 213` against 2.7% pre-2020). **`show_network` dropped** — it errs in both directions and has no stable semantics; **`rating`/`votes`/`comment_count`/`subgenres`/`airs_day` added**, giving the frame a reception axis it lacked; **`size_quintile`** is now within-cohort rank, per-year having over-corrected worse than raw under-corrected. | 2026-08-12 | Closed |
 | [0031](0031-the-50-completer-floor.md) | **The ≥50 S1-completer floor stands, and now has the warrant it never had.** The largest population rule in the study — 44,617 shows to 2,094 — and the only one with no entry and no sensitivity curve. Published: ≥25 gives +81% candidates, ≥100 gives −50%, and **there is no break in the distribution at 50**. Justified on cost, not on shape: shows near the floor are 42% of the frame by count but **15% by pairs**. **The frame at ≥25 is not computable without 1,699 API calls** and no claim is made about it. | 2026-08-12 | Closed |
 | [0032](0032-step4-deliverable-regeneration.md) | **Step 4's deliverables regenerated at zero API calls; the pull stopped SAFELY, not cleanly; the resume cost restated.** `step4_run.json` and `step4_pull_log.json` were written by a `--max-users 3` run and reported **2,137 complete against 2,549** — stale by 464 decided users and 23,410 calls, because the record-writers fire only from `main()`'s `finally` and neither long run reached it. Fixed with `--max-users 0`, verified at an unchanged request-log line count. The pull's ledger, progress file and raw cache all held and nothing was lost, but `finished: false`, `stop_reason: null` and no exit line means **"exited cleanly" was never supported**. Resume costs **~70,000 calls and ~7.8 hours**, not 4.28 — that figure came from 8 users over 100 seconds, 123 of whose pages were free, and is user-count based so blind to the untouched users being the heavier half of every bin. | 2026-08-12 | Closed |
+| [0033](0033-step8-per-air-period-censoring-counts.md) | **Step 8 reports retained-pair counts per air period after right-censoring, for every `W` arm.** The aggregate reads 97.6% retained at `W = 108` and hides that the loss is cohort-asymmetric — at `W = 213` the 2023–2025 cohort keeps **89.7%** against **97.3%** pre-2020, and survivors from recent titles are early adopters. **Closes the Product review's finding 5 ask**, though not the underlying thinness. Also disposes of the Engineering review's discard-rate residual: **bin 5 at +3 SD, no monotone trend, so sweep length is ruled out and the mechanism is unidentified** — recorded as a Step 14 limitation, not fixed. | 2026-08-12 | Closed |
 
-**A note on authority.** Entries 0001–0004 and 0013–0032 are Human Lead decisions. **0005–0008 are agent-taken,
+**A note on authority.** Entries 0001–0004 and 0013–0033 are Human Lead decisions. **0005–0008 are agent-taken,
 inside a Chained step, and are recorded retrospectively for ratification** — they shaped the
 population every downstream number rests on, and a constant that shapes the population is a decision
 whether or not it was treated as one at the time. They are listed here so the distinction between
@@ -321,3 +322,19 @@ that surfaced it.
     not been computed.** Resume hazards also stand unaddressed: an exclude file with no expiry, disk
     unmeasured anywhere, and a 27-hour Sabbath window a 7.8-hour run does not fit before a
     Friday-evening start. ([0032](0032-step4-deliverable-regeneration.md))
+
+38. **The sweep-completeness discard has an unidentified selection mechanism.** Per-bin discard rates
+    run 6.3% to 15.5% against a pooled 10.1%, with **bin 5 at roughly +3 SD**. **Sweep length is ruled
+    out** — no monotone trend across bins spanning 1 to 292 forecast pages — which is the useful half
+    of the finding and is why ~10% remains safe planning for any resume. What drives it is not
+    established. **It compounds with the discard already being outcome-non-neutral**
+    ([0023](0023-step4-completeness-rule-upheld.md), +1.27 pts): a mechanism that is both
+    outcome-correlated and unexplained cannot be argued harmless. Characterising it would mean
+    re-reading the 287 discards' raw pages — the same class of work `0023` declined on cascade cost.
+    Carried to Step 14. ([0033](0033-step8-per-air-period-censoring-counts.md))
+39. **Both partner reviews are now fully disposed**, Product findings 1–5 and its Step 15 warning,
+    Engineering findings A–G. The record is `artifacts/partner-reviews-steps-2-and-4.md`. **The Step
+    15 warning is a live commitment, not a closed item**: the Product reviewer has stated it will ask
+    whether the decision rule's action is stated at a confidence the 2023–2025 evidence — 168 shows,
+    release-strategy cells of 26 to 59 — actually supports.
+    ([0033](0033-step8-per-air-period-censoring-counts.md))
