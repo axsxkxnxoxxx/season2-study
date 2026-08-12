@@ -51,9 +51,22 @@ the date of the artifact it came from.
 | Step 5 **analysis population** — APPROVED, `0021` | **201,900** |
 | Step 5 **W estimation sample** — APPROVED, `0021` | **128,099** |
 
+| Step 6 **C1 estimation subset** = C1 ∩ 128,099 (`0026`) | **25,120** — 206 shows, 2,050 users |
+
 **201,900 and 128,099 are different numbers and `task-sheet.md` Step 6 now says so explicitly**
 (`0022`). The analysis population is what Step 8 classifies; the estimation sample is what Step 6
-measures `W` on, with D14's C1 restriction applied **on top of** it, not instead of it.
+measures `W` on, with D14's C1 restriction applied **on top of** it, not instead of it — 19.6% of
+the sample. Both Step 6 instances **asserted** the full waterfall before computing and aborted on
+mismatch; both reproduced all five lines exactly, and both independently recomputed the D12
+classifier against the frame at **0 disagreements over 1,138 shows**.
+
+**Pairs in the 128,099 by D12 bucket**, from both Step 6 instances, identical:
+C0 **0** · C1 **25,120** · C2 **39,680** · C3 **18,218** · C4 **45,081**. Sums to 128,099 ✓.
+
+**Four pairs in the 128,099 have a first S2 record at or after `τ_pull`** and are retained, because
+Step 5 built the sample without D11's filter and the Step 6 spec directs taking the population as
+published. **None is in C1.** Step 8 applies the frozen cutoff, so **Step 6 and Step 8 will not
+share a row set** — README item 27, open.
 
 ## The 287 discarded users — measured, and not outcome-neutral
 

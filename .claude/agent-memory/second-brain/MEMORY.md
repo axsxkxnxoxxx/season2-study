@@ -2,8 +2,8 @@
 
 Season 2 abandonment study. Continuity role: glossary, consistency checks, coverage of the
 decision log. `decisions/` is the artifact of record; this memory never duplicates or edits it.
-Current through `decisions/0023`, 2026-08-12. **Gates 1 and 5 closed, two of five. Step 6 is live**
-as a dual pair — `W` sample **128,099**, analysis population **201,900**, different numbers.
+Current through `decisions/0028`, 2026-08-12. **Gates 1, 5 and 6 closed, three of five. `W = 108`.
+Step 7 is next.** Analysis population **201,900**; `W` sample **128,099**; C1 subset **25,120**.
 
 ## Standing artifacts I maintain
 
@@ -18,6 +18,7 @@ as a dual pair — `W` sample **128,099**, analysis population **201,900**, diff
 
 - [Step 1 gate — outcome definition](gate-step1-outcome-definition.md) — closed 2026-08-10; **§7 challenged and upheld, and `0012` tested the reopening rule and did not reopen it**.
 - [Step 5 gate — contamination](gate-step5-contamination.md) — closed as `0021`; six revisions, four Red Team rounds. Two standing rulings, now propagated into `task-sheet.md` by `0022`.
+- [Step 6 gate — window W](gate-step6-window-w.md) — closed as `0026`, `W = 108 ± 18`. Two dual runs, each finding something a single run could not.
 - [Step 1's §10.1 open questions](step1-open-questions.md) — Q2 decided as D14; Q1 and Q3 still open and not closed by approval.
 
 ## Working context

@@ -1,5 +1,17 @@
 # Step 6: Derive window W — instance `-a`
 
+> **GATE OUTCOME — header added 2026-08-12, after this artifact was written.**
+> **The approved value is `W = 108 days`** (`decisions/0026-step6-window-w-gate.md`, gate 3 of 5).
+> The figure derived below is this instance's own output and **predates the ruling in
+> `decisions/0025-lag-unit-and-ceiling.md`**, which fixed the lag as a continuous instant difference
+> and `W` as the **ceiling** of the percentile. The true 90th percentile is **107.7135 days**; under
+> the approved half-open test `watched_at < τ1` a `W` of 107 covers 89.976% of C1 started pairs and
+> 108 covers 90.020%, so only the ceiling delivers the percentile the rule asks for.
+>
+> **Do not take `W` from this file.** Downstream steps take it from the decision entry. Everything
+> else here — the estimation sample, the negative-mass tables, the precision intervals, the
+> censoring diagnostic — stands as written and is unaffected by the rendering.
+
 **Owner:** Data Scientist (instance `-a`) · **Mode:** GATE, dual implementation · **Reviewer:** Red Team
 **Status:** **PROPOSED, NOT ADOPTED.** This is a gate artifact. It derives a number and stops.
 No agent adopts W and no agent records approval. Step 7 has not been started.

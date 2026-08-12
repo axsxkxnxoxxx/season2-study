@@ -34,8 +34,16 @@ log shows the judgment."*
 | **`0021`** | **Step 5 gate closed.** The rule, four rulings made inside the gate, two standing rulings, four Step 14 limitations, three recorded errors, and what it unblocks | **Full, and it is the best-formed entry in the log** — it carries the four-round review history, the reasoning quoted verbatim, and the errors that entered rulings before being caught |
 | **`0022`** | The two standing rulings propagated into `task-sheet.md` Steps 6 and 7 | Full. Notably records **who found it** and why the dual-implementation control could not have |
 | **`0023`** | `0012` reviewed and upheld; three findings become Step 14 limitations | Full, and it does the harder thing: **states that Red Team was overruled on cost and not on merit**, so a future reader cannot infer the shape test was examined and found wanting |
+| **`0024`** | "Flattens" withdrawn; `W` is the 90th percentile; Step 13 arms span 46–107 | **Full, and it is the best "alternatives" field in the log** — the alternative is not hypothetical, it is a measured 61-day spread produced by two instances from the same words |
+| **`0025`** | The lag is a continuous instant difference; `W` is the **ceiling** | Full. Names the pattern it is the third instance of, and scopes itself forward to Step 7 |
+| **`0026`** | **Step 6 gate closed. `W = 108`.** Four things that travel with the number; one unresolved conflict between approved documents | Full |
+| **`0027`** | Step 13 `W` arms at 150 and 213 | Full, including why 150 exists — so a non-linear response is traced rather than interpolated between two endpoints |
+| **`0028`** | Step 14 carries seven bias statements and eight non-bias limitations | Full, and it argues *substantively* why the ledger must not be netted rather than issuing it as a caution |
 
-**Gate checklist:** **Steps 1 and 5 closed. Steps 6, 7, 8 open.** Two of five.
+**Gate checklist:** **Steps 1, 5 and 6 closed. Steps 7 and 8 open.** Three of five.
+
+**Two entries in this block credit `second-brain` by name** — `0022` and `0028`, both propagation
+gaps. Recorded without comment: the role is continuity, and the log is the Human Lead's.
 
 **`0021` sets a bar for the three remaining gate entries.** It records not just the rule but the
 rulings made *during* the gate, the standing rulings that outlive it, the limitations that travel
@@ -46,7 +54,15 @@ format working at full strength, and it is the model for Steps 6, 7 and 8.
 **One structural improvement worth naming.** `0022` exists because a ruling recorded in two places
 was still missing from the third. The log now carries the standing check as README item 23. **Every
 remaining gate entry should end by naming what it propagated to `task-sheet.md`, or stating that it
-propagated nothing.**
+propagated nothing.** `0026` does **not** do this, and `W = 108` is consequently absent from the
+Step 7 and Step 8 specs — [[open-items-and-contradictions]] Z2.
+
+**The Step 6 block is where the dual-implementation regime paid for itself, and Step 18 should say
+so with the numbers.** `0024` and `0025` exist *only* because two isolated instances ran the same
+words and produced different answers — 61 days apart, then one day apart. **Neither finding was
+visible in a single run and the first was not visible in the spec.** That is a defensible answer to
+"why did you run everything twice," and it is worth more in the write-up than the value of `W`.
+See [[gate-step6-window-w]].
 
 ---
 

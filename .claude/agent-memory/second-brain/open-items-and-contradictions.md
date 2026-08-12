@@ -20,6 +20,81 @@ approves governs on substance. I never edit `decisions/` — I report.
 
 ---
 
+## NEW — surfaced after the Step 6 gate, in priority order
+
+### Z1. Step 7's spec carries BOTH unclosed Step 6 lessons, and Step 7 is the next dual pair
+
+**`task-sheet.md` Step 7 line 237, unamended:**
+
+> **"Set the threshold well beyond the normal gap"**
+
+That is the identical shape to *"set W at the percentile where the curve flattens"* — and arguably
+worse. "Flattens" at least named a feature of a curve; **"well beyond" and "normal" name nothing at
+all.** `0024` withdrew the first for producing two honest readings 61 days apart on inputs that
+matched to the pair.
+
+**And `0025` names Step 7 by name for the second lesson:**
+
+> *"It applies wherever the same shape recurs. Any later step reading a percentile off a lag or
+> duration and feeding it into a half-open instant test inherits the same off-by-one. **Step 7's
+> liveness threshold is the immediate candidate.**"*
+
+Step 7's rule is *"activity after that pair's clock start plus `W`, with gaps under the threshold"* —
+a duration threshold feeding a boundary test. **Step 7's spec says nothing about the unit of the gap
+or the rounding of the threshold**, which is exactly the gap instance B flagged and declined to
+resolve at Step 6.
+
+**README item 26 already predicts this** — *"Expect the same shape at Steps 7 and 8"* — and `0022`
+and `0028` both establish the remedy: **write the ruling into the spec before the step launches.**
+Step 6 spent one full dual run discovering that an undefined word cannot be diffed. **The cost of
+learning it twice is a second discarded run.**
+
+**Weaker second instance, at Step 8.** Line 257 says *"apply … in a **fixed documented order**"*
+without fixing the order. Two instances can each pick an order, document it, and both be faithful.
+The final row set commutes — every filter is a row-wise predicate — but **line 264 requires
+"Record sample size after each filter"**, and those waterfall counts do **not** commute. So the diff
+would show differing required outputs on an identical table. Lower consequence than Z1, same shape.
+
+### Z2. `W = 108` is not in the spec of either step that consumes it
+
+`decisions/0026` is referenced in `task-sheet.md` at **lines 406 and 414 only — both inside Step
+14**. The string `108` appears once, in a Step 14 bias statement.
+
+- **Step 8** (dual pair) says *"Apply frame, contamination exclusions, S1 completion rule, **W**,
+  liveness rule, right-censoring…"* — no value.
+- **Step 7** (dual pair) composes its rule with *"clock start plus **W**"* — no value.
+
+**This is item 23's rule with the ink still wet**, and the failure mode here is not silence but
+**contradiction**: an instance that goes looking will find the Step 6 deliverables, and those say
+**107** (`-a`) and **107.71** (`-b`). Neither is the adopted value. **Two instances resolving the
+same gap from two different artifacts of the previous gate is precisely a spec-omission divergence
+that looks like an implementation divergence.**
+
+The remedy is the one already applied twice: `0022` put the Step 5 rulings into Steps 6 and 7;
+`0028` put the routed limitations into Step 14. Step 8's and Step 7's specs have not had the
+equivalent for `W`.
+
+### Z3. The two Step 6 deliverables carry pre-`0025` numbers with no forward pointer
+
+Both are correctly marked **PROPOSED, NOT ADOPTED**, and neither claims to be the adopted value —
+that framing is right and should not be changed. The issue is that they are the **public
+deliverables of a closed gate** and a reader arriving at them finds:
+
+| | Instance `-a` | Instance `-b` | Adopted |
+| :--- | ---: | ---: | ---: |
+| `W` | **107** | **107.71** | **108** |
+| Step 13 minimum range | **[37, 107]** | **[37.70, 107.71]**, "37 to 108" | **[38, 108]** per `0026`/`0027` |
+
+**`task-sheet.md` Step 13 line 360 says "Cover at least the range Step 6 reports"** — and what Step
+6 reports is [37, 107] / [37.70, 107.71], not the [38, 108] the decisions use. Practically moot,
+since `0027`'s union runs to 213 anyway and the floor is a one-day question on a sensitivity arm.
+
+**The repo's own established practice is to annotate.** `artifacts/s1-completer-diagnostic.md` opens
+with *"This supersedes the 2,134-user snapshot"*; `pool-coverage-check.md` was fixed for lacking
+exactly that. A one-line header on each Step 6 artifact pointing at `0025` and `0026` would match it.
+
+---
+
 ## Disposition of the seven findings from the 2026-08-12 pass
 
 **Six were actioned; the seventh was actioned by being reviewed.** Recorded here so the register
@@ -269,6 +344,7 @@ for a newly-stated reason should be logged with the new reason, not the one that
 | **Exclude the 1,542** (adoption 2) | "these pairs cannot be evaluated against the definition" | **False.** With zero S2 records `\|A\| = 0` for *every* `τ1`; the pair is perfectly evaluable. Holds instead as a **right-censoring defect** — a fabricated-early `T0` lets a pair pass a censoring test it should have failed (Red Team D2) |
 | **Cap the tail at 300 forecast pages** (`0010`) | "a 907-page user is roughly six hours alone" | **Wrong by a factor of 60.** At 150 GET/min a 907-call user is **6.0 minutes**; the pool's heaviest user is 6.9 minutes. Holds instead as a **circuit breaker on forecast error** — and the wrong argument would have pointed at a far more aggressive cap, which at 150 pages would have removed 5% of the pool, all from the heavy end |
 | **Order the pull so an early stop is survivable** (`0009`) | median-out, "sort by pages, pull median first, work outward" | Median-out leaves a **centered** slice, not a representative one: at ten hours it pulls **no user above 73 pages** in a pool reaching 1,034. Amended before launch to **stratified round-robin**, at a named 12% throughput cost |
+| **`W` is read at a percentile of the C1 lag curve** (`0024`) | "set W at the percentile where the curve **flattens**" | **The C1 density is close to scale-free past day 7** — log-log slope −1.1 to −1.5 across every decade — so there is no elbow to read and **the spec asked for a feature the distribution does not have**. Now the **90th percentile**, defended as an **imported convention** rather than as a fact about the data |
 | **Keep the 2% completeness tolerance** (`0012`, upheld by `0023`) | "the pilot's maximum residual was 0.86% against a 2% tolerance" — i.e. the threshold has headroom | **The pilot max is 11.7%**, and any tolerance from ~1.5% to 11.7% partitioned the pilot identically. The rule now stands on **cascade cost** — a 0.13-point correction does not justify re-deriving cohort → frame → Step 5 rule — **explicitly not on merit**, with Red Team's finding recorded as standing |
 
 **Two of these entered rulings before they were corrected** — the C5 disjointness error and the
@@ -368,12 +444,40 @@ release-time availability.**
 Still open. The Continued boundary and the right-censoring rule. Each carries a Data Scientist
 recommendation and a decision from nobody. See [[step1-open-questions]].
 
-### Critical path, updated 2026-08-12 after `0021`
+### README item 24 — D14's warrant is false and 95 negatives have no account
 
-Steps 1, 3, 4 (stopped), 2 and **5** are done. **Two gates closed of five.** **Step 6 is live**,
-running as a dual pair on the 128,099 estimation sample with D14's C1 restriction on top. Then
-Step 7 (dual, needs the stored calibration and must not refit it), then Step 8 (dual, on the
-201,900 analysis population and the Layer 1 record tags).
+`0003` D14 and Step 1 §9 both state every C1 lag is non-negative **by construction**. **689 are
+negative**, identical counts from both Step 6 instances. **459 bind on the S1-completion term** —
+`max()` can select it on a C1 show, so the warrant only ever covered half the operator — and **230
+bind on the finale**, of which 135 are the known one-day UTC skew and **95 are unexplained, out to
+−495 days**. On a same-day drop nothing should be watchable 495 days before the season exists.
+
+**Worth ≤6 days of `W`, so not load-bearing for the number, but the warrant is false either way and
+the 95 are an unexplained timestamp or metadata defect Step 8 should expect to meet again.** Open.
+
+### README item 27 — Step 6 and Step 8 will not share a row set
+
+**4 pairs in the 128,099 have a first S2 record at or after `τ_pull`.** Step 1 D11 says every such
+record is discarded from every computation; Step 5 built the sample without that filter. Both Step 6
+instances found them and both retained them, **correctly** — the spec directs taking the population
+from the Step 5 artifact, and re-deriving it would have been the larger error. **None is in C1, so
+`W` is unaffected** (107.0 with and without, verified rather than assumed). **Step 8 classifies on
+the 201,900 under the frozen cutoff.** Unresolved, and it lands at Step 8.
+
+### README item 25 — dual instances need distinct output namespaces
+
+Run 1's two instances got byte-identical prompts — **correct, and it must stay that way** — but
+identical default output paths, and collided: one instance's script was overwritten mid-run. **The
+namespace is not part of the task description and separating it does not weaken the diff.** Applies
+to Steps 7 and 9 (`data-scientist` / `-b`) and Step 8 (`analytics-engineer` / `-b`). No output was
+lost, and the identical inputs are themselves evidence the collision never reached the computation.
+
+### Critical path, updated 2026-08-12 after `0026`
+
+Steps 1, 3, 4 (stopped), 2, 5 and **6** are done. **Three gates closed of five.** **Step 7 is next**
+— dual pair, needs the stored calibration and must not refit it, and **carries Z1 and Z2 unresolved
+in its spec.** Then Step 8 (dual, on the 201,900 analysis population, the Layer 1 record tags and
+`W = 108`), which also inherits item 27's four-pair conflict.
 
 **The one thing to watch at each remaining gate**, from README item 23: a ruling that changes what a
 downstream step computes has three homes — the decision log, the gate's own deliverable, and **the
@@ -401,6 +505,21 @@ split signature depends on — README item 5). N6 (the Step 0 file index is stal
 
 Verified 2026-08-12. Arithmetic reconciliations are in [[population-chain-steps-2-3-4]].
 
+Verified after the Step 6 gate:
+
+- **No live reference anywhere in the repo to the run-1 Step 6 artifacts.** Grepped every
+  `step6-window-w` / `step6-lag` / `step6-w-derivation` / `instance-a` string: ten files, all of
+  them either the current `-a` / `-b` deliverables, their sources, or decision entries citing run 1
+  as history at commit `9c5fbd3`. **Removing them from the working tree was clean.**
+- **`task-sheet.md` Step 14 is fully amended** — seven numbered bias statements each with mechanism,
+  direction and source, eight non-bias limitations, and a preamble arguing *why* they must not be
+  netted. **No description of Step 14 as a five-line checklist survives anywhere.**
+- **`task-sheet.md` Step 13 carries all three arm mandates** — the two-curve range, the [46, 107]
+  span with the reason it survives the definition being fixed, and the 150/213 arms with the
+  direction named. `H` constant and the per-arm retained-row count are both still there.
+- **The Step 6 population arithmetic reconciles.** Bucket pairs sum to 128,099; C1 ∩ 128,099 =
+  25,120 = 19.6%; both instances' negative-mass tables are identical to the pair across all five
+  buckets; 28,960 / 128,099 = 22.61% ✓.
 - **220,107 completer pairs reproduce exactly by an independent path.** The discard-neutrality check
   recomputed the retained population's completers from a separate extractor and hit the figure
   carried by Step 2 and by the approved Step 5 rule. **The strongest single confirmation the frame

@@ -40,8 +40,9 @@ Step 18 assembles the final log from these files.
 | [0026](0026-step6-window-w-gate.md) | **Step 6 APPROVED. `W = 108 days`** (gate 3 of 5) — ceiling of the 90th percentile (107.7135) of the continuous lag on the C1 subset, 25,120 pairs of Step 5's 128,099 sample. Applies to all pairs. Four things travel with it: precision is **±18 days** show-clustered not ±8 iid; the percentile is imported convention, not selected by the data; **censoring is one-sided** (p90 rises to 213 at ≥8yr exposure, an upper bound); and D14's warrant is false. | 2026-08-12 | Closed |
 | [0027](0027-step13-w-arms-above-the-adopted-value.md) | **Step 13's `W` arms extend above the adopted value, at 150 and 213 days.** Every mandated range topped out at `W = 108`, so the sensitivity tested `W` downward by a factor of three and upward not at all — while the censoring diagnostic runs one-sided upward (C1 p90 rises 107.7 → 119 → 128 → 146 → **213** with minimum exposure). **213 is an upper bound, not a rival estimate**; 150 is included so the response is traced rather than bracketed. Closes item 28. | 2026-08-12 | Closed |
 | [0028](0028-step14-carries-every-routed-limitation.md) | **Step 14 carries every limitation routed to it.** Its checklist held **one** bias mechanism while **seven** were known and ~eleven limitations had accumulated across ten entries and four artifacts. Adds a seven-statement bias ledger — seeding down, liveness down, tail cap up, tolerance discard up, Step 5 population change up, Step 5 estimator bias down, larger `W` down — each with mechanism, direction and source, and **the instruction that they must not be netted**: two are not the same kind of quantity, same-direction pairs compound rather than confirm, and opposite-direction pairs do not cancel. Plus eight non-bias limitations. Same rule as item 23, different failure mode — Step 14 is single-implementation, so the risk is **plain omission**, not silent divergence. | 2026-08-12 | Closed |
+| [0029](0029-step7-threshold-rule-and-w-propagation.md) | **`W = 108` propagated to its consuming steps; Step 7's threshold rule and Step 8's filter order fixed.** `W` appeared in neither Step 7 nor Step 8, while the two Step 6 artifacts state **107** and **107.7135** — a contradiction with two different wrong answers, into which two dual instances could have resolved differently. Step 7's *"set the threshold well beyond the normal gap"* withdrawn for a named percentile — **proposed at the 99th, not adopted** — with the gap as a **continuous insertion-instant difference** and the threshold rounded **up**. Step 8's filter order fixed, because the row set commutes but the required per-filter waterfall does not. | 2026-08-12 | **Open — the Step 7 percentile is proposed, not ruled** |
 
-**A note on authority.** Entries 0001–0004 and 0013–0028 are Human Lead decisions. **0005–0008 are agent-taken,
+**A note on authority.** Entries 0001–0004 and 0013–0029 are Human Lead decisions. **0005–0008 are agent-taken,
 inside a Chained step, and are recorded retrospectively for ratification** — they shaped the
 population every downstream number rests on, and a constant that shapes the population is a decision
 whether or not it was treated as one at the time. They are listed here so the distinction between
@@ -268,3 +269,17 @@ that surfaced it.
     time of its ruling** rather than accumulating for a sweep later — item 23's rule, applied to a
     step whose failure mode is plain omission rather than silent divergence.
     ([0028](0028-step14-carries-every-routed-limitation.md))
+
+30. **The Step 7 liveness percentile is proposed at the 99th and not ruled.** **Step 7 must not launch
+    until it is.** ([0029](0029-step7-threshold-rule-and-w-propagation.md))
+31. **The liveness rule's shape is unsettled, and no percentile fixes it.** If liveness requires that
+    *no* gap in a sweep exceeds the threshold, the false-dead rate compounds with the number of gaps
+    — at the 99th percentile an account with 50 logged gaps trips it with probability ≈ 39%. Whether
+    the test applies to a **single** gap, to the gap **bracketing `T0 + W`**, or to **every** gap in
+    the sweep is not settled by the current wording.
+    ([0029](0029-step7-threshold-rule-and-w-propagation.md))
+32. **Read each remaining spec for undefined conventions BEFORE its step launches.** Three
+    consecutive gates needed one written in first: "flattens" and the lag unit at Step 6, then the
+    gap unit, the threshold criterion and the filter order at Steps 7 and 8. Two were caught only
+    because a dual run burned a cycle. **Steps 8 and 9–13 should be read for the same defect before
+    each launches, not after.** ([0026](0026-step6-window-w-gate.md), [0029](0029-step7-threshold-rule-and-w-propagation.md))

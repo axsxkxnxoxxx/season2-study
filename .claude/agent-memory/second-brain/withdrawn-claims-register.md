@@ -56,6 +56,8 @@ load-bearing in four places; **liveness is a pair-level filter**, not a statemen
 | *"128,099 under every reading"* | Step 5 revision 3 | Proved for two readings, **false for R3**, which grows the sample to **131,043**. Withdrawn rather than defended. Red Team E3 |
 | R3's precedent is Step 1 §2.3 | Step 5 revision 3 | §2.3 governs *which records count as watching* and says nothing about timestamps. The operative rule is **§2.2**. Red Team E4 |
 | *"Completer counts only rise"* as the pool grows | `decisions/0013` condition 2 | **118 shows fell**, 177 pairs lost. Counts **move**. Corrected by `0019` — the instruction was right, the reason was wrong |
+| *"On a C1 show every lag is non-negative **by construction**"* | **`decisions/0003` D14 and Step 1 §9** — i.e. inside an approved gate and an approved decision | **False on the data. 689 C1 lags are negative**, identical counts from both Step 6 instances. The warrant reasons about the **finale term** and then generalises to the whole `max()`: **459 bind on the S1-completion term**, where a user who watched S2 before finishing S1 gets a negative lag with no defect involved. **230 bind on the finale**, which should be impossible under C1 — 135 are the known one-day UTC skew and **95 have no account, out to −495 days**. Worth ≤6 days of `W`. README item 24, **still open** |
+| *"Set W at the percentile where the curve **flattens**"* | `task-sheet.md` Step 6, the original wording | **Withdrawn by `0024`.** The C1 density is **close to scale-free past day 7**, log-log slope −1.1 to −1.5 across every decade, so **there is no break to read**. Two isolated instances produced 46 and 107 from identical inputs. Textbook mode A — an instruction naming a feature the object does not have |
 | *"There is a real trough between 7 and 180 days"* | Step 5 revision 1 | A **bin-width artifact**; per-day density is monotone decreasing throughout. 180 days is a conservative judgment, not a data-determined break. The only real break is at **7 days**. Red Team C1 |
 | *"Duplicate accounts: none found"* / *"ten duplicate accounts"* | Step 5 revisions 1–2 | The ten were **mode-3 artifacts**. The negative is **conditional** — an import-only duplicate leaves no real-time records and 251 accounts are untestable. Red Team C4 |
 | *"Every retained pair has a clock start with a real logging date behind it"* | Step 5 revision 1 | Overclaim; pairs reach the completion threshold through an ordering that includes fabricated dates. Red Team C5 |
@@ -184,6 +186,31 @@ term binds for **61.8%** of the 720, which is why its absence moves the median b
 the basis differed. Recorded because a correction that is not re-derived is just another claim.
 
 ---
+
+---
+
+## Mode E — a coincidence that would have read as corroboration
+
+**Not an error. A claim correctly refused before anyone made it**, and the clearest example in the
+study of an agent declining a result that flattered it.
+
+Step 6 run 2's instance A produced **`W = 107`**, which is also one of the two values run 1 produced.
+The obvious reading is that two independent runs converged. **Instance A's own §2 refuses it:**
+
+> *"It landed on 107 … and that is not confirmation of anything. … Computing the 90th percentile of
+> the same distribution twice and getting the same answer is arithmetic, not agreement — it says the
+> two runs share a population and a lag definition, which was already known from run 1's identical
+> intermediates. **It carries no independent evidence that 107 is right.** The thing that would be
+> informative is a divergence."*
+
+`0026` records the same point. **The check this generalises to:** when a re-run reproduces an earlier
+number, ask whether the two computations could have differed. If the rule fixes the statistic and the
+sample, agreement is entailed and carries no information. **Only a divergence is evidence, and the
+dual-implementation regime exists to produce divergences, not agreements.**
+
+The same logic sits behind `0024`'s deeper point: **making a definition unambiguous does not make the
+result insensitive to it.** Fixing "flattens" to "90th percentile" removed the *disagreement*; it did
+not remove the *dependence*, which is why Step 13 must still span 46 to 107.
 
 ## The three errors that originated in the main session and reached the Human Lead
 

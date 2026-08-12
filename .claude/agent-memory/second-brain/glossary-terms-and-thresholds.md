@@ -17,8 +17,8 @@ Status vocabulary: **FIXED** (set and gate closed) · **DEFERRED** (form fixed, 
 
 | Term | Value / status | Where set | Gate |
 | :--- | :--- | :--- | :--- |
-| **`W`** — the window, in days | **Value OPEN. Both factors of its sample are FIXED and both are now in `task-sheet.md`.** Estimation sample is **two-factor**: cadence bucket **C1 only** (D14 / `0003`) applied **on top of** — not instead of — a **provenance-clean sample of 128,099 pairs** (`0021` ruling 1). Result applies to all shows and all provenances. Step 6 launched 2026-08-12 as a dual pair. | Value: Step 6. Cadence: D14. Provenance: `0021`. Both propagated by `0022` | Step 6 gate, **not approved** |
-| **Liveness threshold** | **OPEN. Not set.** A gap length derived from data; Step 7 must derive it without using `W` as an input. **Basis fixed:** liveness runs on **record insertion time**, not claimed `watched_at` (`0021` ruling 2). The play-`id` calibration is a **required input and neither instance refits it** — written into `task-sheet.md` Step 7 by `0022`, along with the gap-distribution item now reading **insertion instants** | Step 7; basis `0021`, spec `0022` | Step 7 gate, **not approved** |
+| **`W`** — the window, in days | **FIXED: `W = 108 days`.** The **ceiling** of the **90th percentile** (107.7135) of the **continuous** lag from clock start to first S2 episode, on the **C1 subset (25,120 pairs, 206 shows, 2,050 users)** of the 128,099 clean-record sample. **Applies to all pairs.** Precision: **±18 days, show-clustered** — not the decimals. `τ1 = ⟦T0⟧ + 108 × 24h` is now the operator that assigns every outcome state. | Rule: `0024` (percentile) + `0025` (unit and ceiling). Value: `0026` | **Step 6 gate, APPROVED 2026-08-12, `0026`. Gate 3 of 5** |
+| **Liveness threshold** | **OPEN. Not set.** A gap length derived from data; Step 7 must derive it without using `W` as an input, though the *rule* composes with `W`. **Basis fixed:** liveness runs on **record insertion time**, not claimed `watched_at` (`0021` ruling 2); the play-`id` calibration is a **required input and neither instance refits it** (`0022`). **But the derivation instruction is still "set the threshold well beyond the normal gap"** — undefined, on a dual pair, and `0025` names Step 7 as the immediate candidate to inherit the unit/ceiling off-by-one. [[open-items-and-contradictions]] Z1 | Step 7; basis `0021`, spec `0022` | Step 7 gate, **not approved** |
 | **S1 completion rule** | **FIXED.** `F1 ∈ D1` **and** `\|D1\| ≥ ceil(0.90 × L1)`, distinct episodes, membership by the listed set `E1`. Now applied against **real** `E1` from the Step 2 frame, not a proxy (`0019`). | Step 1 §4 | **Step 1 gate, APPROVED 2026-08-10** |
 | **Contamination exclusion rule** | **FIXED.** Exclude **16,665** pairs whose S2 evidence is *entirely* air-date-stamped, plus **1,542** with no S2 evidence and a fabricated binding clock start. Total **18,207**; retains **201,900 of 220,107 (91.73%)**. Disjoint by construction. | Step 5 §9, revision 6 | **Step 5 gate, APPROVED 2026-08-12, `0021`. Gate 2 of 5** |
 | **Filter order** | **OPEN. Not set.** Step 8 owns it. `task-sheet.md` Step 8 names the members — frame, contamination, S1 completion, W, liveness, right-censoring, `L2 = 1` — and one ordering constraint: **contamination before right-censoring**. The order among the rest is Step 8's. | Step 8 | Step 8 gate, **not approved** |
@@ -32,17 +32,34 @@ handling · `0005` Step 3 stopping rule · `0006` Step 3 crawl constants · `000
 S2 · `0016` per-season network dropped · `0017` air period · `0018` size quintile base · `0019`
 `pool_completers` recomputed · `0020` structural thresholds · **`0021` Step 5 gate APPROVED** ·
 **`0022` the two Step 5 rulings written into `task-sheet.md`** · **`0023` `0012` upheld after a Red
-Team HOLD**.
+Team HOLD** · **`0024` `W` is the 90th percentile** · **`0025` lag unit and ceiling** · **`0026`
+Step 6 gate APPROVED, `W = 108`** · **`0027` Step 13 arms at 150 and 213** · **`0028` Step 14
+carries every routed limitation**.
 
-**Authority split.** `0001–0004` and `0009–0023` are Human Lead. **`0005–0008` are agent-taken and
+**Authority split.** `0001–0004` and `0009–0028` are Human Lead. **`0005–0008` are agent-taken and
 still Open, awaiting ratification** — the README's authority note now names all four correctly.
+
+## Step 6 — how `W` is derived, and the conventions inside it
+
+| Term | Value / rule | Where |
+| :--- | :--- | :--- |
+| **The percentile** | **90th.** *"Attribution-window practice sets the window at or slightly above the 90th percentile of the time-to-conversion distribution, with 75th to 90th the cited range."* **Imported convention, not selected by the data**, and labelled as such wherever it appears. Moving to the 85th buys **61.7 days** (46 vs 107.7) | `0024` |
+| **The withdrawn wording** | ~~"set W at the percentile where the curve flattens"~~ — **withdrawn.** The C1 density is close to scale-free past day 7 (log-log slope −1.1 to −1.5 across every decade), so the spec asked for a feature the distribution does not have | `0024` |
+| **The lag** | **Continuous instant difference**, signed and untruncated. Not floored to whole days | `0025` |
+| **The rendering** | **`W` is the CEILING of the percentile.** A pair is covered iff its fractional lag is `< W`, so flooring is a **systematic one-directional off-by-one against the operator**. 107 covers 89.976%, 108 covers 90.020% | `0025` |
+| **Applies wherever the shape recurs** | Any later step reading a percentile off a lag or duration and feeding it into a half-open instant test inherits the same off-by-one. **`0025` names Step 7's liveness threshold as the immediate candidate** | `0025` |
+| **C1 estimation subset** | **25,120 pairs = C1 ∩ 128,099**, 19.6% of the sample, from **206 shows and 2,050 users** | `0026` |
+| **`W`'s precision** | **±18 days at 95%, show-clustered.** iid ±8 is wrong — 206 shows is the binding cluster, and treating pairs as independent overstates precision ~2.5× | `0026` |
+| **All-shows p90** | **37.6967 → 38** under the ceiling rule. **Descriptive only; `W` is never read here.** The 70.0-day gap between the two curves is the measured size of D14's transfer assumption | `0026` |
+| **Step 13 `W` arms** | Union of the two-curve range **[38, 108]**, the run-1 span **[46, 107]**, and the new arms at **150 and 213** — effectively **38 to 213**, with 108 inside rather than at the ceiling. **`H` constant across every arm; each arm re-censors, so the arms do NOT share a denominator** and the retained-row count is required per arm | `0027`, composing with `0024` |
+| **`213`** | The C1 p90 among pairs with **≥8 years of exposure** (n = 4,141). **An upper bound, not a rival estimate** — exposure and cohort are not separable | `0026`, `0027` |
 
 ## Clock, window, horizon — unchanged from Step 1 except `pull_date`
 
 | Symbol | Definition | Where | Status |
 | :--- | :--- | :--- | :--- |
 | `T0` | `max(S2_finale_air_date, first-pass S1_completion_date)` | Step 1 §6, D1 | FIXED |
-| `τ0` / `τ1` | `⟦T0⟧` / `τ0 + W × 24h`; window `[τ0, τ1)` | §2.4, D13 | FIXED in form |
+| `τ0` / `τ1` | `⟦T0⟧` / `τ0 + W × 24h`; window `[τ0, τ1)`. **Now numeric: `τ1 = ⟦T0⟧ + 108 × 24h`** | §2.4, D13; value `0026` | **FIXED** |
 | In-window test | **`watched_at < τ1`**. Strict, half-open, instants only | §2.4, D13 | FIXED |
 | `H` | **91 days**, fixed, not a function of `W` | §6, D10 | FIXED |
 | Right-censoring | retain iff **`⟦T0⟧ + (max(W, 91) + H) × 24h ≤ τ_pull`** | §6, D10 | FIXED in form |
