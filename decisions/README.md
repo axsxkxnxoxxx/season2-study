@@ -35,8 +35,9 @@ Step 18 assembles the final log from these files.
 | [0021](0021-step5-contamination-gate.md) | **Step 5 contamination exclusion rule APPROVED** (gate 2 of 5). Exclude 16,665 pairs whose S2 evidence is entirely air-date-stamped, on a deterministic mechanism; exclude 1,542 with no S2 evidence and a fabricated binding clock start, on a censoring defect; **retain 201,900 of 220,107**, derive `W` on **128,099**. Four rulings inside the gate — **D1 keeps Step 1 §7 and does not reopen gate 1**, adoption 1 narrowed, adoption 2 re-ruled onto censoring, adoption 3 dropped. Two standing rulings outlive it: `W` derived on clean records and applied to all, and **liveness on insertion time**, making the play-`id` calibration a required Step 7 input. Red Team: four rounds, PROCEED at the fourth. | 2026-08-12 | Closed |
 | [0022](0022-step5-rulings-written-into-task-sheet.md) | **The two Step 5 standing rulings are written into `task-sheet.md`.** They lived only in the decision log and the Step 5 artifact, while the specs the two isolated instances actually read said nothing about them — and **the dual-implementation diff cannot catch what the spec omits**, because both instances read the same silence. Step 6 now names the **128,099** estimation sample and its composition with D14; Step 7 names **insertion time** as the clock and the play-`id` calibration as a required input that **neither instance refits**. Found by `second-brain`. | 2026-08-12 | Closed |
 | [0023](0023-step4-completeness-rule-upheld.md) | **The sweep-completeness rule stands as adopted.** Red Team returned HOLD and was **overruled on cascade cost, not on merit**: changing the tolerance restates the cohort, which re-runs the completer diagnostic, which moves the ≥50 candidate rule and the 1,138-show frame — against a correction worth **0.13 points**. Three findings become **Step 14 limitations**: leg 1 gates on `page_count`, which is `ceil(item_count/250)` and so derived from the header leg 2 exists to absorb; the discard is **not outcome-neutral** (+1.27 pts, CI [0.87, 1.66], direction **up**, compounding with the seeding and liveness biases); and a better instrument existed and was declined. Closes item 15. | 2026-08-12 | Closed |
+| [0024](0024-w-is-the-90th-percentile.md) | **`W` is the 90th percentile of the C1 lag distribution**, not a curve-flattening judgment. Occasioned by Step 6 run 1, where two isolated instances agreed on every input — 128,099 sample, 25,120 C1 pairs, 689 negatives — and produced **`W` = 46 and `W` = 107** from the undefined word "flattens". The C1 density is close to scale-free past day 7, so the spec asked for a feature the data does not have. **Step 13's arms must span 46 to 107**, because fixing the wording removes the disagreement but not the dependence. | 2026-08-12 | Closed |
 
-**A note on authority.** Entries 0001–0004 and 0013–0023 are Human Lead decisions. **0005–0008 are agent-taken,
+**A note on authority.** Entries 0001–0004 and 0013–0024 are Human Lead decisions. **0005–0008 are agent-taken,
 inside a Chained step, and are recorded retrospectively for ratification** — they shaped the
 population every downstream number rests on, and a constant that shapes the population is a decision
 whether or not it was treated as one at the time. They are listed here so the distinction between
@@ -215,3 +216,19 @@ that surfaced it.
     spec omission** — both instances read the same silence and agree on the wrong answer. Fixed as
     [0022](0022-step5-rulings-written-into-task-sheet.md). Three gates remain and each will produce
     rulings with downstream reach. ([0022](0022-step5-rulings-written-into-task-sheet.md))
+
+24. **`decisions/0003` D14's warrant is factually wrong, and 95 negative lags have no explanation.**
+    D14 and Step 1 §9 both state that every C1 lag is non-negative by construction. **689 are
+    negative (2.74% of C1)**, found independently by both Step 6 instances with identical counts.
+    459 bind on the S1-completion term — `max()` can select it on a C1 show, so the guarantee only
+    ever held for the finale term — and 230 bind on the finale, which should be impossible under C1.
+    Of those, 135 are the known one-day UTC finale skew and **95 are beyond it, out to −495 days**,
+    an unexplained timestamp or metadata defect Step 8 should expect to meet again. Worth ≤6 days of
+    `W`, so not load-bearing for the number, but the warrant is false either way.
+    ([0024](0024-w-is-the-90th-percentile.md))
+25. **Dual-implementation instances need distinct output namespaces.** Step 6 run 1's two instances
+    were given byte-identical prompts — correct for spec neutrality — but identical default output
+    paths, and they collided: one instance's script was overwritten mid-run. **The namespace is not
+    part of the task description and separating it does not weaken the diff.** Applies to Steps 6, 7
+    and 9 (`data-scientist` / `-b`) and Step 8 (`analytics-engineer` / `-b`).
+    ([0024](0024-w-is-the-90th-percentile.md))
