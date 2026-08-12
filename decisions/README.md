@@ -34,7 +34,7 @@ Step 18 assembles the final log from these files.
 | [0020](0020-step2-structural-thresholds.md) | **The Step 2 structural thresholds: no minimum season size, max 26 episodes on either season, max 1,095-day gap.** 26 is the traditional full broadcast season and the cut is insensitive from 26 to 40 (1.1–2.4% of pairs); 22 was rejected at 196 shows and 13.8% of pairs, reaching into normal network drama. **The size cap is partly a cadence threshold** — 44 of its 51 shows are C4, the bucket where abandonment is most likely exposure-driven. Frame **1,226 → 1,138 shows, 220,107 pairs. Closes [0014](0014-no-content-filters-structural-fields.md).** | 2026-08-12 | Closed |
 | [0021](0021-step5-contamination-gate.md) | **Step 5 contamination exclusion rule APPROVED** (gate 2 of 5). Exclude 16,665 pairs whose S2 evidence is entirely air-date-stamped, on a deterministic mechanism; exclude 1,542 with no S2 evidence and a fabricated binding clock start, on a censoring defect; **retain 201,900 of 220,107**, derive `W` on **128,099**. Four rulings inside the gate — **D1 keeps Step 1 §7 and does not reopen gate 1**, adoption 1 narrowed, adoption 2 re-ruled onto censoring, adoption 3 dropped. Two standing rulings outlive it: `W` derived on clean records and applied to all, and **liveness on insertion time**, making the play-`id` calibration a required Step 7 input. Red Team: four rounds, PROCEED at the fourth. | 2026-08-12 | Closed |
 
-**A note on authority.** Entries 0001–0004 and 0013–0021 are Human Lead decisions. **0005–0007 are agent-taken,
+**A note on authority.** Entries 0001–0004 and 0013–0021 are Human Lead decisions. **0005–0008 are agent-taken,
 inside a Chained step, and are recorded retrospectively for ratification** — they shaped the
 population every downstream number rests on, and a constant that shapes the population is a decision
 whether or not it was treated as one at the time. They are listed here so the distinction between
@@ -120,7 +120,7 @@ that surfaced it.
     - **What those accounts held. 210 of the 232 have `episodes_watched = 0`.** Only 22 have any
       episodes at all, the maximum being 6 (counts: 0→210, 1→5, 2→3, 3→5, 4→4, 5→1, 6→4).
     - **The warrant is still not literally true**, and that is what is being accepted rather than
-      denied: `min(L1) = 1` over the frame and 159 in-frame shows have `L1 ≤ 6`, so a 6-episode
+      denied: `min(L1) = 1` over the frame and 152 in-frame shows have `L1 ≤ 6`, so a 6-episode
       account is not arithmetically barred from having completed an in-frame S1. **The exposure is
       at most 22 accounts, 0.5% of the 4,320 screened**, not the 232 the floor rejected.
     - **The removed accounts are fully recoverable** — slug and complete screen record for all 232

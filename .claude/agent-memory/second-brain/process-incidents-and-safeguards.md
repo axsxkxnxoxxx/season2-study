@@ -39,6 +39,20 @@ measure — it backfilled round metrics and verified them at **0 mismatches over
 fields at zero live calls**, which is exactly the discipline this project wants. The tool was
 right; the destination was wrong. A verification step overwrote the thing it was verifying.
 
+**Update 2026-08-12 — it happened a second time, and it now has a standing remedy on the record.**
+`decisions/README.md` open item 16: *"`step3_backfill.py --out-dir raw/step3` zeroes the call ledger
+in `state.json` … **This has happened twice** and been restored from `logs/step3_run.json` both
+times."* The remedy named there: **restore after every regeneration, or use the script's default
+out-dir, which does not touch that file.** The item stays open because the ledger is **the only
+record of Step 3's spend against the API budget and it is gitignored** — a git-tracked artifact
+would have made both incidents recoverable by `git checkout`.
+
+**Generalised, because Step 5 ran six revisions of regeneration over `processed/step5/`:** a replay
+that regenerates its own inputs can silently overwrite the evidence it was run to check. Step 5's
+regeneration of `revision4.json` after the unit-bug correction is the same shape and went the right
+way — I verified the corrected values are in the file — but it was verified by reading, not
+guaranteed by design.
+
 ## Related, not an incident: one round that looked like the API and was not
 
 Round 8 recorded 2,796 s wall clock against a single 2,697 s inter-request gap — 96.5 % of the

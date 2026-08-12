@@ -1,6 +1,6 @@
 ---
 name: gate-step1-outcome-definition
-description: Full arc of the Step 1 outcome-definition gate — three Red Team HOLDs, four revisions, what approval on 2026-08-10 did and did not cover, and the post-approval addendum that did not reopen it
+description: Full arc of the Step 1 outcome-definition gate — three Red Team HOLDs, what approval on 2026-08-10 did and did not cover, and the 2026-08-12 challenge to §7 from Step 5 that the Human Lead heard and upheld
 metadata:
   type: project
 ---
@@ -17,9 +17,10 @@ proved about how this study fails*. It fails by naming objects it never makes op
 and by asserting properties that do not follow from the definitions given. Eleven such claims
 were caught and withdrawn or corrected. See [[withdrawn-claims-register]].
 
-**How to apply:** treat Step 1 as settled and downstream of it as unblocked. Do **not** treat
-the remaining open questions in §10.1 — **1 and 3** — or `pull_date`, as settled by it. The four remaining gates
-(5, 6, 7, 8) are unaffected and still bind.
+**How to apply:** treat Step 1 as settled and downstream of it as unblocked. Do **not** treat the
+remaining open questions in §10.1 — **1 and 3** — as settled by it. `pull_date` **is** now settled,
+by `0011` on 2026-08-11 (`2026-08-11`, `τ_pull = 2026-08-11T00:00:00Z`), which closes the one item
+approval left outstanding. The four remaining gates (5, 6, 7, 8) are unaffected and still bind.
 
 ## The arc, in order
 
@@ -58,6 +59,46 @@ in the approval record itself. Apply it at the remaining four gates.
 **The `pull_date` deferral is a decision, not an omission.** The reason is structural: the
 constraint `pull_date ≤ earliest per-user fetch date` cannot be honoured by a value chosen
 before the pull is scheduled. Recorded that way at the head of the document and again in §11.
+
+## 2026-08-12 — §7 was challenged from downstream and UPHELD. Gate 1 stays closed.
+
+**The most consequential post-approval event.** Step 5 revision 3 was built on the principle
+*"Timestamp accuracy is not a concern for this study. The outcome is whether someone watched season
+2, not when."* **Red Team finding D1** showed that principle contradicts approved §7: Never started
+is `|A| = 0` under **`watched_at < τ1`**, so **the outcome operator is a timestamp comparison**, and
+**D8 exists precisely for the population the principle says cannot exist.**
+
+The choice was put to the Human Lead as a fork, not a wording fix:
+
+> **(a)** amend §7 to an ever-started definition — which **reopens gate 1** and voids `W`, D3, D8
+> and the three-state partition; or **(b)** narrow Step 5's exclusion to pairs whose S2 evidence can
+> bear the comparison.
+
+**Ruling: keep §7 as approved. Option (b). Gate 1 stays closed.** Recorded reason:
+
+> Ever-started is the wrong study for this frame. Exposure spans 55 years and 69 percent of pairs
+> are pre-2020, so a to-the-pull-date rate would be a mixture weighted by show recency and newer
+> titles would look worse by construction. It also collapses "started four years late" and "started
+> opening week" into one row, which is the conflation this study exists to break.
+
+**This is the same argument that produced `H = 91` at Step 1** — where "to the pull date" was
+withdrawn as an exposure-weighted mixture whose weight is show recency. Applied a second time, by
+the same person, to defend the rule that argument produced. **Consistency across two gates is worth
+more here than either ruling alone.**
+
+**Three things this establishes for the remaining gates.** A downstream step can challenge an
+approved gate and the challenge is heard on the merits. **The gate holds unless the Human Lead
+reopens it** — no downstream artifact reopens it by acting as though a rule were different. And the
+revision-3 principle is now a **withdrawn claim**, not a live alternative.
+
+## `0012` — the first edit that fails the reopening test, and it has not been reviewed
+
+`decisions/0012` changes the sweep-completeness test inside `artifacts/step1-outcome-definition.md`
+§0 — from exact `item_count` equality to full page coverage plus a 2% residual. **That is a rule
+change, and by this gate's own standing rule a rule change reopens the gate.** It was recorded as a
+Human Lead amendment instead, with `0012` itself flagging that it *"may wish to put it to Red Team."*
+**It has not been.** `decisions/README.md` open item 15. The completeness *requirement* is untouched;
+only the detection test moved, on strong evidence. The issue is procedural, not substantive.
 
 ## The B2 overrule
 
