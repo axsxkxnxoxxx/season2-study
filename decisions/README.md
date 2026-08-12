@@ -38,8 +38,9 @@ Step 18 assembles the final log from these files.
 | [0024](0024-w-is-the-90th-percentile.md) | **`W` is the 90th percentile of the C1 lag distribution**, not a curve-flattening judgment. Occasioned by Step 6 run 1, where two isolated instances agreed on every input — 128,099 sample, 25,120 C1 pairs, 689 negatives — and produced **`W` = 46 and `W` = 107** from the undefined word "flattens". The C1 density is close to scale-free past day 7, so the spec asked for a feature the data does not have. **Step 13's arms must span 46 to 107**, because fixing the wording removes the disagreement but not the dependence. | 2026-08-12 | Closed |
 | [0025](0025-lag-unit-and-ceiling.md) | **The lag is a continuous instant difference and `W` is the CEILING of the percentile.** Run 2's two instances agreed to **fifteen significant digits** and differed only in unit — 107 vs 107.7135. Not a rounding preference: `watched_at < τ1` covers a pair iff its **fractional** lag is `< W`, so flooring is a systematic off-by-one against the operator. `W = 107` covers 89.976%, `W = 108` covers 90.020%. | 2026-08-12 | Closed |
 | [0026](0026-step6-window-w-gate.md) | **Step 6 APPROVED. `W = 108 days`** (gate 3 of 5) — ceiling of the 90th percentile (107.7135) of the continuous lag on the C1 subset, 25,120 pairs of Step 5's 128,099 sample. Applies to all pairs. Four things travel with it: precision is **±18 days** show-clustered not ±8 iid; the percentile is imported convention, not selected by the data; **censoring is one-sided** (p90 rises to 213 at ≥8yr exposure, an upper bound); and D14's warrant is false. | 2026-08-12 | Closed |
+| [0027](0027-step13-w-arms-above-the-adopted-value.md) | **Step 13's `W` arms extend above the adopted value, at 150 and 213 days.** Every mandated range topped out at `W = 108`, so the sensitivity tested `W` downward by a factor of three and upward not at all — while the censoring diagnostic runs one-sided upward (C1 p90 rises 107.7 → 119 → 128 → 146 → **213** with minimum exposure). **213 is an upper bound, not a rival estimate**; 150 is included so the response is traced rather than bracketed. Closes item 28. | 2026-08-12 | Closed |
 
-**A note on authority.** Entries 0001–0004 and 0013–0026 are Human Lead decisions. **0005–0008 are agent-taken,
+**A note on authority.** Entries 0001–0004 and 0013–0027 are Human Lead decisions. **0005–0008 are agent-taken,
 inside a Chained step, and are recorded retrospectively for ratification** — they shaped the
 population every downstream number rests on, and a constant that shapes the population is a decision
 whether or not it was treated as one at the time. They are listed here so the distinction between
@@ -249,8 +250,13 @@ that surfaced it.
     them, correctly, because the spec directs taking the population from the Step 5 artifact. **None
     is in C1, so `W` is unaffected**, but Step 8 classifies on the 201,900 under the frozen cutoff.
     Unresolved. ([0026](0026-step6-window-w-gate.md))
-28. **Step 13's mandated arms top out at the adopted `W`.** The span is [38, 108] ∪ [46, 107] and
-    `W = 108` sits at its ceiling, so the sensitivity does not currently test **above** the adopted
-    value — while the censoring diagnostic runs one-sided in exactly that direction (p90 rises to 213
-    at ≥8 years' exposure). Flagged by a Step 6 instance as a proposal only; not decided.
-    ([0026](0026-step6-window-w-gate.md))
+28. ~~**Step 13's mandated arms top out at the adopted `W`.**~~ **CLOSED 2026-08-12** — arms added
+    at **150 and 213 days** as [0027](0027-step13-w-arms-above-the-adopted-value.md), so the tested
+    span is effectively **38 to 213** with the adopted `W = 108` inside it rather than at its
+    ceiling. 213 is the C1 p90 among pairs with ≥8 years of exposure, an **upper bound** on the
+    censoring correction rather than a rival estimate, since exposure and cohort are not separable.
+    **Watch the denominators:** right-censoring retains a pair only if
+    `⟦T0⟧ + (max(W, 91) + H) × 24h ≤ τ_pull`, so an arm at 213 discards materially more pairs than
+    one at 108 and the headline moves for two reasons at once — the per-arm retained-row count
+    already required by Step 13 is what keeps them separable.
+    ([0026](0026-step6-window-w-gate.md), [0027](0027-step13-w-arms-above-the-adopted-value.md))
