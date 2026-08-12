@@ -34,8 +34,9 @@ Step 18 assembles the final log from these files.
 | [0020](0020-step2-structural-thresholds.md) | **The Step 2 structural thresholds: no minimum season size, max 26 episodes on either season, max 1,095-day gap.** 26 is the traditional full broadcast season and the cut is insensitive from 26 to 40 (1.1–2.4% of pairs); 22 was rejected at 196 shows and 13.8% of pairs, reaching into normal network drama. **The size cap is partly a cadence threshold** — 44 of its 51 shows are C4, the bucket where abandonment is most likely exposure-driven. Frame **1,226 → 1,138 shows, 220,107 pairs. Closes [0014](0014-no-content-filters-structural-fields.md).** | 2026-08-12 | Closed |
 | [0021](0021-step5-contamination-gate.md) | **Step 5 contamination exclusion rule APPROVED** (gate 2 of 5). Exclude 16,665 pairs whose S2 evidence is entirely air-date-stamped, on a deterministic mechanism; exclude 1,542 with no S2 evidence and a fabricated binding clock start, on a censoring defect; **retain 201,900 of 220,107**, derive `W` on **128,099**. Four rulings inside the gate — **D1 keeps Step 1 §7 and does not reopen gate 1**, adoption 1 narrowed, adoption 2 re-ruled onto censoring, adoption 3 dropped. Two standing rulings outlive it: `W` derived on clean records and applied to all, and **liveness on insertion time**, making the play-`id` calibration a required Step 7 input. Red Team: four rounds, PROCEED at the fourth. | 2026-08-12 | Closed |
 | [0022](0022-step5-rulings-written-into-task-sheet.md) | **The two Step 5 standing rulings are written into `task-sheet.md`.** They lived only in the decision log and the Step 5 artifact, while the specs the two isolated instances actually read said nothing about them — and **the dual-implementation diff cannot catch what the spec omits**, because both instances read the same silence. Step 6 now names the **128,099** estimation sample and its composition with D14; Step 7 names **insertion time** as the clock and the play-`id` calibration as a required input that **neither instance refits**. Found by `second-brain`. | 2026-08-12 | Closed |
+| [0023](0023-step4-completeness-rule-upheld.md) | **The sweep-completeness rule stands as adopted.** Red Team returned HOLD and was **overruled on cascade cost, not on merit**: changing the tolerance restates the cohort, which re-runs the completer diagnostic, which moves the ≥50 candidate rule and the 1,138-show frame — against a correction worth **0.13 points**. Three findings become **Step 14 limitations**: leg 1 gates on `page_count`, which is `ceil(item_count/250)` and so derived from the header leg 2 exists to absorb; the discard is **not outcome-neutral** (+1.27 pts, CI [0.87, 1.66], direction **up**, compounding with the seeding and liveness biases); and a better instrument existed and was declined. Closes item 15. | 2026-08-12 | Closed |
 
-**A note on authority.** Entries 0001–0004 and 0013–0022 are Human Lead decisions. **0005–0008 are agent-taken,
+**A note on authority.** Entries 0001–0004 and 0013–0023 are Human Lead decisions. **0005–0008 are agent-taken,
 inside a Chained step, and are recorded retrospectively for ratification** — they shaped the
 population every downstream number rests on, and a constant that shapes the population is a decision
 whether or not it was treated as one at the time. They are listed here so the distinction between
@@ -135,10 +136,21 @@ that surfaced it.
     ([0006](0006-step3-crawl-constants.md), `artifacts/step2-frame-ledger-and-distributions.md` §3.2)
 14. ~~**The Step 3 seed source has no decision entry.**~~ **CLOSED 2026-08-11** — recorded as
     [0008](0008-step3-seed-source.md).
-15. **A rule inside the approved Step 1 gate was amended without Red Team review.**
-    [0012](0012-sweep-completeness-rule.md) changes the completeness test in Step 1 §0. The gate's
-    own approval record says a rule change reopens the gate. Recorded as a Human Lead amendment;
-    **not yet put to Red Team.** Worth settling before results are computed.
+15. ~~**A rule inside the approved Step 1 gate was amended without Red Team review.**~~ **CLOSED
+    2026-08-12** — [0012](0012-sweep-completeness-rule.md) went to Red Team, which returned **HOLD**,
+    and the Human Lead **upheld the rule on cascade cost, not on merit**, as
+    [0023](0023-step4-completeness-rule-upheld.md). Three findings travel to Step 14 instead: the
+    rule validates itself against itself (leg 1 gates on `page_count`, which is
+    `ceil(item_count/250)`); the discard is **not outcome-neutral** (+1.27 pts, CI [0.87, 1.66],
+    pushing never-started **up** and compounding with the seeding and liveness biases, pooled effect
+    0.13 pts); and Red Team's final-page shape test would discriminate exactly, at ~2,800 calls and
+    no re-pull, and was declined on cost. Also recorded there: the 2% was set on a 20-user pilot
+    whose own maximum residual was **11.7%**, not the 0.86% 0012 quotes; any tolerance from ~1.5% to
+    11.7% gave the identical pilot partition and the most aggressive end was taken; and **31 of the
+    287 discards were under-count users** removed for returning more data than advertised, which
+    0012's own text calls benign. **If the pull ever resumes the cascade argument weakens and the
+    shape test should be reconsidered rather than inherited as settled.**
+    ([0012](0012-sweep-completeness-rule.md), [0023](0023-step4-completeness-rule-upheld.md))
 16. **`step3_backfill.py --out-dir raw/step3` zeroes the call ledger in `state.json`**, because the
     offline replay spends no live calls. **This has happened twice** and been restored from
     `logs/step3_run.json` both times; a `ledger_note` in the file records it. Either restore after
