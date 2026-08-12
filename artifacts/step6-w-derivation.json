@@ -1,0 +1,678 @@
+{
+  "population": {
+    "frame_pairs": 220107,
+    "published_analysis_population": 201900,
+    "published_W_estimation_sample": 128099,
+    "reproduced_waterfall": [
+      201900,
+      178165,
+      155131,
+      152126,
+      128099
+    ],
+    "W_estimation_sample": 128099,
+    "buckets_in_frame": {
+      "C4": 425,
+      "C2": 340,
+      "C1": 206,
+      "C3": 167
+    },
+    "estimation_sample_by_bucket": {
+      "C0": 0,
+      "C1": 25120,
+      "C2": 39680,
+      "C3": 18218,
+      "C4": 45081
+    },
+    "C1_pairs": 25120,
+    "C1_shows": 206,
+    "C1_users": 2050,
+    "C1_pairs_per_show_median": 79.0,
+    "C1_pairs_per_show_max": 1063,
+    "C1_pairs_per_user_median": 9.0,
+    "C1_pairs_per_user_max": 88
+  },
+  "negative_mass_by_D12_bucket": {
+    "C0": {
+      "started_pairs": 0,
+      "negative": 0,
+      "negative_pct": null,
+      "note": "no shows in this bucket in the Step 2 frame"
+    },
+    "C1": {
+      "started_pairs": 25120,
+      "negative": 689,
+      "negative_pct": 2.74,
+      "negative_binds_s1": 459,
+      "negative_binds_finale": 230,
+      "negative_binds_tie": 0,
+      "pct_of_negatives_binding_finale": 33.4
+    },
+    "C2": {
+      "started_pairs": 39680,
+      "negative": 11369,
+      "negative_pct": 28.65,
+      "negative_binds_s1": 921,
+      "negative_binds_finale": 10447,
+      "negative_binds_tie": 1,
+      "pct_of_negatives_binding_finale": 91.9
+    },
+    "C3": {
+      "started_pairs": 18218,
+      "negative": 7149,
+      "negative_pct": 39.24,
+      "negative_binds_s1": 307,
+      "negative_binds_finale": 6839,
+      "negative_binds_tie": 3,
+      "pct_of_negatives_binding_finale": 95.7
+    },
+    "C4": {
+      "started_pairs": 45081,
+      "negative": 9753,
+      "negative_pct": 21.63,
+      "negative_binds_s1": 1521,
+      "negative_binds_finale": 8230,
+      "negative_binds_tie": 2,
+      "pct_of_negatives_binding_finale": 84.4
+    },
+    "ALL": {
+      "started_pairs": 128099,
+      "negative": 28960,
+      "negative_pct": 22.61
+    }
+  },
+  "C1_negatives_diagnostic": {
+    "C1_negative_pairs": 689,
+    "C1_negative_pct": 2.74,
+    "binds_s1": 459,
+    "binds_finale": 230,
+    "finale_binding_within_1_day": 135,
+    "finale_binding_beyond_1_day": 95,
+    "finale_binding_min_lag_days": -495.43,
+    "s1_binding_median_lag_days": -46.07,
+    "note": "D14 states every C1 lag is non-negative by construction. It is not: the finale term guarantees non-negativity, the S1-completion term does not, and max() can select the S1 term on a C1 show."
+  },
+  "percentiles_days": {
+    "method": "numpy.percentile, linear interpolation, on signed untruncated lags",
+    "C1": {
+      "1": -88.71,
+      "5": 0.08,
+      "10": 0.22,
+      "25": 0.69,
+      "50": 1.73,
+      "75": 12.8,
+      "80": 22.36,
+      "83": 32.85,
+      "84": 38.87,
+      "85": 45.98,
+      "86": 52.97,
+      "87": 64.22,
+      "88": 74.68,
+      "89": 88.87,
+      "90": 107.71,
+      "95": 322.61,
+      "99": 1155.8
+    },
+    "all_shows": {
+      "1": -387.35,
+      "5": -138.4,
+      "10": -61.02,
+      "25": 0.06,
+      "50": 0.72,
+      "75": 1.95,
+      "80": 4.09,
+      "83": 7.01,
+      "84": 8.6,
+      "85": 10.6,
+      "86": 13.19,
+      "87": 16.8,
+      "88": 21.68,
+      "89": 28.15,
+      "90": 37.7,
+      "95": 184.39,
+      "99": 1008.31
+    }
+  },
+  "weekly_gain_C1": [
+    {
+      "block": 0,
+      "day_start": 0,
+      "day_end": 7,
+      "coverage_end_pct": 68.9968,
+      "gain_pp": 66.254
+    },
+    {
+      "block": 1,
+      "day_start": 7,
+      "day_end": 14,
+      "coverage_end_pct": 75.9236,
+      "gain_pp": 6.9268
+    },
+    {
+      "block": 2,
+      "day_start": 14,
+      "day_end": 21,
+      "coverage_end_pct": 79.4944,
+      "gain_pp": 3.5709
+    },
+    {
+      "block": 3,
+      "day_start": 21,
+      "day_end": 28,
+      "coverage_end_pct": 81.7914,
+      "gain_pp": 2.297
+    },
+    {
+      "block": 4,
+      "day_start": 28,
+      "day_end": 35,
+      "coverage_end_pct": 83.3599,
+      "gain_pp": 1.5685
+    },
+    {
+      "block": 5,
+      "day_start": 35,
+      "day_end": 42,
+      "coverage_end_pct": 84.4506,
+      "gain_pp": 1.0908
+    },
+    {
+      "block": 6,
+      "day_start": 42,
+      "day_end": 49,
+      "coverage_end_pct": 85.426,
+      "gain_pp": 0.9753
+    },
+    {
+      "block": 7,
+      "day_start": 49,
+      "day_end": 56,
+      "coverage_end_pct": 86.3018,
+      "gain_pp": 0.8758
+    },
+    {
+      "block": 8,
+      "day_start": 56,
+      "day_end": 63,
+      "coverage_end_pct": 86.9108,
+      "gain_pp": 0.6091
+    },
+    {
+      "block": 9,
+      "day_start": 63,
+      "day_end": 70,
+      "coverage_end_pct": 87.6115,
+      "gain_pp": 0.7006
+    },
+    {
+      "block": 10,
+      "day_start": 70,
+      "day_end": 77,
+      "coverage_end_pct": 88.1529,
+      "gain_pp": 0.5414
+    },
+    {
+      "block": 11,
+      "day_start": 77,
+      "day_end": 84,
+      "coverage_end_pct": 88.6863,
+      "gain_pp": 0.5334
+    },
+    {
+      "block": 12,
+      "day_start": 84,
+      "day_end": 91,
+      "coverage_end_pct": 89.1561,
+      "gain_pp": 0.4697
+    },
+    {
+      "block": 13,
+      "day_start": 91,
+      "day_end": 98,
+      "coverage_end_pct": 89.5183,
+      "gain_pp": 0.3623
+    },
+    {
+      "block": 14,
+      "day_start": 98,
+      "day_end": 105,
+      "coverage_end_pct": 89.8567,
+      "gain_pp": 0.3384
+    },
+    {
+      "block": 15,
+      "day_start": 105,
+      "day_end": 112,
+      "coverage_end_pct": 90.203,
+      "gain_pp": 0.3463
+    },
+    {
+      "block": 16,
+      "day_start": 112,
+      "day_end": 119,
+      "coverage_end_pct": 90.5175,
+      "gain_pp": 0.3145
+    },
+    {
+      "block": 17,
+      "day_start": 119,
+      "day_end": 126,
+      "coverage_end_pct": 90.8161,
+      "gain_pp": 0.2986
+    },
+    {
+      "block": 18,
+      "day_start": 126,
+      "day_end": 133,
+      "coverage_end_pct": 91.0669,
+      "gain_pp": 0.2508
+    },
+    {
+      "block": 19,
+      "day_start": 133,
+      "day_end": 140,
+      "coverage_end_pct": 91.3416,
+      "gain_pp": 0.2747
+    },
+    {
+      "block": 20,
+      "day_start": 140,
+      "day_end": 147,
+      "coverage_end_pct": 91.6202,
+      "gain_pp": 0.2787
+    },
+    {
+      "block": 21,
+      "day_start": 147,
+      "day_end": 154,
+      "coverage_end_pct": 91.8352,
+      "gain_pp": 0.215
+    },
+    {
+      "block": 22,
+      "day_start": 154,
+      "day_end": 161,
+      "coverage_end_pct": 92.0104,
+      "gain_pp": 0.1752
+    },
+    {
+      "block": 23,
+      "day_start": 161,
+      "day_end": 168,
+      "coverage_end_pct": 92.1855,
+      "gain_pp": 0.1752
+    },
+    {
+      "block": 24,
+      "day_start": 168,
+      "day_end": 175,
+      "coverage_end_pct": 92.3646,
+      "gain_pp": 0.1791
+    },
+    {
+      "block": 25,
+      "day_start": 175,
+      "day_end": 182,
+      "coverage_end_pct": 92.5199,
+      "gain_pp": 0.1553
+    },
+    {
+      "block": 26,
+      "day_start": 182,
+      "day_end": 189,
+      "coverage_end_pct": 92.7309,
+      "gain_pp": 0.211
+    },
+    {
+      "block": 27,
+      "day_start": 189,
+      "day_end": 196,
+      "coverage_end_pct": 92.914,
+      "gain_pp": 0.1831
+    },
+    {
+      "block": 28,
+      "day_start": 196,
+      "day_end": 203,
+      "coverage_end_pct": 93.0454,
+      "gain_pp": 0.1314
+    },
+    {
+      "block": 29,
+      "day_start": 203,
+      "day_end": 210,
+      "coverage_end_pct": 93.2126,
+      "gain_pp": 0.1672
+    }
+  ],
+  "criterion": {
+    "statement": "walk F(w)=P(lag<w) in consecutive 7-day blocks from day 0; the curve has flattened at the first block gaining less than 1.0 pp of coverage that no later block exceeds; W is the whole percentile falling inside that block, rounded up to a whole day",
+    "threshold_pp_per_week": 1.0,
+    "flattening_block": {
+      "block": 6,
+      "day_start": 42,
+      "day_end": 49,
+      "coverage_end_pct": 85.426,
+      "gain_pp": 0.9753
+    },
+    "whole_percentiles_inside_block": [
+      {
+        "percentile": 85,
+        "days": 45.98
+      }
+    ],
+    "why_weekly_blocks": "the one-day slope crosses 0.10 pp/day downward at day 56 and back upward at day 66, so a daily first-crossing rule is not reproducible; 7-day blocks are and match a weekly release grid"
+  },
+  "CHOSEN": {
+    "percentile": 85,
+    "W_exact_days": 45.975,
+    "W_days": 46,
+    "rounding": "ceil to a whole day; the window is exactly W days, half-open [tau0, tau0+W*24h)",
+    "C1_coverage_at_W_pct": 85.004,
+    "all_shows_coverage_at_W_pct": 90.658,
+    "status": "PROPOSED. Step 6 is a gate. Not adopted by this file or its author."
+  },
+  "criterion_threshold_sweep": {
+    "2.0": {
+      "flattening_block_days": [
+        28,
+        35
+      ],
+      "block_gain_pp": 1.5685,
+      "percentile": 82,
+      "W_days": 29
+    },
+    "1.5": {
+      "flattening_block_days": [
+        35,
+        42
+      ],
+      "block_gain_pp": 1.0908,
+      "percentile": 84,
+      "W_days": 39
+    },
+    "1.0": {
+      "flattening_block_days": [
+        42,
+        49
+      ],
+      "block_gain_pp": 0.9753,
+      "percentile": 85,
+      "W_days": 46
+    },
+    "0.75": {
+      "flattening_block_days": [
+        63,
+        70
+      ],
+      "block_gain_pp": 0.7006,
+      "percentile": 87,
+      "W_days": 65
+    },
+    "0.5": {
+      "flattening_block_days": [
+        84,
+        91
+      ],
+      "block_gain_pp": 0.4697,
+      "percentile": 89,
+      "W_days": 89
+    },
+    "0.25": {
+      "flattening_block_days": [
+        147,
+        154
+      ],
+      "block_gain_pp": 0.215,
+      "percentile": null,
+      "W_days": null
+    }
+  },
+  "step13_W_range": {
+    "percentile_used": 85,
+    "C1_curve_days": 45.98,
+    "all_shows_curve_days": 10.6,
+    "minimum_range_whole_days": [
+      11,
+      46
+    ],
+    "note": "this interval is the size of the D14 transfer assumption and is the MINIMUM range Step 13 must cover, not the recommended range"
+  },
+  "weekly_gain_all_shows_first10": [
+    {
+      "block": 0,
+      "day_start": 0,
+      "day_end": 7,
+      "coverage_end_pct": 82.9921,
+      "gain_pp": 60.3845
+    },
+    {
+      "block": 1,
+      "day_start": 7,
+      "day_end": 14,
+      "coverage_end_pct": 86.2567,
+      "gain_pp": 3.2647
+    },
+    {
+      "block": 2,
+      "day_start": 14,
+      "day_end": 21,
+      "coverage_end_pct": 87.9015,
+      "gain_pp": 1.6448
+    },
+    {
+      "block": 3,
+      "day_start": 21,
+      "day_end": 28,
+      "coverage_end_pct": 88.9827,
+      "gain_pp": 1.0812
+    },
+    {
+      "block": 4,
+      "day_start": 28,
+      "day_end": 35,
+      "coverage_end_pct": 89.7673,
+      "gain_pp": 0.7845
+    },
+    {
+      "block": 5,
+      "day_start": 35,
+      "day_end": 42,
+      "coverage_end_pct": 90.3411,
+      "gain_pp": 0.5738
+    },
+    {
+      "block": 6,
+      "day_start": 42,
+      "day_end": 49,
+      "coverage_end_pct": 90.8836,
+      "gain_pp": 0.5425
+    },
+    {
+      "block": 7,
+      "day_start": 49,
+      "day_end": 56,
+      "coverage_end_pct": 91.3395,
+      "gain_pp": 0.4559
+    },
+    {
+      "block": 8,
+      "day_start": 56,
+      "day_end": 63,
+      "coverage_end_pct": 91.7181,
+      "gain_pp": 0.3786
+    },
+    {
+      "block": 9,
+      "day_start": 63,
+      "day_end": 70,
+      "coverage_end_pct": 92.0702,
+      "gain_pp": 0.3521
+    }
+  ],
+  "bootstrap_CI_days_C1": {
+    "B": 2000,
+    "seed": 20260812,
+    "method": "percentile bootstrap, 95% interval",
+    "cluster_show": {
+      "50": {
+        "lo": 1.49,
+        "hi": 1.9
+      },
+      "75": {
+        "lo": 10.86,
+        "hi": 14.97
+      },
+      "85": {
+        "lo": 38.19,
+        "hi": 53.97
+      },
+      "90": {
+        "lo": 90.75,
+        "hi": 125.86
+      },
+      "95": {
+        "lo": 283.48,
+        "hi": 359.89
+      }
+    },
+    "cluster_user": {
+      "50": {
+        "lo": 1.59,
+        "hi": 1.83
+      },
+      "75": {
+        "lo": 11.43,
+        "hi": 14.26
+      },
+      "85": {
+        "lo": 40.32,
+        "hi": 51.89
+      },
+      "90": {
+        "lo": 94.89,
+        "hi": 122.3
+      },
+      "95": {
+        "lo": 286.35,
+        "hi": 366.86
+      }
+    },
+    "iid_pairs": {
+      "50": {
+        "lo": 1.67,
+        "hi": 1.78
+      },
+      "75": {
+        "lo": 11.95,
+        "hi": 13.64
+      },
+      "85": {
+        "lo": 42.81,
+        "hi": 49.29
+      },
+      "90": {
+        "lo": 100.47,
+        "hi": 116.64
+      },
+      "95": {
+        "lo": 297.74,
+        "hi": 348.34
+      }
+    }
+  },
+  "bootstrap_CI_coverage_pct_at_W": {
+    "W_days": 46,
+    "cluster_show": {
+      "point": 85.004,
+      "lo": 83.826,
+      "hi": 86.094
+    },
+    "cluster_user": {
+      "point": 85.004,
+      "lo": 84.144,
+      "hi": 85.778
+    },
+    "iid_pairs": {
+      "point": 85.004,
+      "lo": 84.534,
+      "hi": 85.438
+    }
+  },
+  "exposure_check_C1": {
+    "median_days": 1915.0,
+    "p1_days": 38.0,
+    "share_below_W_pct": 1.509,
+    "share_below_91_pct": 1.951,
+    "direction": "pairs observed for fewer than W days cannot exhibit a lag of W, so coverage at W is very slightly overstated and the true percentile value is very slightly larger"
+  },
+  "spec_silence_sensitivity": {
+    "as_computed_all_C1_signed": {
+      "percentile": 85,
+      "days": 45.98,
+      "n": 25120
+    },
+    "if_C1_negatives_were_dropped": {
+      "percentile": 85,
+      "days": 48.87,
+      "n": 24431
+    },
+    "if_only_the_95_structurally_impossible_were_dropped": {
+      "percentile": 85,
+      "days": 46.58,
+      "n": 25025
+    },
+    "note": "no rule in task-sheet.md or Step 1 covers a negative C1 lag, because D14 assumed none exist; the primary figure keeps every row untouched, which is the only treatment the withdrawal of truncation supports"
+  },
+  "coverage_at_candidate_W": {
+    "7": {
+      "C1_pct": 68.997,
+      "all_shows_pct": 82.992
+    },
+    "11": {
+      "C1_pct": 73.646,
+      "all_shows_pct": 85.229
+    },
+    "14": {
+      "C1_pct": 75.924,
+      "all_shows_pct": 86.257
+    },
+    "21": {
+      "C1_pct": 79.494,
+      "all_shows_pct": 87.902
+    },
+    "28": {
+      "C1_pct": 81.791,
+      "all_shows_pct": 88.983
+    },
+    "30": {
+      "C1_pct": 82.341,
+      "all_shows_pct": 89.237
+    },
+    "46": {
+      "C1_pct": 85.004,
+      "all_shows_pct": 90.658
+    },
+    "60": {
+      "C1_pct": 86.672,
+      "all_shows_pct": 91.569
+    },
+    "65": {
+      "C1_pct": 87.066,
+      "all_shows_pct": 91.8
+    },
+    "89": {
+      "C1_pct": 89.013,
+      "all_shows_pct": 92.826
+    },
+    "91": {
+      "C1_pct": 89.156,
+      "all_shows_pct": 92.896
+    },
+    "120": {
+      "C1_pct": 90.561,
+      "all_shows_pct": 93.733
+    }
+  },
+  "figure": "artifacts/step6-lag-distributions.png"
+}
