@@ -337,16 +337,35 @@ analytics-engineer.** Recorded because one of them entered a ruling:
    The bound is *"a viewer cannot log an episode before watching it, so the insert instant is an
    upper bound on true completion"*, and that admits at least three readings of which insert:
 
-   | Basis for the upper bound on `T0` | Median elapsed | Open at `W = 60` |
-   | :--- | ---: | ---: |
-   | Completing record's insert, `max()` with the S2 finale | 2,266 d | **3.3%** |
-   | Max insert over **all** S1 records, `max()` with the finale — **what was quoted** | 2,150 d | **8.1%** |
-   | Max insert over the **completion prefix** (analytics-engineer, revision 4) | 1,738 d | **7.9%** |
+   **Corrected again 2026-08-12, after the first correction was itself wrong.** The first version of
+   this note claimed the quoted figure included the `max()` with the S2 finale date and differed
+   only in taking the max insert over all S1 records rather than the completion prefix. That was
+   false. **The quoted figure required both departures**, and the cause was a unit bug in the main
+   session's code: `.astype("int64")` on a tz-aware datetime returns **microseconds** in the pandas
+   version in use, not nanoseconds, so dividing by 1e9 placed every S2 finale date in **January
+   1970**. The finale term was therefore inert and `max()` always selected the insert value. The
+   analytics-engineer caught this from arithmetic alone — `max(finale, x) ≥ x` can only push `T0`
+   later and elapsed *smaller*, so a median of 2,150 d could not coexist with the `max()` on the
+   same set — and it was then confirmed directly.
 
-   The third is the most defensible: records watched *after* completion do not bound the completion
-   instant, so taking the max over all S1 records overstates it. The figure quoted was the middle
-   one. The main session did not reproduce the third independently and does not adjudicate between
-   them here; the revised diagnostics artifact publishes the method and the variants.
+   The grid, recomputed with a correct conversion:
+
+   | Basis for the upper bound on `T0` | `max()` with finale | Median elapsed | Open at `W = 60` |
+   | :--- | :--- | ---: | ---: |
+   | **Completion prefix** — the figure to use | **yes** | **1,738 d** | **7.92%** |
+   | Completion prefix | no | 2,190 d | 7.92% |
+   | Any S1 record | yes | 1,728 d | 8.06% |
+   | Any S1 record | no — **what was quoted** | **2,150 d** | **8.06%** |
+
+   The completion prefix with the finale term is the defensible basis: records watched *after*
+   completion do not bound the completion instant, and `T0` **is** a `max()` under Step 1 §6. The
+   finale term binds for about 61% of the 720, which is why dropping it moves the median by roughly
+   450 days.
+
+   **The conclusion is unaffected under every cell of that grid.** The 720 retain roughly five years
+   of elapsed observation and an open-window share under 9%, against **40 days and 58.63%** for the
+   1,542. The 1,542's figures were computed by a different route that did not touch the defective
+   conversion, are identical under all variants, and were independently reproduced.
 
    **The conclusion is unaffected under every reading** — the 720 have four to six years of elapsed
    observation and a single-digit open-window share, against **40 days and 58.63%** for the 1,542,
