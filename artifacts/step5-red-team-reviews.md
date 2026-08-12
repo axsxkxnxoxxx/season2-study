@@ -212,7 +212,9 @@ case for excluding the 1,542.**
 
 The reviewer endorsed the insert-time bound as the correct test, and the ruling on the 720 as
 standing **on that corrected basis** — the 1,542 at median 40 days elapsed with 58.6% still inside an
-open window at `W = 60`; the 720 at median 2,150 days with 8.1%. Two caveats: those figures appear
+open window at `W = 60`; the 720 at median 2,150 days with 8.1%. **The 720's figures as quoted here
+are method-dependent and should not be cited as canonical — see the correction note below.** Two
+caveats the reviewer added: those figures appear
 **nowhere** in the artifact or in `processed/step5/`, and the deliverable is what the isolated Step 6
 and Step 8 instances read; and the same test destroys adoption 2's stated rationale, so **the Human
 Lead needs to re-rule on the 1,542 and on the principle behind adoption 2**, not on the 720.
@@ -328,6 +330,29 @@ analytics-engineer.** Recorded because one of them entered a ruling:
    to survive on the insert-time evidence (720 at median 2,150 days elapsed, 8.1% open at `W = 60`,
    against 40 days and 58.6% for the 1,542), which the Red Team independently endorsed as the right
    test — but the stated basis was wrong.
+
+3. **A third error, found after this file was first published (2026-08-12).** The 720's bound figures
+   above — *median 2,150 days, 8.1% open at `W = 60`* — were quoted to the Human Lead as if canonical
+   and were written into the D1-round ruling. **They are method-dependent and should not have been.**
+   The bound is *"a viewer cannot log an episode before watching it, so the insert instant is an
+   upper bound on true completion"*, and that admits at least three readings of which insert:
+
+   | Basis for the upper bound on `T0` | Median elapsed | Open at `W = 60` |
+   | :--- | ---: | ---: |
+   | Completing record's insert, `max()` with the S2 finale | 2,266 d | **3.3%** |
+   | Max insert over **all** S1 records, `max()` with the finale — **what was quoted** | 2,150 d | **8.1%** |
+   | Max insert over the **completion prefix** (analytics-engineer, revision 4) | 1,738 d | **7.9%** |
+
+   The third is the most defensible: records watched *after* completion do not bound the completion
+   instant, so taking the max over all S1 records overstates it. The figure quoted was the middle
+   one. The main session did not reproduce the third independently and does not adjudicate between
+   them here; the revised diagnostics artifact publishes the method and the variants.
+
+   **The conclusion is unaffected under every reading** — the 720 have four to six years of elapsed
+   observation and a single-digit open-window share, against **40 days and 58.63%** for the 1,542,
+   and the 1,542's figures are **identical under all variants** and were independently reproduced.
+   The decisive comparison is safe; the specific number was not, and it is corrected here because
+   this file is the record the ruling was made against.
 
 ---
 
