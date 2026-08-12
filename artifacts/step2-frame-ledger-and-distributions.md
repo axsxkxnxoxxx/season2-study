@@ -1,5 +1,15 @@
 # Step 2 frame — exclusion ledger, field inventory, and distributions
 
+> **UPDATED 2026-08-12 — `decisions/0030-frame-field-corrections.md`.** After the Product review,
+> three field changes were made at **zero API calls**, touching no inclusion rule: **`show_network`
+> was dropped** (it is neither present-day nor release-time and errs in both directions, so it has no
+> stable semantics); **`rating`, `votes`, `comment_count`, `subgenres` and `airs_day` were added**
+> from the same cached bodies, giving the frame a reception axis it previously lacked entirely; and
+> **`size_quintile` is now the rank within air-period cohort**, because the raw count was a
+> size-and-age composite and per-year normalisation over-corrected. The frame is still **1,138 shows
+> and 220,107 pairs**. §5.1 and §7 below describe the pre-update field set.
+
+
 **Owner:** Human Lead. **Executed by agent** under `decisions/0013`, which delegates Step 2
 *execution* only. Every selection rule below was written by the Human Lead and is applied as
 written. **No rule here is the agent's**, and no threshold is proposed.

@@ -54,6 +54,7 @@ def air_period(year):
 # Step 1 Sec 2.4 / D13: half-open UTC instants. "aired on or before 31 Dec 2025"
 # is therefore first_aired < 2026-01-01T00:00:00Z.
 CUTOFF = datetime(2026, 1, 1, tzinfo=timezone.utc)
+TAU_PULL = pd.Timestamp("2026-08-11", tz="UTC")  # decision 0011
 
 
 def parse_dt(s):
@@ -368,9 +369,38 @@ def main():
 
     # ---- title size quintile, cut over the FRAME only (Human Lead, 2026-08-12):
     # the quintile exists to cut results, and results exist only for in-frame shows.
-    frame["size_quintile"] = pd.qcut(
-        frame["pool_completers"], 5, labels=["Q1", "Q2", "Q3", "Q4", "Q5"],
-        duplicates="drop")
+    #
+    # `pool_completers` counts users who completed S1 EVER, so a 2012 title has had
+    # fourteen years to accumulate them and a 2025 title one. Cut raw, the quintile
+    # is a size-AND-AGE composite, not a size field. Two effects partly cancel --
+    # recent titles must be larger to clear the >=50 floor at all, older titles
+    # accumulate for longer -- which is why it is invisible. Separated here
+    # (Human Lead, 2026-08-12, decision 0030).
+    LBL = ["Q1", "Q2", "Q3", "Q4", "Q5"]
+    exposure_yrs = ((TAU_PULL - pd.to_datetime(frame["s1_premiere_date"], utc=True))
+                    .dt.total_seconds() / (86400 * 365.25))
+    frame["s1_exposure_years"] = exposure_yrs.round(3)
+    frame["completers_per_year"] = (frame["pool_completers"] / exposure_yrs).round(3)
+    # PRIMARY: rank within air-period cohort. This is what "size quintile" means.
+    # Measured against the frame's own 14.8% share of 2023-2025 titles, the three
+    # candidates give 12.3% (raw count), 32.9% (per-year) and 14.9% (within
+    # cohort) of Q5. Within-cohort is the only neutral one, and it is neutral by
+    # construction rather than by luck.
+    #
+    # Per-year OVER-corrects, and worse than raw count under-corrects. Completions
+    # are front-loaded after release, so dividing by total elapsed years penalises
+    # an old title whose accumulation tapered a decade ago: median completers_per_
+    # year runs 8.5 (pre-2020), 16.3 (2020-2022), 28.7 (2023-2025) -- a monotone
+    # gradient that is pure age, not size. Ranking within cohort compares like
+    # with like and assumes nothing about the shape of accumulation.
+    frame["size_quintile"] = (
+        frame.groupby("air_period")["pool_completers"]
+        .transform(lambda s: pd.qcut(s, 5, labels=LBL, duplicates="drop")))
+    # Both alternatives retained and explicitly named, so none can be confused.
+    frame["size_quintile_raw_count"] = pd.qcut(frame["pool_completers"], 5,
+                                               labels=LBL, duplicates="drop")
+    frame["size_quintile_per_year"] = pd.qcut(frame["completers_per_year"], 5,
+                                              labels=LBL, duplicates="drop")
 
     # ---- show-level metadata (second endpoint, /shows/:id?extended=full)
     meta_fields = {}
@@ -380,14 +410,30 @@ def main():
                 r = json.loads(line)
                 meta_fields[int(r["show_trakt_id"])] = r["show"]
     keys = sorted({k for m in meta_fields.values() for k in m})
-    for k in ("country", "language", "languages", "genres", "network", "status",
-              "runtime", "certification", "aired_episodes", "first_aired", "year"):
+    # `network` is DROPPED (Human Lead, 2026-08-12, decision 0030). It is neither
+    # present-day nor release-time and errs in BOTH directions -- Arrested
+    # Development (S2 2005) reads Netflix, Brooklyn Nine-Nine reads FOX having
+    # ended on NBC -- so it has no stable semantics. A present-day field at least
+    # has a known direction of error you could bound; this one does not. A field
+    # that cannot be used is safer absent than present.
+    #
+    # `rating`, `votes`, `comment_count`, `subgenres` and `airs.day` are ADDED
+    # from the same cached bodies, at zero API calls. The frame previously had no
+    # reception axis at all, so "long gaps abandon more" could not be separated
+    # from "long gaps happen to troubled shows".
+    for k in ("country", "language", "languages", "genres", "subgenres", "status",
+              "runtime", "certification", "aired_episodes", "first_aired", "year",
+              "rating", "votes", "comment_count"):
         if k in keys:
             frame["show_" + k] = [
                 (", ".join(meta_fields.get(s, {}).get(k) or [])
                  if isinstance(meta_fields.get(s, {}).get(k), list)
                  else meta_fields.get(s, {}).get(k))
                 for s in frame["show_trakt_id"]]
+    # `airs` is nested {day, time, timezone}; day-of-week is a release-plan lever
+    frame["show_airs_day"] = [
+        ((meta_fields.get(s, {}).get("airs") or {}) or {}).get("day")
+        for s in frame["show_trakt_id"]]
 
     frame.to_csv(OUT_FRAME, index=False)
     pd.DataFrame(undecided).to_csv(OUT_UNDEC, index=False)
@@ -546,6 +592,9 @@ def main():
             "all_keys_returned_by_shows_endpoint": keys,
         },
         "size_quintile_frame_base": frame["size_quintile"].value_counts().sort_index().to_dict(),
+        "size_quintile_raw_count": frame["size_quintile_raw_count"].value_counts().sort_index().to_dict(),
+        "size_quintile_definition": "quintile of pool_completers ranked WITHIN air_period cohort; "
+                                    "exposure-neutral by construction, per 0030",
     }
 
     with open(OUT_JSON, "w") as fh:

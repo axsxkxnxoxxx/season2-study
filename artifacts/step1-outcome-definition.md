@@ -1511,3 +1511,56 @@ Reconciliation logic remains unwritten, and that part of the old recommendation 
   the table at the head of the document. **The approval is the Human Lead's and was given in
   writing in this session; no agent recorded its own approval at any point.** The approval record
   is at the head of this document.
+
+---
+
+## Post-approval addendum, 2026-08-12 — two figures corrected. Evidence only, no rule changed.
+
+**Added on Human Lead instruction. No rule in this document is amended, no approved text above is
+edited, and the Step 1 gate is NOT reopened.** This document does not set the frame's cutoff; it
+*relies* on it, and the value it relied on has since changed. Two supporting figures are therefore
+false as written and are corrected here.
+
+### Correction 1 — the frame caps the S2 finale at 2025-12-31, not 31 Dec 2024
+
+The 31 Dec 2024 cap appears at lines 100, 783, 823, 842 and 1285 above. The Step 2 frame was built
+at **2025-12-31**, set by the Human Lead in `decisions/0014` and applied throughout
+`artifacts/step2-frame-ledger-and-distributions.md`. The frame cutoff is Step 2's rule, not this
+document's, so this is a stale premise rather than an amended rule.
+
+### Correction 2 — the horizon is 199 days, not 182
+
+Line 823 computes "31 Dec 2024 plus 182 days". That assumed `max(W, 91) = 91`, i.e. `W ≤ 91`. **The
+approved `W` is 108** (`decisions/0026`), so the requirement is `max(108, 91) + H = 108 + 91 =`
+**199 days**.
+
+### The conclusion survives, and the margin does not
+
+Line 823 concludes: *"…comfortably inside any 2026 pull, so no show is lost."* **No show is lost is
+still true at `W = 108`. "Comfortably" is not.**
+
+| | Cap | Horizon | Latest admissible `T0` | Clearance from the cap |
+| :--- | :--- | ---: | :--- | ---: |
+| **As written above** | 2024-12-31 | 182 d | 2026-02-10 | **~13 months** |
+| **As actually built** | 2025-12-31 | 199 d | 2026-01-24 | **24 days** |
+
+Right-censoring retains a pair only if `⟦T0⟧ + (max(W, 91) + H) × 24h ≤ τ_pull`, with
+`τ_pull = 2026-08-11`. Measured over the 220,107 in-frame pairs:
+
+| `W` | Horizon | Latest `T0` | Pairs retained | Shows lost |
+| ---: | ---: | :--- | ---: | ---: |
+| 91 | 182 | 2026-02-10 | 215,211 (97.8%) | 0 |
+| **108 (adopted)** | **199** | **2026-01-24** | **214,858 (97.6%)** | **0** |
+| 150 | 241 | 2025-12-13 | 213,885 (97.2%) | 1 |
+| 213 (Step 13 arm) | 304 | 2025-10-11 | 211,439 (96.1%) | 9 |
+
+**The margin is 24 days and `W` itself is ±18 days show-clustered** (`decisions/0026`), so the
+slack is now smaller than the uncertainty in the number that consumes it. That is a fact about the
+study, not a defect in this document, and it is recorded here because §"What `H` costs in retained
+rows" above is where a reader would look for it.
+
+**§842's observation is unchanged and now matters more.** `S1_completion_date` is uncapped, so the
+loss falls entirely on that term — and it is **cohort-asymmetric**: at `W = 213` the 2023–2025
+cohort loses **10.3%** of its pairs against **2.7%** pre-2020, and the survivors from recent titles
+are those who completed S1 early, who are the users likeliest to continue. Carried to Step 14.
+

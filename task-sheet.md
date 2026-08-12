@@ -126,7 +126,7 @@ The rate limit and the authentication answer are settled and recorded in `CLAUDE
 **Owner:** Human Lead
 **Mode:** Runs in parallel with Steps 0, 1, and 3
 
-- [ ] Include shows with two or more seasons where S2 finished airing on or before 31 Dec 2024
+- [ ] Include shows with two or more seasons where S2 finished airing on or before **31 Dec 2025** (Human Lead, `decisions/0014`; this line read 2024 until 2026-08-12 and the frame was built at 2025 — see `decisions/0030`)
 - [ ] Exclude anime
 - [ ] Trim high-frequency cadence outliers such as daily strips and soaps
 - [ ] Collect as fields and not filters: origin, platform, country, language, genre
@@ -419,6 +419,8 @@ its direction on the never-started share, and its source.
 - [ ] **`W` is ±18 days, not a point estimate.** 25,120 C1 pairs come from only **206 shows**, and the show is the binding cluster: the iid interval is ±8 days, the show-clustered interval is [89, 125]. The 90th percentile itself is **imported from attribution-window practice, not selected by the data** — moving to the 85th percentile buys 61.7 days. (`decisions/0024`, `decisions/0026`)
 - [ ] **The size cap is partly a cadence threshold.** Of the 51 shows the 26-episode cap removes, **44 are C4** and none is C1, so C4 fell from 476 to 425 shows. **A C4 result is not a statement about slow-release shows in general** — the longest-running titles were removed from it — and C4 is where abandonment is most likely to be exposure-driven rather than preference-driven. **Air period and cadence are also strongly confounded** and are not independent cuts. (`decisions/0020`, `decisions/0017`)
 - [ ] **Platform fragmentation is not a variable in this study.** Per-season network is 0.71% populated, so "seasons split across services" has no representation in the data. No result may control for it, stratify on it, or rule it out. The show-level `network` is a **present-day** value and must not be read as release-time availability. (`decisions/0016`)
+- [ ] **The right-censoring margin is 24 days.** The frame caps the S2 finale at 2025-12-31 and right-censoring admits `T0` only up to **2026-01-24** at `W = 108` — 24 days of clearance, where the approved Step 1 text was written assuming ~13 months. **No show is lost**, but `W` is itself ±18 days show-clustered, so the slack is now smaller than the uncertainty in the number that consumes it. (`artifacts/step1-outcome-definition.md` post-approval addendum 2026-08-12, `decisions/0030`)
+- [ ] **Censoring is cohort-asymmetric, and it removes the users least like the ones it leaves.** The loss falls entirely on the uncapped `S1_completion_date` term. At the Step 13 arm of `W = 213` the **2023–2025 cohort loses 10.3% of its pairs against 2.7% for pre-2020**. The survivors from recent titles are those who completed S1 early — early adopters, who are the users **likeliest to continue** — so the modern cohort is not merely smaller but differently selected. **The `W = 213` arm added to test the censoring bias is itself the most censored arm.** (`decisions/0027`, `decisions/0030`)
 - [ ] **The study rests on a stopped pull.** 2,549 users of 4,050 planned, **62.9%**. The stop is proportional across all ten strata to within 6.1 points, so it is not an arbitrary prefix — but it is still a subsample, and every count in the study recomputes if the pull resumes. (`decisions/0009`, `artifacts/s1-completer-diagnostic.md` §1)
 
 **Deliver:** limits section in `artifacts/`, placed up front in the write-up and not buried

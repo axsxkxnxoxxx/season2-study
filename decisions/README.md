@@ -41,8 +41,10 @@ Step 18 assembles the final log from these files.
 | [0027](0027-step13-w-arms-above-the-adopted-value.md) | **Step 13's `W` arms extend above the adopted value, at 150 and 213 days.** Every mandated range topped out at `W = 108`, so the sensitivity tested `W` downward by a factor of three and upward not at all — while the censoring diagnostic runs one-sided upward (C1 p90 rises 107.7 → 119 → 128 → 146 → **213** with minimum exposure). **213 is an upper bound, not a rival estimate**; 150 is included so the response is traced rather than bracketed. Closes item 28. | 2026-08-12 | Closed |
 | [0028](0028-step14-carries-every-routed-limitation.md) | **Step 14 carries every limitation routed to it.** Its checklist held **one** bias mechanism while **seven** were known and ~eleven limitations had accumulated across ten entries and four artifacts. Adds a seven-statement bias ledger — seeding down, liveness down, tail cap up, tolerance discard up, Step 5 population change up, Step 5 estimator bias down, larger `W` down — each with mechanism, direction and source, and **the instruction that they must not be netted**: two are not the same kind of quantity, same-direction pairs compound rather than confirm, and opposite-direction pairs do not cancel. Plus eight non-bias limitations. Same rule as item 23, different failure mode — Step 14 is single-implementation, so the risk is **plain omission**, not silent divergence. | 2026-08-12 | Closed |
 | [0029](0029-step7-threshold-rule-and-w-propagation.md) | **`W = 108` propagated to its consuming steps; Step 7's threshold rule and Step 8's filter order fixed.** `W` appeared in neither Step 7 nor Step 8, while the two Step 6 artifacts state **107** and **107.7135** — a contradiction with two different wrong answers, into which two dual instances could have resolved differently. Step 7's *"set the threshold well beyond the normal gap"* withdrawn for a named percentile — **proposed at the 99th, not adopted** — with the gap as a **continuous insertion-instant difference** and the threshold rounded **up**. Step 8's filter order fixed, because the row set commutes but the required per-filter waterfall does not. | 2026-08-12 | **Open — the Step 7 percentile is proposed, not ruled** |
+| [0030](0030-frame-field-corrections.md) | **The 2024/2025 contradiction corrected by addendum, and three frame field changes.** Step 1 relied on a 2024 cap that Step 2 had moved to 2025, and its horizon assumed `W ≤ 91` against the adopted 108 — **the gate is not reopened**, both figures corrected by post-approval addendum. Margin is **24 days**, zero shows lost, but censoring is **cohort-asymmetric** (2023–2025 loses 10.3% of pairs at `W = 213` against 2.7% pre-2020). **`show_network` dropped** — it errs in both directions and has no stable semantics; **`rating`/`votes`/`comment_count`/`subgenres`/`airs_day` added**, giving the frame a reception axis it lacked; **`size_quintile`** is now within-cohort rank, per-year having over-corrected worse than raw under-corrected. | 2026-08-12 | Closed |
+| [0031](0031-the-50-completer-floor.md) | **The ≥50 S1-completer floor stands, and now has the warrant it never had.** The largest population rule in the study — 44,617 shows to 2,094 — and the only one with no entry and no sensitivity curve. Published: ≥25 gives +81% candidates, ≥100 gives −50%, and **there is no break in the distribution at 50**. Justified on cost, not on shape: shows near the floor are 42% of the frame by count but **15% by pairs**. **The frame at ≥25 is not computable without 1,699 API calls** and no claim is made about it. | 2026-08-12 | Closed |
 
-**A note on authority.** Entries 0001–0004 and 0013–0029 are Human Lead decisions. **0005–0008 are agent-taken,
+**A note on authority.** Entries 0001–0004 and 0013–0031 are Human Lead decisions. **0005–0008 are agent-taken,
 inside a Chained step, and are recorded retrospectively for ratification** — they shaped the
 population every downstream number rests on, and a constant that shapes the population is a decision
 whether or not it was treated as one at the time. They are listed here so the distinction between
@@ -283,3 +285,23 @@ that surfaced it.
     gap unit, the threshold criterion and the filter order at Steps 7 and 8. Two were caught only
     because a dual run burned a cycle. **Steps 8 and 9–13 should be read for the same defect before
     each launches, not after.** ([0026](0026-step6-window-w-gate.md), [0029](0029-step7-threshold-rule-and-w-propagation.md))
+
+33. **The right-censoring margin is 24 days and censoring is cohort-asymmetric.** The frame caps the
+    S2 finale at 2025-12-31 and censoring admits `T0` to 2026-01-24 at `W = 108`. Zero shows are
+    lost, but `W` is ±18 days show-clustered, so **the slack is smaller than the uncertainty in the
+    number consuming it**. The loss falls on the uncapped `S1_completion_date` term and is
+    cohort-asymmetric: at `W = 213` the 2023–2025 cohort loses **10.3%** of pairs against **2.7%**
+    pre-2020, and survivors from recent titles skew to early adopters — the users likeliest to
+    continue. **The arm added to test the censoring bias is the most censored arm.** Carried to
+    Step 14. ([0030](0030-frame-field-corrections.md), [0027](0027-step13-w-arms-above-the-adopted-value.md))
+34. **`show_rating` is a contaminated predictor and any cut using it must say so.** It is measured in
+    2026, after S2, so a show whose S2 disappointed may carry a depressed rating **because of the
+    outcome being studied**. `show_votes` is far less contaminated and is external to the pull. The
+    field was added because the alternative was **no reception stratifier at all**, and a disclosed
+    confound beats an absent variable. ([0030](0030-frame-field-corrections.md))
+35. **The frame is a large-title frame and no result generalises to small titles.** The ≥50 floor
+    admits 2.6% of the shows the pool has evidence for. A slate's hard renewal calls cluster in the
+    **marginal** performer, not the top 2.6%, so **Step 15's decision rule must not be phrased as
+    though it covers them**. The floor is also a higher bar for recent titles, making the 2023–2025
+    cohort differently selected rather than merely smaller.
+    ([0031](0031-the-50-completer-floor.md))
