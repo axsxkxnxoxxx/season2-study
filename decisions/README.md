@@ -39,8 +39,9 @@ Step 18 assembles the final log from these files.
 | [0025](0025-lag-unit-and-ceiling.md) | **The lag is a continuous instant difference and `W` is the CEILING of the percentile.** Run 2's two instances agreed to **fifteen significant digits** and differed only in unit — 107 vs 107.7135. Not a rounding preference: `watched_at < τ1` covers a pair iff its **fractional** lag is `< W`, so flooring is a systematic off-by-one against the operator. `W = 107` covers 89.976%, `W = 108` covers 90.020%. | 2026-08-12 | Closed |
 | [0026](0026-step6-window-w-gate.md) | **Step 6 APPROVED. `W = 108 days`** (gate 3 of 5) — ceiling of the 90th percentile (107.7135) of the continuous lag on the C1 subset, 25,120 pairs of Step 5's 128,099 sample. Applies to all pairs. Four things travel with it: precision is **±18 days** show-clustered not ±8 iid; the percentile is imported convention, not selected by the data; **censoring is one-sided** (p90 rises to 213 at ≥8yr exposure, an upper bound); and D14's warrant is false. | 2026-08-12 | Closed |
 | [0027](0027-step13-w-arms-above-the-adopted-value.md) | **Step 13's `W` arms extend above the adopted value, at 150 and 213 days.** Every mandated range topped out at `W = 108`, so the sensitivity tested `W` downward by a factor of three and upward not at all — while the censoring diagnostic runs one-sided upward (C1 p90 rises 107.7 → 119 → 128 → 146 → **213** with minimum exposure). **213 is an upper bound, not a rival estimate**; 150 is included so the response is traced rather than bracketed. Closes item 28. | 2026-08-12 | Closed |
+| [0028](0028-step14-carries-every-routed-limitation.md) | **Step 14 carries every limitation routed to it.** Its checklist held **one** bias mechanism while **seven** were known and ~eleven limitations had accumulated across ten entries and four artifacts. Adds a seven-statement bias ledger — seeding down, liveness down, tail cap up, tolerance discard up, Step 5 population change up, Step 5 estimator bias down, larger `W` down — each with mechanism, direction and source, and **the instruction that they must not be netted**: two are not the same kind of quantity, same-direction pairs compound rather than confirm, and opposite-direction pairs do not cancel. Plus eight non-bias limitations. Same rule as item 23, different failure mode — Step 14 is single-implementation, so the risk is **plain omission**, not silent divergence. | 2026-08-12 | Closed |
 
-**A note on authority.** Entries 0001–0004 and 0013–0027 are Human Lead decisions. **0005–0008 are agent-taken,
+**A note on authority.** Entries 0001–0004 and 0013–0028 are Human Lead decisions. **0005–0008 are agent-taken,
 inside a Chained step, and are recorded retrospectively for ratification** — they shaped the
 population every downstream number rests on, and a constant that shapes the population is a decision
 whether or not it was treated as one at the time. They are listed here so the distinction between
@@ -260,3 +261,10 @@ that surfaced it.
     one at 108 and the headline moves for two reasons at once — the per-arm retained-row count
     already required by Step 13 is what keeps them separable.
     ([0026](0026-step6-window-w-gate.md), [0027](0027-step13-w-arms-above-the-adopted-value.md))
+
+29. **Step 14's limitation list is a floor, not a ceiling.** [0028](0028-step14-carries-every-routed-limitation.md)
+    brought it current at seven bias statements and eight non-bias limitations. **Steps 7, 8 and 9
+    through 13 will route more**, and each should be written into `task-sheet.md` Step 14 **at the
+    time of its ruling** rather than accumulating for a sweep later — item 23's rule, applied to a
+    step whose failure mode is plain omission rather than silent divergence.
+    ([0028](0028-step14-carries-every-routed-limitation.md))
