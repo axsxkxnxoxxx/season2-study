@@ -32,6 +32,11 @@ OUT_JSON = STEP2 / "frame-summary.json"
 SHOWS = STEP2 / "shows_extract.jsonl.gz"
 SCAN = ROOT / "processed" / "s1s2_scan.npz"
 
+# Structural thresholds, Human Lead 2026-08-12 (decision 0020). Applied in
+# this order: season size, then gap. No minimum season size is set.
+MAX_SEASON_EPISODES = 26
+MAX_GAP_DAYS = 1095
+
 # Air period, Human Lead 2026-08-12: the calendar year of the S2 finale,
 # bucketed to bracket the 2020 production shutdown and nothing finer.
 AIR_PERIOD_BUCKETS = [("pre-2020", 0, 2019), ("2020-2022", 2020, 2022),
@@ -278,6 +283,24 @@ def main():
             rows.append(rec)
             continue
 
+        # ---- Structural thresholds (Human Lead, 2026-08-12, decision 0020).
+        # No minimum season size: Step 1 Sec 4's ceil(0.90 * L1) already scales
+        # to the real per-show length, so a short season needs no floor.
+        if L1 > MAX_SEASON_EPISODES or L2 > MAX_SEASON_EPISODES:
+            rec["exclusion"] = "season_over_26_episodes"
+            rows.append(rec)
+            continue
+
+        gap = rec["gap_days"]
+        if gap is None:
+            rec["exclusion"] = "UNDECIDED_gap_not_computable"
+            rows.append(rec)
+            continue
+        if gap > MAX_GAP_DAYS:
+            rec["exclusion"] = "gap_over_1095_days"
+            rows.append(rec)
+            continue
+
         rec["exclusion"] = None
         rows.append(rec)
 
@@ -300,6 +323,16 @@ def main():
     n_late = int((df["exclusion"] == "s2_finale_after_2025_12_31").sum())
     remaining -= set(df.loc[df["exclusion"] == "s2_finale_after_2025_12_31", "show_trakt_id"])
     ledger_steps.append(("S2 finale aired after 2025-12-31", n_late, len(remaining)))
+
+    for label, tag in (
+        ("Season over 26 episodes (S1 or S2)", "season_over_26_episodes"),
+        ("Gap over 1095 days (S1 finale to S2 premiere)", "gap_over_1095_days"),
+        ("Gap not computable (rules do not decide) -> UNDECIDED",
+         "UNDECIDED_gap_not_computable"),
+    ):
+        n = int((df["exclusion"] == tag).sum())
+        remaining -= set(df.loc[df["exclusion"] == tag, "show_trakt_id"])
+        ledger_steps.append((label, n, len(remaining)))
 
     frame = df[df["exclusion"].isna()].copy()
     assert len(frame) == len(remaining), (len(frame), len(remaining))

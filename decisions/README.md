@@ -25,14 +25,15 @@ Step 18 assembles the final log from these files.
 | [0011](0011-pull-date-value.md) | **`pull_date = 2026-08-11`**, `τ_pull = 2026-08-11T00:00:00Z`. Closes the value D11 deferred until Step 4's schedule was known. Constraint satisfied: earliest per-user fetch is 05:01:26Z. | 2026-08-11 | Closed |
 | [0012](0012-sweep-completeness-rule.md) | **Sweep completeness is full `page_count` coverage plus a 2% residual tolerance**, not exact match on `item_count` — which the pilot showed is not an exact record count. Over-count, under-count and genuine cross-page duplicates are counted **separately**. **Amends [0002](0002-step4-history-endpoint.md) and an approved gate artifact.** | 2026-08-11 | Closed |
 | [0013](0013-step2-execution-delegation.md) | **Step 2 execution is delegated to an agent; the selection rules stay with the Human Lead.** Judgment is which shows belong and on what criterion; execution is fetching seasons and applying a written rule. **Amends the `CLAUDE.md` Human Lead ownership rule, for Step 2 only.** Three conditions: no concurrent live-API agents, candidate set recomputed on the full pool, underspecified rules reported not resolved. | 2026-08-11 | Closed |
-| [0014](0014-no-content-filters-structural-fields.md) | **No content-category filters in the Step 2 frame.** The anime and daily-strip/soap exclusions are dropped before first use — the concern was release structure, not genre, and genre is a lossy proxy for it in both directions. Release structure is recorded as **fields**; thresholds set by the Human Lead after the distributions are visible. | 2026-08-11 | **Open — thresholds not yet set** |
+| [0014](0014-no-content-filters-structural-fields.md) | **No content-category filters in the Step 2 frame.** The anime and daily-strip/soap exclusions are dropped before first use — the concern was release structure, not genre, and genre is a lossy proxy for it in both directions. Release structure is recorded as **fields**; thresholds set by the Human Lead after the distributions are visible. **Both open items now discharged: platform fragmentation by [0016](0016-per-season-network-dropped.md), the thresholds by [0020](0020-step2-structural-thresholds.md).** | 2026-08-11 | **Closed 2026-08-12** |
 | [0015](0015-step2-unaired-s2-exclusion.md) | **A listed-but-unaired season 2 is not a season 2 for the frame.** 12 shows excluded, all reporting `aired_episodes = 0`. Recorded as its own ledger step rather than folded into the date cutoff, which removed 60 — collapsing them would have made the ledger say 72. Resolves the one case the selection rules did not decide. | 2026-08-12 | Closed |
 | [0016](0016-per-season-network-dropped.md) | **Per-season network dropped as a field; platform fragmentation is not a variable in this study.** 0.71% populated across 6,645 season objects; one show in 2,094 carries two distinct values, read as noise and not as fragmentation. **Closes the first open problem in [0014](0014-no-content-filters-structural-fields.md); the second survives and now attaches to the show-level network**, a present-day value that must not be read as release-time availability. | 2026-08-12 | Closed |
 | [0017](0017-air-period-definition.md) | **Air period := calendar year of the S2 finale, bucketed pre-2020 / 2020–2022 / 2023–2025**, bracketing the production shutdown and claiming nothing finer. Carries a confound that travels with it: **air period and cadence are strongly collinear** on this frame and are not independent cuts. | 2026-08-12 | Closed |
 | [0018](0018-size-quintile-base.md) | **The title size quintile is cut over the 1,226-show frame, not the 2,094 candidates** — the quintile cuts results, and results exist only in-frame. The rejected base gave unequal bins labelled as quintiles. A quintile label is **not a stable identifier**: rebuild the frame and every boundary moves. | 2026-08-12 | Closed |
 | [0019](0019-pool-completers-recomputed.md) | **`pool_completers` recomputed on real season lengths; the max-observed proxy is superseded and no result may use it.** Changes nothing on this frame — proxy `L1_hat` equals real `\|E1\|` on 1,225 of 1,226 shows — which is not a rehabilitation of the proxy generally. **Corrects the stated premise of [0013](0013-step2-execution-delegation.md) condition 2:** counts do not only rise; 118 long-tail shows fell between pool sizes. | 2026-08-12 | Closed |
+| [0020](0020-step2-structural-thresholds.md) | **The Step 2 structural thresholds: no minimum season size, max 26 episodes on either season, max 1,095-day gap.** 26 is the traditional full broadcast season and the cut is insensitive from 26 to 40 (1.1–2.4% of pairs); 22 was rejected at 196 shows and 13.8% of pairs, reaching into normal network drama. **The size cap is partly a cadence threshold** — 44 of its 51 shows are C4, the bucket where abandonment is most likely exposure-driven. Frame **1,226 → 1,138 shows, 220,107 pairs. Closes [0014](0014-no-content-filters-structural-fields.md).** | 2026-08-12 | Closed |
 
-**A note on authority.** Entries 0001–0004 and 0013–0019 are Human Lead decisions. **0005–0007 are agent-taken,
+**A note on authority.** Entries 0001–0004 and 0013–0020 are Human Lead decisions. **0005–0007 are agent-taken,
 inside a Chained step, and are recorded retrospectively for ratification** — they shaped the
 population every downstream number rests on, and a constant that shapes the population is a decision
 whether or not it was treated as one at the time. They are listed here so the distinction between
@@ -141,13 +142,14 @@ that surfaced it.
     `logs/step3_run.json` both times; a `ledger_note` in the file records it. Either restore after
     every regeneration or use the script's default out-dir, which does not touch that file. The
     ledger is the only record of Step 3's spend against the API budget and it is gitignored.
-17. **The Step 2 structural thresholds are deferred, not skipped.** Until the Human Lead sets them,
-    the frame carries **no exclusion on gap length and no exclusion on season size**. Consequence,
-    stated now rather than discovered later: **any headline computed before those thresholds are set
-    is provisional** — it runs over a population still containing whatever release structures the
-    candidate set happens to hold, including the ones the dropped content filters were reaching for.
-    Usable for diagnostics and for seeing the distributions; not the study's result.
-    ([0014](0014-no-content-filters-structural-fields.md))
+17. ~~**The Step 2 structural thresholds are deferred, not skipped.**~~ **CLOSED 2026-08-12** — set
+    as [0020](0020-step2-structural-thresholds.md): no minimum season size, max 26 episodes on
+    either season, max 1,095-day gap. Frame 1,226 → **1,138 shows, 220,107 pairs**. A headline is
+    **no longer provisional on this ground**; it remains provisional on the four unapproved gates
+    (Steps 5, 6, 7, 8). **New consequence carried forward:** the size cap removed 44 C4 shows of 51,
+    so it is partly a cadence threshold and **a C4 result is computed on a population stripped of
+    its longest-running titles** — C4 being where abandonment is most likely exposure-driven.
+    ([0014](0014-no-content-filters-structural-fields.md), [0020](0020-step2-structural-thresholds.md))
 18. **Platform fragmentation — problem (a) CLOSED 2026-08-12, problem (b) still open and relocated.**
     ~~(a) it is not established whether Trakt exposes a **per-season** network.~~ **Measured: it does,
     and it is empty — 0.71% populated across 6,645 season objects, one show in 2,094 with two
