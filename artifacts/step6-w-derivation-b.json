@@ -1,0 +1,265 @@
+{
+  "instance": "data-scientist-b",
+  "step": 6,
+  "status": "PROPOSED \u2014 gate, not adopted. The Human Lead approves.",
+  "pull_date": "2026-08-11",
+  "api_calls": 0,
+  "spec": "task-sheet.md Step 6, as amended by decisions/0024-w-is-the-90th-percentile.md",
+  "populations": {
+    "analysis_population_NOT_used_here": 201900,
+    "W_estimation_sample_taken_from_step5": 128099,
+    "C1_estimation_sample_after_D14": 25120,
+    "C1_share_of_estimation_sample": 0.19609833019773767
+  },
+  "provenance": {
+    "pair_table_rows": 220107,
+    "waterfall": [
+      {
+        "step": "analysis population",
+        "n": 201900
+      },
+      {
+        "step": "has S2 evidence",
+        "n": 178165,
+        "dropped": 23735
+      },
+      {
+        "step": "T0 not contaminated",
+        "n": 155131,
+        "dropped": 23034
+      },
+      {
+        "step": "completing record not postdated",
+        "n": 152126,
+        "dropped": 3005
+      },
+      {
+        "step": "first S2 watch clean",
+        "n": 128099,
+        "dropped": 24027
+      }
+    ],
+    "frame_shows": 1138,
+    "d12_recompute_mismatches_vs_frame_column": 0,
+    "frame_shows_within_1d_of_a_bucket_boundary": 7,
+    "rows_with_first_s2_watch_at_or_after_tau_pull_NOT_dropped": 4,
+    "rows_used": 128099,
+    "distinct_shows_in_sample": 1138,
+    "distinct_users_in_sample": 2370
+  },
+  "percentile": 90.0,
+  "W_days_raw_C1_p90": 107.71347222222234,
+  "W_days_by_numpy_method": {
+    "linear": 107.71347222222234,
+    "lower": 107.70833333333333,
+    "higher": 107.75972222222222,
+    "nearest": 107.70833333333333,
+    "midpoint": 107.73402777777778
+  },
+  "W_integer_candidates": {
+    "floor": 107,
+    "round": 108,
+    "ceil": 108
+  },
+  "all_shows_p90_days_DESCRIPTIVE_ONLY": 37.696666666666644,
+  "all_shows_p90_by_numpy_method": {
+    "linear": 37.696666666666644,
+    "lower": 37.69513888888889,
+    "higher": 37.702777777777776,
+    "nearest": 37.69513888888889,
+    "midpoint": 37.69895833333334
+  },
+  "step13_range_from_the_two_curves": [
+    37.696666666666644,
+    107.71347222222234
+  ],
+  "step13_range_union_with_46_107": [
+    37.696666666666644,
+    107.71347222222234
+  ],
+  "percentile_grid_C1": {
+    "1": -88.70515277777778,
+    "5": 0.07569444444444444,
+    "10": 0.22291666666666668,
+    "25": 0.6916666666666667,
+    "50": 1.7319444444444445,
+    "75": 12.798090277777778,
+    "80": 22.35805555555556,
+    "85": 45.97527777777773,
+    "88": 74.67650000000005,
+    "90": 107.71347222222234,
+    "92": 159.95199999999988,
+    "95": 322.6134374999999,
+    "99": 1155.7989861111146
+  },
+  "percentile_grid_all_shows": {
+    "1": -387.3546944444445,
+    "5": -138.3996527777778,
+    "10": -61.01555555555555,
+    "25": 0.06180555555555556,
+    "50": 0.7243055555555555,
+    "75": 1.948611111111111,
+    "80": 4.085416666666666,
+    "85": 10.599236111111118,
+    "88": 21.680111111111344,
+    "90": 37.696666666666644,
+    "92": 68.75713888888897,
+    "95": 184.393472222222,
+    "99": 1008.3127500000024
+  },
+  "sensitivity_of_W_to_the_percentile_convention": {
+    "75": 12.798090277777778,
+    "80": 22.35805555555556,
+    "85": 45.97527777777773,
+    "90": 107.71347222222234,
+    "95": 322.6134374999999
+  },
+  "negative_mass_by_D12_bucket": {
+    "C0": {
+      "started": 0,
+      "negative": 0,
+      "share_of_started": 0.0,
+      "share_of_all_started_pairs": 0.0
+    },
+    "C1": {
+      "started": 25120,
+      "negative": 689,
+      "share_of_started": 0.027428343949044587,
+      "share_of_all_started_pairs": 0.005378652448496866
+    },
+    "C2": {
+      "started": 39680,
+      "negative": 11369,
+      "share_of_started": 0.2865171370967742,
+      "share_of_all_started_pairs": 0.08875166863129298
+    },
+    "C3": {
+      "started": 18218,
+      "negative": 7149,
+      "share_of_started": 0.39241409594906135,
+      "share_of_all_started_pairs": 0.05580839819202336
+    },
+    "C4": {
+      "started": 45081,
+      "negative": 9753,
+      "share_of_started": 0.21634391428761562,
+      "share_of_all_started_pairs": 0.07613642573322196
+    },
+    "TOTAL": {
+      "started": 128099,
+      "negative": 28960,
+      "share_of_started": 0.22607514500503517,
+      "share_of_all_started_pairs": 0.22607514500503517
+    }
+  },
+  "D14_warrant_defect": {
+    "claim_in_decisions_0003_D14_and_step1_sec9": "every C1 lag is non-negative by construction",
+    "claim_status": "FALSE against the data; open item 24 in decisions/README.md; not repaired here",
+    "c1_negative_lags": 689,
+    "c1_negative_share": 0.027428343949044587,
+    "binding_term_s1_completion": 459,
+    "binding_term_finale": 230,
+    "binding_term_tie": 0,
+    "finale_binding_within_1_day_utc_skew": 135,
+    "finale_binding_beyond_1_day_UNEXPLAINED": 95,
+    "most_negative_finale_binding_days": -495.4291666666667,
+    "most_negative_any_days": -3247.4381944444444,
+    "W_if_c1_negatives_dropped": 113.98541666666667,
+    "W_if_c1_negatives_truncated_to_zero": 107.71347222222234
+  },
+  "sample_adequacy": {
+    "n_C1_pairs": 25120,
+    "n_above_p90": 2512,
+    "n_distinct_shows": 206,
+    "n_distinct_users": 2050,
+    "bootstrap": {
+      "iid": {
+        "B": 2000,
+        "ci95": [
+          100.47184375000016,
+          116.64375000000018
+        ],
+        "sd_days": 4.026485298663252
+      },
+      "cluster_user": {
+        "B": 500,
+        "n_clusters": 2050,
+        "ci95": [
+          93.8957204861111,
+          122.59888888888898
+        ],
+        "sd_days": 7.153272747098847
+      },
+      "cluster_show": {
+        "B": 500,
+        "n_clusters": 206,
+        "ci95": [
+          89.79544270833334,
+          122.41881597222239
+        ],
+        "sd_days": 8.77542616470741
+      }
+    },
+    "show_concentration": {
+      "n_shows": 206,
+      "top1_share_of_pairs": 0.04231687898089172,
+      "top5_share_of_pairs": 0.12476114649681529,
+      "top10_share_of_pairs": 0.21062898089171975,
+      "top20_share_of_pairs": 0.34785031847133757,
+      "median_pairs_per_show": 79.0,
+      "shows_needed_for_half_the_pairs": 37
+    }
+  },
+  "right_censoring_diagnostic_C1": {
+    "definition": "exposure = (tau_pull - tau0) / 1 day, per C1 pair",
+    "median_exposure_days": 1915.0,
+    "min_exposure_days": 1.0,
+    "pairs_with_exposure_below_W": 530,
+    "share_with_exposure_below_W": 0.02109872611464968,
+    "p90_by_minimum_exposure_years": {
+      "0": {
+        "n": 25120,
+        "p90_days": 107.71347222222234
+      },
+      "1": {
+        "n": 23637,
+        "p90_days": 119.25625000000002
+      },
+      "2": {
+        "n": 21545,
+        "p90_days": 128.0680555555556
+      },
+      "4": {
+        "n": 16882,
+        "p90_days": 146.02638888888887
+      },
+      "8": {
+        "n": 4141,
+        "p90_days": 213.03541666666666
+      },
+      "12": {
+        "n": 119,
+        "p90_days": 177.22527777777793
+      }
+    },
+    "caveat": "longer-exposure pairs are also older shows, so exposure and cohort are not separable here; the movement across these rows is an upper bound on the censoring effect, not an estimate of it"
+  },
+  "C1_shape": {
+    "share_lag_lt_0": 0.027428343949044587,
+    "share_lag_in_0_1d": 0.3975716560509554,
+    "share_lag_in_0_7d": 0.6625398089171974,
+    "share_lag_in_0_30d": 0.7959792993630573,
+    "share_lag_ge_365d": 0.04522292993630573,
+    "days_bought_by_moving_p85_to_p90": 61.73819444444461
+  },
+  "lag_range_days": {
+    "C1_min": -3247.4381944444444,
+    "C1_max": 3927.895138888889,
+    "all_min": -4275.345138888889,
+    "all_max": 11724.77638888889
+  },
+  "figures": [
+    "artifacts/step6-lag-distributions-b.png",
+    "artifacts/step6-lag-tail-b.png"
+  ]
+}

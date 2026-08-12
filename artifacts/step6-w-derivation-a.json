@@ -1,0 +1,350 @@
+{
+  "step": 6,
+  "instance": "a",
+  "spec": "task-sheet.md Step 6, as amended by decisions/0024-w-is-the-90th-percentile.md",
+  "percentile_rule": 90.0,
+  "pull_date": "2026-08-11",
+  "api_calls": 0,
+  "step5_waterfall_reproduced": {
+    "labels": [
+      "analysis population",
+      "has S2 evidence",
+      "T0 not contaminated",
+      "completing record not post-dated",
+      "first S2 watch clean"
+    ],
+    "computed": [
+      201900,
+      178165,
+      155131,
+      152126,
+      128099
+    ],
+    "published": [
+      201900,
+      178165,
+      155131,
+      152126,
+      128099
+    ],
+    "match": true
+  },
+  "d12_recomputation": {
+    "frame_shows": 1138,
+    "disagreements_with_frame_column": 0,
+    "shows_by_bucket": {
+      "C0": 0,
+      "C1": 206,
+      "C2": 340,
+      "C3": 167,
+      "C4": 425
+    },
+    "shows_within_1_day_of_a_bucket_boundary": 7
+  },
+  "lag_definition_check": {
+    "calendar_date_difference_equals_floor_of_instant_difference": true,
+    "note": "the two faithful readings of 'lag in whole days' are identical on this data"
+  },
+  "tau_pull_conflict": {
+    "pairs_in_estimation_sample_whose_first_S2_record_is_at_or_after_tau_pull": 4,
+    "of_which_C1": 0,
+    "note": "Step 1 D11 discards these records from every computation; the Step 5 sample of 128,099 was built without that filter. The spec directs Step 6 to take the population from the Step 5 artifact, so they are retained. The effect on W is reported below and is nil.",
+    "W_with_them": 107.0,
+    "W_without_them": 107.0
+  },
+  "W": {
+    "value_days": 107,
+    "raw_percentile_value": 107.0,
+    "is_integer": true,
+    "estimation_sample": "C1 subset of the Step 5 128,099 clean-record sample",
+    "n_pairs": 25120,
+    "n_shows": 206,
+    "n_users": 2050,
+    "percentile_conventions": {
+      "linear": 107.0,
+      "lower": 107.0,
+      "higher": 107.0,
+      "nearest": 107.0,
+      "midpoint": 107.0,
+      "inverted_cdf": 107.0,
+      "averaged_inverted_cdf": 107.0,
+      "nearest_rank_ceil": 107.0
+    },
+    "all_conventions_agree": true,
+    "order_statistic_95CI": {
+      "lo": 100.0,
+      "hi": 116.0,
+      "ranks": [
+        22515,
+        22703
+      ]
+    },
+    "bootstrap_95CI": {
+      "lo": 100.0,
+      "hi": 116.0,
+      "sd": 4.037529411657568,
+      "B": 2000,
+      "seed": 20260812
+    },
+    "cluster_bootstrap_95CI_by_user": {
+      "lo": 95.0,
+      "hi": 122.0,
+      "B": 1000
+    },
+    "cluster_bootstrap_95CI_by_show": {
+      "lo": 89.0,
+      "hi": 125.0,
+      "B": 1000
+    }
+  },
+  "all_shows_curve": {
+    "population": "all five D12 buckets of the same 128,099 clean-record sample",
+    "n_pairs": 128099,
+    "p90_days": 37.0,
+    "percentile_conventions": {
+      "linear": 37.0,
+      "lower": 37.0,
+      "higher": 37.0,
+      "nearest": 37.0,
+      "midpoint": 37.0,
+      "inverted_cdf": 37.0,
+      "averaged_inverted_cdf": 37.0,
+      "nearest_rank_ceil": 37.0
+    },
+    "all_conventions_agree": true,
+    "warning": "descriptive only; W is never read off this curve"
+  },
+  "step13_minimum_W_range": {
+    "percentile_used": 90.0,
+    "read_on_C1": 107.0,
+    "read_on_all_shows": 37.0,
+    "range": [
+      37.0,
+      107.0
+    ],
+    "note": "the same percentile read on both curves, per the spec's deterministic rule; Step 13 must also span 46-107 per decisions/0024 and cover the UNION of the two"
+  },
+  "shape_C1": {
+    "n": 25120,
+    "min": -3248.0,
+    "max": 3927.0,
+    "mean": 51.403383757961784,
+    "median": 1.0,
+    "quantiles": {
+      "p0": -3248.0,
+      "p1": -89.0,
+      "p5": 0.0,
+      "p10": 0.0,
+      "p25": 0.0,
+      "p50": 1.0,
+      "p75": 12.0,
+      "p80": 22.0,
+      "p85": 45.0,
+      "p90": 107.0,
+      "p95": 322.0,
+      "p99": 1155.430000000004,
+      "p100": 3927.0
+    },
+    "share_negative": 0.027428343949044587,
+    "share_zero": 0.3975716560509554,
+    "share_le_1": 0.534156050955414,
+    "share_le_7": 0.7031847133757961,
+    "share_le_30": 0.8264729299363057
+  },
+  "shape_all_shows": {
+    "n": 128099,
+    "min": -4276.0,
+    "max": 11724.0,
+    "mean": 16.68281563478247,
+    "median": 0.0,
+    "quantiles": {
+      "p0": -4276.0,
+      "p1": -388.0,
+      "p5": -139.0,
+      "p10": -62.0,
+      "p25": 0.0,
+      "p50": 0.0,
+      "p75": 1.0,
+      "p80": 4.0,
+      "p85": 10.0,
+      "p90": 37.0,
+      "p95": 184.0,
+      "p99": 1008.0,
+      "p100": 11724.0
+    },
+    "share_negative": 0.22607514500503517,
+    "share_zero": 0.4535398402797836,
+    "share_le_1": 0.7528942458567202,
+    "share_le_7": 0.8373679732082218,
+    "share_le_30": 0.8936603720559879
+  },
+  "percentile_sensitivity_C1": {
+    "p70": 7.0,
+    "p75": 12.0,
+    "p80": 22.0,
+    "p85": 45.0,
+    "p88": 74.0,
+    "p89": 88.0,
+    "p90": 107.0,
+    "p91": 130.0,
+    "p92": 159.47999999999956,
+    "p95": 322.0
+  },
+  "percentile_sensitivity_all_shows": {
+    "p70": 1.0,
+    "p75": 1.0,
+    "p80": 4.0,
+    "p85": 10.0,
+    "p88": 21.0,
+    "p89": 28.0,
+    "p90": 37.0,
+    "p91": 50.0,
+    "p92": 68.0,
+    "p95": 184.0
+  },
+  "negative_mass_by_bucket_on_the_plotted_population": {
+    "C0": {
+      "pairs": 0,
+      "negative_lag_pairs": 0,
+      "share_of_bucket": null,
+      "share_of_started_population": 0.0,
+      "min_lag_days": null,
+      "median_lag_days": null
+    },
+    "C1": {
+      "pairs": 25120,
+      "negative_lag_pairs": 689,
+      "share_of_bucket": 0.027428343949044587,
+      "share_of_started_population": 0.005378652448496866,
+      "min_lag_days": -3248.0,
+      "median_lag_days": 1.0
+    },
+    "C2": {
+      "pairs": 39680,
+      "negative_lag_pairs": 11369,
+      "share_of_bucket": 0.2865171370967742,
+      "share_of_started_population": 0.08875166863129298,
+      "min_lag_days": -4091.0,
+      "median_lag_days": 0.0
+    },
+    "C3": {
+      "pairs": 18218,
+      "negative_lag_pairs": 7149,
+      "share_of_bucket": 0.39241409594906135,
+      "share_of_started_population": 0.05580839819202336,
+      "min_lag_days": -3651.0,
+      "median_lag_days": 0.0
+    },
+    "C4": {
+      "pairs": 45081,
+      "negative_lag_pairs": 9753,
+      "share_of_bucket": 0.21634391428761562,
+      "share_of_started_population": 0.07613642573322196,
+      "min_lag_days": -4276.0,
+      "median_lag_days": 0.0
+    },
+    "TOTAL": {
+      "started_population": 128099,
+      "negative_lag_pairs": 28960,
+      "share_of_started_population": 0.22607514500503517
+    }
+  },
+  "negative_mass_supplementary_denominator_178165": {
+    "note": "SUPPLEMENTARY ONLY, not the required split. The required split is on the plotted population (128,099). This uses the analysis population's started pairs (178,165), whose timestamps include contaminated ones, and is given so the Human Lead can see the cadence artifact at both denominators.",
+    "started_population": 175655,
+    "by_bucket": {
+      "C0": {
+        "pairs": 0,
+        "negative_lag_pairs": 0
+      },
+      "C1": {
+        "pairs": 33225,
+        "negative_lag_pairs": 1435
+      },
+      "C2": {
+        "pairs": 52960,
+        "negative_lag_pairs": 17354
+      },
+      "C3": {
+        "pairs": 22948,
+        "negative_lag_pairs": 9847
+      },
+      "C4": {
+        "pairs": 66522,
+        "negative_lag_pairs": 18562
+      }
+    },
+    "total_negative": 47198
+  },
+  "C1_negative_lags_defect": {
+    "claim_in_decisions_0003_D14_and_step1_sec9": "every C1 lag is non-negative by construction",
+    "status": "FALSE on this data; carried as open item 24 in decisions/README.md",
+    "count": 689,
+    "share_of_C1": 0.027428343949044587,
+    "by_binding_term": {
+      "s1": 459,
+      "finale": 230
+    },
+    "min_lag_days": -3248,
+    "exactly_minus_1_day": 188,
+    "worse_than_minus_1_day": 501,
+    "effect_on_W_if_they_were_dropped": 113.0,
+    "note": "reported, not repaired; the percentile is taken on the signed, untruncated distribution as the spec directs"
+  },
+  "C1_sample_adequacy": {
+    "n_pairs": 25120,
+    "n_shows": 206,
+    "n_users": 2050,
+    "pairs_at_or_above_the_90th_percentile": 2518,
+    "effective_tail_count": 2512,
+    "order_statistic_95CI_width_days": 16.0,
+    "bootstrap_95CI_width_days": 16.0,
+    "max_pairs_from_one_show": 1063,
+    "share_from_top_show": 0.04231687898089172,
+    "max_pairs_from_one_user": 88,
+    "leave_one_show_out_p90_top10_shows": {
+      "104439": 109.0,
+      "77938": 106.0,
+      "138163": 107.0,
+      "123775": 106.0,
+      "137198": 107.79999999999927,
+      "189717": 107.0,
+      "116965": 106.0,
+      "79385": 103.0,
+      "119913": 107.0,
+      "140590": 108.79999999999927
+    }
+  },
+  "C1_exposure_diagnostic": {
+    "note": "p90 of the observed lag within strata of elapsed time since T0. A rising p90 with exposure indicates the pooled figure is pulled DOWN by short-exposure pairs, i.e. W = 107 is if anything a lower bound on the untruncated behaviour. Selection and cohort effects are not separable here and this is not a correction.",
+    "by_elapsed_time_since_T0": {
+      "0-365d": {
+        "n": 1479,
+        "p90_days": 12.200000000000045,
+        "median_days": 0.0
+      },
+      "365-730d": {
+        "n": 2094,
+        "p90_days": 36.700000000000045,
+        "median_days": 0.0
+      },
+      "730-1460d": {
+        "n": 4663,
+        "p90_days": 77.80000000000018,
+        "median_days": 1.0
+      },
+      "1460-2920d": {
+        "n": 12743,
+        "p90_days": 127.80000000000109,
+        "median_days": 1.0
+      },
+      "2920-1000000d": {
+        "n": 4141,
+        "p90_days": 213.0,
+        "median_days": 2.0
+      }
+    },
+    "p90_on_pairs_with_at_least_8_years_exposure": 213.0,
+    "n_at_least_8_years": 4141
+  }
+}

@@ -36,8 +36,10 @@ Step 18 assembles the final log from these files.
 | [0022](0022-step5-rulings-written-into-task-sheet.md) | **The two Step 5 standing rulings are written into `task-sheet.md`.** They lived only in the decision log and the Step 5 artifact, while the specs the two isolated instances actually read said nothing about them — and **the dual-implementation diff cannot catch what the spec omits**, because both instances read the same silence. Step 6 now names the **128,099** estimation sample and its composition with D14; Step 7 names **insertion time** as the clock and the play-`id` calibration as a required input that **neither instance refits**. Found by `second-brain`. | 2026-08-12 | Closed |
 | [0023](0023-step4-completeness-rule-upheld.md) | **The sweep-completeness rule stands as adopted.** Red Team returned HOLD and was **overruled on cascade cost, not on merit**: changing the tolerance restates the cohort, which re-runs the completer diagnostic, which moves the ≥50 candidate rule and the 1,138-show frame — against a correction worth **0.13 points**. Three findings become **Step 14 limitations**: leg 1 gates on `page_count`, which is `ceil(item_count/250)` and so derived from the header leg 2 exists to absorb; the discard is **not outcome-neutral** (+1.27 pts, CI [0.87, 1.66], direction **up**, compounding with the seeding and liveness biases); and a better instrument existed and was declined. Closes item 15. | 2026-08-12 | Closed |
 | [0024](0024-w-is-the-90th-percentile.md) | **`W` is the 90th percentile of the C1 lag distribution**, not a curve-flattening judgment. Occasioned by Step 6 run 1, where two isolated instances agreed on every input — 128,099 sample, 25,120 C1 pairs, 689 negatives — and produced **`W` = 46 and `W` = 107** from the undefined word "flattens". The C1 density is close to scale-free past day 7, so the spec asked for a feature the data does not have. **Step 13's arms must span 46 to 107**, because fixing the wording removes the disagreement but not the dependence. | 2026-08-12 | Closed |
+| [0025](0025-lag-unit-and-ceiling.md) | **The lag is a continuous instant difference and `W` is the CEILING of the percentile.** Run 2's two instances agreed to **fifteen significant digits** and differed only in unit — 107 vs 107.7135. Not a rounding preference: `watched_at < τ1` covers a pair iff its **fractional** lag is `< W`, so flooring is a systematic off-by-one against the operator. `W = 107` covers 89.976%, `W = 108` covers 90.020%. | 2026-08-12 | Closed |
+| [0026](0026-step6-window-w-gate.md) | **Step 6 APPROVED. `W = 108 days`** (gate 3 of 5) — ceiling of the 90th percentile (107.7135) of the continuous lag on the C1 subset, 25,120 pairs of Step 5's 128,099 sample. Applies to all pairs. Four things travel with it: precision is **±18 days** show-clustered not ±8 iid; the percentile is imported convention, not selected by the data; **censoring is one-sided** (p90 rises to 213 at ≥8yr exposure, an upper bound); and D14's warrant is false. | 2026-08-12 | Closed |
 
-**A note on authority.** Entries 0001–0004 and 0013–0024 are Human Lead decisions. **0005–0008 are agent-taken,
+**A note on authority.** Entries 0001–0004 and 0013–0026 are Human Lead decisions. **0005–0008 are agent-taken,
 inside a Chained step, and are recorded retrospectively for ratification** — they shaped the
 population every downstream number rests on, and a constant that shapes the population is a decision
 whether or not it was treated as one at the time. They are listed here so the distinction between
@@ -49,7 +51,7 @@ Five. Nothing downstream of a gate runs without written Human Lead approval at i
 
 - [x] **Step 1** outcome definition — approved 2026-08-10 ([0001](0001-step1-outcome-definition-gate.md))
 - [x] **Step 5** contamination exclusion rule — approved 2026-08-12 ([0021](0021-step5-contamination-gate.md))
-- [ ] Step 6 window W
+- [x] **Step 6** window `W` — approved 2026-08-12 at **W = 108 days** ([0026](0026-step6-window-w-gate.md))
 - [ ] Step 7 liveness threshold
 - [ ] Step 8 analysis table
 
@@ -232,3 +234,23 @@ that surfaced it.
     part of the task description and separating it does not weaken the diff.** Applies to Steps 6, 7
     and 9 (`data-scientist` / `-b`) and Step 8 (`analytics-engineer` / `-b`).
     ([0024](0024-w-is-the-90th-percentile.md))
+
+26. **Three Step 6 findings share one shape: a convention doing work the data does not do, left
+    unstated in the spec.** "The percentile where the curve flattens" (undefined; the C1 density is
+    close to scale-free past day 7, so there was no feature to read — two instances 61 days apart);
+    the 90th percentile itself (imported from attribution-window practice, not selected by the data);
+    and the unit of the lag with the rounding of the percentile (one day). **Each was caught only
+    because two isolated instances ran the same words and produced different numbers.** None would
+    have been visible in a single run. Expect the same shape at Steps 7 and 8.
+    ([0024](0024-w-is-the-90th-percentile.md), [0025](0025-lag-unit-and-ceiling.md))
+27. **Step 6 and Step 8 will not share a row set.** Four pairs in the 128,099 have a first S2 record
+    at or after `τ_pull`, which Step 1 D11 says must be discarded from every computation, while
+    Step 5 built the sample without that filter. Both Step 6 instances found them and both retained
+    them, correctly, because the spec directs taking the population from the Step 5 artifact. **None
+    is in C1, so `W` is unaffected**, but Step 8 classifies on the 201,900 under the frozen cutoff.
+    Unresolved. ([0026](0026-step6-window-w-gate.md))
+28. **Step 13's mandated arms top out at the adopted `W`.** The span is [38, 108] ∪ [46, 107] and
+    `W = 108` sits at its ceiling, so the sensitivity does not currently test **above** the adopted
+    value — while the censoring diagnostic runs one-sided in exactly that direction (p90 rises to 213
+    at ≥8 years' exposure). Flagged by a Step 6 instance as a proposal only; not decided.
+    ([0026](0026-step6-window-w-gate.md))
