@@ -48,8 +48,42 @@ the date of the artifact it came from.
 | **Pairs meeting the §4 S1-completion rule** | **537,471 (74.9%)** |
 | **Shows with ≥50 completers — the candidate set** | **2,094** |
 | **Step 2 frame** | **1,138 shows, 220,107 pairs** |
-| Step 5 **analysis population** (PROPOSED) | 201,900 |
-| Step 5 **W estimation sample** (PROPOSED) | 128,099 |
+| Step 5 **analysis population** — APPROVED, `0021` | **201,900** |
+| Step 5 **W estimation sample** — APPROVED, `0021` | **128,099** |
+
+**201,900 and 128,099 are different numbers and `task-sheet.md` Step 6 now says so explicitly**
+(`0022`). The analysis population is what Step 8 classifies; the estimation sample is what Step 6
+measures `W` on, with D14's C1 restriction applied **on top of** it, not instead of it.
+
+## The 287 discarded users — measured, and not outcome-neutral
+
+Their raw pages were never deleted (14,578 page files, all 287 users present), so
+`artifacts/step5-discard-outcome-neutrality.md` could measure them at **zero API calls**:
+
+| | Discarded (287) | Retained (2,549) |
+| :--- | ---: | ---: |
+| Completer pairs | **25,035** | **220,107** |
+| Mean completers per user | 87.23 | 87.34 |
+| Median | 64.0 | 71.0 |
+| Users with zero completers | 5 | 62 |
+| **Has-any-S2 rate** | **89.78%** | **88.52%** |
+
+**+1.27 points, CI [0.87, 1.66], p < 0.001. Pooled effect 0.13 points** — the 287 carry 10.2% of
+the combined pair pool. Direction **up** on the never-started share.
+
+**Two method facts that make the comparison trustworthy**, both worth keeping because a difference
+here could easily have been an artifact of reading from two different stores:
+
+1. **The two extractors were cross-validated on shared users** — running the raw extractor over
+   retained users, who have both a raw cache and a parsed file, gave **exact agreement on every user
+   checked**: zero raw-only records, zero parsed-only, on sets up to 9,273 triples.
+2. **The retained population reproduces 220,107 completer pairs exactly, by an independent path.**
+   That is the strongest single confirmation the frame count has received.
+
+**One denominator caveat, stated in the artifact and easy to lose:** the retained *per-user*
+statistics are over **2,520 users, not 2,549** — 29 retained users carry no S1 or S2 record on any
+in-frame show. Adding them as zeros moves the comparison **toward greater similarity**, not less.
+The pair-level rates are unaffected; their denominator is pairs.
 
 ## The prefix is proportional — `0009` held, with one caveat
 

@@ -31,15 +31,22 @@ log shows the judgment."*
 | **`0005`–`0008`** | Step 3: stopping rule, twelve crawl constants, channel cost trade, seed source | Full, and each names the reviewer disagreement. **All four Open — awaiting ratification** |
 | `0009`–`0012` | Step 4: pull order, tail cap, `pull_date` value, sweep completeness | Full. `0009`, `0010` and `0012` each record **the framing that was wrong and why**, which is unusually good for the "why this one" field |
 | `0013`–`0020` | Step 2: delegation, no content filters, unaired S2, per-season network, air period, size quintile base, `pool_completers`, structural thresholds | Full |
+| **`0021`** | **Step 5 gate closed.** The rule, four rulings made inside the gate, two standing rulings, four Step 14 limitations, three recorded errors, and what it unblocks | **Full, and it is the best-formed entry in the log** — it carries the four-round review history, the reasoning quoted verbatim, and the errors that entered rulings before being caught |
+| **`0022`** | The two standing rulings propagated into `task-sheet.md` Steps 6 and 7 | Full. Notably records **who found it** and why the dual-implementation control could not have |
+| **`0023`** | `0012` reviewed and upheld; three findings become Step 14 limitations | Full, and it does the harder thing: **states that Red Team was overruled on cost and not on merit**, so a future reader cannot infer the shape test was examined and found wanting |
 
-**Gate checklist:** Step 1 closed. **Steps 5, 6, 7, 8 open.** Consistent across
-`decisions/README.md` and `task-sheet.md` "Gate summary". Verified 2026-08-12.
+**Gate checklist:** **Steps 1 and 5 closed. Steps 6, 7, 8 open.** Two of five.
 
-**Step 5 has no decision file and correctly so.** The gate is not approved. Red Team round 4
-returned PROCEED; approval is the Human Lead's, in writing, and no agent records it. When it is
-written it needs at minimum: the D1 ruling upholding Step 1 §7, ruling 1 (two populations), ruling 2
-(insertion-time liveness), the shape-3 rejection, and the four limitations. See
-[[gate-step5-contamination]].
+**`0021` sets a bar for the three remaining gate entries.** It records not just the rule but the
+rulings made *during* the gate, the standing rulings that outlive it, the limitations that travel
+forward, and the errors that reached the Human Lead — including two that **entered rulings before
+being caught**, with the note that the conclusions survived on better bases. That is the five-field
+format working at full strength, and it is the model for Steps 6, 7 and 8.
+
+**One structural improvement worth naming.** `0022` exists because a ruling recorded in two places
+was still missing from the third. The log now carries the standing check as README item 23. **Every
+remaining gate entry should end by naming what it propagated to `task-sheet.md`, or stating that it
+propagated nothing.**
 
 ---
 
@@ -125,8 +132,7 @@ ambiguity**. **This is the precedent [[open-items-and-contradictions]] X1 turns 
 
 ## Still with no decision file at all
 
-1. **Step 5's approval**, when given — and the two rulings inside it, which bind Steps 6 and 7.
-2. **§10.1 open questions 1 and 3**, when ruled — the Continued boundary and the right-censoring
+1. **§10.1 open questions 1 and 3**, when ruled — the Continued boundary and the right-censoring
    rule. Each carries a Data Scientist recommendation and a decision from nobody.
 3. **The gap hypothesis**, if and when it is assigned an owner (README items 3 and 8).
 4. **Ratification of `0005`–`0008`**, which are the only Open entries in the log.

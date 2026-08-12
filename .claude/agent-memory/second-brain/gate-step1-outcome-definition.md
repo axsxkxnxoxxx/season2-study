@@ -91,14 +91,31 @@ approved gate and the challenge is heard on the merits. **The gate holds unless 
 reopens it** — no downstream artifact reopens it by acting as though a rule were different. And the
 revision-3 principle is now a **withdrawn claim**, not a live alternative.
 
-## `0012` — the first edit that fails the reopening test, and it has not been reviewed
+## `0012` — the edit that tested the reopening rule. Reviewed 2026-08-12; gate 1 not reopened.
 
-`decisions/0012` changes the sweep-completeness test inside `artifacts/step1-outcome-definition.md`
-§0 — from exact `item_count` equality to full page coverage plus a 2% residual. **That is a rule
-change, and by this gate's own standing rule a rule change reopens the gate.** It was recorded as a
-Human Lead amendment instead, with `0012` itself flagging that it *"may wish to put it to Red Team."*
-**It has not been.** `decisions/README.md` open item 15. The completeness *requirement* is untouched;
-only the detection test moved, on strong evidence. The issue is procedural, not substantive.
+`decisions/0012` changed the sweep-completeness test inside `artifacts/step1-outcome-definition.md`
+§0 — from exact `item_count` equality to full page coverage plus a 2% residual — and was recorded as
+a Human Lead amendment rather than as a gate reopening. It went to Red Team on 2026-08-12, which
+returned **HOLD** and argued it **reaches the reopening clause by converting a categorical
+completeness requirement into a graded one.**
+
+**Ruled (`0023`): the rule stands, upheld on cascade cost, not on merit. Gate 1 is not reopened, and
+the reopening question is answered by that ruling.** The three findings travel to **Step 14** rather
+than back to Step 1. The cascade named in full: tolerance → cohort size → completer counts per show
+→ which shows clear ≥50 → the candidate set → the frame → the structural thresholds → the 220,107
+pairs → the approved Step 5 rule. **A 0.13-point correction at the far end does not justify
+re-deriving that chain.**
+
+**What this establishes about the standing rule.** The rule ("a rule change reopens the gate") is not
+self-executing. **Whether an edit reopens a gate is itself a Human Lead judgment**, and the answer
+can be "no" on cost even when the reviewer's reading of the clause is accepted. Both times the rule
+has been tested — the §5 addendum and `0012` — the gate held; but the §5 addendum held on the rule's
+own terms (evidence, not a rule) and `0012` held on an override. **They are not the same precedent
+and should not be cited as one.**
+
+**Kept open by `0023` itself:** if the Step 4 pull resumes, the cohort restates anyway, the cascade
+argument weakens, and the shape test *"should be reconsidered at that point rather than inherited as
+settled."*
 
 ## The B2 overrule
 

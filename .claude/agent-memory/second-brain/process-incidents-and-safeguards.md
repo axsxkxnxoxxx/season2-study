@@ -53,6 +53,27 @@ regeneration of `revision4.json` after the unit-bug correction is the same shape
 way — I verified the corrected values are in the file — but it was verified by reading, not
 guaranteed by design.
 
+## Step 4, caught 2026-08-12 — a near-miss on the exact failure `CLAUDE.md` names
+
+**The pull ledger carried `"records": 0` on all 287 `discarded_over_tolerance` rows**, while using
+`null` for every other withheld field (`parse`, `parsed_path`, `is_data: false`).
+
+`CLAUDE.md` states the hazard in as many words: *"a skipped user silently read as empty becomes a
+false 'never started' in the headline."* `0010` and `0012` both require discarded and skipped users
+to stay distinguishable **exactly as `access_denied` does** — a distinct outcome, never folded into
+any skip category, **never represented by an empty result**. A consumer reading `records` without
+also reading `outcome` would have seen a real zero.
+
+**Fixed:** `records` is now `null` on all 287 discarded rows, by
+`src/step5_fix_ledger_records_null.py`, which rewrites in place and verifies the row count and every
+other field is untouched. `items_discarded` still carries what was fetched and thrown away.
+
+**Why this is worth carrying.** Nothing was lost and no number moved — it was caught before any
+downstream step read the field. But **the rule was written three times, in `CLAUDE.md`, `0010` and
+`0012`, and the implementation still emitted the value the rule forbids.** A rule stated in prose
+does not enforce itself at the schema level. **When a category means "absent", check that every
+field on that row says absent** — one field saying `0` is enough to defeat all three statements.
+
 ## Related, not an incident: one round that looked like the API and was not
 
 Round 8 recorded 2,796 s wall clock against a single 2,697 s inter-request gap — 96.5 % of the

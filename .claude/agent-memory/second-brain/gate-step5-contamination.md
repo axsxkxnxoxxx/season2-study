@@ -1,16 +1,26 @@
 ---
 name: gate-step5-contamination
-description: Full arc of the Step 5 contamination gate — six revisions, four Red Team rounds (three HOLD, one PROCEED), the D1 challenge to approved Step 1 §7 and the Human Lead ruling that upheld it, and the two standing rulings that outlive the gate
+description: Full arc of the Step 5 contamination gate — six revisions, four Red Team rounds (three HOLD, one PROCEED), APPROVED as decisions/0021 on 2026-08-12, the D1 challenge to Step 1 §7 that was upheld, and the two standing rulings that outlive it
 metadata:
   type: project
 ---
 
-# Step 5 gate — PROPOSED, NOT APPROVED as of 2026-08-12
+# Step 5 gate — CLOSED. Gate 2 of 5.
 
-**Fact:** `artifacts/step5-contamination-diagnostics.md` is at **revision 6, marked FINAL** and
-Red Team round 4 returned **PROCEED**. **The gate is not approved.** `decisions/README.md` shows
-the box unchecked, **no decision entry exists for Step 5, and none should be written by an agent.**
-Steps 6 and 7 stay blocked.
+**Fact of record: `decisions/0021-step5-contamination-gate.md` records the Human Lead approving the
+Step 5 contamination exclusion rule in writing on 2026-08-12.** The deliverable is
+`artifacts/step5-contamination-diagnostics.md` revision 6. The approval record in `0021` states that
+no agent recorded it and no agent adopted its own proposal — the analytics-engineer produced and
+revised, the red-team agent reviewed and recommended, neither approved. I do not record approvals; I
+carry the fact and its citation.
+
+**The approved rule.** Exclude the **16,665** pairs whose S2 evidence is entirely air-date-stamped;
+exclude the **1,542** with no S2 evidence and a fabricated binding clock start; **retain 201,900 of
+220,107 (91.73%)**; derive `W` on **128,099**. The two exclusions are **disjoint by construction** —
+one set has S2 evidence, the other has none.
+
+**Unblocks Steps 6, 7 and 8, each of which is itself an unapproved gate.** Step 6 launched
+2026-08-12 as a dual pair.
 
 **Why this arc matters more than the rule:** Step 5 is the first gate where a downstream step
 challenged an **already-approved** gate and lost. How that was handled is the precedent.
@@ -136,21 +146,48 @@ what B3, D3 and F3 were all about.** That is the lesson, not the number.
 
 Round 4 also found the **gap inside F1's own derivation** — see the floor qualifier below.
 
-## The two standing rulings that outlive the gate
+## The four rulings made inside the gate — all now closed in `0021`
+
+1. **D1 — Step 1 §7 stands, gate 1 is not reopened.** The revision-3 principle is withdrawn.
+2. **Adoption 1 narrowed to option (b)** — the stamp classifies the pair by itself **only where all
+   S2 evidence carries it**. 16,665 out, the 23,067 with no guaranteed direction retained.
+3. **Adoption 2 re-ruled onto the censoring rationale** — not "cannot be evaluated."
+4. **Adoption 3 dropped.** *"A post-dated record is an inaccurate timestamp on an episode that was
+   watched, which is protected everywhere else in this rule."* This is what made the `W` sample
+   **determinate at 128,099** — removed by the ruling, not resolved by argument.
+
+## The two standing rulings that outlive the gate — and are now in the task sheet
 
 Both are Human Lead rulings made **during** Step 5, and both bind steps that are not Step 5.
 
-1. **Ruling 1 — "W is derived from clean records only, then applied to everyone."** Produces two
-   populations: analysis **201,900**, W estimation sample **128,099** (determinate). Step 6 applies
-   D14's C1 restriction **on top**, so the estimation sample is **two-factor: cadence and
-   provenance.**
-2. **Ruling 2 — liveness runs on record insertion time, not claimed watch date.** This
-   **withdrew Layer 3** (35,861 pairs) whose sole premise was that import noise is not liveness
-   evidence — under insertion-time liveness it **is** evidence. It makes the play-`id` calibration
-   a **required input to Step 7.**
+1. **Ruling 1 — "W is derived on clean records and applied to all."** Produces two populations:
+   analysis **201,900**, W estimation sample **128,099**. Step 6 applies D14's C1 restriction **on
+   top**, so the estimation sample is **two-factor: cadence and provenance.** `0021` notes this is
+   **the same shape as the already-approved D14**, where `W` is estimated on C1 only and applied to
+   every show — one transfer assumption, applied twice on different axes.
+2. **Ruling 2 — liveness runs on record insertion time, not claimed watch date.** *"Any record
+   inserted after the window closed proves the account was alive, whatever date it claims —
+   backfilling an old show is still activity."* This **withdrew Layer 3** (35,861 pairs) whose sole
+   premise was that import noise is not liveness evidence. It makes the play-`id` calibration a
+   **required input to Step 7**, not a Step 5 diagnostic.
 
-**Neither ruling is in `task-sheet.md`, which is the file the two isolated Step 6 and Step 7
-instances read.** See [[open-items-and-contradictions]] X1 — this is the live seam.
+**Both were written into `task-sheet.md` as `0022` on 2026-08-12, before Steps 6 or 7 launched.**
+Step 6 now names the 128,099 sample, states that it **composes with D14 rather than replacing it**,
+publishes the waterfall, and says outright that **201,900 and 128,099 are different numbers**. Step 7
+now names insertion time as the clock, amends the gap-distribution item to say **insertion instants**
+rather than "logged events", and adds the clause that carries the most weight for the dual run:
+
+> **The play-`id` insert-time calibration is a required input, and neither instance refits it.**
+
+**Two independently refitted isotonic curves would differ**, and the diff would then confound a
+calibration difference with an implementation difference — the one thing the dual run exists to rule
+out. Both instances read the stored curve at `processed/step5/calibration.npz`.
+
+**The general lesson, README item 23:** *when a gate ruling changes what a downstream step computes,
+propagate it to `task-sheet.md` at the time of the ruling, not at the time the step launches.*
+Because **the dual-implementation diff cannot catch a spec omission** — both instances read the same
+silence and agree on the wrong answer, and the diff reports agreement. Three gates remain and each
+will produce rulings with downstream reach.
 
 ## The four limitations that travel to Step 14 — not decisions
 

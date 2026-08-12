@@ -20,11 +20,110 @@ approves governs on substance. I never edit `decisions/` — I report.
 
 ---
 
-## NEW — surfaced 2026-08-12, in priority order
+## Disposition of the seven findings from the 2026-08-12 pass
 
-### X1. Both of Step 5's standing rulings are missing from the file the isolated instances read
+**Six were actioned; the seventh was actioned by being reviewed.** Recorded here so the register
+stays honest about which entries closed and how, and so none is re-raised.
 
-**This is the highest-consequence item on the register.**
+| Was | Status |
+| :--- | :--- |
+| **X1** — Step 5's two standing rulings missing from `task-sheet.md` | **CLOSED as `0022`**, before Steps 6 or 7 launched. Both rulings written into the Step 6 and Step 7 specs. The general lesson is carried as README item 23 |
+| **X2** — README item 13's "159 in-frame shows with `L1 ≤ 6`" | **CLOSED — corrected to 152** |
+| **X3** — `0018` publishes 1,226-frame quintile bins | **CLOSED** |
+| **X4** — the authority note omits `0008` | **CLOSED — the note now reads 0005–0008** |
+| **X5** — the Step 5 artifact said a review was pending that had happened | **CLOSED** — and moot, since the gate is now approved as `0021` |
+| **X6** — `pool-coverage-check.md` is an unmarked superseded snapshot | **CLOSED** |
+| **X7** — `0012` changed a rule inside an approved gate and had never been reviewed | **CLOSED as `0023`.** It went to Red Team, which returned **HOLD**, and the Human Lead **upheld it on cascade cost, not on merit.** Three findings became Step 14 limitations. **This is the one that produced new material** — see below |
+
+---
+
+## NEW — surfaced 2026-08-12 by the `0012` review
+
+### Y1. The completeness rule's leg 1 is derived from the header leg 2 exists to distrust
+
+- **`0012` leg 1** requires full **`page_count`** coverage, and leg 2 exists because
+  `X-Pagination-Item-Count` is not an exact record count.
+- **`page_count` is `ceil(item_count / 250)` — verified in all 2,839 ledger rows, zero mismatches.**
+  Leg 1 is therefore computed from the header leg 2 was written to absorb.
+
+**The consequence is structural, not cosmetic.** A **short** final page proves the sweep reached the
+end of the history — the server ran out of records before it ran out of page. **A full final page
+proves nothing**: the sweep stopped at the last page the bad header allowed for, while records may
+still have been flowing. Leg 1 cannot distinguish them, and **Step 1 §0 says a truncated sweep "is
+indistinguishable from a genuine 'never started' and lands directly in the study's headline
+category."** This is the study's own named worst failure mode, and the test against it is
+self-referential.
+
+**Not a live contradiction — a recorded limitation.** The Human Lead ruled the rule stands and the
+finding travels to Step 14. It is here because **`0023` explicitly says a future reader should not
+infer the shape test was examined and found wanting**, and because the cascade argument that
+overruled it **weakens if the pull resumes** — at which point `0023` says it should be reconsidered
+rather than inherited as settled.
+
+### Y2. A fourth bias direction is now measured, and it does not offset the others
+
+`artifacts/step5-discard-outcome-neutrality.md`, at zero API calls on the discarded users' still-
+cached raw pages (14,578 page files, all 287 users present):
+
+| | Discarded (287) | Retained (2,549) |
+| :--- | ---: | ---: |
+| Completer pairs | 25,035 | 220,107 |
+| **Has-any-S2 rate** | **89.78%** | **88.52%** |
+| 95% CI (Wilson) | [89.40, 90.15] | [88.38, 88.65] |
+
+**+1.27 points, 95% CI [0.87, 1.66], z = 5.98, p < 0.001.** Intervals do not overlap. Direction:
+discarded users are **more** likely to have S2 evidence, so removing them pushes the never-started
+share **up**. **Pooled effect 0.13 points** — the 287 carry 10.2% of the pair pool.
+
+**The bias ledger now has four entries and they do not net out:**
+
+| Source | Direction |
+| :--- | :--- |
+| Step 3 seeding (`0008`) — heavy trackers | **down** |
+| Liveness exclusion | **down** |
+| `0010` tail cap, 0.93% of the pool | up |
+| **`0012` tolerance discard — newly measured** | **up** |
+| Step 5's adopted exclusions, net | up |
+
+**Nothing shows they cancel, and the artifact says so explicitly.** *"A small directional bias is
+not the same as a safe one."* Step 14 gets each separately.
+
+**Two guards on how this is quoted**, both from the artifact and both easy to drop:
+*"Statistically clear, practically small. Both halves of that sentence are load-bearing and neither
+should be quoted without the other."* And **the significance is a function of sample size as much as
+effect size** — at n = 25,035 against n = 220,107 a 1.27-point gap is easily detected; the same gap
+in 500 pairs would not be.
+
+**What it does not settle:** the mechanism is unestablished; whether the same bias holds at the
+**outcome** level is untestable until `W` exists, because "has any S2 evidence" is a presence count
+and a **ceiling** on Started, not a state.
+
+### Y3. The 2% tolerance was set at the aggressive end of a wide indifference band
+
+- **`0012`** states a replay "with a maximum residual of **0.86 percent** against the 2 percent
+  tolerance," which reads as 2.3× headroom over the worst observed case.
+- **`artifacts/step4-pilot-counts.json`** records `max_abs_share_of_item_count: 0.11707` —
+  **11.7%** — with a signed residual range of −191 to **+131**.
+
+The pilot's p95 is 1.4% and p99 = max is 11.7% **with nothing in between**, so **any tolerance from
+roughly 1.5% to 11.7% gave the identical partition of those 20 users.** The most aggressive end was
+chosen, with no sensitivity table and without the choice being stated as a choice. **On the full run
+there is no such gap:** the 287 discards' absolute residual share runs min 2.01%, median 3.92%, max
+99.9%, with **168 (58.5%) in the 2–5% band** — a 5% tolerance would have retained 168 of them. The
+threshold cuts through the middle of a continuous distribution.
+
+**One structural asymmetry nobody chose.** A positive residual is capped at `limit − 1 = 249`, so
+**above roughly 50 pages the under-count arm cannot fire at all.** The rule presents as symmetric
+and two-sided; it is one-sided on large users and a size-correlated discard on small ones. It also
+discards **31 of 287** users in the direction `0012`'s own table calls *"benign, and in the safe
+direction: more data than advertised, not less."*
+
+---
+
+## Resolved contradictions, retained for the reasoning
+
+### X1. Both of Step 5's standing rulings were missing from the file the isolated instances read
+### CLOSED as `0022`, 2026-08-12 — kept because the reasoning generalises to three remaining gates
 
 - `artifacts/step5-contamination-diagnostics.md` §3: *"Under **ruling 2** this calibration is a
   **required input to Step 7**, which now needs an insertion time for every record."* §9.5 withdrew
@@ -126,10 +225,21 @@ preserves the old outputs at `processed/diag_snapshot_2134u/`. The coverage chec
 header. Every distributional figure in it — 44,866 shows, the per-show user counts, the 1970 spike
 at 285,296 records — is on the smaller cohort and reads as current.
 
-### X7. `0012` changed a rule inside an approved gate and has not been put to Red Team
+### X7. `0012` changed a rule inside an approved gate and had not been put to Red Team
+### CLOSED as `0023`, 2026-08-12 — reviewed, HOLD returned, rule upheld on cascade cost
 
-Carried from `decisions/README.md` open item 15, elevated because the Step 5 gate is now the live
-one and this sits underneath it.
+The review happened and produced Y1, Y2 and Y3 above. **Red Team was not overruled on the
+substance** — `0023` says so in those words; what was weighed against it was cost, and the weighing
+is stated rather than implied. **Red Team also argued `0012` reaches the gate-reopening clause by
+converting a categorical completeness requirement into a graded one. The Human Lead ruled the rule
+stands, and `0023` states the reopening question is answered by that ruling** — the findings travel
+to Step 14 rather than back to Step 1.
+
+`0023` also closes a second-order defect: **`0012` was marked `Status: Closed` while its own header
+said the Human Lead may wish to put it to Red Team.** A decision cannot be closed and pending review
+at once. It is closed now, having been reviewed.
+
+The original reasoning, retained:
 
 - **The standing rule**, from the Step 1 approval record: *an edit that changes a **rule** reopens
   the gate; an edit that adds **evidence** does not.*
@@ -159,6 +269,7 @@ for a newly-stated reason should be logged with the new reason, not the one that
 | **Exclude the 1,542** (adoption 2) | "these pairs cannot be evaluated against the definition" | **False.** With zero S2 records `\|A\| = 0` for *every* `τ1`; the pair is perfectly evaluable. Holds instead as a **right-censoring defect** — a fabricated-early `T0` lets a pair pass a censoring test it should have failed (Red Team D2) |
 | **Cap the tail at 300 forecast pages** (`0010`) | "a 907-page user is roughly six hours alone" | **Wrong by a factor of 60.** At 150 GET/min a 907-call user is **6.0 minutes**; the pool's heaviest user is 6.9 minutes. Holds instead as a **circuit breaker on forecast error** — and the wrong argument would have pointed at a far more aggressive cap, which at 150 pages would have removed 5% of the pool, all from the heavy end |
 | **Order the pull so an early stop is survivable** (`0009`) | median-out, "sort by pages, pull median first, work outward" | Median-out leaves a **centered** slice, not a representative one: at ten hours it pulls **no user above 73 pages** in a pool reaching 1,034. Amended before launch to **stratified round-robin**, at a named 12% throughput cost |
+| **Keep the 2% completeness tolerance** (`0012`, upheld by `0023`) | "the pilot's maximum residual was 0.86% against a 2% tolerance" — i.e. the threshold has headroom | **The pilot max is 11.7%**, and any tolerance from ~1.5% to 11.7% partitioned the pilot identically. The rule now stands on **cascade cost** — a 0.13-point correction does not justify re-deriving cohort → frame → Step 5 rule — **explicitly not on merit**, with Red Team's finding recorded as standing |
 
 **Two of these entered rulings before they were corrected** — the C5 disjointness error and the
 insert-time bound quoted from a unit bug. Both are in [[withdrawn-claims-register]].
@@ -257,12 +368,16 @@ release-time availability.**
 Still open. The Continued boundary and the right-censoring rule. Each carries a Data Scientist
 recommendation and a decision from nobody. See [[step1-open-questions]].
 
-### Critical path, 2026-08-12
+### Critical path, updated 2026-08-12 after `0021`
 
-Steps 1, 3, 4 (stopped) and 2 are done. **Step 5 is the live gate** — revision 6 FINAL, Red Team
-PROCEED, awaiting the Human Lead's written approval. Then Steps 6 and 7 (both dual-implementation,
-both blocked), then Step 8. **X1 should be settled before Step 7 launches, not after**, because the
-dual-implementation diff will not surface it.
+Steps 1, 3, 4 (stopped), 2 and **5** are done. **Two gates closed of five.** **Step 6 is live**,
+running as a dual pair on the 128,099 estimation sample with D14's C1 restriction on top. Then
+Step 7 (dual, needs the stored calibration and must not refit it), then Step 8 (dual, on the
+201,900 analysis population and the Layer 1 record tags).
+
+**The one thing to watch at each remaining gate**, from README item 23: a ruling that changes what a
+downstream step computes has three homes — the decision log, the gate's own deliverable, and **the
+spec the later step actually reads**. At Step 5 the first two were done and were not enough.
 
 ### 403 and 429 — one of three failure paths is live-tested
 
@@ -286,6 +401,13 @@ split signature depends on — README item 5). N6 (the Step 0 file index is stal
 
 Verified 2026-08-12. Arithmetic reconciliations are in [[population-chain-steps-2-3-4]].
 
+- **220,107 completer pairs reproduce exactly by an independent path.** The discard-neutrality check
+  recomputed the retained population's completers from a separate extractor and hit the figure
+  carried by Step 2 and by the approved Step 5 rule. **The strongest single confirmation the frame
+  count has received**, and it arrived as a by-product of a check aimed at something else.
+- **The two record extractors agree exactly.** Raw-page and parsed-store extraction diffed on shared
+  users gives zero raw-only and zero parsed-only records, on sets up to 9,273 triples — so the
+  discarded-vs-retained comparison is not an artifact of reading from two stores.
 - **Step 5's rule composes correctly with Step 1's filter order.** Adoption 2 excludes 1,542 pairs
   *on a censoring rationale*, applied as a **contamination** exclusion — and `task-sheet.md` Step 8
   requires contamination to run **before** right-censoring precisely so *"an import-stamped S1

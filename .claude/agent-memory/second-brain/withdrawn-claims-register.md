@@ -117,6 +117,36 @@ per key, exhaustive, no blanket claim** — so any figure greps to exactly one f
 - **Step 4's ~86,000 calls.** Divided `total_plays`, **absent from 77% of `users/:id/stats` bodies**,
   so most users forecast as exactly one page. True figure **~210,500**, a **2.4×** error, and it is
   what `0010` cites as the reason a forecast-error circuit breaker is needed at all.
+- **`0012`'s "24 of 235 under-count discards."** Read from a **mid-run snapshot of 2,372 users.** On
+  the final ledger it is **31 of 287**. Same class as E2 — a figure computed on a population that
+  had moved by the time it was published. Corrected in `0023`.
+
+### The sharpest instance: an indifference band quoted as headroom
+
+**`0012` states a replay "with a maximum residual of 0.86 percent against the 2 percent tolerance."**
+`artifacts/step4-pilot-counts.json` records `max_abs_share_of_item_count: 0.11707` — **11.7%** —
+with a signed range of −191 to +131. **A reader of `0012` alone concludes the tolerance carries 2.3×
+headroom over the worst observed case. It never did.**
+
+Worse than a wrong number: the pilot's p95 is **1.4%** and p99 = max is **11.7%** with nothing
+between, so **every tolerance from ~1.5% to 11.7% gave the identical partition of those 20 users.**
+The quoted figure was not evidence for 2% over any alternative — it was a coincidence of where the
+band happened to be read. **The most aggressive end of the band was chosen, with no sensitivity
+table, and the choice was not stated as a choice.** On the full run the gap does not exist: 168 of
+the 287 discards (58.5%) sit in the 2–5% band. `0023`.
+
+### A claim attached to a phenomenon that has never been observed
+
+**`0012`'s third required output cites "5 duplicates in 14,236 records" as *genuine cross-page
+duplicate records*** and builds a required-output obligation on them. Instrumentation records
+`cross_page_duplicate_records: 0 affected users, 0 affected records` across 2,137 users and
+22,725,090 records. **Cross-page duplicates have never been observed in either run.**
+
+The anomaly that *does* occur is **within-page** — 147 records, the same `id` twice on one page,
+meaning a 250-slot page carried 249 distinct records. It is **not a required output, is described
+nowhere, and has no stated interpretation.** So the rule mandates measuring something that does not
+happen while the thing that does happen is unmeasured and unexplained. Corrected in `0023`; the
+adopted rule is unchanged.
 
 ---
 

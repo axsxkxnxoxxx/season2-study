@@ -183,7 +183,7 @@ that surfaced it.
     decisions: the ≥50 candidate rule was applied to **proxy** counts and has not been re-applied to
     the recomputed ones ([0019](0019-pool-completers-recomputed.md)); **size quintile boundaries are
     valid only against the frame they were cut on** ([0018](0018-size-quintile-base.md)); and the
-    frame is systematically older than the catalogue, 66.6% of it with an S2 finale before 2020
+    frame is systematically older than the catalogue, 66.5% of it with an S2 finale before 2020
     ([0015](0015-step2-unaired-s2-exclusion.md)).
 
 20. **Four Step 5 limitations travel to Step 14**, as stated limitations and not pending decisions

@@ -17,10 +17,10 @@ Status vocabulary: **FIXED** (set and gate closed) · **DEFERRED** (form fixed, 
 
 | Term | Value / status | Where set | Gate |
 | :--- | :--- | :--- | :--- |
-| **`W`** — the window, in days | **Value OPEN.** Estimation sample now **two-factor and both factors are fixed**: cadence bucket **C1 only** (D14 / `0003`) applied on top of a **provenance-clean sample of 128,099 pairs** (Step 5 ruling 1, §14). Result applied to all shows and all provenances. | Value: Step 6. Cadence factor: D14. Provenance factor: Step 5 §14 | Step 6 gate **not approved**; the provenance factor rides on the **Step 5 gate, also not approved** |
-| **Liveness threshold** | **OPEN. Not set.** A gap length derived from data; Step 7 must derive it without using `W` as an input. **Basis moved:** Step 5 ruling 2 says liveness runs on **record insertion time**, not claimed `watched_at`, making the play-`id` calibration a required Step 7 input. **That ruling is not in `task-sheet.md`** — see [[open-items-and-contradictions]] X1 | Step 7; basis from Step 5 ruling 2 | Step 7 gate, **not approved** |
+| **`W`** — the window, in days | **Value OPEN. Both factors of its sample are FIXED and both are now in `task-sheet.md`.** Estimation sample is **two-factor**: cadence bucket **C1 only** (D14 / `0003`) applied **on top of** — not instead of — a **provenance-clean sample of 128,099 pairs** (`0021` ruling 1). Result applies to all shows and all provenances. Step 6 launched 2026-08-12 as a dual pair. | Value: Step 6. Cadence: D14. Provenance: `0021`. Both propagated by `0022` | Step 6 gate, **not approved** |
+| **Liveness threshold** | **OPEN. Not set.** A gap length derived from data; Step 7 must derive it without using `W` as an input. **Basis fixed:** liveness runs on **record insertion time**, not claimed `watched_at` (`0021` ruling 2). The play-`id` calibration is a **required input and neither instance refits it** — written into `task-sheet.md` Step 7 by `0022`, along with the gap-distribution item now reading **insertion instants** | Step 7; basis `0021`, spec `0022` | Step 7 gate, **not approved** |
 | **S1 completion rule** | **FIXED.** `F1 ∈ D1` **and** `\|D1\| ≥ ceil(0.90 × L1)`, distinct episodes, membership by the listed set `E1`. Now applied against **real** `E1` from the Step 2 frame, not a proxy (`0019`). | Step 1 §4 | **Step 1 gate, APPROVED 2026-08-10** |
-| **Contamination exclusion rule** | **PROPOSED, not approved.** Step 5 revision 6: exclude **16,665** pairs whose S2 evidence is *entirely* air-date-stamped, plus **1,542** with a contaminated binding `T0` and no S2 evidence. Total **18,207**; retains **201,900** of 220,107 (91.73%). Red Team round 4 returned **PROCEED**. **No decision file exists and the gate box is unchecked.** | Step 5 §9, revision 6 | Step 5 gate, **NOT approved** |
+| **Contamination exclusion rule** | **FIXED.** Exclude **16,665** pairs whose S2 evidence is *entirely* air-date-stamped, plus **1,542** with no S2 evidence and a fabricated binding clock start. Total **18,207**; retains **201,900 of 220,107 (91.73%)**. Disjoint by construction. | Step 5 §9, revision 6 | **Step 5 gate, APPROVED 2026-08-12, `0021`. Gate 2 of 5** |
 | **Filter order** | **OPEN. Not set.** Step 8 owns it. `task-sheet.md` Step 8 names the members — frame, contamination, S1 completion, W, liveness, right-censoring, `L2 = 1` — and one ordering constraint: **contamination before right-censoring**. The order among the rest is Step 8's. | Step 8 | Step 8 gate, **not approved** |
 
 ## Decision numbering on the public record — `decisions/`
@@ -30,12 +30,12 @@ handling · `0005` Step 3 stopping rule · `0006` Step 3 crawl constants · `000
 · `0008` Step 3 seed source · `0009` Step 4 pull order · `0010` Step 4 tail cap · `0011` `pull_date`
 · `0012` sweep completeness · `0013` Step 2 delegation · `0014` no content filters · `0015` unaired
 S2 · `0016` per-season network dropped · `0017` air period · `0018` size quintile base · `0019`
-`pool_completers` recomputed · `0020` structural thresholds.
+`pool_completers` recomputed · `0020` structural thresholds · **`0021` Step 5 gate APPROVED** ·
+**`0022` the two Step 5 rulings written into `task-sheet.md`** · **`0023` `0012` upheld after a Red
+Team HOLD**.
 
-**Authority split.** `0001–0004` and `0009–0020` are Human Lead. **`0005–0008` are agent-taken and
-still Open, awaiting ratification.** (The README's own authority note says "0005–0007" and omits
-0008 — [[open-items-and-contradictions]] X4.) **No Step 5 entry exists and none should be written
-until the Human Lead approves the gate.**
+**Authority split.** `0001–0004` and `0009–0023` are Human Lead. **`0005–0008` are agent-taken and
+still Open, awaiting ratification** — the README's authority note now names all four correctly.
 
 ## Clock, window, horizon — unchanged from Step 1 except `pull_date`
 
@@ -220,18 +220,66 @@ one logical **pass**, not one call; throughput is estimated in **pages**.
 | :--- | :--- | :--- |
 | **Pull order** | **Stratified round-robin** over ten equal-count forecast-page bins, one user per bin in turn, deterministic within bins. Amends an initial **median-out** instruction, which left a *centered* slice with **no user above 73 pages** at ten hours in a pool reaching 1,034. Cost: **~12% fewer users/hour**, accepted explicitly. | `0009` |
 | **Tail cap** | **300 forecast pages**, skip whole, never truncate — **plus an actual-pages guard** that discards mid-sweep overruns. Excludes **38 users, 0.93%**, keeps 92.8% of pages. Justified as a **circuit breaker on forecast error**, not as protection against a slow user. Direction **upward** on the headline. | `0010` |
-| **Sweep completeness rule** | **Full `X-Pagination-Page-Count` coverage plus a residual within 2% of `X-Pagination-Item-Count`.** Exact equality is **not** required — the pilot failed 7 of 10 on residuals from −97 to +20, and under exact equality the study would discard ~70% of its pool. **Amends `0002` condition 2 and Step 1 §0 — a rule inside an approved gate.** | `0012` |
-| **Over-tolerance users** | Pages **discarded, logged, never truncated**, and must stay distinguishable downstream exactly as `access_denied` does | `0012` |
+| **Sweep completeness rule** | **Full `X-Pagination-Page-Count` coverage plus a residual within 2% of `X-Pagination-Item-Count`.** Exact equality is **not** required — the pilot failed 7 of 10 on residuals from −97 to +20, and under exact equality the study would discard ~70% of its pool. **Amends `0002` condition 2 and Step 1 §0 — a rule inside an approved gate.** **Reviewed by Red Team 2026-08-12, which returned HOLD; UPHELD by the Human Lead on cascade cost, not on merit (`0023`).** Three findings became Step 14 limitations. | `0012`, upheld by `0023` |
+| **Over-tolerance users** | Pages **discarded, logged, never truncated**, and must stay distinguishable downstream exactly as `access_denied` does. **287 users on the final ledger**; their raw pages remain cached, which is what made the neutrality check possible at zero API cost | `0012` |
 
 **`0012` requires three behaviours counted separately, never collapsed into the tolerance:** header
-**over-count** (benign), header **under-count** (benign, safe direction), and **genuine cross-page
-duplicate records** (real API behaviour — handled downstream by distinct-episode counting, but
-"already handled" is not a reason to stop measuring it).
+**over-count** (benign, 256 of the 287), header **under-count** (benign and in the safe direction —
+**31 of 287**, corrected from a mid-run "24 of 235"), and duplicate records.
+
+**The third is misattributed in `0012` and the correction is in `0023`.** `0012` cites "5 duplicates
+in 14,236 records" as **cross-page** duplicates. Instrumentation records
+`cross_page_duplicate_records: 0 users, 0 records` across 2,137 users and 22,725,090 records.
+**Cross-page duplicates have never been observed in either run.** What does occur is **within-page**:
+147 records, the same `id` twice on one page, meaning a 250-slot page carried 249 distinct records.
+That behaviour **is not a required output, is described nowhere, and has no stated interpretation.**
 
 **Proof that the residuals are not truncation:** page-count and item-count headers were identical on
 every page of every sweep; and re-sweeping one user at `limit=100` returned the **identical record
 set in identical order** as the cached `limit=250` sweep — 1,459 distinct records both ways, while
 both headers reported 1,460.
+
+### What `0023` established about the 2% tolerance, and what did not change
+
+**Nothing in the study moves.** Cohort 2,549, frame 1,138 shows, 220,107 pairs, 201,900 retained,
+128,099 estimation sample — all stand. The tolerance was not touched and nothing was re-run.
+
+**Three findings now travel to Step 14 as limitations:**
+
+1. **The rule validates itself against itself.** Leg 1 gates on `page_count`, which is
+   **`ceil(item_count / 250)` in all 2,839 ledger rows, zero mismatches** — so it is derived from
+   the very header leg 2 exists to absorb. A **short** final page proves the sweep reached the end;
+   a **full** final page proves nothing, and leg 1 cannot tell them apart.
+2. **The discard is NOT outcome-neutral.** Measured at zero API cost on the discarded users' cached
+   raw pages: has-any-S2 **89.78% (discarded) vs 88.52% (retained)**, **+1.27 points, 95% CI [0.87,
+   1.66], z = 5.98, p < 0.001**, intervals non-overlapping. **Direction: up** on the never-started
+   share, **compounding with the seeding and liveness biases rather than offsetting them.**
+   **Pooled effect 0.13 points** (88.52% → 88.65%), because the 287 carry 10.2% of the pair pool.
+   *Statistically clear, practically small — neither half may be quoted without the other.*
+3. **Red Team's final-page shape test** — every interior page full at `limit`, final page strictly
+   between 0 and `limit` — would discriminate **exactly** rather than by calibration, at **~2,800
+   calls, ~19 minutes, and no re-pull**. **Declined on cascade cost, not on merit.** If the pull
+   ever resumes, the cascade argument weakens and the shape test should be reconsidered rather than
+   inherited as settled.
+
+**The ruling's stated reason, in full:** tolerance → cohort size → completer counts per show → which
+shows clear ≥50 → the candidate set → the frame → the structural thresholds → the 220,107 pairs →
+the approved Step 5 rule computed on them. **A 0.13-point correction at the far end does not justify
+re-deriving that chain.**
+
+**How the 2% was actually set, recorded in `0023`.** The pilot's p95 is **1.4%** and p99 = max is
+**11.7%**, with nothing in between, so **every tolerance from ~1.5% to 11.7% split those 20 users
+identically** — and the most aggressive end of that band was chosen, with no sensitivity table and
+without the choice being stated as a choice. **On the full run there is no such gap:** absolute
+residual share over the 287 discards runs min 2.01%, median 3.92%, max 99.9%, with **168 (58.5%) in
+the 2–5% band** — so a 5% tolerance would have retained 168 of the 287. The threshold cuts through
+the middle of a continuous distribution.
+
+**One structural asymmetry nobody chose.** Accumulated records can never exceed
+`limit × page_count`, so a positive residual is capped at **249**. **Above roughly 50 pages the
+under-count arm cannot fire at all.** The rule presents as a symmetric two-sided threshold; it is a
+one-sided test on large users and a size-correlated discard on small ones. It also discards **31 of
+287** users in the direction `0012`'s own table calls *"benign, and in the safe direction."*
 
 ## The population chain — every number a result rests on
 
