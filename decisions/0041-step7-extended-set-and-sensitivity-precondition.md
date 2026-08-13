@@ -81,15 +81,23 @@ as `0038` §2.1's own 2.28% example, one step milder.
 **Both arms report that Step 7's own numbers give no basis for preferring a published threshold to the
 parameter-free rule**, and the evidence is theirs:
 
-- **Across the full clustered interval the exclusion set moves 1,701 → 897 pairs** — **804 pairs,
-  0.55pp of the population.**
+- **Across the full clustered interval the exclusion set moves 1,707 → 897 pairs** — **810 pairs,
+  0.55pp of the population.** *(Corrected 2026-08-13 by `0042`: 1,701 is the count at 790 d, instance
+  B's interval endpoint; at 787 d — instance A's, and the endpoint this entry uses — it is 1,707. The
+  two arms' endpoints had been mixed.)*
 - **The entire exclusion set comes from 205 accounts of 2,402.**
 
 > **Recompute the headline at 787 days and at 2,200 days**, alongside the point value.
 >
 > - **If the three outcome shares are insensitive: DELETE the threshold** and adopt the parameter-free
->   rule — **"the account has insertion evidence bracketing `τ1`"** — and **the gate closes with no free
+>   rule — ~~**"the account has insertion evidence bracketing `τ1`"**~~ — and **the gate closes with no free
 >   parameter.**
+>
+>   **WORDING WITHDRAWN 2026-08-13 (`0042`).** *"An instant at or before `τ1` and one after it"*
+>   **reinstated `0036` §2.3(ii) verbatim** — the rule `0040` §1 had just withdrawn for contradicting
+>   approved gate `0021`. **It was drafted here and propagated a second time into the launch
+>   instruction**, and both arms caught it. The adopted rule is **PF-LIMIT**: a pair is **not live iff
+>   the account shows no insertion instant AFTER `τ1`**. See `0042` §2.
 > - **If sensitive: approve 1,293 d with its interval**, and the interval propagates into the headline
 >   as a sensitivity range.
 

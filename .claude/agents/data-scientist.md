@@ -39,66 +39,15 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
   artifacts state 107 and 107.7135 and neither is the adopted value** — both predate the ceiling ruling.
   Take `W` from the decision entry, never from the artifacts.
 
-- **Step 7, derive liveness threshold. GATE — APPROVED 2026-08-13 at 632 DAYS (`decisions/0039`).
-  Complete; do not re-derive.** Report it as **632 d with an account-clustered interval of [528, 787],
-  never bare** — the i.i.d. interval overstates precision ~20×, since 34.4% of pairs share their
-  bracketing gap with another pair. Same treatment as `W = 108 ± 18`. Two
-  separate things are defined and must not be confused: the threshold is a gap length derived from the
-  data; the rule is how it is applied. Derive the threshold independently and do not use `W` as an input
-  to the derivation.
-    - **Liveness runs on record INSERTION time, not on the claimed `watched_at`** (`decisions/0021`).
-      Any record inserted after the window closed proves the account was alive whatever date it claims;
-      gaps on claimed dates would read a 2026 import of a 2015 season as a 2015 event and score a live
-      account dead.
-    - **The gap is the interval between CONSECUTIVE INSERTION INSTANTS on the account, as a continuous
-      instant difference** — not claimed dates, and not floored to whole days before the percentile is
-      taken (`decisions/0029`).
-    - **The reference distribution is the BRACKETING-GAP distribution itself** (`decisions/0037`,
-      withdrawing `0036` §1's basis). `0036` §1's "one in a hundred" is true of a uniformly drawn gap
-      and **false of the gap this rule tests**: the bracketing gap is **length-biased**, since a gap of
-      length `L` covers `L` of calendar time and so is likelier to contain a fixed instant. Both arms
-      measured **37.4%** of bracketing gaps exceeding the pooled-99th threshold. Take the percentile on
-      the bracketing-gap distribution so the stated rate is the rate delivered. **The percentile
-      remains the 99th, rounded UP** (`0025`).
-    - **The reference population is the 152,126 — waterfall line 4 — and derivation and application
-      populations MUST BE IDENTICAL** (`decisions/0038`). The 152,126 → 128,099 filter concerns the
-      **first S2 watch**, which plays no part in `τ1` or liveness; the lines above 152,126 carry
-      contaminated `T0`, and `τ1` is built from `T0`. **Derive on 152,126, apply to 152,126** —
-      deriving on one population and applying to another delivered 2.28% against a stated 1% and
-      reintroduces the defect `0037` withdrew.
-    - **Weighting: ONE GAP PER PAIR** (`decisions/0038`), not one per distinct `(account, gap)`, which
-      was the largest single lever in the step.
-    - **`W` and the threshold are NOT independent.** The bracketing reference is selected by `τ1`,
-      which contains `W`, so the threshold is a **function of `W`**; the old "derive independently of
-      `W`" requirement was **unsatisfiable and is withdrawn** (`0038`). **Step 13 refits the threshold
-      per arm and reports both the threshold and the realised rate for each.**
-    - **Two things must be stated plainly in the deliverable and not argued away** (`0038`): the
-      **quota property** — taking the percentile on the distribution the test applies to sets the level
-      by the exclusion rate rather than by any feature of the data — and the **inertness**: the
-      measured-gap test does **3.45%** of exclusions while `0036` §2.3's edge cases do **96.55%**,
-      across every percentile from the 90th to the 99.9th.
-    - **The gap sequence is defined on DISTINCT insertion instants** (`decisions/0037`). Per account:
-      every record's insertion instant, sorted ascending, **runs of EXACTLY equal instants collapsed to
-      one** — exact equality only, **no rounding or bucketing to any resolution** — then consecutive
-      differences. **Not** one gap per consecutive pair of *records*, which double-counts a batch
-      insert. A sub-second gap between two genuinely distinct instants is real and retained. This
-      ambiguity produced a real divergence: one arm read 4 days from it and the other 7.
-    - **The test applies to the GAP BRACKETING `τ1`, not to every gap in the sweep** (`decisions/0036`).
-      Take the last insertion instant at or before `τ1` and the first after it, and test that one gap.
-      A whole-sweep test compounds the false-dead rate with the number of gaps — at the 99th percentile
-      an account with 50 gaps trips it ~39% of the time by chance — and **no percentile fixes that; it
-      is the rule's shape.** No instant after `τ1`, or none at or before it, means **not live**; count
-      and report both separately from pairs failing on a measured gap.
-    - **The play-`id` isotonic calibration from Step 5 is a required input and NEITHER INSTANCE REFITS
-      IT.** Read the stored curve.
-    - **Liveness is a PAIR-LEVEL filter, not a user-level one.** Evidence is account-wide — the whole
-      sweep, other shows and movies included — but the test is clock-start-relative and clock start is
-      pair-specific, so one account can be live for one show and dead for another. **Never drop a user
-      wholesale on a liveness test.**
-    - **Liveness stays anchored at `τ1`, and `τ2` plays no part in it** (`decisions/0034`). Outcome
-      assignment now happens at two instants, so re-anchoring at `τ2` is a tempting error. Liveness
-      licenses trusting a null and the null is `|A| = 0`, which is tested at `τ1`.
-    - Deliver the gap distribution chart, the chosen threshold, and the rule statement to `artifacts/`.
+- **Step 7, liveness rule. GATE — APPROVED 2026-08-13 with NO free parameter (`decisions/0042`).
+  Complete; do not re-derive.** **A pair is NOT LIVE if and only if the account shows no insertion
+  instant after that pair's `τ1`.** **There is no threshold.** One was derived three times — 632 d,
+  then 1,293 d — and **deleted**, because the three outcome shares move only 0.026 / 0.038 / 0.012 pp
+  across 787 / 1,293 / 2,200 days and the parameter-free rule, about **3% of the clustered sampling
+  width**. Liveness runs on **insertion time** (`0021`), reads the stored calibration and **never
+  refits it** (`0029`), is a **pair-level** filter anchored at `τ1` (`0034`), and excludes **751 pairs
+  from 166 accounts**. **Do not reintroduce a pre-`τ1` requirement in any form** — it has been
+  withdrawn twice, at `0040` §1 and `0042` §3, both times for contradicting approved gate `0021`.
 
 - **Step 9, headline result. Chained, dual implementation.** Of users who completed S1, compute the
   share who never started S2, who started and left, and who continued, with confidence intervals.

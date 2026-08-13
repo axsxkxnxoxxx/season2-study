@@ -1,0 +1,1221 @@
+{
+  "STATUS": {
+    "what_this_is": "A GATE-CLOSING DIAGNOSTIC FOR STEP 7, run under decisions/0041 SS4 to decide whether the liveness threshold is load-bearing.",
+    "what_this_is_not": "NOT the Step 9 deliverable, and not a study result. The shares below must not be cited as the headline.",
+    "why_provisional_in_population_too": "Step 8 has not launched and is an unapproved gate. Step 8 builds the analysis table and fixes the headline population. This test runs on the Step 7 derivation/application population \u2014 waterfall line 4 less D10 = 147,370 \u2014 which decisions/0041 SS3 records as a strict SUBSET of the population Step 8 will apply liveness to (196,654). Both the population and the status are provisional.",
+    "adopts": "nothing. The Human Lead rules on whether the threshold survives.",
+    "api_calls": 0
+  },
+  "question": "Is the headline sensitive to the liveness threshold across its account-clustered interval?",
+  "answer": {
+    "verdict": "NO. The headline is insensitive across the interval and beyond it.",
+    "largest_movement_across_the_four_candidate_settings_pp": {
+      "never_started": 0.0264,
+      "continued": 0.0385,
+      "started_and_left": 0.0123
+    },
+    "same_movement_as_a_fraction_of_the_95pct_clustered_sampling_width": {
+      "never_started": 0.034,
+      "continued": 0.0309,
+      "started_and_left": 0.0124
+    },
+    "movement_over_the_whole_swept_range_30_to_4000_days_pp": {
+      "never_started": 0.1321,
+      "continued": 0.2434,
+      "started_and_left": 0.1271
+    },
+    "read_this_with_the_caveat_below": "one delta is statistically distinguishable from zero and is still negligible in size; see caveats.paired_test_detects_a_trivial_delta"
+  },
+  "spec": {
+    "governing": [
+      "decisions/0041 SS4 (this test)",
+      "decisions/0040 (the two rulings that produced the population)",
+      "decisions/0038 (frozen spec)",
+      "decisions/0037",
+      "decisions/0036 SS2 with SS2.3(ii) withdrawn",
+      "decisions/0034 (two-instant outcome assignment)",
+      "decisions/0029",
+      "decisions/0026 (W=108)",
+      "decisions/0021"
+    ],
+    "W_days": 108,
+    "H_days": 91,
+    "tau1": "[[T0]] + 108*24h \u2014 never-started is tested here",
+    "tau2": "[[T0]] + (108+91)*24h = [[T0]] + 199 days \u2014 Continued is tested here",
+    "liveness_anchor": "tau1 only. tau2 plays no part in liveness (decisions/0034).",
+    "calibration": "processed/step5/calibration.npz, the STORED isotonic play-id curve, read not refitted",
+    "boundary_form": "half-open UTC instant, watched_at < tau. date(watched_at) <= T1 appears nowhere.",
+    "membership": "by SET against E2, never by the range 1..F2",
+    "counting": "distinct episodes, canonical timestamp = min watched_at across the episode's records (Step 1 SS2.2). Never play events.",
+    "drop_flag": "not used and not available \u2014 Dropped status is OAuth Required. All three states are inferred from episode-level history."
+  },
+  "population": {
+    "step": 7,
+    "what": "GATE-CLOSING SENSITIVITY DIAGNOSTIC for Step 7 (decisions/0041 SS4). NOT the Step 9 deliverable. Step 8 has not launched and is an unapproved gate.",
+    "instance": "sens_a",
+    "api_calls": 0,
+    "W_days": 108,
+    "H_days": 91,
+    "tau_pull_utc": "2026-08-11T00:00:00Z",
+    "waterfall_computed": [
+      201900,
+      178165,
+      155131,
+      152126,
+      128099
+    ],
+    "waterfall_published": [
+      201900,
+      178165,
+      155131,
+      152126,
+      128099
+    ],
+    "waterfall_asserted_equal": true,
+    "reference_line": "line 4 == 152,126 (decisions/0038 SS2)",
+    "line4_pairs": 152126,
+    "d10_rule": "[[T0]] + (max(W,91)+H)*24h <= tau_pull",
+    "d10_latest_admissible_T0_utc": "2026-01-24T00:00:00",
+    "d10_removed": 4756,
+    "post_D10_population": 147370,
+    "post_D10_share_of_line4": 0.968736,
+    "n_distinct_shows_in_population": 1138,
+    "n_distinct_accounts_in_population": 2402,
+    "l2_eq_1_shows_in_population": 0,
+    "l2_eq_1_exclusion_is_a_noop": true
+  },
+  "outcome_inputs": {
+    "step": 7,
+    "what": "GATE-CLOSING SENSITIVITY DIAGNOSTIC for Step 7 (decisions/0041 SS4). NOT the Step 9 deliverable. Step 8 has not launched.",
+    "instance": "sens_a",
+    "api_calls": 0,
+    "population_pairs": 147370,
+    "s2_records_raw": 4117994,
+    "s2_records_missing_ts": 0,
+    "s2_records_at_or_after_tau_pull_D11": 179,
+    "s2_records_dropped_number_not_in_E2": 1306325,
+    "s2_distinct_episodes_all_accounts": 2489729,
+    "s2_distinct_episodes_in_population": 1766142,
+    "canonical_timestamp_rule": "min watched_at across the distinct episode's records (SS2.2)",
+    "boundary_form": "half-open UTC instant, watched_at < tau",
+    "d11_bite_on_this_population": {
+      "note": "D10 guarantees tau2 <= tau_pull for every retained pair, so a record at or after tau_pull cannot enter A or A_H regardless; the count is the global one, reported so the filter is visible rather than assumed inert",
+      "records_discarded_globally": 179
+    },
+    "nA_zero_pairs": 9145,
+    "nAH_zero_pairs": 6637,
+    "pairs_where_A_smaller_than_AH": 6485,
+    "A_subset_AH_invariant_holds": true
+  },
+  "results": {
+    "step": 7,
+    "what": "GATE-CLOSING SENSITIVITY DIAGNOSTIC for Step 7 (decisions/0041 SS4). NOT the Step 9 deliverable. Step 8 has not launched and is an unapproved gate, so these shares are provisional in POPULATION as well as in status.",
+    "instance": "sens_a",
+    "api_calls": 0,
+    "population_post_D10": 147370,
+    "population_line": "Step 5 waterfall line 4 (152,126) less D10 right-censoring at W=108, H=91 -> 147,370",
+    "W_days": 108,
+    "H_days": 91,
+    "tau1": "[[T0]] + 108*24h",
+    "tau2": "[[T0]] + 199*24h",
+    "classes_at_tau1": {
+      "measured_bracketing_gap": 128467,
+      "open_ended_no_instant_after_tau1": 751,
+      "no_instant_at_or_before_tau1": 18152
+    },
+    "pre_liveness_outcomes": {
+      "never_started": 9145,
+      "continued": 121382,
+      "started_and_left": 16843
+    },
+    "settings": {
+      "no_liveness_filter": {
+        "setting": "no liveness filter at all (context row, not a candidate rule)",
+        "excluded_open_ended": 0,
+        "excluded_measured_gap": 0,
+        "excluded_no_instant_before": 0,
+        "pairs_live": 147370,
+        "pairs_excluded": 0,
+        "excluded_share_of_post_D10_pct": 0.0,
+        "accounts_touched_by_exclusion": 0,
+        "counts": {
+          "never_started": 9145,
+          "continued": 121382,
+          "started_and_left": 16843
+        },
+        "shares_pct": {
+          "never_started": 6.2055,
+          "continued": 82.3655,
+          "started_and_left": 11.4291
+        }
+      },
+      "threshold_787d": {
+        "setting": "threshold rule at T = 787 d",
+        "threshold_days": 787,
+        "excluded_open_ended": 751,
+        "excluded_measured_gap": 956,
+        "excluded_no_instant_before": 0,
+        "realised_rate_vs_measured_gap_pairs_pct": 0.7442,
+        "realised_rate_vs_extended_set_pct": 1.321,
+        "pairs_live": 145663,
+        "pairs_excluded": 1707,
+        "excluded_share_of_post_D10_pct": 1.1583,
+        "accounts_touched_by_exclusion": 277,
+        "counts": {
+          "never_started": 9047,
+          "continued": 119999,
+          "started_and_left": 16617
+        },
+        "shares_pct": {
+          "never_started": 6.2109,
+          "continued": 82.3812,
+          "started_and_left": 11.4078
+        }
+      },
+      "threshold_1293d": {
+        "setting": "threshold rule at T = 1293 d",
+        "threshold_days": 1293,
+        "excluded_open_ended": 751,
+        "excluded_measured_gap": 531,
+        "excluded_no_instant_before": 0,
+        "realised_rate_vs_measured_gap_pairs_pct": 0.4133,
+        "realised_rate_vs_extended_set_pct": 0.9921,
+        "pairs_live": 146088,
+        "pairs_excluded": 1282,
+        "excluded_share_of_post_D10_pct": 0.8699,
+        "accounts_touched_by_exclusion": 205,
+        "counts": {
+          "never_started": 9105,
+          "continued": 120303,
+          "started_and_left": 16680
+        },
+        "shares_pct": {
+          "never_started": 6.2325,
+          "continued": 82.3497,
+          "started_and_left": 11.4178
+        }
+      },
+      "threshold_2200d": {
+        "setting": "threshold rule at T = 2200 d",
+        "threshold_days": 2200,
+        "excluded_open_ended": 751,
+        "excluded_measured_gap": 146,
+        "excluded_no_instant_before": 0,
+        "realised_rate_vs_measured_gap_pairs_pct": 0.1136,
+        "realised_rate_vs_extended_set_pct": 0.6942,
+        "pairs_live": 146473,
+        "pairs_excluded": 897,
+        "excluded_share_of_post_D10_pct": 0.6087,
+        "accounts_touched_by_exclusion": 177,
+        "counts": {
+          "never_started": 9136,
+          "continued": 120619,
+          "started_and_left": 16718
+        },
+        "shares_pct": {
+          "never_started": 6.2373,
+          "continued": 82.349,
+          "started_and_left": 11.4137
+        }
+      },
+      "parameter_free_LIMIT": {
+        "setting": "parameter-free, T -> infinity limit of the threshold rule as decisions/0040 leaves it: not live iff no insertion instant after tau1; the no-instant-before bucket is LIVE per 0021",
+        "threshold_days": null,
+        "excluded_open_ended": 751,
+        "excluded_measured_gap": 0,
+        "excluded_no_instant_before": 0,
+        "pairs_live": 146619,
+        "pairs_excluded": 751,
+        "excluded_share_of_post_D10_pct": 0.5096,
+        "accounts_touched_by_exclusion": 166,
+        "counts": {
+          "never_started": 9145,
+          "continued": 120730,
+          "started_and_left": 16744
+        },
+        "shares_pct": {
+          "never_started": 6.2373,
+          "continued": 82.3427,
+          "started_and_left": 11.4201
+        }
+      },
+      "parameter_free_BRACKET": {
+        "setting": "parameter-free, the literal text of 0041 SS4: live iff a distinct insertion instant at or before tau1 AND one after it. THIS REINSTATES 0036 SS2.3(ii), WITHDRAWN BY 0040 SS1.",
+        "threshold_days": null,
+        "excluded_open_ended": 751,
+        "excluded_measured_gap": 0,
+        "excluded_no_instant_before": 18152,
+        "pairs_live": 128467,
+        "pairs_excluded": 18903,
+        "excluded_share_of_post_D10_pct": 12.8269,
+        "accounts_touched_by_exclusion": 1434,
+        "counts": {
+          "never_started": 8099,
+          "continued": 104936,
+          "started_and_left": 15432
+        },
+        "shares_pct": {
+          "never_started": 6.3043,
+          "continued": 81.6832,
+          "started_and_left": 12.0124
+        }
+      }
+    },
+    "deltas_pp": {
+      "787_to_1293": {
+        "never_started": 0.0216,
+        "continued": -0.0315,
+        "started_and_left": 0.01
+      },
+      "1293_to_2200": {
+        "never_started": 0.0048,
+        "continued": -0.0007,
+        "started_and_left": -0.0041
+      },
+      "787_to_2200_FULL_CLUSTERED_INTERVAL": {
+        "never_started": 0.0264,
+        "continued": -0.0322,
+        "started_and_left": 0.0059
+      },
+      "1293_to_parameter_free_LIMIT": {
+        "never_started": 0.0048,
+        "continued": -0.007,
+        "started_and_left": 0.0023
+      },
+      "1293_to_parameter_free_BRACKET": {
+        "never_started": 0.0718,
+        "continued": -0.6665,
+        "started_and_left": 0.5946
+      },
+      "no_filter_to_1293": {
+        "never_started": 0.027,
+        "continued": -0.0158,
+        "started_and_left": -0.0113
+      }
+    },
+    "delta_matrix_pp": {
+      "threshold_787d": {
+        "threshold_787d": {
+          "never_started": 0.0,
+          "continued": 0.0,
+          "started_and_left": 0.0
+        },
+        "threshold_1293d": {
+          "never_started": 0.0216,
+          "continued": -0.0315,
+          "started_and_left": 0.01
+        },
+        "threshold_2200d": {
+          "never_started": 0.0264,
+          "continued": -0.0322,
+          "started_and_left": 0.0059
+        },
+        "parameter_free_LIMIT": {
+          "never_started": 0.0264,
+          "continued": -0.0385,
+          "started_and_left": 0.0123
+        },
+        "parameter_free_BRACKET": {
+          "never_started": 0.0934,
+          "continued": -0.698,
+          "started_and_left": 0.6046
+        },
+        "no_liveness_filter": {
+          "never_started": -0.0054,
+          "continued": -0.0157,
+          "started_and_left": 0.0213
+        }
+      },
+      "threshold_1293d": {
+        "threshold_787d": {
+          "never_started": -0.0216,
+          "continued": 0.0315,
+          "started_and_left": -0.01
+        },
+        "threshold_1293d": {
+          "never_started": 0.0,
+          "continued": 0.0,
+          "started_and_left": 0.0
+        },
+        "threshold_2200d": {
+          "never_started": 0.0048,
+          "continued": -0.0007,
+          "started_and_left": -0.0041
+        },
+        "parameter_free_LIMIT": {
+          "never_started": 0.0048,
+          "continued": -0.007,
+          "started_and_left": 0.0023
+        },
+        "parameter_free_BRACKET": {
+          "never_started": 0.0718,
+          "continued": -0.6665,
+          "started_and_left": 0.5946
+        },
+        "no_liveness_filter": {
+          "never_started": -0.027,
+          "continued": 0.0158,
+          "started_and_left": 0.0113
+        }
+      },
+      "threshold_2200d": {
+        "threshold_787d": {
+          "never_started": -0.0264,
+          "continued": 0.0322,
+          "started_and_left": -0.0059
+        },
+        "threshold_1293d": {
+          "never_started": -0.0048,
+          "continued": 0.0007,
+          "started_and_left": 0.0041
+        },
+        "threshold_2200d": {
+          "never_started": 0.0,
+          "continued": 0.0,
+          "started_and_left": 0.0
+        },
+        "parameter_free_LIMIT": {
+          "never_started": 0.0,
+          "continued": -0.0063,
+          "started_and_left": 0.0064
+        },
+        "parameter_free_BRACKET": {
+          "never_started": 0.067,
+          "continued": -0.6658,
+          "started_and_left": 0.5987
+        },
+        "no_liveness_filter": {
+          "never_started": -0.0318,
+          "continued": 0.0165,
+          "started_and_left": 0.0154
+        }
+      },
+      "parameter_free_LIMIT": {
+        "threshold_787d": {
+          "never_started": -0.0264,
+          "continued": 0.0385,
+          "started_and_left": -0.0123
+        },
+        "threshold_1293d": {
+          "never_started": -0.0048,
+          "continued": 0.007,
+          "started_and_left": -0.0023
+        },
+        "threshold_2200d": {
+          "never_started": 0.0,
+          "continued": 0.0063,
+          "started_and_left": -0.0064
+        },
+        "parameter_free_LIMIT": {
+          "never_started": 0.0,
+          "continued": 0.0,
+          "started_and_left": 0.0
+        },
+        "parameter_free_BRACKET": {
+          "never_started": 0.067,
+          "continued": -0.6595,
+          "started_and_left": 0.5923
+        },
+        "no_liveness_filter": {
+          "never_started": -0.0318,
+          "continued": 0.0228,
+          "started_and_left": 0.009
+        }
+      },
+      "parameter_free_BRACKET": {
+        "threshold_787d": {
+          "never_started": -0.0934,
+          "continued": 0.698,
+          "started_and_left": -0.6046
+        },
+        "threshold_1293d": {
+          "never_started": -0.0718,
+          "continued": 0.6665,
+          "started_and_left": -0.5946
+        },
+        "threshold_2200d": {
+          "never_started": -0.067,
+          "continued": 0.6658,
+          "started_and_left": -0.5987
+        },
+        "parameter_free_LIMIT": {
+          "never_started": -0.067,
+          "continued": 0.6595,
+          "started_and_left": -0.5923
+        },
+        "parameter_free_BRACKET": {
+          "never_started": 0.0,
+          "continued": 0.0,
+          "started_and_left": 0.0
+        },
+        "no_liveness_filter": {
+          "never_started": -0.0988,
+          "continued": 0.6823,
+          "started_and_left": -0.5833
+        }
+      },
+      "no_liveness_filter": {
+        "threshold_787d": {
+          "never_started": 0.0054,
+          "continued": 0.0157,
+          "started_and_left": -0.0213
+        },
+        "threshold_1293d": {
+          "never_started": 0.027,
+          "continued": -0.0158,
+          "started_and_left": -0.0113
+        },
+        "threshold_2200d": {
+          "never_started": 0.0318,
+          "continued": -0.0165,
+          "started_and_left": -0.0154
+        },
+        "parameter_free_LIMIT": {
+          "never_started": 0.0318,
+          "continued": -0.0228,
+          "started_and_left": -0.009
+        },
+        "parameter_free_BRACKET": {
+          "never_started": 0.0988,
+          "continued": -0.6823,
+          "started_and_left": 0.5833
+        },
+        "no_liveness_filter": {
+          "never_started": 0.0,
+          "continued": 0.0,
+          "started_and_left": 0.0
+        }
+      }
+    },
+    "max_minus_min_share_pp_across_the_four_candidate_settings": {
+      "never_started": 0.0264,
+      "continued": 0.0385,
+      "started_and_left": 0.0123
+    }
+  },
+  "bootstrap_yardstick": {
+    "step": 7,
+    "what": "GATE-CLOSING SENSITIVITY DIAGNOSTIC for Step 7 (decisions/0041 SS4). NOT the Step 9 deliverable. Step 8 has not launched.",
+    "instance": "sens_a",
+    "api_calls": 0,
+    "bootstrap": {
+      "B": 4000,
+      "seed": 20260813,
+      "unit": "account",
+      "n_accounts": 2402,
+      "note": "clustered on the account, not the pair; the i.i.d. interval would overstate precision for the same reason it does on the threshold itself"
+    },
+    "shares_with_clustered_intervals": {
+      "threshold_787d": {
+        "never_started": {
+          "point_pct": 6.2109,
+          "clustered_95_ci_pct": [
+            5.8367,
+            6.611
+          ],
+          "ci_width_pp": 0.7742,
+          "clustered_se_pp": 0.1973
+        },
+        "continued": {
+          "point_pct": 82.3812,
+          "clustered_95_ci_pct": [
+            81.7374,
+            82.9837
+          ],
+          "ci_width_pp": 1.2463,
+          "clustered_se_pp": 0.3198
+        },
+        "started_and_left": {
+          "point_pct": 11.4078,
+          "clustered_95_ci_pct": [
+            10.9215,
+            11.9017
+          ],
+          "ci_width_pp": 0.9802,
+          "clustered_se_pp": 0.2501
+        }
+      },
+      "threshold_1293d": {
+        "never_started": {
+          "point_pct": 6.2325,
+          "clustered_95_ci_pct": [
+            5.8591,
+            6.6357
+          ],
+          "ci_width_pp": 0.7766,
+          "clustered_se_pp": 0.1968
+        },
+        "continued": {
+          "point_pct": 82.3497,
+          "clustered_95_ci_pct": [
+            81.7085,
+            82.9552
+          ],
+          "ci_width_pp": 1.2467,
+          "clustered_se_pp": 0.3197
+        },
+        "started_and_left": {
+          "point_pct": 11.4178,
+          "clustered_95_ci_pct": [
+            10.9267,
+            11.9127
+          ],
+          "ci_width_pp": 0.9859,
+          "clustered_se_pp": 0.2496
+        }
+      },
+      "threshold_2200d": {
+        "never_started": {
+          "point_pct": 6.2373,
+          "clustered_95_ci_pct": [
+            5.8697,
+            6.6393
+          ],
+          "ci_width_pp": 0.7696,
+          "clustered_se_pp": 0.1964
+        },
+        "continued": {
+          "point_pct": 82.349,
+          "clustered_95_ci_pct": [
+            81.707,
+            82.9531
+          ],
+          "ci_width_pp": 1.2461,
+          "clustered_se_pp": 0.3193
+        },
+        "started_and_left": {
+          "point_pct": 11.4137,
+          "clustered_95_ci_pct": [
+            10.9278,
+            11.9084
+          ],
+          "ci_width_pp": 0.9806,
+          "clustered_se_pp": 0.2492
+        }
+      },
+      "parameter_free_LIMIT": {
+        "never_started": {
+          "point_pct": 6.2373,
+          "clustered_95_ci_pct": [
+            5.8705,
+            6.6386
+          ],
+          "ci_width_pp": 0.7681,
+          "clustered_se_pp": 0.1963
+        },
+        "continued": {
+          "point_pct": 82.3427,
+          "clustered_95_ci_pct": [
+            81.7,
+            82.9482
+          ],
+          "ci_width_pp": 1.2482,
+          "clustered_se_pp": 0.3191
+        },
+        "started_and_left": {
+          "point_pct": 11.4201,
+          "clustered_95_ci_pct": [
+            10.9354,
+            11.9184
+          ],
+          "ci_width_pp": 0.9831,
+          "clustered_se_pp": 0.2491
+        }
+      },
+      "parameter_free_BRACKET": {
+        "never_started": {
+          "point_pct": 6.3043,
+          "clustered_95_ci_pct": [
+            5.9073,
+            6.7406
+          ],
+          "ci_width_pp": 0.8334,
+          "clustered_se_pp": 0.215
+        },
+        "continued": {
+          "point_pct": 81.6832,
+          "clustered_95_ci_pct": [
+            81.0012,
+            82.3404
+          ],
+          "ci_width_pp": 1.3392,
+          "clustered_se_pp": 0.3413
+        },
+        "started_and_left": {
+          "point_pct": 12.0124,
+          "clustered_95_ci_pct": [
+            11.4844,
+            12.5634
+          ],
+          "ci_width_pp": 1.079,
+          "clustered_se_pp": 0.271
+        }
+      }
+    },
+    "paired_clustered_deltas": {
+      "787_to_2200_FULL_CLUSTERED_INTERVAL": {
+        "never_started": {
+          "observed_delta_pp": 0.0264,
+          "paired_clustered_95_ci_pp": [
+            0.008,
+            0.0464
+          ],
+          "paired_clustered_se_pp": 0.0099,
+          "ci_excludes_zero": true
+        },
+        "continued": {
+          "observed_delta_pp": -0.0323,
+          "paired_clustered_95_ci_pp": [
+            -0.0635,
+            0.0003
+          ],
+          "paired_clustered_se_pp": 0.0161,
+          "ci_excludes_zero": false
+        },
+        "started_and_left": {
+          "observed_delta_pp": 0.0059,
+          "paired_clustered_95_ci_pp": [
+            -0.0133,
+            0.0238
+          ],
+          "paired_clustered_se_pp": 0.0093,
+          "ci_excludes_zero": false
+        }
+      },
+      "787_to_1293": {
+        "never_started": {
+          "observed_delta_pp": 0.0216,
+          "paired_clustered_95_ci_pp": [
+            0.0077,
+            0.0383
+          ],
+          "paired_clustered_se_pp": 0.008,
+          "ci_excludes_zero": true
+        },
+        "continued": {
+          "observed_delta_pp": -0.0316,
+          "paired_clustered_95_ci_pp": [
+            -0.0562,
+            -0.0111
+          ],
+          "paired_clustered_se_pp": 0.0115,
+          "ci_excludes_zero": true
+        },
+        "started_and_left": {
+          "observed_delta_pp": 0.0099,
+          "paired_clustered_95_ci_pp": [
+            -0.0017,
+            0.0225
+          ],
+          "paired_clustered_se_pp": 0.0062,
+          "ci_excludes_zero": false
+        }
+      },
+      "1293_to_2200": {
+        "never_started": {
+          "observed_delta_pp": 0.0048,
+          "paired_clustered_95_ci_pp": [
+            -0.0061,
+            0.017
+          ],
+          "paired_clustered_se_pp": 0.0058,
+          "ci_excludes_zero": false
+        },
+        "continued": {
+          "observed_delta_pp": -0.0007,
+          "paired_clustered_95_ci_pp": [
+            -0.0228,
+            0.0237
+          ],
+          "paired_clustered_se_pp": 0.0118,
+          "ci_excludes_zero": false
+        },
+        "started_and_left": {
+          "observed_delta_pp": -0.0041,
+          "paired_clustered_95_ci_pp": [
+            -0.0196,
+            0.0087
+          ],
+          "paired_clustered_se_pp": 0.0073,
+          "ci_excludes_zero": false
+        }
+      },
+      "1293_to_parameter_free_LIMIT": {
+        "never_started": {
+          "observed_delta_pp": 0.0047,
+          "paired_clustered_95_ci_pp": [
+            -0.0067,
+            0.0169
+          ],
+          "paired_clustered_se_pp": 0.006,
+          "ci_excludes_zero": false
+        },
+        "continued": {
+          "observed_delta_pp": -0.007,
+          "paired_clustered_95_ci_pp": [
+            -0.0323,
+            0.0197
+          ],
+          "paired_clustered_se_pp": 0.0134,
+          "ci_excludes_zero": false
+        },
+        "started_and_left": {
+          "observed_delta_pp": 0.0023,
+          "paired_clustered_95_ci_pp": [
+            -0.0168,
+            0.0204
+          ],
+          "paired_clustered_se_pp": 0.0094,
+          "ci_excludes_zero": false
+        }
+      },
+      "1293_to_parameter_free_BRACKET": {
+        "never_started": {
+          "observed_delta_pp": 0.0718,
+          "paired_clustered_95_ci_pp": [
+            -0.0194,
+            0.1694
+          ],
+          "paired_clustered_se_pp": 0.0479,
+          "ci_excludes_zero": false
+        },
+        "continued": {
+          "observed_delta_pp": -0.6664,
+          "paired_clustered_95_ci_pp": [
+            -0.8766,
+            -0.4728
+          ],
+          "paired_clustered_se_pp": 0.1031,
+          "ci_excludes_zero": true
+        },
+        "started_and_left": {
+          "observed_delta_pp": 0.5946,
+          "paired_clustered_95_ci_pp": [
+            0.4526,
+            0.7461
+          ],
+          "paired_clustered_se_pp": 0.0745,
+          "ci_excludes_zero": true
+        }
+      }
+    },
+    "span_against_sampling_width": {
+      "never_started": {
+        "threshold_span_pp": 0.0264,
+        "clustered_ci_width_pp": 0.7766,
+        "span_as_share_of_ci_width": 0.034
+      },
+      "continued": {
+        "threshold_span_pp": 0.0386,
+        "clustered_ci_width_pp": 1.2467,
+        "span_as_share_of_ci_width": 0.0309
+      },
+      "started_and_left": {
+        "threshold_span_pp": 0.0122,
+        "clustered_ci_width_pp": 0.9859,
+        "span_as_share_of_ci_width": 0.0124
+      }
+    },
+    "seed_stability_of_the_1293_interval_B1000": {
+      "11": {
+        "never_started": [
+          5.8954,
+          6.6255
+        ],
+        "continued": [
+          81.6966,
+          82.9434
+        ],
+        "started_and_left": [
+          10.9496,
+          11.9489
+        ]
+      },
+      "99": {
+        "never_started": [
+          5.8975,
+          6.63
+        ],
+        "continued": [
+          81.6827,
+          82.9258
+        ],
+        "started_and_left": [
+          10.9378,
+          11.9265
+        ]
+      },
+      "777": {
+        "never_started": [
+          5.8683,
+          6.612
+        ],
+        "continued": [
+          81.7053,
+          82.957
+        ],
+        "started_and_left": [
+          10.9383,
+          11.8981
+        ]
+      }
+    }
+  },
+  "continuous_threshold_sweep": {
+    "what": "GATE-CLOSING SENSITIVITY DIAGNOSTIC for Step 7. NOT the Step 9 deliverable.",
+    "instance": "sens_a",
+    "api_calls": 0,
+    "grid_days": [
+      30.0,
+      130.0,
+      230.0,
+      330.0,
+      430.0,
+      530.0,
+      630.0,
+      730.0,
+      825.0,
+      925.0,
+      1025.0,
+      1125.0,
+      1225.0,
+      1320.0,
+      1420.0,
+      1520.0,
+      1620.0,
+      1720.0,
+      1820.0,
+      1920.0,
+      2020.0,
+      2120.0,
+      2220.0,
+      2320.0,
+      2420.0,
+      2520.0,
+      2620.0,
+      2720.0,
+      2820.0,
+      2920.0,
+      3020.0,
+      3120.0,
+      3220.0,
+      3320.0,
+      3420.0,
+      3520.0,
+      3620.0,
+      3720.0,
+      3820.0,
+      3920.0
+    ],
+    "curve_never_started_pct": [
+      6.1244,
+      6.1151,
+      6.117,
+      6.1392,
+      6.1666,
+      6.1774,
+      6.1927,
+      6.2036,
+      6.2118,
+      6.2194,
+      6.221,
+      6.2249,
+      6.2277,
+      6.232,
+      6.2363,
+      6.2397,
+      6.2397,
+      6.2407,
+      6.2376,
+      6.2381,
+      6.2381,
+      6.2378,
+      6.2371,
+      6.2368,
+      6.2368,
+      6.2359,
+      6.2357,
+      6.2357,
+      6.2367,
+      6.2367,
+      6.2368,
+      6.2368,
+      6.2373,
+      6.2373,
+      6.2373,
+      6.2373,
+      6.2373,
+      6.2373,
+      6.2373,
+      6.2373
+    ],
+    "curve_continued_pct": [
+      82.5797,
+      82.5468,
+      82.5306,
+      82.4831,
+      82.4323,
+      82.4163,
+      82.4001,
+      82.3908,
+      82.377,
+      82.3716,
+      82.3678,
+      82.3621,
+      82.3563,
+      82.3517,
+      82.3432,
+      82.3388,
+      82.3388,
+      82.3365,
+      82.3457,
+      82.3455,
+      82.3455,
+      82.3457,
+      82.3497,
+      82.3464,
+      82.3464,
+      82.3501,
+      82.3486,
+      82.3486,
+      82.3461,
+      82.3461,
+      82.3441,
+      82.3441,
+      82.3427,
+      82.3427,
+      82.3427,
+      82.3427,
+      82.3427,
+      82.3427,
+      82.3427,
+      82.3427
+    ],
+    "curve_started_and_left_pct": [
+      11.2958,
+      11.3381,
+      11.3523,
+      11.3777,
+      11.4011,
+      11.4063,
+      11.4073,
+      11.4057,
+      11.4112,
+      11.409,
+      11.4113,
+      11.413,
+      11.4159,
+      11.4163,
+      11.4205,
+      11.4214,
+      11.4214,
+      11.4228,
+      11.4166,
+      11.4163,
+      11.4163,
+      11.4165,
+      11.4132,
+      11.4168,
+      11.4168,
+      11.414,
+      11.4157,
+      11.4157,
+      11.4172,
+      11.4172,
+      11.4191,
+      11.4191,
+      11.4201,
+      11.4201,
+      11.4201,
+      11.4201,
+      11.4201,
+      11.4201,
+      11.4201,
+      11.4201
+    ],
+    "sweep_range_days": [
+      30.0,
+      4000.0
+    ],
+    "share_range_over_whole_sweep_pp": {
+      "never_started": 0.1321,
+      "continued": 0.2434,
+      "started_and_left": 0.1271
+    },
+    "share_range_over_the_clustered_interval_787_2200_pp": {
+      "never_started": 0.0298,
+      "continued": 0.0451,
+      "started_and_left": 0.0167
+    },
+    "T_infinity_limit_shares_pct": {
+      "never_started": 6.2373,
+      "continued": 82.3427,
+      "started_and_left": 11.4201
+    },
+    "literal_bracket_shares_pct": {
+      "never_started": 6.3043,
+      "continued": 81.6832,
+      "started_and_left": 12.0124
+    }
+  },
+  "outcome_operator_validation": {
+    "why": "the liveness filter here is reused from a4 and already corroborated, but the OUTCOME OPERATOR \u2014 |A| at tau1, |A_H| at tau2, F2 in A_H, the canonical min-watched_at rule \u2014 is built fresh for this test. It is run unchanged on a population where the answer is already on the record.",
+    "population": "waterfall line 5, the 128,099 estimation sample, NO D10",
+    "never_started_without_D11": {
+      "record": 8445,
+      "measured": 8445
+    },
+    "never_started_with_D11": {
+      "record": 8449,
+      "measured": 8449
+    },
+    "never_started_share_pct": {
+      "record": 6.5957,
+      "measured": 6.5957
+    },
+    "pairs_moved_by_the_0034_amendment": {
+      "record": 2246,
+      "measured": 2246
+    },
+    "monotone_A_subset_A_H_no_pair_moves_the_other_way": true,
+    "all_four_reproduce_exactly": true
+  },
+  "corroboration_against_the_record": {
+    "post_D10_population": {
+      "decisions/0041 SS1": 147370,
+      "measured_here": 147370,
+      "agrees": true
+    },
+    "classes_live_open_ended_no_before": {
+      "decisions/0041 SS1": [
+        128467,
+        751,
+        18152
+      ],
+      "measured_here": [
+        128467,
+        751,
+        18152
+      ]
+    },
+    "not_live_at_1293": {
+      "decisions/0041 SS1": 1282,
+      "measured_here": 1282
+    },
+    "realised_rate_at_1293_vs_extended_set_pct": {
+      "decisions/0041 SS1": 0.9921,
+      "measured_here": 0.9921
+    },
+    "accounts_carrying_the_exclusion_set_at_1293": {
+      "decisions/0041 SS4": "205 of 2,402",
+      "measured_here": "205 of 2402"
+    },
+    "exclusion_set_at_the_lower_endpoint": {
+      "decisions/0041 SS4 states": 1701,
+      "measured_here_at_787": 1707,
+      "note": "1,701 is the count at T = 790, the OTHER arm's lower endpoint (decisions/0041 SS1 records 787 against 790 as Monte Carlo noise). At 787 the count is 1,707. A 6-pair difference; immaterial to the verdict, recorded so the record is not quietly corrected."
+    }
+  },
+  "caveats": {
+    "the_parameter_free_rule_has_two_readings_and_this_instance_reconciles_neither": {
+      "why": "decisions/0041 SS4 states the parameter-free rule as 'a distinct insertion instant at or before tau1 AND one after it'. Read literally that REINSTATES decisions/0036 SS2.3's second edge case, which decisions/0040 SS1 WITHDREW for contradicting approved gate 0021 \u2014 the ruling that returned the 18,152 pairs to the population.",
+      "PF_LIMIT": "not live iff no insertion instant AFTER tau1. The T -> infinity limit of the threshold rule as 0040 leaves it. 751 excluded.",
+      "PF_BRACKET": "the literal text. 18,903 excluded \u2014 25x more, and 1,434 of 2,402 accounts touched rather than 166.",
+      "consequence": "the two readings differ by 0.67 pp on Continued and 0.59 pp on Started-and-left \u2014 an order of magnitude more than the entire threshold interval moves anything. Deleting the threshold therefore does NOT by itself close the gate: which parameter-free rule is meant still has to be said.",
+      "this_instance_does_not_choose": true
+    },
+    "paired_test_detects_a_trivial_delta": {
+      "what": "the paired account-clustered CI for the 787 -> 2200 delta on never-started EXCLUDES zero.",
+      "size": {
+        "observed_delta_pp": 0.0264,
+        "paired_clustered_95_ci_pp": [
+          0.008,
+          0.0464
+        ],
+        "paired_clustered_se_pp": 0.0099,
+        "ci_excludes_zero": true
+      },
+      "reading": "the settings are nested subsets of the same pairs, so the paired delta has almost no variance and a 0.026 pp movement is resolvable. Detectable is not the same as material: 0.026 pp is 3.4% of the width the share itself is known to. State both."
+    },
+    "the_threshold_is_inert_by_construction_here": {
+      "at_1293": {
+        "excluded_on_a_measured_gap": 531,
+        "excluded_on_absent_evidence_edge_case_i": 751,
+        "measured_gap_share_of_exclusions_pct": 41.42
+      },
+      "note": "the edge-case count is CONSTANT in T while the gap-test count falls with T, so the split moves with the percentile and no invariance is claimed (decisions/0040 SS4)."
+    },
+    "degeneracy_caveat_travels_with_the_threshold": "above the 99.4188th percentile the extended-set percentile is itself infinite and the rule collapses into edge case (i) alone \u2014 0.25% of bootstrap replicates at W=108, 2.80% at W=213 (decisions/0041 SS2.1). At T -> infinity the rule here IS edge case (i) alone, and that row is computed above as parameter_free_LIMIT.",
+    "derive_apply_mismatch_is_recorded_not_repaired": "decisions/0041 SS3. The threshold was derived on 147,370; Step 8 will apply liveness to 196,654, where 1,293 d delivers 1.4418% against a stated 1%. Not repairable inside Step 7. Routed to Step 14.",
+    "continued_and_never_started_are_not_measured_alike": "Continued is a 199-day statement and never-started a 108-day statement (decisions/0034). This appears wherever the split is reported, not in a footnote."
+  },
+  "judgement_calls_the_spec_does_not_settle": [
+    {
+      "call": "POPULATION. Ran on waterfall line 4 less D10 = 147,370.",
+      "why": "decisions/0040 SS2 and 0038 SS2.1 require the derivation and application populations to be identical, and this is the population the threshold under test was derived on. Any other choice would test a threshold against a population it was not calibrated for.",
+      "what_step_8_would_do_differently": "Step 8's analysis population is the wider 196,654 (decisions/0041 SS3) \u2014 a strict superset that includes waterfall lines above 152,126. Those lines carry contaminated T0, and tau1 and tau2 are both built from T0, so every outcome state there is computed off a contaminated clock. The absolute shares below will move at Step 8. The SENSITIVITY verdict is a statement about the shape of the curve, and the curve is flat because the exclusion sets are tiny relative to the population \u2014 0.87% at 787 d, 0.61% at 2,200 d \u2014 which is a property that survives enlarging the denominator.",
+      "direction_if_wrong": "unknown for the absolute shares; the flatness argument is if anything stronger on a larger denominator."
+    },
+    {
+      "call": "L2 = 1 EXCLUSION (Step 8 position 2) not applied as a separate filter.",
+      "why": "asserted rather than assumed: the Step 2 frame contains ZERO shows with s2_L = 1, so the filter is a measured no-op on this population.",
+      "what_step_8_would_do_differently": "nothing.",
+      "direction_if_wrong": "n/a"
+    },
+    {
+      "call": "PARAMETER-FREE RULE computed under BOTH readings, neither adopted.",
+      "why": "the two readings are a spec contradiction between decisions/0041 SS4 and 0040 SS1, not an implementation choice. Reconciling it silently is exactly what the dual-run discipline forbids.",
+      "what_step_8_would_do_differently": "Step 8 needs ONE rule and cannot proceed until this is ruled on.",
+      "direction_if_wrong": "PF_BRACKET lowers Continued by 0.67 pp and raises Started-and-left by 0.59 pp relative to the 1,293 d threshold rule."
+    },
+    {
+      "call": "THRESHOLD COMPARATOR is gap >= T, so a gap exactly equal to T is NOT live.",
+      "why": "carried unchanged from the a4 derivation, where the ceiling ruling (decisions/0025) is justified by exactly this comparator: 'if the test excludes a gap at or above the threshold'.",
+      "what_step_8_would_do_differently": "should carry the same comparator; it is not written into task-sheet.md in operator form, only in prose.",
+      "direction_if_wrong": "at T=787 the strict-inequality reading gives the identical 1,707, so it does not bind at any tested setting."
+    },
+    {
+      "call": "D11 applied to S2 records (179 discarded globally).",
+      "why": "decisions/0034 SS5 found D11 was not being applied and that applying it moved never-started by 4 pairs on the estimation sample.",
+      "what_step_8_would_do_differently": "same. On THIS population D10 already guarantees tau2 <= tau_pull, so D11 cannot bite on A or A_H; it is applied and reported rather than assumed inert.",
+      "direction_if_wrong": "none measurable here"
+    },
+    {
+      "call": "CONFIDENCE INTERVALS are account-clustered bootstrap, B = 4,000, seed 20260813, resampling the 2,402 accounts.",
+      "why": "decisions/0041 SS4 asks for shares and deltas, not intervals. An interval was computed anyway because 'insensitive' is a claim about size and needs a yardstick. Clustered rather than i.i.d. for the same reason the threshold carries a clustered interval. Red Team's criticism of the 300-replicate interval in decisions/0040 SS6 is why B is 4,000 and why three alternate seeds are reported.",
+      "what_step_8_would_do_differently": "Step 9 specifies intervals; the method is not fixed anywhere and this is a proposal, not an adoption.",
+      "direction_if_wrong": "the verdict rests on the point deltas, which are bootstrap-free."
+    },
+    {
+      "call": "SHARES ARE COMPUTED ON PAIRS, and excluded pairs are dropped rather than bounded.",
+      "why": "liveness is a pair-level filter, so the excluded set is a set of user-show pairs. Step 9 requires a floor-and-ceiling BOUND on the excluded set; that is a Step 9 obligation and this diagnostic does not discharge it.",
+      "what_step_8_would_do_differently": "n/a \u2014 the bound is Step 9's.",
+      "direction_if_wrong": "the bound would widen the reported range at every setting; it would not change the RANKING or the flatness."
+    },
+    {
+      "call": "SWEEP RANGE 30 to 4,000 days on a 5-day grid.",
+      "why": "the three required settings are three points; a curve shows whether the flatness is a property of the rule or an accident of which points were chosen. 4,000 d is past the point where the gap test excludes nothing at all.",
+      "what_step_8_would_do_differently": "n/a \u2014 context only.",
+      "direction_if_wrong": "n/a"
+    }
+  ],
+  "what_this_test_does_not_answer": [
+    "Whether the parameter-free rule is RIGHT. It shows only that the threshold's value does not change the shares, which is an argument against publishing a free parameter, not an argument for any particular replacement.",
+    "Whether liveness itself is warranted. The whole filter \u2014 every setting \u2014 moves the shares by less than 0.05 pp against no filter at all, which is a fact about the filter, not only about its parameter.",
+    "Anything about the 91-day arm, Channel A vs Channel B, segment cuts, the abandonment distribution, or the S3-without-S2 and split-artifact bounds. Those are Steps 9 through 13 and none of them has run."
+  ],
+  "files": {
+    "figure": "artifacts/step7-sensitivity-a.png",
+    "write_up": "artifacts/step7-sensitivity-a.md",
+    "row_level_and_intermediate": "processed/step7/sens_a/ (never leaves this machine)",
+    "scripts": [
+      "src/step7_sens_a_pop.py",
+      "src/step7_sens_a_outcomes.py",
+      "src/step7_sens_a_apply.py",
+      "src/step7_sens_a_boot.py",
+      "src/step7_sens_a_fig.py",
+      "src/step7_sens_a_emit.py"
+    ],
+    "reused_without_recomputation": "processed/step7/a4/pair_bracketing_W108.npz (bracketing gaps, asserted row-aligned)"
+  }
+}
