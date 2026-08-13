@@ -1,6 +1,6 @@
 ---
 name: withdrawn-claims-register
-description: The study's own error log — claims asserted and later withdrawn or corrected, organised by failure mode, now covering Steps 1 through 5 and including the three errors that reached the Human Lead and the two that entered rulings
+description: The study's own error log — claims asserted and later withdrawn or corrected, organised by failure mode, covering Steps 1 through 7 including the Step 7 liveness gate's five-entry self-correction cascade and the new failure mode F it produced
 metadata:
   type: project
 ---
@@ -22,6 +22,7 @@ they have all caught something.
 | **B** | **Quoting a figure from a source that does not produce it.** Dominant mode in Steps 4–5, raised **four times** as B3, D3, F3 and again at round 4 | Grep the figure to a **file and a key**. An uncommitted figure is an **unverified** figure — proved when the decorative "164" was finally committed and turned out to also be **wrong** |
 | **C** | **Quoting a cost against a baseline that no longer exists** | For every cost in a rejected-alternatives table, name the population it is computed on and check that population is still the adopted one |
 | **D** | **A unit or order-of-magnitude error that nobody re-derived** | Sanity-check any figure that crosses a unit boundary — per-minute vs per-hour, nanoseconds vs microseconds — against a second route to the same number |
+| **F** | **A figure measured on one population or configuration, quoted as if measured on another.** **NEW, added 2026-08-14. It is now the study's most frequent single error** — at least nine instances, seven of them inside the Step 7 block, and it is what `0046` §0's standing rule exists to stop | **Name the population at the point of use, every time.** For an interval endpoint, name the population it is computed on **and** the estimand it bounds, and check they are the same population (`0047` §3). Mode C is its ancestor — C is a *cost* against a dead baseline, F is *any* figure against the wrong population |
 
 ---
 
@@ -101,6 +102,60 @@ it** rather than repairing it a fourth time — *"a section which has lost three
 rounds is a liability regardless of what a fourth might achieve."* Red Team's own verdict on the
 strip: *"it removed 2,350 words and introduced no new arithmetic error, which is the first round in
 seven that can be said of."*
+
+### Mode A at the Step 7 liveness gate — the rule broke four times, and so did its warrants
+
+**Unlike the Step 1 amendment, here the *rule* broke too.** Full arc in [[gate-step7-liveness]].
+
+| Claim | Where | Why it was false |
+| :--- | :--- | :--- |
+| *"At the 95th, one ordinary gap in twenty trips the threshold; at the 99th **it is one in a hundred**"* | `0036` §1 — the entry that set the threshold | **True of a uniformly drawn gap, false of the gap the rule tests.** The bracketing gap is **length-biased** (inspection paradox): **37.4%** of measured bracketing gaps exceeded the pooled-99th threshold, and the 99.9th still fails 27%. **The calibration was performed on one distribution and applied to another.** Found by **both arms independently and in the same terms**. Instance A's formulation is now the record's: *"the reference distribution and the test statistic are not the same object"* |
+| *"If there is **no insertion instant at or before `τ1`**, the pair is **not live**"* | `0036` §2.3(ii) | **Contradicted approved gate `0021`**, which holds that any record inserted after the window closed **proves the account was alive.** Every pair in that bucket has instants after `τ1` **by construction** — the run records zero accounts with no instants and a minimum of three gaps per account. **18,250 pairs, 76.8% of the filter's exclusions.** Nothing in `0036`–`0039` cited `0021` against it, and `0037` §3 diagnosed the mechanism correctly and then **routed it to Step 14 as a limitation — the wrong disposition for a rule that overrides an approved gate** |
+| *"The measured-gap test does **3.45%** of the exclusions and the edge cases 96.55% — and **this holds across every percentile** from the 90th to the 99.9th"* | `0038` §5 | **Wrong twice.** The level was measured on the **201,900**, which §2 of the same entry had just replaced with the 152,126. And **the invariance is arithmetically impossible**: the edge-case count is **constant in the percentile** (22,496, a function of `W` alone) while the gap-test count is `100 − p` of 129,630, so the share **must** move — 36.5% → 5.37% → 0.4%, a **93-fold range**. Both arms found it independently |
+| *"The threshold is **derived independently of `W`**"*, and `task-sheet.md`'s *"do not use `W` as an input to the derivation"* | `0036` §3, `task-sheet.md` line 235 | **Unsatisfiable after `0037`.** Any bracketing-gap reference is selected by `τ1`, and **`τ1` contains `W`**. Both withdrawn rather than left standing |
+| *"An instant at or before `τ1` **and** one after it"* as the parameter-free rule | `0041` §4 | **Reinstated `0036` §2.3(ii) verbatim** — the rule `0040` §1 had withdrawn **one entry earlier** for contradicting `0021`. **Drafted in the entry and then propagated a second time into the launch instruction**, so both arms received it twice. Priced at **18,903 exclusions from 1,434 of 2,402 accounts**. *"Do not reintroduce a pre-`τ1` requirement in any form"* — **withdrawn twice** |
+| *"There is no threshold and **no free parameter**"* | `0042` §1 — the entry that closed the gate | **Deleting the threshold did not decouple anything — it made the coupling total.** The exclusion set **is** the open-ended bucket, a pure function of `W`, running **348 → 949 pairs on DERIV** across the mandated arms. **And `W` was held at 108 for the entire sensitivity test that justified the deletion.** The honest wording is *"no parameter of its own; fully determined by `W`"* |
+| *"Excluding pairs that fail the liveness test removes accounts that stopped logging, which are **disproportionately the ones that would have scored never-started**"* — bias 2's **DOWN** direction | `task-sheet.md` Step 14, and **every defence of erring high** from `0036` §1 through `0039` §7 | **Measured false.** The filter preferentially deletes **confirmed continuers** — a Continued pair carries positive episode-level evidence that later silence cannot corrupt, so there is nothing for liveness to protect and the rule deletes it anyway. Of the threshold rule's 1,282 exclusions: **1,079 Continued, 163 S&L, 40 Never started.** Separately, `0040` §3: the mechanism **describes accounts that stopped and the 18,250 were accounts that started late**, so it only ever covered ~9% of the filter |
+| *"Both arms measured ALT's exclusion set at **zero pairs** across every `W` tested"* → ALT rejected | `0045` §1 | **That is the DERIV row, where ALT is zero by construction.** ALT = PF-LIMIT ∩ `|A| = 0`, so **ALT's exclusion set *is* PF-LIMIT's never-started exclusion set** — which **`0045` §4.2 itself puts at 604 on APPLY.** *"The same entry gave two counts for the same set and §1 took the one that is zero by construction."* **ALT was rejected on effect using a measurement taken where it cannot have an effect** |
+| *"751 pairs with **directly observed** outcomes — 652 continued, 99 left"* | `0046` §2, the table that justified adopting ALT | **652 are directly observed. 99 are not.** `|A| ≥ 1` is observed; **the failure to meet the Continued condition is not.** Under `0034` only Continued rests on positive evidence. `0047` corrected three claims in `0046` and **missed this one**; Red Team's fourth review caught it, and it is what made ALT-BROAD necessary |
+| *"The 604 are **exactly** the pairs with no S2 record anywhere"* and *"the DERIV zero is **forced by construction**"* | `0046` §1 | **Counts right, both explanations wrong**, and both are the `|A| = 0` versus "no S2 record" conflation **§5 of the same entry warns against**. APPLY holds **23,260** such pairs and **22,656 stay live** — subset, not equality. And `has_s2` does **not** imply `|A| ≥ 1`: **9,145 DERIV pairs are never-started**, four line-4 pairs satisfy both conjuncts at every arm and are removed by D10. **The zero is a fact of the filter order and this pull date, not a theorem** |
+| *"Returning **every excluded pair** as a decliner reproduces the unfiltered population exactly"* — the ceiling identity | `0046` §4 | **False under ALT-BROAD**: it gives an **unattainable 17.3279%**, because the 99 S&L exclusions have `|A| ≥ 1` observed and **cannot** be never-started. **The identity still holds by a different route** — the ceiling returns **only the 604**. Corrected rather than left because **Step 9 reads this sentence** |
+| *"Step 7's own dual run **cannot exercise the rule**… the rule is first exercised at Step 8"* | `0046` §7 | **Too pessimistic and refuted by instance B.** The rule **is** exercised on APPLY. **What is true is narrower and is the operative warning: only the APPLY figures carry information, and DERIV's diff is literally `0 = 0` at every arm** |
+
+### Mode F's signature at Step 7 — nine instances, and the diagnosis
+
+`0038` §5 (level on the wrong waterfall line) · `0039` §2 (*"identical on every published number"*
+against two artifacts publishing 34.1% and 36.96%) · `0039` §6 (**a divergence invented between arms
+that agreed** — A reported both figures and B's matched one exactly; the ~880 are **pairs, not
+accounts**) · `0042` §4 (the **deleted** 1,293-day rule's deltas given the subject *"the approved
+rule"*) · `0043` §1 (the **DERIV** direction published as the study's) · `0043` §1.2 (a remedy
+prescribed on *"the ~40 never-started exclusions"* **that are zero** under the approved rule) ·
+`0045` §1 (above) · `0045`/`0046` §4 (**two consecutive bounds with mixed denominators**) · `0048` §7
+(frozen-D10 figures **stated without the arms that produced them**, which would make a Step 13
+instance file a false divergence).
+
+> **`0046` §0's diagnosis, and it is the durable sentence:** *"The pattern is not inattention to a
+> file. **It is reaching for the number that supports the ruling being written rather than checking
+> which population produced it.**"*
+
+**Three consecutive bounds had an endpoint outside the feasible set** — `0043`'s ceiling, `0045`'s
+floor on the other side, `0046`'s floor on a mixed denominator. **The fourth was refused, by both
+arms independently, before the ruling.** Instance A named the stake: the narrow S&L reading *"would
+have made this the fourth consecutive bound failing that exact test."* **The standing rule worked
+before it could be broken a fourth time, and it worked in the arms rather than in the ruling** — the
+one clean win in the block.
+
+### The pattern the Step 7 block adds to the taxonomy
+
+**Five consecutive entries each corrected their predecessor and each introduced a defect doing it**
+(`0042` → `0043` → `0045` → `0046` → `0047`). The amendment's lesson was *a correction is not
+discharged until the script and its JSON carry it*. **Step 7's is harder:**
+
+> **A correcting entry is the highest-risk place in the log to introduce an error**, because it is
+> written at speed, under a blocking review, and by someone reaching for the number that fixes the
+> thing in front of them. **Every correction should be re-derived from its population, not lifted
+> from the artifact that reported it** — `0042` §4 and `0043` §2 are the same failure, one lifting a
+> sentence from instance A and changing its subject.
 
 ---
 

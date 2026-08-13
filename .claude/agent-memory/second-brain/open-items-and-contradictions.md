@@ -1,11 +1,11 @@
 ---
 name: open-items-and-contradictions
-description: Live register of open items and cross-step contradictions in the Season 2 study, each with its two conflicting sources named — re-verified 2026-08-12 after decisions/0029-0034 and the Step 1 §7 amendment, with Z1-Z3 closed and five new findings led by the stale agent definition files
+description: Live register of open items and cross-step contradictions in the Season 2 study, each with its two conflicting sources named — re-verified 2026-08-14 after decisions/0035-0050 and the Step 7 liveness gate, with W1-W3 and W5 closed and eleven new findings led by the stale per-arm series in both data-scientist files
 metadata:
   type: project
 ---
 
-# Open items and contradictions — re-verified 2026-08-12
+# Open items and contradictions — re-verified 2026-08-14
 
 **Why this file exists:** Second Brain surfaces contradictions and names the two things that
 conflict. It does not decide, arbitrate, or fix. Every entry names its two sources so the Human
@@ -14,15 +14,233 @@ Lead can rule without re-reading the corpus.
 **How to apply:** re-check each entry against the files before raising it. Several close by
 ordinary progress rather than by a decision.
 
-**The decision log of record is `decisions/`** — `README.md` plus `0001`–`0020`. Where a decision
+**The decision log of record is `decisions/`** — `README.md` plus `0001`–`0050`. Where a decision
 file and this memory differ, `decisions/` governs on who decided what and when; the deliverable it
 approves governs on substance. I never edit `decisions/` — I report.
 
 ---
 
-## NEW — surfaced 2026-08-12 by the pass over `0029`–`0034`, in priority order
+## NEW — surfaced 2026-08-14 by the pass over `0035`–`0050`, in priority order
+
+**Context for all of these: the propagation surface has now failed NINE times** (`0050` header), and
+**both halves of every dual pair have carried each defect identically**, so the dual-implementation
+diff cannot catch this class at all. Full arc in [[gate-step7-liveness]].
+
+### V1. Both `data-scientist` files order ALT's superseded per-arm series at Step 13
+
+**The sharpest finding of the pass. It is `0050` defect #4, fixed in three places and surviving in a
+fourth — in the same two files, seventy lines below the corrected copy.**
+
+- **`.claude/agents/data-scientist.md` and `data-scientist-b.md`, line 122 (Step 13), byte-identical
+  in both halves:** *"**report the liveness exclusion count per `W` arm on APPLY** — **485 at
+  `W = 38` to 716 at 213** (`0046`)."*
+- **The same two files, line 68 (Step 7):** *"**537 / 550 / 633 / 664 / 701 / 703 / 789 / 864** at
+  `W` = 38 / 46 / 77 / 91 / 107 / 108 / 150 / 213 (`0048`)."*
+- **`task-sheet.md` line 417 (Step 13):** the ALT-BROAD series, followed by *"**(ALT's 485 → 716
+  series is superseded and must not be ordered.)**"*
+
+**So the instruction the task sheet explicitly forbids is the instruction the agent definition file
+gives, for the same step, on the same population.** `0050` §1 defect 4 recorded this exact string —
+*"Report the **ALT** exclusion count per arm: 485 to 716"* — as *"self-contradictory on its face, in
+`task-sheet.md` and both `data-scientist` files"* and fixed it. **The Step 7 occurrence was fixed;
+the Step 13 occurrence in both files was not.**
+
+**Why it matters more than its size.** Step 13 is Chained and single-implementation, so the failure
+mode is **plain omission with no diff to catch it** — the same mode `0028` was written for and W2
+was. And `CLAUDE.md` sends the agent to its definition file **first**. A Step 13 instance following
+line 122 reports the superseded ALT series and, per `0048` §7's own warning about unlabelled arm
+tables, **would file a false divergence against anything computed from the task sheet.**
+
+**The two things that conflict: `data-scientist.md` line 122 and `task-sheet.md` line 417.**
+
+### V2. `decisions/README.md` has no index row for `0050`
+
+- **The index table ends at `0049`** (line 63). Every entry from `0001` has a row.
+- **`decisions/0050-step7-propagation-pass-and-channel-measurement.md` exists**, is Closed, and is
+  the entry that fixed six defects across all five propagation files, routed three limitations into
+  Step 14, and measured the 297-pair channel.
+
+**The decision log of record does not index its own most recent entry, and that log is the Step 18
+artifact.** `0050` is also the only source for the 297-pair channel measurement and for the
+two-ceilings sentence — a reader working from the index alone reaches neither.
+
+### V3. The README's gate checklist states PF-LIMIT as the rule, two rule changes late
+
+- **`decisions/README.md` line 78:** *"**Step 7** liveness rule — **RULE CHANGED to ALT 2026-08-13
+  ([0046]); reruns pending, gate OPEN.** Previously approved **with NO free parameter** ([0042]).
+  **A pair is not live iff the account shows no insertion instant after `τ1`.**"*
+- **`decisions/0048`:** ALT-BROAD adopted 2026-08-14 — *not live iff no insertion after `τ1` **AND
+  NOT Continued**.* **`0044`** withdrew *"no free parameter."*
+
+**The sentence quoted as the rule is PF-LIMIT**, superseded twice — by ALT at `0046` and by
+ALT-BROAD at `0048`. **The gate status (OPEN) is right; the rule is two generations stale**, and this
+is the checklist a reader consults to learn what was decided. Same class as `0048` §6's line 332,
+one file over.
+
+### V4. README items 30 and 31 read as live blockers on a step that has run five times
+
+- **`decisions/README.md` item 30, unstruck:** *"The Step 7 liveness percentile is proposed at the
+  99th and not ruled. **Step 7 must not launch until it is.**"* **Item 31, unstruck:** *"The liveness
+  rule's shape is unsettled… Whether the test applies to a **single** gap, to the gap **bracketing
+  `T0 + W`**, or to **every** gap in the sweep is not settled."*
+- **`decisions/0036`'s own header:** *"**Closes:** The unruled threshold percentile (README item 30)
+  and the unsettled rule shape (item 31) — the two things blocking Step 7."*
+
+**Both were closed by name, by the entry that unblocked the step, and neither was struck.** Item 31
+is doubly stale: the shape question was settled at `0036` §2 (the bracketing gap), and **the
+percentile it turns on was deleted entirely at `0042`.** Every other closed item in that list carries
+a `~~strikethrough~~` and a CLOSED note, so the convention exists and was not applied.
+
+### V5. `task-sheet.md` Step 14 bias 2 restates a figure it withdraws four lines below
+
+**This is `0050` defect #1's exact shape — fixed for one figure, live for another, inside the bullet
+`0050` rewrote.**
+
+- **Line 453:** *"Applying liveness moves the never-started share **from 6.2055% to 6.2373% — UP by
+  0.032 pp.**"*
+- **Line 456, three lines below:** *"**DERIV** … **UP 0.0042 pp**, 6.2055% → **6.2096%**."*
+- **Line 457, four lines below:** *"the figures −0.2558 (ALT) and **−0.192 / 0.032 (PF-LIMIT)** are
+  all **withdrawn and must not be restated.**"*
+
+**6.2373% and 0.032 pp are PF-LIMIT's DERIV figures.** The bullet states them as the measurement,
+gives a different DERIV measurement three lines later, and then forbids restating the first one.
+`0050` §1 caught precisely this — *"seventeen lines below, the same section said −0.2558 must not be
+restated"* — and corrected the `−0.2558` instance while leaving the `0.032` instance in the lead
+sentence.
+
+**Step 14 is the study's central honesty artifact and this is its bias ledger.**
+
+### V6. The same bullet describes PF-LIMIT as "the approved rule"
+
+- **`task-sheet.md` line 459:** *"the threshold rule's 1,282-pair exclusion set, of which **the
+  approved rule's 751** are the open-ended subset."* **Line 461:** *"**seven in seven of the 751**
+  have positive S2 evidence, and **six in seven — 652** — are confirmed continuers… **Report the
+  bound over the never-started exclusions only** (`0045`, Option C)."*
+- **`decisions/0048`:** ALT-BROAD is the adopted rule; **PF-LIMIT is superseded**, and its exclusion
+  set on DERIV was 751. **`0048` §6** recorded line 444 — *"'Option C' and 'seven in seven of the
+  751' — PF-LIMIT as operative"* — as **superseded and fixed**.
+- **`0049` §2 and `task-sheet.md` line 341** require a **second** bound **over all 703**.
+
+**The text `0048` §6 recorded as fixed is present without a supersession marker**, and line 461's
+instruction ("the never-started exclusions only") is the pre-`0049` disposition. Also **`0048` §4
+corrected "751 directly observed" to 652 observed / 99 null-based**, and line 461's "seven in seven /
+six in seven" framing is the merged form `0045` §4.3 was written to split.
+
+### V7. The Continued floor 73.6537% cannot be reconstructed, and states no population
+
+**This is `0046` §0's own standing rule un-applied in the entry that routes it to Step 14.**
+
+- **`decisions/0050` §3 and `task-sheet.md` line 345:** *"The never-started ceiling **16.9704%**, the
+  started-and-left ceiling **10.0405%** and the **Continued floor 73.6537%** sum to **100.66%**."*
+  The first two state their construction and population; **the third states neither.**
+- **The published counts:** filtered population 195,951, shares 16.7231 / 73.5592 / 9.7177 give a
+  **Continued count of 144,141**. Under ALT-BROAD **no Continued pair is ever excluded**, so
+  Continued's two attainable values are **144,141 / 196,654 = 73.2967%** (unfiltered) and
+  **144,141 / 195,951 = 73.5592%** (filtered).
+
+**73.6537% is outside both, and a "floor" above the point estimate is anomalous.** The sum's
+arithmetic is internally consistent with its own figure (16.9704 + 10.0405 + 73.6537 = 100.6646), so
+the 100.66% headline stands or falls with it — substituting 73.5592% gives 100.57%.
+
+**I am not asserting the figure is wrong. I could not reconstruct it, and it is the one figure in
+that sentence with no stated population** — which is the condition `0046` §0 says means it *"is not
+propagated."* `0050` §5 records that Red Team re-derived the arithmetic independently and cleared it,
+so there may be a corner construction I have not recovered; **if so it needs naming at the point of
+use.** Every other number in this chain reconciles exactly (see the PASS list below).
+
+### V8. Eight generations of Step 7 deliverables sit in `artifacts/` with no forward pointer
+
+**This is Z3 at Step 7, and `0029` already established the remedy.**
+
+- **`artifacts/` holds twenty Step 7 markdown deliverables** across the runs labelled *(none)*, `2`,
+  `3`, `4`, `sensitivity`, `alt-rule`, `liveness-alt` and `liveness-bb` — **only the `bb` pair is
+  ALT-BROAD.** The rest publish **632 d**, **1,293 d**, **PF-LIMIT** and **ALT** as their proposals.
+- **Grepped `step7-liveness-a*.md` for `0048`, `0049`, `0050` and `ALT-BROAD`: zero matches.** No
+  superseded generation points forward.
+
+**Every one is correctly headed "PROPOSED, NOT ADOPTED", and that framing is right and should not be
+changed** — the issue is that they are the **public deliverables of a gate whose rule changed four
+times**, with no header naming what superseded them. Concretely:
+`artifacts/step7-liveness-alt-a.md` line 162 reads *"The exclusion set is empty on DERIV at **every
+arm from 38 to 213**"* — the exact claim **`0049` defect #4 called false in five files** — live and
+unmarked in a public artifact. Same file, line 37: *"`τ2` plays no part"*, withdrawn by `0049` #1.
+
+**The repo's own practice is to annotate:** `0029` put a header on **both** Step 6 artifacts, and
+`artifacts/s1-completer-diagnostic.md` opens *"This supersedes the 2,134-user snapshot."* **Nine
+superseded Step 7 artifacts got no such header.**
+
+### V9. `decisions/0034` still states the clause `0049` withdrew
+
+- **`decisions/0034` line 35:** *"…which is tested at `τ1`. **`τ2` plays no part in the liveness
+  test.** Written into the Step 7 spec so…"*
+- **`decisions/0049` defect #1:** *"`task-sheet.md`'s **'`τ2` plays no part'** — **false under
+  ALT-BROAD**, since the second conjunct **is** the Continued test, read at `τ2`. **Withdrawn.**"*
+
+**The clause was withdrawn from `task-sheet.md` and not from the gate document that originated it.**
+`0034` is an **approved gate amendment** and `0048` §8 sets the convention: `decisions/` entries are
+*"amended only in place, with markers."* Six other entries carry exactly such markers; this one does
+not.
+
+**Substance survives and should be stated when this is raised:** `0034` §6.3's actual ruling — that
+the **silence test** is anchored at `τ1` — is intact and is what ALT-BROAD implements. Only the
+sentence's scope is now too broad. **Low consequence, but `0034` is the document a Step 18 reader
+opens to learn the anchoring ruling.**
+
+### V10. README item 46 undercounts its own pattern by four, and is missing the third control
+
+- **`decisions/README.md` item 46:** *"A ruling lands in a decision entry and not in the file the
+  agents read — **five times now**"*, sharpened *"after a **sixth** instance"* and extended twice
+  through `0047`.
+- **The actual count is nine:** #7 (`0046` §6, the withdrawn instruction surviving in the two files
+  `0044` had itself named), #8 (`0048` §6, five stale task-sheet lines including **line 332 carrying
+  a superseded bound as operative Step 9 instruction**), #9 (`0050` header, **six defects live in
+  all five files, produced by `0048` and `0049` themselves**).
+- **And `0049` §6 added a third control that item 46 does not carry:** the **agent-launch snapshot
+  hazard** — a definition is snapshotted at launch, so a file edited and an agent launched in the
+  same turn disagree and **the agent cannot see it is holding an old copy**. `0049` calls it *"the
+  third control added to the propagation problem"* and names the practice: **the launch prompt, not
+  the definition file, is the authority at launch.**
+
+**The item exists to make the countermeasure a standing obligation. It is the one place a future
+reader learns the surface has failed — and it understates the failure rate by nearly half.**
+
+### V11. `0029`'s Open status is overtaken rather than closed
+
+- **`decisions/0029` is recorded Open** *"on the Step 7 percentile only"*, and README item 30 repeats
+  it.
+- **`0036` ruled the percentile (99th); `0042` deleted the threshold entirely.** There is no
+  percentile to rule.
+
+**Not a contradiction of substance — a status that no longer describes anything.** Flagged because
+`0029` and `0041` are the only non-Closed entries in a fifty-entry log, and one of the two is open on
+a question that no longer exists. **The other, `0041`, is Open by its own status line** and was
+superseded by `0042` the same day.
+
+---
+
+## CLOSED by `0035` — four of the five findings from the 2026-08-12 pass
+
+| Was | How it closed |
+| :--- | :--- |
+| **W1** — the agent definition files were never amended, and `CLAUDE.md` points agents at them first | **CLOSED as `0035`**, in the strongest available form: *"the agent definition files are **live spec**, not vestigial launch briefs."* All four pipeline files amended; both pairs verified byte-identical apart from `name:`. **`0035` §1 adopted the argument I raised** — *"a dual pair whose two halves read the same stale brief produces a clean diff and a wrong answer, and the diff is the only instrument this study has for catching a spec defect."* The surface is now formally **five files** (item 46, sharpened at `0044` §3.1). **Residue: V1**, a Step 13 line in the same two files |
+| **W2** — `task-sheet.md` Step 10 never received `0034` | **CLOSED as `0035` §3.** All three requirements added: `p` on `A_H` in the rank form, the earlier-shifting direction named, the `p = 1.0` residual re-reported. Verified present at `task-sheet.md` lines 365–367 and in both `data-scientist` files |
+| **W3** — "Step 2's marginal-lag distribution" for a figure Step 2 does not contain | **CLOSED as `0035` §4**, corrected in all three places. `task-sheet.md` line 480 now reads *"**§2 of the amendment** — not Step 2, which is the frame ledger and has no lag distribution"* |
+| **W5** — the Step 6 headers' "unaffected by the rendering" clause overreaches | **CLOSED as README item 44**, which states the finding in the register's own terms |
+| **W4** — Q1's warrant turns on D3, which `0034` abolished | **STILL OPEN.** Carried as README item 43. `0035` did not reach it and does not claim to. See [[step1-open-questions]] |
+
+**`0035` credits `second-brain` in its *Occasioned by* field — the fourth such entry after `0022`,
+`0028` and `0029`.** Recorded without comment: the role is continuity, and the log is the Human
+Lead's.
+
+---
+
+## Superseded — the `0029`–`0034` pass of 2026-08-12, retained for the reasoning
+
+**W1, W2, W3 and W5 are CLOSED by `0035` (table above). W4 is still open.** The original text is kept
+because W1's argument became `0035`'s stated ground for treating the agent files as spec.
 
 ### W1. The agent definition files were never amended, and CLAUDE.md points agents at them FIRST
+### CLOSED as `0035`, 2026-08-13
 
 **This is the sharpest finding of the pass, and it is the item-23 pattern with a third home nobody
 has been updating.**
@@ -600,20 +818,25 @@ namespace is not part of the task description and separating it does not weaken 
 to Steps 7 and 9 (`data-scientist` / `-b`) and Step 8 (`analytics-engineer` / `-b`). No output was
 lost, and the identical inputs are themselves evidence the collision never reached the computation.
 
-### Critical path, updated 2026-08-12 after `0034`
+### Critical path, updated 2026-08-14 after `0050`
 
 Steps 1 (amended and re-approved), 3, 4 (stopped), 2, 5 and 6 are done. **Three gates closed of
-five.** **Step 7 is next** — dual pair, spec now fixed by `0029` and `0034`, needs the stored
-calibration and must not refit it, liveness anchored at `τ1`. **It is BLOCKED on one ruling: the
-liveness percentile is proposed at the 99th and not adopted** (README item 30), and `0029` says
-Step 7 must not launch until it is. Then Step 8 (dual, on the 201,900, the Layer 1 record tags,
-`W = 108`, the `0029` filter order and the `A ⊆ A_H` invariant), which also inherits item 27's
-four-pair conflict.
+five.** **Step 7 has run seven times and is STILL OPEN** — approved at `0039` and suspended, approved
+at `0042` and reopened, rule changed at `0046` and again at `0048`. It sits with Red Team after its
+fifth review. The rule is **ALT-BROAD**; the bounds, populations and per-arm series are settled and
+confirmed by both arms. **Step 8 has never launched** and does not until Step 7 closes.
 
-**The one thing to watch at each remaining gate** is unchanged and has now been paid for four times:
-a ruling that changes what a downstream step computes has **three** homes — the decision log, the
-gate's own deliverable, and **the spec the later step actually reads.** W1 argues there is a
-**fourth**, the agent definition files, and that it has never been updated once.
+**When Step 8 does launch** it is a dual pair on **APPLY = 196,654** (line 1 less D10), the Layer 1
+record tags, `W = 108`, the `0029` filter order with **liveness at position 6 and outcome assignment
+at 7**, the `A ⊆ A_H` invariant, the `>=` monotone invariant, **line 6 reported as
+outcome-conditional**, and **703 as the expected exclusion count — a mismatch is a population defect
+before an implementation one.** It also still inherits item 27's four-pair conflict.
+
+**The one thing to watch has now been paid for NINE times, and the surface is FIVE files**
+(`task-sheet.md` plus the four pipeline agent definitions), not three. **Three standing controls
+exist and each was written after the same failure recurred somewhere new:** item 46's five-file rule,
+`0046` §0's population rule, and `0049` §6's launch-snapshot practice. **V1, V5 and V6 show the
+surface has failed again since `0050` closed.** Full arc in [[gate-step7-liveness]].
 
 ### Stale pre-amendment expressions — conclusions survive, wording does not
 
@@ -656,7 +879,49 @@ split signature depends on — README item 5). N6 (the Step 0 file index is stal
 
 ## Checks that PASS — recorded so they are not re-litigated
 
-Verified 2026-08-12. Arithmetic reconciliations are in [[population-chain-steps-2-3-4]].
+### Verified 2026-08-14, on the checks the Human Lead named for the `0035`–`0050` pass
+
+- **Both dual pairs are byte-identical apart from the `name:` field. PASS.**
+  `data-scientist.md` / `data-scientist-b.md` differ only at line 2; `analytics-engineer.md` /
+  `analytics-engineer-b.md` likewise. Read in full and compared line by line, not sampled.
+  **Note the pairs are identical *including* V1's defect** — which is the point `0035` §1 makes:
+  identical halves in the wrong state produce a clean diff and a wrong answer.
+- **No file states PF-LIMIT or ALT as the operative rule.** All five propagation files carry
+  ALT-BROAD's biconditional with both conjuncts. The one exception is **`decisions/README.md`'s gate
+  checklist (V3)**, which is the index rather than a spec file.
+- **The deleted thresholds appear only as history.** `4 / 504 / 632 / 914 / 1,293` occur in the five
+  files exclusively inside "derived three times and deleted" statements. **One collision to watch:
+  `632` is also the legitimate frozen-D10 never-started COMPONENT at `W = 125`** (`0050` defect 5) —
+  same digits, different quantity, and `0048` §7 already shows how an unlabelled arm figure produces
+  a false divergence.
+- **Both superseded bounds are labelled.** `[16.7789%, 17.0355%]` and `[16.7146%, 16.9704%]` appear
+  in `task-sheet.md` line 340 and both `data-scientist` files only under an explicit *superseded*
+  marker with the reason (mixed denominators; floor not a floor).
+- **The withdrawn claims are absent from all five files as operative text.** *"no free parameter"*,
+  *"`τ2` plays no part"*, *"the exclusion set is empty on DERIV"*, *"every liveness exclusion is
+  never-started"*, *"751 directly observed"* — each is either absent, or present under a withdrawal
+  marker, or (in both `data-scientist` files) present in the **negated** corrective form *"NOT every
+  liveness exclusion is never-started."* Surviving instances are in `artifacts/` (**V8**) and in
+  `decisions/0034` (**V9**).
+- **`604` is used correctly everywhere in the five files** — as the never-started **component** of
+  703, and as the **superseded ALT total** with both `analytics-engineer` files stating that
+  producing 604 at Step 8 **is** a divergence.
+
+**The arithmetic reconciles exactly, checked independently rather than accepted:**
+
+- **APPLY**: never-started 33,373 / Continued 144,141 / S&L 19,140 = **196,654** ✓
+- **Shares under the rule** on 195,951: 16.7231 + 73.5592 + 9.7177 = **100.0000** ✓, and each share
+  back-computes to its integer count ✓
+- **Movements** −0.2474 + 0.2630 − 0.0156 = **0.0000** ✓
+- **Never-started bound**: ceiling 16.9704% × 196,654 = **33,373**; floor = (33,373 − 604)/196,654 =
+  **16.6633%**; width **0.3071 pp = 604/196,654** ✓ — **both endpoints on one denominator**
+- **S&L bound**: width **0.3575 pp = 703/196,654** ✓; conditional sub-interval width **0.0503 pp =
+  99/196,654** ✓; the two differ by a **factor of seven** as stated ✓
+- **DERIV/APPLY consistency**: 152,126 − 147,370 = 4,756 removed by D10; 201,900 − 196,654 = 5,246.
+  Line 4 ⊂ line 1 and 4,756 ≤ 5,246 ✓
+- **The one figure that does not reconstruct is the Continued floor 73.6537% — V7.**
+
+### Verified 2026-08-12 and still standing. Arithmetic in [[population-chain-steps-2-3-4]].
 
 Verified after `0034`, on the three checks the Human Lead named:
 

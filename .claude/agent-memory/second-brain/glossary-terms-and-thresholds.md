@@ -1,28 +1,130 @@
 ---
 name: glossary-terms-and-thresholds
-description: Live glossary of every term, threshold and constant in the Season 2 abandonment study, each tagged with the step, decision and gate that fixed it and whether it is set, deferred, or still open — current through decisions/0034 and the Step 1 §7 amendment (2026-08-12)
+description: Live glossary of every term, threshold and constant in the Season 2 abandonment study, each tagged with the step, decision and gate that fixed it and which population its figures are on — current through decisions/0050 and the Step 7 ALT-BROAD rule (2026-08-14)
 metadata:
   type: reference
 ---
 
 # Glossary — terms, thresholds, and where each was set
 
-**Current through `decisions/0034`, 2026-08-12** — Steps 3, 4, 2, 5, 6 and the Step 1 §7 amendment.
-This is an index, not a substitute for the artifacts. Verify against the file before acting on any
-row.
+**Current through `decisions/0050`, 2026-08-14** — Steps 3, 4, 2, 5, 6, the Step 1 §7 amendment, and
+the Step 7 liveness gate (still OPEN). This is an index, not a substitute for the artifacts. Verify
+against the file before acting on any row.
 
 Status vocabulary: **FIXED** (set and gate closed) · **DEFERRED** (form fixed, value owed)
 · **OPEN** (gate has not run) · **PROPOSED** (agent produced it, gate not approved).
+
+> **Standing rule since `0046` §0, and it governs this file: EVERY FIGURE STATES WHICH POPULATION
+> PRODUCED IT, at the point of use.** Extended by `0047` §3 to interval endpoints: *an endpoint
+> states the population it is computed on and the estimand it bounds, and they must be the same
+> population.* Both rules exist because the study broke them repeatedly — see
+> [[gate-step7-liveness]].
 
 ## The five items the Human Lead named as glossary-critical
 
 | Term | Value / status | Where set | Gate |
 | :--- | :--- | :--- | :--- |
 | **`W`** — the window, in days | **FIXED: `W = 108 days`.** The **ceiling** of the **90th percentile** (107.7135) of the **continuous** lag from clock start to first S2 episode, on the **C1 subset (25,120 pairs, 206 shows, 2,050 users)** of the 128,099 clean-record sample. **Applies to all pairs.** Precision: **±18 days, show-clustered** — not the decimals. **Since `0034`, `W` no longer assigns every outcome state on its own**: `τ1` assigns never-started, `τ2 = τ1 + H` assigns Continued. **Precision history: 107 (`-a`, floored) → 107.7135 (`-b`, raw) → 108 (adopted ceiling).** Neither artifact figure is the adopted value; both predate `0025`. | Rule: `0024` (percentile) + `0025` (unit and ceiling). Value: `0026`. Propagated into Steps 7, 8, 13 and both Step 6 artifacts by `0029` | **Step 6 gate, APPROVED 2026-08-12, `0026`. Gate 3 of 5** |
-| **Liveness threshold** | **OPEN as a value; the RULE is now fixed.** `0029` replaced *"set the threshold well beyond the normal gap"* with three specified things: the **gap is the interval between consecutive INSERTION instants, continuous**, not floored; the threshold is a **named percentile**, **PROPOSED at the 99th and NOT adopted**; and it **rounds UP** per `0025`. **Step 7 must not launch until the Human Lead rules the percentile** (README item 30). Basis unchanged: insertion time (`0021` ruling 2), stored play-`id` calibration a required input that **neither instance refits** (`0022`). **Anchored at `τ1`, never `τ2`** (`0034` §6.3). **Two things still unsettled:** the rule's *shape* — single gap, the gap bracketing `T0 + W`, or every gap — and the compounding false-dead rate that no percentile fixes (≈39% at the 99th over 50 gaps). README item 31 | Rule `0029`; basis `0021`; spec `0022`, `0034` | Step 7 gate, **not approved** |
+| **Liveness rule** | **THERE IS NO THRESHOLD. The rule is ALT-BROAD:** *a pair is **not live iff BOTH** the account shows **no insertion instant after that pair's `τ1`** AND the pair is **NOT Continued**.* A numeric threshold was derived three times (632 d, 1,293 d) and **DELETED at `0042`** — the headline could not distinguish 787 from 2,200 days. **No parameter of its own; FULLY DETERMINED BY `W`** (`0044` — "no free parameter" is withdrawn). Basis unchanged: **insertion time**, not claimed `watched_at` (`0021` ruling 2); stored play-`id` calibration a required input that **neither instance refits** (`0022`, `0029`); **pair-level, never a wholesale user drop** (`0034`). **The SILENCE test is anchored at `τ1` and only there; the Continued conjunct is read at `τ2`** (`0049` — *"`τ2` plays no part"* is withdrawn). **Do not reintroduce a pre-`τ1` requirement in any form — withdrawn twice** (`0040` §1, `0042` §3), both for contradicting gate `0021` | Rule `0048`; deletion `0042`; coupling `0044`; corrections `0043`, `0045`, `0046`, `0047`, `0049`, `0050` | **Step 7 gate, still OPEN.** Approved twice (`0039`, `0042`) and reopened twice. **Step 8 has not launched** |
 | **S1 completion rule** | **FIXED.** `F1 ∈ D1` **and** `\|D1\| ≥ ceil(0.90 × L1)`, distinct episodes, membership by the listed set `E1`. Now applied against **real** `E1` from the Step 2 frame, not a proxy (`0019`). | Step 1 §4 | **Step 1 gate, APPROVED 2026-08-10** |
 | **Contamination exclusion rule** | **FIXED.** Exclude **16,665** pairs whose S2 evidence is *entirely* air-date-stamped, plus **1,542** with no S2 evidence and a fabricated binding clock start. Total **18,207**; retains **201,900 of 220,107 (91.73%)**. Disjoint by construction. | Step 5 §9, revision 6 | **Step 5 gate, APPROVED 2026-08-12, `0021`. Gate 2 of 5** |
-| **Filter order** | **FIXED by `0029`, ahead of the gate.** **1.** Step 2 frame → **2.** `L2 = 1` exclusion → **3.** S1 completion rule → **4.** contamination exclusion → **5.** right-censoring → **6.** liveness rule → **7.** outcome assignment **at two instants** (`\|A\| = 0` at `τ1`, Continued at `τ2`, per `0034`). **Why it had to be fixed:** the final row set commutes — every filter is row-wise — but the **required per-filter sample size does not**, so two faithful instances could report different waterfalls on an identical table and the diff could not tell that from a bug. **Contamination before right-censoring** was already required. **Right-censoring before liveness** is the one genuine choice: censoring is a property of the clock and `pull_date`, objective and behaviour-independent, so running it first measures liveness's marginal cost on a fully observable population — the number Step 9's bound needs. | `0029`, written into `task-sheet.md` Step 8 | Step 8 gate, **still not approved** — the order is fixed, the gate is not |
+| **Filter order** | **FIXED by `0029`, ahead of the gate.** **1.** Step 2 frame → **2.** `L2 = 1` exclusion → **3.** S1 completion rule → **4.** contamination exclusion → **5.** right-censoring → **6.** liveness rule → **7.** outcome assignment **at two instants** (`\|A\| = 0` at `τ1`, Continued at `τ2`, per `0034`). **Why it had to be fixed:** the final row set commutes — every filter is row-wise — but the **required per-filter sample size does not**, so two faithful instances could report different waterfalls on an identical table and the diff could not tell that from a bug. **Contamination before right-censoring** was already required. **Right-censoring before liveness** is the one genuine choice: censoring is a property of the clock and `pull_date`, objective and behaviour-independent, so running it first measures liveness's marginal cost on a fully observable population — the number Step 9's bound needs. **Since ALT-BROAD, waterfall line 6 is OUTCOME-CONDITIONAL and must be reported as such** — the Continued test is evaluated before liveness applies. **That is permitted, and both arms proved it independently:** the two are **row-local predicates on the position-5 output and commute exactly**, and `0029`'s rationale concerns per-filter **sample size**, which cannot reach position 7 because **outcome assignment removes no rows** — positions 1–6 are filters, **position 7 is an annotation** contributing no waterfall line. **The monotone invariant is coded `>=`, not `>`** (`0047`, reason corrected by `0049`): decrease is **strict on both populations under ALT-BROAD**, and `>=` is kept anyway **so the invariant does not encode a property of one rule**. **Expect 703 at position 6; treat a mismatch as a POPULATION defect before an implementation one** — Step 7 built APPLY from the Step 5 pair table, not through positions 1–5. **Producing 604 means the withdrawn ALT was implemented, and that IS a divergence.** | `0029`; liveness spec `0046`–`0050`, written into `task-sheet.md` Step 8 | Step 8 gate, **still not approved** — the order is fixed, the gate is not. **Step 8 has never launched** |
+
+## Step 7 — the liveness vocabulary. Gate OPEN. Full arc in [[gate-step7-liveness]]
+
+### The candidate rules, and the status of each
+
+| Name | Rule | Status |
+| :--- | :--- | :--- |
+| **ALT-BROAD** | not live iff **no insertion after `τ1`** AND **NOT Continued** | **ADOPTED, `0048`, 2026-08-14.** Gate still open pending Red Team |
+| **ALT** | not live iff no insertion after `τ1` AND **`\|A\| = 0`** | **SUPERSEDED** by `0048`. Guarded one null of two |
+| **PF-LIMIT** | not live iff **no insertion after `τ1`** (alone) | **SUPERSEDED** by `0046`. Deleted 751 pairs with no stated warrant |
+| **ALT-MATCHED** | one silence test per null, at the instant that null is read | **RECORDED, NOT ADOPTED** (`0050` §4). The form that would close the residual 297-pair channel. Never cite it as the rule; never drop it from the record |
+| *PF-BRACKET* | instant at or before `τ1` **and** one after — the literal reading of `0041` §4's withdrawn wording | **Never a candidate.** Priced at 18,903 exclusions from 1,434 of 2,402 accounts, to show what the wording cost |
+
+**"NOT Continued" means Step 1 §7 as amended by `0034`** — the negation of
+`|A| ≥ 1 ∧ F2 ∈ A_H ∧ |A_H| ≥ ceil(0.90 × L2)` — so it covers **both** Never started and
+Started-and-left. **`|A| = 0` alone is the superseded ALT form.** And `|A| = 0` is §7's Never-started
+condition, **not** "no S2 evidence at all" — the competing reading selects a different set.
+
+### The two populations, named once and used everywhere (`0046` §0)
+
+| Name | Definition | Pairs | Who reads it |
+| :--- | :--- | ---: | :--- |
+| **DERIV** | Step 5 waterfall **line 4 (152,126) less D10**. **Requires S2 evidence** | **147,370** | Step 7 derives here |
+| **APPLY** | **line 1 (201,900) less D10**. **What Step 8 filters at position 6** | **196,654** | Step 8, Step 9, Step 13 |
+
+**Exclusions under ALT-BROAD at `W = 108`: 99 on DERIV (73 accounts) · 703 on APPLY (216 accounts) =
+604 never-started + 99 started-and-left.** Per-arm on APPLY, D10 **re-derived** at each arm:
+**537 / 550 / 633 / 664 / 701 / 703 / 789 / 864** at `W` = 38/46/77/91/107/108/150/213 — factor 1.61.
+**S&L component separately: 52 / 56 / 79 / 89 / 98 / 99 / 125 / 148 — factor 2.85, growing faster
+than the rule itself.** On DERIV the top arm is **147, not 148**.
+
+**Superseded counts, never to be restated as current:** PF-LIMIT's **751** (DERIV) and **1,355**
+(APPLY); ALT's **604** total and **0 on DERIV**; ALT's per-arm **485 → 716**. *(Under ALT-BROAD, 604
+survives only as the never-started **component** of 703.)*
+
+### The bounds — Step 9, both on APPLY, both endpoints on 196,654
+
+| Bound | Interval | Width | Over |
+| :--- | :--- | ---: | :--- |
+| **Never-started** | **[16.6633%, 16.9704%]** | **0.3071 pp** | the **604** never-started exclusions only |
+| **Started-and-left** | **[9.6830%, 10.0405%]** | **0.3575 pp** | **ALL 703** exclusions |
+| *conditional sub-interval* | *[9.6830%, 9.7333%]* | *0.0503 pp* | *the 99 only — **NOT A BOUND*** |
+
+**The never-started ceiling equals the unfiltered share as an identity** — but **by the route
+`0049` corrected:** it returns **only the 604** to the never-started count, **not** every excluded
+pair. *"Returning every excluded pair as a decliner"* gives an **unattainable 17.3279%**, because the
+99 have `|A| ≥ 1` observed. **ALT-BROAD's exclusion set is no longer a subset of never-started, which
+is why the route matters.** Both endpoints attainable, verified in **integer** arithmetic.
+
+**The 99-only interval is a LABELLED CONDITIONAL SUB-INTERVAL and must never be recorded as a bound.**
+It is conditional on every never-started exclusion being truly never-started; **the 604 rest on an
+untrusted `|A| = 0` and some may in truth have left.** The two differ by a **factor of seven**. Both
+arms reached this independently and **both refused to adopt it themselves** — it would have been the
+**fourth consecutive bound** with an endpoint outside the feasible set.
+
+**Superseded bounds, retained only as history:** `0045`'s **[16.7789%, 17.0355%]** (PF-LIMIT, mixed
+denominators, floor was not a floor) and `0046`'s **[16.7146%, 16.9704%]** (mixed denominators, floor
+0.0513 pp above the case liveness guards against). The internally consistent PF-LIMIT interval was
+[16.727%, 17.0355%].
+
+**The bound is DEGENERATE on DERIV — [6.2055%, 6.2055%] — so the dual control is `x = x` there**
+(`0050` §3). **The two ceilings cannot both hold:** 16.9704 + 10.0405 + 73.6537 = **100.66%**. They
+are **alternative worst cases over the same 604 pairs, not simultaneous ones.**
+
+### Shares and movements — APPLY, under ALT-BROAD, at `W = 108`
+
+**16.7231 / 73.5592 / 9.7177**, summing to 100.0000. Movement against no filter: **−0.2474 / +0.2630
+/ −0.0156 pp**, summing to zero. On DERIV: **+0.0042 / +0.0554 / −0.0595 pp**.
+
+**Step 14 bias 2 is UP on DERIV and DOWN on APPLY, and the published direction is APPLY's.** The sign
+is **population-scoped and both directions must be carried** (`0045` §4.1). Mechanism of the DERIV UP:
+line 4 requires S2 evidence, so the 604 never-started pairs with no S2 record anywhere exist **only**
+on APPLY, and excluding them is what pulls the share down there.
+
+### Deleted thresholds — never to be quoted as operative
+
+**4 days · 504 · 632 · 914 · 1,293.** Also 787, 790, 975, 2,200 and the interval [528, 787] as
+threshold quantities. **Watch for a collision: `632` also appears legitimately as the frozen-D10
+never-started COMPONENT at `W = 125`** (`0050` defect 5) — a different quantity that happens to equal
+the deleted threshold. Frozen-D10 **totals** are 746 / 823 / 918 / 1,117 at `W` = 125/150/180/213, of
+which **632 / 684 / 753 / 881 is the never-started component**; **125 and 180 are not in the mandated
+grid**, so only 684 and 881 are comparable to it.
+
+### Withdrawn claims that must not reappear as operative
+
+*"no free parameter"* (`0044`) · *"`τ2` plays no part"* (`0049`) · *"the exclusion set is empty on
+DERIV"* (`0049`, false in five files) · *"every liveness exclusion is never-started"* (`0050`) ·
+*"751 directly observed"* (`0048` — **652 observed, 99 null-based**) · *"the 604 are exactly the
+pairs with no S2 record anywhere"* (`0047` — **subset, not equality**: APPLY holds 23,260 such pairs
+and 22,656 stay live) · *"the DERIV zero is forced by construction"* (`0047` — a **fact of the filter
+order and this pull date**, not a theorem) · *"one ordinary gap in a hundred"* (`0037` — length bias)
+· the **invariance** of the gap-test/edge-case split (`0039` — arithmetically impossible).
+
+**Decomposition, ALT-BROAD:** APPLY **196,654 → 52,514 (¬Continued) → 703**. *(ALT's
+196,654 → 33,373 → 604 is superseded and must not be implemented.)* **Conjunct 1 does most of the
+work**, which is why the count moves with `W` at all.
 
 ## Decision numbering on the public record — `decisions/`
 
@@ -38,12 +140,28 @@ Step 6 gate APPROVED, `W = 108`** · **`0027` Step 13 arms at 150 and 213** · *
 carries every routed limitation** · **`0029` `W` propagated, Step 7 threshold rule, Step 8 filter
 order** · **`0030` 2025 cutoff kept + three frame field changes** · **`0031` the ≥50 floor
 justified** · **`0032` Step 4 deliverables regenerated** · **`0033` Step 8 per-air-period censoring
-counts** · **`0034` Step 1 §7 amended — Continued at `τ2`**.
+counts** · **`0034` Step 1 §7 amended — Continued at `τ2`** · **`0035` agent definitions are live
+spec, amended; Step 10 receives `0034`** · **`0036` Step 7 threshold at the 99th + the bracketing-gap
+shape** · **`0037` `0036` §1's basis withdrawn; gap unit; namespaces** · **`0038` Step 7 spec frozen
+— reference 152,126, one gap per pair** · **`0039` Step 7 APPROVED at 632 d — LATER SUSPENDED** ·
+**`0040` gate REOPENED on Red Team HOLD; `0021` reinstated; the 18,250 returned** · **`0041`
+extended reference set, provisional; no threshold approved** · **`0042` Step 7 APPROVED, threshold
+DELETED, PF-LIMIT** · **`0043` bias-2 sign corrected DOWN→UP** · **`0044` "no free parameter"
+withdrawn; fully determined by `W`** · **`0045` Option C bound; ALT rejected — rejection later
+withdrawn** · **`0046` ALT ADOPTED; `0045`'s rejection withdrawn; the population rule** · **`0047`
+`0046` §1/§4/§7 corrected; D10 re-derived per arm; `>=`** · **`0048` ALT-BROAD ADOPTED** · **`0049`
+joint S&L bound; six record defects; calibration residual discharged** · **`0050` six file defects
+fixed and verified; limits routed to Step 14; channel measured at 297 pairs**.
 
-**Authority split.** `0001–0004` and `0009–0034` are Human Lead. **`0005–0008` are agent-taken and
-still Open, awaiting ratification** — the README's authority note now reads `0013–0033` and needs
-`0034` when next touched. **`0029` is the only other non-Closed entry: Open on the Step 7
-percentile only.**
+**Authority split.** `0001–0004` and `0009–0050` are Human Lead. **`0005–0008` are agent-taken and
+still Open, awaiting ratification.** **`0029` and `0041` are the only non-Closed entries** — `0029`
+was Open on the Step 7 percentile (**now moot: the percentile was ruled at `0036` and the whole
+threshold deleted at `0042`**, so `0029`'s open clause has been overtaken rather than closed);
+`0041` is Open by its own status line.
+
+**Two index defects in `decisions/README.md` as of 2026-08-14:** it carries **no row for `0050`**,
+and its authority note still reads **"0001–0004 and 0013–0033."** See
+[[open-items-and-contradictions]].
 
 ## Step 6 — how `W` is derived, and the conventions inside it
 
@@ -66,8 +184,9 @@ percentile only.**
 | :--- | :--- | :--- | :--- |
 | `T0` | `max(S2_finale_air_date, first-pass S1_completion_date)`. **Carries a behavioural term:** the `S1_completion_date` arm binds on **116,041 of 220,107 pairs — 52.7%** (`processed/step5/t0_binding.json`). Any claim that `T0` is exogenous is false and was withdrawn twice | Step 1 §6, D1; binding counts via `0034` | FIXED |
 | `⟦T0⟧` | The **UTC midnight of the date** of `T0`. `τ0 = ⟦T0⟧` | §2.4, D13 | FIXED |
-| **`τ1`** | **`⟦T0⟧ + W × 24h` = `⟦T0⟧ + 108 days`.** Assigns **never started** (`\|A\| = 0`) and is the **liveness anchor** | §2.4, D13; value `0026`; anchor role `0034` | **FIXED** |
-| **`τ2`** | **`⟦T0⟧ + (W + H) × 24h` = `⟦T0⟧ + 199 days`** at `W = 108`, `H = 91`. Assigns **Continued**. Moves with `W` automatically — at the `W = 213` arm, `τ2 = ⟦T0⟧ + 304 days`, exactly the clearance `0027` already priced | Step 1 §7 as amended; `0034` | **FIXED** |
+| **`τ1`** | **`⟦T0⟧ + W × 24h` = `⟦T0⟧ + 108 days`.** Assigns **never started** (`\|A\| = 0`); is the **liveness SILENCE anchor** and the **only** instant the silence test reads | §2.4, D13; value `0026`; anchor role `0034` | **FIXED** |
+| **`τ2`** | **`⟦T0⟧ + (W + H) × 24h` = `⟦T0⟧ + 199 days`** at `W = 108`, `H = 91`. Assigns **Continued**. Moves with `W` automatically — at the `W = 213` arm, `τ2 = ⟦T0⟧ + 304 days`, exactly the clearance `0027` already priced. **Since `0048` it is also read by the liveness rule's second conjunct** | Step 1 §7 as amended; `0034`; liveness role `0048`, `0049` | **FIXED** |
+| **The liveness rule reads TWO instants** | **Silence at `τ1`, Continued at `τ2`.** *"`τ2` plays no part"* is **WITHDRAWN** (`0049` defect 1) — it was true of PF-LIMIT and is false of ALT-BROAD, whose second conjunct **is** the Continued test. **What survives, and is what the withdrawn line meant: the SILENCE test is anchored at `τ1` and only there.** Since `τ2 > τ1`, ALT-BROAD at `τ1` is **strictly narrower** than a `τ2`-matched form — the conservative version, introducing no new anchor | `0048` §3(b), `0049` | **FIXED** |
 | **`A`** | Distinct S2 episodes with `number ∈ E2` and `watched_at < τ1`, over `(−∞, τ1)` — **one-sided, no lower bound** | Step 1 §7 | FIXED |
 | **`A_H`** | **`A` recomputed with the bound moved from `τ1` to `τ2`** — the set **D3 already defined**, which is why the amendment introduces no new object. **`A ⊆ A_H` by construction** since `τ1 < τ2`, so the amendment is **monotone**: pairs move Started-and-left → Continued only, never back. Asserted at Step 8 **as a code check, not a data check** — being true by construction it can only catch an implementation that computed the two sets wrongly, and a green assertion is not evidence for the rule | D3's original text; promoted to the operator by `0034` | **FIXED** |
 | In-window test | **`watched_at < τ1`** (and `< τ2` for `A_H`). Strict, half-open, instants only, on both boundaries | §2.4, D13 | FIXED |

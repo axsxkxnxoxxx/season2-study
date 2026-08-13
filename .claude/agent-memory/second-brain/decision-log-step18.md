@@ -1,6 +1,6 @@
 ---
 name: decision-log-step18
-description: Coverage map of the decision log of record in decisions/ (0001-0034), which judgments still have no file, and assembled five-field text pending handoff to the Human Lead
+description: Coverage map of the decision log of record in decisions/ (0001-0050), which judgments still have no file, and assembled five-field text pending handoff to the Human Lead
 metadata:
   type: project
 ---
@@ -22,7 +22,7 @@ log shows the judgment."*
 
 ---
 
-## Coverage as of 2026-08-12 — `0001`–`0034`
+## Coverage as of 2026-08-14 — `0001`–`0050`
 
 | Files | Cover | Five-field completeness |
 | :--- | :--- | :--- |
@@ -46,12 +46,58 @@ log shows the judgment."*
 | **`0033`** | Step 8 reports per-air-period retained counts per `W` arm; the discard-rate anomaly to Step 14 | Full. Notable for **separating what a null result rules out from what it leaves open**: no monotone trend rules out sweep length as the mechanism, which is the useful half; the +3 SD residual at bin 5 is unidentified and is not claimed to be noise |
 | **`0034`** | **Step 1 §7 amended. Continued at `τ2` = 199 days.** Gate 1 reopened as an amendment and re-approved | **Full, and it is now the strongest entry in the log on the "where a reviewer disagreed" field** — eleven rounds, the rule never broken, four failed anchor grounds tabled with how each failed, and Red Team's "should not be cut" recorded as **not followed**. See [[amendment-step1-continued-boundary]] |
 
-**Gate checklist:** **Steps 1 (amended and re-approved), 5 and 6 closed. Steps 7 and 8 open.** Three
-of five. **Step 7 is blocked on the `0029` percentile ruling, not on an artifact.**
+### `0035`–`0050` — the Step 7 block. Sixteen entries, five Red Team HOLDs, gate still OPEN.
 
-**Three entries now credit `second-brain` by name** — `0022`, `0028` and `0029`, all three
+**Read [[gate-step7-liveness]] first. The individual entries are each correct about what they
+decided; only the sequence shows what happened, and the sequence is the Step 18 material.**
+
+| Files | Cover | Five-field completeness |
+| :--- | :--- | :--- |
+| **`0035`** | The agent definition files are **live spec**; Step 10 receives `0034`; two propagation errors and five stale expressions | **Full, and its "why this one" field is the strongest structural argument in the log:** *"a dual pair whose two halves read the same stale brief produces a clean diff and a wrong answer, and the diff is the only instrument this study has for catching a spec defect."* Occasioned by `second-brain` |
+| `0036` | Threshold at the 99th percentile; the test applies to the **gap bracketing `τ1`**, not the whole sweep | Full. Its §2.1 is the model for pricing a rule's *shape* rather than its level — the compounding false-dead table, and *"no percentile fixes it"* |
+| `0037` | `0036` §1's basis **withdrawn** (length bias); gap unit fixed; namespaces assigned explicitly | **Full, and notable for recording a strengthening separately from a correction** — §2 makes `0036` §2's case *stronger* while §1 withdraws its sibling. Also the first entry to credit a formulation to an arm by name: *"the reference distribution and the test statistic are not the same object"* |
+| `0038` | Spec frozen: reference 152,126, one gap per pair, quota and inertness disclosed, `W`-coupling accepted | **Full, and its "what it costs" field is unusually honest:** *"Between a number identified by nothing and a number whose advertised property is false, this study takes the first and says so."* Its §5 is corrected in place twice |
+| **`0039`** | **Step 7 APPROVED at 632 d** — **later SUSPENDED** | Full **as a record of a decision that did not survive**. Kept with its errors marked in place, because *"the reasoning that produced them is part of the record"* — which is the right disposition and worth naming as precedent |
+| **`0040`** | Gate **REOPENED**; `0021` reinstated; the 18,250 returned; derivation moved after D10 | **Full, and the best "where a reviewer disagreed" field in the block.** Its §7 is the entry the write-up should quote: *exact agreement between the two arms is **weak** evidence of correctness, because agreement was the design goal* |
+| `0041` | Extended reference set, provisional; **no threshold approved** pending the sensitivity test | Full. **Status Open by its own line**, and superseded by `0042` the same day. Its §5 is where propagation failure was first tabled as a pattern rather than an incident |
+| **`0042`** | **Threshold DELETED**; PF-LIMIT adopted | **Full, and the cleanest "why this one" in the study:** the headline cannot distinguish 787 from 2,200 days, 0.026/0.038/0.012 pp against a 3% share of the sampling width. Its §7 answers "was the work wasted" without defensiveness. **Its §1 claim is withdrawn two entries later** |
+| `0043` | Bias-2 sign corrected DOWN→UP; `0042` §4's figures corrected | Full on the correction; **introduces three errors of its own**, all caught at `0045` |
+| `0044` | "No free parameter" **withdrawn**; the rule is fully determined by `W` | **Full, and §1.1 is the sentence Step 18 should lift verbatim:** *"the study deleted a parameter it had varied — 787 to 2,200 days — and handed the rule's entire authority to a parameter it had not varied in the same test."* Sharpens item 46 to the five-file surface |
+| `0045` | Option C bound; ALT rejected — **rejection later withdrawn** | Full on process, **wrong on substance**: it rejected ALT on a measurement taken where ALT cannot have an effect. Its §2 is still valuable — it separates *rejected on effect* from *rejected on feasibility* and records that the ordering is **not** a barrier to future outcome-conditional filters |
+| **`0046`** | **ALT adopted**; `0045`'s rejection withdrawn; **§0's population rule** | **Full, and §0 is the second standing control in the study.** Its diagnosis is the durable part: *"It is reaching for the number that supports the ruling being written rather than checking which population produced it."* Three of its own sections are corrected in place by `0047` and a fourth by `0048` |
+| `0047` | `0046` §1/§4/§7 corrected; D10 re-derived per arm; `>=` invariant | Full. Adds the **third-consecutive-bound** finding and the endpoint/estimand rule. **Misses `0046` §2's "751 directly observed"** — caught one entry later |
+| **`0048`** | **ALT-BROAD adopted** | **Full, and it carries the warrant the whole gate turned on** — two nulls, not one, and `τ2 > τ1` makes Started-and-left's exit structural. Its §3 dismantles both of an arm's objections **using the arm's own words elsewhere in the same artifact**, which is a distinctive use of the "where a reviewer disagreed" field. §8 states what was **deliberately not touched**, per item 46 |
+| `0049` | Joint S&L bound over all 703; six record defects; calibration residual discharged | **Full, and it records the one clean win of the block:** both arms independently refused a bound that would have been the fourth consecutive failure of the same test — *"the standing rule worked before it could be broken a fourth time, and it worked in the arms rather than in the ruling."* **Its header asserts a five-file pass that did not happen**, which `0050` opens by saying |
+| **`0050`** | Six file defects fixed **and verified on disk**; limits routed to Step 14; the channel measured at **297 pairs** | **Full, and its §0 is the most self-aware opening in the log:** it declines to claim a propagation pass and puts the verification in the transcript. Adopts Red Team's formulation — *"'recorded, not repaired' is a legitimate way to close a gate; recording it only in a `decisions/` entry is not."* **Not indexed in `decisions/README.md`** — see [[open-items-and-contradictions]] V2 |
+
+**Gate checklist:** **Steps 1 (amended and re-approved), 5 and 6 closed. Steps 7 and 8 open.** Three
+of five. **Step 7 has been approved twice and reopened twice and is with Red Team after its fifth
+review. Step 8 has never launched.**
+
+**Four entries now credit `second-brain` by name** — `0022`, `0028`, `0029` and `0035`, all four
 propagation gaps found on a post-gate consistency pass. Recorded without comment: the role is
 continuity, and the log is the Human Lead's.
+
+### What Step 18 should take from the Step 7 block, beyond the entries
+
+1. **A gate can be approved, suspended, re-approved and reopened without the record becoming
+   dishonest — if suspended entries are kept with their errors marked in place.** `0039` is the
+   precedent and `0040` §8 states the principle.
+2. **The five-entry self-correction cascade is the finding, not the entries.** `0042` through `0047`
+   each corrected its predecessor and each introduced a defect doing it. Instance A's line from
+   inside `0045` — *"the seventh instance, inside the entry correcting the sixth"* — is the honest
+   summary, and `0046` §0 names the cause as motivated number-selection rather than inattention.
+3. **Three standing controls came out of nine propagation failures**, each written after the same
+   failure recurred somewhere new. A write-up that reports the controls without the failure count
+   makes the process look more orderly than it was.
+4. **The dual-implementation regime's limits are now measured, not asserted.** `0040` §7 (agreement
+   was the design goal), `0047` §4 (DERIV's diff is literally `0 = 0`), `0050` §0 (both halves
+   carried every defect identically). **These belong beside the Step 6 block's success case, or the
+   write-up will overclaim what running everything twice bought.**
+5. **The threshold's deletion is the block's headline judgment and it is defensible.** Three
+   derivations established that the number did not matter; the quota property explains why there was
+   never a number to find. **`0042` §7 is the paragraph that makes discarded work legible as
+   evidence.**
 
 **`0034` sets a new bar, and it is a different bar from `0021`'s.** `0021` showed the five-field
 format at full strength on a *gate*. `0034` shows it on a *reversal inside an approved gate*, and
@@ -174,8 +220,15 @@ ambiguity**. **This is the precedent [[open-items-and-contradictions]] X1 turns 
    right-censoring rule. Each carries a Data Scientist recommendation and a decision from nobody.
    **Q1's warrant now has a dangling term**: it turns on D3, which `0034` abolished. See
    [[open-items-and-contradictions]] W4 and [[step1-open-questions]].
-2. **The Step 7 liveness percentile**, when ruled. `0029` is Open on exactly this and no other
-   entry covers it. **It blocks the next step.**
+2. ~~**The Step 7 liveness percentile.**~~ **CLOSED** — ruled at the 99th by `0036`, then the whole
+   threshold was **deleted** at `0042`. `0029` is still recorded Open on it and README item 30 still
+   says Step 7 must not launch until it is ruled; both are **overtaken, not closed**
+   ([[open-items-and-contradictions]] V4, V11).
+2b. **The Step 7 gate itself, when it closes.** It is with Red Team after a fifth review. The
+   closing entry should state which of the five propagation files it touched and which it
+   deliberately did not (item 46), and it inherits `0048` §9's open item: **`0021` licenses one
+   direction of a biconditional and the converse is asserted, not justified** — now a Step 14
+   limitation rather than a blocker.
 3. **The gap hypothesis**, if and when it is assigned an owner (README items 3 and 8).
 4. **Ratification of `0005`–`0008`**, which are the only Open entries in the log.
 5. **Whether to resume the Step 4 pull or sample the pool down** (README items 11 and 19). Every
