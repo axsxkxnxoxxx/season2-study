@@ -88,8 +88,7 @@ selected by the gate's own stated warrant, makes the control informative and has
 over the 99. **None exists today.**
 
 **And the un-guarded channel ALT left open grows faster than the rule does** — the S&L component runs
-**52 / 56 / 79 / 89 / 98 / 99 / 125 / 148** across the arms, a factor of **2.85** against ALT's own
-1.5× `W`-coupling. Under ALT that was an unmeasured gap widening with `W`; under ALT-BROAD it is inside
+**52 / 56 / 79 / 89 / 98 / 99 / 125 / 148** across the arms **on APPLY** *(population label added by `0049`)*, a factor of **2.85** against the rule's own ~1.5–1.6× `W`-coupling. **On DERIV the top arm is 147, not 148** — both arms measured it, and an unlabelled series would have read as a divergence. Under ALT that was an unmeasured gap widening with `W`; under ALT-BROAD it is inside
 the rule and reported per arm.
 
 ## 6. Five stale `task-sheet.md` lines fixed — propagation failure #8

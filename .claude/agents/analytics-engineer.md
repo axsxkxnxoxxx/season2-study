@@ -86,8 +86,7 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
       pair table rather than through your positions 1–5, so a mismatch most likely means **your frame
       join, `L2 = 1` exclusion or censoring differs**, not that the liveness rule is coded wrong.
     - **The monotone-decrease invariant is coded `>=`, NOT `>`** (`0047`). Decrease is **strict at line
-      6 on APPLY and non-strict on DERIV**, where the exclusion set is empty. **An implementation
-      asserting strict decrease everywhere fails on correct data.**
+      6 on BOTH populations under ALT-BROAD** — 703 on APPLY and 99 on DERIV, every arm (`0049`). **`>=` is kept anyway, so the invariant does not encode a property of one rule**: a filter position that legitimately removes nothing must not fail an assertion.
     - **Waterfall line 6 is OUTCOME-CONDITIONAL under this rule and must be reported as such** — `|A|`
       is evaluated before liveness applies. Permitted: both are row-local predicates on the position-5
       output and **commute exactly**, and `0029`'s ordering rationale concerns per-filter sample size,

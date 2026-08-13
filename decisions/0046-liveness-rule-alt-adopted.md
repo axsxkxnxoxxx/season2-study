@@ -128,9 +128,18 @@ never-started, paired clustered CI [+0.0413, +0.0947], excluding zero.**
 > must state the population it is computed on and the estimand it bounds, and they must be the same
 > population.**
 
-**The ceiling equals the unfiltered share as an identity** — the excluded set is a subset of
-never-started, so returning every excluded pair as a decliner reproduces the unfiltered population
-exactly. **Both endpoints are attainable.**
+**The ceiling equals the unfiltered share as an identity.**
+
+> **PHRASING CORRECTED 2026-08-14 (`decisions/0049`).** This read *"the excluded set is a subset of
+> never-started, so **returning every excluded pair as a decliner** reproduces the unfiltered population
+> exactly."* **That is false under ALT-BROAD** — returning all 703 as decliners gives an **unattainable
+> 17.3279%**, because the 99 started-and-left exclusions have `|A| ≥ 1` observed and **cannot** be
+> never-started. **Step 9 reads this sentence**, which is why it is corrected rather than left.
+>
+> **The identity still holds, by a different route:** the ceiling returns **only the never-started
+> exclusions** — the 604 — to the never-started count, and those are exactly the pairs the unfiltered
+> population counts as never-started. **The route matters because ALT-BROAD's exclusion set is no
+> longer a subset of never-started.** **Both endpoints are attainable.**
 
 **What `0045` published, and why it was wrong.** It gave **[16.7789%, 17.0355%]** for PF-LIMIT under
 "Option C" and claimed the same identity.

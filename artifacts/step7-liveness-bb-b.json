@@ -1,0 +1,2543 @@
+{
+  "step": 7,
+  "instance": "data-scientist-b",
+  "namespace": "bb_b",
+  "gate": "GATE. This is a proposal. NOTHING IS ADOPTED HERE.",
+  "date": "2026-08-14",
+  "api_calls": 0,
+  "rule": "NOT LIVE iff (no insertion instant after tau1) AND (NOT Continued). Continued = |A| >= 1 AND F2 in A_H AND |A_H| >= ceil(0.90 x L2), read at tau2.",
+  "rule_source": "decisions/0048 Sec 1; task-sheet.md Step 7",
+  "W": 108,
+  "H": 91,
+  "W_arms": [
+    38,
+    46,
+    77,
+    91,
+    107,
+    108,
+    150,
+    213
+  ],
+  "populations": {
+    "DERIV": "Step 5 line 4 (152,126) less D10 = 147,370 at W = 108. Requires S2 evidence.",
+    "APPLY": "Step 5 line 1 (201,900) less D10 = 196,654 at W = 108. Step 8 position 6."
+  },
+  "step5_waterfall_reasserted": {
+    "source": "processed/step5/pair_revision5.csv, recomputed here",
+    "pair_table_rows": 220107,
+    "measured": [
+      201900,
+      178165,
+      155131,
+      152126,
+      128099
+    ],
+    "expected": [
+      201900,
+      178165,
+      155131,
+      152126,
+      128099
+    ],
+    "asserted": true,
+    "line1_APPLY_base_before_D10": 201900,
+    "line4_DERIV_base_before_D10": 152126
+  },
+  "reused_inputs": {
+    "from": "processed/step7/alt2_b/{pairs,outcomes}.npz -- this instance's ALT rerun",
+    "what": "conjunct (a) per arm (no_after_W*), D10 per arm (d10_W*), the line-4 flag, and the outcome assignment per arm (started_/cont_/sal_W*)",
+    "why_valid": "none of these is the rule; 0048 changed conjunct (b) only, and the outcome assignment it now reads was already computed at every arm",
+    "checked": "row order and identity of all 201,900 line-1 pairs, and the line-4 flag, re-derived from pair_revision5.csv and compared element-wise",
+    "calibration": "READ, NEVER REFITTED -- processed/step5/calibration.npz, 10,918 knots"
+  },
+  "headline": {
+    "DERIV_W108": {
+      "n": 147370,
+      "excluded": 99,
+      "excluded_never_started": 0,
+      "excluded_started_and_left": 99,
+      "accounts": 73,
+      "excluded_share_pct": 0.067177851665875
+    },
+    "APPLY_W108": {
+      "n": 196654,
+      "excluded": 703,
+      "excluded_never_started": 604,
+      "excluded_started_and_left": 99,
+      "accounts": 216,
+      "excluded_share_pct": 0.35748065129618517
+    }
+  },
+  "shares": {
+    "DERIV": {
+      "no_filter": {
+        "n": 147370,
+        "never_started": 9145,
+        "continued": 121382,
+        "started_and_left": 16843,
+        "never_started_pct": 6.205469227115424,
+        "continued_pct": 82.36547465562869,
+        "started_and_left_pct": 11.429056117255886
+      },
+      "under_rule": {
+        "n": 147271,
+        "never_started": 9145,
+        "continued": 121382,
+        "started_and_left": 16744,
+        "never_started_pct": 6.209640730354245,
+        "continued_pct": 82.42084320742033,
+        "started_and_left_pct": 11.36951606222542
+      },
+      "delta_pp": {
+        "never_started": 0.004171503238820762,
+        "continued": 0.055368551791644904,
+        "started_and_left": -0.059540055030465666
+      }
+    },
+    "APPLY": {
+      "no_filter": {
+        "n": 196654,
+        "never_started": 33373,
+        "continued": 144140,
+        "started_and_left": 19141,
+        "never_started_pct": 16.97041504368078,
+        "continued_pct": 73.29624619890772,
+        "started_and_left_pct": 9.733338757411495
+      },
+      "under_rule": {
+        "n": 195951,
+        "never_started": 32769,
+        "continued": 144140,
+        "started_and_left": 19042,
+        "never_started_pct": 16.723058315599307,
+        "continued_pct": 73.55920612806263,
+        "started_and_left_pct": 9.717735556338065
+      },
+      "delta_pp": {
+        "never_started": -0.24735672808147413,
+        "continued": 0.26295992915490274,
+        "started_and_left": -0.015603201073430384
+      }
+    }
+  },
+  "bounds": {
+    "DERIV": {
+      "never_started": {
+        "estimand": "never-started share of the position-5 population",
+        "denominator": 147370,
+        "floor_pct": 6.205469227115424,
+        "ceiling_pct": 6.205469227115424,
+        "width_pp": 0.0,
+        "floor_numerator": 9145,
+        "ceiling_numerator": 9145,
+        "ceiling_equals_unfiltered_share_identity": true,
+        "spanned_by": "the NS liveness exclusions only",
+        "complete": "yes -- the started-and-left exclusions have |A| >= 1 DIRECTLY OBSERVED, so they cannot be never-started under any reading and move neither endpoint"
+      },
+      "started_and_left": {
+        "estimand": "started-and-left share of the position-5 population",
+        "denominator": 147370,
+        "floor_pct": 11.361878265590011,
+        "ceiling_over_SL_exclusions_pct": 11.429056117255886,
+        "width_over_SL_exclusions_pp": 0.06717785166587475,
+        "ceiling_joint_pct": 11.429056117255886,
+        "width_joint_pp": 0.06717785166587475,
+        "floor_numerator": 16744,
+        "ceiling_over_SL_exclusions_numerator": 16843,
+        "ceiling_joint_numerator": 16843,
+        "ceiling_over_SL_exclusions_equals_unfiltered_share_identity": true
+      },
+      "continued": {
+        "estimand": "continued share of the position-5 population",
+        "denominator": 147370,
+        "floor_pct": 82.36547465562869,
+        "ceiling_pct": 82.43265250729456,
+        "width_pp": 0.06717785166587475,
+        "floor_equals_unfiltered_share_identity": true
+      }
+    },
+    "APPLY": {
+      "never_started": {
+        "estimand": "never-started share of the position-5 population",
+        "denominator": 196654,
+        "floor_pct": 16.663276617816063,
+        "ceiling_pct": 16.97041504368078,
+        "width_pp": 0.30713842586471785,
+        "floor_numerator": 32769,
+        "ceiling_numerator": 33373,
+        "ceiling_equals_unfiltered_share_identity": true,
+        "spanned_by": "the NS liveness exclusions only",
+        "complete": "yes -- the started-and-left exclusions have |A| >= 1 DIRECTLY OBSERVED, so they cannot be never-started under any reading and move neither endpoint"
+      },
+      "started_and_left": {
+        "estimand": "started-and-left share of the position-5 population",
+        "denominator": 196654,
+        "floor_pct": 9.682996531980026,
+        "ceiling_over_SL_exclusions_pct": 9.733338757411495,
+        "width_over_SL_exclusions_pp": 0.0503422254314696,
+        "ceiling_joint_pct": 10.040477183276211,
+        "width_joint_pp": 0.35748065129618567,
+        "floor_numerator": 19042,
+        "ceiling_over_SL_exclusions_numerator": 19141,
+        "ceiling_joint_numerator": 19745,
+        "ceiling_over_SL_exclusions_equals_unfiltered_share_identity": true
+      },
+      "continued": {
+        "estimand": "continued share of the position-5 population",
+        "denominator": 196654,
+        "floor_pct": 73.29624619890772,
+        "ceiling_pct": 73.65372685020391,
+        "width_pp": 0.35748065129618567,
+        "floor_equals_unfiltered_share_identity": true
+      }
+    }
+  },
+  "per_arm": {
+    "DERIV": {
+      "W": [
+        38,
+        46,
+        77,
+        91,
+        107,
+        108,
+        150,
+        213
+      ],
+      "population_n": [
+        147685,
+        147685,
+        147685,
+        147685,
+        147384,
+        147370,
+        146602,
+        144852
+      ],
+      "excluded_total": [
+        52,
+        56,
+        79,
+        89,
+        98,
+        99,
+        125,
+        147
+      ],
+      "excluded_never_started": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "excluded_started_and_left": [
+        52,
+        56,
+        79,
+        89,
+        98,
+        99,
+        125,
+        147
+      ],
+      "accounts": [
+        44,
+        48,
+        61,
+        68,
+        72,
+        73,
+        90,
+        96
+      ],
+      "never_started_bound_pct": [
+        [
+          9.39364187290517,
+          9.39364187290517
+        ],
+        [
+          8.791685005247656,
+          8.791685005247656
+        ],
+        [
+          7.178792700680503,
+          7.178792700680503
+        ],
+        [
+          6.6784033584995095,
+          6.6784033584995095
+        ],
+        [
+          6.239483254627368,
+          6.239483254627368
+        ],
+        [
+          6.205469227115424,
+          6.205469227115424
+        ],
+        [
+          5.2898323351659595,
+          5.2898323351659595
+        ],
+        [
+          4.394830585701268,
+          4.394830585701268
+        ]
+      ],
+      "started_and_left_bound_over_SL_exclusions_pct": [
+        [
+          11.547550529843924,
+          11.582760605342452
+        ],
+        [
+          11.565155567593187,
+          11.603074110437756
+        ],
+        [
+          11.517080272200968,
+          11.57057250228527
+        ],
+        [
+          11.447337238040424,
+          11.507600636489826
+        ],
+        [
+          11.36758399826304,
+          11.434076969006133
+        ],
+        [
+          11.361878265590011,
+          11.429056117255886
+        ],
+        [
+          11.209260446651479,
+          11.29452531343365
+        ],
+        [
+          10.954629552922983,
+          11.056112445806754
+        ]
+      ],
+      "D10_reading": "RE-DERIVED at each arm (decisions/0047 Sec 5). NOT frozen at 108."
+    },
+    "APPLY": {
+      "W": [
+        38,
+        46,
+        77,
+        91,
+        107,
+        108,
+        150,
+        213
+      ],
+      "population_n": [
+        197007,
+        197007,
+        197007,
+        197007,
+        196674,
+        196654,
+        195689,
+        193270
+      ],
+      "excluded_total": [
+        537,
+        550,
+        633,
+        664,
+        701,
+        703,
+        789,
+        864
+      ],
+      "excluded_never_started": [
+        485,
+        494,
+        554,
+        575,
+        603,
+        604,
+        664,
+        716
+      ],
+      "excluded_started_and_left": [
+        52,
+        56,
+        79,
+        89,
+        98,
+        99,
+        125,
+        148
+      ],
+      "accounts": [
+        177,
+        182,
+        197,
+        207,
+        215,
+        216,
+        243,
+        253
+      ],
+      "never_started_bound_pct": [
+        [
+          19.298299045211593,
+          19.544483190952604
+        ],
+        [
+          18.798824407254564,
+          19.04957691858665
+        ],
+        [
+          17.475521174374514,
+          17.756729456313735
+        ],
+        [
+          17.059799905587113,
+          17.35166770723883
+        ],
+        [
+          16.68903871381067,
+          16.995637450806917
+        ],
+        [
+          16.663276617816063,
+          16.97041504368078
+        ],
+        [
+          15.888476102386951,
+          16.2277900137463
+        ],
+        [
+          15.004397992445801,
+          15.374864179645057
+        ]
+      ],
+      "started_and_left_bound_over_SL_exclusions_pct": [
+        [
+          9.864116503474495,
+          9.890511504667346
+        ],
+        [
+          9.870207657595923,
+          9.898633043495916
+        ],
+        [
+          9.823001213154862,
+          9.863101311120925
+        ],
+        [
+          9.763104864294162,
+          9.80828092402808
+        ],
+        [
+          9.689130235821715,
+          9.738958886278816
+        ],
+        [
+          9.682996531980026,
+          9.733338757411495
+        ],
+        [
+          9.543714771908487,
+          9.607591637751739
+        ],
+        [
+          9.341335954881771,
+          9.41791276452631
+        ]
+      ],
+      "D10_reading": "RE-DERIVED at each arm (decisions/0047 Sec 5). NOT frozen at 108."
+    }
+  },
+  "W_coupling": {
+    "total": 1.6089385474860336,
+    "NS_component": 1.4762886597938145,
+    "SL_component": 2.8461538461538463
+  },
+  "waterfall": {
+    "APPLY": [
+      {
+        "position": "1-2",
+        "name": "Step 2 frame, then L2 = 1 exclusion",
+        "rows_out": null,
+        "note": "owned by Step 8, not rebuilt here. No show in this frame has L2 = 1, so position 2 removes nothing."
+      },
+      {
+        "position": 3,
+        "name": "S1 completion rule",
+        "rows_out": 220107,
+        "note": "row count of the Step 5 pair table (Step 2 frame x Step 1 Sec 4)"
+      },
+      {
+        "position": 4,
+        "name": "contamination exclusion (Step 5)",
+        "rows_out": 201900,
+        "note": "Step 5 line 1 for APPLY; line 4 for DERIV. DERIV additionally requires S2 evidence and clean first-S2 timing and is NOT a Step 8 position -- it exists to make the Step 6/7 derivation sample clean."
+      },
+      {
+        "position": 5,
+        "name": "right-censoring D10, re-derived at W = 108",
+        "rows_out": 196654,
+        "note": "[T0] + (max(W, 91) + H) x 24h <= tau_pull. Contains W (0047 Sec 5)."
+      },
+      {
+        "position": 6,
+        "name": "liveness (ALT-BROAD, decisions/0048)",
+        "rows_out": 195951,
+        "removed": 703,
+        "removed_never_started": 604,
+        "removed_started_and_left": 99,
+        "OUTCOME_CONDITIONAL": true,
+        "note": "line 6's removal count is conditional on the position-7 outcome annotation, because conjunct (b) is 'NOT Continued'. Under ALT-BROAD that conjunct is read at tau2, not tau1, so line 6 depends on an annotation computed at BOTH instants -- a stronger conditioning than under the superseded ALT, whose conjunct (b) was |A| = 0 at tau1. Permitted: both are row-local predicates on the position-5 output and commute exactly; 0029's ordering rationale is per-filter sample size, which cannot reach position 7 because outcome assignment removes no rows."
+      },
+      {
+        "position": 7,
+        "name": "outcome assignment at tau1 and tau2",
+        "rows_out": 195951,
+        "removed": 0,
+        "note": "an annotation, not a filter; contributes no waterfall line"
+      }
+    ],
+    "APPLY_monotone": {
+      "non_strict_holds_all_lines": true,
+      "strict_holds_all_lines": true,
+      "line6_removed": 703,
+      "line6_decrease": "STRICT",
+      "statement": "on APPLY, monotone decrease at line 6 holds STRICTLY: 703 rows removed (604 never-started + 99 started-and-left)"
+    },
+    "APPLY_final_states": {
+      "n": 195951,
+      "never_started": 32769,
+      "continued": 144140,
+      "started_and_left": 19042,
+      "never_started_pct": 16.723058315599307,
+      "continued_pct": 73.55920612806263,
+      "started_and_left_pct": 9.717735556338065
+    },
+    "DERIV": [
+      {
+        "position": "1-2",
+        "name": "Step 2 frame, then L2 = 1 exclusion",
+        "rows_out": null,
+        "note": "owned by Step 8, not rebuilt here. No show in this frame has L2 = 1, so position 2 removes nothing."
+      },
+      {
+        "position": 3,
+        "name": "S1 completion rule",
+        "rows_out": 220107,
+        "note": "row count of the Step 5 pair table (Step 2 frame x Step 1 Sec 4)"
+      },
+      {
+        "position": 4,
+        "name": "contamination exclusion (Step 5)",
+        "rows_out": 152126,
+        "note": "Step 5 line 1 for APPLY; line 4 for DERIV. DERIV additionally requires S2 evidence and clean first-S2 timing and is NOT a Step 8 position -- it exists to make the Step 6/7 derivation sample clean."
+      },
+      {
+        "position": 5,
+        "name": "right-censoring D10, re-derived at W = 108",
+        "rows_out": 147370,
+        "note": "[T0] + (max(W, 91) + H) x 24h <= tau_pull. Contains W (0047 Sec 5)."
+      },
+      {
+        "position": 6,
+        "name": "liveness (ALT-BROAD, decisions/0048)",
+        "rows_out": 147271,
+        "removed": 99,
+        "removed_never_started": 0,
+        "removed_started_and_left": 99,
+        "OUTCOME_CONDITIONAL": true,
+        "note": "line 6's removal count is conditional on the position-7 outcome annotation, because conjunct (b) is 'NOT Continued'. Under ALT-BROAD that conjunct is read at tau2, not tau1, so line 6 depends on an annotation computed at BOTH instants -- a stronger conditioning than under the superseded ALT, whose conjunct (b) was |A| = 0 at tau1. Permitted: both are row-local predicates on the position-5 output and commute exactly; 0029's ordering rationale is per-filter sample size, which cannot reach position 7 because outcome assignment removes no rows."
+      },
+      {
+        "position": 7,
+        "name": "outcome assignment at tau1 and tau2",
+        "rows_out": 147271,
+        "removed": 0,
+        "note": "an annotation, not a filter; contributes no waterfall line"
+      }
+    ],
+    "DERIV_monotone": {
+      "non_strict_holds_all_lines": true,
+      "strict_holds_all_lines": true,
+      "line6_removed": 99,
+      "line6_decrease": "STRICT",
+      "statement": "on DERIV, monotone decrease at line 6 holds STRICTLY: 99 rows removed (0 never-started + 99 started-and-left)"
+    },
+    "DERIV_final_states": {
+      "n": 147271,
+      "never_started": 9145,
+      "continued": 121382,
+      "started_and_left": 16744,
+      "never_started_pct": 6.209640730354245,
+      "continued_pct": 82.42084320742033,
+      "started_and_left_pct": 11.36951606222542
+    }
+  },
+  "monotone_invariant": {
+    "coded_as": ">=",
+    "reason_under_ALT": "0047 Sec 6: decrease was strict at line 6 on APPLY and only NON-STRICT on DERIV, where ALT's exclusion set was empty.",
+    "reason_under_ALT_BROAD": "decrease is STRICT at line 6 on BOTH populations -- 703 on APPLY and 99 on DERIV. The empty-set case that forced '>=' no longer arises at any tested arm. '>=' remains the safe coding, but the stated reason for it is now false.",
+    "task_sheet_lines_now_stale": [
+      "Step 7 bullet: 'The monotone-decrease invariant holds only NON-STRICTLY where the exclusion set is empty, which it is on DERIV.' -- it is 99 on DERIV under ALT-BROAD.",
+      "Step 8 bullet: 'Decrease is strict at line 6 on the application population and only NON-STRICT on the derivation population, where the liveness exclusion set is empty.'"
+    ]
+  },
+  "bootstrap": {
+    "instance": "data-scientist-b",
+    "namespace": "bb_b",
+    "stage": 2,
+    "api_calls": 0,
+    "adopts": "nothing",
+    "method": "nonparametric bootstrap, clusters = ACCOUNTS, unit = pair. Accounts resampled with replacement from the accounts present in the position-5 population; the liveness rule is RE-APPLIED inside each replicate, so the exclusion count is itself random.",
+    "replicates": 2000,
+    "seed": 20260814,
+    "W": 108,
+    "by_population": {
+      "DERIV": {
+        "accounts_resampled": 2402,
+        "point_live_shares_pct": {
+          "never_started": 6.209640730354245,
+          "continued": 82.42084320742033,
+          "started_and_left": 11.36951606222542
+        },
+        "ci95_live_shares_pct": {
+          "never_started": [
+            5.852095145942752,
+            6.594102021047908
+          ],
+          "continued": [
+            81.80383478297446,
+            83.03456817830218
+          ],
+          "started_and_left": [
+            10.896201782525921,
+            11.869927976385352
+          ]
+        },
+        "ci95_width_pp": {
+          "never_started": 0.7420068751051554,
+          "continued": 1.230733395327718,
+          "started_and_left": 0.9737261938594308
+        },
+        "exclusion_count_ci95": [
+          74.975,
+          128.0
+        ],
+        "exclusion_count_point": 99,
+        "bound_width_vs_sampling_width_pp": {
+          "never_started": {
+            "bound_width": 0.0,
+            "ci95_width": 0.7420068751051554,
+            "ratio": 0.0
+          },
+          "started_and_left_over_SL_exclusions": {
+            "bound_width": 0.06717785166587475,
+            "ci95_width": 0.9737261938594308,
+            "ratio": 0.06899049454509457
+          }
+        }
+      },
+      "APPLY": {
+        "accounts_resampled": 2422,
+        "point_live_shares_pct": {
+          "never_started": 16.723058315599307,
+          "continued": 73.55920612806263,
+          "started_and_left": 9.717735556338065
+        },
+        "ci95_live_shares_pct": {
+          "never_started": [
+            16.155306364046684,
+            17.28402607326126
+          ],
+          "continued": [
+            72.83714756832961,
+            74.3207917509807
+          ],
+          "started_and_left": [
+            9.321868155917063,
+            10.11408132105873
+          ]
+        },
+        "ci95_width_pp": {
+          "never_started": 1.1287197092145753,
+          "continued": 1.4836441826510907,
+          "started_and_left": 0.7922131651416677
+        },
+        "exclusion_count_ci95": [
+          577.0,
+          835.0249999999999
+        ],
+        "exclusion_count_point": 703,
+        "bound_width_vs_sampling_width_pp": {
+          "never_started": {
+            "bound_width": 0.30713842586471785,
+            "ci95_width": 1.1287197092145753,
+            "ratio": 0.27211222002886926
+          },
+          "started_and_left_over_SL_exclusions": {
+            "bound_width": 0.0503422254314696,
+            "ci95_width": 0.7922131651416677,
+            "ratio": 0.06354631259184786
+          }
+        }
+      }
+    }
+  },
+  "calibration_residual": {
+    "calibration": {
+      "source": "processed/step5/calibration.npz",
+      "status": "READ, NEVER REFITTED",
+      "n_knots": 10918,
+      "application": "np.interp(rid, knot_rid, knot_time), verbatim step5_calibrate.insert_time",
+      "knot_rid_range": [
+        556310271.5,
+        14237053866.0
+      ],
+      "knot_time_range_utc": [
+        "2012-12-02T05:25:39.404770+00:00",
+        "2026-08-10T20:48:00+00:00"
+      ]
+    },
+    "R1_in_sample_residual_days": {
+      "definition": "insert_time(rid) - watched_at, on the records the curve was fitted on (checkin + scrobble, dated, watched_at <= tau_pull). Their watched_at IS their insert time by construction, so this is the calibration's own error.",
+      "n": 4367583,
+      "in_sample": true,
+      "caveat": "IN-SAMPLE. It understates the error on `watch` rows, which the curve was deliberately not fitted on and which are the majority of the store.",
+      "mean": 0.34982551876507867,
+      "percentiles": {
+        "p0.1": -757.7248342040466,
+        "p1": -328.65323628925483,
+        "p2.5": -126.82905891004341,
+        "p5": -0.13971313796109625,
+        "p10": -0.06071419591042731,
+        "p25": -0.020763910434864186,
+        "p50": 0.003715092145182468,
+        "p75": 0.018757835688690345,
+        "p90": 0.04380012433562016,
+        "p95": 0.08457133897945827,
+        "p97.5": 122.53771777582583,
+        "p99": 342.44707758960845,
+        "p99.9": 687.4739973637119
+      },
+      "abs_percentiles": {
+        "p0.1": 3.8340016780076205e-05,
+        "p1": 0.0003777147347728411,
+        "p2.5": 0.0009414347095621957,
+        "p5": 0.0018732656980002366,
+        "p10": 0.0037024405554488857,
+        "p25": 0.00888921926970835,
+        "p50": 0.019532858080886027,
+        "p75": 0.042162435555623635,
+        "p90": 0.1072147702111139,
+        "p95": 124.64115523847452,
+        "p97.5": 287.51669750808026,
+        "p99": 472.87608906437066,
+        "p99.9": 761.6550994818243
+      },
+      "share_abs_le_1d": 0.9148249729884927,
+      "share_abs_le_7d": 0.9184748177653407,
+      "share_abs_le_30d": 0.9295647043227341,
+      "stored_held_out_median_days": 0.002622477307363793,
+      "stored_held_out_abs_le_7d": 0.9064737273619021,
+      "held_out_note": "the held-out figures are QUOTED from calibration_meta.json, not recomputed; recomputing them would require refitting, which is barred."
+    },
+    "R2_future_dated": {
+      "definition": "watched_at later than the record's own calibrated insertion instant",
+      "records_dated": 27656434,
+      "future_dated": 6271584,
+      "share_pct": 22.676763027366434,
+      "claim_0048": {
+        "n": 6271584,
+        "of": 27656434,
+        "pct": 22.68
+      },
+      "verdict": "CONFIRMED",
+      "excess_days_percentiles": {
+        "p0.1": 2.3751693928131354e-05,
+        "p1": 0.00025723387742484057,
+        "p2.5": 0.0006362196555430139,
+        "p5": 0.001272255580182429,
+        "p10": 0.0027401338997814395,
+        "p25": 0.008032059301794679,
+        "p50": 0.02053605302616402,
+        "p75": 0.04592698745429516,
+        "p90": 0.14084553414859155,
+        "p95": 77.48297345487607,
+        "p97.5": 232.4192339040339,
+        "p99": 470.6171010110882,
+        "p99.9": 765.4384328151577
+      },
+      "max_excess_days": 4759.573199133658,
+      "reading": "a future-dated record is arithmetically impossible for a genuine insert, so its excess is a lower bound on the residual at that record. The p50 of the excess is the scale at which the curve is wrong for the affected fifth of the store."
+    },
+    "R3_clamping": {
+      "records_below_first_knot": 1862,
+      "records_above_last_knot": 5094,
+      "claim_0048_above": 5094,
+      "verdict_above": "CONFIRMED",
+      "clamp_value_above_utc": "2026-08-10T20:48:00+00:00",
+      "direction": "a record above the last knot is pinned to knot_time[-1], so its instant is EARLIER than the truth. That lowers max(instant) and pushes TOWARD exclusion -- i.e. toward FALSE exclusion.",
+      "accounts_total": 2549,
+      "accounts_holding_a_clamped_above_record": 682,
+      "accounts_whose_MAX_instant_is_set_by_a_clamped_record": 681,
+      "note": "only the per-account MAXIMUM enters conjunct (a), so clamping can only matter where it sets the maximum. That count is the one above; stage 3b intersects it with the excluded pairs."
+    },
+    "margins": {
+      "DERIV": {
+        "population": "DERIV",
+        "W": 108,
+        "n": 147370,
+        "M1_excluded_margin_days": {
+          "definition": "tau1 - max(instant) for excluded pairs; how far below tau1 the account's last insertion sits",
+          "n": 99,
+          "n_never_started": 0,
+          "n_started_and_left": 99,
+          "percentiles": {
+            "p0": 0.06989138250825581,
+            "p1": 1.1727843351460165,
+            "p5": 8.706302485743606,
+            "p10": 15.837091675619837,
+            "p25": 35.85902966419994,
+            "p50": 81.30926619255985,
+            "p75": 107.06899884496437,
+            "p90": 165.56735277603127,
+            "p95": 248.65066311859027,
+            "p99": 365.3824114008564,
+            "p100": 389.6840410298992
+          },
+          "mean": 87.99777353144744,
+          "count_within_delta": {
+            "0.02": 0,
+            "0.107": 1,
+            "1.0": 1,
+            "7.0": 5,
+            "30.0": 19,
+            "124.6": 84,
+            "287.5": 95
+          },
+          "percentiles_never_started": null,
+          "percentiles_started_and_left": {
+            "p0": 0.06989138250825581,
+            "p1": 1.1727843351460165,
+            "p5": 8.706302485743606,
+            "p10": 15.837091675619837,
+            "p25": 35.85902966419994,
+            "p50": 81.30926619255985,
+            "p75": 107.06899884496437,
+            "p90": 165.56735277603127,
+            "p95": 248.65066311859027,
+            "p99": 365.3824114008564,
+            "p100": 389.6840410298992
+          }
+        },
+        "M2_near_miss_live_margin_days": {
+          "definition": "max(instant) - tau1 for pairs live ONLY by conjunct (a) (not Continued, and an insertion after tau1)",
+          "n": 25889,
+          "percentiles": {
+            "p0": 1.072073419764638,
+            "p1": 141.45286903796548,
+            "p5": 310.5225534748855,
+            "p10": 477.5715829471201,
+            "p25": 1034.027863517848,
+            "p50": 2022.521386441489,
+            "p75": 2912.866666666667,
+            "p90": 3650.866666666667,
+            "p95": 4035.7109266911393,
+            "p99": 5070.227028632296,
+            "p100": 19388.866666666665
+          },
+          "count_within_delta": {
+            "0.02": 0,
+            "0.107": 0,
+            "1.0": 0,
+            "7.0": 5,
+            "30.0": 27,
+            "124.6": 197,
+            "287.5": 1134
+          }
+        },
+        "M4_clamping": {
+          "excluded_pairs_on_accounts_whose_max_instant_is_clamped": 0,
+          "near_miss_live_pairs_on_such_accounts": 8340,
+          "clamp_value_utc": "2026-08-10T20:48:00+00:00",
+          "reading": "the clamp value is the last knot time, 2026-08-10T20:48Z, which is later than tau1 for EVERY pair surviving D10 -- D10 requires [T0] + (max(W,91) + H) x 24h <= tau_pull, so tau1 <= tau_pull - H days. An account whose maximum is clamped is therefore live for every pair it holds, and the 5,094 clamped records cannot produce a false exclusion at any tested arm. 0048 Sec 9's clamping concern is real in direction and null in effect on this exclusion set."
+        },
+        "M5_claimed_watched_at_cross_check": {
+          "definition": "a DIAGNOSTIC only. Does an excluded pair's account hold any record whose CLAIMED watched_at is after tau1? Liveness runs on insertion time (0021) and this does not change that.",
+          "excluded_pairs_whose_account_claims_a_watch_after_tau1": 2,
+          "of_which_never_started": 0,
+          "of_which_started_and_left": 2,
+          "excess_days_percentiles": {
+            "p0": -389.69652777777776,
+            "p1": -365.3938888888889,
+            "p5": -263.20430555555555,
+            "p10": -178.17847222222218,
+            "p25": -107.98784722222223,
+            "p50": -81.33125,
+            "p75": -35.15972222222222,
+            "p90": -12.262916666666664,
+            "p95": -6.247708333333335,
+            "p99": 2.155763888888853,
+            "p100": 10.979166666666666
+          },
+          "reading": "a claim after tau1 on an account with no insertion after tau1 is either a backdated-forward claim, which is what 0021 says to ignore, or calibration error. It cannot distinguish the two, so it is an UPPER bound on the count of exclusions the residual could overturn, not an estimate of it."
+        }
+      },
+      "APPLY": {
+        "population": "APPLY",
+        "W": 108,
+        "n": 196654,
+        "M1_excluded_margin_days": {
+          "definition": "tau1 - max(instant) for excluded pairs; how far below tau1 the account's last insertion sits",
+          "n": 703,
+          "n_never_started": 604,
+          "n_started_and_left": 99,
+          "percentiles": {
+            "p0": 0.013711570236417982,
+            "p1": 4.944689131950339,
+            "p5": 15.758638562988075,
+            "p10": 31.216406639180807,
+            "p25": 74.84011824475118,
+            "p50": 170.88645977577403,
+            "p75": 350.29913546020924,
+            "p90": 564.8183779153686,
+            "p95": 676.3728312233646,
+            "p99": 890.3318485983383,
+            "p100": 1167.5905516111106
+          },
+          "mean": 236.7485529128743,
+          "count_within_delta": {
+            "0.02": 1,
+            "0.107": 2,
+            "1.0": 2,
+            "7.0": 17,
+            "30.0": 68,
+            "124.6": 289,
+            "287.5": 485
+          },
+          "percentiles_never_started": {
+            "p0": 0.013711570236417982,
+            "p1": 4.957855731699202,
+            "p5": 17.68276047400993,
+            "p10": 39.332486601734054,
+            "p25": 87.15010765569353,
+            "p50": 202.53363406231284,
+            "p75": 384.9557380003137,
+            "p90": 585.7833902960074,
+            "p95": 711.3864162083612,
+            "p99": 915.3296853900927,
+            "p100": 1167.5905516111106
+          },
+          "percentiles_started_and_left": {
+            "p0": 0.06989138250825581,
+            "p1": 1.1727843351460165,
+            "p5": 8.706302485743606,
+            "p10": 15.837091675619837,
+            "p25": 35.85902966419994,
+            "p50": 81.30926619255985,
+            "p75": 107.06899884496437,
+            "p90": 165.56735277603127,
+            "p95": 248.65066311859027,
+            "p99": 365.3824114008564,
+            "p100": 389.6840410298992
+          }
+        },
+        "M2_near_miss_live_margin_days": {
+          "definition": "max(instant) - tau1 for pairs live ONLY by conjunct (a) (not Continued, and an insertion after tau1)",
+          "n": 51811,
+          "percentiles": {
+            "p0": 0.7526105134465076,
+            "p1": 117.87547884220713,
+            "p5": 266.5054755987103,
+            "p10": 429.2876631672046,
+            "p25": 934.2886539618105,
+            "p50": 1861.8666666666666,
+            "p75": 2877.6491519147035,
+            "p90": 3726.4444748304204,
+            "p95": 4207.588595739926,
+            "p99": 5424.032387174144,
+            "p100": 20264.866666666665
+          },
+          "count_within_delta": {
+            "0.02": 0,
+            "0.107": 0,
+            "1.0": 2,
+            "7.0": 14,
+            "30.0": 81,
+            "124.6": 581,
+            "287.5": 2992
+          }
+        },
+        "M4_clamping": {
+          "excluded_pairs_on_accounts_whose_max_instant_is_clamped": 0,
+          "near_miss_live_pairs_on_such_accounts": 16150,
+          "clamp_value_utc": "2026-08-10T20:48:00+00:00",
+          "reading": "the clamp value is the last knot time, 2026-08-10T20:48Z, which is later than tau1 for EVERY pair surviving D10 -- D10 requires [T0] + (max(W,91) + H) x 24h <= tau_pull, so tau1 <= tau_pull - H days. An account whose maximum is clamped is therefore live for every pair it holds, and the 5,094 clamped records cannot produce a false exclusion at any tested arm. 0048 Sec 9's clamping concern is real in direction and null in effect on this exclusion set."
+        },
+        "M5_claimed_watched_at_cross_check": {
+          "definition": "a DIAGNOSTIC only. Does an excluded pair's account hold any record whose CLAIMED watched_at is after tau1? Liveness runs on insertion time (0021) and this does not change that.",
+          "excluded_pairs_whose_account_claims_a_watch_after_tau1": 3,
+          "of_which_never_started": 1,
+          "of_which_started_and_left": 2,
+          "excess_days_percentiles": {
+            "p0": -1167.6131944444444,
+            "p1": -962.5534305555556,
+            "p5": -711.7977777777778,
+            "p10": -583.5668055555556,
+            "p25": -385.39409722222223,
+            "p50": -179.75416666666666,
+            "p75": -81.84826388888888,
+            "p90": -30.34374999999995,
+            "p95": -14.131250000000007,
+            "p99": -4.0065833333333325,
+            "p100": 170.125
+          },
+          "reading": "a claim after tau1 on an account with no insertion after tau1 is either a backdated-forward claim, which is what 0021 says to ignore, or calibration error. It cannot distinguish the two, so it is an UPPER bound on the count of exclusions the residual could overturn, not an estimate of it."
+        }
+      }
+    },
+    "sensitivity": {
+      "DERIV": {
+        "38": {
+          "later_0.0": {
+            "excluded": 52,
+            "never_started": 0,
+            "started_and_left": 52
+          },
+          "later_0.02": {
+            "excluded": 52,
+            "never_started": 0,
+            "started_and_left": 52
+          },
+          "earlier_0.02": {
+            "excluded": 52,
+            "never_started": 0,
+            "started_and_left": 52
+          },
+          "later_0.107": {
+            "excluded": 52,
+            "never_started": 0,
+            "started_and_left": 52
+          },
+          "earlier_0.107": {
+            "excluded": 52,
+            "never_started": 0,
+            "started_and_left": 52
+          },
+          "later_1.0": {
+            "excluded": 51,
+            "never_started": 0,
+            "started_and_left": 51
+          },
+          "earlier_1.0": {
+            "excluded": 52,
+            "never_started": 0,
+            "started_and_left": 52
+          },
+          "later_7.0": {
+            "excluded": 51,
+            "never_started": 0,
+            "started_and_left": 51
+          },
+          "earlier_7.0": {
+            "excluded": 55,
+            "never_started": 0,
+            "started_and_left": 55
+          },
+          "later_30.0": {
+            "excluded": 36,
+            "never_started": 0,
+            "started_and_left": 36
+          },
+          "earlier_30.0": {
+            "excluded": 68,
+            "never_started": 0,
+            "started_and_left": 68
+          },
+          "later_124.6": {
+            "excluded": 9,
+            "never_started": 0,
+            "started_and_left": 9
+          },
+          "earlier_124.6": {
+            "excluded": 160,
+            "never_started": 8,
+            "started_and_left": 152
+          },
+          "later_287.5": {
+            "excluded": 2,
+            "never_started": 0,
+            "started_and_left": 2
+          },
+          "earlier_287.5": {
+            "excluded": 930,
+            "never_started": 265,
+            "started_and_left": 665
+          },
+          "_base": 52,
+          "_range_over_ladder": [
+            2,
+            930
+          ],
+          "_range_over_sub_day_residual": [
+            52,
+            52
+          ]
+        },
+        "46": {
+          "later_0.0": {
+            "excluded": 56,
+            "never_started": 0,
+            "started_and_left": 56
+          },
+          "later_0.02": {
+            "excluded": 56,
+            "never_started": 0,
+            "started_and_left": 56
+          },
+          "earlier_0.02": {
+            "excluded": 56,
+            "never_started": 0,
+            "started_and_left": 56
+          },
+          "later_0.107": {
+            "excluded": 56,
+            "never_started": 0,
+            "started_and_left": 56
+          },
+          "earlier_0.107": {
+            "excluded": 56,
+            "never_started": 0,
+            "started_and_left": 56
+          },
+          "later_1.0": {
+            "excluded": 55,
+            "never_started": 0,
+            "started_and_left": 55
+          },
+          "earlier_1.0": {
+            "excluded": 56,
+            "never_started": 0,
+            "started_and_left": 56
+          },
+          "later_7.0": {
+            "excluded": 52,
+            "never_started": 0,
+            "started_and_left": 52
+          },
+          "earlier_7.0": {
+            "excluded": 58,
+            "never_started": 0,
+            "started_and_left": 58
+          },
+          "later_30.0": {
+            "excluded": 43,
+            "never_started": 0,
+            "started_and_left": 43
+          },
+          "earlier_30.0": {
+            "excluded": 79,
+            "never_started": 0,
+            "started_and_left": 79
+          },
+          "later_124.6": {
+            "excluded": 9,
+            "never_started": 0,
+            "started_and_left": 9
+          },
+          "earlier_124.6": {
+            "excluded": 167,
+            "never_started": 8,
+            "started_and_left": 159
+          },
+          "later_287.5": {
+            "excluded": 2,
+            "never_started": 0,
+            "started_and_left": 2
+          },
+          "earlier_287.5": {
+            "excluded": 940,
+            "never_started": 247,
+            "started_and_left": 693
+          },
+          "_base": 56,
+          "_range_over_ladder": [
+            2,
+            940
+          ],
+          "_range_over_sub_day_residual": [
+            56,
+            56
+          ]
+        },
+        "77": {
+          "later_0.0": {
+            "excluded": 79,
+            "never_started": 0,
+            "started_and_left": 79
+          },
+          "later_0.02": {
+            "excluded": 79,
+            "never_started": 0,
+            "started_and_left": 79
+          },
+          "earlier_0.02": {
+            "excluded": 79,
+            "never_started": 0,
+            "started_and_left": 79
+          },
+          "later_0.107": {
+            "excluded": 79,
+            "never_started": 0,
+            "started_and_left": 79
+          },
+          "earlier_0.107": {
+            "excluded": 79,
+            "never_started": 0,
+            "started_and_left": 79
+          },
+          "later_1.0": {
+            "excluded": 79,
+            "never_started": 0,
+            "started_and_left": 79
+          },
+          "earlier_1.0": {
+            "excluded": 80,
+            "never_started": 0,
+            "started_and_left": 80
+          },
+          "later_7.0": {
+            "excluded": 72,
+            "never_started": 0,
+            "started_and_left": 72
+          },
+          "earlier_7.0": {
+            "excluded": 83,
+            "never_started": 0,
+            "started_and_left": 83
+          },
+          "later_30.0": {
+            "excluded": 56,
+            "never_started": 0,
+            "started_and_left": 56
+          },
+          "earlier_30.0": {
+            "excluded": 100,
+            "never_started": 0,
+            "started_and_left": 100
+          },
+          "later_124.6": {
+            "excluded": 11,
+            "never_started": 0,
+            "started_and_left": 11
+          },
+          "earlier_124.6": {
+            "excluded": 243,
+            "never_started": 9,
+            "started_and_left": 234
+          },
+          "later_287.5": {
+            "excluded": 2,
+            "never_started": 0,
+            "started_and_left": 2
+          },
+          "earlier_287.5": {
+            "excluded": 1146,
+            "never_started": 227,
+            "started_and_left": 919
+          },
+          "_base": 79,
+          "_range_over_ladder": [
+            2,
+            1146
+          ],
+          "_range_over_sub_day_residual": [
+            79,
+            79
+          ]
+        },
+        "91": {
+          "later_0.0": {
+            "excluded": 89,
+            "never_started": 0,
+            "started_and_left": 89
+          },
+          "later_0.02": {
+            "excluded": 89,
+            "never_started": 0,
+            "started_and_left": 89
+          },
+          "earlier_0.02": {
+            "excluded": 89,
+            "never_started": 0,
+            "started_and_left": 89
+          },
+          "later_0.107": {
+            "excluded": 89,
+            "never_started": 0,
+            "started_and_left": 89
+          },
+          "earlier_0.107": {
+            "excluded": 89,
+            "never_started": 0,
+            "started_and_left": 89
+          },
+          "later_1.0": {
+            "excluded": 88,
+            "never_started": 0,
+            "started_and_left": 88
+          },
+          "earlier_1.0": {
+            "excluded": 89,
+            "never_started": 0,
+            "started_and_left": 89
+          },
+          "later_7.0": {
+            "excluded": 83,
+            "never_started": 0,
+            "started_and_left": 83
+          },
+          "earlier_7.0": {
+            "excluded": 93,
+            "never_started": 0,
+            "started_and_left": 93
+          },
+          "later_30.0": {
+            "excluded": 66,
+            "never_started": 0,
+            "started_and_left": 66
+          },
+          "earlier_30.0": {
+            "excluded": 115,
+            "never_started": 0,
+            "started_and_left": 115
+          },
+          "later_124.6": {
+            "excluded": 11,
+            "never_started": 0,
+            "started_and_left": 11
+          },
+          "earlier_124.6": {
+            "excluded": 295,
+            "never_started": 18,
+            "started_and_left": 277
+          },
+          "later_287.5": {
+            "excluded": 4,
+            "never_started": 0,
+            "started_and_left": 4
+          },
+          "earlier_287.5": {
+            "excluded": 1237,
+            "never_started": 227,
+            "started_and_left": 1010
+          },
+          "_base": 89,
+          "_range_over_ladder": [
+            4,
+            1237
+          ],
+          "_range_over_sub_day_residual": [
+            89,
+            89
+          ]
+        },
+        "107": {
+          "later_0.0": {
+            "excluded": 98,
+            "never_started": 0,
+            "started_and_left": 98
+          },
+          "later_0.02": {
+            "excluded": 98,
+            "never_started": 0,
+            "started_and_left": 98
+          },
+          "earlier_0.02": {
+            "excluded": 98,
+            "never_started": 0,
+            "started_and_left": 98
+          },
+          "later_0.107": {
+            "excluded": 98,
+            "never_started": 0,
+            "started_and_left": 98
+          },
+          "earlier_0.107": {
+            "excluded": 98,
+            "never_started": 0,
+            "started_and_left": 98
+          },
+          "later_1.0": {
+            "excluded": 97,
+            "never_started": 0,
+            "started_and_left": 97
+          },
+          "earlier_1.0": {
+            "excluded": 99,
+            "never_started": 0,
+            "started_and_left": 99
+          },
+          "later_7.0": {
+            "excluded": 94,
+            "never_started": 0,
+            "started_and_left": 94
+          },
+          "earlier_7.0": {
+            "excluded": 104,
+            "never_started": 0,
+            "started_and_left": 104
+          },
+          "later_30.0": {
+            "excluded": 79,
+            "never_started": 0,
+            "started_and_left": 79
+          },
+          "earlier_30.0": {
+            "excluded": 123,
+            "never_started": 1,
+            "started_and_left": 122
+          },
+          "later_124.6": {
+            "excluded": 15,
+            "never_started": 0,
+            "started_and_left": 15
+          },
+          "earlier_124.6": {
+            "excluded": 299,
+            "never_started": 20,
+            "started_and_left": 279
+          },
+          "later_287.5": {
+            "excluded": 4,
+            "never_started": 0,
+            "started_and_left": 4
+          },
+          "earlier_287.5": {
+            "excluded": 1228,
+            "never_started": 193,
+            "started_and_left": 1035
+          },
+          "_base": 98,
+          "_range_over_ladder": [
+            4,
+            1228
+          ],
+          "_range_over_sub_day_residual": [
+            98,
+            98
+          ]
+        },
+        "108": {
+          "later_0.0": {
+            "excluded": 99,
+            "never_started": 0,
+            "started_and_left": 99
+          },
+          "later_0.02": {
+            "excluded": 99,
+            "never_started": 0,
+            "started_and_left": 99
+          },
+          "earlier_0.02": {
+            "excluded": 99,
+            "never_started": 0,
+            "started_and_left": 99
+          },
+          "later_0.107": {
+            "excluded": 98,
+            "never_started": 0,
+            "started_and_left": 98
+          },
+          "earlier_0.107": {
+            "excluded": 99,
+            "never_started": 0,
+            "started_and_left": 99
+          },
+          "later_1.0": {
+            "excluded": 98,
+            "never_started": 0,
+            "started_and_left": 98
+          },
+          "earlier_1.0": {
+            "excluded": 99,
+            "never_started": 0,
+            "started_and_left": 99
+          },
+          "later_7.0": {
+            "excluded": 94,
+            "never_started": 0,
+            "started_and_left": 94
+          },
+          "earlier_7.0": {
+            "excluded": 104,
+            "never_started": 0,
+            "started_and_left": 104
+          },
+          "later_30.0": {
+            "excluded": 80,
+            "never_started": 0,
+            "started_and_left": 80
+          },
+          "earlier_30.0": {
+            "excluded": 126,
+            "never_started": 1,
+            "started_and_left": 125
+          },
+          "later_124.6": {
+            "excluded": 15,
+            "never_started": 0,
+            "started_and_left": 15
+          },
+          "earlier_124.6": {
+            "excluded": 296,
+            "never_started": 18,
+            "started_and_left": 278
+          },
+          "later_287.5": {
+            "excluded": 4,
+            "never_started": 0,
+            "started_and_left": 4
+          },
+          "earlier_287.5": {
+            "excluded": 1233,
+            "never_started": 192,
+            "started_and_left": 1041
+          },
+          "_base": 99,
+          "_range_over_ladder": [
+            4,
+            1233
+          ],
+          "_range_over_sub_day_residual": [
+            98,
+            99
+          ]
+        },
+        "150": {
+          "later_0.0": {
+            "excluded": 125,
+            "never_started": 0,
+            "started_and_left": 125
+          },
+          "later_0.02": {
+            "excluded": 125,
+            "never_started": 0,
+            "started_and_left": 125
+          },
+          "earlier_0.02": {
+            "excluded": 125,
+            "never_started": 0,
+            "started_and_left": 125
+          },
+          "later_0.107": {
+            "excluded": 125,
+            "never_started": 0,
+            "started_and_left": 125
+          },
+          "earlier_0.107": {
+            "excluded": 125,
+            "never_started": 0,
+            "started_and_left": 125
+          },
+          "later_1.0": {
+            "excluded": 124,
+            "never_started": 0,
+            "started_and_left": 124
+          },
+          "earlier_1.0": {
+            "excluded": 125,
+            "never_started": 0,
+            "started_and_left": 125
+          },
+          "later_7.0": {
+            "excluded": 119,
+            "never_started": 0,
+            "started_and_left": 119
+          },
+          "earlier_7.0": {
+            "excluded": 131,
+            "never_started": 0,
+            "started_and_left": 131
+          },
+          "later_30.0": {
+            "excluded": 96,
+            "never_started": 0,
+            "started_and_left": 96
+          },
+          "earlier_30.0": {
+            "excluded": 148,
+            "never_started": 0,
+            "started_and_left": 148
+          },
+          "later_124.6": {
+            "excluded": 42,
+            "never_started": 0,
+            "started_and_left": 42
+          },
+          "earlier_124.6": {
+            "excluded": 358,
+            "never_started": 23,
+            "started_and_left": 335
+          },
+          "later_287.5": {
+            "excluded": 6,
+            "never_started": 0,
+            "started_and_left": 6
+          },
+          "earlier_287.5": {
+            "excluded": 1369,
+            "never_started": 194,
+            "started_and_left": 1175
+          },
+          "_base": 125,
+          "_range_over_ladder": [
+            6,
+            1369
+          ],
+          "_range_over_sub_day_residual": [
+            125,
+            125
+          ]
+        },
+        "213": {
+          "later_0.0": {
+            "excluded": 147,
+            "never_started": 0,
+            "started_and_left": 147
+          },
+          "later_0.02": {
+            "excluded": 147,
+            "never_started": 0,
+            "started_and_left": 147
+          },
+          "earlier_0.02": {
+            "excluded": 148,
+            "never_started": 0,
+            "started_and_left": 148
+          },
+          "later_0.107": {
+            "excluded": 147,
+            "never_started": 0,
+            "started_and_left": 147
+          },
+          "earlier_0.107": {
+            "excluded": 148,
+            "never_started": 0,
+            "started_and_left": 148
+          },
+          "later_1.0": {
+            "excluded": 147,
+            "never_started": 0,
+            "started_and_left": 147
+          },
+          "earlier_1.0": {
+            "excluded": 148,
+            "never_started": 0,
+            "started_and_left": 148
+          },
+          "later_7.0": {
+            "excluded": 143,
+            "never_started": 0,
+            "started_and_left": 143
+          },
+          "earlier_7.0": {
+            "excluded": 151,
+            "never_started": 0,
+            "started_and_left": 151
+          },
+          "later_30.0": {
+            "excluded": 120,
+            "never_started": 0,
+            "started_and_left": 120
+          },
+          "earlier_30.0": {
+            "excluded": 173,
+            "never_started": 0,
+            "started_and_left": 173
+          },
+          "later_124.6": {
+            "excluded": 71,
+            "never_started": 0,
+            "started_and_left": 71
+          },
+          "earlier_124.6": {
+            "excluded": 367,
+            "never_started": 14,
+            "started_and_left": 353
+          },
+          "later_287.5": {
+            "excluded": 9,
+            "never_started": 0,
+            "started_and_left": 9
+          },
+          "earlier_287.5": {
+            "excluded": 1443,
+            "never_started": 150,
+            "started_and_left": 1293
+          },
+          "_base": 147,
+          "_range_over_ladder": [
+            9,
+            1443
+          ],
+          "_range_over_sub_day_residual": [
+            147,
+            148
+          ]
+        }
+      },
+      "APPLY": {
+        "38": {
+          "later_0.0": {
+            "excluded": 537,
+            "never_started": 485,
+            "started_and_left": 52
+          },
+          "later_0.02": {
+            "excluded": 537,
+            "never_started": 485,
+            "started_and_left": 52
+          },
+          "earlier_0.02": {
+            "excluded": 537,
+            "never_started": 485,
+            "started_and_left": 52
+          },
+          "later_0.107": {
+            "excluded": 537,
+            "never_started": 485,
+            "started_and_left": 52
+          },
+          "earlier_0.107": {
+            "excluded": 537,
+            "never_started": 485,
+            "started_and_left": 52
+          },
+          "later_1.0": {
+            "excluded": 533,
+            "never_started": 482,
+            "started_and_left": 51
+          },
+          "earlier_1.0": {
+            "excluded": 539,
+            "never_started": 487,
+            "started_and_left": 52
+          },
+          "later_7.0": {
+            "excluded": 524,
+            "never_started": 473,
+            "started_and_left": 51
+          },
+          "earlier_7.0": {
+            "excluded": 548,
+            "never_started": 493,
+            "started_and_left": 55
+          },
+          "later_30.0": {
+            "excluded": 468,
+            "never_started": 432,
+            "started_and_left": 36
+          },
+          "earlier_30.0": {
+            "excluded": 608,
+            "never_started": 540,
+            "started_and_left": 68
+          },
+          "later_124.6": {
+            "excluded": 320,
+            "never_started": 311,
+            "started_and_left": 9
+          },
+          "earlier_124.6": {
+            "excluded": 872,
+            "never_started": 720,
+            "started_and_left": 152
+          },
+          "later_287.5": {
+            "excluded": 173,
+            "never_started": 171,
+            "started_and_left": 2
+          },
+          "earlier_287.5": {
+            "excluded": 2660,
+            "never_started": 1959,
+            "started_and_left": 701
+          },
+          "_base": 537,
+          "_range_over_ladder": [
+            173,
+            2660
+          ],
+          "_range_over_sub_day_residual": [
+            537,
+            537
+          ]
+        },
+        "46": {
+          "later_0.0": {
+            "excluded": 550,
+            "never_started": 494,
+            "started_and_left": 56
+          },
+          "later_0.02": {
+            "excluded": 550,
+            "never_started": 494,
+            "started_and_left": 56
+          },
+          "earlier_0.02": {
+            "excluded": 550,
+            "never_started": 494,
+            "started_and_left": 56
+          },
+          "later_0.107": {
+            "excluded": 550,
+            "never_started": 494,
+            "started_and_left": 56
+          },
+          "earlier_0.107": {
+            "excluded": 550,
+            "never_started": 494,
+            "started_and_left": 56
+          },
+          "later_1.0": {
+            "excluded": 548,
+            "never_started": 493,
+            "started_and_left": 55
+          },
+          "earlier_1.0": {
+            "excluded": 551,
+            "never_started": 495,
+            "started_and_left": 56
+          },
+          "later_7.0": {
+            "excluded": 539,
+            "never_started": 487,
+            "started_and_left": 52
+          },
+          "earlier_7.0": {
+            "excluded": 565,
+            "never_started": 507,
+            "started_and_left": 58
+          },
+          "later_30.0": {
+            "excluded": 493,
+            "never_started": 450,
+            "started_and_left": 43
+          },
+          "earlier_30.0": {
+            "excluded": 633,
+            "never_started": 554,
+            "started_and_left": 79
+          },
+          "later_124.6": {
+            "excluded": 330,
+            "never_started": 321,
+            "started_and_left": 9
+          },
+          "earlier_124.6": {
+            "excluded": 901,
+            "never_started": 742,
+            "started_and_left": 159
+          },
+          "later_287.5": {
+            "excluded": 176,
+            "never_started": 174,
+            "started_and_left": 2
+          },
+          "earlier_287.5": {
+            "excluded": 2709,
+            "never_started": 1979,
+            "started_and_left": 730
+          },
+          "_base": 550,
+          "_range_over_ladder": [
+            176,
+            2709
+          ],
+          "_range_over_sub_day_residual": [
+            550,
+            550
+          ]
+        },
+        "77": {
+          "later_0.0": {
+            "excluded": 633,
+            "never_started": 554,
+            "started_and_left": 79
+          },
+          "later_0.02": {
+            "excluded": 633,
+            "never_started": 554,
+            "started_and_left": 79
+          },
+          "earlier_0.02": {
+            "excluded": 633,
+            "never_started": 554,
+            "started_and_left": 79
+          },
+          "later_0.107": {
+            "excluded": 633,
+            "never_started": 554,
+            "started_and_left": 79
+          },
+          "earlier_0.107": {
+            "excluded": 634,
+            "never_started": 555,
+            "started_and_left": 79
+          },
+          "later_1.0": {
+            "excluded": 633,
+            "never_started": 554,
+            "started_and_left": 79
+          },
+          "earlier_1.0": {
+            "excluded": 636,
+            "never_started": 556,
+            "started_and_left": 80
+          },
+          "later_7.0": {
+            "excluded": 618,
+            "never_started": 546,
+            "started_and_left": 72
+          },
+          "earlier_7.0": {
+            "excluded": 651,
+            "never_started": 568,
+            "started_and_left": 83
+          },
+          "later_30.0": {
+            "excluded": 551,
+            "never_started": 495,
+            "started_and_left": 56
+          },
+          "earlier_30.0": {
+            "excluded": 704,
+            "never_started": 604,
+            "started_and_left": 100
+          },
+          "later_124.6": {
+            "excluded": 372,
+            "never_started": 361,
+            "started_and_left": 11
+          },
+          "earlier_124.6": {
+            "excluded": 1100,
+            "never_started": 864,
+            "started_and_left": 236
+          },
+          "later_287.5": {
+            "excluded": 194,
+            "never_started": 192,
+            "started_and_left": 2
+          },
+          "earlier_287.5": {
+            "excluded": 3295,
+            "never_started": 2331,
+            "started_and_left": 964
+          },
+          "_base": 633,
+          "_range_over_ladder": [
+            194,
+            3295
+          ],
+          "_range_over_sub_day_residual": [
+            633,
+            634
+          ]
+        },
+        "91": {
+          "later_0.0": {
+            "excluded": 664,
+            "never_started": 575,
+            "started_and_left": 89
+          },
+          "later_0.02": {
+            "excluded": 664,
+            "never_started": 575,
+            "started_and_left": 89
+          },
+          "earlier_0.02": {
+            "excluded": 664,
+            "never_started": 575,
+            "started_and_left": 89
+          },
+          "later_0.107": {
+            "excluded": 664,
+            "never_started": 575,
+            "started_and_left": 89
+          },
+          "earlier_0.107": {
+            "excluded": 664,
+            "never_started": 575,
+            "started_and_left": 89
+          },
+          "later_1.0": {
+            "excluded": 662,
+            "never_started": 574,
+            "started_and_left": 88
+          },
+          "earlier_1.0": {
+            "excluded": 668,
+            "never_started": 579,
+            "started_and_left": 89
+          },
+          "later_7.0": {
+            "excluded": 651,
+            "never_started": 568,
+            "started_and_left": 83
+          },
+          "earlier_7.0": {
+            "excluded": 679,
+            "never_started": 586,
+            "started_and_left": 93
+          },
+          "later_30.0": {
+            "excluded": 598,
+            "never_started": 532,
+            "started_and_left": 66
+          },
+          "earlier_30.0": {
+            "excluded": 740,
+            "never_started": 625,
+            "started_and_left": 115
+          },
+          "later_124.6": {
+            "excluded": 389,
+            "never_started": 378,
+            "started_and_left": 11
+          },
+          "earlier_124.6": {
+            "excluded": 1221,
+            "never_started": 941,
+            "started_and_left": 280
+          },
+          "later_287.5": {
+            "excluded": 205,
+            "never_started": 201,
+            "started_and_left": 4
+          },
+          "earlier_287.5": {
+            "excluded": 3635,
+            "never_started": 2572,
+            "started_and_left": 1063
+          },
+          "_base": 664,
+          "_range_over_ladder": [
+            205,
+            3635
+          ],
+          "_range_over_sub_day_residual": [
+            664,
+            664
+          ]
+        },
+        "107": {
+          "later_0.0": {
+            "excluded": 701,
+            "never_started": 603,
+            "started_and_left": 98
+          },
+          "later_0.02": {
+            "excluded": 701,
+            "never_started": 603,
+            "started_and_left": 98
+          },
+          "earlier_0.02": {
+            "excluded": 701,
+            "never_started": 603,
+            "started_and_left": 98
+          },
+          "later_0.107": {
+            "excluded": 701,
+            "never_started": 603,
+            "started_and_left": 98
+          },
+          "earlier_0.107": {
+            "excluded": 701,
+            "never_started": 603,
+            "started_and_left": 98
+          },
+          "later_1.0": {
+            "excluded": 700,
+            "never_started": 603,
+            "started_and_left": 97
+          },
+          "earlier_1.0": {
+            "excluded": 703,
+            "never_started": 604,
+            "started_and_left": 99
+          },
+          "later_7.0": {
+            "excluded": 685,
+            "never_started": 591,
+            "started_and_left": 94
+          },
+          "earlier_7.0": {
+            "excluded": 714,
+            "never_started": 610,
+            "started_and_left": 104
+          },
+          "later_30.0": {
+            "excluded": 632,
+            "never_started": 553,
+            "started_and_left": 79
+          },
+          "earlier_30.0": {
+            "excluded": 779,
+            "never_started": 657,
+            "started_and_left": 122
+          },
+          "later_124.6": {
+            "excluded": 412,
+            "never_started": 397,
+            "started_and_left": 15
+          },
+          "earlier_124.6": {
+            "excluded": 1286,
+            "never_started": 999,
+            "started_and_left": 287
+          },
+          "later_287.5": {
+            "excluded": 217,
+            "never_started": 213,
+            "started_and_left": 4
+          },
+          "earlier_287.5": {
+            "excluded": 3680,
+            "never_started": 2585,
+            "started_and_left": 1095
+          },
+          "_base": 701,
+          "_range_over_ladder": [
+            217,
+            3680
+          ],
+          "_range_over_sub_day_residual": [
+            701,
+            701
+          ]
+        },
+        "108": {
+          "later_0.0": {
+            "excluded": 703,
+            "never_started": 604,
+            "started_and_left": 99
+          },
+          "later_0.02": {
+            "excluded": 702,
+            "never_started": 603,
+            "started_and_left": 99
+          },
+          "earlier_0.02": {
+            "excluded": 703,
+            "never_started": 604,
+            "started_and_left": 99
+          },
+          "later_0.107": {
+            "excluded": 701,
+            "never_started": 603,
+            "started_and_left": 98
+          },
+          "earlier_0.107": {
+            "excluded": 703,
+            "never_started": 604,
+            "started_and_left": 99
+          },
+          "later_1.0": {
+            "excluded": 701,
+            "never_started": 603,
+            "started_and_left": 98
+          },
+          "earlier_1.0": {
+            "excluded": 705,
+            "never_started": 606,
+            "started_and_left": 99
+          },
+          "later_7.0": {
+            "excluded": 686,
+            "never_started": 592,
+            "started_and_left": 94
+          },
+          "earlier_7.0": {
+            "excluded": 717,
+            "never_started": 613,
+            "started_and_left": 104
+          },
+          "later_30.0": {
+            "excluded": 635,
+            "never_started": 555,
+            "started_and_left": 80
+          },
+          "earlier_30.0": {
+            "excluded": 784,
+            "never_started": 659,
+            "started_and_left": 125
+          },
+          "later_124.6": {
+            "excluded": 414,
+            "never_started": 399,
+            "started_and_left": 15
+          },
+          "earlier_124.6": {
+            "excluded": 1284,
+            "never_started": 999,
+            "started_and_left": 285
+          },
+          "later_287.5": {
+            "excluded": 218,
+            "never_started": 214,
+            "started_and_left": 4
+          },
+          "earlier_287.5": {
+            "excluded": 3695,
+            "never_started": 2595,
+            "started_and_left": 1100
+          },
+          "_base": 703,
+          "_range_over_ladder": [
+            218,
+            3695
+          ],
+          "_range_over_sub_day_residual": [
+            701,
+            703
+          ]
+        },
+        "150": {
+          "later_0.0": {
+            "excluded": 789,
+            "never_started": 664,
+            "started_and_left": 125
+          },
+          "later_0.02": {
+            "excluded": 789,
+            "never_started": 664,
+            "started_and_left": 125
+          },
+          "earlier_0.02": {
+            "excluded": 789,
+            "never_started": 664,
+            "started_and_left": 125
+          },
+          "later_0.107": {
+            "excluded": 789,
+            "never_started": 664,
+            "started_and_left": 125
+          },
+          "earlier_0.107": {
+            "excluded": 789,
+            "never_started": 664,
+            "started_and_left": 125
+          },
+          "later_1.0": {
+            "excluded": 784,
+            "never_started": 660,
+            "started_and_left": 124
+          },
+          "earlier_1.0": {
+            "excluded": 790,
+            "never_started": 665,
+            "started_and_left": 125
+          },
+          "later_7.0": {
+            "excluded": 767,
+            "never_started": 648,
+            "started_and_left": 119
+          },
+          "earlier_7.0": {
+            "excluded": 806,
+            "never_started": 675,
+            "started_and_left": 131
+          },
+          "later_30.0": {
+            "excluded": 702,
+            "never_started": 606,
+            "started_and_left": 96
+          },
+          "earlier_30.0": {
+            "excluded": 875,
+            "never_started": 727,
+            "started_and_left": 148
+          },
+          "later_124.6": {
+            "excluded": 498,
+            "never_started": 456,
+            "started_and_left": 42
+          },
+          "earlier_124.6": {
+            "excluded": 1548,
+            "never_started": 1198,
+            "started_and_left": 350
+          },
+          "later_287.5": {
+            "excluded": 267,
+            "never_started": 261,
+            "started_and_left": 6
+          },
+          "earlier_287.5": {
+            "excluded": 4019,
+            "never_started": 2782,
+            "started_and_left": 1237
+          },
+          "_base": 789,
+          "_range_over_ladder": [
+            267,
+            4019
+          ],
+          "_range_over_sub_day_residual": [
+            789,
+            789
+          ]
+        },
+        "213": {
+          "later_0.0": {
+            "excluded": 864,
+            "never_started": 716,
+            "started_and_left": 148
+          },
+          "later_0.02": {
+            "excluded": 864,
+            "never_started": 716,
+            "started_and_left": 148
+          },
+          "earlier_0.02": {
+            "excluded": 865,
+            "never_started": 716,
+            "started_and_left": 149
+          },
+          "later_0.107": {
+            "excluded": 864,
+            "never_started": 716,
+            "started_and_left": 148
+          },
+          "earlier_0.107": {
+            "excluded": 865,
+            "never_started": 716,
+            "started_and_left": 149
+          },
+          "later_1.0": {
+            "excluded": 859,
+            "never_started": 711,
+            "started_and_left": 148
+          },
+          "earlier_1.0": {
+            "excluded": 868,
+            "never_started": 719,
+            "started_and_left": 149
+          },
+          "later_7.0": {
+            "excluded": 841,
+            "never_started": 697,
+            "started_and_left": 144
+          },
+          "earlier_7.0": {
+            "excluded": 885,
+            "never_started": 733,
+            "started_and_left": 152
+          },
+          "later_30.0": {
+            "excluded": 765,
+            "never_started": 645,
+            "started_and_left": 120
+          },
+          "earlier_30.0": {
+            "excluded": 961,
+            "never_started": 787,
+            "started_and_left": 174
+          },
+          "later_124.6": {
+            "excluded": 582,
+            "never_started": 511,
+            "started_and_left": 71
+          },
+          "earlier_124.6": {
+            "excluded": 1466,
+            "never_started": 1107,
+            "started_and_left": 359
+          },
+          "later_287.5": {
+            "excluded": 307,
+            "never_started": 298,
+            "started_and_left": 9
+          },
+          "earlier_287.5": {
+            "excluded": 4095,
+            "never_started": 2738,
+            "started_and_left": 1357
+          },
+          "_base": 864,
+          "_range_over_ladder": [
+            307,
+            4095
+          ],
+          "_range_over_sub_day_residual": [
+            864,
+            865
+          ]
+        }
+      }
+    },
+    "stability_verdict": {
+      "APPLY_W108_base": 703,
+      "APPLY_W108_range_sub_day_residual": [
+        701,
+        703
+      ],
+      "APPLY_W108_range_full_ladder": [
+        218,
+        3695
+      ],
+      "DERIV_W108_base": 99,
+      "DERIV_W108_range_sub_day_residual": [
+        98,
+        99
+      ],
+      "DERIV_W108_range_full_ladder": [
+        4,
+        1233
+      ]
+    },
+    "residual_ladder_days": [
+      0.02,
+      0.107,
+      1.0,
+      7.0,
+      30.0,
+      124.6,
+      287.5
+    ],
+    "residual_ladder_provenance": {
+      "0.02": "median |residual| on the fit family (28 minutes)",
+      "0.107": "p90 |residual| on the fit family (2.6 hours)",
+      "1.0": "one day -- 91.5% of fit records are inside this",
+      "7.0": "one week -- the stored held-out validation reports 90.6% inside",
+      "30.0": "one month",
+      "124.6": "p95 |residual| on the fit family",
+      "287.5": "p97.5 |residual| on the fit family"
+    },
+    "residual_shape": "BIMODAL. 90% of fit-family records sit inside 2.6 HOURS; the top ~8% sit in the HUNDREDS OF DAYS. There is no single residual scale, so the stability question has to be answered at both."
+  },
+  "claims_tested": {
+    "prior_measurement_DERIV_99_from_73_accounts": {
+      "claimed": {
+        "excluded": 99,
+        "accounts": 73
+      },
+      "measured": {
+        "excluded": 99,
+        "accounts": 73
+      },
+      "verdict": "CONFIRMED"
+    },
+    "prior_measurement_APPLY_703_from_216_accounts": {
+      "claimed": {
+        "excluded": 703,
+        "accounts": 216,
+        "split": [
+          604,
+          99
+        ]
+      },
+      "measured": {
+        "excluded": 703,
+        "accounts": 216,
+        "split": [
+          604,
+          99
+        ]
+      },
+      "verdict": "CONFIRMED"
+    },
+    "0048_per_arm_APPLY": {
+      "claimed": [
+        537,
+        550,
+        633,
+        664,
+        701,
+        703,
+        789,
+        864
+      ],
+      "measured": [
+        537,
+        550,
+        633,
+        664,
+        701,
+        703,
+        789,
+        864
+      ]
+    },
+    "0048_per_arm_SL_component": {
+      "claimed": [
+        52,
+        56,
+        79,
+        89,
+        98,
+        99,
+        125,
+        148
+      ],
+      "claimed_population_stated_in_0048": "not stated at the point of use (0046 Sec 0)",
+      "measured_APPLY": [
+        52,
+        56,
+        79,
+        89,
+        98,
+        99,
+        125,
+        148
+      ],
+      "measured_DERIV": [
+        52,
+        56,
+        79,
+        89,
+        98,
+        99,
+        125,
+        147
+      ]
+    },
+    "never_started_bound_unchanged_from_ALT": {
+      "ALT_published_0047": [
+        16.6633,
+        16.9704
+      ],
+      "ALT_BROAD_measured_APPLY_W108": [
+        16.663276617816063,
+        16.97041504368078
+      ],
+      "ALT_BROAD_denominator": 196654
+    },
+    "DERIV_NS_exclusion_component_is_zero_at_every_arm": {
+      "38": 0,
+      "46": 0,
+      "77": 0,
+      "91": 0,
+      "107": 0,
+      "108": 0,
+      "150": 0,
+      "213": 0
+    },
+    "APPLY_W_coupling_factor": {
+      "total": 1.6089385474860336,
+      "NS_component": 1.4762886597938145,
+      "SL_component": 2.8461538461538463
+    }
+  }
+}

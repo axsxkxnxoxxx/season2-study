@@ -63,7 +63,7 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
       before liveness applies; that is permitted because both are **row-local predicates on the
       position-5 output and commute exactly**, and `0029`'s ordering rationale concerns per-filter
       sample size, which cannot reach position 7 — **outcome assignment removes no rows.**
-      **Monotone decrease holds only NON-STRICTLY** where the exclusion set is empty.
+      **Monotone decrease is STRICT on both populations** under ALT-BROAD — 703 and 99, every arm (`0049`). The `>=` coding is kept so the invariant does not encode a property of one rule.
     - **`|A| = 0` is Step 1 §7's Never-started condition**, not "no S2 evidence at all."
     - Insertion time not claimed `watched_at` (`0021`); stored calibration **never refitted** (`0029`);
       **pair-level**, anchored at `τ1` (`0034`); **never drop a user wholesale**.
@@ -83,8 +83,11 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
   never-started by construction, the **never-started** bound on a **single denominator** is
   **[16.6633%, 16.9704%] on APPLY, width 0.3071 pp**, ceiling equal to the unfiltered share **as an
   identity** — **identical under ALT and ALT-BROAD**, since the 99 started-and-left exclusions enter
-  neither endpoint. **Compute a SECOND bound on the started-and-left share over those 99** (`0048`);
-  no such bound exists today. **[16.7146%, 16.9704%] is superseded — it mixed
+  neither endpoint. **Compute a SECOND bound on the started-and-left share over ALL 703 exclusions** (`0049`) —
+  **[9.6830%, 10.0405%], width 0.3575 pp on APPLY, both endpoints on 196,654.** **Not over the 99
+  alone**: the 604 rest on an untrusted `|A| = 0` and some may in truth have left, so a 99-only ceiling
+  is not a ceiling on the unconditional estimand. Report [9.6830%, 9.7333%] only as a **labelled
+  conditional sub-interval**. **[16.7146%, 16.9704%] is superseded — it mixed
   denominators and its floor sat 0.0513 pp above the case liveness guards against.** `0045`'s [16.7789%,
   17.0355%] is **superseded**: it mixed two denominators and its floor was not a floor. Report the **floor and ceiling**, not a single contestable number, and report
   the **S3-without-S2 bound (D4)** and the **split-artifact bound (D9)** alongside the liveness bound.

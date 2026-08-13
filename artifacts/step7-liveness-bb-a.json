@@ -1,0 +1,1827 @@
+{
+  "step": 7,
+  "title": "Liveness rule, rerun on ALT-BROAD (decisions/0048). GATE \u2014 proposal only.",
+  "instance": "bb_a (namespace a)",
+  "status": "GATE. This artifact adopts nothing and approves nothing. The Human Lead approves in writing, in session.",
+  "api_calls": 0,
+  "rule_as_run": {
+    "statement": "A user-show pair is NOT LIVE if and only if BOTH: the account shows no insertion instant after that pair's tau1 = [[T0]] + W*24h, AND the pair is NOT Continued.",
+    "continued": "|A| >= 1 and F2 in A_H and |A_H| >= ceil(0.90*L2), A_H read at tau2 = [[T0]] + (W+H)*24h (Step 1 SS7 as amended by 0034)",
+    "conjunct_2_selects_the_two_nulls": {
+      "never_started": "|A| = 0 -- null",
+      "started_and_left": "|A| >= 1 and not Continued -- null ON EXIT",
+      "continued": "the only state resting on positive evidence; the rule never reaches it"
+    },
+    "insertion_instant": "np.interp(play_id, stored Step 5 calibration). The curve is READ, never refitted (0029). Insertion time is not claimed watched_at (0021).",
+    "anchoring": "pair-level, at that pair's tau1 (0034). No user is ever dropped wholesale.",
+    "tie_convention": "'after' is strict, so NOT LIVE requires max instant <= tau1; measured to be non-load-bearing, 0 ties on either population",
+    "W": 108,
+    "H": 91
+  },
+  "populations": {
+    "rule": "EVERY FIGURE STATES ITS POPULATION (0046 SS0)",
+    "DERIV": {
+      "definition": "Step 5 waterfall line 4 less D10",
+      "pairs": 147370,
+      "accounts": 2402,
+      "asserted_against_step5_waterfall": true
+    },
+    "APPLY": {
+      "definition": "Step 5 waterfall line 1 less D10; what Step 8 filters",
+      "pairs": 196654,
+      "accounts": 2422,
+      "asserted_against_step5_waterfall": true
+    },
+    "step5_waterfall_recomputed": [
+      201900,
+      178165,
+      155131,
+      152126,
+      128099
+    ],
+    "step5_waterfall_published": [
+      201900,
+      178165,
+      155131,
+      152126,
+      128099
+    ]
+  },
+  "exclusions_at_W108": {
+    "DERIV": {
+      "population_pairs": 147370,
+      "excluded_pairs": 99,
+      "excluded_accounts": 73,
+      "never_started_component": 0,
+      "never_started_component_accounts": 0,
+      "started_and_left_component": 99,
+      "started_and_left_component_accounts": 73,
+      "continued_component": 0,
+      "share_of_population_pct": 0.0672
+    },
+    "APPLY": {
+      "population_pairs": 196654,
+      "excluded_pairs": 703,
+      "excluded_accounts": 216,
+      "never_started_component": 604,
+      "never_started_component_accounts": 191,
+      "started_and_left_component": 99,
+      "started_and_left_component_accounts": 73,
+      "continued_component": 0,
+      "share_of_population_pct": 0.3575
+    }
+  },
+  "prior_measurement_check": {
+    "claim": "99 on DERIV from 73 accounts; 703 on APPLY from 216 accounts",
+    "measured_DERIV": [
+      99,
+      73
+    ],
+    "measured_APPLY": [
+      703,
+      216
+    ],
+    "verdict": "CONFIRMED on both populations, counts and account counts"
+  },
+  "outcome_shares_at_W108": {
+    "DERIV": {
+      "population_pairs": 147370,
+      "no_liveness_filter": {
+        "pairs": 147370,
+        "excluded_pairs": 0,
+        "counts": {
+          "never_started": 9145,
+          "continued": 121382,
+          "started_and_left": 16843
+        },
+        "shares_pct": {
+          "never_started": 6.2055,
+          "continued": 82.3655,
+          "started_and_left": 11.4291
+        },
+        "shares_pct_full": {
+          "never_started": 6.205469227115424,
+          "continued": 82.36547465562869,
+          "started_and_left": 11.429056117255886
+        }
+      },
+      "under_the_rule": {
+        "pairs": 147271,
+        "excluded_pairs": 99,
+        "counts": {
+          "never_started": 9145,
+          "continued": 121382,
+          "started_and_left": 16744
+        },
+        "shares_pct": {
+          "never_started": 6.2096,
+          "continued": 82.4208,
+          "started_and_left": 11.3695
+        },
+        "shares_pct_full": {
+          "never_started": 6.209640730354245,
+          "continued": 82.42084320742033,
+          "started_and_left": 11.36951606222542
+        }
+      },
+      "movement_pp": {
+        "never_started": 0.0042,
+        "continued": 0.0554,
+        "started_and_left": -0.0595
+      },
+      "movement_pp_6dp": {
+        "never_started": 0.004172,
+        "continued": 0.055369,
+        "started_and_left": -0.05954
+      }
+    },
+    "APPLY": {
+      "population_pairs": 196654,
+      "no_liveness_filter": {
+        "pairs": 196654,
+        "excluded_pairs": 0,
+        "counts": {
+          "never_started": 33373,
+          "continued": 144140,
+          "started_and_left": 19141
+        },
+        "shares_pct": {
+          "never_started": 16.9704,
+          "continued": 73.2962,
+          "started_and_left": 9.7333
+        },
+        "shares_pct_full": {
+          "never_started": 16.97041504368078,
+          "continued": 73.29624619890772,
+          "started_and_left": 9.733338757411495
+        }
+      },
+      "under_the_rule": {
+        "pairs": 195951,
+        "excluded_pairs": 703,
+        "counts": {
+          "never_started": 32769,
+          "continued": 144140,
+          "started_and_left": 19042
+        },
+        "shares_pct": {
+          "never_started": 16.7231,
+          "continued": 73.5592,
+          "started_and_left": 9.7177
+        },
+        "shares_pct_full": {
+          "never_started": 16.723058315599307,
+          "continued": 73.55920612806263,
+          "started_and_left": 9.717735556338065
+        }
+      },
+      "movement_pp": {
+        "never_started": -0.2474,
+        "continued": 0.263,
+        "started_and_left": -0.0156
+      },
+      "movement_pp_6dp": {
+        "never_started": -0.247357,
+        "continued": 0.26296,
+        "started_and_left": -0.015603
+      }
+    }
+  },
+  "conjunct_decomposition": {
+    "DERIV": {
+      "population": 147370,
+      "after_conjunct_2_NOT_continued": 25988,
+      "after_both_conjuncts": 99,
+      "conjunct_1_alone_no_insertion_after_tau1": 751,
+      "reading": "conjunct 2 narrows the population to the two nulls; conjunct 1 then does almost all of the remaining work, which is why the count moves with W at all"
+    },
+    "APPLY": {
+      "population": 196654,
+      "after_conjunct_2_NOT_continued": 52514,
+      "after_both_conjuncts": 703,
+      "conjunct_1_alone_no_insertion_after_tau1": 1355,
+      "reading": "conjunct 2 narrows the population to the two nulls; conjunct 1 then does almost all of the remaining work, which is why the count moves with W at all"
+    }
+  },
+  "rule_comparison_at_W108": {
+    "DERIV": {
+      "PF_LIMIT_no_insertion_after_tau1_only": 751,
+      "ALT_silent_AND_|A|=0": 0,
+      "ALT_BROAD_silent_AND_not_continued": 99,
+      "confirmed_continuers_PF_LIMIT_would_delete": 652
+    },
+    "APPLY": {
+      "PF_LIMIT_no_insertion_after_tau1_only": 1355,
+      "ALT_silent_AND_|A|=0": 604,
+      "ALT_BROAD_silent_AND_not_continued": 703,
+      "confirmed_continuers_PF_LIMIT_would_delete": 652
+    }
+  },
+  "exclusion_set_identity_on_APPLY": {
+    "APPLY_pairs_with_no_S2_record_anywhere_step5_flag": 23260,
+    "APPLY_pairs_with_zero_distinct_in_E2_S2_episodes": 23260,
+    "excluded_pairs": 703,
+    "excluded_is_a_SUBSET_of_no_S2_record": false,
+    "excluded_EQUALS_no_S2_record": false,
+    "excluded_pairs_that_DO_hold_an_S2_record": 99,
+    "no_S2_record_pairs_that_stay_LIVE": 22656,
+    "reading": "under ALT-BROAD the exclusion set is NOT a subset of the no-S2-record pairs, because the started-and-left component has |A| >= 1 by definition"
+  },
+  "bounds": {
+    "DERIV": {
+      "population": "DERIV",
+      "population_pairs_denominator": 147370,
+      "population_definition": "Step 5 line 4 less D10",
+      "unfiltered_counts": {
+        "never_started": 9145,
+        "continued": 121382,
+        "started_and_left": 16843
+      },
+      "exclusions": {
+        "total": 99,
+        "never_started_component": 0,
+        "started_and_left_component": 99
+      },
+      "bound_never_started": {
+        "estimand": "share of the position-5 population whose true state is Never started",
+        "denominator": 147370,
+        "denominator_is_the_estimands_population": true,
+        "floor_pct": 6.205469,
+        "ceiling_pct": 6.205469,
+        "floor_numerator": 9145,
+        "ceiling_numerator": 9145,
+        "width_pp": 0.0,
+        "floor_attained_when": "all 0 excluded never-started nulls in truth started",
+        "ceiling_attained_when": "all 0 excluded never-started nulls are true declines; the 99 started-and-left exclusions cannot enter either endpoint",
+        "ceiling_equals_unfiltered_never_started_share": true,
+        "identity_note": "the ceiling equals the unfiltered share because the ceiling numerator IS the unfiltered numerator on the unfiltered denominator. 0046 SS4's phrasing -- 'returning every excluded pair as a decliner reproduces the unfiltered population' -- no longer holds under ALT-BROAD: returning all 99 exclusions as decliners would give 6.272647%, which is NOT attainable, because the 99 started-and-left exclusions have |A| >= 1 observed.",
+        "unattainable_all_exclusions_as_decliners_pct": 6.272647
+      },
+      "bound_started_and_left": {
+        "estimand": "share of the position-5 population whose true state is Started and left",
+        "denominator": 147370,
+        "denominator_is_the_estimands_population": true,
+        "floor_pct": 11.361878,
+        "ceiling_pct": 11.429056,
+        "floor_numerator": 16744,
+        "ceiling_numerator": 16843,
+        "width_pp": 0.067178,
+        "floor_attained_when": "all 99 excluded started-and-left nulls in truth continued",
+        "ceiling_attained_when": "all 0 excluded never-started nulls in truth started and left, and all 99 started-and-left exclusions are true exits",
+        "both_endpoints_attainable": true
+      },
+      "bound_started_and_left_COMPONENT_over_the_SL_exclusions_only": {
+        "estimand": "share of the position-5 population whose true state is Started and left, CONDITIONAL on every excluded never-started null being a true decline",
+        "denominator": 147370,
+        "denominator_is_the_estimands_population": true,
+        "floor_pct": 11.361878,
+        "ceiling_pct": 11.429056,
+        "width_pp": 0.067178,
+        "WARNING": "this is NOT a bound on the unconditional started-and-left share. Its ceiling does not cover the case in which an excluded never-started null in truth started and left -- the same defect 0047 SS3 records three times. Published only as the DECOMPOSITION of the lower half of bound_started_and_left, which is the operative interval."
+      },
+      "bound_continued": {
+        "estimand": "share of the position-5 population whose true state is Continued",
+        "denominator": 147370,
+        "denominator_is_the_estimands_population": true,
+        "floor_pct": 82.365475,
+        "ceiling_pct": 82.432653,
+        "width_pp": 0.067178,
+        "note": "Continued is the only state that rests on positive evidence, so no exclusion can leave it; both other states can only flow INTO it"
+      },
+      "joint_corner_check": {
+        "never_started_floor_with_started_and_left_ceiling": {
+          "resolution": "all 0 never-started nulls started and left; all 99 started-and-left exclusions are true exits",
+          "never_started_pct": 6.205469,
+          "started_and_left_pct": 11.429056,
+          "continued_pct": 82.365475,
+          "sums_to_100": true
+        },
+        "never_started_ceiling_with_started_and_left_floor": {
+          "resolution": "all 0 never-started nulls are true declines; all 99 started-and-left exclusions in truth continued",
+          "never_started_pct": 6.205469,
+          "started_and_left_pct": 11.361878,
+          "continued_pct": 82.432653,
+          "sums_to_100": true
+        },
+        "reading": "both corners are attainable resolutions of the same population, so the two intervals are simultaneously tight"
+      },
+      "shares_under_the_rule_on_the_FILTERED_denominator": {
+        "note": "reported because Step 8 hands Step 9 the filtered table; these are NOT the bound endpoints and must never be mixed with them",
+        "denominator": 147271,
+        "never_started_pct": 6.209641,
+        "continued_pct": 82.420843,
+        "started_and_left_pct": 11.369516
+      }
+    },
+    "APPLY": {
+      "population": "APPLY",
+      "population_pairs_denominator": 196654,
+      "population_definition": "Step 5 line 1 less D10, what Step 8 filters",
+      "unfiltered_counts": {
+        "never_started": 33373,
+        "continued": 144140,
+        "started_and_left": 19141
+      },
+      "exclusions": {
+        "total": 703,
+        "never_started_component": 604,
+        "started_and_left_component": 99
+      },
+      "bound_never_started": {
+        "estimand": "share of the position-5 population whose true state is Never started",
+        "denominator": 196654,
+        "denominator_is_the_estimands_population": true,
+        "floor_pct": 16.663277,
+        "ceiling_pct": 16.970415,
+        "floor_numerator": 32769,
+        "ceiling_numerator": 33373,
+        "width_pp": 0.307138,
+        "floor_attained_when": "all 604 excluded never-started nulls in truth started",
+        "ceiling_attained_when": "all 604 excluded never-started nulls are true declines; the 99 started-and-left exclusions cannot enter either endpoint",
+        "ceiling_equals_unfiltered_never_started_share": true,
+        "identity_note": "the ceiling equals the unfiltered share because the ceiling numerator IS the unfiltered numerator on the unfiltered denominator. 0046 SS4's phrasing -- 'returning every excluded pair as a decliner reproduces the unfiltered population' -- no longer holds under ALT-BROAD: returning all 703 exclusions as decliners would give 17.327896%, which is NOT attainable, because the 99 started-and-left exclusions have |A| >= 1 observed.",
+        "unattainable_all_exclusions_as_decliners_pct": 17.327896
+      },
+      "bound_started_and_left": {
+        "estimand": "share of the position-5 population whose true state is Started and left",
+        "denominator": 196654,
+        "denominator_is_the_estimands_population": true,
+        "floor_pct": 9.682997,
+        "ceiling_pct": 10.040477,
+        "floor_numerator": 19042,
+        "ceiling_numerator": 19745,
+        "width_pp": 0.357481,
+        "floor_attained_when": "all 99 excluded started-and-left nulls in truth continued",
+        "ceiling_attained_when": "all 604 excluded never-started nulls in truth started and left, and all 99 started-and-left exclusions are true exits",
+        "both_endpoints_attainable": true
+      },
+      "bound_started_and_left_COMPONENT_over_the_SL_exclusions_only": {
+        "estimand": "share of the position-5 population whose true state is Started and left, CONDITIONAL on every excluded never-started null being a true decline",
+        "denominator": 196654,
+        "denominator_is_the_estimands_population": true,
+        "floor_pct": 9.682997,
+        "ceiling_pct": 9.733339,
+        "width_pp": 0.050342,
+        "WARNING": "this is NOT a bound on the unconditional started-and-left share. Its ceiling does not cover the case in which an excluded never-started null in truth started and left -- the same defect 0047 SS3 records three times. Published only as the DECOMPOSITION of the lower half of bound_started_and_left, which is the operative interval."
+      },
+      "bound_continued": {
+        "estimand": "share of the position-5 population whose true state is Continued",
+        "denominator": 196654,
+        "denominator_is_the_estimands_population": true,
+        "floor_pct": 73.296246,
+        "ceiling_pct": 73.653727,
+        "width_pp": 0.357481,
+        "note": "Continued is the only state that rests on positive evidence, so no exclusion can leave it; both other states can only flow INTO it"
+      },
+      "joint_corner_check": {
+        "never_started_floor_with_started_and_left_ceiling": {
+          "resolution": "all 604 never-started nulls started and left; all 99 started-and-left exclusions are true exits",
+          "never_started_pct": 16.663277,
+          "started_and_left_pct": 10.040477,
+          "continued_pct": 73.296246,
+          "sums_to_100": true
+        },
+        "never_started_ceiling_with_started_and_left_floor": {
+          "resolution": "all 604 never-started nulls are true declines; all 99 started-and-left exclusions in truth continued",
+          "never_started_pct": 16.970415,
+          "started_and_left_pct": 9.682997,
+          "continued_pct": 73.346588,
+          "sums_to_100": true
+        },
+        "reading": "both corners are attainable resolutions of the same population, so the two intervals are simultaneously tight"
+      },
+      "shares_under_the_rule_on_the_FILTERED_denominator": {
+        "note": "reported because Step 8 hands Step 9 the filtered table; these are NOT the bound endpoints and must never be mixed with them",
+        "denominator": 195951,
+        "never_started_pct": 16.723058,
+        "continued_pct": 73.559206,
+        "started_and_left_pct": 9.717736
+      }
+    }
+  },
+  "never_started_bound_vs_ALT": {
+    "ALT_exclusions_on_APPLY": 604,
+    "ALT_BROAD_never_started_component_on_APPLY": 604,
+    "ALT_published_bound_0047": [
+      16.6633,
+      16.9704
+    ],
+    "ALT_BROAD_bound_APPLY": [
+      16.663277,
+      16.970415
+    ],
+    "identical": true,
+    "why": "the started-and-left exclusions have |A| >= 1 OBSERVED, so they cannot enter either endpoint of the never-started bound; the never-started component of the exclusion set is exactly ALT's exclusion set, 604 on APPLY",
+    "width_pp": 0.307138
+  },
+  "sampling_error": {
+    "DERIV": {
+      "population_pairs": 147370,
+      "accounts": 2402,
+      "settings": {
+        "ADOPTED_RULE": {
+          "never_started": {
+            "point_pct": 6.2096,
+            "clustered_95_ci_pct": [
+              5.8444,
+              6.6087
+            ],
+            "ci_width_pp": 0.7643
+          },
+          "continued": {
+            "point_pct": 82.4208,
+            "clustered_95_ci_pct": [
+              81.776,
+              83.0246
+            ],
+            "ci_width_pp": 1.2485
+          },
+          "started_and_left": {
+            "point_pct": 11.3695,
+            "clustered_95_ci_pct": [
+              10.8891,
+              11.8624
+            ],
+            "ci_width_pp": 0.9733
+          }
+        },
+        "no_liveness_filter": {
+          "never_started": {
+            "point_pct": 6.2055,
+            "clustered_95_ci_pct": [
+              5.8409,
+              6.6035
+            ],
+            "ci_width_pp": 0.7626
+          },
+          "continued": {
+            "point_pct": 82.3655,
+            "clustered_95_ci_pct": [
+              81.7202,
+              82.9647
+            ],
+            "ci_width_pp": 1.2445
+          },
+          "started_and_left": {
+            "point_pct": 11.4291,
+            "clustered_95_ci_pct": [
+              10.9438,
+              11.9195
+            ],
+            "ci_width_pp": 0.9757
+          }
+        }
+      },
+      "paired_delta_rule_minus_no_filter": {
+        "never_started": {
+          "observed_pp": 0.0042,
+          "paired_clustered_95_ci_pp": [
+            0.0031,
+            0.0054
+          ],
+          "ci_excludes_zero": true
+        },
+        "continued": {
+          "observed_pp": 0.0554,
+          "paired_clustered_95_ci_pp": [
+            0.0414,
+            0.0712
+          ],
+          "ci_excludes_zero": true
+        },
+        "started_and_left": {
+          "observed_pp": -0.0595,
+          "paired_clustered_95_ci_pp": [
+            -0.0765,
+            -0.0445
+          ],
+          "ci_excludes_zero": true
+        }
+      },
+      "bound_endpoints": {
+        "never_started_floor": {
+          "point_pct": 6.205469,
+          "clustered_95_ci_pct": [
+            5.8409,
+            6.6035
+          ],
+          "ci_width_pp": 0.7626
+        },
+        "never_started_ceiling": {
+          "point_pct": 6.205469,
+          "clustered_95_ci_pct": [
+            5.8409,
+            6.6035
+          ],
+          "ci_width_pp": 0.7626
+        },
+        "started_and_left_floor": {
+          "point_pct": 11.361878,
+          "clustered_95_ci_pct": [
+            10.8817,
+            11.8561
+          ],
+          "ci_width_pp": 0.9744
+        },
+        "started_and_left_ceiling": {
+          "point_pct": 11.429056,
+          "clustered_95_ci_pct": [
+            10.9438,
+            11.9195
+          ],
+          "ci_width_pp": 0.9757
+        },
+        "never_started_bound_width_pp": 0.0,
+        "never_started_bound_width_over_sampling_width": 0.0,
+        "started_and_left_bound_width_pp": 0.067178,
+        "started_and_left_bound_width_over_sampling_width": 0.069
+      }
+    },
+    "APPLY": {
+      "population_pairs": 196654,
+      "accounts": 2422,
+      "settings": {
+        "ADOPTED_RULE": {
+          "never_started": {
+            "point_pct": 16.7231,
+            "clustered_95_ci_pct": [
+              16.175,
+              17.2669
+            ],
+            "ci_width_pp": 1.092
+          },
+          "continued": {
+            "point_pct": 73.5592,
+            "clustered_95_ci_pct": [
+              72.862,
+              74.2689
+            ],
+            "ci_width_pp": 1.4069
+          },
+          "started_and_left": {
+            "point_pct": 9.7177,
+            "clustered_95_ci_pct": [
+              9.3554,
+              10.1155
+            ],
+            "ci_width_pp": 0.7601
+          }
+        },
+        "no_liveness_filter": {
+          "never_started": {
+            "point_pct": 16.9704,
+            "clustered_95_ci_pct": [
+              16.4097,
+              17.5131
+            ],
+            "ci_width_pp": 1.1033
+          },
+          "continued": {
+            "point_pct": 73.2962,
+            "clustered_95_ci_pct": [
+              72.5926,
+              74.0162
+            ],
+            "ci_width_pp": 1.4236
+          },
+          "started_and_left": {
+            "point_pct": 9.7333,
+            "clustered_95_ci_pct": [
+              9.3685,
+              10.1318
+            ],
+            "ci_width_pp": 0.7634
+          }
+        }
+      },
+      "paired_delta_rule_minus_no_filter": {
+        "never_started": {
+          "observed_pp": -0.2474,
+          "paired_clustered_95_ci_pp": [
+            -0.2995,
+            -0.201
+          ],
+          "ci_excludes_zero": true
+        },
+        "continued": {
+          "observed_pp": 0.263,
+          "paired_clustered_95_ci_pp": [
+            0.2163,
+            0.3146
+          ],
+          "ci_excludes_zero": true
+        },
+        "started_and_left": {
+          "observed_pp": -0.0156,
+          "paired_clustered_95_ci_pp": [
+            -0.0272,
+            -0.0046
+          ],
+          "ci_excludes_zero": true
+        }
+      },
+      "bound_endpoints": {
+        "never_started_floor": {
+          "point_pct": 16.663277,
+          "clustered_95_ci_pct": [
+            16.1159,
+            17.2059
+          ],
+          "ci_width_pp": 1.09
+        },
+        "never_started_ceiling": {
+          "point_pct": 16.970415,
+          "clustered_95_ci_pct": [
+            16.4097,
+            17.5131
+          ],
+          "ci_width_pp": 1.1033
+        },
+        "started_and_left_floor": {
+          "point_pct": 9.682997,
+          "clustered_95_ci_pct": [
+            9.32,
+            10.0802
+          ],
+          "ci_width_pp": 0.7602
+        },
+        "started_and_left_ceiling": {
+          "point_pct": 10.040477,
+          "clustered_95_ci_pct": [
+            9.6718,
+            10.4389
+          ],
+          "ci_width_pp": 0.767
+        },
+        "never_started_bound_width_pp": 0.307138,
+        "never_started_bound_width_over_sampling_width": 0.2813,
+        "started_and_left_bound_width_pp": 0.357481,
+        "started_and_left_bound_width_over_sampling_width": 0.4703
+      }
+    }
+  },
+  "waterfall": {
+    "DERIV": {
+      "position_4_output_contamination_exclusion": 152126,
+      "position_5_output_right_censoring_D10": 147370,
+      "position_5_removed": 4756,
+      "position_6_output_liveness": 147271,
+      "position_6_removed": 99,
+      "position_6_removed_never_started": 0,
+      "position_6_removed_started_and_left": 99,
+      "position_6_removed_continued": 0,
+      "position_6_label": "LIVENESS (OUTCOME-CONDITIONAL) -- conjunct 2 is 'NOT Continued', a position-7 outcome predicate, so the removed count cannot be stated without reference to outcome assignment. Under ALT-BROAD it removes rows from TWO outcome states, not one, and the split must be published with the line.",
+      "monotone_decrease_strict": true,
+      "monotone_decrease_non_strict": true
+    },
+    "APPLY": {
+      "position_4_output_contamination_exclusion": 201900,
+      "position_5_output_right_censoring_D10": 196654,
+      "position_5_removed": 5246,
+      "position_6_output_liveness": 195951,
+      "position_6_removed": 703,
+      "position_6_removed_never_started": 604,
+      "position_6_removed_started_and_left": 99,
+      "position_6_removed_continued": 0,
+      "position_6_label": "LIVENESS (OUTCOME-CONDITIONAL) -- conjunct 2 is 'NOT Continued', a position-7 outcome predicate, so the removed count cannot be stated without reference to outcome assignment. Under ALT-BROAD it removes rows from TWO outcome states, not one, and the split must be published with the line.",
+      "monotone_decrease_strict": true,
+      "monotone_decrease_non_strict": true
+    }
+  },
+  "ordering_commutation_check": {
+    "DERIV": {
+      "outcome_then_filter": [
+        9145,
+        121382,
+        16744
+      ],
+      "filter_then_outcome": [
+        9145,
+        121382,
+        16744
+      ],
+      "identical": true
+    },
+    "APPLY": {
+      "outcome_then_filter": [
+        32769,
+        144140,
+        19042
+      ],
+      "filter_then_outcome": [
+        32769,
+        144140,
+        19042
+      ],
+      "identical": true
+    }
+  },
+  "pair_level_not_user_level": {
+    "DERIV": {
+      "excluded_pairs": 99,
+      "accounts_with_at_least_one_excluded_pair": 73,
+      "accounts_excluded_on_one_show_and_live_on_another": 72,
+      "accounts_excluded_on_every_one_of_their_pairs": 1,
+      "accounts_in_BOTH_exclusion_components": 0,
+      "reading": "a positive middle row is 0034's pair-level anchoring doing visible work: the same account is not live for one show and live for another, because tau1 is pair-specific. NEVER drop a user wholesale."
+    },
+    "APPLY": {
+      "excluded_pairs": 703,
+      "accounts_with_at_least_one_excluded_pair": 216,
+      "accounts_excluded_on_one_show_and_live_on_another": 215,
+      "accounts_excluded_on_every_one_of_their_pairs": 1,
+      "accounts_in_BOTH_exclusion_components": 48,
+      "reading": "a positive middle row is 0034's pair-level anchoring doing visible work: the same account is not live for one show and live for another, because tau1 is pair-specific. NEVER drop a user wholesale."
+    }
+  },
+  "tie_convention": {
+    "implemented": "NOT LIVE requires max insertion instant <= tau1; 'after' strict",
+    "by_population": {
+      "DERIV": {
+        "pairs_with_last_instant_exactly_equal_to_tau1": 0,
+        "pairs_with_last_instant_within_1_second_of_tau1": 0,
+        "pairs_whose_exclusion_would_flip_if_the_tie_went_the_other_way": 0
+      },
+      "APPLY": {
+        "pairs_with_last_instant_exactly_equal_to_tau1": 0,
+        "pairs_with_last_instant_within_1_second_of_tau1": 0,
+        "pairs_whose_exclusion_would_flip_if_the_tie_went_the_other_way": 0
+      }
+    }
+  },
+  "W_coupling_per_arm": {
+    "note": "D10 contains W, so the censored population differs per arm (0047 SS5). BOTH readings are given and each names itself. The mandated grid is 0027's 38/46/77/91/107/108/150/213; 60, 100, 125 and 180 are extra, and 125 and 180 are the off-grid arms 0047 SS5 quoted without their arms.",
+    "rows": [
+      {
+        "W": 38,
+        "in_mandated_grid_0027": true,
+        "D10_re_derived_at_this_arm": {
+          "DERIV": {
+            "population_pairs": 147685,
+            "excluded_pairs": 52,
+            "excluded_never_started": 0,
+            "excluded_started_and_left": 52,
+            "excluded_accounts": 44
+          },
+          "APPLY": {
+            "population_pairs": 197007,
+            "excluded_pairs": 537,
+            "excluded_never_started": 485,
+            "excluded_started_and_left": 52,
+            "excluded_accounts": 177
+          }
+        },
+        "D10_frozen_at_W108": {
+          "DERIV": {
+            "population_pairs": 147370,
+            "excluded_pairs": 52,
+            "excluded_never_started": 0,
+            "excluded_started_and_left": 52,
+            "excluded_accounts": 44
+          },
+          "APPLY": {
+            "population_pairs": 196654,
+            "excluded_pairs": 536,
+            "excluded_never_started": 484,
+            "excluded_started_and_left": 52,
+            "excluded_accounts": 176
+          }
+        }
+      },
+      {
+        "W": 46,
+        "in_mandated_grid_0027": true,
+        "D10_re_derived_at_this_arm": {
+          "DERIV": {
+            "population_pairs": 147685,
+            "excluded_pairs": 56,
+            "excluded_never_started": 0,
+            "excluded_started_and_left": 56,
+            "excluded_accounts": 48
+          },
+          "APPLY": {
+            "population_pairs": 197007,
+            "excluded_pairs": 550,
+            "excluded_never_started": 494,
+            "excluded_started_and_left": 56,
+            "excluded_accounts": 182
+          }
+        },
+        "D10_frozen_at_W108": {
+          "DERIV": {
+            "population_pairs": 147370,
+            "excluded_pairs": 56,
+            "excluded_never_started": 0,
+            "excluded_started_and_left": 56,
+            "excluded_accounts": 48
+          },
+          "APPLY": {
+            "population_pairs": 196654,
+            "excluded_pairs": 549,
+            "excluded_never_started": 493,
+            "excluded_started_and_left": 56,
+            "excluded_accounts": 181
+          }
+        }
+      },
+      {
+        "W": 60,
+        "in_mandated_grid_0027": false,
+        "D10_re_derived_at_this_arm": {
+          "DERIV": {
+            "population_pairs": 147685,
+            "excluded_pairs": 65,
+            "excluded_never_started": 0,
+            "excluded_started_and_left": 65,
+            "excluded_accounts": 51
+          },
+          "APPLY": {
+            "population_pairs": 197007,
+            "excluded_pairs": 592,
+            "excluded_never_started": 527,
+            "excluded_started_and_left": 65,
+            "excluded_accounts": 188
+          }
+        },
+        "D10_frozen_at_W108": {
+          "DERIV": {
+            "population_pairs": 147370,
+            "excluded_pairs": 65,
+            "excluded_never_started": 0,
+            "excluded_started_and_left": 65,
+            "excluded_accounts": 51
+          },
+          "APPLY": {
+            "population_pairs": 196654,
+            "excluded_pairs": 591,
+            "excluded_never_started": 526,
+            "excluded_started_and_left": 65,
+            "excluded_accounts": 187
+          }
+        }
+      },
+      {
+        "W": 77,
+        "in_mandated_grid_0027": true,
+        "D10_re_derived_at_this_arm": {
+          "DERIV": {
+            "population_pairs": 147685,
+            "excluded_pairs": 79,
+            "excluded_never_started": 0,
+            "excluded_started_and_left": 79,
+            "excluded_accounts": 61
+          },
+          "APPLY": {
+            "population_pairs": 197007,
+            "excluded_pairs": 633,
+            "excluded_never_started": 554,
+            "excluded_started_and_left": 79,
+            "excluded_accounts": 197
+          }
+        },
+        "D10_frozen_at_W108": {
+          "DERIV": {
+            "population_pairs": 147370,
+            "excluded_pairs": 79,
+            "excluded_never_started": 0,
+            "excluded_started_and_left": 79,
+            "excluded_accounts": 61
+          },
+          "APPLY": {
+            "population_pairs": 196654,
+            "excluded_pairs": 632,
+            "excluded_never_started": 553,
+            "excluded_started_and_left": 79,
+            "excluded_accounts": 196
+          }
+        }
+      },
+      {
+        "W": 91,
+        "in_mandated_grid_0027": true,
+        "D10_re_derived_at_this_arm": {
+          "DERIV": {
+            "population_pairs": 147685,
+            "excluded_pairs": 89,
+            "excluded_never_started": 0,
+            "excluded_started_and_left": 89,
+            "excluded_accounts": 68
+          },
+          "APPLY": {
+            "population_pairs": 197007,
+            "excluded_pairs": 664,
+            "excluded_never_started": 575,
+            "excluded_started_and_left": 89,
+            "excluded_accounts": 207
+          }
+        },
+        "D10_frozen_at_W108": {
+          "DERIV": {
+            "population_pairs": 147370,
+            "excluded_pairs": 88,
+            "excluded_never_started": 0,
+            "excluded_started_and_left": 88,
+            "excluded_accounts": 67
+          },
+          "APPLY": {
+            "population_pairs": 196654,
+            "excluded_pairs": 662,
+            "excluded_never_started": 574,
+            "excluded_started_and_left": 88,
+            "excluded_accounts": 205
+          }
+        }
+      },
+      {
+        "W": 100,
+        "in_mandated_grid_0027": false,
+        "D10_re_derived_at_this_arm": {
+          "DERIV": {
+            "population_pairs": 147518,
+            "excluded_pairs": 94,
+            "excluded_never_started": 0,
+            "excluded_started_and_left": 94,
+            "excluded_accounts": 69
+          },
+          "APPLY": {
+            "population_pairs": 196829,
+            "excluded_pairs": 686,
+            "excluded_never_started": 592,
+            "excluded_started_and_left": 94,
+            "excluded_accounts": 211
+          }
+        },
+        "D10_frozen_at_W108": {
+          "DERIV": {
+            "population_pairs": 147370,
+            "excluded_pairs": 94,
+            "excluded_never_started": 0,
+            "excluded_started_and_left": 94,
+            "excluded_accounts": 69
+          },
+          "APPLY": {
+            "population_pairs": 196654,
+            "excluded_pairs": 685,
+            "excluded_never_started": 591,
+            "excluded_started_and_left": 94,
+            "excluded_accounts": 210
+          }
+        }
+      },
+      {
+        "W": 107,
+        "in_mandated_grid_0027": true,
+        "D10_re_derived_at_this_arm": {
+          "DERIV": {
+            "population_pairs": 147384,
+            "excluded_pairs": 98,
+            "excluded_never_started": 0,
+            "excluded_started_and_left": 98,
+            "excluded_accounts": 72
+          },
+          "APPLY": {
+            "population_pairs": 196674,
+            "excluded_pairs": 701,
+            "excluded_never_started": 603,
+            "excluded_started_and_left": 98,
+            "excluded_accounts": 215
+          }
+        },
+        "D10_frozen_at_W108": {
+          "DERIV": {
+            "population_pairs": 147370,
+            "excluded_pairs": 98,
+            "excluded_never_started": 0,
+            "excluded_started_and_left": 98,
+            "excluded_accounts": 72
+          },
+          "APPLY": {
+            "population_pairs": 196654,
+            "excluded_pairs": 701,
+            "excluded_never_started": 603,
+            "excluded_started_and_left": 98,
+            "excluded_accounts": 215
+          }
+        }
+      },
+      {
+        "W": 108,
+        "in_mandated_grid_0027": true,
+        "D10_re_derived_at_this_arm": {
+          "DERIV": {
+            "population_pairs": 147370,
+            "excluded_pairs": 99,
+            "excluded_never_started": 0,
+            "excluded_started_and_left": 99,
+            "excluded_accounts": 73
+          },
+          "APPLY": {
+            "population_pairs": 196654,
+            "excluded_pairs": 703,
+            "excluded_never_started": 604,
+            "excluded_started_and_left": 99,
+            "excluded_accounts": 216
+          }
+        },
+        "D10_frozen_at_W108": {
+          "DERIV": {
+            "population_pairs": 147370,
+            "excluded_pairs": 99,
+            "excluded_never_started": 0,
+            "excluded_started_and_left": 99,
+            "excluded_accounts": 73
+          },
+          "APPLY": {
+            "population_pairs": 196654,
+            "excluded_pairs": 703,
+            "excluded_never_started": 604,
+            "excluded_started_and_left": 99,
+            "excluded_accounts": 216
+          }
+        }
+      },
+      {
+        "W": 125,
+        "in_mandated_grid_0027": false,
+        "D10_re_derived_at_this_arm": {
+          "DERIV": {
+            "population_pairs": 147049,
+            "excluded_pairs": 111,
+            "excluded_never_started": 0,
+            "excluded_started_and_left": 111,
+            "excluded_accounts": 81
+          },
+          "APPLY": {
+            "population_pairs": 196276,
+            "excluded_pairs": 736,
+            "excluded_never_started": 625,
+            "excluded_started_and_left": 111,
+            "excluded_accounts": 233
+          }
+        },
+        "D10_frozen_at_W108": {
+          "DERIV": {
+            "population_pairs": 147370,
+            "excluded_pairs": 114,
+            "excluded_never_started": 0,
+            "excluded_started_and_left": 114,
+            "excluded_accounts": 82
+          },
+          "APPLY": {
+            "population_pairs": 196654,
+            "excluded_pairs": 746,
+            "excluded_never_started": 632,
+            "excluded_started_and_left": 114,
+            "excluded_accounts": 236
+          }
+        }
+      },
+      {
+        "W": 150,
+        "in_mandated_grid_0027": true,
+        "D10_re_derived_at_this_arm": {
+          "DERIV": {
+            "population_pairs": 146602,
+            "excluded_pairs": 125,
+            "excluded_never_started": 0,
+            "excluded_started_and_left": 125,
+            "excluded_accounts": 90
+          },
+          "APPLY": {
+            "population_pairs": 195689,
+            "excluded_pairs": 789,
+            "excluded_never_started": 664,
+            "excluded_started_and_left": 125,
+            "excluded_accounts": 243
+          }
+        },
+        "D10_frozen_at_W108": {
+          "DERIV": {
+            "population_pairs": 147370,
+            "excluded_pairs": 139,
+            "excluded_never_started": 0,
+            "excluded_started_and_left": 139,
+            "excluded_accounts": 99
+          },
+          "APPLY": {
+            "population_pairs": 196654,
+            "excluded_pairs": 823,
+            "excluded_never_started": 684,
+            "excluded_started_and_left": 139,
+            "excluded_accounts": 261
+          }
+        }
+      },
+      {
+        "W": 180,
+        "in_mandated_grid_0027": false,
+        "D10_re_derived_at_this_arm": {
+          "DERIV": {
+            "population_pairs": 145845,
+            "excluded_pairs": 135,
+            "excluded_never_started": 0,
+            "excluded_started_and_left": 135,
+            "excluded_accounts": 89
+          },
+          "APPLY": {
+            "population_pairs": 194617,
+            "excluded_pairs": 818,
+            "excluded_never_started": 683,
+            "excluded_started_and_left": 135,
+            "excluded_accounts": 243
+          }
+        },
+        "D10_frozen_at_W108": {
+          "DERIV": {
+            "population_pairs": 147370,
+            "excluded_pairs": 165,
+            "excluded_never_started": 0,
+            "excluded_started_and_left": 165,
+            "excluded_accounts": 111
+          },
+          "APPLY": {
+            "population_pairs": 196654,
+            "excluded_pairs": 918,
+            "excluded_never_started": 753,
+            "excluded_started_and_left": 165,
+            "excluded_accounts": 290
+          }
+        }
+      },
+      {
+        "W": 213,
+        "in_mandated_grid_0027": true,
+        "D10_re_derived_at_this_arm": {
+          "DERIV": {
+            "population_pairs": 144852,
+            "excluded_pairs": 147,
+            "excluded_never_started": 0,
+            "excluded_started_and_left": 147,
+            "excluded_accounts": 96
+          },
+          "APPLY": {
+            "population_pairs": 193270,
+            "excluded_pairs": 864,
+            "excluded_never_started": 716,
+            "excluded_started_and_left": 148,
+            "excluded_accounts": 253
+          }
+        },
+        "D10_frozen_at_W108": {
+          "DERIV": {
+            "population_pairs": 147370,
+            "excluded_pairs": 234,
+            "excluded_never_started": 0,
+            "excluded_started_and_left": 234,
+            "excluded_accounts": 163
+          },
+          "APPLY": {
+            "population_pairs": 196654,
+            "excluded_pairs": 1117,
+            "excluded_never_started": 881,
+            "excluded_started_and_left": 236,
+            "excluded_accounts": 394
+          }
+        }
+      }
+    ]
+  },
+  "calibration_residual": {
+    "curve": {
+      "source": "processed/step5/calibration.npz, READ ONLY, never refitted",
+      "knots": 10918,
+      "rid_range": [
+        556310271.5,
+        14237053866.0
+      ],
+      "time_range_utc": [
+        "2012-12-02T05:25:39",
+        "2026-08-10T20:48:00"
+      ],
+      "stored_heldout_median_lag_days": 0.002622477307363793,
+      "stored_heldout_abs_lag_le_7d": 0.9064737273619021,
+      "fit_on": "checkin+scrobble only",
+      "fit_records": 4367583
+    },
+    "claim_1_watched_at_after_calibrated_instant": {
+      "claim": "22.68% of dated records, 6,271,584 of 27,656,434",
+      "measured_dated_denominator": 27656434,
+      "measured_count_dated": 6271584,
+      "measured_pct_dated": 22.6768,
+      "measured_count_dated_and_le_tau_pull": 6269852,
+      "verdict": "CONFIRMED",
+      "size_of_the_discrepancy_days": {
+        "p0.1": 0.0,
+        "p1": 0.0003,
+        "p5": 0.0013,
+        "p10": 0.0027,
+        "p25": 0.008,
+        "p50": 0.0205,
+        "p75": 0.0459,
+        "p90": 0.1408,
+        "p95": 77.483,
+        "p99": 470.6171,
+        "p99.9": 765.4384
+      },
+      "reading": "a genuine record cannot be inserted before it was watched, so each of these is a place the curve reads EARLY by at least that much. The median discrepancy is the load-bearing number, not the count."
+    },
+    "claim_2_clamped_above": {
+      "claim": "5,094 records clamped above the calibration range",
+      "measured_records_clamped_above": 5094,
+      "measured_records_clamped_below": 1862,
+      "verdict": "CONFIRMED",
+      "accounts_whose_MAX_rid_is_clamped_above": 682,
+      "clamp_value_utc": "2026-08-10T20:48:00"
+    },
+    "residual_on_the_fit_family": {
+      "definition": "r = interp(rid) - watched_at, in days, on checkin+scrobble records dated and <= tau_pull, where watched_at IS the insertion time",
+      "n": 4367583,
+      "IN_SAMPLE_CAVEAT": "the stored curve was fitted on exactly this family, so these residuals are in-sample and UNDERSTATE the true error; the stored held-out figures are quoted above beside them",
+      "quantiles_days": {
+        "p0.1": -757.7248,
+        "p1": -328.6532,
+        "p5": -0.1397,
+        "p10": -0.0607,
+        "p25": -0.0208,
+        "p50": 0.0037,
+        "p75": 0.0188,
+        "p90": 0.0438,
+        "p95": 0.0846,
+        "p99": 342.4471,
+        "p99.9": 687.474
+      },
+      "mean_days": 0.3498,
+      "abs_quantiles_days": {
+        "p0.1": 0.0,
+        "p1": 0.0004,
+        "p5": 0.0019,
+        "p10": 0.0037,
+        "p25": 0.0089,
+        "p50": 0.0195,
+        "p75": 0.0422,
+        "p90": 0.1072,
+        "p95": 124.6412,
+        "p99": 472.8761,
+        "p99.9": 761.6551
+      },
+      "share_abs_le_1d": 0.9148,
+      "share_abs_le_7d": 0.9185,
+      "share_abs_le_30d": 0.9296,
+      "share_reads_early_r_lt_0": 0.4448,
+      "by_rid_decile": [
+        {
+          "decile": 1,
+          "rid_lo": 547704411.0,
+          "rid_hi": 1457854980.4,
+          "instant_lo_utc": "2012-12-02T05:25:39",
+          "instant_hi_utc": "2015-07-06T19:29:45",
+          "n": 436759,
+          "median_d": 0.0005,
+          "p5_d": -450.7297,
+          "p95_d": 484.3258,
+          "abs_p95_d": 588.4507,
+          "abs_p99_d": 758.0783
+        },
+        {
+          "decile": 2,
+          "rid_lo": 1457854980.4,
+          "rid_hi": 2757977779.8,
+          "instant_lo_utc": "2015-07-06T19:29:45",
+          "instant_hi_utc": "2017-04-21T03:24:40",
+          "n": 436758,
+          "median_d": 0.0029,
+          "p5_d": -0.073,
+          "p95_d": 0.0639,
+          "abs_p95_d": 0.0835,
+          "abs_p99_d": 0.1181
+        },
+        {
+          "decile": 3,
+          "rid_lo": 2757977779.8,
+          "rid_hi": 3980886297.6000004,
+          "instant_lo_utc": "2017-04-21T03:24:40",
+          "instant_hi_utc": "2018-11-01T16:45:37",
+          "n": 436758,
+          "median_d": 0.0035,
+          "p5_d": -0.0701,
+          "p95_d": 0.0605,
+          "abs_p95_d": 0.0807,
+          "abs_p99_d": 0.1132
+        },
+        {
+          "decile": 4,
+          "rid_lo": 3980886297.6000004,
+          "rid_hi": 5697407652.0,
+          "instant_lo_utc": "2018-11-01T16:45:37",
+          "instant_hi_utc": "2020-02-28T04:04:57",
+          "n": 436758,
+          "median_d": 0.0037,
+          "p5_d": -0.0659,
+          "p95_d": 0.0561,
+          "abs_p95_d": 0.079,
+          "abs_p99_d": 0.1207
+        },
+        {
+          "decile": 5,
+          "rid_lo": 5697407652.0,
+          "rid_hi": 7422670921.0,
+          "instant_lo_utc": "2020-02-28T04:04:57",
+          "instant_hi_utc": "2021-04-21T19:46:00",
+          "n": 436758,
+          "median_d": 0.0043,
+          "p5_d": -0.0676,
+          "p95_d": 0.0483,
+          "abs_p95_d": 0.08,
+          "abs_p99_d": 0.1438
+        },
+        {
+          "decile": 6,
+          "rid_lo": 7422670921.0,
+          "rid_hi": 8384332085.000001,
+          "instant_lo_utc": "2021-04-21T19:46:00",
+          "instant_hi_utc": "2022-06-20T11:11:40",
+          "n": 436759,
+          "median_d": 0.0037,
+          "p5_d": -0.0732,
+          "p95_d": 0.0538,
+          "abs_p95_d": 0.088,
+          "abs_p99_d": 0.1613
+        },
+        {
+          "decile": 7,
+          "rid_lo": 8384332085.000001,
+          "rid_hi": 9159837305.2,
+          "instant_lo_utc": "2022-06-20T11:11:40",
+          "instant_hi_utc": "2023-08-18T00:57:28",
+          "n": 436758,
+          "median_d": 0.0044,
+          "p5_d": -0.0588,
+          "p95_d": 0.0399,
+          "abs_p95_d": 0.0647,
+          "abs_p99_d": 0.1045
+        },
+        {
+          "decile": 8,
+          "rid_lo": 9159837305.2,
+          "rid_hi": 9971266987.800001,
+          "instant_lo_utc": "2023-08-18T00:57:28",
+          "instant_hi_utc": "2024-09-08T22:37:22",
+          "n": 436758,
+          "median_d": 0.0027,
+          "p5_d": -6.4777,
+          "p95_d": 0.0375,
+          "abs_p95_d": 7.2383,
+          "abs_p99_d": 22.0568
+        },
+        {
+          "decile": 9,
+          "rid_lo": 9971266987.800001,
+          "rid_hi": 11186440116.2,
+          "instant_lo_utc": "2024-09-08T22:37:22",
+          "instant_hi_utc": "2025-08-21T20:16:12",
+          "n": 436758,
+          "median_d": 0.0042,
+          "p5_d": -0.0493,
+          "p95_d": 0.0291,
+          "abs_p95_d": 0.0549,
+          "abs_p99_d": 0.0946
+        },
+        {
+          "decile": 10,
+          "rid_lo": 11186440116.2,
+          "rid_hi": 14238530849.0,
+          "instant_lo_utc": "2025-08-21T20:16:12",
+          "instant_hi_utc": "2026-08-10T20:48:00",
+          "n": 436759,
+          "median_d": 0.0036,
+          "p5_d": -0.0572,
+          "p95_d": 0.0428,
+          "abs_p95_d": 0.07,
+          "abs_p99_d": 0.1318
+        }
+      ]
+    },
+    "clamp_check": {
+      "clamp_value_utc": "2026-08-10T20:48:00",
+      "max_tau1_possible_at_any_arm_utc": "2026-05-12T00:00:00",
+      "max_tau1_observed_at_W108_on_APPLY_utc": "2026-05-12T00:00:00",
+      "note_on_that_figure": "the maximum is taken over the APPLY population, i.e. AFTER D10; the line-1 table before D10 reaches 2026-11-27, which is not a tau1 the rule ever reads",
+      "pairs_on_APPLY_whose_account_max_rid_is_clamped_above": 66961,
+      "of_those_excluded": 0,
+      "verdict": "clamping ABOVE cannot cause a false exclusion at any arm: the clamp value is later than the largest tau1 D10 permits, so every clamped account is LIVE for every pair. Instance B's stated direction is correct in principle and INERT here."
+    },
+    "exclusion_set_stability": {
+      "DERIV": {
+        "population_pairs": 147370,
+        "excluded_pairs": 99,
+        "A_margin_tau1_minus_max_instant_days_EXCLUDED": {
+          "all": {
+            "p0": 0.0699,
+            "p1": 1.1728,
+            "p5": 8.7063,
+            "p10": 15.8371,
+            "p25": 35.859,
+            "p50": 81.3093,
+            "p75": 107.069,
+            "p90": 165.5674,
+            "p95": 248.6507,
+            "p99": 365.3824,
+            "p100": 389.684
+          },
+          "never_started_component": null,
+          "started_and_left_component": {
+            "p0": 0.0699,
+            "p1": 1.1728,
+            "p5": 8.7063,
+            "p10": 15.8371,
+            "p25": 35.859,
+            "p50": 81.3093,
+            "p75": 107.069,
+            "p90": 165.5674,
+            "p95": 248.6507,
+            "p99": 365.3824,
+            "p100": 389.684
+          },
+          "count_within_0.0195d_residual_median": 0,
+          "count_within_0.1072d_residual_p90": 1,
+          "count_within_1d": 1,
+          "count_within_7d": 5,
+          "count_within_30d": 19,
+          "count_within_90d": 56,
+          "count_within_365d": 98,
+          "reading": "an excluded pair survives any residual correction smaller than its own margin; the count within a given residual is the number of exclusions that correction could reverse"
+        },
+        "A_margin_max_instant_minus_tau1_days_LIVE_NEAR_MISSES": {
+          "all_live": {
+            "p0": -127.3944,
+            "p1": 107.4758,
+            "p5": 298.3532,
+            "p10": 462.8667,
+            "p25": 1010.832,
+            "p50": 2003.5214,
+            "p75": 3003.3448,
+            "p90": 3923.656,
+            "p95": 4408.856,
+            "p99": 9027.9006,
+            "p100": 20264.8667
+          },
+          "live_and_not_continued_the_only_flippable_ones": {
+            "p0": 1.0721,
+            "p1": 141.4529,
+            "p5": 310.5226,
+            "p10": 477.5716,
+            "p25": 1034.0279,
+            "p50": 2022.5214,
+            "p75": 2912.8667,
+            "p90": 3650.8667,
+            "p95": 4035.7109,
+            "p99": 5070.227,
+            "p100": 19388.8667
+          },
+          "counts_within": {
+            "0.0195": 0,
+            "0.1072": 0,
+            "1.0": 0,
+            "7.0": 5,
+            "30.0": 27,
+            "90.0": 90,
+            "180.0": 412,
+            "365.0": 1770
+          },
+          "reading": "a live pair can only flip to excluded if it is NOT Continued and the curve reads LATE by more than this margin; the residual's sign here is the opposite of the one that worries 0048 SS9"
+        },
+        "B_uniform_shift_plus_delta_days": {
+          "0.0195": {
+            "excluded_pairs": 99,
+            "never_started_component": 0,
+            "started_and_left_component": 99,
+            "exclusions_lost_vs_delta_0": 0,
+            "pct_of_exclusion_set_retained": 100.0
+          },
+          "0.0422": {
+            "excluded_pairs": 99,
+            "never_started_component": 0,
+            "started_and_left_component": 99,
+            "exclusions_lost_vs_delta_0": 0,
+            "pct_of_exclusion_set_retained": 100.0
+          },
+          "0.1072": {
+            "excluded_pairs": 98,
+            "never_started_component": 0,
+            "started_and_left_component": 98,
+            "exclusions_lost_vs_delta_0": 1,
+            "pct_of_exclusion_set_retained": 98.99
+          },
+          "1.0": {
+            "excluded_pairs": 98,
+            "never_started_component": 0,
+            "started_and_left_component": 98,
+            "exclusions_lost_vs_delta_0": 1,
+            "pct_of_exclusion_set_retained": 98.99
+          },
+          "7.0": {
+            "excluded_pairs": 94,
+            "never_started_component": 0,
+            "started_and_left_component": 94,
+            "exclusions_lost_vs_delta_0": 5,
+            "pct_of_exclusion_set_retained": 94.95
+          },
+          "30.0": {
+            "excluded_pairs": 80,
+            "never_started_component": 0,
+            "started_and_left_component": 80,
+            "exclusions_lost_vs_delta_0": 19,
+            "pct_of_exclusion_set_retained": 80.81
+          },
+          "77.483": {
+            "excluded_pairs": 51,
+            "never_started_component": 0,
+            "started_and_left_component": 51,
+            "exclusions_lost_vs_delta_0": 48,
+            "pct_of_exclusion_set_retained": 51.52
+          },
+          "124.6412": {
+            "excluded_pairs": 15,
+            "never_started_component": 0,
+            "started_and_left_component": 15,
+            "exclusions_lost_vs_delta_0": 84,
+            "pct_of_exclusion_set_retained": 15.15
+          },
+          "365.0": {
+            "excluded_pairs": 1,
+            "never_started_component": 0,
+            "started_and_left_component": 1,
+            "exclusions_lost_vs_delta_0": 98,
+            "pct_of_exclusion_set_retained": 1.01
+          },
+          "470.6171": {
+            "excluded_pairs": 0,
+            "never_started_component": 0,
+            "started_and_left_component": 0,
+            "exclusions_lost_vs_delta_0": 99,
+            "pct_of_exclusion_set_retained": 0.0
+          }
+        },
+        "C_nonparametric_correction": {
+          "definition": "last_inst' = max(interp(max rid), max dated watched_at <= tau_pull)",
+          "assumption": "direction only: a genuine record is not inserted before it is watched, so watched_at is a lower bound on its insertion instant",
+          "pairs_whose_account_instant_moved_later": 59501,
+          "median_move_days_where_moved": 0.0259,
+          "excluded_pairs_after_correction": 97,
+          "never_started_component_after": 0,
+          "started_and_left_component_after": 97,
+          "exclusions_lost": 2,
+          "pct_of_exclusion_set_retained": 97.98,
+          "new_exclusions_created": 0
+        },
+        "excluded_set_provenance": {
+          "excluded_accounts": 73,
+          "max_rid_record_is_watch_import_family": 61,
+          "max_rid_record_is_checkin_or_scrobble": 38,
+          "residual_at_that_record_days_where_measurable": {
+            "p0": -0.1431,
+            "p1": -0.1431,
+            "p5": -0.0751,
+            "p10": -0.041,
+            "p25": -0.0225,
+            "p50": 0.0054,
+            "p75": 0.0168,
+            "p90": 0.0218,
+            "p95": 0.0239,
+            "p99": 0.0329,
+            "p100": 0.0339
+          },
+          "reading": "where the account's own last record is a checkin or scrobble the residual at exactly the point the rule reads is directly measurable; where it is a watch it is not, and the uniform-shift and non-parametric tests are what cover it"
+        }
+      },
+      "APPLY": {
+        "population_pairs": 196654,
+        "excluded_pairs": 703,
+        "A_margin_tau1_minus_max_instant_days_EXCLUDED": {
+          "all": {
+            "p0": 0.0137,
+            "p1": 4.9447,
+            "p5": 15.7586,
+            "p10": 31.2164,
+            "p25": 74.8401,
+            "p50": 170.8865,
+            "p75": 350.2991,
+            "p90": 564.8184,
+            "p95": 676.3728,
+            "p99": 890.3318,
+            "p100": 1167.5906
+          },
+          "never_started_component": {
+            "p0": 0.0137,
+            "p1": 4.9579,
+            "p5": 17.6828,
+            "p10": 39.3325,
+            "p25": 87.1501,
+            "p50": 202.5336,
+            "p75": 384.9557,
+            "p90": 585.7834,
+            "p95": 711.3864,
+            "p99": 915.3297,
+            "p100": 1167.5906
+          },
+          "started_and_left_component": {
+            "p0": 0.0699,
+            "p1": 1.1728,
+            "p5": 8.7063,
+            "p10": 15.8371,
+            "p25": 35.859,
+            "p50": 81.3093,
+            "p75": 107.069,
+            "p90": 165.5674,
+            "p95": 248.6507,
+            "p99": 365.3824,
+            "p100": 389.684
+          },
+          "count_within_0.0195d_residual_median": 1,
+          "count_within_0.1072d_residual_p90": 2,
+          "count_within_1d": 2,
+          "count_within_7d": 17,
+          "count_within_30d": 68,
+          "count_within_90d": 210,
+          "count_within_365d": 540,
+          "reading": "an excluded pair survives any residual correction smaller than its own margin; the count within a given residual is the number of exclusions that correction could reverse"
+        },
+        "A_margin_max_instant_minus_tau1_days_LIVE_NEAR_MISSES": {
+          "all_live": {
+            "p0": -127.3944,
+            "p1": 113.8667,
+            "p5": 298.18,
+            "p10": 474.7804,
+            "p25": 1041.8667,
+            "p50": 2053.0037,
+            "p75": 3118.6277,
+            "p90": 4121.9782,
+            "p95": 4719.3458,
+            "p99": 8124.8599,
+            "p100": 20264.8667
+          },
+          "live_and_not_continued_the_only_flippable_ones": {
+            "p0": 0.7526,
+            "p1": 117.8755,
+            "p5": 266.5055,
+            "p10": 429.2877,
+            "p25": 934.2887,
+            "p50": 1861.8667,
+            "p75": 2877.6492,
+            "p90": 3726.4445,
+            "p95": 4207.5886,
+            "p99": 5424.0324,
+            "p100": 20264.8667
+          },
+          "counts_within": {
+            "0.0195": 0,
+            "0.1072": 0,
+            "1.0": 2,
+            "7.0": 14,
+            "30.0": 81,
+            "90.0": 293,
+            "180.0": 1194,
+            "365.0": 4349
+          },
+          "reading": "a live pair can only flip to excluded if it is NOT Continued and the curve reads LATE by more than this margin; the residual's sign here is the opposite of the one that worries 0048 SS9"
+        },
+        "B_uniform_shift_plus_delta_days": {
+          "0.0195": {
+            "excluded_pairs": 702,
+            "never_started_component": 603,
+            "started_and_left_component": 99,
+            "exclusions_lost_vs_delta_0": 1,
+            "pct_of_exclusion_set_retained": 99.86
+          },
+          "0.0422": {
+            "excluded_pairs": 702,
+            "never_started_component": 603,
+            "started_and_left_component": 99,
+            "exclusions_lost_vs_delta_0": 1,
+            "pct_of_exclusion_set_retained": 99.86
+          },
+          "0.1072": {
+            "excluded_pairs": 701,
+            "never_started_component": 603,
+            "started_and_left_component": 98,
+            "exclusions_lost_vs_delta_0": 2,
+            "pct_of_exclusion_set_retained": 99.72
+          },
+          "1.0": {
+            "excluded_pairs": 701,
+            "never_started_component": 603,
+            "started_and_left_component": 98,
+            "exclusions_lost_vs_delta_0": 2,
+            "pct_of_exclusion_set_retained": 99.72
+          },
+          "7.0": {
+            "excluded_pairs": 686,
+            "never_started_component": 592,
+            "started_and_left_component": 94,
+            "exclusions_lost_vs_delta_0": 17,
+            "pct_of_exclusion_set_retained": 97.58
+          },
+          "30.0": {
+            "excluded_pairs": 635,
+            "never_started_component": 555,
+            "started_and_left_component": 80,
+            "exclusions_lost_vs_delta_0": 68,
+            "pct_of_exclusion_set_retained": 90.33
+          },
+          "77.483": {
+            "excluded_pairs": 523,
+            "never_started_component": 472,
+            "started_and_left_component": 51,
+            "exclusions_lost_vs_delta_0": 180,
+            "pct_of_exclusion_set_retained": 74.4
+          },
+          "124.6412": {
+            "excluded_pairs": 414,
+            "never_started_component": 399,
+            "started_and_left_component": 15,
+            "exclusions_lost_vs_delta_0": 289,
+            "pct_of_exclusion_set_retained": 58.89
+          },
+          "365.0": {
+            "excluded_pairs": 163,
+            "never_started_component": 162,
+            "started_and_left_component": 1,
+            "exclusions_lost_vs_delta_0": 540,
+            "pct_of_exclusion_set_retained": 23.19
+          },
+          "470.6171": {
+            "excluded_pairs": 98,
+            "never_started_component": 98,
+            "started_and_left_component": 0,
+            "exclusions_lost_vs_delta_0": 605,
+            "pct_of_exclusion_set_retained": 13.94
+          }
+        },
+        "C_nonparametric_correction": {
+          "definition": "last_inst' = max(interp(max rid), max dated watched_at <= tau_pull)",
+          "assumption": "direction only: a genuine record is not inserted before it is watched, so watched_at is a lower bound on its insertion instant",
+          "pairs_whose_account_instant_moved_later": 79370,
+          "median_move_days_where_moved": 0.0257,
+          "excluded_pairs_after_correction": 700,
+          "never_started_component_after": 603,
+          "started_and_left_component_after": 97,
+          "exclusions_lost": 3,
+          "pct_of_exclusion_set_retained": 99.57,
+          "new_exclusions_created": 0
+        },
+        "excluded_set_provenance": {
+          "excluded_accounts": 216,
+          "max_rid_record_is_watch_import_family": 525,
+          "max_rid_record_is_checkin_or_scrobble": 178,
+          "residual_at_that_record_days_where_measurable": {
+            "p0": -7.7312,
+            "p1": -0.1431,
+            "p5": -0.1431,
+            "p10": -0.0631,
+            "p25": -0.0291,
+            "p50": 0.0013,
+            "p75": 0.0097,
+            "p90": 0.0195,
+            "p95": 0.0226,
+            "p99": 0.0339,
+            "p100": 4346.9151
+          },
+          "reading": "where the account's own last record is a checkin or scrobble the residual at exactly the point the rule reads is directly measurable; where it is a watch it is not, and the uniform-shift and non-parametric tests are what cover it"
+        }
+      }
+    }
+  },
+  "files": {
+    "artifacts": [
+      "artifacts/step7-liveness-bb-a.json",
+      "artifacts/step7-liveness-bb-a.md"
+    ],
+    "processed": [
+      "arms.json",
+      "bootstrap.json",
+      "bootstrap_replicates_APPLY.npz",
+      "bootstrap_replicates_DERIV.npz",
+      "bounds.json",
+      "checks.json",
+      "instants.json",
+      "instants.npz",
+      "masks_W108.npz",
+      "population.json",
+      "population.npz",
+      "residual.json",
+      "residual_accounts.npz",
+      "stability.json"
+    ],
+    "scripts": [
+      "step7_bb_a_1_population.py",
+      "step7_bb_a_2_instants.py",
+      "step7_bb_a_3_rule.py",
+      "step7_bb_a_4_bounds.py",
+      "step7_bb_a_5_checks.py",
+      "step7_bb_a_6a_residual.py",
+      "step7_bb_a_6b_stability.py",
+      "step7_bb_a_7_boot.py",
+      "step7_bb_a_8_deliver.py"
+    ]
+  }
+}
