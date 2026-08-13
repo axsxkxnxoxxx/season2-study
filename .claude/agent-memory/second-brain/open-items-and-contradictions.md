@@ -1,6 +1,6 @@
 ---
 name: open-items-and-contradictions
-description: Live register of open items and cross-step contradictions in the Season 2 study, each with its two conflicting sources named — re-verified 2026-08-12 after Steps 3, 4, 2 and Step 5 revision 6, including seven new contradictions and the five conclusions whose stated reason was corrected
+description: Live register of open items and cross-step contradictions in the Season 2 study, each with its two conflicting sources named — re-verified 2026-08-12 after decisions/0029-0034 and the Step 1 §7 amendment, with Z1-Z3 closed and five new findings led by the stale agent definition files
 metadata:
   type: project
 ---
@@ -20,9 +20,137 @@ approves governs on substance. I never edit `decisions/` — I report.
 
 ---
 
-## NEW — surfaced after the Step 6 gate, in priority order
+## NEW — surfaced 2026-08-12 by the pass over `0029`–`0034`, in priority order
 
-### Z1. Step 7's spec carries BOTH unclosed Step 6 lessons, and Step 7 is the next dual pair
+### W1. The agent definition files were never amended, and CLAUDE.md points agents at them FIRST
+
+**This is the sharpest finding of the pass, and it is the item-23 pattern with a third home nobody
+has been updating.**
+
+- **`CLAUDE.md`**: *"The full specification is in `task-sheet.md`. **Each agent's own steps are
+  written into its definition file.** Read the task sheet **only when you need context beyond your
+  own steps.**"*
+- **`.claude/agents/data-scientist.md` and `data-scientist-b.md`, line 14, byte-identical in both
+  halves of the next dual pair:** *"Plot the distribution of gaps between consecutive **logged
+  events** per user. **Set the threshold well beyond the normal gap** … a **user** counts as live
+  if they show logged activity after clock start plus W."*
+
+**Every clause in that sentence is withdrawn.** "Set the threshold well beyond the normal gap" was
+withdrawn by **`0029`**; gaps run on **insertion instants**, not logged events, by **`0021` ruling
+2**; and liveness is a **pair-level** filter, not a user-level one — the scope correction the Human
+Lead made directly to `task-sheet.md` Steps 7 and 9.
+
+**And it is not confined to Step 7.** Same files, same class:
+
+| File / line | What it says | What supersedes it |
+| :--- | :--- | :--- |
+| `data-scientist.md` :13 | *"Set W at the percentile where the curve **flattens**"* | Withdrawn by `0024` |
+| `data-scientist.md` :12 | *"The clock starts at the later of the S2 **premiere** date and … S1 completion date"*; *"three … states **measured at clock start plus W**"* | D1 anchors on the **finale**; `0034` measures at **two** instants |
+| `analytics-engineer.md` :16 | *"in a **fixed documented order**"*; *"no clock start precedes an S2 premiere"* | Order fixed by `0029`; that invariant is **vacuous** and `task-sheet.md` line 288 says so. No `A ⊆ A_H`, no `L2 = 1` exclusion, no per-air-period counts |
+| `analytics-engineer.md` :12 | *"On a 403, **hard stop and report**"* | `0004`, which **`CLAUDE.md` itself already carries as amended** |
+
+**Why this is different from Z2, which it otherwise resembles.** Z2 was a spec *omission* plus a
+conflict between two artifacts. **This is the spec an agent is told to read first, carrying rules
+that were explicitly withdrawn**, and both instances of the next dual pair carry the identical
+withdrawn wording — so the divergence signal is zero and the agreement is on the withdrawn rule.
+`0022` and `0029` both fixed exactly this shape in `task-sheet.md` and neither touched these files.
+
+**What I do not know and am not asserting:** whether the Human Lead treats these files as live spec
+or as vestigial launch briefs superseded by `task-sheet.md` in practice. `0022`, `0028`, `0029`,
+`0033` and `0034` all propagated to `task-sheet.md` and **none mentions the agent files at all**,
+which is consistent with either reading. **The two things that conflict are `CLAUDE.md`'s
+read-order instruction and the content of the files it points at.**
+
+### W2. `task-sheet.md` Step 10 was not amended, and `0034` changed what Step 10 computes
+
+- **`0034` §6.2 and `artifacts/step1-outcome-definition.md`** (§Abandonment point, amended in
+  place) require three things of Step 10: `p` on **`m_H = max(A_H)`**; the **direction** named —
+  the 2,246 movers are the ones that got furthest, so abandonment looks **earlier** on the
+  published chart; and the **`p = 1.0` residual re-reported, not carried over**, because it changes
+  size under `A_H`.
+- **`task-sheet.md` Step 10, lines 323–325**, unchanged: *"Plot the distribution of abandonment
+  points … Separate first-episode, mid-season, near-finale … Do not claim a specific episode."*
+  **None of the three appears.**
+
+Step 10 is Chained and single-implementation, so the failure mode is **plain omission**, not silent
+divergence — the same mode `0028` was written for at Step 14 and README item 29 warns about.
+`0034` propagated to Steps 7, 8, 13 and 14 and stopped short of Step 10.
+
+### W3. Two documents cite "Step 2's marginal-lag distribution" for a figure Step 2 does not contain
+
+- **`decisions/README.md` items 40 and 41**: *"**Step 2's** marginal-lag distribution is the
+  start-anchored rule's own distribution"* and *"**Step 2's** marginal p90 of **100.39** is
+  pre-D11."* **`task-sheet.md` line 423** carries the same sentence in the Step 14 ledger.
+- **The source says `§2`, not Step 2.** `artifacts/step1-amendment-continued-boundary.md` §21.2:
+  *"**§2's** marginal-lag row is the start-anchored rule's own distribution."* That is **§2 of the
+  amendment**, produced by `src/step6_completion_lag.py`.
+
+**Step 2 is the frame ledger. It contains no lag distribution of any kind.** A reader following the
+citation lands in `artifacts/step2-frame-ledger-and-distributions.md` and finds nothing. A section
+mark was rendered as a step number in the **decision log of record** — the Step 18 artifact — and in
+the spec Step 14 reads. Small, purely a pointer, and trivially fixable; flagged because it is
+exactly the class of defect `0031` and `0034` were both written to stop.
+
+### W4. Step 1 §10.1 question 1 turns on a diagnostic `0034` abolished, and Q1 is still open
+
+- **`decisions/README.md` item 2**: *"Step 1 open questions 1 and 3 remain open. **The drafted
+  boundary stands until decided.**"*
+- **`artifacts/step1-outcome-definition.md` §10.1 Q1**, unedited: its third supporting ground is
+  ***"D3 covers the strict rule's real weakness"***, and its recommendation is *"read it together
+  with **D3**. **If D3 returns a high resumption share, revisit this boundary and the value of `W`
+  together.**"*
+- **`0034` replaced D3 with D3′** precisely because *"that quantity is now the operator itself, so
+  D3 as written measures nothing."*
+
+**So Q1's decision procedure points at a diagnostic that was superseded because the amendment
+absorbed the exact quantity Q1 wanted to read.** Q1's second ground moves too: it rests on the
+`p = 1.0` residual being *visible*, and `0034` §6.2 says that residual **changes size under `A_H`
+and must be re-reported.**
+
+**Q1 is not closed by `0034` and `0034` does not claim to close it.** Q1 asks *finale-plus-90 or
+finale alone* — the **conjuncts**; `0034` moved the **instant**. Both conjuncts survive. But
+`0034`'s own title is "the Continued boundary amendment" and Q1 is "the Continued boundary
+question," and a Step 18 reader meeting both will reasonably read Q1 as disposed of. **It is not,
+and its stated warrant now has a dangling term.**
+
+### W5. Both Step 6 artifacts' new headers say more than is true, in one row
+
+`0029` added the right header to both files — gate outcome, coverage arithmetic, *"do not take `W`
+from this file."* **Z3 is closed by it.** One clause overreaches:
+
+- **The header**: *"Everything else here — the estimation sample, the negative-mass tables, the
+  precision intervals, the censoring diagnostic — **stands as written and is unaffected by the
+  rendering.**"*
+- **But the same artifacts publish a Step 13 minimum range** of **[37, 107]** (`-a`) and
+  **[37.70, 107.71]** (`-b`), and those **are** rendered figures: under `0025`'s ceiling the
+  all-shows p90 goes 37.6967 → **38** and the C1 p90 107.7135 → **108**, giving **[38, 108]**, which
+  is what `0026`/`0027` use. **`task-sheet.md` Step 13 line 368 still says "Cover at least the range
+  Step 6 reports."**
+
+**Practically moot** — `0027`'s union runs to 213 and the floor is a one-day question on a
+sensitivity arm — and the header's enumerated list does not name the range. Recorded because the
+header's *general* clause is broader than its list and asserts non-impact for a figure the rendering
+did move.
+
+---
+
+## CLOSED by `0029` — the three Step 6 findings, all actioned within a day
+
+| Was | How it closed |
+| :--- | :--- |
+| **Z1** — Step 7's spec carried both unclosed Step 6 lessons | **CLOSED as `0029`.** *"Set the threshold well beyond the normal gap"* withdrawn for a **named percentile**, the gap fixed as a **continuous insertion-instant difference**, and the threshold **rounded up** per `0025`. The percentile is **PROPOSED at the 99th and not adopted; Step 7 must not launch until it is ruled** (README item 30). Z1's weaker second instance — Step 8's *"fixed documented order"* with no order fixed — closed in the same entry |
+| **Z2** — `W = 108` in neither consuming step, while the two artifacts said 107 and 107.71 | **CLOSED as `0029`.** `W = 108` now stated in Steps 7, 8 and 13, each naming `0026` and each saying the artifacts' figures are **not** the adopted value. `0029` names it correctly as *"not an omission but a contradiction with two different wrong answers"* |
+| **Z3** — the Step 6 deliverables carried pre-`0025` numbers with no forward pointer | **CLOSED as `0029`**, in the form I flagged: a header on each artifact following the S1-completer diagnostic's supersession practice. One residual clause — see **W5** |
+
+**Worth recording for Step 18:** all three were surfaced by this role on the post-gate consistency
+pass and all three were ruled on the same day, before Step 7 launched. `0029` credits
+`second-brain` in its **Found by** field. That is the third such entry after `0022` and `0028`.
+
+---
+
+## Superseded — the Step 6 gate pass, retained for the reasoning
+
+### Z1. Step 7's spec carried BOTH unclosed Step 6 lessons, and Step 7 is the next dual pair
 
 **`task-sheet.md` Step 7 line 237, unamended:**
 
@@ -472,12 +600,37 @@ namespace is not part of the task description and separating it does not weaken 
 to Steps 7 and 9 (`data-scientist` / `-b`) and Step 8 (`analytics-engineer` / `-b`). No output was
 lost, and the identical inputs are themselves evidence the collision never reached the computation.
 
-### Critical path, updated 2026-08-12 after `0026`
+### Critical path, updated 2026-08-12 after `0034`
 
-Steps 1, 3, 4 (stopped), 2, 5 and **6** are done. **Three gates closed of five.** **Step 7 is next**
-— dual pair, needs the stored calibration and must not refit it, and **carries Z1 and Z2 unresolved
-in its spec.** Then Step 8 (dual, on the 201,900 analysis population, the Layer 1 record tags and
-`W = 108`), which also inherits item 27's four-pair conflict.
+Steps 1 (amended and re-approved), 3, 4 (stopped), 2, 5 and 6 are done. **Three gates closed of
+five.** **Step 7 is next** — dual pair, spec now fixed by `0029` and `0034`, needs the stored
+calibration and must not refit it, liveness anchored at `τ1`. **It is BLOCKED on one ruling: the
+liveness percentile is proposed at the 99th and not adopted** (README item 30), and `0029` says
+Step 7 must not launch until it is. Then Step 8 (dual, on the 201,900, the Layer 1 record tags,
+`W = 108`, the `0029` filter order and the `A ⊆ A_H` invariant), which also inherits item 27's
+four-pair conflict.
+
+**The one thing to watch at each remaining gate** is unchanged and has now been paid for four times:
+a ruling that changes what a downstream step computes has **three** homes — the decision log, the
+gate's own deliverable, and **the spec the later step actually reads.** W1 argues there is a
+**fourth**, the agent definition files, and that it has never been updated once.
+
+### Stale pre-amendment expressions — conclusions survive, wording does not
+
+Grepped every `.md` and `.py` for the pre-amendment Continued condition. **No live rule anywhere
+still evaluates Continued at `τ1` on `A`.** `artifacts/step1-outcome-definition.md` §7 is amended in
+place, `task-sheet.md` Steps 1, 7, 8, 13 and 14 all carry `τ2`, and the old row is quoted only under
+an explicit **"Superseded by this amendment"** label. Five residues, none of which changes an
+outcome:
+
+| Where | Text | Status |
+| :--- | :--- | :--- |
+| `step1-outcome-definition.md` :875 | §7 opens *"Measured at the window close `τ1`"* | Half-true; the amendment block follows three lines later |
+| `step1-outcome-definition.md` :935 | The `L2 = 1` degeneracy: *"`\|A\| ≥ 1 ⟺ F2 ∈ A ⟺` the Continued condition"* | **Conclusion still holds.** At `L2 = 1`, `A ⊆ {F2}`, so `\|A\| ≥ 1 ⟹ F2 ∈ A ⊆ A_H` and `\|A_H\| ≥ 1`. Moot on this frame — `min(L2) = 2` |
+| `step1-outcome-definition.md` :516 | Listed-but-unaired S2 episode makes *"`F2 ∈ A` unsatisfiable"* | Holds a fortiori on `A_H` — the episode never aired at either bound |
+| `step5-contamination-diagnostics.md` :59, `step5-red-team-reviews.md` :193 | The air-date-stamping argument runs on `F2 ∈ A` and `\|A\| ≥ ceil(0.90 × L2)` | **Holds a fortiori.** A fully stamped season lands before `T0 < τ1 < τ2`, and `A ⊆ A_H`, so it still scores Continued. An **approved gate** quoting a superseded form of the condition, with the direction unaffected |
+| `step1-outcome-definition.md` :1157, `task-sheet.md` :372 | *"Hold `H` constant … otherwise **D3** and D8 are not comparable between arms"* | **D3** is superseded by **D3′**. Notably this exact line was the basis of failed anchor ground (b) at revision 8 |
+| `src/step6_completion_lag.py` :9–12 | Docstring: *"Step 1 sec 7 makes **W** govern TWO boundaries"* and prints the pre-amendment Continued row | Its **output is unaffected** — it measures the completion instant at an unbounded horizon. But `0034` §10 names this file as the live provenance of §2's three rows, so a live-provenance script describes a superseded rule |
 
 **The one thing to watch at each remaining gate**, from README item 23: a ruling that changes what a
 downstream step computes has three homes — the decision log, the gate's own deliverable, and **the
@@ -504,6 +657,26 @@ split signature depends on — README item 5). N6 (the Step 0 file index is stal
 ## Checks that PASS — recorded so they are not re-litigated
 
 Verified 2026-08-12. Arithmetic reconciliations are in [[population-chain-steps-2-3-4]].
+
+Verified after `0034`, on the three checks the Human Lead named:
+
+- **No live use of the superseded `W` figures.** Every occurrence of 107 / 107.7135 / 37.6967 in the
+  repo is one of four legitimate kinds: the Step 6 artifacts stating **their own** outputs under a
+  header saying not to take `W` from them; `0024` and `0025` citing them as the divergence they
+  resolved; `task-sheet.md` Steps 7, 8 and 13 citing them **to say they are not the adopted value**;
+  and `0024`'s **[46, 107] Step 13 span mandate**, which is a range requirement and not a value.
+  **Nothing quotes either as adopted.** The one clause that overreaches is W5.
+- **No live citation of the cut §1.1 / §2.2 / §2.3.** Every reference sits in the §11–§21 disposition
+  tables, which cite them by number as **history** — correct and intended — or in the status block,
+  which states outright that they are cut and records the cut-restore-cut sequence. The one
+  forward-facing pointer, §6.5's note, was corrected to name the **pre-strip** §1.1 explicitly.
+  `src/amendment_corrections.py` retains the keys renamed `HISTORY_…_CUT_AT_REVISION_10`, so §11–§18
+  stay reproducible without the figures reading as live.
+- **`0034`'s zero-censoring claim survives Q3 being open.** Q3 asks `max(W, 91)` versus `W` alone.
+  The identity `W + H ≤ max(W, 91) + H` holds under **either** answer, and at the adopted `W = 108`
+  the two coincide exactly. They diverge only on the **low** Step 13 arms — at `W = 46`,
+  `max(46, 91) = 91 ≠ 46` — where the retained population is **larger** under the adopted answer, so
+  `A_H` stays fully observed either way. **Q3 cannot threaten the amendment.**
 
 Verified after the Step 6 gate:
 

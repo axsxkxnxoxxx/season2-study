@@ -1,6 +1,6 @@
 ---
 name: decision-log-step18
-description: Coverage map of the decision log of record in decisions/ (0001-0020), which judgments still have no file, and assembled five-field text pending handoff to the Human Lead
+description: Coverage map of the decision log of record in decisions/ (0001-0034), which judgments still have no file, and assembled five-field text pending handoff to the Human Lead
 metadata:
   type: project
 ---
@@ -22,7 +22,7 @@ log shows the judgment."*
 
 ---
 
-## Coverage as of 2026-08-12 — `0001`–`0020`
+## Coverage as of 2026-08-12 — `0001`–`0034`
 
 | Files | Cover | Five-field completeness |
 | :--- | :--- | :--- |
@@ -39,11 +39,31 @@ log shows the judgment."*
 | **`0026`** | **Step 6 gate closed. `W = 108`.** Four things that travel with the number; one unresolved conflict between approved documents | Full |
 | **`0027`** | Step 13 `W` arms at 150 and 213 | Full, including why 150 exists — so a non-linear response is traced rather than interpolated between two endpoints |
 | **`0028`** | Step 14 carries seven bias statements and eight non-bias limitations | Full, and it argues *substantively* why the ledger must not be netted rather than issuing it as a caution |
+| **`0029`** | `W = 108` propagated to Steps 7, 8, 13 and both Step 6 artifacts; Step 7's threshold rule; Step 8's filter order | **Full, and the only entry in the log that is deliberately left partly Open** — the Step 7 percentile is **proposed at the 99th and not adopted**, and the entry says Step 7 must not launch until it is ruled. Its "alternatives" field is unusually strong: 90th / 95th / 99th priced by **false-dead rate** — one gap in ten, twenty, a hundred. It also **flags a caution the percentile does not answer** (the compounding false-dead rate over many gaps, ≈39% at the 99th over 50) rather than letting the ruling settle a question it does not reach |
+| **`0030`** | The 2024/2025 contradiction; `show_network` dropped; five reception fields added; `size_quintile` separated from exposure | **Full, and the best "why not the obvious fix" field in the log** — per-year normalisation *over*-corrected worse than raw under-corrected (32.9% vs 12.3% against a 14.8% base), with the mechanism named. Also models how to correct an approved gate **without** reopening it: Step 1 *relies* on the cutoff, Step 2 *sets* it, so it is an addendum. Records the reviewer's one **wrong** example (`The Killing`) beside its six right ones |
+| **`0031`** | The ≥50 completer floor, justified against its own sensitivity curve | **Full, and the most honest "what it costs" field.** It publishes a curve showing the threshold is **genuinely sensitive** — ±one step changes the candidate set by ~half — and says *no such defence is available here, and none is offered.* It also **refuses a number the reviewer asked for**: the frame at ≥25 costs 1,699 live calls and is not claimed |
+| **`0032`** | Step 4 deliverables regenerated; the pull stopped **safely, not cleanly**; resume repriced | Full. Its judgment is the **characterisation**, not the fix: *"'exited cleanly' implies the run's own record is trustworthy, and it was the untrustworthy record that this entry exists to fix."* Records the engineering **PASS** and its evidence — zero 429s, zero 403s, 3 transient events in 126,391 requests — beside the defect |
+| **`0033`** | Step 8 reports per-air-period retained counts per `W` arm; the discard-rate anomaly to Step 14 | Full. Notable for **separating what a null result rules out from what it leaves open**: no monotone trend rules out sweep length as the mechanism, which is the useful half; the +3 SD residual at bin 5 is unidentified and is not claimed to be noise |
+| **`0034`** | **Step 1 §7 amended. Continued at `τ2` = 199 days.** Gate 1 reopened as an amendment and re-approved | **Full, and it is now the strongest entry in the log on the "where a reviewer disagreed" field** — eleven rounds, the rule never broken, four failed anchor grounds tabled with how each failed, and Red Team's "should not be cut" recorded as **not followed**. See [[amendment-step1-continued-boundary]] |
 
-**Gate checklist:** **Steps 1, 5 and 6 closed. Steps 7 and 8 open.** Three of five.
+**Gate checklist:** **Steps 1 (amended and re-approved), 5 and 6 closed. Steps 7 and 8 open.** Three
+of five. **Step 7 is blocked on the `0029` percentile ruling, not on an artifact.**
 
-**Two entries in this block credit `second-brain` by name** — `0022` and `0028`, both propagation
-gaps. Recorded without comment: the role is continuity, and the log is the Human Lead's.
+**Three entries now credit `second-brain` by name** — `0022`, `0028` and `0029`, all three
+propagation gaps found on a post-gate consistency pass. Recorded without comment: the role is
+continuity, and the log is the Human Lead's.
+
+**`0034` sets a new bar, and it is a different bar from `0021`'s.** `0021` showed the five-field
+format at full strength on a *gate*. `0034` shows it on a *reversal inside an approved gate*, and
+its distinctive contribution is recording **what could not be justified**: the amendment is adopted
+with **no stated ground** for preferring `τ2` to first-S2-watch + `H`, four attempts are tabled with
+their refutations, and the entry says the absence *"is the honest record and is not to be repaired
+by a fifth attempt without new evidence."* **A decision log that can record an unfilled "why this
+one" field without either faking it or blocking is doing the thing Step 18 exists to do.**
+
+**Two propagation gaps `0034` left**, both in [[open-items-and-contradictions]]: **Step 10's spec**
+(W2) and **the agent definition files** (W1). `0029` and `0034` between them amended `task-sheet.md`
+Steps 1, 7, 8, 13 and 14 — and Step 10 is the one consuming step that moved and was not written to.
 
 **`0021` sets a bar for the three remaining gate entries.** It records not just the rule but the
 rulings made *during* the gate, the standing rulings that outlive it, the limitations that travel
@@ -54,8 +74,10 @@ format working at full strength, and it is the model for Steps 6, 7 and 8.
 **One structural improvement worth naming.** `0022` exists because a ruling recorded in two places
 was still missing from the third. The log now carries the standing check as README item 23. **Every
 remaining gate entry should end by naming what it propagated to `task-sheet.md`, or stating that it
-propagated nothing.** `0026` does **not** do this, and `W = 108` is consequently absent from the
-Step 7 and Step 8 specs — [[open-items-and-contradictions]] Z2.
+propagated nothing.** `0026` did **not** do this, and `W = 108` was consequently absent from the
+Step 7 and Step 8 specs — **closed as `0029`**, which does exactly that and adds README items 30–32.
+`0033` and `0034` both now carry the propagation statement explicitly. **The practice took four
+entries to become habit and it should not be allowed to lapse at Steps 7, 8 or 9.**
 
 **The Step 6 block is where the dual-implementation regime paid for itself, and Step 18 should say
 so with the numbers.** `0024` and `0025` exist *only* because two isolated instances ran the same
@@ -148,8 +170,12 @@ ambiguity**. **This is the precedent [[open-items-and-contradictions]] X1 turns 
 
 ## Still with no decision file at all
 
-1. **§10.1 open questions 1 and 3**, when ruled — the Continued boundary and the right-censoring
-   rule. Each carries a Data Scientist recommendation and a decision from nobody.
+1. **§10.1 open questions 1 and 3**, when ruled — the Continued boundary **conjuncts** and the
+   right-censoring rule. Each carries a Data Scientist recommendation and a decision from nobody.
+   **Q1's warrant now has a dangling term**: it turns on D3, which `0034` abolished. See
+   [[open-items-and-contradictions]] W4 and [[step1-open-questions]].
+2. **The Step 7 liveness percentile**, when ruled. `0029` is Open on exactly this and no other
+   entry covers it. **It blocks the next step.**
 3. **The gap hypothesis**, if and when it is assigned an owner (README items 3 and 8).
 4. **Ratification of `0005`–`0008`**, which are the only Open entries in the log.
 5. **Whether to resume the Step 4 pull or sample the pool down** (README items 11 and 19). Every

@@ -1,14 +1,15 @@
 ---
 name: glossary-terms-and-thresholds
-description: Live glossary of every term, threshold and constant in the Season 2 abandonment study, each tagged with the step, decision and gate that fixed it and whether it is set, deferred, or still open — current through Steps 2, 3, 4 and Step 5 revision 6 (2026-08-12)
+description: Live glossary of every term, threshold and constant in the Season 2 abandonment study, each tagged with the step, decision and gate that fixed it and whether it is set, deferred, or still open — current through decisions/0034 and the Step 1 §7 amendment (2026-08-12)
 metadata:
   type: reference
 ---
 
 # Glossary — terms, thresholds, and where each was set
 
-**Current through 2026-08-12**, after Steps 3, 4, 2 and Step 5 revision 6. This is an index, not a
-substitute for the artifacts. Verify against the file before acting on any row.
+**Current through `decisions/0034`, 2026-08-12** — Steps 3, 4, 2, 5, 6 and the Step 1 §7 amendment.
+This is an index, not a substitute for the artifacts. Verify against the file before acting on any
+row.
 
 Status vocabulary: **FIXED** (set and gate closed) · **DEFERRED** (form fixed, value owed)
 · **OPEN** (gate has not run) · **PROPOSED** (agent produced it, gate not approved).
@@ -17,11 +18,11 @@ Status vocabulary: **FIXED** (set and gate closed) · **DEFERRED** (form fixed, 
 
 | Term | Value / status | Where set | Gate |
 | :--- | :--- | :--- | :--- |
-| **`W`** — the window, in days | **FIXED: `W = 108 days`.** The **ceiling** of the **90th percentile** (107.7135) of the **continuous** lag from clock start to first S2 episode, on the **C1 subset (25,120 pairs, 206 shows, 2,050 users)** of the 128,099 clean-record sample. **Applies to all pairs.** Precision: **±18 days, show-clustered** — not the decimals. `τ1 = ⟦T0⟧ + 108 × 24h` is now the operator that assigns every outcome state. | Rule: `0024` (percentile) + `0025` (unit and ceiling). Value: `0026` | **Step 6 gate, APPROVED 2026-08-12, `0026`. Gate 3 of 5** |
-| **Liveness threshold** | **OPEN. Not set.** A gap length derived from data; Step 7 must derive it without using `W` as an input, though the *rule* composes with `W`. **Basis fixed:** liveness runs on **record insertion time**, not claimed `watched_at` (`0021` ruling 2); the play-`id` calibration is a **required input and neither instance refits it** (`0022`). **But the derivation instruction is still "set the threshold well beyond the normal gap"** — undefined, on a dual pair, and `0025` names Step 7 as the immediate candidate to inherit the unit/ceiling off-by-one. [[open-items-and-contradictions]] Z1 | Step 7; basis `0021`, spec `0022` | Step 7 gate, **not approved** |
+| **`W`** — the window, in days | **FIXED: `W = 108 days`.** The **ceiling** of the **90th percentile** (107.7135) of the **continuous** lag from clock start to first S2 episode, on the **C1 subset (25,120 pairs, 206 shows, 2,050 users)** of the 128,099 clean-record sample. **Applies to all pairs.** Precision: **±18 days, show-clustered** — not the decimals. **Since `0034`, `W` no longer assigns every outcome state on its own**: `τ1` assigns never-started, `τ2 = τ1 + H` assigns Continued. **Precision history: 107 (`-a`, floored) → 107.7135 (`-b`, raw) → 108 (adopted ceiling).** Neither artifact figure is the adopted value; both predate `0025`. | Rule: `0024` (percentile) + `0025` (unit and ceiling). Value: `0026`. Propagated into Steps 7, 8, 13 and both Step 6 artifacts by `0029` | **Step 6 gate, APPROVED 2026-08-12, `0026`. Gate 3 of 5** |
+| **Liveness threshold** | **OPEN as a value; the RULE is now fixed.** `0029` replaced *"set the threshold well beyond the normal gap"* with three specified things: the **gap is the interval between consecutive INSERTION instants, continuous**, not floored; the threshold is a **named percentile**, **PROPOSED at the 99th and NOT adopted**; and it **rounds UP** per `0025`. **Step 7 must not launch until the Human Lead rules the percentile** (README item 30). Basis unchanged: insertion time (`0021` ruling 2), stored play-`id` calibration a required input that **neither instance refits** (`0022`). **Anchored at `τ1`, never `τ2`** (`0034` §6.3). **Two things still unsettled:** the rule's *shape* — single gap, the gap bracketing `T0 + W`, or every gap — and the compounding false-dead rate that no percentile fixes (≈39% at the 99th over 50 gaps). README item 31 | Rule `0029`; basis `0021`; spec `0022`, `0034` | Step 7 gate, **not approved** |
 | **S1 completion rule** | **FIXED.** `F1 ∈ D1` **and** `\|D1\| ≥ ceil(0.90 × L1)`, distinct episodes, membership by the listed set `E1`. Now applied against **real** `E1` from the Step 2 frame, not a proxy (`0019`). | Step 1 §4 | **Step 1 gate, APPROVED 2026-08-10** |
 | **Contamination exclusion rule** | **FIXED.** Exclude **16,665** pairs whose S2 evidence is *entirely* air-date-stamped, plus **1,542** with no S2 evidence and a fabricated binding clock start. Total **18,207**; retains **201,900 of 220,107 (91.73%)**. Disjoint by construction. | Step 5 §9, revision 6 | **Step 5 gate, APPROVED 2026-08-12, `0021`. Gate 2 of 5** |
-| **Filter order** | **OPEN. Not set.** Step 8 owns it. `task-sheet.md` Step 8 names the members — frame, contamination, S1 completion, W, liveness, right-censoring, `L2 = 1` — and one ordering constraint: **contamination before right-censoring**. The order among the rest is Step 8's. | Step 8 | Step 8 gate, **not approved** |
+| **Filter order** | **FIXED by `0029`, ahead of the gate.** **1.** Step 2 frame → **2.** `L2 = 1` exclusion → **3.** S1 completion rule → **4.** contamination exclusion → **5.** right-censoring → **6.** liveness rule → **7.** outcome assignment **at two instants** (`\|A\| = 0` at `τ1`, Continued at `τ2`, per `0034`). **Why it had to be fixed:** the final row set commutes — every filter is row-wise — but the **required per-filter sample size does not**, so two faithful instances could report different waterfalls on an identical table and the diff could not tell that from a bug. **Contamination before right-censoring** was already required. **Right-censoring before liveness** is the one genuine choice: censoring is a property of the clock and `pull_date`, objective and behaviour-independent, so running it first measures liveness's marginal cost on a fully observable population — the number Step 9's bound needs. | `0029`, written into `task-sheet.md` Step 8 | Step 8 gate, **still not approved** — the order is fixed, the gate is not |
 
 ## Decision numbering on the public record — `decisions/`
 
@@ -34,10 +35,15 @@ S2 · `0016` per-season network dropped · `0017` air period · `0018` size quin
 **`0022` the two Step 5 rulings written into `task-sheet.md`** · **`0023` `0012` upheld after a Red
 Team HOLD** · **`0024` `W` is the 90th percentile** · **`0025` lag unit and ceiling** · **`0026`
 Step 6 gate APPROVED, `W = 108`** · **`0027` Step 13 arms at 150 and 213** · **`0028` Step 14
-carries every routed limitation**.
+carries every routed limitation** · **`0029` `W` propagated, Step 7 threshold rule, Step 8 filter
+order** · **`0030` 2025 cutoff kept + three frame field changes** · **`0031` the ≥50 floor
+justified** · **`0032` Step 4 deliverables regenerated** · **`0033` Step 8 per-air-period censoring
+counts** · **`0034` Step 1 §7 amended — Continued at `τ2`**.
 
-**Authority split.** `0001–0004` and `0009–0028` are Human Lead. **`0005–0008` are agent-taken and
-still Open, awaiting ratification** — the README's authority note now names all four correctly.
+**Authority split.** `0001–0004` and `0009–0034` are Human Lead. **`0005–0008` are agent-taken and
+still Open, awaiting ratification** — the README's authority note now reads `0013–0033` and needs
+`0034` when next touched. **`0029` is the only other non-Closed entry: Open on the Step 7
+percentile only.**
 
 ## Step 6 — how `W` is derived, and the conventions inside it
 
@@ -54,15 +60,22 @@ still Open, awaiting ratification** — the README's authority note now names al
 | **Step 13 `W` arms** | Union of the two-curve range **[38, 108]**, the run-1 span **[46, 107]**, and the new arms at **150 and 213** — effectively **38 to 213**, with 108 inside rather than at the ceiling. **`H` constant across every arm; each arm re-censors, so the arms do NOT share a denominator** and the retained-row count is required per arm | `0027`, composing with `0024` |
 | **`213`** | The C1 p90 among pairs with **≥8 years of exposure** (n = 4,141). **An upper bound, not a rival estimate** — exposure and cohort are not separable | `0026`, `0027` |
 
-## Clock, window, horizon — unchanged from Step 1 except `pull_date`
+## Clock, window, horizon — TWO boundaries since `0034`
 
 | Symbol | Definition | Where | Status |
 | :--- | :--- | :--- | :--- |
-| `T0` | `max(S2_finale_air_date, first-pass S1_completion_date)` | Step 1 §6, D1 | FIXED |
-| `τ0` / `τ1` | `⟦T0⟧` / `τ0 + W × 24h`; window `[τ0, τ1)`. **Now numeric: `τ1 = ⟦T0⟧ + 108 × 24h`** | §2.4, D13; value `0026` | **FIXED** |
-| In-window test | **`watched_at < τ1`**. Strict, half-open, instants only | §2.4, D13 | FIXED |
-| `H` | **91 days**, fixed, not a function of `W` | §6, D10 | FIXED |
-| Right-censoring | retain iff **`⟦T0⟧ + (max(W, 91) + H) × 24h ≤ τ_pull`** | §6, D10 | FIXED in form |
+| `T0` | `max(S2_finale_air_date, first-pass S1_completion_date)`. **Carries a behavioural term:** the `S1_completion_date` arm binds on **116,041 of 220,107 pairs — 52.7%** (`processed/step5/t0_binding.json`). Any claim that `T0` is exogenous is false and was withdrawn twice | Step 1 §6, D1; binding counts via `0034` | FIXED |
+| `⟦T0⟧` | The **UTC midnight of the date** of `T0`. `τ0 = ⟦T0⟧` | §2.4, D13 | FIXED |
+| **`τ1`** | **`⟦T0⟧ + W × 24h` = `⟦T0⟧ + 108 days`.** Assigns **never started** (`\|A\| = 0`) and is the **liveness anchor** | §2.4, D13; value `0026`; anchor role `0034` | **FIXED** |
+| **`τ2`** | **`⟦T0⟧ + (W + H) × 24h` = `⟦T0⟧ + 199 days`** at `W = 108`, `H = 91`. Assigns **Continued**. Moves with `W` automatically — at the `W = 213` arm, `τ2 = ⟦T0⟧ + 304 days`, exactly the clearance `0027` already priced | Step 1 §7 as amended; `0034` | **FIXED** |
+| **`A`** | Distinct S2 episodes with `number ∈ E2` and `watched_at < τ1`, over `(−∞, τ1)` — **one-sided, no lower bound** | Step 1 §7 | FIXED |
+| **`A_H`** | **`A` recomputed with the bound moved from `τ1` to `τ2`** — the set **D3 already defined**, which is why the amendment introduces no new object. **`A ⊆ A_H` by construction** since `τ1 < τ2`, so the amendment is **monotone**: pairs move Started-and-left → Continued only, never back. Asserted at Step 8 **as a code check, not a data check** — being true by construction it can only catch an implementation that computed the two sets wrongly, and a green assertion is not evidence for the rule | D3's original text; promoted to the operator by `0034` | **FIXED** |
+| In-window test | **`watched_at < τ1`** (and `< τ2` for `A_H`). Strict, half-open, instants only, on both boundaries | §2.4, D13 | FIXED |
+| `H` | **91 days**, fixed, **not a function of `W`**, held constant across every Step 13 arm. Adopted **by name** at the Step 1 approval (D10) — which is why `τ2` introduces **no new constant**. **`H` loses the comparison it is measured against by 10 days:** the marginal p90 (first S2 episode → completion) is **100.39**, i.e. **101 under `0025`'s ceiling, against 91**. The shortfall is not argued away — it is exactly what item 9's 3,440 residual counts | §6, D10; marginal p90 from `src/step6_completion_lag.py` | FIXED |
+| Right-censoring | retain iff **`⟦T0⟧ + (max(W, 91) + H) × 24h ≤ τ_pull`**. **This is exactly `τ2` at `W = 108`**, so every retained pair already has `A_H` fully observed and the amendment's censoring cost is **zero**. Holds at **every** arm, because `W + H ≤ max(W, 91) + H` is an identity | §6, D10; identity in `0034` §3 | FIXED in form |
+| **`m_H`** | **`max(A_H)`.** Step 10's abandonment point is the **rank form** `p = \|{ e ∈ E2 : e ≤ m_H }\| / L2`, `m` replaced by `m_H` and nothing else changed. **`p = m_H / L2` is NOT the rule** — the raw-ratio form stays withdrawn (`L2` is a count, `m` an episode number; with an `E2` gap it can exceed 1). `p` is defined **only on Started-and-left**, which is now assigned on `A_H` | Step 1 §Abandonment point as amended; `0034` | **FIXED** |
+| **D8(ii)** | The count and share of pairs **satisfying the Continued condition** — `F2 ∈ A_H` and `\|A_H\| ≥ ceil(0.90 × L2)` — with `\|A\| = 0`. Already required by the approved text, so **D8 needed no amendment**; what changed is that it is now **the only bound on the never-started boundary**. Size: **1,575 on the estimation sample, 1,573 after right-censoring**, against 8,449 scored Never started. **The count is a FLOOR and the 18.64% share is a CEILING** — different populations, never combined | Step 1 D8; sized by `0034` §6.1, routed as ledger item 10 | FIXED |
+| **D3′** | Replaces **D3**, which measured nothing once its quantity became the operator. *Of pairs scored Started-and-left **at `τ2`** whose `⟦T0⟧ + (W + 2H) × 24h ≤ τ_pull`, report the **share** completing within `[τ2, τ2 + H)`, the **count** of that cleared subpopulation, and its **share of all Started-and-left**.* **Runs at EVERY Step 13 arm** — the clearance contains `W`, so the cleared set shrinks 95.98% (`W = 46`) → 94.82% (108) → 91.34% (213), and shows absent from the subset run 5 → 9 → 18. **Reported alongside, labelled a COUNT and not a rate:** the 3,440 completing at any point before `τ_pull`, with its exposure-weighting by show recency stated at the point of use. **The two do NOT bracket the quantity** — both truncate observation and neither is a lower bound | `0034` §6.4, written into `task-sheet.md` Step 8 | **FIXED** |
 | **`pull_date` / `τ_pull`** | **`pull_date = 2026-08-11`, `τ_pull = 2026-08-11T00:00:00Z`.** Every record with `watched_at ≥ τ_pull` is discarded. | **`0011`, Human Lead 2026-08-11** | **FIXED — D11's deferred value is now closed** |
 
 `0011`'s constraint check: earliest per-user fetch instant **2026-08-11T05:01:26Z ≥ τ_pull** ✓.
@@ -332,10 +345,35 @@ Unchanged from Step 1 and still governing.
 except by Human Lead adoption of the §3.3 fallback. Source `GET /shows/:id/seasons?extended=
 episodes,full`, one call per show. `show.aired_episodes` is **never** used.
 
-`A` = distinct S2 episodes with `number ∈ E2` and `watched_at < τ1`, over `(−∞, τ1)` — **one-sided,
-no lower bound**. Never started ⇔ `|A| = 0`. Continued ⇔ `|A| ≥ 1` and `F2 ∈ A` and
-`|A| ≥ ceil(0.90 × L2)`. Started-and-left is the remainder. Abandonment point
-`p = |{e ∈ E2 : e ≤ m}| / L2` where `m = max(A)` — rank-based, defined only for Started-and-left.
+### The outcome states, POST-AMENDMENT — `0034`, 2026-08-12
+
+| State | Condition |
+| :--- | :--- |
+| **Never started** | `\|A\| = 0` — decided at **`τ1`, 108 days** |
+| **Continued** | `\|A\| ≥ 1` **and** `F2 ∈ A_H` **and** `\|A_H\| ≥ ceil(0.90 × L2)` — decided at **`τ2`, 199 days** |
+| **Started and left** | `\|A\| ≥ 1` **and not** the Continued condition |
+
+**The pre-amendment Continued row read `|A| ≥ 1 ∧ F2 ∈ A ∧ |A| ≥ ceil(0.90 × L2)`, evaluated at
+`τ1`. That is superseded.** Any live use of that form is stale — see
+[[open-items-and-contradictions]].
+
+**The `|A| ≥ 1` conjunct is load-bearing, not tidying.** Without it, a pair first watching S2 on
+day 150 and completing by day 190 satisfies the other two conjuncts with `|A| = 0` and falls in
+**two** states. It **makes the cost visible; it does not cause it** — the cost belongs to the
+asymmetric anchoring, and D8(ii) is that asymmetry measured. Attributing 1,575 to the conjunct was
+withdrawn.
+
+**Partition proof survives verbatim in structure:** `A = ∅` / `(A ≠ ∅ ∧ C_H)` / `(A ≠ ∅ ∧ ¬C_H)`.
+No fourth state, no changed denominator, Step 8's sum-to-sample invariant untouched.
+
+**Continued is a 199-day statement while never-started is a 108-day statement, and the two must
+never be described as measured alike.** This appears wherever the split is reported, not in a
+footnote.
+
+Abandonment point `p = |{e ∈ E2 : e ≤ m_H}| / L2` where `m_H = max(A_H)` — rank-based, defined only
+for Started-and-left. **Direction Step 10 must name:** the 2,246 pairs leaving Started-and-left are
+the ones that got furthest, so abandonment looks **earlier** on the published chart, and the
+`p = 1.0` residual **changes size under `A_H` and must be re-reported, not carried over.**
 
 Counting: **distinct episodes, never play events**, dedup key `(show.ids.trakt, season, number)`
 scoped to the user; **canonical timestamp = minimum `watched_at`**; **all `action` values count as

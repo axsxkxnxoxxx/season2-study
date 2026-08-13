@@ -63,6 +63,45 @@ load-bearing in four places; **liveness is a pair-level filter**, not a statemen
 | *"Every retained pair has a clock start with a real logging date behind it"* | Step 5 revision 1 | Overclaim; pairs reach the completion threshold through an ordering that includes fabricated dates. Red Team C5 |
 | *"The best account rule leaves 21.1% on a fabricated clock start, the pair rule 0%"* | Step 5 revision 1 | **Circular** — the pair rule is *defined* as removing exactly those pairs. Red Team C2 |
 
+### Mode A at the Step 1 §7 amendment — eleven rounds, and the rule was never the thing that broke
+
+**The amendment survived eleven adversarial attempts unbroken.** Every one of these is a withdrawn
+**justification**, which is the point: mode A is a failure of *warrant*, not of *rule*. Full arc in
+[[amendment-step1-continued-boundary]].
+
+| Claim | Where | Why it was false |
+| :--- | :--- | :--- |
+| **Four successive grounds for the anchor choice** — exogeneity, temporal position, arm comparability, choice-at-a-price | §1.1, revisions 6, 7, 8, 12 | **All four failed on the study's own recorded figures.** `T0` is behavioural on **52.7%** of pairs; D10 already imposes the clearance; no diagnostic window changes length; and `τ2` gives every starter **more** than 91 days, so the "price" ran backwards. **§1.1 was cut and the amendment adopted with no stated ground** |
+| *"Both marginal figures are comfortably inside the 91 days `H` adds"* | Revision 1 §2 | **False.** The marginal p90 is **100.39** — **101 against 91** under `0025`'s ceiling. `H` **loses** the comparison by 10 days. Stated first, before anything favourable |
+| *"Nearly one in five never-started pairs demonstrably finished S2"* | Revision 3 §6.1 | **A ceiling labelled a floor**, on a denominator §4 disqualified three paragraphs earlier. 8,449 excludes the **23,735** pairs with no S2 record, which belong in D8's denominator. *"The most quotable line in the document and it was off by a large factor"* |
+| *"1,575 is the price of the `\|A\| ≥ 1` conjunct"* | Revision 3 | **False.** Dropping the conjunct makes the definition **non-partitioning**, not more generous. Reattributed to the asymmetric anchoring — the conjunct **makes the cost visible; it does not cause it** |
+| *"They bracket the quantity"* — of the coverage pair, and again of D3′ and its companion count | Revisions 2–3 | **Both truncate observation and neither is a lower bound.** "Bracket" dropped in both places. This study does use genuine floor-and-ceiling pairs; **this is not one**, and calling it one borrows a rigour it does not have |
+| *"The estimation sample truncates first-S2 lag at 180 days, so starts in `(180, 199]` are excluded by construction"* | **Five places across six revisions**, and load-bearing in two ledger entries | **`first_s2_lag_days` is a BACKFILL measure** — insertion instant minus claimed `watched_at`. A day-185 live scrobbler has a lag near zero and **is** in the sample. **Step 5 named it correctly throughout**; the misreading was the amendment's alone |
+| *"The corrected values are upper bounds"* — **6,874 / 5.37% / 0.453** | Revisions 6–8 | **Ran backwards on both of its own channels**, reinstating in numeric form the overstatement §6.1 had withdrawn. **All three values deleted**, from the prose, the script and the JSON |
+| *"The correction lands at 0.453, below item 8's pre-amendment 0.485"* | Revision 7 | **Not like-for-like** — those pairs are Never started under the approved rule too, so the comparable figure is 0.395. Removed |
+| *"The valid comparison is count against count"* — item 9's 3,440 against item 10's 1,575 | Revision 8 | **Not commensurable.** Item 9 acts on the ratio's **denominator**, item 10 on its **numerator**. Deleted, **not replaced** |
+| *"Item 10's floor is 1,575 on the population D8 runs on"* | Revision 9 | **Three populations conflated as two.** 1,575 (estimation sample), **1,573** (less right-censoring), and D8's own, **not computed**. 1,573 is a **floor for** D8's population, not the count on it |
+| *"8,445 hold an admissible record"* | Revisions 5–6 | Obtained as `8,449 − 4` where the 4 was a **state-change delta**, missing two families of pair. **Recomputed directly: still 4, so 8,445 stands — now measured.** *"Surviving does not retire the objection"* |
+| *"Both Step 6 instances measured its effect on `W` as nil"* | Revision 6 | **Only instance A tested it.** B recorded the same 4 as `NOT_dropped` with no with/without comparison. Attribution corrected three times across three revisions before landing on *"claims nothing beyond the file"* |
+| *"The 4 pairs Continued at `τ1` but not at the pull bound are real and not a bug"* | Revision 3 §10 | **It was a bug — the missing D11 filter.** The accompanying assertion was **vacuous**: it tested `cleared ∧ cont_τ1 ∧ ¬cont_τ2`, empty on every row unconditionally because `τ1 < τ2`. *"The conclusion was true by arithmetic; the check was not a check"* |
+| *"`0029` grounds censoring on both `τ1` and `τ2` being functions of `T0`, `W` and `H`"* | Revisions 5, §6.5 and pre-strip §1.1 | **Not `0029`'s text and false in substance.** `0029`'s actual ground is *"a property of the clock and `pull_date`."* `T0` carries a behavioural term |
+
+### The pattern the amendment adds to the taxonomy
+
+**Four consecutive rounds found a ruling executed in the prose and not in the code** —
+`amendment_corrections.py` and its JSON kept publishing withdrawn keys, and revision 4's **C2
+recurred verbatim** one round after being closed in the same file. `1,573` had **no producer
+anywhere in the repository** for a full round after being ruled.
+
+> **Mode B's lesson generalises: a correction is not discharged until the script and its JSON carry
+> it.** Grepping the prose is not the check; grepping the producer is.
+
+**And the remedy, which is now precedent.** When §1.1 had failed three rounds, the Human Lead **cut
+it** rather than repairing it a fourth time — *"a section which has lost three arguments in three
+rounds is a liability regardless of what a fourth might achieve."* Red Team's own verdict on the
+strip: *"it removed 2,350 words and introduced no new arithmetic error, which is the first round in
+seven that can be said of."*
+
 ---
 
 ## Mode B — figures quoted from sources that do not produce them
@@ -122,6 +161,28 @@ per key, exhaustive, no blanket claim** — so any figure greps to exactly one f
 - **`0012`'s "24 of 235 under-count discards."** Read from a **mid-run snapshot of 2,372 users.** On
   the final ledger it is **31 of 287**. Same class as E2 — a figure computed on a population that
   had moved by the time it was published. Corrected in `0023`.
+- **Step 4's published deliverables, for the whole life of the project until `0032`.**
+  `logs/step4_run.json` and `logs/step4_pull_log.json` — the files `task-sheet.md` **names as Step
+  4's deliverable** — were written by a **`--max-users 3` run** and read **2,137 complete / 235
+  discarded / 2,410 decided / 102,735 calls** against the true **2,549 / 287 / 2,874 / 126,145**.
+  **Stale by 464 decided users and 23,410 calls.** The record-writers fire only from `main()`'s
+  `finally` block and neither long run reached it. **The canonical state was never wrong** —
+  `state.json` and the append-only ledger held throughout. *"Only the published record was wrong,
+  which is the worse failure of the two: a reader with no access to `processed/` had no way to
+  know."* `0032`.
+- **Step 1's right-censoring margin, on two figures at once.** Step 1 said the frame caps the S2
+  finale at **2024-12-31** in five places (it is **2025**) and computed its horizon as **182 days**
+  (it is **199** — line 823 assumed `max(W, 91) = 91` against the adopted `W = 108`). **The
+  conclusion survives; the margin does not:** ~13 months of clearance becomes **24 days**. Zero
+  shows are lost, but `W` is **±18 days** show-clustered, so **the slack is now smaller than the
+  uncertainty in the number consuming it.** Corrected by **addendum, not by editing approved text**,
+  because Step 1 *relies* on the cutoff and Step 2 *sets* it. `0030`.
+- **`show_network` as "a present-day value."** `0016` disclosed it that way and `0030` **supersedes
+  that as too generous**: it errs in **both** directions — *Arrested Development* (FOX, 2005) tagged
+  **Netflix**, *Community* (NBC, 2011) tagged **Yahoo! Screen**, which no longer exists. *"Not
+  present-day, not release-time, and not consistently either"* — strictly worse than the disclosed
+  defect, because a present-day value has a bounded direction of error and this has none. **Dropped
+  rather than warned**: *"a field that cannot be used is safer absent than present."*
 
 ### The sharpest instance: an indifference band quoted as headroom
 
@@ -184,6 +245,22 @@ term binds for **61.8%** of the 720, which is why its absence moves the median b
 
 **The first correction to this was itself wrong** — it claimed the `max()` had been included and only
 the basis differed. Recorded because a correction that is not re-derived is just another claim.
+
+**`projected_hours_remaining: 4.28` for the Step 4 resume.** Wrong by roughly **1.8×** — the true
+cost is **~70,000 live calls and ~7.8 hours**. Two structural faults, both in `write_progress()`:
+it was measured over **8 users in 100 seconds**, of which **123 pages were served from cache and
+were therefore free**, and it is **user-count based**, so it is blind to `0009`'s stratified
+round-robin leaving the untouched users as **the heavier half of every bin** (43.3 → 50.5 → ~58
+mean pages per user across the three tranches). **The exact figure is one summation over
+`pull_order.jsonl` at zero API calls and has not been computed.** `0032`, README item 37.
+
+**"The pull exited cleanly."** Repeated throughout the project, including in the session that ran
+it. `step4_progress.json` carries `finished: false` and `stop_reason: null`; both console logs end
+mid-stream with no exit line; the `finally` block never ran. **The right word is "safely, not
+cleanly"** — the fsynced ledger, atomic progress file and raw cache all survived, no data was lost
+and nothing was double-counted. **The distinction is not pedantry:** *"'exited cleanly' implies the
+run's own record is trustworthy, and it was the untrustworthy record that this entry exists to fix.
+Recording the pull as clean is what let a stale deliverable sit unexamined."* `0032`.
 
 ---
 

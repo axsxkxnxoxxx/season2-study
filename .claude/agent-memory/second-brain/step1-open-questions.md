@@ -1,6 +1,6 @@
 ---
 name: step1-open-questions
-description: The Step 1 §10.1 open questions — Q2 was decided as D14 on 2026-08-10, Q1 and Q3 remain open with their drafted defaults and recommendations
+description: The Step 1 §10.1 open questions — Q2 was decided as D14 on 2026-08-10, Q1 and Q3 remain open, and 0034 did NOT close Q1 despite sharing its name while abolishing the diagnostic Q1's warrant runs on
 metadata:
   type: project
 ---
@@ -26,7 +26,14 @@ decision is in the file the isolated instances read.
 | **3** | Right-censoring on `max(W, 91)`, or on `W` alone? | `max(W, 91)`, carried as `max(W, 91) + H` per D10 — §6 implements this | **OPEN.** Recommendation: keep it |
 | ~~4~~ | ~~Show merges and splits~~ | — | Closed, became **D9** |
 
-## Q1 — Continued boundary (open)
+## Q1 — Continued boundary (open) — and `0034` did NOT close it
+
+**First, the collision, because it is the thing most likely to be got wrong.** `0034` is titled
+*"the Continued boundary amendment"* and Q1 is *"the Continued boundary question."* **They are
+different questions.** Q1 asks about the **conjuncts** — finale plus ≥90%, or finale alone. `0034`
+moved the **instant** at which those conjuncts are tested, from `τ1` to `τ2`. **Both conjuncts
+survive `0034` unchanged, and Q1 is exactly as open as it was.** A Step 18 reader meeting both will
+reasonably assume otherwise. See [[amendment-step1-continued-boundary]].
 
 The symmetry argument from the first draft is **withdrawn**: it was false. S1 completion is
 evaluated over all time and S2 completion within `W`, so the tests share arithmetic but not
@@ -39,6 +46,24 @@ finishers) with a reported number rather than an argument.
 
 **Trigger to revisit:** a high D3 resumption share. Q1 and the value of `W` are the same problem
 seen from two ends.
+
+### Two of Q1's three grounds moved under `0034`, and §10.1 was not edited
+
+- **Ground 3 and the revisit trigger point at D3, which no longer exists.** `0034` replaced D3 with
+  **D3′** precisely because *"that quantity is now the operator itself, so D3 as written measures
+  nothing."* So Q1's warrant and its decision procedure both name a diagnostic the amendment
+  abolished **by absorbing the very quantity Q1 wanted to read.** D3′ measures completion over
+  `[τ2, τ2 + H)` on a cleared subpopulation, per arm — a different number on a different population,
+  and whether it can serve Q1's trigger is not stated anywhere.
+- **Ground 2's `p = 1.0` residual changes size.** `0034` §6.2: the residual *"changes size under
+  `A_H` and must be re-reported, not carried over."* The ground still holds in form — the cost is
+  still visible — but the number it points at is not the number that was in the room.
+- **Ground 1 is untouched.** The skip-to-finale viewer is admitted or not by the **conjuncts**, and
+  those did not move.
+
+**Not a contradiction — a warrant with a dangling term inside an approved document.** `0034` does
+not claim to close Q1 and its "Does NOT reopen" list does not mention it either way.
+[[open-items-and-contradictions]] W4.
 
 ## Q2 — decided, and what travelled with it
 
