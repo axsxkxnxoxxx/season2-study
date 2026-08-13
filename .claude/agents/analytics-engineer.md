@@ -78,13 +78,18 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
     - **EVERY FIGURE STATES ITS POPULATION.** **The population YOU filter at position 6 is line 1 less
       D10 — 196,654, "APPLY".** Step 7 derives on line 4 less D10 — **147,370, "DERIV"** — which
       **requires S2 evidence**.
-    - **Exclusions: 604 on APPLY, 0 on DERIV.** The DERIV zero is forced by construction. **The 604 are
-      exactly the pairs with no S2 record anywhere. Reporting 604 is correct and is not a divergence.**
+    - **Exclusions: 604 on APPLY, 0 on DERIV**, both measured (`0047`). **Reporting 604 is correct and
+      is not a divergence.** **EXPECT 604 at position 6, `W = 108` — and if you get a different number,
+      treat it as a POPULATION defect before an implementation one.** Step 7 built APPLY from the Step 5
+      pair table rather than through your positions 1–5, so a mismatch most likely means **your frame
+      join, `L2 = 1` exclusion or censoring differs**, not that the liveness rule is coded wrong.
+    - **The monotone-decrease invariant is coded `>=`, NOT `>`** (`0047`). Decrease is **strict at line
+      6 on APPLY and non-strict on DERIV**, where the exclusion set is empty. **An implementation
+      asserting strict decrease everywhere fails on correct data.**
     - **Waterfall line 6 is OUTCOME-CONDITIONAL under this rule and must be reported as such** — `|A|`
       is evaluated before liveness applies. Permitted: both are row-local predicates on the position-5
       output and **commute exactly**, and `0029`'s ordering rationale concerns per-filter sample size,
-      which cannot reach position 7 because **outcome assignment removes no rows**. **Monotone decrease
-      holds only NON-STRICTLY** where the exclusion set is empty.
+      which cannot reach position 7 because **outcome assignment removes no rows**. **See the `>=` invariant above.**
     - Insertion time not claimed `watched_at` (`0021`); stored calibration at
       `processed/step5/calibration.npz` **never refitted** (`0029`); **pair-level**, anchored at `τ1`
       (`0034`); **never drop a user wholesale**.

@@ -1,0 +1,701 @@
+{
+  "step": 7,
+  "title": "Step 7 liveness rule \u2014 rerun on the rule adopted at decisions/0046",
+  "instance": "a",
+  "mode": "GATE. Dual implementation. This artifact ADOPTS NOTHING and approves nothing.",
+  "date": "2026-08-13",
+  "api_calls": 0,
+  "inputs": {
+    "calibration": "processed/step5/calibration.npz \u2014 STORED, read, NEVER refitted (task-sheet Step 7; decisions/0029)",
+    "calibration_knots": 10918,
+    "records_scanned": 27656813,
+    "accounts_with_an_insertion_sequence": 2549,
+    "reused_from_earlier_run": "processed/step7/a4/distinct_instants.npz",
+    "reuse_crosscheck_max_abs_diff_seconds": 0.0
+  },
+  "1_rule_statement": {
+    "rule": "A user-show pair is NOT LIVE if and only if BOTH: the account shows no insertion instant after that pair's tau1 = [[T0]] + W x 24h, AND |A| = 0. Otherwise it is live.",
+    "second_conjunct": "|A| = 0 is Step 1 SS7's Never-started condition \u2014 the set A of distinct S2 episodes whose number is in E2 and whose canonical timestamp satisfies watched_at < tau1 \u2014 and NOT 'no S2 evidence at all'. The two readings select different sets and this run measures both.",
+    "first_conjunct_implementation": "insertion instant = np.interp(play id, stored calibration); evidence is ACCOUNT-WIDE across all shows and seasons (decisions/0021); 'after' is strict, so NOT LIVE requires max instant <= tau1",
+    "free_parameters": "none of its own; the exclusion set is fully determined by W",
+    "anchoring": "pair-level, at tau1 (decisions/0034). tau2 plays no part.",
+    "no_pre_tau1_requirement": "none is imposed, in any form (withdrawn at 0040 SS1 and 0042 SS3)"
+  },
+  "2_populations_asserted": {
+    "step5_waterfall_recomputed": [
+      201900,
+      178165,
+      155131,
+      152126,
+      128099
+    ],
+    "step5_waterfall_published": [
+      201900,
+      178165,
+      155131,
+      152126,
+      128099
+    ],
+    "asserted_equal": true,
+    "DERIV": {
+      "definition": "Step 5 waterfall line 4 (152,126) less D10; REQUIRES S2 evidence",
+      "before_d10": 152126,
+      "d10_removed": 4756,
+      "pairs": 147370,
+      "asserted_equals": 147370,
+      "accounts": 2402,
+      "shows": 1138,
+      "pairs_without_any_S2_evidence": 0
+    },
+    "APPLY": {
+      "definition": "Step 5 waterfall line 1 (201,900) less D10; what Step 8 filters at position 6",
+      "before_d10": 201900,
+      "d10_removed": 5246,
+      "pairs": 196654,
+      "asserted_equals": 196654,
+      "accounts": 2422,
+      "shows": 1138,
+      "pairs_without_any_S2_evidence": 23260
+    },
+    "D10_rule": "[[T0]] + (max(W,91)+H)*24h <= tau_pull",
+    "L2_eq_1_exclusion_is_a_noop_on_both": true,
+    "S2_episode_table": {
+      "line1_pairs": 201900,
+      "distinct_S2_episodes": 2191550,
+      "records_dropped_number_not_in_E2": 1306325,
+      "records_dropped_at_or_after_tau_pull_D11": 179,
+      "pairs_with_zero_distinct_in_E2_S2_episodes_on_line1": 23739,
+      "of_which_Step5_says_they_DO_have_S2_records": 4
+    }
+  },
+  "3_exclusion_counts": {
+    "at_W_108": {
+      "DERIV": {
+        "population": 147370,
+        "excluded": 0,
+        "expected_by_0046": 0,
+        "confirmed": true
+      },
+      "APPLY": {
+        "population": 196654,
+        "excluded": 604,
+        "expected_by_0046": 604,
+        "confirmed": true,
+        "accounts_touched": 191,
+        "accounts_excluded_on_one_show_and_live_on_another": 191
+      }
+    },
+    "per_W_arm": {
+      "38": {
+        "D10_re_derived_at_this_arm": {
+          "DERIV_population": 147685,
+          "DERIV_excluded": 0,
+          "APPLY_population": 197007,
+          "APPLY_excluded": 485,
+          "APPLY_never_started_in_population": 38504,
+          "APPLY_excluded_accounts": 162,
+          "APPLY_PF_LIMIT_would_have_excluded": 833
+        },
+        "D10_frozen_at_the_adopted_W_108": {
+          "DERIV_excluded": 0,
+          "APPLY_excluded": 484
+        }
+      },
+      "46": {
+        "D10_re_derived_at_this_arm": {
+          "DERIV_population": 147685,
+          "DERIV_excluded": 0,
+          "APPLY_population": 197007,
+          "APPLY_excluded": 494,
+          "APPLY_never_started_in_population": 37529,
+          "APPLY_excluded_accounts": 166,
+          "APPLY_PF_LIMIT_would_have_excluded": 861
+        },
+        "D10_frozen_at_the_adopted_W_108": {
+          "DERIV_excluded": 0,
+          "APPLY_excluded": 493
+        }
+      },
+      "60": {
+        "D10_re_derived_at_this_arm": {
+          "DERIV_population": 147685,
+          "DERIV_excluded": 0,
+          "APPLY_population": 197007,
+          "APPLY_excluded": 527,
+          "APPLY_never_started_in_population": 36178,
+          "APPLY_excluded_accounts": 172,
+          "APPLY_PF_LIMIT_would_have_excluded": 959
+        },
+        "D10_frozen_at_the_adopted_W_108": {
+          "DERIV_excluded": 0,
+          "APPLY_excluded": 526
+        }
+      },
+      "77": {
+        "D10_re_derived_at_this_arm": {
+          "DERIV_population": 147685,
+          "DERIV_excluded": 0,
+          "APPLY_population": 197007,
+          "APPLY_excluded": 554,
+          "APPLY_never_started_in_population": 34982,
+          "APPLY_excluded_accounts": 177,
+          "APPLY_PF_LIMIT_would_have_excluded": 1073
+        },
+        "D10_frozen_at_the_adopted_W_108": {
+          "DERIV_excluded": 0,
+          "APPLY_excluded": 553
+        }
+      },
+      "91": {
+        "D10_re_derived_at_this_arm": {
+          "DERIV_population": 147685,
+          "DERIV_excluded": 0,
+          "APPLY_population": 197007,
+          "APPLY_excluded": 575,
+          "APPLY_never_started_in_population": 34184,
+          "APPLY_excluded_accounts": 183,
+          "APPLY_PF_LIMIT_would_have_excluded": 1281
+        },
+        "D10_frozen_at_the_adopted_W_108": {
+          "DERIV_excluded": 0,
+          "APPLY_excluded": 574
+        }
+      },
+      "100": {
+        "D10_re_derived_at_this_arm": {
+          "DERIV_population": 147518,
+          "DERIV_excluded": 0,
+          "APPLY_population": 196829,
+          "APPLY_excluded": 592,
+          "APPLY_never_started_in_population": 33768,
+          "APPLY_excluded_accounts": 188,
+          "APPLY_PF_LIMIT_would_have_excluded": 1327
+        },
+        "D10_frozen_at_the_adopted_W_108": {
+          "DERIV_excluded": 0,
+          "APPLY_excluded": 591
+        }
+      },
+      "107": {
+        "D10_re_derived_at_this_arm": {
+          "DERIV_population": 147384,
+          "DERIV_excluded": 0,
+          "APPLY_population": 196674,
+          "APPLY_excluded": 603,
+          "APPLY_never_started_in_population": 33426,
+          "APPLY_excluded_accounts": 190,
+          "APPLY_PF_LIMIT_would_have_excluded": 1348
+        },
+        "D10_frozen_at_the_adopted_W_108": {
+          "DERIV_excluded": 0,
+          "APPLY_excluded": 603
+        }
+      },
+      "108": {
+        "D10_re_derived_at_this_arm": {
+          "DERIV_population": 147370,
+          "DERIV_excluded": 0,
+          "APPLY_population": 196654,
+          "APPLY_excluded": 604,
+          "APPLY_never_started_in_population": 33373,
+          "APPLY_excluded_accounts": 191,
+          "APPLY_PF_LIMIT_would_have_excluded": 1355
+        },
+        "D10_frozen_at_the_adopted_W_108": {
+          "DERIV_excluded": 0,
+          "APPLY_excluded": 604
+        }
+      },
+      "125": {
+        "D10_re_derived_at_this_arm": {
+          "DERIV_population": 147049,
+          "DERIV_excluded": 0,
+          "APPLY_population": 196276,
+          "APPLY_excluded": 625,
+          "APPLY_never_started_in_population": 32657,
+          "APPLY_excluded_accounts": 204,
+          "APPLY_PF_LIMIT_would_have_excluded": 1373
+        },
+        "D10_frozen_at_the_adopted_W_108": {
+          "DERIV_excluded": 0,
+          "APPLY_excluded": 632
+        }
+      },
+      "150": {
+        "D10_re_derived_at_this_arm": {
+          "DERIV_population": 146602,
+          "DERIV_excluded": 0,
+          "APPLY_population": 195689,
+          "APPLY_excluded": 664,
+          "APPLY_never_started_in_population": 31756,
+          "APPLY_excluded_accounts": 213,
+          "APPLY_PF_LIMIT_would_have_excluded": 1443
+        },
+        "D10_frozen_at_the_adopted_W_108": {
+          "DERIV_excluded": 0,
+          "APPLY_excluded": 684
+        }
+      },
+      "180": {
+        "D10_re_derived_at_this_arm": {
+          "DERIV_population": 145845,
+          "DERIV_excluded": 0,
+          "APPLY_population": 194617,
+          "APPLY_excluded": 683,
+          "APPLY_never_started_in_population": 30710,
+          "APPLY_excluded_accounts": 214,
+          "APPLY_PF_LIMIT_would_have_excluded": 1519
+        },
+        "D10_frozen_at_the_adopted_W_108": {
+          "DERIV_excluded": 0,
+          "APPLY_excluded": 753
+        }
+      },
+      "213": {
+        "D10_re_derived_at_this_arm": {
+          "DERIV_population": 144852,
+          "DERIV_excluded": 0,
+          "APPLY_population": 193270,
+          "APPLY_excluded": 716,
+          "APPLY_never_started_in_population": 29715,
+          "APPLY_excluded_accounts": 218,
+          "APPLY_PF_LIMIT_would_have_excluded": 1670
+        },
+        "D10_frozen_at_the_adopted_W_108": {
+          "DERIV_excluded": 0,
+          "APPLY_excluded": 881
+        }
+      }
+    },
+    "arm_table_matches_0046_SS3_under_the_per_arm_D10_reading": true,
+    "judgement_call": "D10 contains W, so the population is re-derived at each arm. That reading reproduces 0046 SS3 exactly. Freezing D10 at W = 108 instead gives different counts above W = 108 (632 at 125, 684 at 150, 753 at 180, 881 at 213) and the arm table must therefore say which reading it is."
+  },
+  "4_outcome_shares": {
+    "note": "Three states, Step 1 SS7 as amended by 0034. Never-started is tested at tau1; Continued at tau2 = [[T0]] + (W + H) x 24h on A_H. The two are not measured alike and must not be described as if they were.",
+    "DERIV": {
+      "population_pairs": 147370,
+      "accounts": 2402,
+      "no_liveness_filter": {
+        "pairs": 147370,
+        "excluded_pairs": 0,
+        "counts": {
+          "never_started": 9145,
+          "continued": 121382,
+          "started_and_left": 16843
+        },
+        "shares_pct": {
+          "never_started": 6.2055,
+          "continued": 82.3655,
+          "started_and_left": 11.4291
+        }
+      },
+      "under_the_adopted_rule": {
+        "pairs": 147370,
+        "excluded_pairs": 0,
+        "counts": {
+          "never_started": 9145,
+          "continued": 121382,
+          "started_and_left": 16843
+        },
+        "shares_pct": {
+          "never_started": 6.2055,
+          "continued": 82.3655,
+          "started_and_left": 11.4291
+        }
+      },
+      "delta_pp": {
+        "never_started": 0.0,
+        "continued": 0.0,
+        "started_and_left": 0.0
+      },
+      "clustered_intervals": {
+        "ADOPTED_RULE": {
+          "never_started": {
+            "point_pct": 6.2055,
+            "clustered_95_ci_pct": [
+              5.8409,
+              6.6035
+            ],
+            "ci_width_pp": 0.7626
+          },
+          "continued": {
+            "point_pct": 82.3655,
+            "clustered_95_ci_pct": [
+              81.7202,
+              82.9647
+            ],
+            "ci_width_pp": 1.2445
+          },
+          "started_and_left": {
+            "point_pct": 11.4291,
+            "clustered_95_ci_pct": [
+              10.9438,
+              11.9195
+            ],
+            "ci_width_pp": 0.9757
+          }
+        },
+        "no_liveness_filter": {
+          "never_started": {
+            "point_pct": 6.2055,
+            "clustered_95_ci_pct": [
+              5.8409,
+              6.6035
+            ],
+            "ci_width_pp": 0.7626
+          },
+          "continued": {
+            "point_pct": 82.3655,
+            "clustered_95_ci_pct": [
+              81.7202,
+              82.9647
+            ],
+            "ci_width_pp": 1.2445
+          },
+          "started_and_left": {
+            "point_pct": 11.4291,
+            "clustered_95_ci_pct": [
+              10.9438,
+              11.9195
+            ],
+            "ci_width_pp": 0.9757
+          }
+        }
+      },
+      "paired_delta": {
+        "never_started": {
+          "observed_pp": 0.0,
+          "paired_clustered_95_ci_pp": [
+            0.0,
+            0.0
+          ],
+          "ci_excludes_zero": false
+        },
+        "continued": {
+          "observed_pp": 0.0,
+          "paired_clustered_95_ci_pp": [
+            0.0,
+            0.0
+          ],
+          "ci_excludes_zero": false
+        },
+        "started_and_left": {
+          "observed_pp": 0.0,
+          "paired_clustered_95_ci_pp": [
+            0.0,
+            0.0
+          ],
+          "ci_excludes_zero": false
+        }
+      }
+    },
+    "APPLY": {
+      "population_pairs": 196654,
+      "accounts": 2422,
+      "no_liveness_filter": {
+        "pairs": 196654,
+        "excluded_pairs": 0,
+        "counts": {
+          "never_started": 33373,
+          "continued": 144140,
+          "started_and_left": 19141
+        },
+        "shares_pct": {
+          "never_started": 16.9704,
+          "continued": 73.2962,
+          "started_and_left": 9.7333
+        }
+      },
+      "under_the_adopted_rule": {
+        "pairs": 196050,
+        "excluded_pairs": 604,
+        "counts": {
+          "never_started": 32769,
+          "continued": 144140,
+          "started_and_left": 19141
+        },
+        "shares_pct": {
+          "never_started": 16.7146,
+          "continued": 73.5221,
+          "started_and_left": 9.7633
+        }
+      },
+      "delta_pp": {
+        "never_started": -0.2558,
+        "continued": 0.2259,
+        "started_and_left": 0.03
+      },
+      "clustered_intervals": {
+        "ADOPTED_RULE": {
+          "never_started": {
+            "point_pct": 16.7146,
+            "clustered_95_ci_pct": [
+              16.1656,
+              17.2581
+            ],
+            "ci_width_pp": 1.0924
+          },
+          "continued": {
+            "point_pct": 73.5221,
+            "clustered_95_ci_pct": [
+              72.8231,
+              74.2325
+            ],
+            "ci_width_pp": 1.4094
+          },
+          "started_and_left": {
+            "point_pct": 9.7633,
+            "clustered_95_ci_pct": [
+              9.3983,
+              10.1624
+            ],
+            "ci_width_pp": 0.7641
+          }
+        },
+        "no_liveness_filter": {
+          "never_started": {
+            "point_pct": 16.9704,
+            "clustered_95_ci_pct": [
+              16.4097,
+              17.5131
+            ],
+            "ci_width_pp": 1.1033
+          },
+          "continued": {
+            "point_pct": 73.2962,
+            "clustered_95_ci_pct": [
+              72.5926,
+              74.0162
+            ],
+            "ci_width_pp": 1.4236
+          },
+          "started_and_left": {
+            "point_pct": 9.7333,
+            "clustered_95_ci_pct": [
+              9.3685,
+              10.1318
+            ],
+            "ci_width_pp": 0.7634
+          }
+        }
+      },
+      "paired_delta": {
+        "never_started": {
+          "observed_pp": -0.2558,
+          "paired_clustered_95_ci_pp": [
+            -0.3083,
+            -0.2086
+          ],
+          "ci_excludes_zero": true
+        },
+        "continued": {
+          "observed_pp": 0.2258,
+          "paired_clustered_95_ci_pp": [
+            0.1844,
+            0.2728
+          ],
+          "ci_excludes_zero": true
+        },
+        "started_and_left": {
+          "observed_pp": 0.03,
+          "paired_clustered_95_ci_pp": [
+            0.0243,
+            0.0362
+          ],
+          "ci_excludes_zero": true
+        }
+      },
+      "the_delta_is_a_pure_denominator_move": "Continued and Started-and-left numerators are identical under both settings (144,140 and 19,141); only the never-started numerator and the denominator change"
+    },
+    "bootstrap": {
+      "B": 4000,
+      "seed": 20260813,
+      "unit": "account",
+      "resample": "accounts with replacement, all their pairs travel"
+    }
+  },
+  "5_step9_liveness_bound": {
+    "DERIV": {
+      "excluded_pairs_all_never_started_by_construction": 0,
+      "floor_never_started_pct": 6.205469,
+      "ceiling_never_started_pct": 6.205469,
+      "width_pp": 0.0,
+      "unfiltered_never_started_pct": 6.2055,
+      "ceiling_equals_unfiltered_share_exact_rational": true,
+      "ceiling_minus_unfiltered_pp": 0.0
+    },
+    "APPLY": {
+      "excluded_pairs_all_never_started_by_construction": 604,
+      "floor_never_started_pct": 16.714614,
+      "ceiling_never_started_pct": 16.970415,
+      "width_pp": 0.255801,
+      "unfiltered_never_started_pct": 16.9704,
+      "ceiling_equals_unfiltered_share_exact_rational": true,
+      "ceiling_minus_unfiltered_pp": 0.0
+    },
+    "APPLY_with_intervals": {
+      "floor_point_pct": 16.7146,
+      "floor_clustered_95_ci_pct": [
+        16.1656,
+        17.2581
+      ],
+      "ceiling_point_pct": 16.9704,
+      "ceiling_clustered_95_ci_pct": [
+        16.4097,
+        17.5131
+      ],
+      "bound_width_pp": 0.2558,
+      "clustered_ci_width_of_the_floor_pp": 1.0924,
+      "bound_width_as_share_of_the_sampling_width": 0.2342
+    },
+    "identity_check": {
+      "claim": "the ceiling equals the unfiltered never-started share, as an identity",
+      "test": "exact integer cross-multiplication, not a float comparison",
+      "DERIV_holds": true,
+      "APPLY_holds": true,
+      "why": "the excluded set is a SUBSET of never-started by construction, so returning every excluded pair as a decliner reproduces the unfiltered population exactly, numerator and denominator alike",
+      "both_endpoints_attainable": true
+    },
+    "published_by_0046_APPLY": [
+      16.7146,
+      16.9704
+    ],
+    "reproduced": true
+  },
+  "6_waterfall": {
+    "positions": "decisions/0029: 4 contamination -> 5 right-censoring -> 6 liveness -> 7 outcome assignment",
+    "DERIV": {
+      "position_4_output_contamination_exclusion": 152126,
+      "position_5_output_right_censoring_D10": 147370,
+      "position_5_removed": 4756,
+      "position_6_output_liveness": 147370,
+      "position_6_removed": 0,
+      "position_6_label": "LIVENESS (OUTCOME-CONDITIONAL) \u2014 removes only pairs whose outcome is Never started, since |A| = 0 is the second conjunct; the removed count cannot be stated without reference to the position-7 outcome condition",
+      "monotone_decrease_strict": false,
+      "monotone_decrease_non_strict": true
+    },
+    "APPLY": {
+      "position_4_output_contamination_exclusion": 201900,
+      "position_5_output_right_censoring_D10": 196654,
+      "position_5_removed": 5246,
+      "position_6_output_liveness": 196050,
+      "position_6_removed": 604,
+      "position_6_label": "LIVENESS (OUTCOME-CONDITIONAL) \u2014 removes only pairs whose outcome is Never started, since |A| = 0 is the second conjunct; the removed count cannot be stated without reference to the position-7 outcome condition",
+      "monotone_decrease_strict": true,
+      "monotone_decrease_non_strict": true
+    },
+    "line_6_is_outcome_conditional": true,
+    "monotone_decrease": {
+      "DERIV": "holds NON-STRICTLY only \u2014 147,370 -> 147,370, the exclusion set is empty",
+      "APPLY": "holds STRICTLY \u2014 196,654 -> 196,050",
+      "consequence": "the Step 8 invariant 'filter counts decrease monotonically' must be coded as >=, not >"
+    }
+  },
+  "7_the_two_recorded_weaknesses_tested": {
+    "weakness_1_this_gate_cannot_exercise_the_rule_on_DERIV": {
+      "verdict": "CONFIRMED on DERIV. The exclusion set is empty at every arm from 38 to 213, so on the derivation population this step's dual diff is 0 = 0 and no implementation difference in the rule could show up in it.",
+      "but": "the diff is NOT vacuous overall. Both arms can be diffed on APPLY: 604 exclusions, the twelve-arm table, the three shares, and the bound. Those are the figures the Human Lead should diff."
+    },
+    "weakness_2_the_rule_is_first_exercised_at_Step_8": {
+      "what_this_gate_establishes": [
+        "the rule is well defined and computable with zero free parameters",
+        "its exclusion set is 0 on DERIV and 604 on APPLY at W = 108, and rises monotonically with W on APPLY",
+        "its exclusions are all Never started, so the Step 9 bound's ceiling is an identity and both endpoints are attainable",
+        "the headline moves 0.2558 pp on APPLY, which is 23.4% of the account-clustered sampling width of the share it moves"
+      ],
+      "what_this_gate_CANNOT_establish": [
+        "that Step 8's position-6 population is the one reconstructed here. APPLY is rebuilt from Step 5 outputs; Step 8 builds it through positions 1-5 of its own pipeline. Any difference at any position moves the 604.",
+        "that two independent implementations of the rule agree, because on DERIV there is nothing to disagree about",
+        "anything about the rule's behaviour on pairs Step 8 scores differently from this reconstruction, since the second conjunct IS an outcome"
+      ],
+      "recommendation_to_the_Human_Lead": "carry the 604, the arm table and the waterfall line 6 into the Step 8 diff as expected values, and treat a Step 8 position-6 count other than 604 as a population defect rather than a liveness defect until proven otherwise"
+    }
+  },
+  "8_findings_against_decisions_0046": {
+    "finding_1_the_604_are_NOT_the_pairs_with_no_S2_record_anywhere": {
+      "text_in_0046": "SS1 and SS3: 'The 604 on APPLY are exactly the pairs with no S2 record anywhere.'",
+      "measured": {
+        "APPLY_pairs_with_no_S2_record_anywhere_step5_flag": 23260,
+        "APPLY_pairs_with_zero_distinct_in_E2_S2_episodes": 23260,
+        "excluded_pairs": 604,
+        "excluded_is_a_SUBSET_of_no_S2_record": true,
+        "excluded_EQUALS_no_S2_record": false,
+        "no_S2_record_pairs_that_stay_LIVE": 22656,
+        "reason_they_stay_live": "they have |A| = 0 but the account HAS an insertion instant after tau1, so conjunct (i) fails",
+        "excluded_pairs_that_have_S2_records_but_zero_in_E2_episodes": 0
+      },
+      "verdict": "REFUTED as a set equality, CONFIRMED as a subset relation. APPLY holds 23,260 pairs with no S2 record anywhere; 604 are excluded and 22,656 stay live because their accounts insert records after tau1. The correct statement is: the 604 are exactly those no-S2-record pairs whose account shows no insertion instant after tau1.",
+      "why_it_matters": "as written it credits the second conjunct with the whole selection; in fact the second conjunct narrows 196,654 to 33,373 and the FIRST conjunct does the rest, 33,373 to 604"
+    },
+    "finding_2_the_DERIV_zero_is_not_forced_by_construction": {
+      "text_in_0046": "SS1: 'The DERIV zero is forced by construction \u2014 line 4 requires S2 evidence, so no line-4 pair can have |A| = 0 and no S2 record.'",
+      "verdict": "The COUNT is confirmed at 0, at every arm from 38 to 213. The REASON is a non-sequitur, and it is the exact conflation SS5 of the same entry warns against: the rule's second conjunct is |A| = 0, not 'no S2 record'.",
+      "evidence": {
+        "line4_pairs_with_|A|_eq_0_at_W108": 9145,
+        "share_of_DERIV_pct": 6.2055,
+        "so_the_second_conjunct_is_satisfied_by_9145_line4_pairs": true,
+        "what_actually_produces_the_zero": "the FIRST conjunct: every one of those 9,145 accounts inserts a record after tau1",
+        "margin_diagnostic": {
+          "never_started_pairs_on_DERIV": 9145,
+          "days_from_tau1_to_the_account_last_insertion_instant": {
+            "min": 23.945,
+            "p1": 189.307,
+            "p5": 433.187,
+            "median": 2183.867,
+            "max": 15371.03
+          },
+          "count_with_margin_le_0_would_be_excluded": 0,
+          "count_with_margin_le_30_days": 1,
+          "count_with_margin_le_90_days": 3,
+          "reading": "every DERIV never-started pair's account inserts a record after tau1, and the smallest margin states how near the zero is to changing"
+        },
+        "and_D10_is_load_bearing": {
+          "line4_ALT_candidates_with_D10_SUPPRESSED": {
+            "38": {
+              "line1_candidates_pre_D10": 694,
+              "line4_candidates_pre_D10": 4,
+              "line4_candidates_pre_D10_with_S2_flag": 4,
+              "line1_candidates_with_S2_flag": 4
+            },
+            "91": {
+              "line1_candidates_pre_D10": 896,
+              "line4_candidates_pre_D10": 4,
+              "line4_candidates_pre_D10_with_S2_flag": 4,
+              "line1_candidates_with_S2_flag": 4
+            },
+            "108": {
+              "line1_candidates_pre_D10": 960,
+              "line4_candidates_pre_D10": 4,
+              "line4_candidates_pre_D10_with_S2_flag": 4,
+              "line1_candidates_with_S2_flag": 4
+            },
+            "150": {
+              "line1_candidates_pre_D10": 1085,
+              "line4_candidates_pre_D10": 4,
+              "line4_candidates_pre_D10_with_S2_flag": 4,
+              "line1_candidates_with_S2_flag": 4
+            },
+            "213": {
+              "line1_candidates_pre_D10": 1360,
+              "line4_candidates_pre_D10": 4,
+              "line4_candidates_pre_D10_with_S2_flag": 4,
+              "line1_candidates_with_S2_flag": 4
+            }
+          },
+          "reading": "with right-censoring suppressed, FOUR line-4 pairs satisfy both conjuncts at every arm tested \u2014 pairs Step 5 flags as having S2 records but whose records leave no distinct in-E2 episode after the SS3.2 membership drop and D11, so |A| = 0 at every W. They are exactly the case 0046 says cannot exist. D10 removes them at position 5, before liveness at position 6, so the OPERATIVE count is 0.",
+          "consequence": "the DERIV zero is an empirical fact about this pull date, not a theorem. A later pull, a different H, or any change to D10 could make it 4."
+        }
+      }
+    }
+  },
+  "9_judgement_calls_the_spec_does_not_settle": [
+    "TIE AT tau1. 'After tau1' is read strictly, so NOT LIVE requires max insertion instant <= tau1 and an instant landing exactly on tau1 does not prove liveness. Measured non-load-bearing: 0 pairs on either population have their last instant within one second of tau1.",
+    "ONLY THE LAST INSTANT MATTERS. The rule asks whether ANY instant falls after tau1, which is max(instant) > tau1. No gap, no percentile and no sequence statistic is used, and none is needed.",
+    "PER-ARM D10. The arm table re-derives D10 at each W because D10 contains W and runs at position 5. Both readings are reported; they differ above W = 108.",
+    "'NO S2 RECORD ANYWHERE' has two readings \u2014 Step 5's has_S2 flag, and zero distinct in-E2 episodes after D11. They coincide on APPLY at 23,260 and differ on line 1 before D10, 23,735 against 23,739. The four-pair difference is load-bearing for finding 2 and is reported rather than smoothed.",
+    "UNFILTERED COMPARATOR. 'No filter at all' means the position-5 output with position 6 skipped, on the same population. It is not the pre-censoring line.",
+    "BOOTSTRAP DESIGN is not specified by the spec: B = 4,000, seed 20260813, accounts resampled with replacement and all their pairs travelling with them, matching the earlier Step 7 runs so the rows are comparable.",
+    "ARM LIST is 0046 SS3's eight arms plus 60, 100, 125 and 180 to fill the Step 13 span (decisions/0027).",
+    "APPLY IS A RECONSTRUCTION of Step 8's position-6 input, built from Step 5 outputs. Step 8 builds the same population through its own positions 1-5."
+  ]
+}

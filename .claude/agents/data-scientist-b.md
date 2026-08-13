@@ -47,8 +47,13 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
       rule does not reach it.
     - **EVERY FIGURE STATES ITS POPULATION.** **DERIV** = Step 5 line 4 less D10, **147,370**, requires
       S2 evidence. **APPLY** = line 1 less D10, **196,654**, what Step 8 filters.
-    - **Exclusions: 0 on DERIV — forced, since line 4 requires S2 evidence — and 604 on APPLY**, being
-      exactly the pairs with no S2 record anywhere. **Reporting both is correct, not a divergence.**
+    - **Exclusions: 0 on DERIV, 604 on APPLY**, both measured. **Reporting both is correct, not a
+      divergence.** **Conjunct 2 narrows APPLY 196,654 → 33,373; conjunct 1 narrows 33,373 → 604** — so
+      **conjunct 1 does most of the work**, which is why the count moves with `W`. The 604 are **not**
+      "exactly the pairs with no S2 record anywhere": APPLY holds **23,260** such pairs and **22,656
+      stay live** (`0047`). **The DERIV zero is not forced by construction** — `has_s2` does not imply
+      `|A| ≥ 1`, **9,145 DERIV pairs are never-started**, and the zero comes from the filter order and
+      this pull date.
     - **Waterfall line 6 is OUTCOME-CONDITIONAL and must be reported as such.** `|A| = 0` is evaluated
       before liveness applies; that is permitted because both are **row-local predicates on the
       position-5 output and commute exactly**, and `0029`'s ordering rationale concerns per-filter
@@ -59,13 +64,19 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
       **pair-level**, anchored at `τ1` (`0034`); **never drop a user wholesale**.
     - **Do not reintroduce a pre-`τ1` requirement in any form** — withdrawn twice, `0040` §1 and `0042`
       §3, both for contradicting gate `0021`.
-    - **Report the exclusion count per `W` arm on APPLY** — 485 at `W = 38` to 716 at 213 (`0046`).
+    - **Report the exclusion count per `W` arm on APPLY** — 485 / 494 / 554 / 575 / 603 / 604 / 664 / 716
+      at `W` = 38 / 46 / 77 / 91 / 107 / 108 / 150 / 213 (`0046`).
+    - **D10 is RE-DERIVED at each arm — name the reading** (`0047`). Censoring contains `W`, so the
+      censored population differs per arm; **freezing D10 at 108 gives 632 / 684 / 753 / 881** at the
+      upper arms instead. An arm table that does not name the reading is not reproducible.
 
 - **Step 9, headline result. Chained, dual implementation.** Of users who completed S1, compute the
   share who never started S2, who started and left, and who continued, with confidence intervals.
   **Compute the bound on PAIRS, not users.** Under the adopted rule every liveness exclusion is
-  never-started by construction, so the bound is **[16.7146%, 16.9704%] on APPLY, width 0.2558 pp**,
-  and **the ceiling equals the unfiltered share as an identity** (`0046`). `0045`'s [16.7789%,
+  never-started by construction, so the bound on a **single denominator** is
+  **[16.6633%, 16.9704%] on APPLY, width 0.3071 pp**, and **the ceiling equals the unfiltered share as
+  an identity** (`0046`, corrected by `0047`). **[16.7146%, 16.9704%] is superseded — it mixed
+  denominators and its floor sat 0.0513 pp above the case liveness guards against.** `0045`'s [16.7789%,
   17.0355%] is **superseded**: it mixed two denominators and its floor was not a floor. Report the **floor and ceiling**, not a single contestable number, and report
   the **S3-without-S2 bound (D4)** and the **split-artifact bound (D9)** alongside the liveness bound.
   *(The liveness bound's "accepted risk" framing is superseded by `0046`: under the adopted rule the bound's ceiling is an identity and both endpoints are attainable.)*

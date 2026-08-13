@@ -1,0 +1,1273 @@
+{
+  "step": 7,
+  "instance": "data-scientist-b",
+  "namespace": "alt2_b",
+  "mode": "GATE. Proposed and measured, NOT adopted. The Human Lead approves and diffs.",
+  "rule_statement": "A user-show pair is NOT LIVE if and only if BOTH: the account shows no insertion instant strictly after that pair's tau1 = [T0] + W x 24h, AND |A| = 0, where |A| = 0 is Step 1 Sec 7's Never-started condition read at tau1. Otherwise the pair is live.",
+  "rule_source": "decisions/0046 Sec 1; task-sheet.md Step 7 as rewritten 2026-08-13",
+  "free_parameters": {
+    "own_parameters": 0,
+    "note": "the rule has no parameter of its own; it is fully determined by W, and its exclusion set moves with W. Per-arm counts are reported below."
+  },
+  "api_calls": 0,
+  "calibration": {
+    "source": "processed/step5/calibration.npz",
+    "status": "READ, NOT REFITTED",
+    "n_knots": 10918,
+    "application": "np.interp(rid, knot_rid, knot_time), verbatim step5_calibrate.insert_time",
+    "records_clamped_below_first_knot": 1862,
+    "records_clamped_above_last_knot": 5094
+  },
+  "populations": {
+    "DERIV": {
+      "definition": "Step 5 line 4 (152,126) less D10",
+      "n_at_W108": 147370,
+      "requires_S2_evidence": true
+    },
+    "APPLY": {
+      "definition": "Step 5 line 1 (201,900) less D10",
+      "n_at_W108": 196654,
+      "requires_S2_evidence": false,
+      "role": "what Step 8 filters at position 6"
+    }
+  },
+  "step5_waterfall_asserted": [
+    201900,
+    178165,
+    155131,
+    152126,
+    128099
+  ],
+  "exclusions": {
+    "at_W108": {
+      "DERIV": {
+        "excluded_pairs": 0,
+        "accounts": 0,
+        "share_of_population_pct": 0.0,
+        "composition": {
+          "never_started": 0,
+          "continued": 0,
+          "started_and_left": 0
+        }
+      },
+      "APPLY": {
+        "excluded_pairs": 604,
+        "accounts": 191,
+        "share_of_population_pct": 0.30713842586471674,
+        "composition": {
+          "never_started": 604,
+          "continued": 0,
+          "started_and_left": 0
+        },
+        "all_hold_no_S2_record_anywhere": true
+      }
+    },
+    "per_W_arm": {
+      "DERIV": {
+        "38": 0,
+        "46": 0,
+        "77": 0,
+        "91": 0,
+        "107": 0,
+        "108": 0,
+        "150": 0,
+        "213": 0
+      },
+      "APPLY": {
+        "38": 485,
+        "46": 494,
+        "77": 554,
+        "91": 575,
+        "107": 603,
+        "108": 604,
+        "150": 664,
+        "213": 716
+      }
+    },
+    "conjunct_a_alone_would_exclude_per_W_arm": {
+      "DERIV": {
+        "38": 348,
+        "46": 367,
+        "77": 519,
+        "91": 706,
+        "107": 745,
+        "108": 751,
+        "150": 779,
+        "213": 949
+      },
+      "APPLY": {
+        "38": 833,
+        "46": 861,
+        "77": 1073,
+        "91": 1281,
+        "107": 1348,
+        "108": 1355,
+        "150": 1443,
+        "213": 1670
+      }
+    }
+  },
+  "outcome_shares_at_W108": {
+    "DERIV": {
+      "no_filter": {
+        "n": 147370,
+        "never_started": 9145,
+        "continued": 121382,
+        "started_and_left": 16843,
+        "never_started_pct": 6.205469227115424,
+        "continued_pct": 82.36547465562869,
+        "started_and_left_pct": 11.429056117255886
+      },
+      "under_the_rule": {
+        "n": 147370,
+        "never_started": 9145,
+        "continued": 121382,
+        "started_and_left": 16843,
+        "never_started_pct": 6.205469227115424,
+        "continued_pct": 82.36547465562869,
+        "started_and_left_pct": 11.429056117255886
+      },
+      "delta_pp": {
+        "never_started": 0.0,
+        "continued": 0.0,
+        "started_and_left": 0.0
+      }
+    },
+    "APPLY": {
+      "no_filter": {
+        "n": 196654,
+        "never_started": 33373,
+        "continued": 144140,
+        "started_and_left": 19141,
+        "never_started_pct": 16.97041504368078,
+        "continued_pct": 73.29624619890772,
+        "started_and_left_pct": 9.733338757411495
+      },
+      "under_the_rule": {
+        "n": 196050,
+        "never_started": 32769,
+        "continued": 144140,
+        "started_and_left": 19141,
+        "never_started_pct": 16.714613618974752,
+        "continued_pct": 73.52206069880133,
+        "started_and_left_pct": 9.763325682223922
+      },
+      "delta_pp": {
+        "never_started": -0.2558014247060285,
+        "continued": 0.2258144998936018,
+        "started_and_left": 0.029986924812426707
+      }
+    }
+  },
+  "outcome_shares_per_W_arm": {
+    "DERIV": {
+      "38": {
+        "n_before_liveness": 147685,
+        "no_filter_pct": {
+          "never_started_pct": 9.39364187290517,
+          "continued_pct": 79.02359752175238,
+          "started_and_left_pct": 11.582760605342452
+        },
+        "under_the_rule_pct": {
+          "never_started_pct": 9.39364187290517,
+          "continued_pct": 79.02359752175238,
+          "started_and_left_pct": 11.582760605342452
+        }
+      },
+      "46": {
+        "n_before_liveness": 147685,
+        "no_filter_pct": {
+          "never_started_pct": 8.791685005247656,
+          "continued_pct": 79.60524088431458,
+          "started_and_left_pct": 11.603074110437756
+        },
+        "under_the_rule_pct": {
+          "never_started_pct": 8.791685005247656,
+          "continued_pct": 79.60524088431458,
+          "started_and_left_pct": 11.603074110437756
+        }
+      },
+      "77": {
+        "n_before_liveness": 147685,
+        "no_filter_pct": {
+          "never_started_pct": 7.178792700680503,
+          "continued_pct": 81.25063479703422,
+          "started_and_left_pct": 11.57057250228527
+        },
+        "under_the_rule_pct": {
+          "never_started_pct": 7.178792700680503,
+          "continued_pct": 81.25063479703422,
+          "started_and_left_pct": 11.57057250228527
+        }
+      },
+      "91": {
+        "n_before_liveness": 147685,
+        "no_filter_pct": {
+          "never_started_pct": 6.6784033584995095,
+          "continued_pct": 81.81399600501067,
+          "started_and_left_pct": 11.507600636489826
+        },
+        "under_the_rule_pct": {
+          "never_started_pct": 6.6784033584995095,
+          "continued_pct": 81.81399600501067,
+          "started_and_left_pct": 11.507600636489826
+        }
+      },
+      "107": {
+        "n_before_liveness": 147384,
+        "no_filter_pct": {
+          "never_started_pct": 6.239483254627368,
+          "continued_pct": 82.3264397763665,
+          "started_and_left_pct": 11.434076969006133
+        },
+        "under_the_rule_pct": {
+          "never_started_pct": 6.239483254627368,
+          "continued_pct": 82.3264397763665,
+          "started_and_left_pct": 11.434076969006133
+        }
+      },
+      "108": {
+        "n_before_liveness": 147370,
+        "no_filter_pct": {
+          "never_started_pct": 6.205469227115424,
+          "continued_pct": 82.36547465562869,
+          "started_and_left_pct": 11.429056117255886
+        },
+        "under_the_rule_pct": {
+          "never_started_pct": 6.205469227115424,
+          "continued_pct": 82.36547465562869,
+          "started_and_left_pct": 11.429056117255886
+        }
+      },
+      "150": {
+        "n_before_liveness": 146602,
+        "no_filter_pct": {
+          "never_started_pct": 5.2898323351659595,
+          "continued_pct": 83.4156423514004,
+          "started_and_left_pct": 11.29452531343365
+        },
+        "under_the_rule_pct": {
+          "never_started_pct": 5.2898323351659595,
+          "continued_pct": 83.4156423514004,
+          "started_and_left_pct": 11.29452531343365
+        }
+      },
+      "213": {
+        "n_before_liveness": 144852,
+        "no_filter_pct": {
+          "never_started_pct": 4.394830585701268,
+          "continued_pct": 84.54905696849198,
+          "started_and_left_pct": 11.056112445806754
+        },
+        "under_the_rule_pct": {
+          "never_started_pct": 4.394830585701268,
+          "continued_pct": 84.54905696849198,
+          "started_and_left_pct": 11.056112445806754
+        }
+      }
+    },
+    "APPLY": {
+      "38": {
+        "n_before_liveness": 197007,
+        "no_filter_pct": {
+          "never_started_pct": 19.544483190952604,
+          "continued_pct": 70.56500530438005,
+          "started_and_left_pct": 9.890511504667346
+        },
+        "under_the_rule_pct": {
+          "never_started_pct": 19.345925647001355,
+          "continued_pct": 70.73915388607891,
+          "started_and_left_pct": 9.914920466919733
+        }
+      },
+      "46": {
+        "n_before_liveness": 197007,
+        "no_filter_pct": {
+          "never_started_pct": 19.04957691858665,
+          "continued_pct": 71.05179003791743,
+          "started_and_left_pct": 9.898633043495916
+        },
+        "under_the_rule_pct": {
+          "never_started_pct": 18.846081429727295,
+          "continued_pct": 71.23040205991461,
+          "started_and_left_pct": 9.923516510358093
+        }
+      },
+      "77": {
+        "n_before_liveness": 197007,
+        "no_filter_pct": {
+          "never_started_pct": 17.756729456313735,
+          "continued_pct": 72.38016923256534,
+          "started_and_left_pct": 9.863101311120925
+        },
+        "under_the_rule_pct": {
+          "never_started_pct": 17.52480237003253,
+          "continued_pct": 72.58428224562618,
+          "started_and_left_pct": 9.890915384341293
+        }
+      },
+      "91": {
+        "n_before_liveness": 197007,
+        "no_filter_pct": {
+          "never_started_pct": 17.35166770723883,
+          "continued_pct": 72.84005136873309,
+          "started_and_left_pct": 9.80828092402808
+        },
+        "under_the_rule_pct": {
+          "never_started_pct": 17.1097377209416,
+          "continued_pct": 73.05327034291766,
+          "started_and_left_pct": 9.836991936140752
+        }
+      },
+      "107": {
+        "n_before_liveness": 196674,
+        "no_filter_pct": {
+          "never_started_pct": 16.995637450806917,
+          "continued_pct": 73.26540366291427,
+          "started_and_left_pct": 9.738958886278816
+        },
+        "under_the_rule_pct": {
+          "never_started_pct": 16.740364459813026,
+          "continued_pct": 73.49072529848881,
+          "started_and_left_pct": 9.76891024169816
+        }
+      },
+      "108": {
+        "n_before_liveness": 196654,
+        "no_filter_pct": {
+          "never_started_pct": 16.97041504368078,
+          "continued_pct": 73.29624619890772,
+          "started_and_left_pct": 9.733338757411495
+        },
+        "under_the_rule_pct": {
+          "never_started_pct": 16.714613618974752,
+          "continued_pct": 73.52206069880133,
+          "started_and_left_pct": 9.763325682223922
+        }
+      },
+      "150": {
+        "n_before_liveness": 195689,
+        "no_filter_pct": {
+          "never_started_pct": 16.2277900137463,
+          "continued_pct": 74.16461834850196,
+          "started_and_left_pct": 9.607591637751739
+        },
+        "under_the_rule_pct": {
+          "never_started_pct": 15.94257146519677,
+          "continued_pct": 74.41712600948597,
+          "started_and_left_pct": 9.640302525317267
+        }
+      },
+      "213": {
+        "n_before_liveness": 193270,
+        "no_filter_pct": {
+          "never_started_pct": 15.374864179645057,
+          "continued_pct": 75.20722305582863,
+          "started_and_left_pct": 9.41791276452631
+        },
+        "under_the_rule_pct": {
+          "never_started_pct": 15.060190907485692,
+          "continued_pct": 75.48687640869574,
+          "started_and_left_pct": 9.452932683818565
+        }
+      }
+    }
+  },
+  "step9_liveness_bound": {
+    "APPLY_W108": {
+      "floor_pct": 16.714613618974752,
+      "ceiling_pct": 16.97041504368078,
+      "width_pp": 0.2558014247060285,
+      "floor_denominator": 196050,
+      "ceiling_denominator": 196654,
+      "ceiling_equals_unfiltered_share_identity": true,
+      "ceiling_minus_unfiltered_pp": 0.0
+    },
+    "DERIV_W108": {
+      "floor_pct": 6.205469227115424,
+      "ceiling_pct": 6.205469227115424,
+      "width_pp": 0.0,
+      "floor_denominator": 147370,
+      "ceiling_denominator": 147370,
+      "ceiling_equals_unfiltered_share_identity": true,
+      "ceiling_minus_unfiltered_pp": 0.0
+    },
+    "per_W_arm_APPLY": {
+      "38": {
+        "floor_pct": 19.345925647001355,
+        "ceiling_pct": 19.544483190952604,
+        "width_pp": 0.19855754395124947,
+        "floor_denominator": 196522,
+        "ceiling_denominator": 197007,
+        "ceiling_equals_unfiltered_share_identity": true,
+        "ceiling_minus_unfiltered_pp": 0.0
+      },
+      "46": {
+        "floor_pct": 18.846081429727295,
+        "ceiling_pct": 19.04957691858665,
+        "width_pp": 0.2034954888593532,
+        "floor_denominator": 196513,
+        "ceiling_denominator": 197007,
+        "ceiling_equals_unfiltered_share_identity": true,
+        "ceiling_minus_unfiltered_pp": 0.0
+      },
+      "77": {
+        "floor_pct": 17.52480237003253,
+        "ceiling_pct": 17.756729456313735,
+        "width_pp": 0.23192708628120684,
+        "floor_denominator": 196453,
+        "ceiling_denominator": 197007,
+        "ceiling_equals_unfiltered_share_identity": true,
+        "ceiling_minus_unfiltered_pp": 0.0
+      },
+      "91": {
+        "floor_pct": 17.1097377209416,
+        "ceiling_pct": 17.35166770723883,
+        "width_pp": 0.2419299862972295,
+        "floor_denominator": 196432,
+        "ceiling_denominator": 197007,
+        "ceiling_equals_unfiltered_share_identity": true,
+        "ceiling_minus_unfiltered_pp": 0.0
+      },
+      "107": {
+        "floor_pct": 16.740364459813026,
+        "ceiling_pct": 16.995637450806917,
+        "width_pp": 0.2552729909938911,
+        "floor_denominator": 196071,
+        "ceiling_denominator": 196674,
+        "ceiling_equals_unfiltered_share_identity": true,
+        "ceiling_minus_unfiltered_pp": 0.0
+      },
+      "108": {
+        "floor_pct": 16.714613618974752,
+        "ceiling_pct": 16.97041504368078,
+        "width_pp": 0.2558014247060285,
+        "floor_denominator": 196050,
+        "ceiling_denominator": 196654,
+        "ceiling_equals_unfiltered_share_identity": true,
+        "ceiling_minus_unfiltered_pp": 0.0
+      },
+      "150": {
+        "floor_pct": 15.94257146519677,
+        "ceiling_pct": 16.2277900137463,
+        "width_pp": 0.28521854854953155,
+        "floor_denominator": 195025,
+        "ceiling_denominator": 195689,
+        "ceiling_equals_unfiltered_share_identity": true,
+        "ceiling_minus_unfiltered_pp": 0.0
+      },
+      "213": {
+        "floor_pct": 15.060190907485692,
+        "ceiling_pct": 15.374864179645057,
+        "width_pp": 0.31467327215936436,
+        "floor_denominator": 192554,
+        "ceiling_denominator": 193270,
+        "ceiling_equals_unfiltered_share_identity": true,
+        "ceiling_minus_unfiltered_pp": 0.0
+      }
+    },
+    "estimand_check": {
+      "DERIV": {
+        "38": {
+          "W": 38,
+          "excluded": 0,
+          "published_bound_E1_floor_E2_ceiling": [
+            9.39364187290517,
+            9.39364187290517
+          ],
+          "floor_denominator": 147685,
+          "ceiling_denominator": 147685,
+          "single_denominator_interval_E2": [
+            9.39364187290517,
+            9.39364187290517
+          ],
+          "single_denominator": 147685,
+          "published_floor_minus_E2_low_pp": 0.0,
+          "published_floor_is_a_floor_for_E2": true,
+          "E1_and_E2_coincide_when_no_exclusions": true,
+          "E2_width_pp": 0.0,
+          "published_width_pp": 0.0
+        },
+        "46": {
+          "W": 46,
+          "excluded": 0,
+          "published_bound_E1_floor_E2_ceiling": [
+            8.791685005247656,
+            8.791685005247656
+          ],
+          "floor_denominator": 147685,
+          "ceiling_denominator": 147685,
+          "single_denominator_interval_E2": [
+            8.791685005247656,
+            8.791685005247656
+          ],
+          "single_denominator": 147685,
+          "published_floor_minus_E2_low_pp": 0.0,
+          "published_floor_is_a_floor_for_E2": true,
+          "E1_and_E2_coincide_when_no_exclusions": true,
+          "E2_width_pp": 0.0,
+          "published_width_pp": 0.0
+        },
+        "77": {
+          "W": 77,
+          "excluded": 0,
+          "published_bound_E1_floor_E2_ceiling": [
+            7.178792700680503,
+            7.178792700680503
+          ],
+          "floor_denominator": 147685,
+          "ceiling_denominator": 147685,
+          "single_denominator_interval_E2": [
+            7.178792700680503,
+            7.178792700680503
+          ],
+          "single_denominator": 147685,
+          "published_floor_minus_E2_low_pp": 0.0,
+          "published_floor_is_a_floor_for_E2": true,
+          "E1_and_E2_coincide_when_no_exclusions": true,
+          "E2_width_pp": 0.0,
+          "published_width_pp": 0.0
+        },
+        "91": {
+          "W": 91,
+          "excluded": 0,
+          "published_bound_E1_floor_E2_ceiling": [
+            6.6784033584995095,
+            6.6784033584995095
+          ],
+          "floor_denominator": 147685,
+          "ceiling_denominator": 147685,
+          "single_denominator_interval_E2": [
+            6.6784033584995095,
+            6.6784033584995095
+          ],
+          "single_denominator": 147685,
+          "published_floor_minus_E2_low_pp": 0.0,
+          "published_floor_is_a_floor_for_E2": true,
+          "E1_and_E2_coincide_when_no_exclusions": true,
+          "E2_width_pp": 0.0,
+          "published_width_pp": 0.0
+        },
+        "107": {
+          "W": 107,
+          "excluded": 0,
+          "published_bound_E1_floor_E2_ceiling": [
+            6.239483254627368,
+            6.239483254627368
+          ],
+          "floor_denominator": 147384,
+          "ceiling_denominator": 147384,
+          "single_denominator_interval_E2": [
+            6.239483254627368,
+            6.239483254627368
+          ],
+          "single_denominator": 147384,
+          "published_floor_minus_E2_low_pp": 0.0,
+          "published_floor_is_a_floor_for_E2": true,
+          "E1_and_E2_coincide_when_no_exclusions": true,
+          "E2_width_pp": 0.0,
+          "published_width_pp": 0.0
+        },
+        "108": {
+          "W": 108,
+          "excluded": 0,
+          "published_bound_E1_floor_E2_ceiling": [
+            6.205469227115424,
+            6.205469227115424
+          ],
+          "floor_denominator": 147370,
+          "ceiling_denominator": 147370,
+          "single_denominator_interval_E2": [
+            6.205469227115424,
+            6.205469227115424
+          ],
+          "single_denominator": 147370,
+          "published_floor_minus_E2_low_pp": 0.0,
+          "published_floor_is_a_floor_for_E2": true,
+          "E1_and_E2_coincide_when_no_exclusions": true,
+          "E2_width_pp": 0.0,
+          "published_width_pp": 0.0
+        },
+        "150": {
+          "W": 150,
+          "excluded": 0,
+          "published_bound_E1_floor_E2_ceiling": [
+            5.2898323351659595,
+            5.2898323351659595
+          ],
+          "floor_denominator": 146602,
+          "ceiling_denominator": 146602,
+          "single_denominator_interval_E2": [
+            5.2898323351659595,
+            5.2898323351659595
+          ],
+          "single_denominator": 146602,
+          "published_floor_minus_E2_low_pp": 0.0,
+          "published_floor_is_a_floor_for_E2": true,
+          "E1_and_E2_coincide_when_no_exclusions": true,
+          "E2_width_pp": 0.0,
+          "published_width_pp": 0.0
+        },
+        "213": {
+          "W": 213,
+          "excluded": 0,
+          "published_bound_E1_floor_E2_ceiling": [
+            4.394830585701268,
+            4.394830585701268
+          ],
+          "floor_denominator": 144852,
+          "ceiling_denominator": 144852,
+          "single_denominator_interval_E2": [
+            4.394830585701268,
+            4.394830585701268
+          ],
+          "single_denominator": 144852,
+          "published_floor_minus_E2_low_pp": 0.0,
+          "published_floor_is_a_floor_for_E2": true,
+          "E1_and_E2_coincide_when_no_exclusions": true,
+          "E2_width_pp": 0.0,
+          "published_width_pp": 0.0
+        }
+      },
+      "APPLY": {
+        "38": {
+          "W": 38,
+          "excluded": 485,
+          "published_bound_E1_floor_E2_ceiling": [
+            19.345925647001355,
+            19.544483190952604
+          ],
+          "floor_denominator": 196522,
+          "ceiling_denominator": 197007,
+          "single_denominator_interval_E2": [
+            19.298299045211593,
+            19.544483190952604
+          ],
+          "single_denominator": 197007,
+          "published_floor_minus_E2_low_pp": 0.04762660178976219,
+          "published_floor_is_a_floor_for_E2": false,
+          "E1_and_E2_coincide_when_no_exclusions": false,
+          "E2_width_pp": 0.24618414574101166,
+          "published_width_pp": 0.19855754395124947
+        },
+        "46": {
+          "W": 46,
+          "excluded": 494,
+          "published_bound_E1_floor_E2_ceiling": [
+            18.846081429727295,
+            19.04957691858665
+          ],
+          "floor_denominator": 196513,
+          "ceiling_denominator": 197007,
+          "single_denominator_interval_E2": [
+            18.798824407254564,
+            19.04957691858665
+          ],
+          "single_denominator": 197007,
+          "published_floor_minus_E2_low_pp": 0.047257022472731336,
+          "published_floor_is_a_floor_for_E2": false,
+          "E1_and_E2_coincide_when_no_exclusions": false,
+          "E2_width_pp": 0.25075251133208454,
+          "published_width_pp": 0.2034954888593532
+        },
+        "77": {
+          "W": 77,
+          "excluded": 554,
+          "published_bound_E1_floor_E2_ceiling": [
+            17.52480237003253,
+            17.756729456313735
+          ],
+          "floor_denominator": 196453,
+          "ceiling_denominator": 197007,
+          "single_denominator_interval_E2": [
+            17.475521174374514,
+            17.756729456313735
+          ],
+          "single_denominator": 197007,
+          "published_floor_minus_E2_low_pp": 0.04928119565801481,
+          "published_floor_is_a_floor_for_E2": false,
+          "E1_and_E2_coincide_when_no_exclusions": false,
+          "E2_width_pp": 0.28120828193922165,
+          "published_width_pp": 0.23192708628120684
+        },
+        "91": {
+          "W": 91,
+          "excluded": 575,
+          "published_bound_E1_floor_E2_ceiling": [
+            17.1097377209416,
+            17.35166770723883
+          ],
+          "floor_denominator": 196432,
+          "ceiling_denominator": 197007,
+          "single_denominator_interval_E2": [
+            17.059799905587113,
+            17.35166770723883
+          ],
+          "single_denominator": 197007,
+          "published_floor_minus_E2_low_pp": 0.04993781535448605,
+          "published_floor_is_a_floor_for_E2": false,
+          "E1_and_E2_coincide_when_no_exclusions": false,
+          "E2_width_pp": 0.29186780165171555,
+          "published_width_pp": 0.2419299862972295
+        },
+        "107": {
+          "W": 107,
+          "excluded": 603,
+          "published_bound_E1_floor_E2_ceiling": [
+            16.740364459813026,
+            16.995637450806917
+          ],
+          "floor_denominator": 196071,
+          "ceiling_denominator": 196674,
+          "single_denominator_interval_E2": [
+            16.68903871381067,
+            16.995637450806917
+          ],
+          "single_denominator": 196674,
+          "published_floor_minus_E2_low_pp": 0.05132574600235529,
+          "published_floor_is_a_floor_for_E2": false,
+          "E1_and_E2_coincide_when_no_exclusions": false,
+          "E2_width_pp": 0.3065987369962464,
+          "published_width_pp": 0.2552729909938911
+        },
+        "108": {
+          "W": 108,
+          "excluded": 604,
+          "published_bound_E1_floor_E2_ceiling": [
+            16.714613618974752,
+            16.97041504368078
+          ],
+          "floor_denominator": 196050,
+          "ceiling_denominator": 196654,
+          "single_denominator_interval_E2": [
+            16.663276617816063,
+            16.97041504368078
+          ],
+          "single_denominator": 196654,
+          "published_floor_minus_E2_low_pp": 0.05133700115868933,
+          "published_floor_is_a_floor_for_E2": false,
+          "E1_and_E2_coincide_when_no_exclusions": false,
+          "E2_width_pp": 0.30713842586471785,
+          "published_width_pp": 0.2558014247060285
+        },
+        "150": {
+          "W": 150,
+          "excluded": 664,
+          "published_bound_E1_floor_E2_ceiling": [
+            15.94257146519677,
+            16.2277900137463
+          ],
+          "floor_denominator": 195025,
+          "ceiling_denominator": 195689,
+          "single_denominator_interval_E2": [
+            15.888476102386951,
+            16.2277900137463
+          ],
+          "single_denominator": 195689,
+          "published_floor_minus_E2_low_pp": 0.05409536280981797,
+          "published_floor_is_a_floor_for_E2": false,
+          "E1_and_E2_coincide_when_no_exclusions": false,
+          "E2_width_pp": 0.3393139113593495,
+          "published_width_pp": 0.28521854854953155
+        },
+        "213": {
+          "W": 213,
+          "excluded": 716,
+          "published_bound_E1_floor_E2_ceiling": [
+            15.060190907485692,
+            15.374864179645057
+          ],
+          "floor_denominator": 192554,
+          "ceiling_denominator": 193270,
+          "single_denominator_interval_E2": [
+            15.004397992445801,
+            15.374864179645057
+          ],
+          "single_denominator": 193270,
+          "published_floor_minus_E2_low_pp": 0.055792915039891255,
+          "published_floor_is_a_floor_for_E2": false,
+          "E1_and_E2_coincide_when_no_exclusions": false,
+          "E2_width_pp": 0.3704661871992556,
+          "published_width_pp": 0.31467327215936436
+        }
+      }
+    },
+    "estimand_reading_APPLY_W108": "The published interval [16.7146%, 16.9704%] takes its floor on 196,050 and its ceiling on 196,654. On the single denominator 196,654 the feasible range is [16.6633%, 16.9704%], width 0.3071 pp. The published floor sits +0.0513 pp above the low end, so it is NOT a floor for the full-population share -- which is the objection 0046 Sec 4 raised against PF-LIMIT's floor, and it applies to the adopted rule's floor in the same form. The ceiling is unaffected: it is the identity, and it is the same number under both estimands.",
+    "identity": "the exclusion set is a subset of Never started by construction, so NS_live + excluded = NS_unfiltered and n_live + excluded = n_unfiltered; the ceiling therefore EQUALS the unfiltered never-started share exactly, on ONE denominator. Verified on the integers, not on the percentages."
+  },
+  "clustered_bootstrap_W108": {
+    "DERIV": {
+      "n": 147370,
+      "accounts": 2402,
+      "ci95": {
+        "NO_FILTER": {
+          "never_started_pct": [
+            5.837917172865433,
+            6.60203765351824
+          ],
+          "continued_pct": [
+            81.73546813550385,
+            82.9732960688417
+          ],
+          "started_and_left_pct": [
+            10.942539568110142,
+            11.906310574337612
+          ],
+          "bound_ceiling_pct": [
+            5.837917172865433,
+            6.60203765351824
+          ],
+          "clustered_width_pp": {
+            "never_started_pct": 0.7641204806528066,
+            "continued_pct": 1.2378279333378543,
+            "started_and_left_pct": 0.9637710062274696
+          }
+        },
+        "ADOPTED": {
+          "never_started_pct": [
+            5.837917172865433,
+            6.60203765351824
+          ],
+          "continued_pct": [
+            81.73546813550385,
+            82.9732960688417
+          ],
+          "started_and_left_pct": [
+            10.942539568110142,
+            11.906310574337612
+          ],
+          "bound_ceiling_pct": [
+            5.837917172865433,
+            6.60203765351824
+          ],
+          "clustered_width_pp": {
+            "never_started_pct": 0.7641204806528066,
+            "continued_pct": 1.2378279333378543,
+            "started_and_left_pct": 0.9637710062274696
+          }
+        }
+      },
+      "paired_delta_pp": {
+        "never_started_pct": {
+          "mean_delta_pp": 0.0,
+          "paired_ci95_pp": [
+            0.0,
+            0.0
+          ],
+          "excludes_zero": false
+        },
+        "continued_pct": {
+          "mean_delta_pp": 0.0,
+          "paired_ci95_pp": [
+            0.0,
+            0.0
+          ],
+          "excludes_zero": false
+        },
+        "started_and_left_pct": {
+          "mean_delta_pp": 0.0,
+          "paired_ci95_pp": [
+            0.0,
+            0.0
+          ],
+          "excludes_zero": false
+        }
+      }
+    },
+    "APPLY": {
+      "n": 196654,
+      "accounts": 2422,
+      "ci95": {
+        "NO_FILTER": {
+          "never_started_pct": [
+            16.44400002620168,
+            17.513963084179117
+          ],
+          "continued_pct": [
+            72.61653977711879,
+            74.00204606285509
+          ],
+          "started_and_left_pct": [
+            9.357507225416954,
+            10.119850804332575
+          ],
+          "bound_ceiling_pct": [
+            16.44400002620168,
+            17.513963084179117
+          ],
+          "clustered_width_pp": {
+            "never_started_pct": 1.0699630579774357,
+            "continued_pct": 1.385506285736298,
+            "started_and_left_pct": 0.7623435789156208
+          }
+        },
+        "ADOPTED": {
+          "never_started_pct": [
+            16.193924797809508,
+            17.255997009110356
+          ],
+          "continued_pct": [
+            72.82632997973131,
+            74.22249417608155
+          ],
+          "started_and_left_pct": [
+            9.385834811310215,
+            10.14982200126276
+          ],
+          "bound_ceiling_pct": [
+            16.44400002620168,
+            17.513963084179117
+          ],
+          "clustered_width_pp": {
+            "never_started_pct": 1.0620722113008476,
+            "continued_pct": 1.3961641963502416,
+            "started_and_left_pct": 0.7639871899525446
+          }
+        }
+      },
+      "paired_delta_pp": {
+        "never_started_pct": {
+          "mean_delta_pp": -0.25594434182918546,
+          "paired_ci95_pp": [
+            -0.3073926794915966,
+            -0.20772426030054894
+          ],
+          "excludes_zero": true
+        },
+        "continued_pct": {
+          "mean_delta_pp": 0.22594948614111515,
+          "paired_ci95_pp": [
+            0.18327353805530927,
+            0.2709259729117032
+          ],
+          "excludes_zero": true
+        },
+        "started_and_left_pct": {
+          "mean_delta_pp": 0.0299948556880703,
+          "paired_ci95_pp": [
+            0.0243568854820714,
+            0.036210784090997934
+          ],
+          "excludes_zero": true
+        }
+      }
+    }
+  },
+  "waterfall": {
+    "APPLY": [
+      {
+        "position": "1-2",
+        "name": "Step 2 frame, then L2 = 1 exclusion",
+        "rows_out": null,
+        "note": "owned by Step 8; not rebuilt here. No show in the frame has L2 = 1, so position 2 removes nothing on this frame."
+      },
+      {
+        "position": 3,
+        "name": "S1 completion rule",
+        "rows_out": 220107,
+        "note": "the Step 5 pair table's row count; Step 2 + Step 1 Sec 4"
+      },
+      {
+        "position": 4,
+        "name": "contamination exclusion (Step 5)",
+        "rows_out": 201900,
+        "note": "Step 5 line 1 (201,900) for APPLY; line 4 (152,126) for DERIV. DERIV additionally requires S2 evidence and clean first-S2 timing, which is why it is not a Step 8 position"
+      },
+      {
+        "position": 5,
+        "name": "right-censoring D10 at W = 108",
+        "rows_out": 196654
+      },
+      {
+        "position": 6,
+        "name": "liveness (adopted rule)",
+        "rows_out": 196050,
+        "removed": 604,
+        "OUTCOME_CONDITIONAL": true,
+        "note": "line 6's removal count is conditional on the position-5 outcome annotation, because the rule's second conjunct is |A| = 0. Reported as such per 0046 Sec 5; |A| and liveness are row-local predicates on the position-5 output and commute exactly, so the final row set does not depend on which is read first"
+      },
+      {
+        "position": 7,
+        "name": "outcome assignment at tau1 and tau2",
+        "rows_out": 196050,
+        "removed": 0,
+        "note": "an annotation, not a filter -- contributes no waterfall line"
+      }
+    ],
+    "APPLY_monotone": {
+      "non_strict_holds": true,
+      "strict_at_line_6": true,
+      "strict_everywhere_through_line_6": false,
+      "statement": "monotone decrease holds STRICTLY at line 6 on APPLY (604 rows removed)"
+    },
+    "APPLY_final_states": {
+      "n": 196050,
+      "never_started": 32769,
+      "continued": 144140,
+      "started_and_left": 19141,
+      "never_started_pct": 16.714613618974752,
+      "continued_pct": 73.52206069880133,
+      "started_and_left_pct": 9.763325682223922
+    },
+    "DERIV": [
+      {
+        "position": "1-2",
+        "name": "Step 2 frame, then L2 = 1 exclusion",
+        "rows_out": null,
+        "note": "owned by Step 8; not rebuilt here. No show in the frame has L2 = 1, so position 2 removes nothing on this frame."
+      },
+      {
+        "position": 3,
+        "name": "S1 completion rule",
+        "rows_out": 220107,
+        "note": "the Step 5 pair table's row count; Step 2 + Step 1 Sec 4"
+      },
+      {
+        "position": 4,
+        "name": "contamination exclusion (Step 5)",
+        "rows_out": 152126,
+        "note": "Step 5 line 1 (201,900) for APPLY; line 4 (152,126) for DERIV. DERIV additionally requires S2 evidence and clean first-S2 timing, which is why it is not a Step 8 position"
+      },
+      {
+        "position": 5,
+        "name": "right-censoring D10 at W = 108",
+        "rows_out": 147370
+      },
+      {
+        "position": 6,
+        "name": "liveness (adopted rule)",
+        "rows_out": 147370,
+        "removed": 0,
+        "OUTCOME_CONDITIONAL": true,
+        "note": "line 6's removal count is conditional on the position-5 outcome annotation, because the rule's second conjunct is |A| = 0. Reported as such per 0046 Sec 5; |A| and liveness are row-local predicates on the position-5 output and commute exactly, so the final row set does not depend on which is read first"
+      },
+      {
+        "position": 7,
+        "name": "outcome assignment at tau1 and tau2",
+        "rows_out": 147370,
+        "removed": 0,
+        "note": "an annotation, not a filter -- contributes no waterfall line"
+      }
+    ],
+    "DERIV_monotone": {
+      "non_strict_holds": true,
+      "strict_at_line_6": false,
+      "strict_everywhere_through_line_6": false,
+      "statement": "monotone decrease holds ONLY NON-STRICTLY at line 6 on DERIV (0 rows removed; the count is unchanged)"
+    },
+    "DERIV_final_states": {
+      "n": 147370,
+      "never_started": 9145,
+      "continued": 121382,
+      "started_and_left": 16843,
+      "never_started_pct": 6.205469227115424,
+      "continued_pct": 82.36547465562869,
+      "started_and_left_pct": 11.429056117255886
+    }
+  },
+  "monotone_decrease": {
+    "APPLY": {
+      "non_strict_holds": true,
+      "strict_at_line_6": true,
+      "strict_everywhere_through_line_6": false,
+      "statement": "monotone decrease holds STRICTLY at line 6 on APPLY (604 rows removed)"
+    },
+    "DERIV": {
+      "non_strict_holds": true,
+      "strict_at_line_6": false,
+      "strict_everywhere_through_line_6": false,
+      "statement": "monotone decrease holds ONLY NON-STRICTLY at line 6 on DERIV (0 rows removed; the count is unchanged)"
+    }
+  },
+  "claims_tested": {
+    "C1_DERIV_exclusions_per_arm": {
+      "38": 0,
+      "46": 0,
+      "77": 0,
+      "91": 0,
+      "107": 0,
+      "108": 0,
+      "150": 0,
+      "213": 0
+    },
+    "C1_DERIV_zero_at_every_arm": true,
+    "C1_mechanism_at_W108_DERIV": {
+      "n": 147370,
+      "pairs_with_A_empty": 9145,
+      "pairs_with_no_insertion_after_tau1": 751,
+      "intersection": 0,
+      "pairs_with_no_S2_record_anywhere": 0,
+      "reading": "the DERIV zero is NOT forced by |A| = 0 being empty -- 9,145 line-4 pairs are never-started -- it is that none of them coincides with an account silent after tau1"
+    },
+    "C2_APPLY_at_W108": {
+      "excluded": 604,
+      "subset_reading_all_excluded_have_no_S2_record_anywhere": true,
+      "excluded_with_an_S2_record_somewhere": 0,
+      "set_equality_reading_excluded_equals_no_S2_record_anywhere_on_APPLY": false,
+      "pairs_on_APPLY_with_no_S2_record_anywhere": 23260,
+      "of_those_also_silent_after_tau1": 604,
+      "of_those_with_an_insertion_after_tau1_hence_LIVE": 22656,
+      "excluded_with_no_in_E2_S2_record": 604
+    },
+    "C2_APPLY_exclusions_per_arm": {
+      "38": 485,
+      "46": 494,
+      "77": 554,
+      "91": 575,
+      "107": 603,
+      "108": 604,
+      "150": 664,
+      "213": 716
+    },
+    "C3_identity_APPLY_W108": {
+      "excluded_all_never_started": true,
+      "floor_pct": 16.714613618974752,
+      "ceiling_pct": 16.97041504368078,
+      "unfiltered_never_started_pct": 16.97041504368078,
+      "ceiling_equals_unfiltered_exactly": true,
+      "single_denominator": 196654,
+      "width_pp": 0.2558014247060285
+    },
+    "C4_ALT_vs_PF_LIMIT_APPLY_W108": {
+      "PF_LIMIT_excluded": 1355,
+      "ALT_excluded": 604,
+      "difference": 751,
+      "ALT_is_a_subset_of_PF_LIMIT": true,
+      "difference_composition": {
+        "continued": 652,
+        "started_and_left": 99,
+        "never_started": 0
+      },
+      "difference_all_in_line4_DERIV": true,
+      "difference_count_in_line4": 751,
+      "DERIV_PF_LIMIT_excluded_at_W108": 751
+    }
+  },
+  "forcedness_of_the_DERIV_zero": {
+    "line1": {
+      "n": 201900,
+      "pairs_with_a_non_empty_feasible_W_interval": 23765,
+      "of_those_with_S2_evidence": 26,
+      "of_those_with_no_S2_evidence_hence_feasible_for_all_large_W": 23739
+    },
+    "DERIV_line4": {
+      "n": 152126,
+      "pairs_with_a_non_empty_feasible_W_interval": 29,
+      "all_of_which_hold_S2_evidence": false,
+      "feasible_W_intervals_days": {
+        "lo_min": 0.0,
+        "lo_median": 0.5752739066492628,
+        "lo_max": 2359.4800783408764,
+        "hi_min": 0.13472222222222222,
+        "hi_median": 0.8895833333333333,
+        "hi_max": Infinity
+      },
+      "per_arm": {
+        "38": {
+          "excluded_at_this_arm_after_D10": 0,
+          "in_the_W_interval_before_D10": 4
+        },
+        "46": {
+          "excluded_at_this_arm_after_D10": 0,
+          "in_the_W_interval_before_D10": 4
+        },
+        "77": {
+          "excluded_at_this_arm_after_D10": 0,
+          "in_the_W_interval_before_D10": 4
+        },
+        "91": {
+          "excluded_at_this_arm_after_D10": 0,
+          "in_the_W_interval_before_D10": 4
+        },
+        "107": {
+          "excluded_at_this_arm_after_D10": 0,
+          "in_the_W_interval_before_D10": 4
+        },
+        "108": {
+          "excluded_at_this_arm_after_D10": 0,
+          "in_the_W_interval_before_D10": 4
+        },
+        "150": {
+          "excluded_at_this_arm_after_D10": 0,
+          "in_the_W_interval_before_D10": 4
+        },
+        "213": {
+          "excluded_at_this_arm_after_D10": 0,
+          "in_the_W_interval_before_D10": 4
+        }
+      },
+      "reading": "the configuration is NOT foreclosed on DERIV: these pairs would be excluded at some W. The zero at the tested arms is therefore an OBSERVED zero over the arm grid, not an identity."
+    },
+    "candidates": {
+      "total": 29,
+      "with_an_in_E2_S2_record_finite_upper_end": 25,
+      "with_an_S2_record_but_none_in_E2_upper_end_infinite": 4,
+      "with_no_S2_record_anywhere": 0
+    },
+    "per_arm": {
+      "38": {
+        "line4_pairs_satisfying_both_conjuncts_before_D10": 4,
+        "of_which_survive_D10_and_are_therefore_excluded": 0,
+        "of_which_removed_earlier_by_D10_right_censoring": 4,
+        "those_removed_by_D10_that_hold_an_in_E2_S2_record": 0
+      },
+      "46": {
+        "line4_pairs_satisfying_both_conjuncts_before_D10": 4,
+        "of_which_survive_D10_and_are_therefore_excluded": 0,
+        "of_which_removed_earlier_by_D10_right_censoring": 4,
+        "those_removed_by_D10_that_hold_an_in_E2_S2_record": 0
+      },
+      "77": {
+        "line4_pairs_satisfying_both_conjuncts_before_D10": 4,
+        "of_which_survive_D10_and_are_therefore_excluded": 0,
+        "of_which_removed_earlier_by_D10_right_censoring": 4,
+        "those_removed_by_D10_that_hold_an_in_E2_S2_record": 0
+      },
+      "91": {
+        "line4_pairs_satisfying_both_conjuncts_before_D10": 4,
+        "of_which_survive_D10_and_are_therefore_excluded": 0,
+        "of_which_removed_earlier_by_D10_right_censoring": 4,
+        "those_removed_by_D10_that_hold_an_in_E2_S2_record": 0
+      },
+      "107": {
+        "line4_pairs_satisfying_both_conjuncts_before_D10": 4,
+        "of_which_survive_D10_and_are_therefore_excluded": 0,
+        "of_which_removed_earlier_by_D10_right_censoring": 4,
+        "those_removed_by_D10_that_hold_an_in_E2_S2_record": 0
+      },
+      "108": {
+        "line4_pairs_satisfying_both_conjuncts_before_D10": 4,
+        "of_which_survive_D10_and_are_therefore_excluded": 0,
+        "of_which_removed_earlier_by_D10_right_censoring": 4,
+        "those_removed_by_D10_that_hold_an_in_E2_S2_record": 0
+      },
+      "150": {
+        "line4_pairs_satisfying_both_conjuncts_before_D10": 4,
+        "of_which_survive_D10_and_are_therefore_excluded": 0,
+        "of_which_removed_earlier_by_D10_right_censoring": 4,
+        "those_removed_by_D10_that_hold_an_in_E2_S2_record": 0
+      },
+      "213": {
+        "line4_pairs_satisfying_both_conjuncts_before_D10": 4,
+        "of_which_survive_D10_and_are_therefore_excluded": 0,
+        "of_which_removed_earlier_by_D10_right_censoring": 4,
+        "those_removed_by_D10_that_hold_an_in_E2_S2_record": 0
+      }
+    },
+    "future_dated_records": {
+      "definition": "a record whose claimed watched_at is later than its own calibrated insertion instant",
+      "records_dated": 27656434,
+      "future_dated": 6271584,
+      "share_pct": 22.676763027366434,
+      "future_dated_S2_records": 922504,
+      "max_future_dating_days": 4759.573199133658
+    },
+    "cross_check": "APPLY exclusions reconstructed independently from the feasible-W intervals: {\"38\": 485, \"46\": 494, \"77\": 554, \"91\": 575, \"107\": 603, \"108\": 604, \"150\": 664, \"213\": 716}"
+  },
+  "evidence_inputs": {
+    "line1_pairs_with_no_S2_record_anywhere": 23735,
+    "line1_pairs_with_no_in_E2_S2_record": 23739,
+    "D11_records_discarded_at_or_after_tau_pull": 80,
+    "S2_records_dropped_by_set_membership_not_in_E2": 1306410
+  }
+}
