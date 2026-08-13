@@ -51,9 +51,17 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
     - **The gap is the interval between CONSECUTIVE INSERTION INSTANTS on the account, as a continuous
       instant difference** — not claimed dates, and not floored to whole days before the percentile is
       taken (`decisions/0029`).
-    - **Set the threshold at a NAMED PERCENTILE of the observed gap distribution and round UP**
-      (`decisions/0025`). "Well beyond the normal gap" is withdrawn: it is unreproducible across two
-      isolated instances, which is the same defect that cost Step 6 a full dual run.
+    - **The threshold is the 99th PERCENTILE of the observed gap distribution, rounded UP**
+      (`decisions/0036`, `0025`). At the 95th one ordinary gap in twenty trips the threshold; at the
+      99th it is one in a hundred, and a false-dead removes a pair against a bias that already runs
+      down. "Well beyond the normal gap" is withdrawn: it is unreproducible across two isolated
+      instances, the same defect that cost Step 6 a full dual run.
+    - **The test applies to the GAP BRACKETING `τ1`, not to every gap in the sweep** (`decisions/0036`).
+      Take the last insertion instant at or before `τ1` and the first after it, and test that one gap.
+      A whole-sweep test compounds the false-dead rate with the number of gaps — at the 99th percentile
+      an account with 50 gaps trips it ~39% of the time by chance — and **no percentile fixes that; it
+      is the rule's shape.** No instant after `τ1`, or none at or before it, means **not live**; count
+      and report both separately from pairs failing on a measured gap.
     - **The play-`id` isotonic calibration from Step 5 is a required input and NEITHER INSTANCE REFITS
       IT.** Read the stored curve.
     - **Liveness is a PAIR-LEVEL filter, not a user-level one.** Evidence is account-wide — the whole
