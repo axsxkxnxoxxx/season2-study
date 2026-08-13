@@ -86,7 +86,12 @@ diff that merged them would hide which one an instance had hit.
 - **Liveness is a pair-level filter.** Evidence is account-wide — the whole sweep, other shows and
   movies included — but the test is clock-start-relative and clock start is pair-specific, so one
   account can be live for one show and dead for another. **Never drop a user wholesale.**
-- **The threshold is derived independently of `W`**, though the test instant is a function of it.
+- ~~**The threshold is derived independently of `W`**, though the test instant is a function of it.~~
+  **AMENDED 2026-08-13 (`decisions/0038`): this is withdrawn and was unsatisfiable after `0037`.** Any
+  bracketing-gap reference distribution is **selected by `τ1`, which contains `W`**, so the threshold
+  is a **function of `W`** and cannot be derived independently of it. Measured across the Step 13 arms:
+  408 → 576 days on the clean sample, 885 → 973 on the full population. **Step 13 must refit the
+  threshold per arm** and report both the threshold and the realised rate for each.
 
 ## 4. Scope
 

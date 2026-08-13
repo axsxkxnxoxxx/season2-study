@@ -1,0 +1,236 @@
+{
+ "step": 7,
+ "instance": "b2",
+ "run": "rerun of 2026-08-13 on the corrected reference distribution (decisions/0037)",
+ "status": "PROPOSAL. Gate not approved. Nothing adopted by this instance.",
+ "api_calls": 0,
+ "inputs": {
+  "calibration_curve": "processed/step5/calibration.npz (READ, not refitted)",
+  "pair_table": "processed/step5/pair_revision5.csv",
+  "sweep": "processed/step5/full_scan.npz",
+  "W_used_only_to_place_tau1": 108,
+  "step5_waterfall_asserted": [
+   201900,
+   178165,
+   155131,
+   152126,
+   128099
+  ]
+ },
+ "gap_unit": {
+  "rule": "decisions/0037 s4 -- every record's insertion instant, sorted ascending, runs of EXACTLY equal instants collapsed, then consecutive differences",
+  "records_total": 27656813,
+  "distinct_instants_total": 25864798,
+  "collapsed_records": 1792015,
+  "collapsed_pct": 6.4795,
+  "accounts": 2549,
+  "median_gaps_per_account": 7812.0,
+  "records_below_calibration_curve_start": 1862,
+  "records_above_calibration_curve_end": 5094
+ },
+ "pooled_gap_distribution_context_only": {
+  "n": 25862249,
+  "percentiles_days": {
+   "50": 7.001917671274256e-07,
+   "75": 0.025080093694505867,
+   "90": 0.4059718132333619,
+   "95": 0.9389527457433718,
+   "99": 3.4431932062376234,
+   "99.5": 5.883114735404772,
+   "99.9": 19.471986747298054
+  },
+  "sub_second_share_pct": 56.4657
+ },
+ "reference_distribution_bracketing": {
+  "n": 157995,
+  "percentiles_days": {
+   "90": {
+    "raw_days": 81.28830472699194,
+    "ceiled_days": 82,
+    "realised_failure_rate_pct": 9.9547
+   },
+   "95": {
+    "raw_days": 240.48807137471937,
+    "ceiled_days": 241,
+    "realised_failure_rate_pct": 4.9919
+   },
+   "97.5": {
+    "raw_days": 470.2599963927352,
+    "ceiled_days": 471,
+    "realised_failure_rate_pct": 2.4969
+   },
+   "99": {
+    "raw_days": 913.355941220566,
+    "ceiled_days": 914,
+    "realised_failure_rate_pct": 0.9937
+   },
+   "99.5": {
+    "raw_days": 1404.669184007675,
+    "ceiled_days": 1405,
+    "realised_failure_rate_pct": 0.4987
+   },
+   "99.9": {
+    "raw_days": 2936.933193135176,
+    "ceiled_days": 2937,
+    "realised_failure_rate_pct": 0.0234
+   }
+  },
+  "median_days": 2.010144779353782
+ },
+ "threshold": {
+  "percentile": 99.0,
+  "percentile_method": "numpy linear interpolation between order statistics",
+  "raw_days": 913.355941220566,
+  "PROPOSED_days": 914,
+  "rounding": "ceiling, decisions/0025",
+  "test_direction": "LIVE iff measured bracketing gap < threshold; >= threshold is not live",
+  "realised_failure_rate_pct_on_measured_gaps": 0.9937,
+  "bootstrap_95pct_interval_days": {
+   "point": 913.355941220566,
+   "p2.5": 907.1592672809616,
+   "p97.5": 959.2805198235834,
+   "ceiled_p2.5": 908,
+   "ceiled_p97.5": 960,
+   "resamples": 400,
+   "seed": 20260813
+  }
+ },
+ "corrected_vs_withdrawn_basis": {
+  "pooled_99th_days_raw": 3.4431932062376234,
+  "pooled_99th_days_ceiled": 4,
+  "realised_failure_rate_pct_at_pooled_threshold": 37.3936,
+  "published_figure_under_withdrawn_basis_pct": 37.4
+ },
+ "pooled_grid_for_contrast": {
+  "95": {
+   "raw_days": 0.9389527457433718,
+   "ceiled_days": 1,
+   "realised_failure_rate_pct_on_bracketing": 65.1793
+  },
+  "99": {
+   "raw_days": 3.4431932062376234,
+   "ceiled_days": 4,
+   "realised_failure_rate_pct_on_bracketing": 37.3936
+  },
+  "99.9": {
+   "raw_days": 19.471986747298054,
+   "ceiled_days": 20,
+   "realised_failure_rate_pct_on_bracketing": 18.2082
+  },
+  "99.99": {
+   "raw_days": 144.06153619561857,
+   "ceiled_days": 145,
+   "realised_failure_rate_pct_on_bracketing": 7.0148
+  }
+ },
+ "rule_application": {
+  "analysis_population": 201900,
+  "live": 156425,
+  "not_live_measured_gap_at_or_above_threshold": 1570,
+  "not_live_no_instant_after_tau1": 5209,
+  "not_live_no_instant_at_or_before_tau1": 38696,
+  "not_live_total": 45475,
+  "live_pct": 77.48,
+  "of_which_no_instant_after_tau1_is_after_the_pull_date": 3684
+ },
+ "rule_application_on_step5_estimation_sample": {
+  "n": 128099,
+  "live": 122560,
+  "not_live_measured_gap": 381,
+  "not_live_no_instant_after_tau1": 4120,
+  "not_live_no_instant_at_or_before_tau1": 1038,
+  "live_pct": 95.68
+ },
+ "exclusion_composition": {
+  "not_live_total": 45475,
+  "share_from_measured_gap_pct": 3.45,
+  "share_from_evidence_absence_pct": 96.55
+ },
+ "pair_level_not_user_level": {
+  "accounts_with_at_least_one_pair": 2481,
+  "accounts_all_pairs_live": 475,
+  "accounts_no_pair_live": 359,
+  "accounts_mixed": 1647,
+  "mixed_pct": 66.38
+ },
+ "failing_pairs_gap_days": {
+  "n": 1570,
+  "min": 923.1314985107356,
+  "median": 1405.813033338159,
+  "max": 3196.2712693346953
+ },
+ "sensitivity_reference_population": {
+  "analysis_population_201900_PRIMARY": {
+   "measured_gap_pairs": 157995,
+   "raw_99th_days": 913.355941220566,
+   "ceiled_days": 914,
+   "median_days": 2.010144779353782,
+   "realised_failure_rate_pct_at_own_threshold": 0.9937,
+   "realised_failure_rate_pct_at_primary_threshold": 0.9937
+  },
+  "clean_T0_subset": {
+   "measured_gap_pairs": 149257,
+   "raw_99th_days": 701.5149346363489,
+   "ceiled_days": 702,
+   "median_days": 1.9383306352601009,
+   "realised_failure_rate_pct_at_own_threshold": 0.9969,
+   "realised_failure_rate_pct_at_primary_threshold": 0.7042
+  },
+  "step5_estimation_sample_128099": {
+   "measured_gap_pairs": 122941,
+   "raw_99th_days": 503.0756063025733,
+   "ceiled_days": 504,
+   "median_days": 1.824723495647863,
+   "realised_failure_rate_pct_at_own_threshold": 0.9891,
+   "realised_failure_rate_pct_at_primary_threshold": 0.3099
+  }
+ },
+ "sensitivity_weighting": {
+  "n": 111456,
+  "raw_99th_days": 201.8966101572528,
+  "ceiled_days": 202,
+  "median_days": 1.4478091809291531,
+  "realised_failure_rate_pct_on_pairs_at_this_threshold": 5.5932,
+  "note": "distinct on (user_idx, gap_days); exact float equality within an account identifies the gap"
+ },
+ "W_dependence_defect": {
+  "W=46": {
+   "measured_gap_pairs": 158316,
+   "raw_99th_days": 884.8520832938895,
+   "ceiled_days": 885,
+   "median_days": 2.0010888472558173
+  },
+  "W=77": {
+   "measured_gap_pairs": 158264,
+   "raw_99th_days": 897.1188837817201,
+   "ceiled_days": 898,
+   "median_days": 2.008327013752251
+  },
+  "W=91": {
+   "measured_gap_pairs": 158099,
+   "raw_99th_days": 911.4598612893703,
+   "ceiled_days": 912,
+   "median_days": 2.047788209390861
+  },
+  "W=108": {
+   "measured_gap_pairs": 157995,
+   "raw_99th_days": 913.355941220566,
+   "ceiled_days": 914,
+   "median_days": 2.010144779353782
+  },
+  "W=150": {
+   "measured_gap_pairs": 157906,
+   "raw_99th_days": 962.7707883178498,
+   "ceiled_days": 963,
+   "median_days": 2.0441351914226455
+  },
+  "W=213": {
+   "measured_gap_pairs": 157482,
+   "raw_99th_days": 972.7229946996216,
+   "ceiled_days": 973,
+   "median_days": 2.0474212968763377
+  }
+ },
+ "chart": "artifacts/step7-gap-distribution-b2.png",
+ "row_level_detail": "processed/step7/b2/ (not public)"
+}

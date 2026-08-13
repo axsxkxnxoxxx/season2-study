@@ -57,7 +57,24 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
       length `L` covers `L` of calendar time and so is likelier to contain a fixed instant. Both arms
       measured **37.4%** of bracketing gaps exceeding the pooled-99th threshold. Take the percentile on
       the bracketing-gap distribution so the stated rate is the rate delivered. **The percentile
-      remains the 99th, rounded UP** (`0025`), unless the Human Lead rules otherwise.
+      remains the 99th, rounded UP** (`0025`).
+    - **The reference population is the 152,126 — waterfall line 4 — and derivation and application
+      populations MUST BE IDENTICAL** (`decisions/0038`). The 152,126 → 128,099 filter concerns the
+      **first S2 watch**, which plays no part in `τ1` or liveness; the lines above 152,126 carry
+      contaminated `T0`, and `τ1` is built from `T0`. **Derive on 152,126, apply to 152,126** —
+      deriving on one population and applying to another delivered 2.28% against a stated 1% and
+      reintroduces the defect `0037` withdrew.
+    - **Weighting: ONE GAP PER PAIR** (`decisions/0038`), not one per distinct `(account, gap)`, which
+      was the largest single lever in the step.
+    - **`W` and the threshold are NOT independent.** The bracketing reference is selected by `τ1`,
+      which contains `W`, so the threshold is a **function of `W`**; the old "derive independently of
+      `W`" requirement was **unsatisfiable and is withdrawn** (`0038`). **Step 13 refits the threshold
+      per arm and reports both the threshold and the realised rate for each.**
+    - **Two things must be stated plainly in the deliverable and not argued away** (`0038`): the
+      **quota property** — taking the percentile on the distribution the test applies to sets the level
+      by the exclusion rate rather than by any feature of the data — and the **inertness**: the
+      measured-gap test does **3.45%** of exclusions while `0036` §2.3's edge cases do **96.55%**,
+      across every percentile from the 90th to the 99.9th.
     - **The gap sequence is defined on DISTINCT insertion instants** (`decisions/0037`). Per account:
       every record's insertion instant, sorted ascending, **runs of EXACTLY equal instants collapsed to
       one** — exact equality only, **no rounding or bucketing to any resolution** — then consecutive

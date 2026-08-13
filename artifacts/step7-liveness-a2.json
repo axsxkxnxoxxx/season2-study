@@ -1,0 +1,545 @@
+{
+  "step": 7,
+  "instance": "a2",
+  "run": "rerun of 2026-08-13, corrected reference distribution",
+  "status": "PROPOSAL. GATE. Not adopted. Human Lead approves.",
+  "api_calls": 0,
+  "spec": [
+    "task-sheet.md Step 7 (lines 226-262)",
+    "decisions/0037 (reference distribution + exact gap unit)",
+    "decisions/0036 SS2 (rule shape, stands unchanged); SS1's basis withdrawn by 0037",
+    "decisions/0029 (continuous instant differences), 0025 (ceiling), 0021 (insertion time)",
+    "decisions/0026 (W = 108 days), 0034 (liveness anchored at tau1, not tau2)"
+  ],
+  "inputs": {
+    "calibration": "processed/step5/calibration.npz \u2014 READ, NOT REFITTED",
+    "sweep": "processed/step5/full_scan.npz",
+    "pairs": "processed/step5/pair_revision5.csv",
+    "step5_waterfall_reproduced": {
+      "computed": [
+        201900,
+        178165,
+        155131,
+        152126,
+        128099
+      ],
+      "published": [
+        201900,
+        178165,
+        155131,
+        152126,
+        128099
+      ],
+      "match": true
+    }
+  },
+  "gap_unit": {
+    "operation": "insertion instant of every record in the account's sweep; sort ascending; collapse runs of EXACTLY equal instants (exact float equality, no rounding or bucketing at any resolution); consecutive differences",
+    "insertion_instant": "np.interp(rid, knot_rid, knot_time)",
+    "records": 27656813,
+    "accounts": 2549,
+    "distinct_instants": 25864798,
+    "records_collapsed_as_exact_ties": 1792015,
+    "records_collapsed_share": 0.064795,
+    "rid_below_calibration_curve_start": 1862,
+    "rid_above_calibration_curve_end": 5094,
+    "gaps_per_account_median": 7812.0
+  },
+  "pooled_distribution_WITHDRAWN_AS_REFERENCE": {
+    "n_gaps": 25862249,
+    "median_days": 7.001917671274256e-07,
+    "p99_days": 3.4431932062376234,
+    "p99_ceil_days": 4,
+    "sub_second_share": 0.564657,
+    "note": "retained only as the contrast that decisions/0037 SS1 withdrew; it is NOT the reference distribution"
+  },
+  "reference_distribution": {
+    "definition": "the BRACKETING-gap distribution itself: for each pair, the gap between the last distinct insertion instant at or before tau1 and the first after it",
+    "tau1": "[[T0]] + W x 24h, W = 108 days, [[T0]] = UTC midnight of the pair's T0 date",
+    "by_population": {
+      "analysis_population_201900": {
+        "n_pairs": 201900,
+        "n_measured_gap": 157995,
+        "median_days": 2.0101,
+        "p75_days": 9.0346,
+        "p95_days": 240.4881,
+        "p99_raw_days": 913.3559,
+        "p99_ceil_days": 914
+      },
+      "has_s2_evidence_178165": {
+        "n_pairs": 178165,
+        "n_measured_gap": 138077,
+        "median_days": 1.9675,
+        "p75_days": 8.4685,
+        "p95_days": 229.9077,
+        "p99_raw_days": 902.011,
+        "p99_ceil_days": 903
+      },
+      "t0_not_contaminated_155131": {
+        "n_pairs": 155131,
+        "n_measured_gap": 132628,
+        "median_days": 1.8935,
+        "p75_days": 7.0177,
+        "p95_days": 138.9339,
+        "p99_raw_days": 638.9547,
+        "p99_ceil_days": 639
+      },
+      "completing_record_not_postdated_152126": {
+        "n_pairs": 152126,
+        "n_measured_gap": 129630,
+        "median_days": 1.8816,
+        "p75_days": 6.8949,
+        "p95_days": 124.9101,
+        "p99_raw_days": 631.8031,
+        "p99_ceil_days": 632
+      },
+      "w_estimation_sample_128099": {
+        "n_pairs": 128099,
+        "n_measured_gap": 122941,
+        "median_days": 1.8247,
+        "p75_days": 6.28,
+        "p95_days": 101.3134,
+        "p99_raw_days": 503.0756,
+        "p99_ceil_days": 504
+      }
+    }
+  },
+  "proposed_threshold": {
+    "value_days": 504,
+    "raw_percentile_days": 503.0756,
+    "percentile": 99.0,
+    "rounding": "ceiling, per decisions/0025",
+    "measured_on": "w_estimation_sample_128099",
+    "PROPOSAL_ONLY": true,
+    "alternatives_if_the_Human_Lead_picks_a_different_population": {
+      "analysis_population_201900": 914,
+      "has_s2_evidence_178165": 903,
+      "t0_not_contaminated_155131": 639,
+      "completing_record_not_postdated_152126": 632,
+      "w_estimation_sample_128099": 504
+    }
+  },
+  "rule_statement": "A USER-SHOW PAIR is LIVE if, on the account's whole sweep (all shows, all movies, all record kinds), there exists a distinct insertion instant at or before that pair's tau1 = [[T0]] + 108 x 24h AND a distinct insertion instant after tau1, AND the gap between those two instants is STRICTLY LESS THAN the threshold. Otherwise the pair is NOT LIVE. Insertion instants come from the stored Step 5 play-id calibration, never from claimed watched_at. Evidence is account-wide; the test is pair-specific; a user is never dropped wholesale.",
+  "rule_application": {
+    "analysis_population_201900": {
+      "threshold_days": 914,
+      "live": 156425,
+      "not_live_measured_gap": 1570,
+      "not_live_no_instant_after_tau1": 5209,
+      "not_live_no_instant_at_or_before_tau1": 38696,
+      "not_live_total": 45475,
+      "live_share_of_population": 0.774765,
+      "measured_gap_failure_rate": 0.009937
+    },
+    "has_s2_evidence_178165": {
+      "threshold_days": 903,
+      "live": 136711,
+      "not_live_measured_gap": 1366,
+      "not_live_no_instant_after_tau1": 4253,
+      "not_live_no_instant_at_or_before_tau1": 35835,
+      "not_live_total": 41454,
+      "live_share_of_population": 0.767328,
+      "measured_gap_failure_rate": 0.009893
+    },
+    "t0_not_contaminated_155131": {
+      "threshold_days": 639,
+      "live": 131304,
+      "not_live_measured_gap": 1324,
+      "not_live_no_instant_after_tau1": 4253,
+      "not_live_no_instant_at_or_before_tau1": 18250,
+      "not_live_total": 23827,
+      "live_share_of_population": 0.846407,
+      "measured_gap_failure_rate": 0.009983
+    },
+    "completing_record_not_postdated_152126": {
+      "threshold_days": 632,
+      "live": 128354,
+      "not_live_measured_gap": 1276,
+      "not_live_no_instant_after_tau1": 4246,
+      "not_live_no_instant_at_or_before_tau1": 18250,
+      "not_live_total": 23772,
+      "live_share_of_population": 0.843735,
+      "measured_gap_failure_rate": 0.009843
+    },
+    "w_estimation_sample_128099": {
+      "threshold_days": 504,
+      "live": 121725,
+      "not_live_measured_gap": 1216,
+      "not_live_no_instant_after_tau1": 4120,
+      "not_live_no_instant_at_or_before_tau1": 1038,
+      "not_live_total": 6374,
+      "live_share_of_population": 0.950242,
+      "measured_gap_failure_rate": 0.009891
+    }
+  },
+  "realised_failure_rate": {
+    "under_withdrawn_pooled_basis": {
+      "analysis_population_201900": 0.373936,
+      "has_s2_evidence_178165": 0.364912,
+      "t0_not_contaminated_155131": 0.345297,
+      "completing_record_not_postdated_152126": 0.34121,
+      "w_estimation_sample_128099": 0.330012
+    },
+    "under_corrected_basis": {
+      "analysis_population_201900": 0.009937,
+      "has_s2_evidence_178165": 0.009893,
+      "t0_not_contaminated_155131": 0.009983,
+      "completing_record_not_postdated_152126": 0.009843,
+      "w_estimation_sample_128099": 0.009891
+    },
+    "note": "0037 recorded 37.4% under the withdrawn basis; reproduced here at 0.373936 on the 201,900 analysis population. The corrected basis takes it to ~0.99%, which is 100 - percentile by construction, not an empirical finding."
+  },
+  "applied_to_the_full_analysis_population_201900": {
+    "note": "Step 5's precedent for W is 'derived from clean records only, then applied to everyone'. If the same is done here, the threshold derived on 128,099 is applied to 201,900 and the delivered failure rate is NOT the stated 1%.",
+    "by_threshold": {
+      "4": {
+        "threshold_days": 4,
+        "live": 98915,
+        "not_live_measured_gap": 59080,
+        "not_live_no_instant_after_tau1": 5209,
+        "not_live_no_instant_at_or_before_tau1": 38696,
+        "not_live_total": 102985,
+        "live_share_of_201900": 0.489921,
+        "measured_gap_failure_rate": 0.373936
+      },
+      "504": {
+        "threshold_days": 504,
+        "live": 154390,
+        "not_live_measured_gap": 3605,
+        "not_live_no_instant_after_tau1": 5209,
+        "not_live_no_instant_at_or_before_tau1": 38696,
+        "not_live_total": 47510,
+        "live_share_of_201900": 0.764685,
+        "measured_gap_failure_rate": 0.022817
+      },
+      "632": {
+        "threshold_days": 632,
+        "live": 155495,
+        "not_live_measured_gap": 2500,
+        "not_live_no_instant_after_tau1": 5209,
+        "not_live_no_instant_at_or_before_tau1": 38696,
+        "not_live_total": 46405,
+        "live_share_of_201900": 0.770158,
+        "measured_gap_failure_rate": 0.015823
+      },
+      "914": {
+        "threshold_days": 914,
+        "live": 156425,
+        "not_live_measured_gap": 1570,
+        "not_live_no_instant_after_tau1": 5209,
+        "not_live_no_instant_at_or_before_tau1": 38696,
+        "not_live_total": 45475,
+        "live_share_of_201900": 0.774765,
+        "measured_gap_failure_rate": 0.009937
+      }
+    }
+  },
+  "percentile_sweep": {
+    "analysis_population_201900": [
+      {
+        "percentile": 90.0,
+        "raw_days": 81.2883,
+        "threshold_days_ceil": 82,
+        "measured_gap_failure_rate_at_ceil": 0.099547,
+        "not_live_measured_gap": 15728
+      },
+      {
+        "percentile": 95.0,
+        "raw_days": 240.4881,
+        "threshold_days_ceil": 241,
+        "measured_gap_failure_rate_at_ceil": 0.049919,
+        "not_live_measured_gap": 7887
+      },
+      {
+        "percentile": 97.5,
+        "raw_days": 470.26,
+        "threshold_days_ceil": 471,
+        "measured_gap_failure_rate_at_ceil": 0.024969,
+        "not_live_measured_gap": 3945
+      },
+      {
+        "percentile": 99.0,
+        "raw_days": 913.3559,
+        "threshold_days_ceil": 914,
+        "measured_gap_failure_rate_at_ceil": 0.009937,
+        "not_live_measured_gap": 1570
+      },
+      {
+        "percentile": 99.5,
+        "raw_days": 1404.6692,
+        "threshold_days_ceil": 1405,
+        "measured_gap_failure_rate_at_ceil": 0.004987,
+        "not_live_measured_gap": 788
+      },
+      {
+        "percentile": 99.9,
+        "raw_days": 2936.9332,
+        "threshold_days_ceil": 2937,
+        "measured_gap_failure_rate_at_ceil": 0.000234,
+        "not_live_measured_gap": 37
+      }
+    ],
+    "w_estimation_sample_128099": [
+      {
+        "percentile": 90.0,
+        "raw_days": 35.0436,
+        "threshold_days_ceil": 36,
+        "measured_gap_failure_rate_at_ceil": 0.098559,
+        "not_live_measured_gap": 12117
+      },
+      {
+        "percentile": 95.0,
+        "raw_days": 101.3134,
+        "threshold_days_ceil": 102,
+        "measured_gap_failure_rate_at_ceil": 0.049723,
+        "not_live_measured_gap": 6113
+      },
+      {
+        "percentile": 97.5,
+        "raw_days": 203.0329,
+        "threshold_days_ceil": 204,
+        "measured_gap_failure_rate_at_ceil": 0.024735,
+        "not_live_measured_gap": 3041
+      },
+      {
+        "percentile": 99.0,
+        "raw_days": 503.0756,
+        "threshold_days_ceil": 504,
+        "measured_gap_failure_rate_at_ceil": 0.009891,
+        "not_live_measured_gap": 1216
+      },
+      {
+        "percentile": 99.5,
+        "raw_days": 654.339,
+        "threshold_days_ceil": 655,
+        "measured_gap_failure_rate_at_ceil": 0.004986,
+        "not_live_measured_gap": 613
+      },
+      {
+        "percentile": 99.9,
+        "raw_days": 1405.813,
+        "threshold_days_ceil": 1406,
+        "measured_gap_failure_rate_at_ceil": 0.000992,
+        "not_live_measured_gap": 122
+      }
+    ]
+  },
+  "W_sensitivity_of_threshold": {
+    "W=46": {
+      "analysis_population_201900": {
+        "n_measured_gap": 158316,
+        "n_no_instant_after_tau1": 3613,
+        "n_no_instant_at_or_before_tau1": 39971,
+        "median_days": 2.0011,
+        "p99_raw_days": 884.8521,
+        "p99_ceil_days": 885
+      },
+      "w_estimation_sample_128099": {
+        "n_measured_gap": 123504,
+        "n_no_instant_after_tau1": 2773,
+        "n_no_instant_at_or_before_tau1": 1822,
+        "median_days": 1.7771,
+        "p99_raw_days": 407.2978,
+        "p99_ceil_days": 408
+      }
+    },
+    "W=60": {
+      "analysis_population_201900": {
+        "n_measured_gap": 158198,
+        "n_no_instant_after_tau1": 3975,
+        "n_no_instant_at_or_before_tau1": 39727,
+        "median_days": 2.0059,
+        "p99_raw_days": 886.27,
+        "p99_ceil_days": 887
+      },
+      "w_estimation_sample_128099": {
+        "n_measured_gap": 123366,
+        "n_no_instant_after_tau1": 3058,
+        "n_no_instant_at_or_before_tau1": 1675,
+        "median_days": 1.8093,
+        "p99_raw_days": 422.7247,
+        "p99_ceil_days": 423
+      }
+    },
+    "W=91": {
+      "analysis_population_201900": {
+        "n_measured_gap": 158099,
+        "n_no_instant_after_tau1": 4813,
+        "n_no_instant_at_or_before_tau1": 38988,
+        "median_days": 2.0478,
+        "p99_raw_days": 911.4599,
+        "p99_ceil_days": 912
+      },
+      "w_estimation_sample_128099": {
+        "n_measured_gap": 123121,
+        "n_no_instant_after_tau1": 3795,
+        "n_no_instant_at_or_before_tau1": 1183,
+        "median_days": 1.8626,
+        "p99_raw_days": 496.3646,
+        "p99_ceil_days": 497
+      }
+    },
+    "W=108": {
+      "analysis_population_201900": {
+        "n_measured_gap": 157995,
+        "n_no_instant_after_tau1": 5209,
+        "n_no_instant_at_or_before_tau1": 38696,
+        "median_days": 2.0101,
+        "p99_raw_days": 913.3559,
+        "p99_ceil_days": 914
+      },
+      "w_estimation_sample_128099": {
+        "n_measured_gap": 122941,
+        "n_no_instant_after_tau1": 4120,
+        "n_no_instant_at_or_before_tau1": 1038,
+        "median_days": 1.8247,
+        "p99_raw_days": 503.0756,
+        "p99_ceil_days": 504
+      }
+    },
+    "W=150": {
+      "analysis_population_201900": {
+        "n_measured_gap": 157906,
+        "n_no_instant_after_tau1": 6019,
+        "n_no_instant_at_or_before_tau1": 37975,
+        "median_days": 2.0441,
+        "p99_raw_days": 962.7708,
+        "p99_ceil_days": 963
+      },
+      "w_estimation_sample_128099": {
+        "n_measured_gap": 122596,
+        "n_no_instant_after_tau1": 4789,
+        "n_no_instant_at_or_before_tau1": 714,
+        "median_days": 1.885,
+        "p99_raw_days": 519.0351,
+        "p99_ceil_days": 520
+      }
+    },
+    "W=213": {
+      "analysis_population_201900": {
+        "n_measured_gap": 157482,
+        "n_no_instant_after_tau1": 7674,
+        "n_no_instant_at_or_before_tau1": 36744,
+        "median_days": 2.0474,
+        "p99_raw_days": 972.723,
+        "p99_ceil_days": 973
+      },
+      "w_estimation_sample_128099": {
+        "n_measured_gap": 121546,
+        "n_no_instant_after_tau1": 6112,
+        "n_no_instant_at_or_before_tau1": 441,
+        "median_days": 1.8756,
+        "p99_raw_days": 575.4545,
+        "p99_ceil_days": 576
+      }
+    }
+  },
+  "edge_bucket_diagnostics": {
+    "analysis_population_201900": {
+      "no_instant_after_tau1": {
+        "n": 5209,
+        "median_days_tau1_after_account_last_instant": 72.37,
+        "n_tau1_after_global_sweep_end": 3700,
+        "share_tau1_after_global_sweep_end": 0.7103
+      },
+      "no_instant_at_or_before_tau1": {
+        "n": 38696,
+        "median_days_tau1_before_account_first_instant": 1578.11,
+        "n_tau1_before_calibration_curve_start": 8037
+      }
+    },
+    "w_estimation_sample_128099": {
+      "no_instant_after_tau1": {
+        "n": 4120,
+        "median_days_tau1_after_account_last_instant": 71.13,
+        "n_tau1_after_global_sweep_end": 3249,
+        "share_tau1_after_global_sweep_end": 0.7886
+      },
+      "no_instant_at_or_before_tau1": {
+        "n": 1038,
+        "median_days_tau1_before_account_first_instant": 68.76,
+        "n_tau1_before_calibration_curve_start": 149
+      }
+    }
+  },
+  "insertion_clock_span_days": 4999.64,
+  "weighting_sensitivity": {
+    "analysis_population_201900": {
+      "pair_weighted_ceil_days": 914,
+      "distinct_account_gap_weighted_ceil_days": 202,
+      "n_distinct_account_gap_keys": 111456
+    },
+    "has_s2_evidence_178165": {
+      "pair_weighted_ceil_days": 903,
+      "distinct_account_gap_weighted_ceil_days": 201,
+      "n_distinct_account_gap_keys": 96799
+    },
+    "t0_not_contaminated_155131": {
+      "pair_weighted_ceil_days": 639,
+      "distinct_account_gap_weighted_ceil_days": 190,
+      "n_distinct_account_gap_keys": 95568
+    },
+    "completing_record_not_postdated_152126": {
+      "pair_weighted_ceil_days": 632,
+      "distinct_account_gap_weighted_ceil_days": 190,
+      "n_distinct_account_gap_keys": 94031
+    },
+    "w_estimation_sample_128099": {
+      "pair_weighted_ceil_days": 504,
+      "distinct_account_gap_weighted_ceil_days": 159,
+      "n_distinct_account_gap_keys": 89624
+    }
+  },
+  "percentile_method_panel": {
+    "analysis_population_201900": {
+      "linear": 913.355941220566,
+      "lower": 913.355941220566,
+      "higher": 913.355941220566,
+      "nearest": 913.355941220566,
+      "midpoint": 913.355941220566,
+      "inverted_cdf": 913.355941220566,
+      "averaged_inverted_cdf": 913.355941220566,
+      "nearest_rank_ceil": 913.355941220566
+    },
+    "has_s2_evidence_178165": {
+      "linear": 902.0109696757435,
+      "lower": 902.0109696757435,
+      "higher": 902.0109696757435,
+      "nearest": 902.0109696757435,
+      "midpoint": 902.0109696757435,
+      "inverted_cdf": 902.0109696757435,
+      "averaged_inverted_cdf": 902.0109696757435,
+      "nearest_rank_ceil": 902.0109696757435
+    },
+    "t0_not_contaminated_155131": {
+      "linear": 638.9546834501155,
+      "lower": 638.9546834501155,
+      "higher": 638.9546834501155,
+      "nearest": 638.9546834501155,
+      "midpoint": 638.9546834501155,
+      "inverted_cdf": 638.9546834501155,
+      "averaged_inverted_cdf": 638.9546834501155,
+      "nearest_rank_ceil": 638.9546834501155
+    },
+    "completing_record_not_postdated_152126": {
+      "linear": 631.8031044554186,
+      "lower": 631.8031044554186,
+      "higher": 631.8031044554186,
+      "nearest": 631.8031044554186,
+      "midpoint": 631.8031044554186,
+      "inverted_cdf": 631.8031044554186,
+      "averaged_inverted_cdf": 631.8031044554186,
+      "nearest_rank_ceil": 631.8031044554186
+    },
+    "w_estimation_sample_128099": {
+      "linear": 503.0756063025733,
+      "lower": 501.7539136962455,
+      "higher": 503.9567347067705,
+      "nearest": 503.9567347067705,
+      "midpoint": 502.855324201508,
+      "inverted_cdf": 503.9567347067705,
+      "averaged_inverted_cdf": 503.9567347067705,
+      "nearest_rank_ceil": 503.9567347067705
+    }
+  }
+}
