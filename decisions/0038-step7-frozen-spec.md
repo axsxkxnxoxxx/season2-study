@@ -72,13 +72,33 @@ identifies a level. **The deliverable must state this plainly.**
 
 ## 5. The inertness is accepted and disclosed
 
-**The measured-gap test does 3.45% of the exclusions; `0036` §2.3's evidence-absence edge cases do
-96.55%** — and **this holds across every percentile from the 90th to the 99.9th.** Both arms measured
-it.
+> **CORRECTED 2026-08-13 (`decisions/0039`).** As first written this section said *"the measured-gap
+> test does 3.45% of the exclusions and the edge cases 96.55% — and this holds across every percentile
+> from the 90th to the 99.9th."* **Both figures were wrong and the invariance claim was impossible.**
+> 3.45% was measured on the **201,900** line, which §2 of this same entry had just replaced with the
+> **152,126**. Both Step 7 arms found this independently on the frozen run.
 
-**A reader must not take the threshold to be doing work it is not doing.** The liveness filter's effect
-is overwhelmingly the two edge-case rulings, not the gap test. **The deliverable must state this
-plainly.**
+**On the frozen population at the adopted 99th percentile: the measured-gap test does 5.37% of the
+exclusions and `0036` §2.3's evidence-absence edge cases do 94.63%.**
+
+**The invariance claim is WITHDRAWN. The share cannot be invariant, as a matter of arithmetic.** The
+edge-case count is **constant in the percentile** — 22,496, a function of `W` alone — while the
+gap-test count is `100 − p` of the 129,630 measured-gap pairs. The share therefore moves with `p` by
+construction:
+
+| Percentile | Gap-test exclusions | Edge cases | Gap-test share |
+| :--- | ---: | ---: | ---: |
+| 90th | ~12,963 | 22,496 | **36.5%** |
+| **99th — adopted** | **1,276** | **22,496** | **5.37%** |
+| 99.9th | ~130 | 22,496 | **0.4%** |
+
+A 93-fold range. On the 128,099 line the gap test is the **majority** of exclusions at the 90th (70.1%),
+so the original claim fails on every waterfall line, not merely on this one.
+
+**The qualitative point stands at the adopted percentile, and it is what must be published.** **The
+threshold is not doing most of the work** — at the 99th, `0036` §2.3's two edge-case rulings drive
+roughly nineteen exclusions in twenty. A reader must not take the threshold to be doing work it is not
+doing. **The deliverable states this plainly; it does not state invariance.**
 
 ## 6. The `W`-coupling is accepted; the contradicting requirement is withdrawn
 

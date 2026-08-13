@@ -39,8 +39,10 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
   artifacts state 107 and 107.7135 and neither is the adopted value** — both predate the ceiling ruling.
   Take `W` from the decision entry, never from the artifacts.
 
-- **Step 7, derive liveness threshold. GATE, dual implementation. LAUNCHED 2026-08-13; both rulings
-  are made (`decisions/0036`) and the artifacts are with the Human Lead, unapproved.** Two
+- **Step 7, derive liveness threshold. GATE — APPROVED 2026-08-13 at 632 DAYS (`decisions/0039`).
+  Complete; do not re-derive.** Report it as **632 d with an account-clustered interval of [528, 787],
+  never bare** — the i.i.d. interval overstates precision ~20×, since 34.4% of pairs share their
+  bracketing gap with another pair. Same treatment as `W = 108 ± 18`. Two
   separate things are defined and must not be confused: the threshold is a gap length derived from the
   data; the rule is how it is applied. Derive the threshold independently and do not use `W` as an input
   to the derivation.

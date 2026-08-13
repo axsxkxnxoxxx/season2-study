@@ -1,0 +1,470 @@
+{
+  "step": 7,
+  "instance": "a3",
+  "status": "PROPOSED, NOT ADOPTED. Gate. Awaiting Human Lead approval.",
+  "date": "2026-08-13",
+  "api_calls": 0,
+  "spec_read": [
+    "task-sheet.md lines 226-275",
+    "decisions/0038-step7-frozen-spec.md",
+    "decisions/0037-step7-reference-distribution-and-gap-unit.md",
+    "decisions/0036-step7-threshold-and-shape.md",
+    "artifacts/step1-outcome-definition.md lines 685-710"
+  ],
+  "proposal": {
+    "threshold_days": 632,
+    "p99_raw_days": 631.8031044554186,
+    "percentile": 99.0,
+    "reference_distribution": "bracketing-gap distribution, one gap per pair",
+    "reference_population_n": 152126,
+    "rounding": "ceiling (decisions/0025)",
+    "W_days": 108,
+    "threshold_is_a_function_of_W": true,
+    "percentile_convention_sensitivity": "none: all 8 numpy conventions and nearest-rank-ceil agree to the digit at every W arm tested"
+  },
+  "rule_statement": "A USER-SHOW PAIR is LIVE if, on the pair's own clock, the account's insertion history brackets tau1 = [[T0]] + W*24h with a gap shorter than 632 days. Concretely: build the account's sweep-wide sequence of record insertion instants (every record, all shows and movies, estimated from the stored Step 5 isotonic play-id curve), sort ascending, collapse runs of exactly equal instants, and take the last distinct instant at or before tau1 and the first distinct instant after tau1. If both exist and their difference is strictly less than 632 days, the pair is LIVE. If both exist and the difference is 632 days or more, the pair is NOT LIVE. If there is no instant after tau1, the pair is NOT LIVE. If there is no instant at or before tau1, the pair is NOT LIVE. The test is applied to that one bracketing gap and to no other gap in the sweep. Evidence is account-wide; the test is pair-specific, so one account may be live for one show and not for another. No user is ever dropped wholesale.",
+  "rule_boundary_convention": "excluded iff gap >= threshold (decisions/0025 reason (a))",
+  "counts_at_W108": {
+    "population": 152126,
+    "live": 128354,
+    "not_live_measured_gap": 1276,
+    "not_live_no_instant_after_tau1": 4246,
+    "not_live_no_instant_at_or_before_tau1": 18250,
+    "not_live_total": 23772,
+    "n_pairs_with_a_measured_bracketing_gap": 129630,
+    "realised_exclusion_rate_of_measured_gap_pairs": 0.009843,
+    "realised_exclusion_rate_of_population": 0.156265,
+    "live_share_of_population": 0.843735
+  },
+  "bracketing_gap_distribution_days": {
+    "n_gaps_one_per_pair": 129630,
+    "min": 1.9462434230027377e-05,
+    "p1": 0.025674488154467608,
+    "p10": 0.27595698972377514,
+    "p25": 0.7911934049606875,
+    "median": 1.8816179206856976,
+    "p75": 6.894885091685724,
+    "p90": 42.8031074488163,
+    "p95": 124.91009130966884,
+    "p99": 631.8031044554186,
+    "p99_5": 1148.607459490727,
+    "p99_9": 2469.3532119203496,
+    "max": 3196.2712693346953,
+    "mean": 31.91686527721619,
+    "sub_second_share": 0.0
+  },
+  "pooled_gap_distribution_days_CONTEXT": {
+    "n_gaps": 25862249,
+    "percentiles": {
+      "50": 7.001917671274256e-07,
+      "75": 0.025080093694505867,
+      "90": 0.4059718132333619,
+      "95": 0.9389527457433718,
+      "99": 3.4431932062376234,
+      "99.5": 5.883114735404772,
+      "99.9": 19.471986747298054
+    },
+    "sub_second_share": 0.5646570799005145
+  },
+  "MANDATORY_DISCLOSURE_1_quota_property": {
+    "statement": "The threshold is set by the exclusion rate, not by anything in the data. The percentile is taken on the very distribution the test is applied to, so choosing the 99th mechanically fixes the exclusion rate at 1% of measured-gap pairs and the threshold is whatever number delivers it. Any percentile would have produced a self-consistent answer. 632 days is not a point where account behaviour changes; it is the 1% quota's price tag.",
+    "evidence_realised_rate_equals_the_quota_at_every_W_arm": {
+      "46": 0.009961,
+      "77": 0.009944,
+      "108": 0.009843,
+      "150": 0.009847,
+      "213": 0.009964
+    },
+    "evidence_threshold_moves_with_the_quota": {
+      "90.0": 43,
+      "95.0": 125,
+      "97.5": 281,
+      "99.0": 632,
+      "99.5": 1149,
+      "99.9": 2470
+    },
+    "what_survives": "0036 SS1's conservative-direction argument survives and still points up: a false-dead removes a pair and the liveness exclusion already biases the never-started share down (Step 14 bias 2). It identifies a direction, not a level."
+  },
+  "MANDATORY_DISCLOSURE_2_inertness": {
+    "statement": "The threshold does almost none of the excluding. At the proposed 99th, the measured-gap test removes 1,276 pairs and 0036 SS2.3's two evidence-absence edge cases remove 22,496 - the threshold is 5.4% of the liveness filter and the edge-case rulings are 94.6%. A reader must not take the threshold to be doing work it is not doing.",
+    "measured_on_frozen_population_152126": {
+      "90.0": {
+        "threshold_days": 43,
+        "not_live_measured_gap": 12942,
+        "not_live_edge_cases": 22496,
+        "not_live_total": 35438,
+        "measured_gap_share_of_exclusions": 0.365201,
+        "edge_case_share_of_exclusions": 0.634799,
+        "realised_measured_gap_exclusion_rate": 0.099838,
+        "realised_exclusion_rate_of_population": 0.232952
+      },
+      "95.0": {
+        "threshold_days": 125,
+        "not_live_measured_gap": 6463,
+        "not_live_edge_cases": 22496,
+        "not_live_total": 28959,
+        "measured_gap_share_of_exclusions": 0.223178,
+        "edge_case_share_of_exclusions": 0.776822,
+        "realised_measured_gap_exclusion_rate": 0.049857,
+        "realised_exclusion_rate_of_population": 0.190362
+      },
+      "97.5": {
+        "threshold_days": 281,
+        "not_live_measured_gap": 3237,
+        "not_live_edge_cases": 22496,
+        "not_live_total": 25733,
+        "measured_gap_share_of_exclusions": 0.125792,
+        "edge_case_share_of_exclusions": 0.874208,
+        "realised_measured_gap_exclusion_rate": 0.024971,
+        "realised_exclusion_rate_of_population": 0.169156
+      },
+      "99.0": {
+        "threshold_days": 632,
+        "not_live_measured_gap": 1276,
+        "not_live_edge_cases": 22496,
+        "not_live_total": 23772,
+        "measured_gap_share_of_exclusions": 0.053677,
+        "edge_case_share_of_exclusions": 0.946323,
+        "realised_measured_gap_exclusion_rate": 0.009843,
+        "realised_exclusion_rate_of_population": 0.156265
+      },
+      "99.5": {
+        "threshold_days": 1149,
+        "not_live_measured_gap": 643,
+        "not_live_edge_cases": 22496,
+        "not_live_total": 23139,
+        "measured_gap_share_of_exclusions": 0.027789,
+        "edge_case_share_of_exclusions": 0.972211,
+        "realised_measured_gap_exclusion_rate": 0.00496,
+        "realised_exclusion_rate_of_population": 0.152104
+      },
+      "99.9": {
+        "threshold_days": 2470,
+        "not_live_measured_gap": 89,
+        "not_live_edge_cases": 22496,
+        "not_live_total": 22585,
+        "measured_gap_share_of_exclusions": 0.003941,
+        "edge_case_share_of_exclusions": 0.996059,
+        "realised_measured_gap_exclusion_rate": 0.000687,
+        "realised_exclusion_rate_of_population": 0.148462
+      }
+    },
+    "DIVERGENCE_FROM_0038_SS5": {
+      "0038_states": "3.45% / 96.55%, holding across every percentile 90th to 99.9th",
+      "a3_measures_at_the_99th_on_the_frozen_population": 0.053677,
+      "a3_reproduces_3.45_percent_on_the_201900_line": 0.034524,
+      "reading": "0038 SS5's figure is the 201,900 line's, not the frozen 152,126 line's. On the frozen population the split at the 99th is 5.4% / 94.6%. The percentile-invariance claim does not hold on any line: the measured-gap share runs 36.5% at the 90th to 0.4% at the 99.9th on the frozen population. The qualitative claim - the edge cases dominate at the adopted percentile - holds.",
+      "by_waterfall_line": {
+        "analysis_population_201900": {
+          "n_pairs": 201900,
+          "n_measured_gap": 157995,
+          "n_no_after": 5209,
+          "n_no_before": 38696,
+          "by_percentile": {
+            "90.0": {
+              "threshold_days": 82,
+              "measured_gap_share_of_exclusions": 0.263747
+            },
+            "95.0": {
+              "threshold_days": 241,
+              "measured_gap_share_of_exclusions": 0.152282
+            },
+            "99.0": {
+              "threshold_days": 914,
+              "measured_gap_share_of_exclusions": 0.034524
+            },
+            "99.9": {
+              "threshold_days": 2937,
+              "measured_gap_share_of_exclusions": 0.000842
+            }
+          }
+        },
+        "has_s2_evidence_178165": {
+          "n_pairs": 178165,
+          "n_measured_gap": 138077,
+          "n_no_after": 4253,
+          "n_no_before": 35835,
+          "by_percentile": {
+            "90.0": {
+              "threshold_days": 79,
+              "measured_gap_share_of_exclusions": 0.255783
+            },
+            "95.0": {
+              "threshold_days": 230,
+              "measured_gap_share_of_exclusions": 0.146864
+            },
+            "99.0": {
+              "threshold_days": 903,
+              "measured_gap_share_of_exclusions": 0.032952
+            },
+            "99.9": {
+              "threshold_days": 2937,
+              "measured_gap_share_of_exclusions": 0.000922
+            }
+          }
+        },
+        "t0_not_contaminated_155131": {
+          "n_pairs": 155131,
+          "n_measured_gap": 132628,
+          "n_no_after": 4253,
+          "n_no_before": 18250,
+          "by_percentile": {
+            "90.0": {
+              "threshold_days": 50,
+              "measured_gap_share_of_exclusions": 0.366523
+            },
+            "95.0": {
+              "threshold_days": 139,
+              "measured_gap_share_of_exclusions": 0.22577
+            },
+            "99.0": {
+              "threshold_days": 639,
+              "measured_gap_share_of_exclusions": 0.055567
+            },
+            "99.9": {
+              "threshold_days": 2339,
+              "measured_gap_share_of_exclusions": 0.005876
+            }
+          }
+        },
+        "completing_record_not_postdated_152126": {
+          "n_pairs": 152126,
+          "n_measured_gap": 129630,
+          "n_no_after": 4246,
+          "n_no_before": 18250,
+          "by_percentile": {
+            "90.0": {
+              "threshold_days": 43,
+              "measured_gap_share_of_exclusions": 0.365201
+            },
+            "95.0": {
+              "threshold_days": 125,
+              "measured_gap_share_of_exclusions": 0.223178
+            },
+            "99.0": {
+              "threshold_days": 632,
+              "measured_gap_share_of_exclusions": 0.053677
+            },
+            "99.9": {
+              "threshold_days": 2470,
+              "measured_gap_share_of_exclusions": 0.003941
+            }
+          }
+        },
+        "first_s2_watch_clean_128099": {
+          "n_pairs": 128099,
+          "n_measured_gap": 122941,
+          "n_no_after": 4120,
+          "n_no_before": 1038,
+          "by_percentile": {
+            "90.0": {
+              "threshold_days": 36,
+              "measured_gap_share_of_exclusions": 0.701418
+            },
+            "95.0": {
+              "threshold_days": 102,
+              "measured_gap_share_of_exclusions": 0.542365
+            },
+            "99.0": {
+              "threshold_days": 504,
+              "measured_gap_share_of_exclusions": 0.190775
+            },
+            "99.9": {
+              "threshold_days": 1406,
+              "measured_gap_share_of_exclusions": 0.023106
+            }
+          }
+        }
+      }
+    }
+  },
+  "step13_arms_refitted": {
+    "46": {
+      "W_days": 46,
+      "p99_raw_days": 575.4544970725256,
+      "refitted_threshold_days": 576,
+      "n_pairs": 152126,
+      "live": 128718,
+      "not_live_measured_gap": 1295,
+      "not_live_no_instant_after_tau1": 2881,
+      "not_live_no_instant_at_or_before_tau1": 19232,
+      "not_live_total": 23408,
+      "n_measured_gap": 130013,
+      "realised_exclusion_rate_measured_gap_pairs": 0.009961,
+      "realised_exclusion_rate_of_population": 0.153872,
+      "bracketing_median_days": 1.8506448738801258,
+      "no_after_tau1_past_global_sweep_end": 2404,
+      "no_after_tau1_past_pull_instant": 2388
+    },
+    "77": {
+      "W_days": 77,
+      "p99_raw_days": 589.5110554096324,
+      "refitted_threshold_days": 590,
+      "n_pairs": 152126,
+      "live": 128637,
+      "not_live_measured_gap": 1292,
+      "not_live_no_instant_after_tau1": 3539,
+      "not_live_no_instant_at_or_before_tau1": 18658,
+      "not_live_total": 23489,
+      "n_measured_gap": 129929,
+      "realised_exclusion_rate_measured_gap_pairs": 0.009944,
+      "realised_exclusion_rate_of_population": 0.154405,
+      "bracketing_median_days": 1.873418146352525,
+      "no_after_tau1_past_global_sweep_end": 2906,
+      "no_after_tau1_past_pull_instant": 2897
+    },
+    "108": {
+      "W_days": 108,
+      "p99_raw_days": 631.8031044554186,
+      "refitted_threshold_days": 632,
+      "n_pairs": 152126,
+      "live": 128354,
+      "not_live_measured_gap": 1276,
+      "not_live_no_instant_after_tau1": 4246,
+      "not_live_no_instant_at_or_before_tau1": 18250,
+      "not_live_total": 23772,
+      "n_measured_gap": 129630,
+      "realised_exclusion_rate_measured_gap_pairs": 0.009843,
+      "realised_exclusion_rate_of_population": 0.156265,
+      "bracketing_median_days": 1.8816179206856976,
+      "no_after_tau1_past_global_sweep_end": 3367,
+      "no_after_tau1_past_pull_instant": 3352
+    },
+    "150": {
+      "W_days": 150,
+      "p99_raw_days": 661.0605549307498,
+      "refitted_threshold_days": 662,
+      "n_pairs": 152126,
+      "live": 128104,
+      "not_live_measured_gap": 1274,
+      "not_live_no_instant_after_tau1": 4930,
+      "not_live_no_instant_at_or_before_tau1": 17818,
+      "not_live_total": 24022,
+      "n_measured_gap": 129378,
+      "realised_exclusion_rate_measured_gap_pairs": 0.009847,
+      "realised_exclusion_rate_of_population": 0.157909,
+      "bracketing_median_days": 1.927743937516654,
+      "no_after_tau1_past_global_sweep_end": 3888,
+      "no_after_tau1_past_pull_instant": 3874
+    },
+    "213": {
+      "W_days": 213,
+      "p99_raw_days": 696.021225544584,
+      "refitted_threshold_days": 697,
+      "n_pairs": 152126,
+      "live": 127286,
+      "not_live_measured_gap": 1281,
+      "not_live_no_instant_after_tau1": 6278,
+      "not_live_no_instant_at_or_before_tau1": 17281,
+      "not_live_total": 24840,
+      "n_measured_gap": 128567,
+      "realised_exclusion_rate_measured_gap_pairs": 0.009964,
+      "realised_exclusion_rate_of_population": 0.163286,
+      "bracketing_median_days": 1.9271239032485972,
+      "no_after_tau1_past_global_sweep_end": 5045,
+      "no_after_tau1_past_pull_instant": 5018
+    }
+  },
+  "step13_counterfactual_single_frozen_threshold": {
+    "note": "What a single 632-day threshold, frozen from W=108, would deliver at each arm. It misses its stated 1% at every arm but 108, which is why 0038 SS6 requires a refit per arm.",
+    "by_arm": {
+      "46": {
+        "threshold_days": 632,
+        "realised_exclusion_rate_measured_gap_pairs": 0.008345
+      },
+      "77": {
+        "threshold_days": 632,
+        "realised_exclusion_rate_measured_gap_pairs": 0.008582
+      },
+      "108": {
+        "threshold_days": 632,
+        "realised_exclusion_rate_measured_gap_pairs": 0.009843
+      },
+      "150": {
+        "threshold_days": 632,
+        "realised_exclusion_rate_measured_gap_pairs": 0.010867
+      },
+      "213": {
+        "threshold_days": 632,
+        "realised_exclusion_rate_measured_gap_pairs": 0.011908
+      }
+    }
+  },
+  "weighting_sensitivity_NOT_ADOPTED": {
+    "distinct_account_gap_p99_raw_days": 189.30855549492807,
+    "distinct_account_gap_p99_ceil_days": 190,
+    "n_distinct_account_gap_keys": 94031
+  },
+  "withdrawn_pooled_basis_for_continuity": {
+    "pooled_p99_raw_days": 3.4431932062376234,
+    "pooled_p99_ceil_days": 4,
+    "n_pooled_gaps": 25862249,
+    "pooled_median_days": 7.001917671274256e-07,
+    "bracketing_pairs_failing_pooled_threshold_rate": 0.34121
+  },
+  "right_censoring_diagnostic": {
+    "note": "0038 SS7: Step 7 derives on an uncensored population, so the no-instant-after-tau1 bucket is inflated by pairs D10 would remove at Step 8. Measured against the GLOBAL sweep end and against the pull instant; a test against the account's own last instant is tautological under the bucket's definition and is not reported.",
+    "global_sweep_end_utc": "2026-08-10T20:48:00Z",
+    "pull_instant_utc": "2026-08-11T00:00:00Z",
+    "by_arm": {
+      "46": {
+        "n_no_instant_after_tau1": 2881,
+        "of_which_tau1_past_global_sweep_end": 2404,
+        "of_which_tau1_past_pull_instant": 2388,
+        "censored_share": 0.8344
+      },
+      "77": {
+        "n_no_instant_after_tau1": 3539,
+        "of_which_tau1_past_global_sweep_end": 2906,
+        "of_which_tau1_past_pull_instant": 2897,
+        "censored_share": 0.8211
+      },
+      "108": {
+        "n_no_instant_after_tau1": 4246,
+        "of_which_tau1_past_global_sweep_end": 3367,
+        "of_which_tau1_past_pull_instant": 3352,
+        "censored_share": 0.793
+      },
+      "150": {
+        "n_no_instant_after_tau1": 4930,
+        "of_which_tau1_past_global_sweep_end": 3888,
+        "of_which_tau1_past_pull_instant": 3874,
+        "censored_share": 0.7886
+      },
+      "213": {
+        "n_no_instant_after_tau1": 6278,
+        "of_which_tau1_past_global_sweep_end": 5045,
+        "of_which_tau1_past_pull_instant": 5018,
+        "censored_share": 0.8036
+      }
+    }
+  },
+  "provenance": {
+    "records_scanned": 27656813,
+    "accounts_in_sweep": 2549,
+    "accounts_touched_by_reference_pairs": 2471,
+    "distinct_insertion_instants": 25864798,
+    "exact_ties_collapsed": 1792015,
+    "gaps_per_account_median": 7812.0,
+    "calibration_curve": "processed/step5/calibration.npz, READ NOT REFITTED",
+    "rid_clamped_below_first_knot": 1862,
+    "rid_clamped_above_last_knot": 5094,
+    "waterfall_reproduced": [
+      201900,
+      178165,
+      155131,
+      152126,
+      128099
+    ],
+    "t0_undefined_in_reference_population": 0
+  },
+  "corroborations_of_the_record": {
+    "pooled_p99_days": 3.4431932062376234,
+    "pooled_p99_ceil_days": 4,
+    "gaps_per_account_median": 7812.0,
+    "bracketing_median_days": 1.8816179206856976,
+    "share_of_bracketing_gaps_exceeding_pooled_99th": 0.34121,
+    "no_instant_at_or_before_tau1_bucket": 18250,
+    "note": "0037/0038 record pooled median 0.0000006 d; a3 measures 0.0000007 d (7.0019e-07). 0037 records 37.4% exceeding the pooled-99th on its populations; a3 measures 34.1% on the frozen 152,126. Both are reporting differences of basis, not arithmetic disagreements."
+  }
+}
