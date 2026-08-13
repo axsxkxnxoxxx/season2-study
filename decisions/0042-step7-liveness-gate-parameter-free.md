@@ -75,9 +75,20 @@ wording.**
 
 ## 4. The filter as a whole is nearly inert, and Step 9's bound rests on it
 
-**Against no liveness filter at all**, the approved rule moves the three shares by **0.027 / 0.016 /
-0.011 pp** — smaller than the third significant figure of every share, and roughly **2% of the
+**Against no liveness filter at all**, the approved rule moves the three shares by **0.032 / 0.023 /
+0.009 pp** — smaller than the third significant figure of every share, and roughly **2–3% of the
 clustered sampling width**.
+
+> **CORRECTED 2026-08-13 (`decisions/0043`).** This section first read **0.027 / 0.016 / 0.011**. Those
+> are the deltas for the **1,293-day threshold row** — the rule that was *deleted* — against no filter.
+> Instance A's sentence said so explicitly and **this entry lifted it and changed its subject to "the
+> approved rule."** Same error class as `0038` §5 and `0039` §2/§6: a figure measured on one
+> configuration, quoted as if measured on another. Trivial in magnitude, and **it erred in the
+> direction that made the approved rule look more inert on never-started** — the share the study exists
+> to report. It had already propagated verbatim into `task-sheet.md` as an operative Step 14
+> instruction.
+
+**And the direction of that movement is UP, which the Step 14 ledger had backwards.** See `0043`.
 
 **Step 9's liveness bound is computed on 751 pairs from 166 accounts.** So **the bound is narrow
 because the filter is nearly inert, not because the inference is tight**, and Step 14 carries that
