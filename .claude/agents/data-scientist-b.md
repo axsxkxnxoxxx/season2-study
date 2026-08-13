@@ -42,12 +42,17 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
 - **Step 7, liveness rule. GATE — RULE CHANGED 2026-08-13 (`decisions/0046`). Reruns pending; NOT
   approved. The gate is OPEN.**
     - **A pair is NOT LIVE iff BOTH: the account shows no insertion instant after that pair's `τ1`,
-      AND `|A| = 0`.** The second conjunct is the ruling: **liveness licenses trusting a null, and the
-      null is `|A| = 0`.** A pair with `|A| ≥ 1` has its outcome directly observed — no null, so the
-      rule does not reach it.
+      AND the pair is NOT Continued** (`0048`, superseding the `|A| = 0` form). **The second conjunct
+      reaches BOTH nulls.** Under `0034` only **Continued** rests on positive evidence; **Never started
+      is a null and Started-and-left is ALSO a null** — `|A| ≥ 1` is observed, the failure to meet the
+      Continued condition is not. **Structural, not incidental:** `τ2 > τ1`, so a pair silent after
+      `τ1` is silent after `τ2` and **can produce no evidence in the `[τ1, τ2)` window the Continued
+      test reads** — it is scored "left" **by construction**.
     - **EVERY FIGURE STATES ITS POPULATION.** **DERIV** = Step 5 line 4 less D10, **147,370**, requires
       S2 evidence. **APPLY** = line 1 less D10, **196,654**, what Step 8 filters.
-    - **Exclusions: 0 on DERIV, 604 on APPLY**, both measured. **Reporting both is correct, not a
+    - **Exclusions: 99 on DERIV (73 accounts), 703 on APPLY (216 accounts)** — 604 never-started plus
+      99 started-and-left. **Under ALT-BROAD the DERIV diff is 99 against 99, not the `0 = 0` the
+      superseded ALT gave**, so this step's dual control is informative on both populations. **Reporting both is correct, not a
       divergence.** **Conjunct 2 narrows APPLY 196,654 → 33,373; conjunct 1 narrows 33,373 → 604** — so
       **conjunct 1 does most of the work**, which is why the count moves with `W`. The 604 are **not**
       "exactly the pairs with no S2 record anywhere": APPLY holds **23,260** such pairs and **22,656
@@ -64,8 +69,10 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
       **pair-level**, anchored at `τ1` (`0034`); **never drop a user wholesale**.
     - **Do not reintroduce a pre-`τ1` requirement in any form** — withdrawn twice, `0040` §1 and `0042`
       §3, both for contradicting gate `0021`.
-    - **Report the exclusion count per `W` arm on APPLY** — 485 / 494 / 554 / 575 / 603 / 604 / 664 / 716
-      at `W` = 38 / 46 / 77 / 91 / 107 / 108 / 150 / 213 (`0046`).
+    - **Report the exclusion count per `W` arm on APPLY** — **537 / 550 / 633 / 664 / 701 / 703 / 789 /
+      864** at `W` = 38 / 46 / 77 / 91 / 107 / 108 / 150 / 213 (`0048`). **Report the started-and-left
+      component separately — 52 / 56 / 79 / 89 / 98 / 99 / 125 / 148, a factor of 2.85**, growing
+      faster than the rule's own 1.5× `W`-coupling.
     - **D10 is RE-DERIVED at each arm — name the reading** (`0047`). Censoring contains `W`, so the
       censored population differs per arm; **freezing D10 at 108 gives 632 / 684 / 753 / 881** at the
       upper arms instead. An arm table that does not name the reading is not reproducible.
@@ -73,9 +80,11 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
 - **Step 9, headline result. Chained, dual implementation.** Of users who completed S1, compute the
   share who never started S2, who started and left, and who continued, with confidence intervals.
   **Compute the bound on PAIRS, not users.** Under the adopted rule every liveness exclusion is
-  never-started by construction, so the bound on a **single denominator** is
-  **[16.6633%, 16.9704%] on APPLY, width 0.3071 pp**, and **the ceiling equals the unfiltered share as
-  an identity** (`0046`, corrected by `0047`). **[16.7146%, 16.9704%] is superseded — it mixed
+  never-started by construction, the **never-started** bound on a **single denominator** is
+  **[16.6633%, 16.9704%] on APPLY, width 0.3071 pp**, ceiling equal to the unfiltered share **as an
+  identity** — **identical under ALT and ALT-BROAD**, since the 99 started-and-left exclusions enter
+  neither endpoint. **Compute a SECOND bound on the started-and-left share over those 99** (`0048`);
+  no such bound exists today. **[16.7146%, 16.9704%] is superseded — it mixed
   denominators and its floor sat 0.0513 pp above the case liveness guards against.** `0045`'s [16.7789%,
   17.0355%] is **superseded**: it mixed two denominators and its floor was not a floor. Report the **floor and ceiling**, not a single contestable number, and report
   the **S3-without-S2 bound (D4)** and the **split-artifact bound (D9)** alongside the liveness bound.

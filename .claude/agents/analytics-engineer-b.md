@@ -73,13 +73,15 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
   **RULE CHANGED 2026-08-13 (`decisions/0046`). The gate is OPEN and Step 8 does not launch until it
   closes.**
     - **A pair is NOT LIVE iff BOTH: the account shows no insertion instant after that pair's `τ1`,
-      AND `|A| = 0`.** The second conjunct is the ruling — **liveness licenses trusting a null and the
-      null is `|A| = 0`**; a pair with `|A| ≥ 1` has its outcome directly observed.
+      AND the pair is NOT Continued** (`0048`). **Both Never started and Started-and-left are nulls** —
+      only Continued rests on positive evidence. **Note this makes liveness outcome-conditional on the
+      Continued test as well as on `|A|`**, which is permitted for the same reason: row-local predicates
+      on the position-5 output commute, and position 7 removes no rows.
     - **EVERY FIGURE STATES ITS POPULATION.** **The population YOU filter at position 6 is line 1 less
       D10 — 196,654, "APPLY".** Step 7 derives on line 4 less D10 — **147,370, "DERIV"** — which
       **requires S2 evidence**.
-    - **Exclusions: 604 on APPLY, 0 on DERIV**, both measured (`0047`). **Reporting 604 is correct and
-      is not a divergence.** **EXPECT 604 at position 6, `W = 108` — and if you get a different number,
+    - **Exclusions: 703 on APPLY (216 accounts), 99 on DERIV (73 accounts)** (`0048`). **Reporting 604 is correct and
+      is not a divergence.** **EXPECT 703 at position 6, `W = 108` — 604 never-started plus 99 started-and-left — — and if you get a different number,
       treat it as a POPULATION defect before an implementation one.** Step 7 built APPLY from the Step 5
       pair table rather than through your positions 1–5, so a mismatch most likely means **your frame
       join, `L2 = 1` exclusion or censoring differs**, not that the liveness rule is coded wrong.

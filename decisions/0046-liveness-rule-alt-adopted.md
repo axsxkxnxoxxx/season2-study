@@ -70,7 +70,15 @@ On APPLY, PF-LIMIT deleted **1,355** pairs. They split cleanly:
 | | Pairs | Outcome basis | Warrant |
 | :--- | ---: | :--- | :--- |
 | No S2 record anywhere | **604** | rests entirely on the null | **`|A| = 0`** — stated, uncontested |
-| Positive in-window S2 evidence | **751** | **directly observed** — 652 continued, 99 left | **none stated in `0021` through `0045`** |
+| Positive in-window S2 evidence | **751** | **652 directly observed (Continued); 99 NULL-BASED (Started-and-left)** | 652: none stated. **99: the same warrant that covers the 604** |
+
+> **CORRECTED 2026-08-14 (`decisions/0048`).** This row first read *"directly observed — 652 continued,
+> 99 left."* **The 99 are not directly observed.** `|A| ≥ 1` is observed; **the failure to meet the
+> Continued condition is not.** Under `0034` **only Continued rests on positive evidence**, so
+> Started-and-left is a null on exit — and `τ2 > τ1` makes it structural: **a pair silent after `τ1`
+> can produce no evidence in the `[τ1, τ2)` window the Continued test reads**, so it is scored "left"
+> **by construction.** The 751 split **652 observed / 99 null-based**, and the warrant reaches the 99.
+> `0047` corrected three claims in this entry and missed this one; Red Team's fourth review caught it.
 
 **Deleting rows whose outcomes are observed is a denominator operation, not a liveness inference.**
 Instance A measured the mechanism exactly: on DERIV the never-started **numerator is 9,145 under both
