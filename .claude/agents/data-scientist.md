@@ -53,12 +53,8 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
     - **Exclusions: 99 on DERIV (73 accounts), 703 on APPLY (216 accounts)** — 604 never-started plus
       99 started-and-left. **Under ALT-BROAD the DERIV diff is 99 against 99, not the `0 = 0` the
       superseded ALT gave**, so this step's dual control is informative on both populations. **Reporting both is correct, not a
-      divergence.** **Conjunct 2 narrows APPLY 196,654 → 33,373; conjunct 1 narrows 33,373 → 604** — so
-      **conjunct 1 does most of the work**, which is why the count moves with `W`. The 604 are **not**
-      "exactly the pairs with no S2 record anywhere": APPLY holds **23,260** such pairs and **22,656
-      stay live** (`0047`). **The DERIV zero is not forced by construction** — `has_s2` does not imply
-      `|A| ≥ 1`, **9,145 DERIV pairs are never-started**, and the zero comes from the filter order and
-      this pull date.
+      divergence.** **Conjunct 2 (NOT Continued) narrows APPLY 196,654 → 52,514; conjunct 1 narrows 52,514 → 703**
+      (`0050`). *(ALT's 196,654 → 33,373 → 604 is superseded and must not be implemented.)*
     - **Waterfall line 6 is OUTCOME-CONDITIONAL and must be reported as such.** `|A| = 0` is evaluated
       before liveness applies; that is permitted because both are **row-local predicates on the
       position-5 output and commute exactly**, and `0029`'s ordering rationale concerns per-filter
@@ -74,13 +70,14 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
       component separately — 52 / 56 / 79 / 89 / 98 / 99 / 125 / 148, a factor of 2.85**, growing
       faster than the rule's own 1.5× `W`-coupling.
     - **D10 is RE-DERIVED at each arm — name the reading** (`0047`). Censoring contains `W`, so the
-      censored population differs per arm; **freezing D10 at 108 gives 632 / 684 / 753 / 881** at the
-      upper arms instead. An arm table that does not name the reading is not reproducible.
+      censored population differs per arm; **freezing D10 at 108 gives TOTALS 746 / 823 / 918 / 1,117 at
+      `W` = 125 / 150 / 180 / 213, of which 632 / 684 / 753 / 881 is the never-started COMPONENT**
+      (`0050`). An arm table that does not name the reading is not reproducible.
 
 - **Step 9, headline result. Chained, dual implementation.** Of users who completed S1, compute the
   share who never started S2, who started and left, and who continued, with confidence intervals.
-  **Compute the bound on PAIRS, not users.** Under the adopted rule every liveness exclusion is
-  never-started by construction, the **never-started** bound on a **single denominator** is
+  **Compute the bound on PAIRS, not users.** **NOT every liveness exclusion is never-started** — 703 on APPLY is **604 never-started + 99
+  started-and-left** (`0050`). Taken over the 604 only, the **never-started** bound on a **single denominator** is
   **[16.6633%, 16.9704%] on APPLY, width 0.3071 pp**, ceiling equal to the unfiltered share **as an
   identity** — **identical under ALT and ALT-BROAD**, since the 99 started-and-left exclusions enter
   neither endpoint. **Compute a SECOND bound on the started-and-left share over ALL 703 exclusions** (`0049`) —

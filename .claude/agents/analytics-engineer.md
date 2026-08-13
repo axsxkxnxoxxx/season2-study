@@ -80,11 +80,12 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
     - **EVERY FIGURE STATES ITS POPULATION.** **The population YOU filter at position 6 is line 1 less
       D10 — 196,654, "APPLY".** Step 7 derives on line 4 less D10 — **147,370, "DERIV"** — which
       **requires S2 evidence**.
-    - **Exclusions: 703 on APPLY (216 accounts), 99 on DERIV (73 accounts)** (`0048`). **Reporting 604 is correct and
-      is not a divergence.** **EXPECT 703 at position 6, `W = 108` — 604 never-started plus 99 started-and-left — — and if you get a different number,
-      treat it as a POPULATION defect before an implementation one.** Step 7 built APPLY from the Step 5
-      pair table rather than through your positions 1–5, so a mismatch most likely means **your frame
-      join, `L2 = 1` exclusion or censoring differs**, not that the liveness rule is coded wrong.
+    - **Exclusions: 703 on APPLY (216 accounts) = 604 never-started + 99 started-and-left; 99 on
+      DERIV (73 accounts) = 0 + 99** (`0048`, `0050`). **EXPECT 703 at position 6, `W = 108`.**
+      **604 is the SUPERSEDED ALT answer. If you produce 604 you have implemented the withdrawn rule,
+      and that IS a divergence.** For any other number, **treat it as a POPULATION defect before an
+      implementation one**: Step 7 built APPLY from the Step 5 pair table, not through your positions
+      1–5, so a mismatch most likely means your frame join, `L2 = 1` exclusion or censoring differs.
     - **The monotone-decrease invariant is coded `>=`, NOT `>`** (`0047`). Decrease is **strict at line
       6 on BOTH populations under ALT-BROAD** — 703 on APPLY and 99 on DERIV, every arm (`0049`). **`>=` is kept anyway, so the invariant does not encode a property of one rule**: a filter position that legitimately removes nothing must not fail an assertion.
     - **Waterfall line 6 is OUTCOME-CONDITIONAL under this rule and must be reported as such** — `|A|`
