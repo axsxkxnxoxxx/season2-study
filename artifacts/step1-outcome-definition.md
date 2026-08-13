@@ -513,7 +513,7 @@ The consequence is mechanical, because 3.1 fixes `L := |E|` regardless:
 - **A listed-but-unaired episode inside S2 raises `L2`, which tightens `ceil(0.90 × L2)`.** That
   direction *is* signed: pairs that would have been **Continued** are pushed into **Started and
   left**, so it **overstates abandonment**. `F2 = max(E2)` may also be an episode that never
-  aired, in which case `F2 ∈ A` is unsatisfiable and **no pair on that show can ever score
+  aired, in which case `F2 ∈ A` — and equally `F2 ∈ A_H` after the amendment — is unsatisfiable and **no pair on that show can ever score
   Continued**.
 
 > **Required, therefore, and not merely "flagged":** the count of in-frame shows where
@@ -932,7 +932,9 @@ for any well-defined `A`, and Section 3.2 is what makes `A` well-defined.
 
 **Stated here rather than pushed to the frame, because Step 2 is the Human Lead's and Step 1
 does not add filters to it.** When `L2 = 1`, `E2 = {F2}` and `ceil(0.90 × 1) = 1`, so
-`|A| ≥ 1 ⟺ F2 ∈ A ⟺` the Continued condition. **Continued becomes equivalent to Started,
+`|A| ≥ 1 ⟺ F2 ∈ A ⟺` the Continued condition — and after the 2026-08-12 amendment the same
+collapse holds on `A_H` at `τ2`, since `E2 = {F2}` makes all three conjuncts one test at whichever
+bound is used. **Continued becomes equivalent to Started,
 Started-and-left is empty by construction, and `p` — defined only on Started-and-left — is
 never defined.** The three-state partition degenerates to two, and a two-state row cannot
 contribute to a headline that splits started-and-left from continued.
@@ -1154,7 +1156,7 @@ Recorded here so nothing is reconstructed later from memory.
   first-pass, per Section 5; **(ii)** an `action`-type arm excluding `checkin`-only and
   manual-`watch`-only evidence, per Section 2.3. Both exist because a permissive choice was
   made here and the permissiveness should be shown not to be load-bearing. **`H` is held
-  constant across every arm that varies `W`** (D10) — otherwise D3 and D8 are not comparable
+  constant across every arm that varies `W`** (D10) — otherwise **D3′** and D8 are not comparable
   between arms — and because the right-censoring rule contains `W`, **each `W` arm re-censors
   the population**, so the arms do not share a denominator and the retained-row count must be
   reported per arm.

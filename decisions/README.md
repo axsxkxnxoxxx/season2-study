@@ -46,6 +46,7 @@ Step 18 assembles the final log from these files.
 | [0032](0032-step4-deliverable-regeneration.md) | **Step 4's deliverables regenerated at zero API calls; the pull stopped SAFELY, not cleanly; the resume cost restated.** `step4_run.json` and `step4_pull_log.json` were written by a `--max-users 3` run and reported **2,137 complete against 2,549** — stale by 464 decided users and 23,410 calls, because the record-writers fire only from `main()`'s `finally` and neither long run reached it. Fixed with `--max-users 0`, verified at an unchanged request-log line count. The pull's ledger, progress file and raw cache all held and nothing was lost, but `finished: false`, `stop_reason: null` and no exit line means **"exited cleanly" was never supported**. Resume costs **~70,000 calls and ~7.8 hours**, not 4.28 — that figure came from 8 users over 100 seconds, 123 of whose pages were free, and is user-count based so blind to the untouched users being the heavier half of every bin. | 2026-08-12 | Closed |
 | [0033](0033-step8-per-air-period-censoring-counts.md) | **Step 8 reports retained-pair counts per air period after right-censoring, for every `W` arm.** The aggregate reads 97.6% retained at `W = 108` and hides that the loss is cohort-asymmetric — at `W = 213` the 2023–2025 cohort keeps **89.7%** against **97.3%** pre-2020, and survivors from recent titles are early adopters. **Closes the Product review's finding 5 ask**, though not the underlying thinness. Also disposes of the Engineering review's discard-rate residual: **bin 5 at +3 SD, no monotone trend, so sweep length is ruled out and the mechanism is unidentified** — recorded as a Step 14 limitation, not fixed. | 2026-08-12 | Closed |
 | [0034](0034-step1-continued-boundary-amendment.md) | **Step 1 §7 amended: Continued is evaluated at `τ2 = ⟦T0⟧ + (W + H) = 199 days`; never-started stays at `τ1` = 108.** The old boundary scored a late completer as an abandoner. **2,246 pairs move, all one direction, monotone since `A ⊆ A_H`; the never-started share is unchanged; censoring cost is zero and no shows are lost; no new constant** — `H = 91` was already adopted by name at D10. It **fixes 39.5% of the misclassification and leaves 60.5% standing** as a reported residual. D3 is replaced by **D3′**, run at every Step 13 arm; Step 10's `p` uses `m_H`; liveness stays anchored at `τ1`; Step 8 gains the `A ⊆ A_H` invariant. **Eleven Red Team rounds; the rule was never broken and every hold was against the justification prose.** Ledger items **8, 9 and 10** go to Step 14 and publish together, never netted. **No stated ground exists for preferring `τ2` to first-S2-watch + `H`** — four were attempted and all four failed, and that absence is recorded. | 2026-08-12 | Closed |
+| [0035](0035-agent-definitions-and-propagation-cleanup.md) | **The agent definition files are live spec and are amended to the decision log; Step 10 receives `0034`; two propagation errors and five stale expressions corrected.** `CLAUDE.md` points agents at their definition file first, and **ten decisions had propagated to `task-sheet.md` and none to `.claude/agents/`**. Both `data-scientist` halves — **byte-identical, and Step 7 is the next dual pair** — carried withdrawn liveness spec: logged events not insertion time, "well beyond the normal gap" not a named percentile, user-level not pair-level. **Identical halves in the wrong state produce a clean diff and a wrong answer**, which is the argument for treating these files as spec. Also fixed: Step 1's premiere anchoring, Step 6's flattening rule, Step 0's superseded 403 rule, Step 8's "fixed documented order" and its vacuous premiere invariant. `task-sheet.md` Step 10 gains `p` on `m_H`, the earlier-shifting direction, and the re-reported `p = 1.0` residual. | 2026-08-13 | Closed |
 
 **A note on authority.** Entries 0001–0004 and 0013–0033 are Human Lead decisions. **0005–0008 are agent-taken,
 inside a Chained step, and are recorded retrospectively for ratification** — they shaped the
@@ -346,13 +347,16 @@ that surfaced it.
     (false: `T0`'s `S1_completion_date` term binds on **52.7%** of pairs), temporal position (does not
     bind: D10 already imposes the clearance), arm comparability (false: no diagnostic window changes
     length), and choice-at-a-price (false and backwards: `τ2` gives every starter **more** than 91
-    days, and item 9's set **grows** under the start anchor). **Step 2's marginal-lag distribution is
-    the start-anchored rule's own distribution**, so the study computes the alternative's evidence and
+    days, and item 9's set **grows** under the start anchor). **§2 of the amendment carries the marginal-lag
+    distribution — not Step 2, which is the frame ledger and has none — and it is the start-anchored
+    rule's own distribution**, so the study computes the alternative's evidence and
     uses it to grade the adopted rule. **Not to be repaired by a fifth attempt without new evidence.**
     ([0034](0034-step1-continued-boundary-amendment.md), `artifacts/step1-amendment-continued-boundary.md` §21)
 41. **D11 is applied to the amendment's record set only, not to the Step 5 pair table or the Step 6
     lag script.** The 128,099 can therefore contain pairs whose only S2 evidence is post-cutoff, and
-    `T0` may be fixed by a post-cutoff S1 record. **Step 2's marginal p90 of 100.39 is pre-D11.**
+    `T0` may be fixed by a post-cutoff S1 record. **The amendment's §2 marginal p90 of 100.39 is pre-D11** — §2 of
+    `artifacts/step1-amendment-continued-boundary.md`, produced by `src/step6_completion_lag.py`, not
+    Step 2 of the task sheet.**
     Extending the filter would move the **Step 5 waterfall** and the distribution **`W = 108` was
     derived from**, both inside approved gates, so the limit is **disclosed rather than chased**.
     Bounded: 77 records / 28 pairs in-sample, **1,734 of 27,656,434** account-wide, and the 4 pairs
@@ -365,3 +369,16 @@ that surfaced it.
     now rest on the contamination-exclusion channel — **50,066** pairs, not 73,801, since the 23,735
     dropped at the waterfall's second step have `A_H = ∅` and can enter no numerator.
     ([0034](0034-step1-continued-boundary-amendment.md))
+
+43. **Q1 remains open but its warrant cites a diagnostic `0034` replaced.** §10.1's open question 1 —
+    whether the Continued conjuncts are the right ones — rests in part on *"D3 covers the strict rule's
+    real weakness"* and is triggered by *"if D3 returns a high resumption share."* **`0034` replaced D3
+    with D3′** because that quantity became the operator itself. **Q1 is genuinely still open** — it
+    asks about the **conjuncts** while the amendment moved the **instant** — but its stated warrant has
+    a dangling term and should be restated against D3′ before it is answered.
+    ([0034](0034-step1-continued-boundary-amendment.md), `artifacts/step1-outcome-definition.md` §10.1)
+44. **The Step 6 headers' "unaffected by the rendering" clause overreaches.** `0029` closed the
+    rendering question correctly, but both Step 6 artifacts publish a **Step 13 minimum range** —
+    `[37, 107]` and `[37.70, 107.71]` — which *is* a rendered figure and does move to `[38, 108]` under
+    `0025`'s ceiling rule. **Practically moot**, since `0027`'s arms run to 213 and therefore cover it,
+    but the clause claims more than it should. ([0035](0035-agent-definitions-and-propagation-cleanup.md))

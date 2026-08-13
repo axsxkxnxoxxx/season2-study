@@ -9,11 +9,93 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
 
 ## Steps you own
 
-- **Step 0, access and setup. Chained.** The Trakt API application is already registered. The Client ID is in `.env` and is loaded at runtime; it is never written into a code file, a log, or an artifact. Authentication is settled: every endpoint this study uses is OAuth Optional and works with the Client ID alone on public profiles, so do not build an OAuth flow. Private profiles return nothing; log them and move on. The rate limit is settled: Trakt allows 1000 GET calls per 5 minutes at the application level, which is 200 per minute. Throttle at 150 per minute and never run at the ceiling. Build a resumable client that persists raw responses to `raw/` before parsing and never re-requests what is already on disk. On timeouts, connection errors, and 5xx responses, retry with backoff. On a 429, read the `Retry-After` header, pause that many seconds, then resume. Never retry the same request in a loop. If 429s persist across several consecutive pauses, stop and report. Log the status, the `X-Ratelimit` object, `Retry-After`, the endpoint, and the method every time. On a 403, hard stop and report: that is a block, not a throttle. Deliver a working client, one successful test pull, and the documented rate limit. Reviewer: Engineering reviews infrastructure constraints.
-- **Step 3, user discovery. Chained.** Channel A seeds a few hundred public profiles and crawls the follower graph outward. Channel B collects owners of public lists. Tag every username with its source channel; this is required, not optional. Do not harvest usernames from comments on the shows being measured, because that selects on the outcome. Run until usable-user yield plateaus. The username pool goes to `raw/` and never to `artifacts/`. The yield curve, which is counts only, goes to `artifacts/`. The Human Lead reviews the yield curve before Step 4 runs at full scale. Not a gate, but Step 4 does not scale up without it.
-- **Step 4, pull watch histories. Chained.** Pull full episode-level watch history with timestamps for each discovered user. Store raw in `raw/`, parse separately into `processed/`. Log failures and private profiles to `logs/` rather than dropping them silently. Checkpoint continuously so the job survives interruption. Deliver the raw history store in `raw/`, a pull log with success, private, and error counts in `logs/`, and summary counts in `artifacts/`. Reviewer: Engineering reviews throughput and failure rates.
-- **Step 5, contamination diagnostics. GATE.** TV Time shut down 15 July 2026 and users bulk-imported into Trakt. Imported timestamps are backfill, not real watch dates. Both W and the liveness rule run on timestamps, so this must be caught before either is derived. Flag accounts showing implausible bursts of historical logging concentrated in a short real-time span. Flag bot and duplicate accounts. Report the share of history that is plausibly backfilled overall. Propose an exclusion rule and do not adopt it. Deliver the contamination report with counts and the proposed exclusion rule in `artifacts/`. Red Team reviews. Nothing downstream runs until the Human Lead approves the exclusion rule.
-- **Step 8, analysis table. GATE, dual implementation.** Apply the frame, contamination exclusions, the S1 completion rule, W, and the liveness rule in a fixed documented order. Build one row per user-show pair carrying outcome state, abandonment point, discovery channel, and all Step 2 show fields. Record sample size after each filter. Assert the invariants: outcome states are mutually exclusive and sum to the sample; filter counts decrease monotonically; distinct episodes never exceed season length; no clock start precedes an S2 premiere. Report all invariant results. The table goes to `processed/`. The filter waterfall and invariant report, which are counts only, go to `artifacts/`. Red Team reviews the filter order and the invariant set. Approval is required before any result is computed.
+> **This section was amended 2026-08-13 (`decisions/0035`). It had drifted behind the decision log:
+> Step 0 carried the superseded "on a 403, hard stop, always" rule, and Step 8 carried "a fixed
+> documented order" where the order is now exact, plus an invariant that is vacuous.**
+>
+> **`decisions/` is authoritative over this file, and `CLAUDE.md` is authoritative on API discipline.**
+> Where they disagree with this file, they win and the disagreement is a defect to report. Read
+> `task-sheet.md` for the step you are running: it carries the propagated rulings in full.
+
+- **Step 0, access and setup. Chained — COMPLETE.** The Trakt application is registered. The Client ID
+  is in `.env`, loaded at runtime, and **never written into a code file, a log, or an artifact**.
+  Authentication is settled: every endpoint is OAuth Optional and works with the Client ID alone on
+  public profiles, so **do not build an OAuth flow**. The rate limit is settled: 1000 GET calls per 5
+  minutes at the application level, 200 per minute — **throttle at 150 and never run at the ceiling**.
+  Build a resumable client that persists raw responses to `raw/` before parsing and **never re-requests
+  what is already on disk**. On timeouts, connection errors and 5xx, retry with backoff. On a **429**,
+  read `Retry-After`, pause that many seconds, resume; never retry in a loop; if 429s persist across
+  several consecutive pauses, stop and report. Log the status, the `X-Ratelimit` object, `Retry-After`,
+  the endpoint and the method every time.
+    - **The 403 rule is NOT "hard stop, always." That version is superseded** — amended by the Human
+      Lead 2026-08-10, because it would halt an unattended Step 4 pull on a single private profile.
+      **Classify before acting.** On a **user resource**: skip that user, log it with full headers, and
+      continue — bounded by two circuit breakers, **5** consecutive unconfirmed user-403s with no
+      intervening 2xx, and **200** user-403s in a run. **Only a 2xx resets the streak**; a 401 or 404
+      does not. **Not on a user resource** — or on a user resource where `X-Private-User` is present and
+      false-like, or present and unrecognized — **hard stop and report.** **Ambiguity resolves strict.**
+    - **`X-Private-User` is positive confirmation ONLY.** It is absent from every captured response on
+      the endpoint family Step 4 uses, so its absence carries no information and must never be read as
+      "not private." The endpoint path is the primary discriminator.
+    - **A skipped user is NOT a user with no history.** Record it as `access_denied` and keep it
+      distinguishable downstream — a skipped user silently read as empty becomes a false "never started"
+      in the headline.
+
+- **Step 3, user discovery. Chained — COMPLETE.** Channel A seeds public profiles and crawls the
+  follower graph; Channel B collects owners of public lists. **Tag every username with its source
+  channel** — required, not optional, because Step 11 recomputes the headline within each. **Do not
+  harvest usernames from comments on the shows being measured**, which selects on the outcome. The
+  username pool goes to `raw/` and never to `artifacts/`; the yield curve, counts only, goes to
+  `artifacts/`.
+
+- **Step 4, pull watch histories. Chained — STOPPED at 2,549 complete users, 62.9% of plan.** Full
+  episode-level history with timestamps per user, raw to `raw/`, parsed separately to `processed/`.
+  Failures and private profiles go to `logs/`, never dropped silently. Checkpoint continuously so the
+  job survives interruption. **The pull stopped SAFELY, not cleanly** (`decisions/0032`): the ledger,
+  progress file and raw cache all held and nothing was lost, but `finished: false` and no exit line
+  means the run's own record was not trustworthy and had to be regenerated. **Read failure counts from
+  `processed/step4/pull_ledger.jsonl`, never from the failure log**, which carries 14 duplicate rows;
+  and read spend from `api_requests.ndjson`, which is authoritative over the ledger's 246-call
+  under-count.
+
+- **Step 5, contamination diagnostics. GATE — APPROVED 2026-08-12 (`decisions/0021`, `0023`).
+  Complete; do not re-derive.** TV Time shut down 15 July 2026 and users bulk-imported into Trakt, so
+  imported timestamps are backfill rather than real watch dates, and both `W` and the liveness rule run
+  on timestamps. The adopted rule uses the play **`id`** as a second clock — a global auto-increment at
+  insert — with an **isotonic PAVA calibration fitted on checkin and scrobble records only**. The
+  analysis population is **201,900** pairs and the clean-record estimation sample is **128,099**.
+  **`first_s2_lag_days` is a BACKFILL measure** — insertion instant minus claimed `watched_at` — **not a
+  start-time lag**; it was misread as the latter for six revisions of the Step 1 amendment draft
+  (`decisions/0034`). The stored calibration curve is a required input downstream and **is never
+  refitted** by Step 7 or Step 8.
+
+- **Step 8, analysis table. GATE, dual implementation. NOT LAUNCHED.** Build one row per user-show pair
+  carrying outcome state, abandonment point, discovery channel and all Step 2 show fields; **retain
+  `action` as a column**, Step 13 has an arm that needs it. Record sample size after each filter.
+    - **Apply the filters in EXACTLY this order** (`decisions/0029`) — the final row set commutes but
+      the per-filter sample sizes do not, and two instances applying the same filters in different
+      orders would report different waterfalls on an identical table:
+      **1.** Step 2 frame → **2.** `L2 = 1` exclusion → **3.** S1 completion rule → **4.** contamination
+      exclusion → **5.** right-censoring → **6.** liveness → **7.** outcome assignment.
+      "A fixed documented order" is withdrawn: it is not reproducible across isolated instances.
+    - **Outcome assignment evaluates TWO instants** (`decisions/0034`): `|A| = 0` at
+      `τ1 = ⟦T0⟧ + W × 24h`, and the Continued condition at `τ2 = ⟦T0⟧ + (W + H) × 24h` on `A_H`.
+      **`|A| ≥ 1` at `τ1` remains a conjunct of Continued** — dropping it puts a day-150 starter
+      completing by day 190 in two states at once.
+    - **Invariants.** Outcome states are mutually exclusive and sum to the sample; filter counts
+      decrease monotonically; distinct episodes never exceed season length; **`A ⊆ A_H` on every row**.
+      **The old invariant "no clock start precedes an S2 premiere" is VACUOUS under a finale-anchored
+      clock and catches nothing** — it is replaced by: clock start is on or after the S2 finale date,
+      on or after the first-pass S1 completion date, and **equals one of the two**. That check must
+      compute the S1 completion date **independently**, not read back the pipeline's value, or its
+      equality clause proves nothing. **Label `A ⊆ A_H` and the set-membership check as CODE checks,
+      not data checks** — both are true by construction.
+    - **Required counts to `artifacts/`, aggregates only:** the two drop counts, D2, **D3′** (per Step
+      13 arm, with its cleared count and share), D8, D9, right-censoring removal as **two lines**, and
+      **retained-pair counts PER AIR PERIOD after right-censoring for every `W` arm**
+      (`decisions/0033`) — the aggregate 97.6% hides a cohort-asymmetric loss.
+    - The table goes to `processed/`; the filter waterfall and invariant report, counts only, to
+      `artifacts/`.
 
 ## Where files go
 

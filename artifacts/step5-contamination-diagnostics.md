@@ -57,7 +57,9 @@ Air-date stamping (§4, mode 3) writes an episode's **original broadcast instant
 episode that instant is **≤ the S2 finale air date ≤ `T0` < `τ1`** by construction. So an
 air-date-stamped S2 record lands in `A` **on its own**, and the pair cannot score Never started.
 Where the whole season is stamped, `F2 ∈ A` and `|A| ≥ ceil(0.90 × L2)` both hold and the pair
-scores **Continued**.
+scores **Continued**. *(Written before the 2026-08-12 amendment, which moved Continued to `A_H` at
+`τ2`. The conclusion holds a fortiori: `A ⊆ A_H` since `τ1 < τ2`, so a pair satisfying both conjuncts
+on `A` satisfies them on `A_H`. The argument is unaffected.)*
 
 Revision 1 §3 said exactly this — *"the strongest possible 'continued' signal… left alone these
 would bias W downward and inflate Continued."* Revision 3 reversed it on no new evidence, only on

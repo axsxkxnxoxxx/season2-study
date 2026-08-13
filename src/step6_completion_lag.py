@@ -6,10 +6,17 @@ READ ONLY. ZERO API calls. Nothing here changes W, reopens the gate, or
 proposes a rule. It computes one number that was never computed.
 
 WHY IT EXISTS
-  Step 1 sec 7 makes W govern TWO boundaries, not one:
-    Never started   |A| = 0
-    Continued       |A| >= 1 AND F2 in A AND |A| >= ceil(0.90 * L2)
-  where A is the S2 episodes with watched_at < tau1 = [T0] + W*24h.
+  WRITTEN BEFORE THE AMENDMENT, AND ITS PREMISE IS NOW THE THING THAT CHANGED.
+  At the time, Step 1 sec 7 made W govern TWO boundaries on ONE instant:
+    Never started   |A| = 0                                        at tau1
+    Continued       |A| >= 1 AND F2 in A AND |A| >= ceil(0.90 * L2) at tau1
+  That is SUPERSEDED. decisions/0034 moved Continued to tau2 = [T0] + (W+H)*24h,
+  evaluated on A_H, precisely because W was doing two jobs that are different
+  questions -- which is the finding this script produced. The number it computes
+  is unchanged and remains the live provenance for sec 2 of
+  artifacts/step1-amendment-continued-boundary.md; only the premise it was
+  written against has moved. Retained as written, with the supersession named,
+  because the amendment cites this file's output.
   Step 6 derived W from the lag to the FIRST S2 episode only. For any pair
   with L2 >= 2 the time to satisfy the Continued condition strictly exceeds
   the time to the first episode, so the percentile of the second boundary is
