@@ -41,7 +41,9 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
 
 - **Step 7, liveness rule. GATE — APPROVED 2026-08-13 with NO free parameter (`decisions/0042`).
   Complete; do not re-derive.** **A pair is NOT LIVE if and only if the account shows no insertion
-  instant after that pair's `τ1`.** **There is no threshold.** One was derived three times — 632 d,
+  instant after that pair's `τ1`.** **There is no threshold, but the rule is NOT free of parameters** — it has **no parameter of its own**
+  and is **fully determined by `W`**, its exclusion set running **348 pairs at `W = 38` to 949 at
+  `W = 213`** (`0044`). One threshold was derived three times — 632 d,
   then 1,293 d — and **deleted**, because the three outcome shares move only 0.026 / 0.038 / 0.012 pp
   across 787 / 1,293 / 2,200 days and the parameter-free rule, about **3% of the clustered sampling
   width**. Liveness runs on **insertion time** (`0021`), reads the stored calibration and **never

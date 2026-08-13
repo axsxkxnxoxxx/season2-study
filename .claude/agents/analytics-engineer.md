@@ -69,6 +69,25 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
   (`decisions/0034`). The stored calibration curve is a required input downstream and **is never
   refitted** by Step 7 or Step 8.
 
+- **Step 7, liveness rule. NOT YOURS TO DERIVE — but you APPLY it at Step 8, so the rule is stated
+  here.** Added 2026-08-13 (`decisions/0044`) after it was found stated in neither of these files while
+  Step 8 is the step that applies it.
+    - **A user-show pair is NOT LIVE if and only if the account shows no insertion instant after that
+      pair's `τ1 = ⟦T0⟧ + W × 24h`. Otherwise it is live.** There is **no threshold**; one was derived
+      three times and deleted (`0042`).
+    - **Liveness runs on record INSERTION time, not claimed `watched_at`** (`0021`, gate 2 of 5). Read
+      the stored calibration at `processed/step5/calibration.npz`; **never refit it** (`0029`).
+    - **It is a PAIR-LEVEL filter.** Evidence is account-wide, the test is clock-start-relative, and
+      clock start is pair-specific. **One account can be live for one show and not another. Never drop
+      a user wholesale.**
+    - **Do not reintroduce a pre-`τ1` requirement in any form.** It has been withdrawn twice — `0040`
+      §1 and `0042` §3 — both times for contradicting approved gate `0021`.
+    - **The rule has no parameter of its own, but it is fully determined by `W`** (`0044`). Its
+      exclusion set **is** the open-ended bucket, which runs **348 pairs at `W = 38` to 949 at
+      `W = 213`** — a factor of **2.7** across the mandated Step 13 arms.
+    - **The gate is OPEN.** Red Team's HOLD of 2026-08-13 left three items unresolved. **Step 8 does
+      not launch until it closes.**
+
 - **Step 8, analysis table. GATE, dual implementation. NOT LAUNCHED.** Build one row per user-show pair
   carrying outcome state, abandonment point, discovery channel and all Step 2 show fields; **retain
   `action` as a column**, Step 13 has an arm that needs it. Record sample size after each filter.

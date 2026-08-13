@@ -233,15 +233,19 @@ W is a number of days. It is derived here and used everywhere downstream.
 > **A user-show pair is NOT LIVE if and only if the account shows no insertion instant after that
 > pair's `τ1 = ⟦T0⟧ + W × 24h`. Otherwise it is live.**
 >
-> **There is no numeric parameter.** The threshold was derived three times and **deleted** — the
-> headline is insensitive to it across its own clustered interval.
+> **The rule has NO PARAMETER OF ITS OWN. It is not free of parameters.** The threshold was derived
+> three times and **deleted** — the headline is insensitive to it across its own clustered interval.
+> **But the rule's behaviour is fully determined by `W`**, set at another gate: its exclusion set **is**
+> the open-ended bucket, a pure function of `W`, running **348 pairs at `W = 38` to 949 at `W = 213`, a
+> factor of 2.7** across the mandated Step 13 arms. **`W` was held at 108 for the entire sensitivity
+> test that justified the deletion.** (`decisions/0044`, withdrawing `0042` §1's "no free parameter".)
 
 - [ ] **Liveness runs on record INSERTION time, not claimed `watched_at`** (`decisions/0021`, gate 2 of 5). **Any record inserted after the window closed proves the account was alive, whatever date it claims.** This is the ruling the whole rule now rests on.
 - [ ] **Read the stored play-`id` isotonic calibration at `processed/step5/calibration.npz`. NEITHER INSTANCE REFITS IT** (`0029`). Two independently fitted curves would differ and the diff would confound a calibration difference with an implementation difference.
 - [ ] **Liveness is a PAIR-LEVEL filter, anchored at `τ1`** (`0034`). Evidence is account-wide — the whole sweep, other shows and movies included — but the test is clock-start-relative and clock start is pair-specific. **One account can be live for one show and not another. Never drop a user wholesale.**
 - [ ] **`τ2` plays no part.** Liveness licenses trusting a null, and the null is `|A| = 0`, tested at `τ1`.
 - [ ] **Exclusions on the derivation population (line 4 less D10, 147,370): 751 pairs from 166 accounts — 0.51%.**
-- [ ] **Report the excluded count and its share, and state that the rule has no free parameter.**
+- [ ] **Report the excluded count and its share, and state the `W`-coupling — NOT that the rule has no free parameter.** That claim is withdrawn (`decisions/0044`). The honest statement is **"no parameter of its own; fully determined by `W`"**, with the 348–949 range given at the point of use.
 
 ### What was deleted, and why the record keeps it
 
@@ -384,7 +388,8 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
 - [ ] **The W arms must also extend ABOVE the adopted `W`, with arms at 150 and 213 days.** Human Lead decision, 2026-08-12 (`decisions/0027-step13-w-arms-above-the-adopted-value.md`). **213 is the 90th percentile among C1 pairs with 8 or more years of exposure** — the direction the right-censoring diagnostic runs, and an upper bound rather than a rival estimate, since exposure and cohort are not separable on this data. Every other mandated range tops out at or below the adopted `W = 108`, so without these two arms **the sensitivity would not test the one direction the known bias points.** 150 sits between the adopted value and the bound so the response is not read off two endpoints alone. Direction, stated so the arms are interpretable: a larger `W` admits later starters and moves the never-started share **down**.
 - [ ] **Report the retained-row count for every W arm.** The right-censoring rule contains W, so each arm re-censors the population and the arms do NOT share a denominator.
 - [ ] **Hold `H` constant across every arm that varies W.** Otherwise **D3′** and D8 are not comparable between arms. (D3 was replaced by D3′ at `decisions/0034`; the requirement is unchanged and now governs D3′.)
-- [ ] **Vary the liveness threshold — and REFIT IT PER `W` ARM.** Human Lead ruling, 2026-08-13 (`decisions/0038`). **`W` and the liveness threshold are NOT independent axes and must not be presented as if they were.** The bracketing-gap reference is selected by `τ1`, which contains `W`, so the threshold moves with the arm — measured 408 → 576 days across the arms on the clean sample. **Report BOTH the refitted threshold AND the realised exclusion rate for every arm**, so the coupling is visible rather than hidden inside a single frozen number that would fail to deliver its stated rate at every arm but one.
+- [ ] ~~**Vary the liveness threshold — and REFIT IT PER `W` ARM.**~~ **WITHDRAWN 2026-08-13 (`decisions/0044`), and `0038` §6's refit requirement is withdrawn with it. THERE IS NO THRESHOLD TO VARY OR REFIT** — `0042` deleted it. This item had no referent and a data-scientist instance would have tried to execute it.
+- [ ] **REPORT THE LIVENESS EXCLUSION COUNT PER `W` ARM.** Human Lead ruling, 2026-08-13 (`decisions/0044`). **The rule has no parameter of its own, but it is fully determined by `W`:** its exclusion set **is** the open-ended bucket, and that bucket is a pure function of `W` — **348 pairs at `W = 38`, 706 at 91, 751 at 108, 779 at 150, 949 at 213. A factor of 2.7 across the mandated arms.** Report the count at every arm so the coupling is visible. **`W` and liveness are not independent axes and never were** — deleting the threshold made the coupling total rather than removing it.
 - [ ] Vary the S1 completion rule at 100 percent and at 90 percent. **That is the threshold, not the date definition — the two arms below are separate and neither is covered by it**
 - [ ] **Arm: S1 completion DATE as last-observed rather than first-pass**, per Step 1 §5. Required by Step 1 §9, and it does more than test a choice: **recompute D2 inside this arm.** D2 on the operative first-pass clock cannot see the rewatch artifact the Step 1 §5 addendum documents — a rewatch cannot move a first-pass clock start, so the primary D2 count will read zero for that failure mode, and **a zero there is not evidence it is rare.** This arm is the only place its frequency is measurable
 - [ ] **Arm: `action`-type, excluding `checkin`-only and manual-`watch`-only evidence**, per Step 1 §2.3. Requires the `action` column retained at Step 8. Exists because Step 1 made a permissive choice and the permissiveness should be shown not to be load-bearing
