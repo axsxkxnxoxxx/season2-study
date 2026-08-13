@@ -45,6 +45,7 @@ Step 18 assembles the final log from these files.
 | [0031](0031-the-50-completer-floor.md) | **The ≥50 S1-completer floor stands, and now has the warrant it never had.** The largest population rule in the study — 44,617 shows to 2,094 — and the only one with no entry and no sensitivity curve. Published: ≥25 gives +81% candidates, ≥100 gives −50%, and **there is no break in the distribution at 50**. Justified on cost, not on shape: shows near the floor are 42% of the frame by count but **15% by pairs**. **The frame at ≥25 is not computable without 1,699 API calls** and no claim is made about it. | 2026-08-12 | Closed |
 | [0032](0032-step4-deliverable-regeneration.md) | **Step 4's deliverables regenerated at zero API calls; the pull stopped SAFELY, not cleanly; the resume cost restated.** `step4_run.json` and `step4_pull_log.json` were written by a `--max-users 3` run and reported **2,137 complete against 2,549** — stale by 464 decided users and 23,410 calls, because the record-writers fire only from `main()`'s `finally` and neither long run reached it. Fixed with `--max-users 0`, verified at an unchanged request-log line count. The pull's ledger, progress file and raw cache all held and nothing was lost, but `finished: false`, `stop_reason: null` and no exit line means **"exited cleanly" was never supported**. Resume costs **~70,000 calls and ~7.8 hours**, not 4.28 — that figure came from 8 users over 100 seconds, 123 of whose pages were free, and is user-count based so blind to the untouched users being the heavier half of every bin. | 2026-08-12 | Closed |
 | [0033](0033-step8-per-air-period-censoring-counts.md) | **Step 8 reports retained-pair counts per air period after right-censoring, for every `W` arm.** The aggregate reads 97.6% retained at `W = 108` and hides that the loss is cohort-asymmetric — at `W = 213` the 2023–2025 cohort keeps **89.7%** against **97.3%** pre-2020, and survivors from recent titles are early adopters. **Closes the Product review's finding 5 ask**, though not the underlying thinness. Also disposes of the Engineering review's discard-rate residual: **bin 5 at +3 SD, no monotone trend, so sweep length is ruled out and the mechanism is unidentified** — recorded as a Step 14 limitation, not fixed. | 2026-08-12 | Closed |
+| [0034](0034-step1-continued-boundary-amendment.md) | **Step 1 §7 amended: Continued is evaluated at `τ2 = ⟦T0⟧ + (W + H) = 199 days`; never-started stays at `τ1` = 108.** The old boundary scored a late completer as an abandoner. **2,246 pairs move, all one direction, monotone since `A ⊆ A_H`; the never-started share is unchanged; censoring cost is zero and no shows are lost; no new constant** — `H = 91` was already adopted by name at D10. It **fixes 39.5% of the misclassification and leaves 60.5% standing** as a reported residual. D3 is replaced by **D3′**, run at every Step 13 arm; Step 10's `p` uses `m_H`; liveness stays anchored at `τ1`; Step 8 gains the `A ⊆ A_H` invariant. **Eleven Red Team rounds; the rule was never broken and every hold was against the justification prose.** Ledger items **8, 9 and 10** go to Step 14 and publish together, never netted. **No stated ground exists for preferring `τ2` to first-S2-watch + `H`** — four were attempted and all four failed, and that absence is recorded. | 2026-08-12 | Closed |
 
 **A note on authority.** Entries 0001–0004 and 0013–0033 are Human Lead decisions. **0005–0008 are agent-taken,
 inside a Chained step, and are recorded retrospectively for ratification** — they shaped the
@@ -56,7 +57,7 @@ whether or not it was treated as one at the time. They are listed here so the di
 
 Five. Nothing downstream of a gate runs without written Human Lead approval at it.
 
-- [x] **Step 1** outcome definition — approved 2026-08-10 ([0001](0001-step1-outcome-definition-gate.md))
+- [x] **Step 1** outcome definition — approved 2026-08-10 ([0001](0001-step1-outcome-definition-gate.md)); **§7 reopened as an amendment and re-approved 2026-08-12** at `τ2 = ⟦T0⟧ + 199 days` for Continued ([0034](0034-step1-continued-boundary-amendment.md))
 - [x] **Step 5** contamination exclusion rule — approved 2026-08-12 ([0021](0021-step5-contamination-gate.md))
 - [x] **Step 6** window `W` — approved 2026-08-12 at **W = 108 days** ([0026](0026-step6-window-w-gate.md))
 - [ ] Step 7 liveness threshold
@@ -338,3 +339,29 @@ that surfaced it.
     whether the decision rule's action is stated at a confidence the 2023–2025 evidence — 168 shows,
     release-strategy cells of 26 to 59 — actually supports.
     ([0033](0033-step8-per-air-period-censoring-counts.md))
+
+40. **The Step 1 §7 amendment has no stated ground for its anchor choice.** There is no argument
+    anywhere in the approved text for preferring `τ2 = ⟦T0⟧ + (W + H)` to **first-S2-watch + `H`**.
+    Four were attempted across revisions 6, 7, 8 and 12 and **all four failed review** — exogeneity
+    (false: `T0`'s `S1_completion_date` term binds on **52.7%** of pairs), temporal position (does not
+    bind: D10 already imposes the clearance), arm comparability (false: no diagnostic window changes
+    length), and choice-at-a-price (false and backwards: `τ2` gives every starter **more** than 91
+    days, and item 9's set **grows** under the start anchor). **Step 2's marginal-lag distribution is
+    the start-anchored rule's own distribution**, so the study computes the alternative's evidence and
+    uses it to grade the adopted rule. **Not to be repaired by a fifth attempt without new evidence.**
+    ([0034](0034-step1-continued-boundary-amendment.md), `artifacts/step1-amendment-continued-boundary.md` §21)
+41. **D11 is applied to the amendment's record set only, not to the Step 5 pair table or the Step 6
+    lag script.** The 128,099 can therefore contain pairs whose only S2 evidence is post-cutoff, and
+    `T0` may be fixed by a post-cutoff S1 record. **Step 2's marginal p90 of 100.39 is pre-D11.**
+    Extending the filter would move the **Step 5 waterfall** and the distribution **`W = 108` was
+    derived from**, both inside approved gates, so the limit is **disclosed rather than chased**.
+    Bounded: 77 records / 28 pairs in-sample, **1,734 of 27,656,434** account-wide, and the 4 pairs
+    whose first S2 record is post-cutoff are **not in `W`'s C1 derivation population**, so `W` cannot
+    move. ([0034](0034-step1-continued-boundary-amendment.md))
+42. **`first_s2_lag_days` is a backfill measure and was misread as a start-time filter for six
+    revisions of the amendment draft.** It is `tau − ts` — a record's estimated insertion instant minus
+    its claimed `watched_at`. **Step 5 named it correctly throughout**, so the approved Step 5 gate is
+    untouched, but two ledger entries were argued from the misreading before it was caught. The floors
+    now rest on the contamination-exclusion channel — **50,066** pairs, not 73,801, since the 23,735
+    dropped at the waterfall's second step have `A_H = ∅` and can enter no numerator.
+    ([0034](0034-step1-continued-boundary-amendment.md))

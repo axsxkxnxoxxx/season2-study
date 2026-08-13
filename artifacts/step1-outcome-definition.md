@@ -889,15 +889,43 @@ convention governs D3, D8 and right-censoring so no second reading survives anyw
 range form was the F1 defect and is withdrawn. `A ⊆ E2` by construction, so `|A| ≤ L2` and
 `m ∈ E2`.
 
+> **AMENDED 2026-08-12 — the Continued boundary moves to `τ1 + H`.** Approved by the Human Lead.
+> Record: `decisions/0034-step1-continued-boundary-amendment.md`; full derivation, eleven Red Team
+> rounds and their dispositions: `artifacts/step1-amendment-continued-boundary.md`.
+>
+> Let **`τ2 = ⟦T0⟧ + (W + H) × 24h`**. At the approved `W = 108` and `H = 91`, **`τ2 = ⟦T0⟧ + 199
+> days`**. Let **`A_H`** be `A` recomputed with the bound moved from `τ1` to `τ2` — the set D3
+> already defines. `A ⊆ A_H` by construction, since `τ1 < τ2`.
+
 | State | Condition |
 | :--- | :--- |
 | **Never started** | `\|A\| = 0` |
-| **Continued** | `\|A\| ≥ 1` **and** `F2 ∈ A` **and** `\|A\| ≥ ceil(0.90 × L2)` |
+| **Continued** | `\|A\| ≥ 1` **and** `F2 ∈ A_H` **and** `\|A_H\| ≥ ceil(0.90 × L2)` |
 | **Started and left** | `\|A\| ≥ 1` **and not** the Continued condition |
 
+**The `|A| ≥ 1` conjunct is load-bearing, not redundant.** Without it a pair with a first S2
+episode on day 150 completing by day 190 would satisfy the other two conjuncts with `|A| = 0` and
+fall in **two** states. It must not be dropped as tidying.
+
+**Continued is a 199-day statement while never-started is a 108-day statement, and the two must
+not be described as measured alike.** This must appear wherever the split is reported.
+
+**Superseded by this amendment:** the pre-amendment Continued row read
+`|A| ≥ 1 ∧ F2 ∈ A ∧ |A| ≥ ceil(0.90 × L2)` — evaluated at `τ1`. That boundary scored a late
+completer as an abandoner, which was false. **2,246 pairs move, all in one direction; the change
+is monotone since `A ⊆ A_H`; the never-started share is unchanged to four decimal places; and the
+censoring cost is zero, because D10 already requires `⟦T0⟧ + (max(W, 91) + H) × 24h ≤ τ_pull`,
+which at `W = 108` is exactly `τ2`.** No new constant is introduced.
+
+**What it does not fix.** Of the 5,686 Started-and-left pairs that eventually complete S2, **2,246
+are reclassified and 3,440 are not — it fixes 39.5% and leaves 60.5% standing** as a reported
+residual under D3′. **There is no stated ground in this document for preferring `τ2` to
+first-S2-watch + `H`**; four were attempted during review and all four failed, and that absence is
+recorded rather than papered over (`artifacts/step1-amendment-continued-boundary.md` §21).
+
 **Mutually exclusive and exhaustive by construction.** The partition is
-`A = ∅` / `(A ≠ ∅ ∧ C)` / `(A ≠ ∅ ∧ ¬C)`, so no eligible pair can fall in two states or in
-none. This is what satisfies the Step 8 invariant that the states sum to the sample. It holds
+`A = ∅` / `(A ≠ ∅ ∧ C_H)` / `(A ≠ ∅ ∧ ¬C_H)`, where `C_H` is the Continued condition as amended,
+so no eligible pair can fall in two states or in none. This is what satisfies the Step 8 invariant that the states sum to the sample. It holds
 for any well-defined `A`, and Section 3.2 is what makes `A` well-defined.
 
 ### The degenerate case: `L2 = 1`
@@ -950,9 +978,16 @@ not follow.** `L2` is a *count* of listed S2 episodes and `m` is an episode *num
 numbering has a gap, `F2 > L2` and `m / L2` can exceed 1. Section 3 keeps `L2` and `F2`
 separate precisely because they can differ, and the range claim quietly assumed they could not.
 
-**Resolved by making `p` rank-based rather than a raw number ratio:**
+**Resolved by making `p` rank-based rather than a raw number ratio.** **Amended 2026-08-12:**
+Started-and-left is now assigned on `A_H`, so `p` is read on `A_H`. Let **`m_H = max(A_H)`**.
 
-> `p = |{ e ∈ E2 : e ≤ m }| / L2`
+> `p = |{ e ∈ E2 : e ≤ m_H }| / L2`
+
+**`p = m_H / L2` is NOT the rule** — that raw-ratio form was withdrawn above for the reason given
+and must not be reinstated. **Direction, which Step 10 must name:** the 2,246 pairs leaving
+Started-and-left are the ones that got furthest, so removing them shifts the abandonment
+distribution **earlier** on a published chart. The `p = 1.0` residual changes size under `A_H` and
+must be re-reported, not carried over.
 
 That is, the position of the highest watched episode within the season's actual episode list,
 over the length of that list. Both numerator and denominator count listed episodes, so
@@ -1202,12 +1237,40 @@ they are not, and that is worth knowing before `W` is derived on top of them.
 **D3, stated in full.** Symmetric in purpose to D2: D2 measures what the clock's *start*
 hides, D3 measures what the window's *close* hides.
 
-> Of user-show pairs scored **Started and left** at `τ1`, report: **(i)** the share with any
-> further distinct S2 episode whose canonical timestamp falls in **`[τ1, τ1 + H × 24h)`** — the
-> fixed horizon `H = 91 days` from D10 — and **(ii)** the share satisfying the Continued
-> condition — `F2 ∈ A_H` and `|A_H| ≥ ceil(0.90 × L2)`, where `A_H` is the set `A` recomputed
-> with the bound moved from `τ1` to `τ1 + H × 24h` — over that same horizon. Counts and shares
-> only, to `artifacts/`.
+> **SUPERSEDED 2026-08-12 by D3′.** D3 as written reported, of pairs scored Started-and-left **at
+> `τ1`**, the share completing over `[τ1, τ1 + H)`. **The amendment makes that quantity the
+> operator itself**, so D3 as written measures nothing. Original text, for the record:
+>
+> > Of user-show pairs scored **Started and left** at `τ1`, report: **(i)** the share with any
+> > further distinct S2 episode whose canonical timestamp falls in **`[τ1, τ1 + H × 24h)`** — the
+> > fixed horizon `H = 91 days` from D10 — and **(ii)** the share satisfying the Continued
+> > condition — `F2 ∈ A_H` and `|A_H| ≥ ceil(0.90 × L2)` — over that same horizon. Counts and
+> > shares only, to `artifacts/`.
+
+> **D3′ (approved 2026-08-12).** Of user-show pairs scored **Started and left at `τ2`** whose
+> **`⟦T0⟧ + (W + 2H) × 24h ≤ τ_pull`**, report the **share** completing within `[τ2, τ2 + H)`, the
+> **count** of that cleared subpopulation, and its **share of all Started-and-left**. Counts and
+> shares only, to `artifacts/`.
+>
+> **D3′ runs at every Step 13 `W` arm, and each arm reports its own cleared count and share.** The
+> clearance contains `W`, so the cleared subpopulation shrinks as `W` rises — 95.98% of
+> Started-and-left at `W = 46` down to 91.34% at `W = 213`, where the cleared set admits no `T0`
+> after 2025-07-12 and so excludes all but the first twelve days of H2 2025. A single figure
+> carried from the adopted arm would misdescribe every other one.
+>
+> **Reported alongside, and labelled a count rather than a rate:** the **3,440** Started-and-left
+> pairs completing S2 at any point before `τ_pull`, **with its exposure-weighting by show recency
+> stated at the point of use.** The two do **not** bracket the quantity — both truncate observation
+> and neither is a lower bound. They are a fixed-horizon rate and an exposure-weighted count,
+> reported together so the truncation is visible.
+
+**Why a cleared subset rather than a moved horizon.** Moving D3's horizon whole would have required
+censoring to clear 290 days, giving a latest `T0` of 2025-10-25 against a frame capped at
+2025-12-31 — **shows lost from the analysis population.** D3′ instead runs a diagnostic on a cleared
+**subset** while the analysis population is untouched: **a diagnostic may run on a cleared subset; a
+headline may not be censored to feed one.** D10's objection was never to exposure dependence as
+such, but to exposure dependence **concealed inside a pooled rate**, which is why the cleared count
+and share are reported rather than the rate alone.
 
 **The horizon replaces "before the pull date," and that is a correction, not a tightening.**
 Measured to the pull date, D3's denominator ran from eighteen months to ten years depending on
@@ -1267,7 +1330,7 @@ and adopted by the Human Lead, never self-adopted.
 
 | # | Required output | Direction on the headline |
 | :--- | :--- | :--- |
-| **D8** | **Never-started post-window diagnostic.** The symmetric counterpart to D3, for the category the study is named after. | **Down** |
+| **D8** | **Never-started post-window diagnostic**, for the category the study is named after. **Unchanged by the 2026-08-12 amendment, but no longer D3's symmetric counterpart** — D8 measures over `[τ1, τ2)` and D3′ over `[τ2, τ2 + H)`: adjacent windows, not mirror images. **D8(ii) is now the only bound on the never-started boundary**, and its size routes to Step 14 as ledger item 10. | **Down** |
 | **D9** | **Split-artifact counts and bound.** Trakt show splits manufacture Never started rows; treated as a known misclassification, not as a counting nuisance. | **Down**, plus an unmeasured denominator loss |
 
 **D8, stated in full.** D3 asks what the window's close hides for **Started and left**. Nothing
