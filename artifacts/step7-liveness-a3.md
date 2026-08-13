@@ -1,3 +1,12 @@
+> **SUPERSEDED — HISTORICAL RECORD ONLY. Do not cite any figure in this file as operative.**
+> The Step 7 rule changed four times. This artifact predates **ALT-BROAD** (`decisions/0048`),
+> the rule in force: *not live iff no insertion instant after `τ1` AND NOT Continued.*
+> The current deliverables are `artifacts/step7-liveness-bb-{a,b}.{md,json}`.
+> Superseded here: any numeric threshold (4 / 504 / 632 / 914 / 1,293 days), **PF-LIMIT**,
+> **ALT**, the bounds `[16.7789%, 17.0355%]` and `[16.7146%, 16.9704%]`, exclusion counts
+> 751 / 1,355 / 604-as-total / 0-on-DERIV, and the claim *"the exclusion set is empty on
+> DERIV"* (`decisions/0049` #4 — false; it is 99). Stamped 2026-08-14 by `decisions/0051`.
+
 # Step 7 — Liveness threshold and rule (instance `a3`, frozen spec)
 
 **Status: PROPOSED, NOT ADOPTED.** Step 7 is a gate. This instance produces and stops. The Human

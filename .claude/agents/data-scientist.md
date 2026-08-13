@@ -119,7 +119,11 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
 
 - **Step 13, robustness. Chained.** Vary `W` and the S1 completion rule at 100 and 90 percent. **There is no liveness
   threshold to vary — it was deleted at `0042` and the instruction withdrawn at `0044` §2.** Instead
-  **report the liveness exclusion count per `W` arm on APPLY** — 485 at `W = 38` to 716 at 213 (`0046`). Report which conclusions survive and which do not, and record the tested ranges —
+  **report the liveness exclusion count per `W` arm on APPLY** — **537 / 550 / 633 / 664 / 701 / 703 /
+  789 / 864** at `W` = 38 / 46 / 77 / 91 / 107 / 108 / 150 / 213 (`0048`, `0051`), **with the
+  started-and-left component reported separately: 52 / 56 / 79 / 89 / 98 / 99 / 125 / 148.**
+  **ALT's 485 → 716 series is SUPERSEDED and must not be ordered** — it was still here at line 122 while
+  line 68 of this same file carried the correct one. Report which conclusions survive and which do not, and record the tested ranges —
   Step 16 needs them. **`W` arms are set by `decisions/0027`: the span 46 to 107, PLUS arms at 150 and
   213.** The arms above the adopted value exist to probe the one-sided censoring bias. **Hold `H`
   constant across every arm**, or D3′ and D8 are not comparable between arms. **D3′ runs at EVERY arm

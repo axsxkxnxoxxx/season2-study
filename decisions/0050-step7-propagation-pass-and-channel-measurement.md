@@ -49,9 +49,24 @@ agent reads.
 
 ## 3. Step 9 gains two sentences
 
-**The two ceilings cannot both hold.** 16.9704 + 10.0405 + 73.6537 = **100.66%**. They are **alternative
-worst cases over the same 604 pairs, not simultaneous ones.** Instance B asked for this and neither
-`0048` nor `0049` carried it.
+**The two ceilings cannot both hold.**
+
+> **FIGURE CORRECTED 2026-08-14 (`decisions/0051`).** This section first read *"16.9704 + 10.0405 +
+> **73.6537** = **100.66%**."* **73.6537% matches no population.** It was taken from Red Team's review
+> and propagated without checking — **the exact failure `0046` §0's standing rule exists to prevent,
+> committed in the entry that routed that rule into Step 14.**
+
+| On APPLY, n = 196,654 | Count | Share |
+| :--- | ---: | ---: |
+| Never-started ceiling | 33,373 | **16.9704%** |
+| Started-and-left ceiling | 19,745 | **10.0405%** |
+| **Continued** — no Continued pair is ever excluded | **144,140** | **73.2962%** |
+| **Sum** | | **100.3071%** |
+
+**The excess is 0.3071 pp, and it is exactly 604 / 196,654.** That is the mechanism, and it is what
+should be stated rather than the total: **the same 604 pairs are counted once in each ceiling.** They
+are **alternative worst cases over one set, not simultaneous ones.** Instance B asked for this and
+neither `0048` nor `0049` carried it.
 
 **The never-started bound is degenerate on DERIV** — [6.2055%, 6.2055%] — **so the dual control is
 `x = x` there**, and the informative comparison is on APPLY.
