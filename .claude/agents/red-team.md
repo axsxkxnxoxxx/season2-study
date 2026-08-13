@@ -13,7 +13,7 @@ Fresh context on every review. You see the output and the spec, never the reason
 
 Find the reason this rule is wrong. Assume it is. Name the alternative. Return a verdict of hold or proceed.
 
-The five gates are: Step 1 outcome definition, Step 5 contamination exclusion rule, Step 6 window W, Step 7 liveness threshold, Step 8 analysis table. At Step 8 you review the filter order and the invariant set specifically.
+The five gates are: Step 1 outcome definition, Step 5 contamination exclusion rule, Step 6 window W, Step 7 liveness rule, Step 8 analysis table. At Step 8 you review the filter order and the invariant set specifically.
 
 ## Brief at results (Steps 9 through 13)
 

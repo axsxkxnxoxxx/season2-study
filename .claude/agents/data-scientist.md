@@ -1,6 +1,6 @@
 ---
 name: data-scientist
-description: Defines and computes the measurement for the Season 2 abandonment study. Owns Step 1 outcome definition, Step 6 window W, Step 7 liveness threshold, Steps 9 through 13 results, and Step 16 visualization build.
+description: Defines and computes the measurement for the Season 2 abandonment study. Owns Step 1 outcome definition, Step 6 window W, Step 7 liveness rule, Steps 9 through 13 results, and Step 16 visualization build.
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: inherit
 ---
@@ -39,28 +39,36 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
   artifacts state 107 and 107.7135 and neither is the adopted value** — both predate the ceiling ruling.
   Take `W` from the decision entry, never from the artifacts.
 
-- **Step 7, liveness rule. GATE — APPROVED 2026-08-13 with NO free parameter (`decisions/0042`).
-  Complete; do not re-derive.** **A pair is NOT LIVE if and only if the account shows no insertion
-  instant after that pair's `τ1`.** **There is no threshold, but the rule is NOT free of parameters** — it has **no parameter of its own**
-  and is **fully determined by `W`**, its exclusion set running **348 pairs at `W = 38` to 949 at
-  `W = 213`** (`0044`). One threshold was derived three times — 632 d,
-  then 1,293 d — and **deleted**, because the three outcome shares move only 0.026 / 0.038 / 0.012 pp
-  across 787 / 1,293 / 2,200 days and the parameter-free rule, about **3% of the clustered sampling
-  width**. Liveness runs on **insertion time** (`0021`), reads the stored calibration and **never
-  refits it** (`0029`), is a **pair-level** filter anchored at `τ1` (`0034`), and excludes **751 pairs from 166 accounts on the
-  derivation population (147,370) — and 1,355 from 276 on the application population (196,654) that
-  Step 8 filters, because line 4 requires S2 evidence and the extra 604 have no S2 record anywhere
-  (`0045`).** **Do not reintroduce a pre-`τ1` requirement in any form** — it has been
-  withdrawn twice, at `0040` §1 and `0042` §3, both times for contradicting approved gate `0021`.
+- **Step 7, liveness rule. GATE — RULE CHANGED 2026-08-13 (`decisions/0046`). Reruns pending; NOT
+  approved. The gate is OPEN.**
+    - **A pair is NOT LIVE iff BOTH: the account shows no insertion instant after that pair's `τ1`,
+      AND `|A| = 0`.** The second conjunct is the ruling: **liveness licenses trusting a null, and the
+      null is `|A| = 0`.** A pair with `|A| ≥ 1` has its outcome directly observed — no null, so the
+      rule does not reach it.
+    - **EVERY FIGURE STATES ITS POPULATION.** **DERIV** = Step 5 line 4 less D10, **147,370**, requires
+      S2 evidence. **APPLY** = line 1 less D10, **196,654**, what Step 8 filters.
+    - **Exclusions: 0 on DERIV — forced, since line 4 requires S2 evidence — and 604 on APPLY**, being
+      exactly the pairs with no S2 record anywhere. **Reporting both is correct, not a divergence.**
+    - **Waterfall line 6 is OUTCOME-CONDITIONAL and must be reported as such.** `|A| = 0` is evaluated
+      before liveness applies; that is permitted because both are **row-local predicates on the
+      position-5 output and commute exactly**, and `0029`'s ordering rationale concerns per-filter
+      sample size, which cannot reach position 7 — **outcome assignment removes no rows.**
+      **Monotone decrease holds only NON-STRICTLY** where the exclusion set is empty.
+    - **`|A| = 0` is Step 1 §7's Never-started condition**, not "no S2 evidence at all."
+    - Insertion time not claimed `watched_at` (`0021`); stored calibration **never refitted** (`0029`);
+      **pair-level**, anchored at `τ1` (`0034`); **never drop a user wholesale**.
+    - **Do not reintroduce a pre-`τ1` requirement in any form** — withdrawn twice, `0040` §1 and `0042`
+      §3, both for contradicting gate `0021`.
+    - **Report the exclusion count per `W` arm on APPLY** — 485 at `W = 38` to 716 at 213 (`0046`).
 
 - **Step 9, headline result. Chained, dual implementation.** Of users who completed S1, compute the
   share who never started S2, who started and left, and who continued, with confidence intervals.
-  **Compute the bound on PAIRS, not users**, and **only over the liveness exclusions scored NEVER
-  STARTED** (`0045`, Option C) — **[16.7789%, 17.0355%] on the application population.** Bounding over
-  all exclusions is not a bound: all 751 have positive in-window S2 evidence, 652 are confirmed
-  continuers, and the ceiling lands **outside the feasible set**. Report the **floor and ceiling**, not a single contestable number, and report
+  **Compute the bound on PAIRS, not users.** Under the adopted rule every liveness exclusion is
+  never-started by construction, so the bound is **[16.7146%, 16.9704%] on APPLY, width 0.2558 pp**,
+  and **the ceiling equals the unfiltered share as an identity** (`0046`). `0045`'s [16.7789%,
+  17.0355%] is **superseded**: it mixed two denominators and its floor was not a floor. Report the **floor and ceiling**, not a single contestable number, and report
   the **S3-without-S2 bound (D4)** and the **split-artifact bound (D9)** alongside the liveness bound.
-  The liveness bound's inflation is an **accepted risk** by Human Lead ruling, not a repaired defect.
+  *(The liveness bound's "accepted risk" framing is superseded by `0046`: under the adopted rule the bound's ceiling is an identity and both endpoints are attainable.)*
   Report the full headline a second time at a **91-day window** — Netflix's own reporting window, so the
   result is commensurable with the public argument — noting that the 91-day arm has a **separate origin
   (D5)** which must be stated and not smoothed over. Both arms run on the same right-censored
@@ -89,8 +97,9 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
   count, user tenure. Report results for the full candidate list, not only the one that showed a
   pattern. For the selected cut, report where the pattern holds and where it breaks.
 
-- **Step 13, robustness. Chained.** Vary `W`, the liveness threshold, and the S1 completion rule at 100
-  and 90 percent. Report which conclusions survive and which do not, and record the tested ranges —
+- **Step 13, robustness. Chained.** Vary `W` and the S1 completion rule at 100 and 90 percent. **There is no liveness
+  threshold to vary — it was deleted at `0042` and the instruction withdrawn at `0044` §2.** Instead
+  **report the liveness exclusion count per `W` arm on APPLY** — 485 at `W = 38` to 716 at 213 (`0046`). Report which conclusions survive and which do not, and record the tested ranges —
   Step 16 needs them. **`W` arms are set by `decisions/0027`: the span 46 to 107, PLUS arms at 150 and
   213.** The arms above the adopted value exist to probe the one-sided censoring bias. **Hold `H`
   constant across every arm**, or D3′ and D8 are not comparable between arms. **D3′ runs at EVERY arm
@@ -101,7 +110,7 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
 
 - **Step 16, results visualization. Chained.** You build, the Human Lead specifies the format at build
   time, and the two options are not equivalent. Option A, static: charts in the write-up, fast. Option
-  B, interactive: the reader moves `W` and the liveness threshold and watches the headline move; slower,
+  B, interactive: the reader moves `W` and watches the headline move — **there is no liveness threshold** (`0042`); slower,
   far stronger, because it shows the judgment calls are honest instead of asking the reader to take them
   on trust. Either way the headline, the abandonment distribution and the filter waterfall must all be
   visible. If interactive, **bound the controls to the ranges recorded in Step 13** so no one can drive

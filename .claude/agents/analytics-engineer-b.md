@@ -69,29 +69,26 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
   (`decisions/0034`). The stored calibration curve is a required input downstream and **is never
   refitted** by Step 7 or Step 8.
 
-- **Step 7, liveness rule. NOT YOURS TO DERIVE — but you APPLY it at Step 8, so the rule is stated
-  here.** Added 2026-08-13 (`decisions/0044`) after it was found stated in neither of these files while
-  Step 8 is the step that applies it.
-    - **A user-show pair is NOT LIVE if and only if the account shows no insertion instant after that
-      pair's `τ1 = ⟦T0⟧ + W × 24h`. Otherwise it is live.** There is **no threshold**; one was derived
-      three times and deleted (`0042`).
-    - **Liveness runs on record INSERTION time, not claimed `watched_at`** (`0021`, gate 2 of 5). Read
-      the stored calibration at `processed/step5/calibration.npz`; **never refit it** (`0029`).
-    - **It is a PAIR-LEVEL filter.** Evidence is account-wide, the test is clock-start-relative, and
-      clock start is pair-specific. **One account can be live for one show and not another. Never drop
-      a user wholesale.**
-    - **Do not reintroduce a pre-`τ1` requirement in any form.** It has been withdrawn twice — `0040`
-      §1 and `0042` §3 — both times for contradicting approved gate `0021`.
-    - **The rule has no parameter of its own, but it is fully determined by `W`** (`0044`). Its
-      exclusion set **is** the open-ended bucket, which runs **348 pairs at `W = 38` to 949 at
-      `W = 213`** — a factor of **2.7** across the mandated Step 13 arms.
-    - **Exclusion counts differ by population and BOTH are correct** (`0045`): **751 pairs from 166
-      accounts** on Step 7's derivation population (line 4 less D10, 147,370), and **1,355 from 276**
-      on the population **you** filter at position 6 (line 1 less D10, **196,654**). **Line 4 requires
-      S2 evidence; the extra 604 have no S2 record anywhere.** **Reporting 1,355 is correct and is not
-      a divergence.**
-    - **The gate is OPEN.** Red Team's HOLD of 2026-08-13 left three items unresolved. **Step 8 does
-      not launch until it closes.**
+- **Step 7, liveness rule. NOT YOURS TO DERIVE — but you APPLY it at Step 8, so it is stated here.**
+  **RULE CHANGED 2026-08-13 (`decisions/0046`). The gate is OPEN and Step 8 does not launch until it
+  closes.**
+    - **A pair is NOT LIVE iff BOTH: the account shows no insertion instant after that pair's `τ1`,
+      AND `|A| = 0`.** The second conjunct is the ruling — **liveness licenses trusting a null and the
+      null is `|A| = 0`**; a pair with `|A| ≥ 1` has its outcome directly observed.
+    - **EVERY FIGURE STATES ITS POPULATION.** **The population YOU filter at position 6 is line 1 less
+      D10 — 196,654, "APPLY".** Step 7 derives on line 4 less D10 — **147,370, "DERIV"** — which
+      **requires S2 evidence**.
+    - **Exclusions: 604 on APPLY, 0 on DERIV.** The DERIV zero is forced by construction. **The 604 are
+      exactly the pairs with no S2 record anywhere. Reporting 604 is correct and is not a divergence.**
+    - **Waterfall line 6 is OUTCOME-CONDITIONAL under this rule and must be reported as such** — `|A|`
+      is evaluated before liveness applies. Permitted: both are row-local predicates on the position-5
+      output and **commute exactly**, and `0029`'s ordering rationale concerns per-filter sample size,
+      which cannot reach position 7 because **outcome assignment removes no rows**. **Monotone decrease
+      holds only NON-STRICTLY** where the exclusion set is empty.
+    - Insertion time not claimed `watched_at` (`0021`); stored calibration at
+      `processed/step5/calibration.npz` **never refitted** (`0029`); **pair-level**, anchored at `τ1`
+      (`0034`); **never drop a user wholesale**.
+    - **Do not reintroduce a pre-`τ1` requirement in any form** — withdrawn twice.
 
 - **Step 8, analysis table. GATE, dual implementation. NOT LAUNCHED.** Build one row per user-show pair
   carrying outcome state, abandonment point, discovery channel and all Step 2 show fields; **retain
