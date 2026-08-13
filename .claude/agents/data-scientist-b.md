@@ -47,14 +47,18 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
   then 1,293 d — and **deleted**, because the three outcome shares move only 0.026 / 0.038 / 0.012 pp
   across 787 / 1,293 / 2,200 days and the parameter-free rule, about **3% of the clustered sampling
   width**. Liveness runs on **insertion time** (`0021`), reads the stored calibration and **never
-  refits it** (`0029`), is a **pair-level** filter anchored at `τ1` (`0034`), and excludes **751 pairs
-  from 166 accounts**. **Do not reintroduce a pre-`τ1` requirement in any form** — it has been
+  refits it** (`0029`), is a **pair-level** filter anchored at `τ1` (`0034`), and excludes **751 pairs from 166 accounts on the
+  derivation population (147,370) — and 1,355 from 276 on the application population (196,654) that
+  Step 8 filters, because line 4 requires S2 evidence and the extra 604 have no S2 record anywhere
+  (`0045`).** **Do not reintroduce a pre-`τ1` requirement in any form** — it has been
   withdrawn twice, at `0040` §1 and `0042` §3, both times for contradicting approved gate `0021`.
 
 - **Step 9, headline result. Chained, dual implementation.** Of users who completed S1, compute the
   share who never started S2, who started and left, and who continued, with confidence intervals.
-  **Compute the bound on PAIRS, not users** — liveness is a pair-level filter, so the excluded set is a
-  set of user-show pairs. Report the **floor and ceiling**, not a single contestable number, and report
+  **Compute the bound on PAIRS, not users**, and **only over the liveness exclusions scored NEVER
+  STARTED** (`0045`, Option C) — **[16.7789%, 17.0355%] on the application population.** Bounding over
+  all exclusions is not a bound: all 751 have positive in-window S2 evidence, 652 are confirmed
+  continuers, and the ceiling lands **outside the feasible set**. Report the **floor and ceiling**, not a single contestable number, and report
   the **S3-without-S2 bound (D4)** and the **split-artifact bound (D9)** alongside the liveness bound.
   The liveness bound's inflation is an **accepted risk** by Human Lead ruling, not a repaired defect.
   Report the full headline a second time at a **91-day window** — Netflix's own reporting window, so the

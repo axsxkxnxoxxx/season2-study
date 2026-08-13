@@ -85,6 +85,11 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
     - **The rule has no parameter of its own, but it is fully determined by `W`** (`0044`). Its
       exclusion set **is** the open-ended bucket, which runs **348 pairs at `W = 38` to 949 at
       `W = 213`** — a factor of **2.7** across the mandated Step 13 arms.
+    - **Exclusion counts differ by population and BOTH are correct** (`0045`): **751 pairs from 166
+      accounts** on Step 7's derivation population (line 4 less D10, 147,370), and **1,355 from 276**
+      on the population **you** filter at position 6 (line 1 less D10, **196,654**). **Line 4 requires
+      S2 evidence; the extra 604 have no S2 record anywhere.** **Reporting 1,355 is correct and is not
+      a divergence.**
     - **The gate is OPEN.** Red Team's HOLD of 2026-08-13 left three items unresolved. **Step 8 does
       not launch until it closes.**
 

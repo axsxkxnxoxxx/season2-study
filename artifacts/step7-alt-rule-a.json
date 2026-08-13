@@ -1,0 +1,1654 @@
+{
+  "step": 7,
+  "instance": "a",
+  "what": "EVALUATION of Red Team's proposed alternative liveness rule against the approved PF-LIMIT (decisions/0042). ADOPTS NOTHING. Produced for the Human Lead's ruling; the other arm ran the same brief in isolation.",
+  "api_calls": 0,
+  "status": "The Step 7 gate is OPEN (decisions/0043, 0044). Step 8 has not launched.",
+  "population": {
+    "line": "Step 5 waterfall line 4 (152,126) less D10 right-censoring",
+    "post_D10_at_W108": 147370,
+    "accounts": 2402,
+    "shows": 1138,
+    "note": "the derivation population. Step 8 applies liveness to the analysis population less D10 (196,654), a strict superset whose extra lines carry contaminated T0. Absolute shares will move at Step 8 (decisions/0042 SS5)."
+  },
+  "rules_compared": {
+    "PF_LIMIT_approved": "not live iff the account shows no insertion instant after that pair's tau1",
+    "ALT_proposed": "not live iff (no insertion instant after tau1) AND (|A| = 0)",
+    "threshold_1293d_deleted": "context row only; the rule decisions/0042 deleted"
+  },
+  "headline_finding": {
+    "ALT_exclusions_at_W108": 0,
+    "ALT_exclusions_at_every_W_from_1_to_400": 0,
+    "PF_LIMIT_exclusions_at_W108": 751,
+    "PF_LIMIT_excluded_never_started_pairs_at_W108": 0,
+    "statement": "The ALT conjunction is EMPTY on the operative population. Every one of PF-LIMIT's 751 exclusions has |A| >= 1. Red Team's estimate of 'on the order of 40 pairs' is read off the DELETED 1,293-day threshold rule's composition, where the 40 never-started exclusions come entirely from the measured-gap branch that decisions/0042 removed. Under the approved rule the never-started exclusion count is ZERO."
+  },
+  "Q1_is_the_ordering_obstacle_real": {
+    "answer": "No dependency exists. The obstacle is a convention, and the convention can be restated without changing any row set.",
+    "grounds": [
+      "|A| is a function of E2, the pair's canonical S2 timestamps, T0 and W. None of those is a function of the liveness mask.",
+      "Liveness is a function of the account's insertion instants and tau1. Neither is a function of |A|.",
+      "Both are ROW-LOCAL predicates on the output of position 5, and two row-local predicates commute exactly, so the retained row set is identical whether ALT is evaluated at position 6 or after position 7.",
+      "Position 7 is not a filter. Outcome assignment LABELS rows, it does not drop them (the L2 = 1 drop is position 2). An ordering constraint between a filter and a labelling step constrains only which is computed first, and computation order is free when neither reads the other's output.",
+      "decisions/0029's recorded rationale for 5-before-6 is that censoring is objective and independent of behaviour while liveness is a behavioural inference. That argument is about censoring before liveness. It says nothing about liveness before outcome assignment and does not transfer."
+    ],
+    "what_genuinely_does_not_commute": "the reported per-filter sample size, which is why decisions/0029 fixed an order at all. Under ALT, waterfall line 6 must be defined as an outcome-conditional count, and the spec must say so or two faithful instances will report it differently.",
+    "empirically_verified": "ALT retains 147,370 rows whichever position it is evaluated at, because its exclusion set is empty."
+  },
+  "Q2_what_it_would_cost": {
+    "exclusion_count": {
+      "PF_LIMIT": 751,
+      "ALT": 0
+    },
+    "accounts_touched": {
+      "PF_LIMIT": 166,
+      "ALT": 0
+    },
+    "exclusion_composition_by_outcome_at_W108": {
+      "PF_LIMIT": {
+        "never_started": 0,
+        "continued": 652,
+        "started_and_left": 99
+      },
+      "ALT": {
+        "never_started": 0,
+        "continued": 0,
+        "started_and_left": 0
+      },
+      "threshold_1293d_deleted": {
+        "never_started": 40,
+        "continued": 1079,
+        "started_and_left": 163
+      }
+    },
+    "three_shares_pct": {
+      "no_liveness_filter": {
+        "never_started": 6.2055,
+        "continued": 82.3655,
+        "started_and_left": 11.4291
+      },
+      "PF_LIMIT_approved": {
+        "never_started": 6.2373,
+        "continued": 82.3427,
+        "started_and_left": 11.4201
+      },
+      "ALT_proposed": {
+        "never_started": 6.2055,
+        "continued": 82.3655,
+        "started_and_left": 11.4291
+      },
+      "threshold_1293d_deleted": {
+        "never_started": 6.2325,
+        "continued": 82.3497,
+        "started_and_left": 11.4178
+      }
+    },
+    "PF_LIMIT_to_ALT_delta_pp": {
+      "never_started": {
+        "observed_delta_pp": -0.0318,
+        "paired_clustered_95_ci_pp": [
+          -0.0464,
+          -0.0204
+        ],
+        "ci_excludes_zero": true
+      },
+      "continued": {
+        "observed_delta_pp": 0.0228,
+        "paired_clustered_95_ci_pp": [
+          -0.0076,
+          0.0619
+        ],
+        "ci_excludes_zero": false
+      },
+      "started_and_left": {
+        "observed_delta_pp": 0.009,
+        "paired_clustered_95_ci_pp": [
+          -0.0171,
+          0.0315
+        ],
+        "ci_excludes_zero": false
+      }
+    },
+    "delta_as_share_of_the_clustered_sampling_width": {
+      "never_started": 0.0414,
+      "continued": 0.0183,
+      "started_and_left": 0.0092
+    },
+    "PF_LIMIT_never_started_movement_is_denominator_only": {
+      "never_started_numerator_no_filter": 9145,
+      "never_started_numerator_PF_LIMIT": 9145,
+      "denominator_no_filter": 147370,
+      "denominator_PF_LIMIT": 146619,
+      "statement": "PF-LIMIT excludes zero never-started pairs, so its entire +0.0318 pp effect on the never-started share is the denominator shrinking by 751. decisions/0043's UP sign is confirmed and its mechanism is now exact rather than approximate."
+    },
+    "invariants_and_waterfall_touched": {
+      "step8_waterfall_line_6": {
+        "PF_LIMIT": "147,370 -> 146,619 (-751)",
+        "ALT": "147,370 -> 147,370 (0)"
+      },
+      "filter_counts_decrease_monotonically": "holds NON-STRICTLY under ALT. An instance coding a strict `<` would fail the assertion on a legitimate no-op. This is a concrete dual-implementation hazard and the spec must state non-strict.",
+      "outcome_states_mutually_exclusive_and_sum_to_sample": "unaffected by either rule",
+      "A_subset_of_A_H": "unaffected by either rule",
+      "downstream_counts_D3prime_D8_D9_per_air_period": "all are computed on the retained population, so under ALT they equal the no-liveness-filter values exactly and under PF-LIMIT they are shifted by the 751 removed pairs. Not recomputed here - they are Step 8 outputs and Step 8 has not launched."
+    }
+  },
+  "Q3_the_step9_bound": {
+    "definition": "task-sheet Step 9: what the never-started share becomes if every inactivity-excluded PAIR is treated as a decliner",
+    "by_rule": {
+      "PF_LIMIT_approved": {
+        "excluded_pairs": 751,
+        "floor_never_started_pct": 6.2373,
+        "ceiling_never_started_pct": 6.7151,
+        "bound_width_pp": 0.4778,
+        "excluded_with_positive_S2_evidence_at_tau1": 751,
+        "excluded_with_positive_S2_evidence_share": 1.0,
+        "excluded_confirmed_continuers": 652,
+        "ceiling_counts_a_confirmed_continuer_as_a_decliner_for_n_pairs": 652
+      },
+      "ALT_proposed": {
+        "excluded_pairs": 0,
+        "floor_never_started_pct": 6.2055,
+        "ceiling_never_started_pct": 6.2055,
+        "bound_width_pp": 0.0,
+        "excluded_with_positive_S2_evidence_at_tau1": 0,
+        "excluded_with_positive_S2_evidence_share": null,
+        "excluded_confirmed_continuers": 0,
+        "ceiling_counts_a_confirmed_continuer_as_a_decliner_for_n_pairs": 0
+      },
+      "threshold_1293d_deleted": {
+        "excluded_pairs": 1282,
+        "floor_never_started_pct": 6.2325,
+        "ceiling_never_started_pct": 7.0482,
+        "bound_width_pp": 0.8157,
+        "excluded_with_positive_S2_evidence_at_tau1": 1242,
+        "excluded_with_positive_S2_evidence_share": 0.9688,
+        "excluded_confirmed_continuers": 1079,
+        "ceiling_counts_a_confirmed_continuer_as_a_decliner_for_n_pairs": 1079
+      }
+    },
+    "with_clustered_intervals": {
+      "PF_LIMIT_approved": {
+        "point_pct": 6.7151,
+        "clustered_95_ci_pct": [
+          6.2885,
+          7.1618
+        ],
+        "bound_width_pp_point": 0.4778
+      },
+      "ALT_proposed": {
+        "point_pct": 6.2055,
+        "clustered_95_ci_pct": [
+          5.8409,
+          6.6035
+        ],
+        "bound_width_pp_point": 0.0
+      },
+      "threshold_1293d_deleted": {
+        "point_pct": 7.0482,
+        "clustered_95_ci_pct": [
+          6.6002,
+          7.5194
+        ],
+        "bound_width_pp_point": 0.8157
+      }
+    },
+    "inflation_against_sampling_width": {
+      "PF_LIMIT_approved": {
+        "bound_inflation_pp": 0.4778,
+        "clustered_ci_width_of_never_started_pp": 0.7681,
+        "inflation_as_multiple_of_the_sampling_width": 0.6221
+      },
+      "ALT_proposed": {
+        "bound_inflation_pp": 0.0,
+        "clustered_ci_width_of_never_started_pp": 0.7681,
+        "inflation_as_multiple_of_the_sampling_width": 0.0
+      },
+      "threshold_1293d_deleted": {
+        "bound_inflation_pp": 0.8157,
+        "clustered_ci_width_of_never_started_pp": 0.7681,
+        "inflation_as_multiple_of_the_sampling_width": 1.062
+      },
+      "no_liveness_filter": {
+        "bound_inflation_pp": 0.0,
+        "clustered_ci_width_of_never_started_pp": 0.7681,
+        "inflation_as_multiple_of_the_sampling_width": 0.0
+      }
+    },
+    "answer": "Under PF-LIMIT the bound runs 6.2373% -> 6.7151%, an inflation of 0.4778 pp which is 0.62x the clustered sampling width of the share it bounds. Its 751 pairs comprise 652 confirmed continuers and 99 started-and-left and ZERO never-started - 751 of 751 carry positive S2 evidence at tau1. It therefore bounds no uncertainty that exists: no pair's never-started classification is at risk from account silence, because no never-started pair is excluded. Under ALT the bound is 6.2055% -> 6.2055%, width 0.0000 pp. It bounds the right quantity and the quantity is nil.",
+    "correction_to_decisions_0043": {
+      "0043_SS1_2_says": "'Roughly six in seven of the 751 have positive S2 evidence' and offers the remedy 'or compute it on the ~40 never-started exclusions instead'",
+      "measured": "751 of 751 - SEVEN in seven - carry positive S2 evidence at tau1; 652 of 751 (six in seven, 86.8%) are confirmed continuers. The ~40 never-started exclusions belong to the DELETED 1,293-day rule's measured-gap branch. Under the approved rule that count is 0, so 0043's proposed remedy cannot be executed as written.",
+      "error_class": "a figure measured on one configuration quoted as if measured on another - the same class 0043 SS2 itself records as the sixth instance. This is the seventh."
+    }
+  },
+  "Q4_what_breaks": {
+    "against_ALT": [
+      "It does not supply the missing warrant. Red Team's open item 2 is that the not-live branch has no warrant from decisions/0021, which licenses only the sufficient condition 'insertion after tau1 -> live'. ALT makes the branch EMPTY, which moots the question rather than answering it. If the stopped pull resumes and the frame grows (decisions/0021, closing note), the branch can become non-empty and the warrant gap returns unresolved.",
+      "Its direction is true by construction, not by measurement. ALT's exclusion set is a subset of Never-started, so it can only move the never-started share DOWN. That matches the ledger's original sign, but the conservative-direction argument decisions/0040 SS3 withdrew is restored as a tautology - the direction is built into the rule rather than found in the data. Step 14 must say so or it re-publishes a withdrawn argument in a new form.",
+      "A filter that excludes nothing cannot be shown to be working. PF-LIMIT's 751 exclusions are at least auditable. ALT's zero is consistent both with 'no account silence corrupts any null' and with 'the rule is mis-specified and never fires'. Only the margin diagnostic distinguishes them, and that diagnostic is not currently required by any step.",
+      "It zeroes the column decisions/0044 SS1.2 added. That entry requires Step 13 to report the exclusion count per W arm so the W-coupling is visible in the output rather than only in the decision log. Under ALT the column is zeros at every arm. The coupling genuinely vanishes, but a reader comparing against 0044's 348-949 table must be told why, or the zeros read as a bug.",
+      "It complicates a filter order that has already had to be fixed once. Even though the row sets commute, position 6 would read a quantity produced at position 7, and the documented order stops being a simple chain. decisions/0029 fixed the order precisely because the per-filter sample size does not commute, and three gate reruns have been spent on defects of this class.",
+      "Dual-implementation exposure. ALT needs the spec to state (i) that waterfall line 6 is outcome-conditional, (ii) that the monotone-decrease invariant is non-strict, and (iii) which reading of '|A| = 0' is meant. Absent any of the three, two faithful instances can diverge on the waterfall while agreeing on every share - the exact failure mode decisions/0029 SS3 exists to prevent."
+    ],
+    "against_PF_LIMIT": [
+      "Its analysis population has 652 confirmed continuers deleted for a reason unrelated to continuing. The published Continued share is then computed on a denominator from which known continuers were removed by a behavioural inference that could not have been wrong about them.",
+      "Its Step 9 bound inflates the never-started share by 0.4778 pp - 0.62x the sampling width - entirely out of pairs with positive S2 evidence.",
+      "Its never-started effect is denominator-only, which means the filter is not protecting the null it exists to protect on a single pair in this population."
+    ],
+    "what_ALT_damages_that_PF_LIMIT_does_not": "Nothing measurable. On this population ALT is a strict no-op, so every count, share, invariant and downstream diagnostic equals the no-liveness-filter value. The costs listed above are costs to the specification and to what the study can claim, not to any number."
+  },
+  "evidence": {
+    "core_W108": {
+      "step": 7,
+      "what": "EVALUATION of Red Team's proposed alternative liveness rule against the approved PF-LIMIT. ADOPTS NOTHING. The Human Lead rules.",
+      "instance": "alt_a",
+      "api_calls": 0,
+      "W_days": 108,
+      "H_days": 91,
+      "population_post_D10": 147370,
+      "population_line": "Step 5 waterfall line 4 (152,126) less D10 at W=108, H=91",
+      "rules": {
+        "PF_LIMIT_approved": "not live iff no insertion instant after tau1 (decisions/0042)",
+        "ALT_proposed": "not live iff (no insertion instant after tau1) AND (|A| = 0)"
+      },
+      "recomputed_states_match_cached_pair_states": {
+        "never": true,
+        "continued": true,
+        "started_and_left": true
+      },
+      "classes_at_tau1": {
+        "measured_bracketing_gap": 128467,
+        "open_ended_no_instant_after_tau1": 751,
+        "no_instant_at_or_before_tau1_LIVE_per_0021": 18152
+      },
+      "joint_table_no_after_by_nA": {
+        "no_after_TRUE_and_nA_eq_0": 0,
+        "no_after_TRUE_and_nA_ge_1": 751,
+        "no_after_FALSE_and_nA_eq_0": 9145,
+        "no_after_FALSE_and_nA_ge_1": 137474
+      },
+      "never_started_diagnostic": {
+        "never_started_pairs": 9145,
+        "of_which_no_instant_after_tau1": 0,
+        "of_which_no_instant_at_or_before_tau1": 1046,
+        "of_which_measured_bracketing_gap": 8099
+      },
+      "settings": {
+        "no_liveness_filter": {
+          "pairs_live": 147370,
+          "pairs_excluded": 0,
+          "excluded_share_of_post_D10_pct": 0.0,
+          "accounts_touched_by_exclusion": 0,
+          "excluded_composition": {
+            "never_started": 0,
+            "continued": 0,
+            "started_and_left": 0
+          },
+          "counts": {
+            "never_started": 9145,
+            "continued": 121382,
+            "started_and_left": 16843
+          },
+          "shares_pct": {
+            "never_started": 6.2055,
+            "continued": 82.3655,
+            "started_and_left": 11.4291
+          }
+        },
+        "PF_LIMIT_approved": {
+          "pairs_live": 146619,
+          "pairs_excluded": 751,
+          "excluded_share_of_post_D10_pct": 0.5096,
+          "accounts_touched_by_exclusion": 166,
+          "excluded_composition": {
+            "never_started": 0,
+            "continued": 652,
+            "started_and_left": 99
+          },
+          "counts": {
+            "never_started": 9145,
+            "continued": 120730,
+            "started_and_left": 16744
+          },
+          "shares_pct": {
+            "never_started": 6.2373,
+            "continued": 82.3427,
+            "started_and_left": 11.4201
+          }
+        },
+        "ALT_proposed": {
+          "pairs_live": 147370,
+          "pairs_excluded": 0,
+          "excluded_share_of_post_D10_pct": 0.0,
+          "accounts_touched_by_exclusion": 0,
+          "excluded_composition": {
+            "never_started": 0,
+            "continued": 0,
+            "started_and_left": 0
+          },
+          "counts": {
+            "never_started": 9145,
+            "continued": 121382,
+            "started_and_left": 16843
+          },
+          "shares_pct": {
+            "never_started": 6.2055,
+            "continued": 82.3655,
+            "started_and_left": 11.4291
+          }
+        },
+        "threshold_1293d_deleted": {
+          "pairs_live": 146088,
+          "pairs_excluded": 1282,
+          "excluded_share_of_post_D10_pct": 0.8699,
+          "accounts_touched_by_exclusion": 205,
+          "excluded_composition": {
+            "never_started": 40,
+            "continued": 1079,
+            "started_and_left": 163
+          },
+          "counts": {
+            "never_started": 9105,
+            "continued": 120303,
+            "started_and_left": 16680
+          },
+          "shares_pct": {
+            "never_started": 6.2325,
+            "continued": 82.3497,
+            "started_and_left": 11.4178
+          }
+        }
+      },
+      "step9_liveness_bound": {
+        "PF_LIMIT_approved": {
+          "excluded_pairs": 751,
+          "floor_never_started_pct": 6.2373,
+          "ceiling_never_started_pct": 6.7151,
+          "bound_width_pp": 0.4778,
+          "excluded_with_positive_S2_evidence_at_tau1": 751,
+          "excluded_with_positive_S2_evidence_share": 1.0,
+          "excluded_confirmed_continuers": 652,
+          "ceiling_counts_a_confirmed_continuer_as_a_decliner_for_n_pairs": 652
+        },
+        "ALT_proposed": {
+          "excluded_pairs": 0,
+          "floor_never_started_pct": 6.2055,
+          "ceiling_never_started_pct": 6.2055,
+          "bound_width_pp": 0.0,
+          "excluded_with_positive_S2_evidence_at_tau1": 0,
+          "excluded_with_positive_S2_evidence_share": null,
+          "excluded_confirmed_continuers": 0,
+          "ceiling_counts_a_confirmed_continuer_as_a_decliner_for_n_pairs": 0
+        },
+        "threshold_1293d_deleted": {
+          "excluded_pairs": 1282,
+          "floor_never_started_pct": 6.2325,
+          "ceiling_never_started_pct": 7.0482,
+          "bound_width_pp": 0.8157,
+          "excluded_with_positive_S2_evidence_at_tau1": 1242,
+          "excluded_with_positive_S2_evidence_share": 0.9688,
+          "excluded_confirmed_continuers": 1079,
+          "ceiling_counts_a_confirmed_continuer_as_a_decliner_for_n_pairs": 1079
+        }
+      }
+    },
+    "W_arms": {
+      "38": {
+        "post_D10_population": 147685,
+        "PF_LIMIT_excluded": 348,
+        "PF_LIMIT_excluded_never_started": 0,
+        "PF_LIMIT_excluded_continued": 296,
+        "PF_LIMIT_excluded_started_and_left": 52,
+        "ALT_excluded": 0,
+        "PF_LIMIT_never_started_pct": 9.4158,
+        "ALT_never_started_pct": 9.3936,
+        "PF_LIMIT_bound_ceiling_pct": 9.6293,
+        "ALT_bound_ceiling_pct": 9.3936
+      },
+      "46": {
+        "post_D10_population": 147685,
+        "PF_LIMIT_excluded": 367,
+        "PF_LIMIT_excluded_never_started": 0,
+        "PF_LIMIT_excluded_continued": 311,
+        "PF_LIMIT_excluded_started_and_left": 56,
+        "ALT_excluded": 0,
+        "PF_LIMIT_never_started_pct": 8.8136,
+        "ALT_never_started_pct": 8.7917,
+        "PF_LIMIT_bound_ceiling_pct": 9.0402,
+        "ALT_bound_ceiling_pct": 8.7917
+      },
+      "60": {
+        "post_D10_population": 147685,
+        "PF_LIMIT_excluded": 432,
+        "PF_LIMIT_excluded_never_started": 0,
+        "PF_LIMIT_excluded_continued": 367,
+        "PF_LIMIT_excluded_started_and_left": 65,
+        "ALT_excluded": 0,
+        "PF_LIMIT_never_started_pct": 7.9645,
+        "ALT_never_started_pct": 7.9412,
+        "PF_LIMIT_bound_ceiling_pct": 8.2337,
+        "ALT_bound_ceiling_pct": 7.9412
+      },
+      "75": {
+        "post_D10_population": 147685,
+        "PF_LIMIT_excluded": 517,
+        "PF_LIMIT_excluded_never_started": 0,
+        "PF_LIMIT_excluded_continued": 438,
+        "PF_LIMIT_excluded_started_and_left": 79,
+        "ALT_excluded": 0,
+        "PF_LIMIT_never_started_pct": 7.2849,
+        "ALT_never_started_pct": 7.2594,
+        "PF_LIMIT_bound_ceiling_pct": 7.6094,
+        "ALT_bound_ceiling_pct": 7.2594
+      },
+      "91": {
+        "post_D10_population": 147685,
+        "PF_LIMIT_excluded": 706,
+        "PF_LIMIT_excluded_never_started": 0,
+        "PF_LIMIT_excluded_continued": 617,
+        "PF_LIMIT_excluded_started_and_left": 89,
+        "ALT_excluded": 0,
+        "PF_LIMIT_never_started_pct": 6.7105,
+        "ALT_never_started_pct": 6.6784,
+        "PF_LIMIT_bound_ceiling_pct": 7.1564,
+        "ALT_bound_ceiling_pct": 6.6784
+      },
+      "108": {
+        "post_D10_population": 147370,
+        "PF_LIMIT_excluded": 751,
+        "PF_LIMIT_excluded_never_started": 0,
+        "PF_LIMIT_excluded_continued": 652,
+        "PF_LIMIT_excluded_started_and_left": 99,
+        "ALT_excluded": 0,
+        "PF_LIMIT_never_started_pct": 6.2373,
+        "ALT_never_started_pct": 6.2055,
+        "PF_LIMIT_bound_ceiling_pct": 6.7151,
+        "ALT_bound_ceiling_pct": 6.2055
+      },
+      "125": {
+        "post_D10_population": 147049,
+        "PF_LIMIT_excluded": 748,
+        "PF_LIMIT_excluded_never_started": 0,
+        "PF_LIMIT_excluded_continued": 637,
+        "PF_LIMIT_excluded_started_and_left": 111,
+        "ALT_excluded": 0,
+        "PF_LIMIT_never_started_pct": 5.827,
+        "ALT_never_started_pct": 5.7974,
+        "PF_LIMIT_bound_ceiling_pct": 6.3061,
+        "ALT_bound_ceiling_pct": 5.7974
+      },
+      "150": {
+        "post_D10_population": 146602,
+        "PF_LIMIT_excluded": 779,
+        "PF_LIMIT_excluded_never_started": 0,
+        "PF_LIMIT_excluded_continued": 654,
+        "PF_LIMIT_excluded_started_and_left": 125,
+        "ALT_excluded": 0,
+        "PF_LIMIT_never_started_pct": 5.3181,
+        "ALT_never_started_pct": 5.2898,
+        "PF_LIMIT_bound_ceiling_pct": 5.8212,
+        "ALT_bound_ceiling_pct": 5.2898
+      },
+      "180": {
+        "post_D10_population": 145845,
+        "PF_LIMIT_excluded": 836,
+        "PF_LIMIT_excluded_never_started": 0,
+        "PF_LIMIT_excluded_continued": 701,
+        "PF_LIMIT_excluded_started_and_left": 135,
+        "ALT_excluded": 0,
+        "PF_LIMIT_never_started_pct": 4.8466,
+        "ALT_never_started_pct": 4.8188,
+        "PF_LIMIT_bound_ceiling_pct": 5.392,
+        "ALT_bound_ceiling_pct": 4.8188
+      },
+      "213": {
+        "post_D10_population": 144852,
+        "PF_LIMIT_excluded": 949,
+        "PF_LIMIT_excluded_never_started": 0,
+        "PF_LIMIT_excluded_continued": 802,
+        "PF_LIMIT_excluded_started_and_left": 147,
+        "ALT_excluded": 0,
+        "PF_LIMIT_never_started_pct": 4.4238,
+        "ALT_never_started_pct": 4.3948,
+        "PF_LIMIT_bound_ceiling_pct": 5.05,
+        "ALT_bound_ceiling_pct": 4.3948
+      }
+    },
+    "W_arms_full": {
+      "38": {
+        "W_days": 38,
+        "H_days": 91,
+        "post_D10_population": 147685,
+        "d10_removed_from_152126": 4441,
+        "PF_LIMIT": {
+          "excluded": {
+            "pairs": 348,
+            "accounts": 98,
+            "never_started": 0,
+            "continued": 296,
+            "started_and_left": 52
+          },
+          "shares": {
+            "pairs": 147337,
+            "never_started_pct": 9.4158,
+            "continued_pct": 79.0093,
+            "started_and_left_pct": 11.5748,
+            "never_started_n": 13873
+          },
+          "bound_ceiling_never_pct": 9.6293
+        },
+        "ALT": {
+          "excluded": {
+            "pairs": 0,
+            "accounts": 0,
+            "never_started": 0,
+            "continued": 0,
+            "started_and_left": 0
+          },
+          "shares": {
+            "pairs": 147685,
+            "never_started_pct": 9.3936,
+            "continued_pct": 79.0236,
+            "started_and_left_pct": 11.5828,
+            "never_started_n": 13873
+          },
+          "bound_ceiling_never_pct": 9.3936
+        },
+        "no_filter_shares": {
+          "pairs": 147685,
+          "never_started_pct": 9.3936,
+          "continued_pct": 79.0236,
+          "started_and_left_pct": 11.5828,
+          "never_started_n": 13873
+        },
+        "never_started_pairs_in_population": 13873,
+        "pairs_with_zero_distinct_S2_episodes_in_population": 0
+      },
+      "46": {
+        "W_days": 46,
+        "H_days": 91,
+        "post_D10_population": 147685,
+        "d10_removed_from_152126": 4441,
+        "PF_LIMIT": {
+          "excluded": {
+            "pairs": 367,
+            "accounts": 106,
+            "never_started": 0,
+            "continued": 311,
+            "started_and_left": 56
+          },
+          "shares": {
+            "pairs": 147318,
+            "never_started_pct": 8.8136,
+            "continued_pct": 79.5924,
+            "started_and_left_pct": 11.594,
+            "never_started_n": 12984
+          },
+          "bound_ceiling_never_pct": 9.0402
+        },
+        "ALT": {
+          "excluded": {
+            "pairs": 0,
+            "accounts": 0,
+            "never_started": 0,
+            "continued": 0,
+            "started_and_left": 0
+          },
+          "shares": {
+            "pairs": 147685,
+            "never_started_pct": 8.7917,
+            "continued_pct": 79.6052,
+            "started_and_left_pct": 11.6031,
+            "never_started_n": 12984
+          },
+          "bound_ceiling_never_pct": 8.7917
+        },
+        "no_filter_shares": {
+          "pairs": 147685,
+          "never_started_pct": 8.7917,
+          "continued_pct": 79.6052,
+          "started_and_left_pct": 11.6031,
+          "never_started_n": 12984
+        },
+        "never_started_pairs_in_population": 12984,
+        "pairs_with_zero_distinct_S2_episodes_in_population": 0
+      },
+      "60": {
+        "W_days": 60,
+        "H_days": 91,
+        "post_D10_population": 147685,
+        "d10_removed_from_152126": 4441,
+        "PF_LIMIT": {
+          "excluded": {
+            "pairs": 432,
+            "accounts": 122,
+            "never_started": 0,
+            "continued": 367,
+            "started_and_left": 65
+          },
+          "shares": {
+            "pairs": 147253,
+            "never_started_pct": 7.9645,
+            "continued_pct": 80.4316,
+            "started_and_left_pct": 11.6038,
+            "never_started_n": 11728
+          },
+          "bound_ceiling_never_pct": 8.2337
+        },
+        "ALT": {
+          "excluded": {
+            "pairs": 0,
+            "accounts": 0,
+            "never_started": 0,
+            "continued": 0,
+            "started_and_left": 0
+          },
+          "shares": {
+            "pairs": 147685,
+            "never_started_pct": 7.9412,
+            "continued_pct": 80.4449,
+            "started_and_left_pct": 11.6139,
+            "never_started_n": 11728
+          },
+          "bound_ceiling_never_pct": 7.9412
+        },
+        "no_filter_shares": {
+          "pairs": 147685,
+          "never_started_pct": 7.9412,
+          "continued_pct": 80.4449,
+          "started_and_left_pct": 11.6139,
+          "never_started_n": 11728
+        },
+        "never_started_pairs_in_population": 11728,
+        "pairs_with_zero_distinct_S2_episodes_in_population": 0
+      },
+      "75": {
+        "W_days": 75,
+        "H_days": 91,
+        "post_D10_population": 147685,
+        "d10_removed_from_152126": 4441,
+        "PF_LIMIT": {
+          "excluded": {
+            "pairs": 517,
+            "accounts": 142,
+            "never_started": 0,
+            "continued": 438,
+            "started_and_left": 79
+          },
+          "shares": {
+            "pairs": 147168,
+            "never_started_pct": 7.2849,
+            "continued_pct": 81.1556,
+            "started_and_left_pct": 11.5596,
+            "never_started_n": 10721
+          },
+          "bound_ceiling_never_pct": 7.6094
+        },
+        "ALT": {
+          "excluded": {
+            "pairs": 0,
+            "accounts": 0,
+            "never_started": 0,
+            "continued": 0,
+            "started_and_left": 0
+          },
+          "shares": {
+            "pairs": 147685,
+            "never_started_pct": 7.2594,
+            "continued_pct": 81.168,
+            "started_and_left_pct": 11.5726,
+            "never_started_n": 10721
+          },
+          "bound_ceiling_never_pct": 7.2594
+        },
+        "no_filter_shares": {
+          "pairs": 147685,
+          "never_started_pct": 7.2594,
+          "continued_pct": 81.168,
+          "started_and_left_pct": 11.5726,
+          "never_started_n": 10721
+        },
+        "never_started_pairs_in_population": 10721,
+        "pairs_with_zero_distinct_S2_episodes_in_population": 0
+      },
+      "91": {
+        "W_days": 91,
+        "H_days": 91,
+        "post_D10_population": 147685,
+        "d10_removed_from_152126": 4441,
+        "PF_LIMIT": {
+          "excluded": {
+            "pairs": 706,
+            "accounts": 160,
+            "never_started": 0,
+            "continued": 617,
+            "started_and_left": 89
+          },
+          "shares": {
+            "pairs": 146979,
+            "never_started_pct": 6.7105,
+            "continued_pct": 81.7872,
+            "started_and_left_pct": 11.5023,
+            "never_started_n": 9863
+          },
+          "bound_ceiling_never_pct": 7.1564
+        },
+        "ALT": {
+          "excluded": {
+            "pairs": 0,
+            "accounts": 0,
+            "never_started": 0,
+            "continued": 0,
+            "started_and_left": 0
+          },
+          "shares": {
+            "pairs": 147685,
+            "never_started_pct": 6.6784,
+            "continued_pct": 81.814,
+            "started_and_left_pct": 11.5076,
+            "never_started_n": 9863
+          },
+          "bound_ceiling_never_pct": 6.6784
+        },
+        "no_filter_shares": {
+          "pairs": 147685,
+          "never_started_pct": 6.6784,
+          "continued_pct": 81.814,
+          "started_and_left_pct": 11.5076,
+          "never_started_n": 9863
+        },
+        "never_started_pairs_in_population": 9863,
+        "pairs_with_zero_distinct_S2_episodes_in_population": 0
+      },
+      "108": {
+        "W_days": 108,
+        "H_days": 91,
+        "post_D10_population": 147370,
+        "d10_removed_from_152126": 4756,
+        "PF_LIMIT": {
+          "excluded": {
+            "pairs": 751,
+            "accounts": 166,
+            "never_started": 0,
+            "continued": 652,
+            "started_and_left": 99
+          },
+          "shares": {
+            "pairs": 146619,
+            "never_started_pct": 6.2373,
+            "continued_pct": 82.3427,
+            "started_and_left_pct": 11.4201,
+            "never_started_n": 9145
+          },
+          "bound_ceiling_never_pct": 6.7151
+        },
+        "ALT": {
+          "excluded": {
+            "pairs": 0,
+            "accounts": 0,
+            "never_started": 0,
+            "continued": 0,
+            "started_and_left": 0
+          },
+          "shares": {
+            "pairs": 147370,
+            "never_started_pct": 6.2055,
+            "continued_pct": 82.3655,
+            "started_and_left_pct": 11.4291,
+            "never_started_n": 9145
+          },
+          "bound_ceiling_never_pct": 6.2055
+        },
+        "no_filter_shares": {
+          "pairs": 147370,
+          "never_started_pct": 6.2055,
+          "continued_pct": 82.3655,
+          "started_and_left_pct": 11.4291,
+          "never_started_n": 9145
+        },
+        "never_started_pairs_in_population": 9145,
+        "pairs_with_zero_distinct_S2_episodes_in_population": 0
+      },
+      "125": {
+        "W_days": 125,
+        "H_days": 91,
+        "post_D10_population": 147049,
+        "d10_removed_from_152126": 5077,
+        "PF_LIMIT": {
+          "excluded": {
+            "pairs": 748,
+            "accounts": 176,
+            "never_started": 0,
+            "continued": 637,
+            "started_and_left": 111
+          },
+          "shares": {
+            "pairs": 146301,
+            "never_started_pct": 5.827,
+            "continued_pct": 82.8183,
+            "started_and_left_pct": 11.3547,
+            "never_started_n": 8525
+          },
+          "bound_ceiling_never_pct": 6.3061
+        },
+        "ALT": {
+          "excluded": {
+            "pairs": 0,
+            "accounts": 0,
+            "never_started": 0,
+            "continued": 0,
+            "started_and_left": 0
+          },
+          "shares": {
+            "pairs": 147049,
+            "never_started_pct": 5.7974,
+            "continued_pct": 82.8302,
+            "started_and_left_pct": 11.3724,
+            "never_started_n": 8525
+          },
+          "bound_ceiling_never_pct": 5.7974
+        },
+        "no_filter_shares": {
+          "pairs": 147049,
+          "never_started_pct": 5.7974,
+          "continued_pct": 82.8302,
+          "started_and_left_pct": 11.3724,
+          "never_started_n": 8525
+        },
+        "never_started_pairs_in_population": 8525,
+        "pairs_with_zero_distinct_S2_episodes_in_population": 0
+      },
+      "150": {
+        "W_days": 150,
+        "H_days": 91,
+        "post_D10_population": 146602,
+        "d10_removed_from_152126": 5524,
+        "PF_LIMIT": {
+          "excluded": {
+            "pairs": 779,
+            "accounts": 193,
+            "never_started": 0,
+            "continued": 654,
+            "started_and_left": 125
+          },
+          "shares": {
+            "pairs": 145823,
+            "never_started_pct": 5.3181,
+            "continued_pct": 83.4128,
+            "started_and_left_pct": 11.2691,
+            "never_started_n": 7755
+          },
+          "bound_ceiling_never_pct": 5.8212
+        },
+        "ALT": {
+          "excluded": {
+            "pairs": 0,
+            "accounts": 0,
+            "never_started": 0,
+            "continued": 0,
+            "started_and_left": 0
+          },
+          "shares": {
+            "pairs": 146602,
+            "never_started_pct": 5.2898,
+            "continued_pct": 83.4156,
+            "started_and_left_pct": 11.2945,
+            "never_started_n": 7755
+          },
+          "bound_ceiling_never_pct": 5.2898
+        },
+        "no_filter_shares": {
+          "pairs": 146602,
+          "never_started_pct": 5.2898,
+          "continued_pct": 83.4156,
+          "started_and_left_pct": 11.2945,
+          "never_started_n": 7755
+        },
+        "never_started_pairs_in_population": 7755,
+        "pairs_with_zero_distinct_S2_episodes_in_population": 0
+      },
+      "180": {
+        "W_days": 180,
+        "H_days": 91,
+        "post_D10_population": 145845,
+        "d10_removed_from_152126": 6281,
+        "PF_LIMIT": {
+          "excluded": {
+            "pairs": 836,
+            "accounts": 190,
+            "never_started": 0,
+            "continued": 701,
+            "started_and_left": 135
+          },
+          "shares": {
+            "pairs": 145009,
+            "never_started_pct": 4.8466,
+            "continued_pct": 83.9913,
+            "started_and_left_pct": 11.1621,
+            "never_started_n": 7028
+          },
+          "bound_ceiling_never_pct": 5.392
+        },
+        "ALT": {
+          "excluded": {
+            "pairs": 0,
+            "accounts": 0,
+            "never_started": 0,
+            "continued": 0,
+            "started_and_left": 0
+          },
+          "shares": {
+            "pairs": 145845,
+            "never_started_pct": 4.8188,
+            "continued_pct": 83.9905,
+            "started_and_left_pct": 11.1906,
+            "never_started_n": 7028
+          },
+          "bound_ceiling_never_pct": 4.8188
+        },
+        "no_filter_shares": {
+          "pairs": 145845,
+          "never_started_pct": 4.8188,
+          "continued_pct": 83.9905,
+          "started_and_left_pct": 11.1906,
+          "never_started_n": 7028
+        },
+        "never_started_pairs_in_population": 7028,
+        "pairs_with_zero_distinct_S2_episodes_in_population": 0
+      },
+      "213": {
+        "W_days": 213,
+        "H_days": 91,
+        "post_D10_population": 144852,
+        "d10_removed_from_152126": 7274,
+        "PF_LIMIT": {
+          "excluded": {
+            "pairs": 949,
+            "accounts": 194,
+            "never_started": 0,
+            "continued": 802,
+            "started_and_left": 147
+          },
+          "shares": {
+            "pairs": 143903,
+            "never_started_pct": 4.4238,
+            "continued_pct": 84.5493,
+            "started_and_left_pct": 11.0269,
+            "never_started_n": 6366
+          },
+          "bound_ceiling_never_pct": 5.05
+        },
+        "ALT": {
+          "excluded": {
+            "pairs": 0,
+            "accounts": 0,
+            "never_started": 0,
+            "continued": 0,
+            "started_and_left": 0
+          },
+          "shares": {
+            "pairs": 144852,
+            "never_started_pct": 4.3948,
+            "continued_pct": 84.5491,
+            "started_and_left_pct": 11.0561,
+            "never_started_n": 6366
+          },
+          "bound_ceiling_never_pct": 4.3948
+        },
+        "no_filter_shares": {
+          "pairs": 144852,
+          "never_started_pct": 4.3948,
+          "continued_pct": 84.5491,
+          "started_and_left_pct": 11.0561,
+          "never_started_n": 6366
+        },
+        "never_started_pairs_in_population": 6366,
+        "pairs_with_zero_distinct_S2_episodes_in_population": 0
+      }
+    },
+    "margins_and_mechanism": {
+      "step": 7,
+      "instance": "alt_a",
+      "stage": 3,
+      "api_calls": 0,
+      "what": "Is ALT's emptiness structural or a knife-edge? EVALUATION ONLY.",
+      "margin_at_W108": {
+        "n_no_after_pairs": 751,
+        "n_with_no_in_E2_S2_episode": 0,
+        "headroom_days_tau1_minus_earliest_canonical_S2_ts": {
+          "min": 47.47569444444444,
+          "p1": 98.84270833333332,
+          "p5": 107.00381944444445,
+          "p25": 107.15,
+          "median": 107.40625,
+          "p75": 107.89027777777778,
+          "max": 2312.9375
+        },
+        "n_with_headroom_below_1_day": 0,
+        "n_with_headroom_below_30_days": 0,
+        "n_with_headroom_below_108_days": 653,
+        "interpretation": "every no_after pair's earliest S2 episode predates its own tau1 by this many days, so |A| >= 1 for all of them and the ALT conjunction is empty; the minimum is the distance to a knife-edge"
+      },
+      "mechanism": {
+        "n": 751,
+        "n_earliest_S2_claim_after_the_accounts_last_insertion_instant": 16,
+        "earliest_S2_claim_minus_last_insertion_instant_days": {
+          "min": -2259.245898918394,
+          "median": -58.95028996555617,
+          "p99": 0.04066816267867883,
+          "max": 20.370094095598215
+        },
+        "note": "a value > 0 is a post-dated S2 record - claimed later than it was written. Step 5 adoption 3 (decisions/0021) deliberately does NOT delete post-dated records, so this is the only channel through which ALT could ever bite, and it would additionally have to carry the claim past tau1."
+      },
+      "zero_episode_pairs": {
+        "n_pairs_with_zero_distinct_in_E2_S2_episodes": 4,
+        "these_have_A_eq_0_at_every_W": true,
+        "days_from_their_tau1_at_W108_to_their_accounts_last_insertion_instant": [
+          -108.13,
+          -107.13,
+          -107.13,
+          -107.13
+        ],
+        "n_of_them_no_after_at_W108": 0,
+        "note": "these are the only pairs that could satisfy ALT at arbitrarily large W. A POSITIVE number above means the account kept logging after tau1, so 0021 rules the pair live and ALT does not fire."
+      },
+      "fine_W_sweep_0_to_400": {
+        "0": {
+          "post_D10_population": 147685,
+          "PF_LIMIT_excluded": 29,
+          "ALT_excluded": 6,
+          "never_started_pairs": 100175
+        },
+        "1": {
+          "post_D10_population": 147685,
+          "PF_LIMIT_excluded": 92,
+          "ALT_excluded": 0,
+          "never_started_pairs": 43510
+        },
+        "3": {
+          "post_D10_population": 147685,
+          "PF_LIMIT_excluded": 111,
+          "ALT_excluded": 0,
+          "never_started_pairs": 30245
+        },
+        "7": {
+          "post_D10_population": 147685,
+          "PF_LIMIT_excluded": 163,
+          "ALT_excluded": 0,
+          "never_started_pairs": 23612
+        },
+        "14": {
+          "post_D10_population": 147685,
+          "PF_LIMIT_excluded": 250,
+          "ALT_excluded": 0,
+          "never_started_pairs": 19128
+        },
+        "21": {
+          "post_D10_population": 147685,
+          "PF_LIMIT_excluded": 287,
+          "ALT_excluded": 0,
+          "never_started_pairs": 16855
+        },
+        "30": {
+          "post_D10_population": 147685,
+          "PF_LIMIT_excluded": 315,
+          "ALT_excluded": 0,
+          "never_started_pairs": 14981
+        },
+        "38": {
+          "post_D10_population": 147685,
+          "PF_LIMIT_excluded": 348,
+          "ALT_excluded": 0,
+          "never_started_pairs": 13873
+        },
+        "46": {
+          "post_D10_population": 147685,
+          "PF_LIMIT_excluded": 367,
+          "ALT_excluded": 0,
+          "never_started_pairs": 12984
+        },
+        "60": {
+          "post_D10_population": 147685,
+          "PF_LIMIT_excluded": 432,
+          "ALT_excluded": 0,
+          "never_started_pairs": 11728
+        },
+        "75": {
+          "post_D10_population": 147685,
+          "PF_LIMIT_excluded": 517,
+          "ALT_excluded": 0,
+          "never_started_pairs": 10721
+        },
+        "91": {
+          "post_D10_population": 147685,
+          "PF_LIMIT_excluded": 706,
+          "ALT_excluded": 0,
+          "never_started_pairs": 9863
+        },
+        "108": {
+          "post_D10_population": 147370,
+          "PF_LIMIT_excluded": 751,
+          "ALT_excluded": 0,
+          "never_started_pairs": 9145
+        },
+        "125": {
+          "post_D10_population": 147049,
+          "PF_LIMIT_excluded": 748,
+          "ALT_excluded": 0,
+          "never_started_pairs": 8525
+        },
+        "150": {
+          "post_D10_population": 146602,
+          "PF_LIMIT_excluded": 779,
+          "ALT_excluded": 0,
+          "never_started_pairs": 7755
+        },
+        "180": {
+          "post_D10_population": 145845,
+          "PF_LIMIT_excluded": 836,
+          "ALT_excluded": 0,
+          "never_started_pairs": 7028
+        },
+        "213": {
+          "post_D10_population": 144852,
+          "PF_LIMIT_excluded": 949,
+          "ALT_excluded": 0,
+          "never_started_pairs": 6366
+        },
+        "250": {
+          "post_D10_population": 144181,
+          "PF_LIMIT_excluded": 1085,
+          "ALT_excluded": 0,
+          "never_started_pairs": 5730
+        },
+        "300": {
+          "post_D10_population": 142250,
+          "PF_LIMIT_excluded": 1140,
+          "ALT_excluded": 0,
+          "never_started_pairs": 4964
+        },
+        "350": {
+          "post_D10_population": 140796,
+          "PF_LIMIT_excluded": 1275,
+          "ALT_excluded": 0,
+          "never_started_pairs": 4411
+        },
+        "400": {
+          "post_D10_population": 138575,
+          "PF_LIMIT_excluded": 1415,
+          "ALT_excluded": 0,
+          "never_started_pairs": 3857
+        }
+      },
+      "ALT_empty_at_every_W_tested": false
+    },
+    "D10_attribution": {
+      "step": 7,
+      "instance": "alt_a",
+      "stage": "3b",
+      "api_calls": 0,
+      "what": "Is D10 right-censoring, not the rule, what makes ALT empty? EVALUATION ONLY.",
+      "filter_order": "decisions/0029: ... 5. right-censoring -> 6. liveness -> 7. outcome assignment. D10 runs BEFORE liveness, so a pair D10 removes is never offered to the liveness rule at all.",
+      "by_arm": {
+        "0": {
+          "ALT_candidates_on_line4_before_D10": 7,
+          "of_which_removed_by_D10": 1,
+          "ALT_exclusions_after_D10_OPERATIVE": 6,
+          "of_the_candidates_how_many_have_zero_in_E2_S2_episodes": 1,
+          "PF_LIMIT_candidates_before_D10": 30,
+          "PF_LIMIT_after_D10": 29
+        },
+        "1": {
+          "ALT_candidates_on_line4_before_D10": 4,
+          "of_which_removed_by_D10": 4,
+          "ALT_exclusions_after_D10_OPERATIVE": 0,
+          "of_the_candidates_how_many_have_zero_in_E2_S2_episodes": 4,
+          "PF_LIMIT_candidates_before_D10": 133,
+          "PF_LIMIT_after_D10": 92
+        },
+        "7": {
+          "ALT_candidates_on_line4_before_D10": 4,
+          "of_which_removed_by_D10": 4,
+          "ALT_exclusions_after_D10_OPERATIVE": 0,
+          "of_the_candidates_how_many_have_zero_in_E2_S2_episodes": 4,
+          "PF_LIMIT_candidates_before_D10": 364,
+          "PF_LIMIT_after_D10": 163
+        },
+        "30": {
+          "ALT_candidates_on_line4_before_D10": 4,
+          "of_which_removed_by_D10": 4,
+          "ALT_exclusions_after_D10_OPERATIVE": 0,
+          "of_the_candidates_how_many_have_zero_in_E2_S2_episodes": 4,
+          "PF_LIMIT_candidates_before_D10": 1422,
+          "PF_LIMIT_after_D10": 315
+        },
+        "38": {
+          "ALT_candidates_on_line4_before_D10": 4,
+          "of_which_removed_by_D10": 4,
+          "ALT_exclusions_after_D10_OPERATIVE": 0,
+          "of_the_candidates_how_many_have_zero_in_E2_S2_episodes": 4,
+          "PF_LIMIT_candidates_before_D10": 2331,
+          "PF_LIMIT_after_D10": 348
+        },
+        "46": {
+          "ALT_candidates_on_line4_before_D10": 4,
+          "of_which_removed_by_D10": 4,
+          "ALT_exclusions_after_D10_OPERATIVE": 0,
+          "of_the_candidates_how_many_have_zero_in_E2_S2_episodes": 4,
+          "PF_LIMIT_candidates_before_D10": 2881,
+          "PF_LIMIT_after_D10": 367
+        },
+        "60": {
+          "ALT_candidates_on_line4_before_D10": 4,
+          "of_which_removed_by_D10": 4,
+          "ALT_exclusions_after_D10_OPERATIVE": 0,
+          "of_the_candidates_how_many_have_zero_in_E2_S2_episodes": 4,
+          "PF_LIMIT_candidates_before_D10": 3170,
+          "PF_LIMIT_after_D10": 432
+        },
+        "75": {
+          "ALT_candidates_on_line4_before_D10": 4,
+          "of_which_removed_by_D10": 4,
+          "ALT_exclusions_after_D10_OPERATIVE": 0,
+          "of_the_candidates_how_many_have_zero_in_E2_S2_episodes": 4,
+          "PF_LIMIT_candidates_before_D10": 3516,
+          "PF_LIMIT_after_D10": 517
+        },
+        "91": {
+          "ALT_candidates_on_line4_before_D10": 4,
+          "of_which_removed_by_D10": 4,
+          "ALT_exclusions_after_D10_OPERATIVE": 0,
+          "of_the_candidates_how_many_have_zero_in_E2_S2_episodes": 4,
+          "PF_LIMIT_candidates_before_D10": 3914,
+          "PF_LIMIT_after_D10": 706
+        },
+        "108": {
+          "ALT_candidates_on_line4_before_D10": 4,
+          "of_which_removed_by_D10": 4,
+          "ALT_exclusions_after_D10_OPERATIVE": 0,
+          "of_the_candidates_how_many_have_zero_in_E2_S2_episodes": 4,
+          "PF_LIMIT_candidates_before_D10": 4246,
+          "PF_LIMIT_after_D10": 751
+        },
+        "125": {
+          "ALT_candidates_on_line4_before_D10": 4,
+          "of_which_removed_by_D10": 4,
+          "ALT_exclusions_after_D10_OPERATIVE": 0,
+          "of_the_candidates_how_many_have_zero_in_E2_S2_episodes": 4,
+          "PF_LIMIT_candidates_before_D10": 4542,
+          "PF_LIMIT_after_D10": 748
+        },
+        "150": {
+          "ALT_candidates_on_line4_before_D10": 4,
+          "of_which_removed_by_D10": 4,
+          "ALT_exclusions_after_D10_OPERATIVE": 0,
+          "of_the_candidates_how_many_have_zero_in_E2_S2_episodes": 4,
+          "PF_LIMIT_candidates_before_D10": 4930,
+          "PF_LIMIT_after_D10": 779
+        },
+        "180": {
+          "ALT_candidates_on_line4_before_D10": 4,
+          "of_which_removed_by_D10": 4,
+          "ALT_exclusions_after_D10_OPERATIVE": 0,
+          "of_the_candidates_how_many_have_zero_in_E2_S2_episodes": 4,
+          "PF_LIMIT_candidates_before_D10": 5586,
+          "PF_LIMIT_after_D10": 836
+        },
+        "213": {
+          "ALT_candidates_on_line4_before_D10": 4,
+          "of_which_removed_by_D10": 4,
+          "ALT_exclusions_after_D10_OPERATIVE": 0,
+          "of_the_candidates_how_many_have_zero_in_E2_S2_episodes": 4,
+          "PF_LIMIT_candidates_before_D10": 6278,
+          "PF_LIMIT_after_D10": 949
+        },
+        "300": {
+          "ALT_candidates_on_line4_before_D10": 4,
+          "of_which_removed_by_D10": 4,
+          "ALT_exclusions_after_D10_OPERATIVE": 0,
+          "of_the_candidates_how_many_have_zero_in_E2_S2_episodes": 4,
+          "PF_LIMIT_candidates_before_D10": 8699,
+          "PF_LIMIT_after_D10": 1140
+        },
+        "400": {
+          "ALT_candidates_on_line4_before_D10": 4,
+          "of_which_removed_by_D10": 4,
+          "ALT_exclusions_after_D10_OPERATIVE": 0,
+          "of_the_candidates_how_many_have_zero_in_E2_S2_episodes": 4,
+          "PF_LIMIT_candidates_before_D10": 12098,
+          "PF_LIMIT_after_D10": 1415
+        }
+      },
+      "the_four_zero_episode_pairs": [
+        {
+          "T0_floor_utc": "2026-08-11T00:00:00",
+          "account_last_insertion_instant_utc": "2026-08-10T20:48:00",
+          "days_last_insertion_minus_T0": -0.133,
+          "no_after_at_W108_ignoring_D10": true,
+          "survives_D10_at_W108": false
+        },
+        {
+          "T0_floor_utc": "2026-08-10T00:00:00",
+          "account_last_insertion_instant_utc": "2026-08-10T20:48:00",
+          "days_last_insertion_minus_T0": 0.867,
+          "no_after_at_W108_ignoring_D10": true,
+          "survives_D10_at_W108": false
+        },
+        {
+          "T0_floor_utc": "2026-08-10T00:00:00",
+          "account_last_insertion_instant_utc": "2026-08-10T20:48:00",
+          "days_last_insertion_minus_T0": 0.867,
+          "no_after_at_W108_ignoring_D10": true,
+          "survives_D10_at_W108": false
+        },
+        {
+          "T0_floor_utc": "2026-08-10T00:00:00",
+          "account_last_insertion_instant_utc": "2026-08-10T20:48:00",
+          "days_last_insertion_minus_T0": 0.867,
+          "no_after_at_W108_ignoring_D10": true,
+          "survives_D10_at_W108": false
+        }
+      ],
+      "verdict": {
+        "ALT_candidates_before_D10_range": [
+          4,
+          7
+        ],
+        "ALT_exclusions_after_D10_range": [
+          0,
+          6
+        ],
+        "D10_is_load_bearing_for_ALT_emptiness": true,
+        "arms_where_D10_is_load_bearing": [
+          "1",
+          "7",
+          "30",
+          "38",
+          "46",
+          "60",
+          "75",
+          "91",
+          "108",
+          "125",
+          "150",
+          "180",
+          "213",
+          "300",
+          "400"
+        ]
+      }
+    },
+    "bootstrap": {
+      "step": 7,
+      "instance": "alt_a",
+      "stage": 4,
+      "api_calls": 0,
+      "what": "Account-clustered intervals for the approved PF-LIMIT and the proposed ALT, and for the Step 9 liveness bound under each. EVALUATION ONLY.",
+      "bootstrap": {
+        "B": 4000,
+        "seed": 20260813,
+        "unit": "account",
+        "n_accounts": 2402,
+        "note": "identical design and seed to processed/step7/sens_a/bootstrap.json, so the rows are comparable with the gate-closing run"
+      },
+      "shares_with_clustered_intervals": {
+        "PF_LIMIT_approved": {
+          "never_started": {
+            "point_pct": 6.2373,
+            "clustered_95_ci_pct": [
+              5.8705,
+              6.6386
+            ],
+            "ci_width_pp": 0.7681
+          },
+          "continued": {
+            "point_pct": 82.3427,
+            "clustered_95_ci_pct": [
+              81.7,
+              82.9482
+            ],
+            "ci_width_pp": 1.2482
+          },
+          "started_and_left": {
+            "point_pct": 11.4201,
+            "clustered_95_ci_pct": [
+              10.9354,
+              11.9184
+            ],
+            "ci_width_pp": 0.9831
+          },
+          "step9_bound_ceiling_never_started": {
+            "point_pct": 6.7151,
+            "clustered_95_ci_pct": [
+              6.2885,
+              7.1618
+            ],
+            "bound_width_pp_point": 0.4778
+          }
+        },
+        "ALT_proposed": {
+          "never_started": {
+            "point_pct": 6.2055,
+            "clustered_95_ci_pct": [
+              5.8409,
+              6.6035
+            ],
+            "ci_width_pp": 0.7626
+          },
+          "continued": {
+            "point_pct": 82.3655,
+            "clustered_95_ci_pct": [
+              81.7202,
+              82.9647
+            ],
+            "ci_width_pp": 1.2445
+          },
+          "started_and_left": {
+            "point_pct": 11.4291,
+            "clustered_95_ci_pct": [
+              10.9438,
+              11.9195
+            ],
+            "ci_width_pp": 0.9757
+          },
+          "step9_bound_ceiling_never_started": {
+            "point_pct": 6.2055,
+            "clustered_95_ci_pct": [
+              5.8409,
+              6.6035
+            ],
+            "bound_width_pp_point": 0.0
+          }
+        },
+        "threshold_1293d_deleted": {
+          "never_started": {
+            "point_pct": 6.2325,
+            "clustered_95_ci_pct": [
+              5.8591,
+              6.6357
+            ],
+            "ci_width_pp": 0.7766
+          },
+          "continued": {
+            "point_pct": 82.3497,
+            "clustered_95_ci_pct": [
+              81.7085,
+              82.9552
+            ],
+            "ci_width_pp": 1.2467
+          },
+          "started_and_left": {
+            "point_pct": 11.4178,
+            "clustered_95_ci_pct": [
+              10.9267,
+              11.9127
+            ],
+            "ci_width_pp": 0.9859
+          },
+          "step9_bound_ceiling_never_started": {
+            "point_pct": 7.0482,
+            "clustered_95_ci_pct": [
+              6.6002,
+              7.5194
+            ],
+            "bound_width_pp_point": 0.8157
+          }
+        },
+        "no_liveness_filter": {
+          "never_started": {
+            "point_pct": 6.2055,
+            "clustered_95_ci_pct": [
+              5.8409,
+              6.6035
+            ],
+            "ci_width_pp": 0.7626
+          },
+          "continued": {
+            "point_pct": 82.3655,
+            "clustered_95_ci_pct": [
+              81.7202,
+              82.9647
+            ],
+            "ci_width_pp": 1.2445
+          },
+          "started_and_left": {
+            "point_pct": 11.4291,
+            "clustered_95_ci_pct": [
+              10.9438,
+              11.9195
+            ],
+            "ci_width_pp": 0.9757
+          },
+          "step9_bound_ceiling_never_started": {
+            "point_pct": 6.2055,
+            "clustered_95_ci_pct": [
+              5.8409,
+              6.6035
+            ],
+            "bound_width_pp_point": 0.0
+          }
+        }
+      },
+      "paired_clustered_deltas": {
+        "PF_LIMIT_to_ALT": {
+          "never_started": {
+            "observed_delta_pp": -0.0318,
+            "paired_clustered_95_ci_pp": [
+              -0.0464,
+              -0.0204
+            ],
+            "ci_excludes_zero": true
+          },
+          "continued": {
+            "observed_delta_pp": 0.0228,
+            "paired_clustered_95_ci_pp": [
+              -0.0076,
+              0.0619
+            ],
+            "ci_excludes_zero": false
+          },
+          "started_and_left": {
+            "observed_delta_pp": 0.009,
+            "paired_clustered_95_ci_pp": [
+              -0.0171,
+              0.0315
+            ],
+            "ci_excludes_zero": false
+          }
+        },
+        "no_filter_to_PF_LIMIT": {
+          "never_started": {
+            "observed_delta_pp": 0.0318,
+            "paired_clustered_95_ci_pp": [
+              0.0204,
+              0.0464
+            ],
+            "ci_excludes_zero": true
+          },
+          "continued": {
+            "observed_delta_pp": -0.0228,
+            "paired_clustered_95_ci_pp": [
+              -0.0619,
+              0.0076
+            ],
+            "ci_excludes_zero": false
+          },
+          "started_and_left": {
+            "observed_delta_pp": -0.009,
+            "paired_clustered_95_ci_pp": [
+              -0.0315,
+              0.0171
+            ],
+            "ci_excludes_zero": false
+          }
+        },
+        "no_filter_to_ALT": {
+          "never_started": {
+            "observed_delta_pp": 0.0,
+            "paired_clustered_95_ci_pp": [
+              0.0,
+              0.0
+            ],
+            "ci_excludes_zero": false
+          },
+          "continued": {
+            "observed_delta_pp": 0.0,
+            "paired_clustered_95_ci_pp": [
+              0.0,
+              0.0
+            ],
+            "ci_excludes_zero": false
+          },
+          "started_and_left": {
+            "observed_delta_pp": 0.0,
+            "paired_clustered_95_ci_pp": [
+              0.0,
+              0.0
+            ],
+            "ci_excludes_zero": false
+          }
+        }
+      },
+      "step9_bound_inflation_against_sampling_width": {
+        "PF_LIMIT_approved": {
+          "bound_inflation_pp": 0.4778,
+          "clustered_ci_width_of_never_started_pp": 0.7681,
+          "inflation_as_multiple_of_the_sampling_width": 0.6221
+        },
+        "ALT_proposed": {
+          "bound_inflation_pp": 0.0,
+          "clustered_ci_width_of_never_started_pp": 0.7681,
+          "inflation_as_multiple_of_the_sampling_width": 0.0
+        },
+        "threshold_1293d_deleted": {
+          "bound_inflation_pp": 0.8157,
+          "clustered_ci_width_of_never_started_pp": 0.7681,
+          "inflation_as_multiple_of_the_sampling_width": 1.062
+        },
+        "no_liveness_filter": {
+          "bound_inflation_pp": 0.0,
+          "clustered_ci_width_of_never_started_pp": 0.7681,
+          "inflation_as_multiple_of_the_sampling_width": 0.0
+        }
+      }
+    }
+  },
+  "judgement_calls": [
+    "READING OF '|A| = 0'. Taken as Step 1 SS7's Never-started condition - the set A at tau1 - because Red Team's own framing invokes the outcome and the filter-order position of outcome assignment. The competing reading, 'the pair has no S2 evidence at all in the record', gives a different set: 4 pairs on line 4 have no distinct in-E2 S2 episode at any bound, against 9,145 with |A| = 0 at tau1. If the Human Lead means the second reading the numbers here do not apply.",
+    "W ARMS. decisions/0027's span plus 150 and 213, with 38, 91 and 108 added so the table lines up with decisions/0044's, plus a fine sweep from 0 to 400 to test whether the emptiness is a knife-edge. H held constant at 91 in every arm.",
+    "W = 0 IS REPORTED BUT TREATED AS OUT OF SCOPE. ALT excludes 6 pairs at W = 0 and 0 at every W from 1 to 400. W = 0 is not a tested arm and is degenerate under finale anchoring - it scores 100,175 of 147,685 pairs never-started. Reported so the emptiness is presented as an empirical fact over a range, not as a theorem.",
+    "FLOOR AND CEILING. The Step 9 bound's floor is read as the rule's own point estimate and the ceiling as every excluded pair returned to the denominator and counted never-started. The task sheet names the ceiling explicitly and leaves the floor implicit.",
+    "BOOTSTRAP DESIGN COPIED, NOT RE-DESIGNED. B = 4,000, seed 20260813, resampling the 2,402 accounts - identical to the gate-closing run so the rows are comparable. This is deliberately not an independent design choice, and the intervals here therefore corroborate nothing about the interval method.",
+    "OUTCOMES COMPUTED FOR ALL ROWS BEFORE EITHER FILTER. Necessary to report the exclusion sets' composition at all, since PF-LIMIT deletes pairs before outcome assignment. Legitimate because outcome assignment is row-local, and it is the same computation the ordering question is about.",
+    "STATES RECOMPUTED, NOT READ FROM CACHE. The three states were rebuilt from nA, nAH, f2_in_AH and need and asserted equal to the cached pair_states, so this run does not inherit an error from the earlier one.",
+    "THE STORED CALIBRATION WAS READ, NEVER REFITTED. Insertion instants come from processed/step7/a4/distinct_instants.npz unchanged.",
+    "NO 91-DAY ARM. Step 9's second headline has a separate origin (D5) and is a Step 9 deliverable; Step 8 has not launched. Not measured here.",
+    "no_after COMPUTED IN CLOSED FORM (account's last insertion instant <= tau1) rather than by searchsorted, and asserted equal to the cached searchsorted result at W = 108 on all 152,126 line-4 rows."
+  ],
+  "recommendation": {
+    "stated_as": "a recommendation. Nothing is adopted here.",
+    "primary": "The alternative rule's DIAGNOSIS is correct and its REMEDY is null. On this population ALT excludes 0 pairs at every W from 1 to 400, so adopting it is numerically identical to deleting the liveness filter. I recommend adopting ALT rather than deleting the filter, on the single ground that the frame is a stopped pull and a stated rule that currently fires on nothing survives the frame growing, whereas a deleted filter does not. If it is adopted, the artifact must say in plain words that it excludes zero pairs on this data - a reader told 'a liveness filter was applied' would otherwise be misled.",
+    "second_and_independent_of_which_rule_is_chosen": "The Step 9 liveness bound should not be published in its current form under either rule. Under PF-LIMIT it adds 751 pairs - 652 of them confirmed continuers, none of them never-started - to the never-started numerator, inflating the share by 0.4778 pp, 0.62x its own sampling width. decisions/0043 already called it 'meaningless, not merely uninformative'; the measurement here is that the set it bounds contains zero pairs of the kind it claims to bound. Its remedy - recompute on the ~40 never-started exclusions - cannot be executed, because that count is 0 under the approved rule.",
+    "third": "Red Team's item 2 stays open under either rule. ALT empties the unwarranted branch; it does not warrant it."
+  }
+}
