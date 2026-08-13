@@ -1,0 +1,545 @@
+{
+  "instance": "data-scientist-b, namespace b4",
+  "step": 7,
+  "status": "PROPOSED, NOT ADOPTED. This is a gate; only the Human Lead approves.",
+  "date": "2026-08-13",
+  "api_calls": 0,
+  "spec": [
+    "decisions/0040 (gate reopened; 0036 Sec 2.3(ii) withdrawn; derive after D10)",
+    "decisions/0038 (frozen spec; reference line 4; one gap per pair; quota; inertness)",
+    "decisions/0037 (bracketing reference; distinct-instant gap unit)",
+    "decisions/0036 Sec 2 (rule shape: the gap bracketing tau1)",
+    "decisions/0029 (continuous instant differences; filter order 5 then 6)",
+    "decisions/0026 (W = 108), decisions/0025 (ceiling), decisions/0021 (insertion time)",
+    "decisions/0011 (tau_pull), artifacts/step1-outcome-definition.md Sec 6 and D10"
+  ],
+  "waterfall_assertion": {
+    "expected": [
+      201900,
+      178165,
+      155131,
+      152126,
+      128099
+    ],
+    "measured": [
+      201900,
+      178165,
+      155131,
+      152126,
+      128099
+    ],
+    "asserted": true,
+    "reference_line": "line 4 -- 152,126 (0038 Sec 2)"
+  },
+  "D10_right_censoring": {
+    "rule": "retain iff [T0] + (max(W,91) + H) x 24h <= tau_pull",
+    "H": 91,
+    "tau_pull": "2026-08-11T00:00:00Z",
+    "bound_days_at_W_108": 199,
+    "n_before": 152126,
+    "POST_CENSORING_COUNT": 147370,
+    "removed": 4756,
+    "removed_share": 0.031263557840211405,
+    "removed_by_class": {
+      "measured_gap": 1163,
+      "open_ended": 3495,
+      "no_pre_instant": 98
+    },
+    "pre_D10_classes_reproduce_the_frozen_run": {
+      "measured_gap": 129630,
+      "open_ended": 4246,
+      "no_pre_instant": 18250
+    }
+  },
+  "population_by_class_post_D10_at_W_108": {
+    "total": 147370,
+    "measured_bracketing_gap": 128467,
+    "open_ended_no_instant_after_tau1": 751,
+    "no_instant_at_or_before_tau1_LIVE_per_0021": 18152,
+    "extended_set_the_reference": 129218
+  },
+  "gap_unit": {
+    "operation": "0037 Sec 4, verbatim: every record's insertion instant, sorted, runs of EXACTLY equal instants collapsed, consecutive differences",
+    "records_in_sweep": 27656813,
+    "distinct_insertion_instants": 25864798,
+    "records_collapsed_by_exact_tie": 1792015,
+    "accounts": 2549,
+    "accounts_with_zero_instants": 0,
+    "min_gaps_per_account": 3,
+    "median_gaps_per_account": 7812.0,
+    "calibration": {
+      "source": "processed/step5/calibration.npz -- READ, NOT REFITTED",
+      "application": "np.interp(rid, knot_rid, knot_time), verbatim step5_calibrate.insert_time",
+      "n_knots": 10918,
+      "records_with_rid_below_first_knot_CLAMPED": 1862,
+      "records_with_rid_above_last_knot_CLAMPED": 5094,
+      "clamped_share": 0.000251511264150356,
+      "clamping_note": "np.interp clamps outside the knot range, so all pre-curve records share one instant and all post-curve records share another; those runs collapse to a single instant each by the exact-tie rule. JUDGEMENT CALL: the spec does not state how to treat records outside the fitted rid range. Reported, not repaired -- the curve is a required input and is not refitted."
+    }
+  },
+  "reference_distribution_bracketing_gap_post_D10": {
+    "n": 129218,
+    "n_infinite": 751,
+    "min_d": 1.9462434230027377e-05,
+    "p25_d": 0.7940566498123938,
+    "median_d": 1.8947847687066706,
+    "p75_d": 7.017677839988911,
+    "p90_d": 48.96114139486518,
+    "p99_d": 1292.0283982776575,
+    "max_finite_d": 3196.2712693346953,
+    "mean_finite_d": 32.13226793809037
+  },
+  "reference_distribution_measured_only": {
+    "n": 128467,
+    "n_infinite": 0,
+    "min_d": 1.9462434230027377e-05,
+    "p25_d": 0.791640263059073,
+    "median_d": 1.8829685296752938,
+    "p75_d": 6.916671494321415,
+    "p90_d": 43.10246254805062,
+    "p99_d": 631.8031044554186,
+    "max_finite_d": 3196.2712693346953,
+    "mean_finite_d": 32.13226793809037
+  },
+  "pooled_gap_distribution_NOT_THE_REFERENCE": {
+    "n": 25862249,
+    "n_infinite": 0,
+    "min_d": 3.857745064629449e-09,
+    "p25_d": 3.3717464517664026e-07,
+    "median_d": 7.001917671274256e-07,
+    "p75_d": 0.025080093694505867,
+    "p90_d": 0.4059718132333619,
+    "p99_d": 3.4431932062376234,
+    "max_finite_d": 3196.2712693346953,
+    "mean_finite_d": 0.24729346018971662,
+    "note": "NOT the reference distribution -- 0037 Sec 1 withdrew the pooled basis. Reported only to corroborate the length bias."
+  },
+  "length_bias": {
+    "pooled_p99_days_raw": 3.4431932062376234,
+    "pooled_p99_days_ceiling": 4.0,
+    "share_bracketing_ge_pooled_p99_RAW_comparator": 0.36976811165513324,
+    "share_bracketing_ge_pooled_p99_CEILING_comparator": 0.34183876014852066,
+    "comparator_note": "decisions/0040 Sec 5: the superseded run's two artifacts published 34.1% and 36.96% for this quantity and misattributed the difference to a different population. It is the raw-vs-ceiling comparator. Both are stated here.",
+    "pooled_median_days": 7.001917671274256e-07,
+    "bracketing_median_days": 1.8829685296752938
+  },
+  "tie_structure": {
+    "distinct_values": 92564,
+    "pairs_sharing_a_value_with_another_pair": 44355,
+    "share_sharing": 0.34526376423517324,
+    "largest_tie_group": 298
+  },
+  "exclusion_concentration": {
+    "accounts_in_the_post_D10_population": 2402,
+    "accounts_supplying_the_gap_test_exclusions": 43,
+    "accounts_supplying_the_open_ended_exclusions": 166,
+    "pairs_at_exactly_the_threshold": 0,
+    "pairs_spared_by_the_ceiling_rounding": 12,
+    "comment": "the whole exclusion set comes from 209 accounts of the 2,402 in the post-D10 population (2,100 of which hold an extended-set gap), which is why an i.i.d. interval is not admissible here"
+  },
+  "PROPOSED_THRESHOLD": {
+    "percentile": 99.0,
+    "reference": "the extended bracketing-gap set (measured gaps + open-ended as +inf), one gap per pair, on the post-D10 population",
+    "raw_days": 1292.0283982776575,
+    "threshold_days_ceiling_per_0025": 1293.0,
+    "account_clustered_ci95_days": [
+      790.0,
+      2200.0
+    ],
+    "bootstrap_replicates": 2000,
+    "bootstrap_endpoint_convention": "2.5th by method='lower', 97.5th by method='higher'; whole days",
+    "bootstrap_seed": 20260921,
+    "bootstrap_accounts_resampled": 2100,
+    "iid_pair_level_ci95_FOR_CONTRAST": [
+      1210.0,
+      1405.0
+    ],
+    "iid_overstates_precision_by": 7.230769230769231,
+    "replicates_with_infinite_p99_share": 0.0025,
+    "NEVER_REPORT_BARE": "report as a point value with the account-clustered interval, same treatment as W = 108 +- 18"
+  },
+  "RULE_STATEMENT": "A user-show pair is LIVE unless its bracketing gap is at or above the threshold. For a pair with clock start T0 and window W, let tau1 = [T0] + W x 24h. On that pair's ACCOUNT, over the whole sweep -- every show and movie, not only the show under study -- take the distinct insertion instants; let b be the last instant at or before tau1 and f the first instant strictly after tau1. The bracketing gap is f - b, a continuous instant difference in days. (1) If both exist, the pair is NOT LIVE iff f - b >= threshold. (2) If no instant falls after tau1, the gap is open-ended, +inf, and the pair is NOT LIVE -- it fails any finite threshold on its own. (3) If no instant falls at or before tau1, the pair is LIVE: decisions/0021, approved gate 2 of 5, rules that any record inserted after the window closed proves the account was alive whatever date it claims. Liveness is a PAIR-level filter, never a user-level one: evidence is account-wide but tau1 is pair-specific, so one account can be live for one show and not for another. Liveness is anchored at tau1; tau2 plays no part in it (0034). Applied at Step 8 position 6, after right-censoring at position 5.",
+  "REALISED_RATE": {
+    "against_the_extended_set_the_reference": 0.009921218406104413,
+    "against_measured_gap_pairs_only": 0.0041333572045739375,
+    "against_all_post_D10_pairs": 0.008699192508651693,
+    "stated_rate": 0.01,
+    "not_live_total": 1282,
+    "not_live_measured_gap": 531,
+    "not_live_open_ended": 751,
+    "live_pairs": 146088,
+    "live_share": 0.9913008074913483
+  },
+  "QUOTA_PROPERTY": "Taking the percentile on the distribution the test applies to sets the level by the exclusion rate, not by any feature of the data: choosing p mechanically fixes the exclusion rate at 100 - p percent of the reference set. It is a quota, not a finding. 0040 Sec 2 sharpens it: because open-ended gaps now sit INSIDE the reference set, they consume 751 of the 1282-pair quota before the gap test runs, and the measured-gap test is left with what remains. That is why the threshold rose from 632 d to 1293 d: not because gaps got longer, but because the quota got smaller.",
+  "INERTNESS_AS_MEASURED_ON_THIS_POPULATION": {
+    "note": "MEASURED HERE, NOT CARRIED. 0040 Sec 4 withdrew the 3.45/96.55 invariance claim as arithmetically impossible and the 5.37/94.63 figures as predating the two changes. NO INVARIANCE IS CLAIMED.",
+    "at_the_adopted_99th": {
+      "gap_test_exclusions": 531,
+      "edge_case_open_ended_exclusions": 751,
+      "gap_test_share": 0.4141965678627145,
+      "edge_case_share": 0.5858034321372855
+    },
+    "across_percentiles": {
+      "90.0": {
+        "raw_days": 48.96114139486518,
+        "threshold_days": 49.0,
+        "gap_test_exclusions": 12165,
+        "edge_case_open_ended_exclusions": 751,
+        "gap_test_share_of_exclusions": 0.9418550634871478,
+        "edge_case_share_of_exclusions": 0.058144936512852276,
+        "realised_rate_vs_extended_set": 0.09995511461251529
+      },
+      "95.0": {
+        "raw_days": 146.1042710378297,
+        "threshold_days": 147.0,
+        "gap_test_exclusions": 5674,
+        "edge_case_open_ended_exclusions": 751,
+        "gap_test_share_of_exclusions": 0.8831128404669261,
+        "edge_case_share_of_exclusions": 0.11688715953307394,
+        "realised_rate_vs_extended_set": 0.049722174929189435
+      },
+      "97.5": {
+        "raw_days": 384.9465537543843,
+        "threshold_days": 385.0,
+        "gap_test_exclusions": 2472,
+        "edge_case_open_ended_exclusions": 751,
+        "gap_test_share_of_exclusions": 0.7669872789326714,
+        "edge_case_share_of_exclusions": 0.23301272106732857,
+        "realised_rate_vs_extended_set": 0.024942345493661873
+      },
+      "99.0": {
+        "raw_days": 1292.0283982776575,
+        "threshold_days": 1293.0,
+        "gap_test_exclusions": 531,
+        "edge_case_open_ended_exclusions": 751,
+        "gap_test_share_of_exclusions": 0.4141965678627145,
+        "edge_case_share_of_exclusions": 0.5858034321372855,
+        "realised_rate_vs_extended_set": 0.009921218406104413
+      },
+      "99.5": {
+        "raw_days": Infinity,
+        "threshold_days": Infinity,
+        "gap_test_exclusions": 0,
+        "edge_case_open_ended_exclusions": 751,
+        "gap_test_share_of_exclusions": 0.0,
+        "edge_case_share_of_exclusions": 1.0,
+        "realised_rate_vs_extended_set": 0.005811883793279574
+      },
+      "99.9": {
+        "raw_days": Infinity,
+        "threshold_days": Infinity,
+        "gap_test_exclusions": 0,
+        "edge_case_open_ended_exclusions": 751,
+        "gap_test_share_of_exclusions": 0.0,
+        "edge_case_share_of_exclusions": 1.0,
+        "realised_rate_vs_extended_set": 0.005811883793279574
+      }
+    },
+    "what_changed": "the withdrawn edge case (ii) was 76.8% of the old filter's exclusions; those 18,152 pairs are now LIVE, so the remaining split is between the gap test and the open-ended bucket only."
+  },
+  "EDGE_CASE_i_STILL_NEEDED_AS_A_SEPARATE_RULING": {
+    "question": "0040 Sec 2: does an infinite gap simply fail a finite threshold on its own?",
+    "open_ended_share_of_extended_set": 0.005811883793279574,
+    "0040_predicted": 0.00685,
+    "finite_99th_over_extended_set": true,
+    "answer": "NOT NEEDED AS AN EXCLUSION RULING at the 99th percentile. The extended-set 99th is finite and every open-ended gap exceeds it automatically. STILL NEEDED AS A CONSTRUCTION RULING: something must say that an open-ended gap enters the reference set as +inf rather than being dropped from it -- that single choice is what moves the threshold 632 -> 1293 d.",
+    "where_it_becomes_load_bearing_again": {
+      "percentile_above_which_the_extended_p_is_infinite": 99.41881162067205,
+      "consequence": "above that percentile the threshold is +inf, the measured-gap test excludes nobody, and the ONLY exclusions are the open-ended pairs -- so the rule degenerates into edge case (i) alone.",
+      "bootstrap_replicates_hitting_it_at_W_108": 0.0025,
+      "bootstrap_replicates_hitting_it_at_W_213": 0.028
+    }
+  },
+  "REFERENCE_SET_VARIANTS_the_largest_remaining_lever": {
+    "note": "0040 Sec 2 fixes the population but not the treatment of pairs with no bracketing gap. Three readings are defensible; V1 is taken as primary because 0040's own arithmetic (894/130,524) frames the extended set as measured + open-ended, excluding the no-pre-instant pairs.",
+    "variants": {
+      "V1_extended_PRIMARY": {
+        "reference_n": 129218,
+        "raw_p99_days": 1292.0283982776575,
+        "threshold_days_ceiling": 1293.0,
+        "not_live_total": 1282,
+        "not_live_measured_gap": 531,
+        "not_live_open_ended": 751,
+        "realised_rate_vs_measured_gap_pairs": 0.0041333572045739375,
+        "realised_rate_vs_extended_set": 0.009921218406104413,
+        "realised_rate_vs_all_post_D10_pairs": 0.008699192508651693,
+        "live_pairs": 146088,
+        "live_share": 0.9913008074913483
+      },
+      "V2_measured_only_0039_basis": {
+        "reference_n": 128467,
+        "raw_p99_days": 631.8031044554186,
+        "threshold_days_ceiling": 632.0,
+        "not_live_total": 2026,
+        "not_live_measured_gap": 1275,
+        "not_live_open_ended": 751,
+        "realised_rate_vs_measured_gap_pairs": 0.009924727751095612,
+        "realised_rate_vs_extended_set": 0.015678930180005882,
+        "realised_rate_vs_all_post_D10_pairs": 0.013747709845965937,
+        "live_pairs": 145344,
+        "live_share": 0.986252290154034
+      },
+      "V3_all_pairs_no_pre_instant_as_zero": {
+        "reference_n": 147370,
+        "raw_p99_days": 974.3299180794038,
+        "threshold_days_ceiling": 975.0,
+        "not_live_total": 1471,
+        "not_live_measured_gap": 720,
+        "not_live_open_ended": 751,
+        "realised_rate_vs_measured_gap_pairs": 0.005604552141795169,
+        "realised_rate_vs_extended_set": 0.011383862929313253,
+        "realised_rate_vs_all_post_D10_pairs": 0.009981678767727488,
+        "live_pairs": 145899,
+        "live_share": 0.9900183212322725
+      }
+    }
+  },
+  "IS_THE_THRESHOLD_LOAD_BEARING_input_to_0040_Sec_6": {
+    "not_live_at_ci_low": 1701,
+    "not_live_at_point": 1282,
+    "not_live_at_ci_high": 897,
+    "swing_pairs_across_the_interval": 804,
+    "swing_pp_of_population": 0.5455655832258941,
+    "share_of_population_excluded_at_point": 0.008699192508651693,
+    "comment": "Step 9 must recompute the headline at both endpoints. The exclusion set moves by fewer than a thousand pairs across an interval 1,410 days wide; whether that moves the headline is Step 9's to answer, not Step 7's."
+  },
+  "STEP_13_PER_ARM_REFIT": {
+    "38": {
+      "W": 38,
+      "censoring_bound_days_max_W_91_plus_H": 182,
+      "population_post_D10": 147685,
+      "removed_by_D10": 4441,
+      "measured_gap_pairs": 128122,
+      "open_ended_pairs": 348,
+      "no_pre_instant_pairs_LIVE": 19215,
+      "raw_p99_days": 715.450023167149,
+      "threshold_days": 716.0,
+      "ci95_account_clustered": [
+        591.0,
+        973.0
+      ],
+      "bootstrap_replicates": 1000,
+      "bootstrap_replicates_with_infinite_p99_share": 0.0,
+      "not_live_total": 1285,
+      "not_live_measured_gap": 937,
+      "not_live_open_ended": 348,
+      "realised_rate_vs_extended_set": 0.010002335175527361,
+      "realised_rate_vs_measured_gap_pairs": 0.007313341970933954,
+      "realised_rate_vs_all_post_D10_pairs": 0.008700951349155297,
+      "live_pairs": 146400,
+      "live_share": 0.9912990486508447,
+      "gap_test_share_of_exclusions": 0.7291828793774319
+    },
+    "46": {
+      "W": 46,
+      "censoring_bound_days_max_W_91_plus_H": 182,
+      "population_post_D10": 147685,
+      "removed_by_D10": 4441,
+      "measured_gap_pairs": 128248,
+      "open_ended_pairs": 367,
+      "no_pre_instant_pairs_LIVE": 19070,
+      "raw_p99_days": 720.4717326502143,
+      "threshold_days": 721.0,
+      "ci95_account_clustered": [
+        591.0,
+        982.0
+      ],
+      "bootstrap_replicates": 1000,
+      "bootstrap_replicates_with_infinite_p99_share": 0.0,
+      "not_live_total": 1259,
+      "not_live_measured_gap": 892,
+      "not_live_open_ended": 367,
+      "realised_rate_vs_extended_set": 0.009788904871127007,
+      "realised_rate_vs_measured_gap_pairs": 0.006955274156322126,
+      "realised_rate_vs_all_post_D10_pairs": 0.00852490097166266,
+      "live_pairs": 146426,
+      "live_share": 0.9914750990283373,
+      "gap_test_share_of_exclusions": 0.7084988085782367
+    },
+    "77": {
+      "W": 77,
+      "censoring_bound_days_max_W_91_plus_H": 182,
+      "population_post_D10": 147685,
+      "removed_by_D10": 4441,
+      "measured_gap_pairs": 128606,
+      "open_ended_pairs": 519,
+      "no_pre_instant_pairs_LIVE": 18560,
+      "raw_p99_days": 884.8520832938895,
+      "threshold_days": 885.0,
+      "ci95_account_clustered": [
+        632.0,
+        1293.0
+      ],
+      "bootstrap_replicates": 1000,
+      "bootstrap_replicates_with_infinite_p99_share": 0.0,
+      "not_live_total": 1279,
+      "not_live_measured_gap": 760,
+      "not_live_open_ended": 519,
+      "realised_rate_vs_extended_set": 0.00990513068731849,
+      "realised_rate_vs_measured_gap_pairs": 0.00590952210627809,
+      "realised_rate_vs_all_post_D10_pairs": 0.008660324338964688,
+      "live_pairs": 146406,
+      "live_share": 0.9913396756610353,
+      "gap_test_share_of_exclusions": 0.5942142298670836
+    },
+    "91": {
+      "W": 91,
+      "censoring_bound_days_max_W_91_plus_H": 182,
+      "population_post_D10": 147685,
+      "removed_by_D10": 4441,
+      "measured_gap_pairs": 128592,
+      "open_ended_pairs": 706,
+      "no_pre_instant_pairs_LIVE": 18387,
+      "raw_p99_days": 1229.0125611550995,
+      "threshold_days": 1230.0,
+      "ci95_account_clustered": [
+        721.0,
+        1766.0
+      ],
+      "bootstrap_replicates": 1000,
+      "bootstrap_replicates_with_infinite_p99_share": 0.0,
+      "not_live_total": 1284,
+      "not_live_measured_gap": 578,
+      "not_live_open_ended": 706,
+      "realised_rate_vs_extended_set": 0.0099305480363192,
+      "realised_rate_vs_measured_gap_pairs": 0.004494836381734478,
+      "realised_rate_vs_all_post_D10_pairs": 0.008694180180790195,
+      "live_pairs": 146401,
+      "live_share": 0.9913058198192098,
+      "gap_test_share_of_exclusions": 0.4501557632398754
+    },
+    "107": {
+      "W": 107,
+      "censoring_bound_days_max_W_91_plus_H": 198,
+      "population_post_D10": 147384,
+      "removed_by_D10": 4742,
+      "measured_gap_pairs": 128476,
+      "open_ended_pairs": 745,
+      "no_pre_instant_pairs_LIVE": 18163,
+      "raw_p99_days": 1286.5211190169525,
+      "threshold_days": 1287.0,
+      "ci95_account_clustered": [
+        787.0,
+        1766.0
+      ],
+      "bootstrap_replicates": 1000,
+      "bootstrap_replicates_with_infinite_p99_share": 0.004,
+      "not_live_total": 1289,
+      "not_live_measured_gap": 544,
+      "not_live_open_ended": 745,
+      "realised_rate_vs_extended_set": 0.009975158836412038,
+      "realised_rate_vs_measured_gap_pairs": 0.004234253868426788,
+      "realised_rate_vs_all_post_D10_pairs": 0.008745861151821093,
+      "live_pairs": 146095,
+      "live_share": 0.9912541388481789,
+      "gap_test_share_of_exclusions": 0.42203258339798294
+    },
+    "108": {
+      "W": 108,
+      "censoring_bound_days_max_W_91_plus_H": 199,
+      "population_post_D10": 147370,
+      "removed_by_D10": 4756,
+      "measured_gap_pairs": 128467,
+      "open_ended_pairs": 751,
+      "no_pre_instant_pairs_LIVE": 18152,
+      "raw_p99_days": 1292.0283982776575,
+      "threshold_days": 1293.0,
+      "ci95_account_clustered": [
+        790.0,
+        2200.0
+      ],
+      "bootstrap_replicates": 2000,
+      "bootstrap_replicates_with_infinite_p99_share": 0.0025,
+      "not_live_total": 1282,
+      "not_live_measured_gap": 531,
+      "not_live_open_ended": 751,
+      "realised_rate_vs_extended_set": 0.009921218406104413,
+      "realised_rate_vs_measured_gap_pairs": 0.0041333572045739375,
+      "realised_rate_vs_all_post_D10_pairs": 0.008699192508651693,
+      "live_pairs": 146088,
+      "live_share": 0.9913008074913483,
+      "gap_test_share_of_exclusions": 0.4141965678627145
+    },
+    "150": {
+      "W": 150,
+      "censoring_bound_days_max_W_91_plus_H": 241,
+      "population_post_D10": 146602,
+      "removed_by_D10": 5524,
+      "measured_gap_pairs": 128079,
+      "open_ended_pairs": 779,
+      "no_pre_instant_pairs_LIVE": 17744,
+      "raw_p99_days": 1404.669184007675,
+      "threshold_days": 1405.0,
+      "ci95_account_clustered": [
+        898.0,
+        2470.0
+      ],
+      "bootstrap_replicates": 1000,
+      "bootstrap_replicates_with_infinite_p99_share": 0.002,
+      "not_live_total": 1280,
+      "not_live_measured_gap": 501,
+      "not_live_open_ended": 779,
+      "realised_rate_vs_extended_set": 0.009933415077061572,
+      "realised_rate_vs_measured_gap_pairs": 0.003911648279577448,
+      "realised_rate_vs_all_post_D10_pairs": 0.008731122358494428,
+      "live_pairs": 145322,
+      "live_share": 0.9912688776415056,
+      "gap_test_share_of_exclusions": 0.39140625
+    },
+    "213": {
+      "W": 213,
+      "censoring_bound_days_max_W_91_plus_H": 304,
+      "population_post_D10": 144852,
+      "removed_by_D10": 7274,
+      "measured_gap_pairs": 126762,
+      "open_ended_pairs": 949,
+      "no_pre_instant_pairs_LIVE": 17141,
+      "raw_p99_days": 1653.4218190416252,
+      "threshold_days": 1654.0,
+      "ci95_account_clustered": [
+        1097.0,
+        2937.0
+      ],
+      "bootstrap_replicates": 1000,
+      "bootstrap_replicates_with_infinite_p99_share": 0.028,
+      "not_live_total": 1272,
+      "not_live_measured_gap": 323,
+      "not_live_open_ended": 949,
+      "realised_rate_vs_extended_set": 0.00995998778492064,
+      "realised_rate_vs_measured_gap_pairs": 0.0025480822328458057,
+      "realised_rate_vs_all_post_D10_pairs": 0.008781376853616105,
+      "live_pairs": 143580,
+      "live_share": 0.9912186231463839,
+      "gap_test_share_of_exclusions": 0.2539308176100629
+    }
+  },
+  "DERIVE_APPLY_MISMATCH_STILL_OPEN": {
+    "finding": "0038 Sec 2.1 requires derivation and application populations to be IDENTICAL. 0040 closed the D10 half of the mismatch and left the other half open: the reference is waterfall line 4 (152,126) less D10, but Step 8 applies liveness at position 6 to the ANALYSIS population (201,900) less D10. Line 4 is a strict subset. This is the same defect class 0038 Sec 2.1 names, one step milder.",
+    "measured": {
+      "population": "analysis population 201,900 less D10 -- what Step 8 position 6 receives",
+      "n_before_D10": 201900,
+      "n_after_D10": 196654,
+      "measured_gap": 156711,
+      "open_ended": 1355,
+      "no_instant_at_or_before_tau1_LIVE": 38588,
+      "not_live_measured_gap": 924,
+      "not_live_open_ended": 1355,
+      "not_live_total": 2279,
+      "realised_rate_vs_extended_set": 0.014418027912391027,
+      "realised_rate_vs_all_pairs": 0.011588881995789559,
+      "stated_rate": 0.01
+    },
+    "L2_eq_1_check": "zero pairs on L2 = 1 shows in line 4, so Step 8 position 2 removes nothing and contributes no further mismatch"
+  },
+  "JUDGEMENT_CALLS_THE_SPEC_DOES_NOT_SETTLE": [
+    "1. Whether pairs with NO instant at or before tau1 belong in the reference distribution. They are LIVE (0021) but have no bracketing gap. V1 excludes them (primary, matching 0040's own 894/130,524 arithmetic); V3 enters them as 0. The choice moves the threshold from 1,293 d to 975 d. Largest remaining lever in the step.",
+    "2. Whether the reference set includes open-ended gaps as +inf (V1) or is restricted to measured gaps (V2, 0039's basis). 0040 Sec 2 directs V1; the cost is that the threshold more than doubles, 632 -> 1,293 d, and the measured-gap test excludes 531 pairs instead of 1,275.",
+    "3. Comparator direction: NOT LIVE iff gap >= threshold. 0025's reasoning implies at-or-above; the spec never states it as an operator. At 1,293 d exactly zero pairs sit on the boundary, so it does not bite here.",
+    "4. Quantile method: R type-7 / numpy 'linear'. The spec names a percentile, never an estimator. Type-7 reproduces the frozen run's 631.8031 exactly.",
+    "5. np.interp CLAMPS 6,956 records outside the fitted rid range (1,862 below, 5,094 above) to the endpoint instants. The calibration is a required input and is not refitted, so this is reported, not repaired. Both arms of the superseded run resolved it identically by chance (0040 Sec 7).",
+    "6. D10's comparison is written '<=' and is applied as written; every other boundary in the study is half-open.",
+    "7. Bootstrap endpoints: the ceilinged replicate thresholds' 2.5th taken by method='lower' and 97.5th by method='higher', so the interval is not narrowed by interpolating between adjacent replicates. B = 2,000 at the adopted arm, 1,000 elsewhere; seed recorded.",
+    "8. Which W arms Step 13 runs. 0027 gives the union 38..213; the task sheet's Step 7 summary says '46 to 107 plus 150 and 213'. Eight arms are run to cover both."
+  ],
+  "elapsed_s": 0.40048789978027344
+}

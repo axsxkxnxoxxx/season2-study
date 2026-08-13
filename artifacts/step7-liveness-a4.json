@@ -1,0 +1,1697 @@
+{
+  "step": 7,
+  "instance": "a4",
+  "status": "PROPOSED, NOT ADOPTED. Gate reopened by decisions/0040. Awaiting Human Lead approval.",
+  "date": "2026-08-13",
+  "api_calls": 0,
+  "spec_read": [
+    "decisions/0040-step7-gate-reopened.md (read first, whole)",
+    "task-sheet.md lines 226-285",
+    "decisions/0038-step7-frozen-spec.md (SS2.1 as corrected by 0040)",
+    "decisions/0037 SS4 (gap unit); decisions/0036 SS2 (rule shape), SS2.3(ii) WITHDRAWN",
+    "decisions/0021-step5-contamination-gate.md (reinstated insertion-time ruling)",
+    "artifacts/step1-outcome-definition.md lines 685-710 and D10"
+  ],
+  "THE_ONE_UNSETTLED_QUESTION_THAT_SETS_THE_NUMBER": {
+    "question": "which set of pairs forms the reference distribution",
+    "candidate_A_EXTENDED": {
+      "definition": "every TESTED pair in the post-D10 population: the 128,467 measured bracketing gaps plus the 751 open-ended gaps carried as +infinity",
+      "n": 129218,
+      "threshold_days": 1293,
+      "basis": "decisions/0040 SS2 \u2014 after D10 the open-ended share is under 1%, the extended 99th is finite, 'an infinite gap fails a finite threshold on its own', and the restriction 0039 SS5 called forced is dissolved. Also the only reading under which derivation and application sets are the same set (0038 SS2.1)."
+    },
+    "candidate_B_MEASURED_ONLY": {
+      "definition": "the finite bracketing gaps only",
+      "n": 128467,
+      "threshold_days": 632,
+      "basis": "task-sheet.md line 266, which still carries decisions/0039 SS5's restriction verbatim. 0039 is SUSPENDED by 0040 and its stated reason for the restriction ('a 99th percentile over the extended set would itself be infinite') is false on this population."
+    },
+    "A4_PROPOSES": "candidate A, 1,293 days",
+    "why": "task-sheet.md states that decisions/ is authoritative over it where the two disagree. decisions/0040 postdates and suspends 0039, and reasons explicitly toward the extended set. Candidate B is reported in full at every number below so the Human Lead can select B without a rerun.",
+    "DEFECT_TO_REPORT": "decisions/0040 SS4 corrected four superseded figures in task-sheet.md and did not correct line 266, which still states the suspended entry's reference set as operative spec. Step 8 launches off the task sheet.",
+    "size_of_the_lever": {
+      "threshold_days": [
+        1293,
+        632
+      ],
+      "pairs_excluded": [
+        1282,
+        2026
+      ],
+      "excluded_share_of_post_D10_population": [
+        0.008699,
+        0.013748
+      ]
+    }
+  },
+  "population": {
+    "waterfall_computed": [
+      201900,
+      178165,
+      155131,
+      152126,
+      128099
+    ],
+    "waterfall_published": [
+      201900,
+      178165,
+      155131,
+      152126,
+      128099
+    ],
+    "frozen_line_152126": 152126,
+    "d10_rule": "[[T0]] + (max(W,91)+H)*24h <= tau_pull",
+    "d10_latest_admissible_T0_utc": "2026-01-24T00:00:00",
+    "d10_removed": 4756,
+    "post_D10_population": 147370,
+    "post_D10_share_of_152126": 0.968736,
+    "derivation_equals_application": true
+  },
+  "d10_effect_by_class": {
+    "before_152126": {
+      "measured": 129630,
+      "open_ended": 4246,
+      "no_pre_tau1": 18250,
+      "total": 152126
+    },
+    "after_D10": {
+      "measured": 128467,
+      "open_ended": 751,
+      "no_pre_tau1": 18152,
+      "total": 147370
+    },
+    "removed_by_D10": {
+      "measured": 1163,
+      "open_ended": 3495,
+      "no_pre_tau1": 98,
+      "total": 4756
+    },
+    "note": "decisions/0040 SS2 anticipated 894 open-ended out of a 130,524 extended set (0.685%). Measured here: 751 out of 129,218 (0.581%). The anticipated figure is the pre-D10 extended set (133,876) less the 3,352 pairs whose tau1 is past the pull instant, i.e. it assumes D10 acts only on the open-ended bucket. D10 is a cut on [[T0]] + (max(W,91)+H)*24h, which is 91 days stricter than tau1 > tau_pull, so it removes pairs from every class: 3495 open-ended, 1163 measured, 98 no-pre-tau1. The conclusion 0040 draws from the figure is unaffected: the open-ended share is well under 1%, so the extended 99th is finite."
+  },
+  "pair_counts_by_class_at_W108": {
+    "measured_bracketing_gap": 128467,
+    "open_ended_no_instant_after_tau1": 751,
+    "no_instant_at_or_before_tau1_LIVE_per_0021": 18152,
+    "extended_set": 129218,
+    "total": 147370
+  },
+  "PROPOSAL_extended_reference": {
+    "threshold_days": 1293,
+    "p99_raw_days": 1292.0283982776575,
+    "percentile": 99.0,
+    "rounding": "ceiling (decisions/0025)",
+    "weighting": "one gap per pair (decisions/0038 SS3)",
+    "reference_population": "the 152,126 (waterfall line 4) LESS D10 right-censoring = 147,370; tested subset 129,218",
+    "W_days": 108,
+    "H_days": 91,
+    "threshold_is_a_function_of_W": true,
+    "account_clustered_95_CI_days": [
+      787,
+      2200
+    ],
+    "bootstrap_replicates": 2000,
+    "bootstrap_seed": 20260813,
+    "infinite_replicates": 4,
+    "infinite_replicate_share": 0.002,
+    "NEVER_REPORT_BARE": "report 1,293 d with the account-clustered interval, never as a point estimate. Same treatment as W = 108 +/- 18.",
+    "applied": {
+      "threshold_days": 1293,
+      "live": 146088,
+      "not_live_total": 1282,
+      "not_live_measured_gap": 531,
+      "not_live_open_ended_no_instant_after_tau1": 751,
+      "not_live_no_instant_at_or_before_tau1": 0,
+      "live_of_which_no_instant_at_or_before_tau1_0021": 18152,
+      "realised_rate_vs_measured_gap_pairs": 0.004133,
+      "realised_rate_vs_extended_set": 0.009921,
+      "realised_rate_vs_post_D10_population": 0.008699,
+      "live_share_of_post_D10_population": 0.991301
+    }
+  },
+  "ALTERNATIVE_measured_only_reference": {
+    "threshold_days": 632,
+    "p99_raw_days": 631.8031044554186,
+    "account_clustered_95_CI_days": [
+      556,
+      836
+    ],
+    "bootstrap_replicates": 2000,
+    "applied": {
+      "threshold_days": 632,
+      "live": 145344,
+      "not_live_total": 2026,
+      "not_live_measured_gap": 1275,
+      "not_live_open_ended_no_instant_after_tau1": 751,
+      "not_live_no_instant_at_or_before_tau1": 0,
+      "live_of_which_no_instant_at_or_before_tau1_0021": 18152,
+      "realised_rate_vs_measured_gap_pairs": 0.009925,
+      "realised_rate_vs_extended_set": 0.015679,
+      "realised_rate_vs_post_D10_population": 0.013748,
+      "live_share_of_post_D10_population": 0.986252
+    },
+    "note": "this is bit-identical to decisions/0039's approved 631.8031044554186 -> 632 d. D10 removes 1,163 measured-gap pairs and does not move this threshold at all, because the selected order statistic sits in a tie plateau of 156 pairs. What D10 and the 0036 SS2.3(ii) withdrawal change is the EXCLUSION COUNT, not this number."
+  },
+  "RULE_STATEMENT": {
+    "text": "A USER-SHOW PAIR is LIVE unless the account's insertion history shows a gap of at least T days bracketing that pair's own tau1 = [[T0]] + W*24h. Concretely: build the account's sweep-wide sequence of record insertion instants - every record, all shows and movies, estimated from the STORED Step 5 isotonic play-id curve, which is read and never refitted - sort ascending, collapse runs of exactly equal instants, and take the last distinct instant at or before tau1 and the first distinct instant after tau1. If both exist, the bracketing gap is their difference in continuous days. If there is no instant after tau1 the bracketing gap is INFINITE. If there is no instant at or before tau1 the pair is LIVE and is not tested, because decisions/0021 rules that any record inserted after the window closed proves the account was alive whatever date it claims. The pair is NOT LIVE iff the bracketing gap is >= T. The test is applied to that one gap and to no other gap in the sweep. Evidence is account-wide; the test is clock-start-relative and clock start is pair-specific, so one account may be live for one show and not for another. No user is ever dropped wholesale.",
+    "T_proposed_days": 1293,
+    "boundary_convention": "not live iff gap >= T (decisions/0025 reason (a)); the spec does not state >= vs >, this is A4's call",
+    "tau1_boundary_convention": "an instant exactly equal to tau1 counts as 'at or before tau1' (searchsorted side='right')",
+    "anchored_at": "tau1 only. tau2 plays no part in liveness (decisions/0034).",
+    "filter_level": "PAIR, never user (decisions/0036 SS3)"
+  },
+  "EDGE_CASE_I_IS_IT_STILL_NEEDED": {
+    "question": "is 0036 SS2.3(i) still needed as a separate ruling?",
+    "open_ended_pairs": 751,
+    "extended_reference": {
+      "threshold_days": 1293,
+      "an_infinite_gap_fails_it": true,
+      "separate_ruling_needed": false
+    },
+    "measured_only_reference": {
+      "threshold_days": 632,
+      "an_infinite_gap_fails_it": true,
+      "separate_ruling_needed": false
+    },
+    "what_IS_still_needed": "the CONVENTION that an absent successor instant is scored as an infinite gap rather than as undefined. That is a definition, not a liveness ruling. Once it is stated, the branch is arithmetic: inf >= any finite threshold.",
+    "extended_reference_finiteness_margin": {
+      "open_ended_share": 0.005812,
+      "percentile_above_which_the_extended_p_is_infinite": 99.4188,
+      "headroom_from_the_99th_in_percentile_points": 0.4188
+    }
+  },
+  "EDGE_CASE_II_WITHDRAWN_WHAT_IT_COST": {
+    "pairs_returned_to_the_population": 18152,
+    "they_are_LIVE": true,
+    "authority": "decisions/0021, approved gate 2 of 5, reinstated by 0040 SS1",
+    "corroboration_of_0040s_premise": {
+      "accounts_with_no_insertion_instants": 0,
+      "minimum_gaps_per_account": 3,
+      "reading": "every pair in this bucket has insertion instants AFTER tau1 by construction, so 0021 rules them live. 0040 SS1's premise is confirmed on this data: no account in the sweep has zero instants and the minimum is 3 gaps."
+    },
+    "effect_on_the_filter": {
+      "approved_0039_not_live_total_on_152126": 23772,
+      "a4_not_live_total_extended_reference": 1282,
+      "a4_not_live_total_measured_only_reference": 2026,
+      "reduction": "the liveness filter's cost falls by roughly 95%, from 23,772 pairs to 1,282 (or 2,026 under candidate B). Step 9's liveness bound shrinks accordingly and Step 9 must recompute it."
+    }
+  },
+  "realised_rate_against_both_denominators": {
+    "extended_reference_T_1293": {
+      "of_measured_gap_pairs": 0.004133,
+      "of_the_tested_extended_set": 0.009921,
+      "of_the_post_D10_population": 0.008699
+    },
+    "measured_only_reference_T_632": {
+      "of_measured_gap_pairs": 0.009925,
+      "of_the_tested_extended_set": 0.015679,
+      "of_the_post_D10_population": 0.013748
+    },
+    "reading": "candidate A delivers the stated 1% against the set the percentile was taken on (0.9921%). Candidate B delivers 0.9925% of measured-gap pairs but 1.5679% of the pairs the rule actually tests, because the open-ended pairs are excluded from the reference and then excluded by the rule. That is the calibrate-on-one-set-apply-to-another shape 0037 withdrew, in miniature."
+  },
+  "bracketing_gap_distribution_days": {
+    "n_gaps_one_per_pair": 128467,
+    "min": 1.9462434230027377e-05,
+    "p1": 0.025701881506763124,
+    "p10": 0.2762240702371907,
+    "p25": 0.791640263059073,
+    "median": 1.8829685296752938,
+    "p75": 6.916671494321415,
+    "p90": 43.10246254805062,
+    "p95": 125.27954940902139,
+    "p99": 631.8031044554186,
+    "p99_5": 1156.6164437745638,
+    "p99_9": 2469.3532119203496,
+    "max": 3196.2712693346953,
+    "mean": 32.13226793809038,
+    "sub_second_share": 0.0
+  },
+  "pooled_gap_distribution_days_CONTEXT": {
+    "n_gaps": 25862249,
+    "percentiles": {
+      "50": 7.001917671274256e-07,
+      "75": 0.025080093694505867,
+      "90": 0.4059718132333619,
+      "95": 0.9389527457433718,
+      "99": 3.4431932062376234,
+      "99.5": 5.883114735404772,
+      "99.9": 19.471986747298054
+    },
+    "sub_second_share": 0.5646570799005145
+  },
+  "percentile_convention_panels": {
+    "extended": {
+      "linear": 1292.0283982776575,
+      "lower": 1292.0283982776575,
+      "higher": 1292.0283982776575,
+      "nearest": 1292.0283982776575,
+      "midpoint": 1292.0283982776575,
+      "inverted_cdf": 1292.0283982776575,
+      "averaged_inverted_cdf": 1292.0283982776575,
+      "nearest_rank_ceil": 1292.0283982776575
+    },
+    "measured_only": {
+      "linear": 631.8031044554186,
+      "lower": 631.8031044554186,
+      "higher": 631.8031044554186,
+      "nearest": 631.8031044554186,
+      "midpoint": 631.8031044554186,
+      "inverted_cdf": 631.8031044554186,
+      "averaged_inverted_cdf": 631.8031044554186,
+      "nearest_rank_ceil": 631.8031044554186
+    },
+    "note": "all eight conventions agree to the digit on both sets, because the selected order statistic sits in a tie plateau"
+  },
+  "order_statistic_ties": {
+    "measured_only_p99_value_days": 631.8031044554186,
+    "pairs_at_exactly_that_value": 156,
+    "extended_p99_value_days": 1292.0283982776575,
+    "pairs_at_exactly_that_value_extended": 12,
+    "why_it_matters": "every numpy percentile convention and the nearest-rank ceiling return the same value because the selected order statistic sits inside a tie plateau. It is also why the measured-only p99 is bit-identical before and after D10."
+  },
+  "MANDATORY_DISCLOSURE_1_quota_property": {
+    "statement": "The level is set by the exclusion rate, not by any feature of the data. The percentile is taken on the very distribution the test is applied to, so choosing the 99th mechanically fixes the exclusion rate at 1% and the threshold is whatever number delivers it. Any percentile would have produced a self-consistent answer. 1,293 days is not a point where account behaviour changes; it is the 1% quota's price tag. This is the price of a calibrated rate and it is disclosed, not argued away (decisions/0038 SS4).",
+    "evidence_threshold_moves_with_the_quota_extended_reference": {
+      "90.0": 49,
+      "95.0": 147,
+      "97.5": 385,
+      "99.0": 1293,
+      "99.5": null,
+      "99.9": null
+    },
+    "evidence_threshold_moves_with_the_quota_measured_only": {
+      "90.0": 44,
+      "95.0": 126,
+      "97.5": 283,
+      "99.0": 632,
+      "99.5": 1157,
+      "99.9": 2470
+    },
+    "what_survives": "0036 SS1's conservative-direction argument still points UP for the GAP TEST, because a false-dead removes a pair and the liveness exclusion already biases the never-started share down (Step 14 bias 2). It identifies a direction, not a level. Per 0040 SS3 it is WITHDRAWN as a justification for the edge-case branches and is not cited beyond the gap test here."
+  },
+  "MANDATORY_DISCLOSURE_2_inertness_MEASURED_ON_A4s_POPULATION": {
+    "no_invariance_is_claimed": true,
+    "statement": "Measured on A4's post-D10 population at the proposed 99th under the extended reference: the measured-gap test does 531 of 1,282 exclusions (41.42%) and the remaining evidence-absence branch - open-ended gaps - does 751 (58.58%). Under candidate B at 632 d the split is 1,275 of 2,026 (62.93%) against 751 (37.07%). The share is NOT invariant across percentiles and cannot be: the evidence-absence count is constant in the percentile while the gap-test count is a function of it.",
+    "how_this_differs_from_the_record": "decisions/0038 SS5 as corrected by 0039 published 5.37% / 94.63% on the pre-D10 152,126. That figure is gone, not merely moved: 94.63% of it was 0036 SS2.3(ii)'s 18,250-pair bucket, which 0040 SS1 withdrew and returned to the population as LIVE, and most of the rest was right-censoring that D10 removes. There is no longer an edge-case branch that dominates the filter.",
+    "extended_reference_by_percentile": {
+      "90.0": {
+        "threshold_days": 49,
+        "not_live_measured_gap": 12165,
+        "not_live_open_ended": 751,
+        "not_live_total": 12916,
+        "measured_gap_share_of_exclusions": 0.941855,
+        "evidence_absence_share_of_exclusions": 0.058145,
+        "realised_rate_vs_extended_set": 0.099955,
+        "realised_rate_vs_post_D10_population": 0.087643
+      },
+      "95.0": {
+        "threshold_days": 147,
+        "not_live_measured_gap": 5674,
+        "not_live_open_ended": 751,
+        "not_live_total": 6425,
+        "measured_gap_share_of_exclusions": 0.883113,
+        "evidence_absence_share_of_exclusions": 0.116887,
+        "realised_rate_vs_extended_set": 0.049722,
+        "realised_rate_vs_post_D10_population": 0.043598
+      },
+      "97.5": {
+        "threshold_days": 385,
+        "not_live_measured_gap": 2472,
+        "not_live_open_ended": 751,
+        "not_live_total": 3223,
+        "measured_gap_share_of_exclusions": 0.766987,
+        "evidence_absence_share_of_exclusions": 0.233013,
+        "realised_rate_vs_extended_set": 0.024942,
+        "realised_rate_vs_post_D10_population": 0.02187
+      },
+      "99.0": {
+        "threshold_days": 1293,
+        "not_live_measured_gap": 531,
+        "not_live_open_ended": 751,
+        "not_live_total": 1282,
+        "measured_gap_share_of_exclusions": 0.414197,
+        "evidence_absence_share_of_exclusions": 0.585803,
+        "realised_rate_vs_extended_set": 0.009921,
+        "realised_rate_vs_post_D10_population": 0.008699
+      },
+      "99.5": {
+        "threshold_days": null,
+        "p99_infinite": true
+      },
+      "99.9": {
+        "threshold_days": null,
+        "p99_infinite": true
+      }
+    },
+    "measured_only_reference_by_percentile": {
+      "90.0": {
+        "threshold_days": 44,
+        "not_live_measured_gap": 12729,
+        "not_live_open_ended": 751,
+        "not_live_total": 13480,
+        "measured_gap_share_of_exclusions": 0.944288,
+        "evidence_absence_share_of_exclusions": 0.055712,
+        "realised_rate_vs_measured_gap_pairs": 0.099084,
+        "realised_rate_vs_post_D10_population": 0.09147
+      },
+      "95.0": {
+        "threshold_days": 126,
+        "not_live_measured_gap": 6404,
+        "not_live_open_ended": 751,
+        "not_live_total": 7155,
+        "measured_gap_share_of_exclusions": 0.895038,
+        "evidence_absence_share_of_exclusions": 0.104962,
+        "realised_rate_vs_measured_gap_pairs": 0.049849,
+        "realised_rate_vs_post_D10_population": 0.048551
+      },
+      "97.5": {
+        "threshold_days": 283,
+        "not_live_measured_gap": 3201,
+        "not_live_open_ended": 751,
+        "not_live_total": 3952,
+        "measured_gap_share_of_exclusions": 0.80997,
+        "evidence_absence_share_of_exclusions": 0.19003,
+        "realised_rate_vs_measured_gap_pairs": 0.024917,
+        "realised_rate_vs_post_D10_population": 0.026817
+      },
+      "99.0": {
+        "threshold_days": 632,
+        "not_live_measured_gap": 1275,
+        "not_live_open_ended": 751,
+        "not_live_total": 2026,
+        "measured_gap_share_of_exclusions": 0.629319,
+        "evidence_absence_share_of_exclusions": 0.370681,
+        "realised_rate_vs_measured_gap_pairs": 0.009925,
+        "realised_rate_vs_post_D10_population": 0.013748
+      },
+      "99.5": {
+        "threshold_days": 1157,
+        "not_live_measured_gap": 643,
+        "not_live_open_ended": 751,
+        "not_live_total": 1394,
+        "measured_gap_share_of_exclusions": 0.461263,
+        "evidence_absence_share_of_exclusions": 0.538737,
+        "realised_rate_vs_measured_gap_pairs": 0.005005,
+        "realised_rate_vs_post_D10_population": 0.009459
+      },
+      "99.9": {
+        "threshold_days": 2470,
+        "not_live_measured_gap": 89,
+        "not_live_open_ended": 751,
+        "not_live_total": 840,
+        "measured_gap_share_of_exclusions": 0.105952,
+        "evidence_absence_share_of_exclusions": 0.894048,
+        "realised_rate_vs_measured_gap_pairs": 0.000693,
+        "realised_rate_vs_post_D10_population": 0.0057
+      }
+    }
+  },
+  "ACCOUNT_CLUSTERED_BOOTSTRAP": {
+    "replicates": 2000,
+    "seed": 20260813,
+    "rng": "numpy default_rng (PCG64)",
+    "clustering_unit": "account",
+    "accounts_resampled": 2100,
+    "why_clustered": "One account's insertion sweep supplies the bracketing gap for every pair it owns, so pairs are not independent draws. Measured here: 0.3453 of measured-gap pairs share their bracketing gap value exactly with at least one other pair, largest tie group 298.",
+    "tie_structure": {
+      "share_of_measured_gap_pairs_sharing_their_value": 0.345264,
+      "largest_tie_group": 298,
+      "n_distinct_values": 92564
+    },
+    "extended_reference": {
+      "point_days": 1293,
+      "ci95_ceil_days": [
+        787,
+        2200
+      ],
+      "ci95_raw_days": [
+        786.6012731439813,
+        2199.4897585340727
+      ],
+      "sd_days": 332.22465337294983,
+      "infinite_replicates": 4
+    },
+    "measured_only_reference": {
+      "point_days": 632,
+      "ci95_ceil_days": [
+        556,
+        836
+      ],
+      "ci95_raw_days": [
+        555.5593518507811,
+        835.9791760927852
+      ],
+      "sd_days": 63.43154213138069
+    },
+    "iid_for_contrast_only": {
+      "extended": {
+        "label": "extended reference, i.i.d. pairs",
+        "replicates_used": 2000,
+        "point_of_replicates_median_raw_days": 1292.0283982776575,
+        "ci95_raw_days": [
+          1209.077546101218,
+          1404.669184007675
+        ],
+        "ci95_ceil_days": [
+          1210,
+          1405
+        ],
+        "sd_raw_days": 45.340217697818574,
+        "clustered_width_over_iid_width": 7.22
+      },
+      "extended_infinite_replicates": 0,
+      "measured_only": {
+        "label": "measured-gap-only reference, i.i.d. pairs",
+        "replicates_used": 2000,
+        "point_of_replicates_median_raw_days": 631.8031044554186,
+        "ci95_raw_days": [
+          631.8031044554186,
+          654.1369784047589
+        ],
+        "ci95_ceil_days": [
+          632,
+          655
+        ],
+        "sd_raw_days": 4.746663582951191,
+        "clustered_width_over_iid_width": 12.56
+      }
+    },
+    "endpoint_stability_by_B_and_seed": {
+      "table": {
+        "B300_s20260813": {
+          "measured_only": [
+            564,
+            741
+          ],
+          "extended": [
+            823,
+            1766
+          ]
+        },
+        "B300_s7": {
+          "measured_only": [
+            542,
+            812
+          ],
+          "extended": [
+            789,
+            2200
+          ]
+        },
+        "B300_s99": {
+          "measured_only": [
+            560,
+            804
+          ],
+          "extended": [
+            858,
+            2200
+          ]
+        },
+        "B1000_s20260813": {
+          "measured_only": [
+            559,
+            836
+          ],
+          "extended": [
+            787,
+            2200
+          ]
+        },
+        "B1000_s7": {
+          "measured_only": [
+            554,
+            814
+          ],
+          "extended": [
+            790,
+            2200
+          ]
+        },
+        "B1000_s99": {
+          "measured_only": [
+            539,
+            800
+          ],
+          "extended": [
+            795,
+            2200
+          ]
+        },
+        "B2000_s20260813": {
+          "measured_only": [
+            556,
+            836
+          ],
+          "extended": [
+            787,
+            2200
+          ]
+        },
+        "B2000_s7": {
+          "measured_only": [
+            553,
+            829
+          ],
+          "extended": [
+            790,
+            2200
+          ]
+        },
+        "B2000_s99": {
+          "measured_only": [
+            542,
+            829
+          ],
+          "extended": [
+            787,
+            2200
+          ]
+        },
+        "B4000_s20260813": {
+          "measured_only": [
+            553,
+            814
+          ],
+          "extended": [
+            787,
+            2200
+          ]
+        },
+        "B4000_s7": {
+          "measured_only": [
+            554,
+            814
+          ],
+          "extended": [
+            790,
+            2200
+          ]
+        },
+        "B4000_s99": {
+          "measured_only": [
+            542,
+            829
+          ],
+          "extended": [
+            789,
+            2200
+          ]
+        }
+      },
+      "reading": "Red Team's objection is confirmed and quantified. At B = 300 the measured-only interval's upper endpoint moves 741 -> 812 days on the seed alone; at B = 2,000 it sits in 829-836 and the lower endpoint in 542-556. The extended interval's upper endpoint is pinned at 2,200 across every B and seed, which is a tie plateau rather than precision."
+    },
+    "arm_level_intervals_use_B_1000": "the per-arm CIs in STEP_13_PER_ARM_REFIT are B = 1,000 and resample each arm's own reference set directly; the headline interval here is B = 2,000 and resamples the tested set once, dropping open-ended values afterwards for the measured-only variant. The two designs differ slightly and their numbers are not interchangeable.",
+    "vs_the_suspended_approval": "decisions/0039 approved 632 d with a clustered [528, 787] from B = 300. On A4's post-D10 population at B = 2,000 the same quantity is 632 d with [556, 836]. The point estimate is bit-identical; the interval moves because 300 replicates put the endpoints on the 7th and 8th order statistics. Red Team's objection is confirmed, and the wider interval is the honest one."
+  },
+  "FILTER_COST_ACROSS_THE_INTERVAL_for_0040_SS6": {
+    "question": "0040 SS6 asks Step 9 whether the threshold is load-bearing at all. These are the inputs Step 9 needs; Step 7 does not answer it.",
+    "by_threshold": {
+      "measured_only_lo": {
+        "threshold_days": 556,
+        "not_live_measured_gap": 1703,
+        "not_live_total": 2454,
+        "excluded_share_of_post_D10_population": 0.016652,
+        "live": 144916
+      },
+      "measured_only_point": {
+        "threshold_days": 632,
+        "not_live_measured_gap": 1275,
+        "not_live_total": 2026,
+        "excluded_share_of_post_D10_population": 0.013748,
+        "live": 145344
+      },
+      "measured_only_hi": {
+        "threshold_days": 836,
+        "not_live_measured_gap": 920,
+        "not_live_total": 1671,
+        "excluded_share_of_post_D10_population": 0.011339,
+        "live": 145699
+      },
+      "extended_lo": {
+        "threshold_days": 787,
+        "not_live_measured_gap": 956,
+        "not_live_total": 1707,
+        "excluded_share_of_post_D10_population": 0.011583,
+        "live": 145663
+      },
+      "extended_point": {
+        "threshold_days": 1293,
+        "not_live_measured_gap": 531,
+        "not_live_total": 1282,
+        "excluded_share_of_post_D10_population": 0.008699,
+        "live": 146088
+      },
+      "extended_hi": {
+        "threshold_days": 2200,
+        "not_live_measured_gap": 146,
+        "not_live_total": 897,
+        "excluded_share_of_post_D10_population": 0.006087,
+        "live": 146473
+      }
+    },
+    "reading": "across the whole account-clustered interval of either candidate the liveness filter removes between 897 and 2,454 pairs of 147,370 - 0.61% to 1.67% of the population. Whether that band moves the headline is Step 9's measurement, not Step 7's claim."
+  },
+  "STEP_13_PER_ARM_REFIT": {
+    "spec": "decisions/0038 SS6 requires a refit per arm with the realised rate for each; decisions/0027 sets the arms; H is held constant at 91 across every arm; D10 is re-run at each arm because D10 is a function of W.",
+    "arms_run": [
+      38,
+      46,
+      60,
+      75,
+      91,
+      107,
+      108,
+      120,
+      150,
+      180,
+      213
+    ],
+    "arm_list_note": "0027's union range starts at 38 and the brief names 46-107 plus 150 and 213; A4 runs a superset so the response is traced, not interpolated between endpoints.",
+    "by_arm": {
+      "38": {
+        "W_days": 38,
+        "H_days": 91,
+        "d10_horizon_days": 182,
+        "d10_latest_admissible_T0_utc": "2026-02-10T00:00:00",
+        "population_152126_after_D10": 147685,
+        "d10_removed_from_152126": 4441,
+        "d10_retained_share": 0.970807,
+        "measured_gap_pairs": 128122,
+        "open_ended_pairs": 348,
+        "open_ended_share_of_extended_set": 0.002709,
+        "no_instant_at_or_before_tau1_LIVE_per_0021": 19215,
+        "EXTENDED_reference": {
+          "p99_raw_days": 715.450023167149,
+          "p99_is_finite": true,
+          "threshold_days": 716,
+          "applied": {
+            "live": 146400,
+            "not_live_total": 1285,
+            "not_live_measured_gap": 937,
+            "not_live_open_ended": 348,
+            "realised_rate_vs_measured_gap_pairs": 0.007313,
+            "realised_rate_vs_extended_set": 0.010002,
+            "realised_rate_vs_post_D10_population": 0.008701,
+            "live_share_of_post_D10_population": 0.991299
+          },
+          "clustered_ci": {
+            "replicates": 1000,
+            "infinite_replicates": 0,
+            "ci95_raw_days": [
+              589.5110554096324,
+              913.4690242340806
+            ],
+            "ci95_ceil_days": [
+              590,
+              914
+            ]
+          }
+        },
+        "MEASURED_ONLY_reference": {
+          "p99_raw_days": 588.2515134679069,
+          "threshold_days": 589,
+          "applied": {
+            "live": 146060,
+            "not_live_total": 1625,
+            "not_live_measured_gap": 1277,
+            "not_live_open_ended": 348,
+            "realised_rate_vs_measured_gap_pairs": 0.009967,
+            "realised_rate_vs_extended_set": 0.012649,
+            "realised_rate_vs_post_D10_population": 0.011003,
+            "live_share_of_post_D10_population": 0.988997
+          },
+          "clustered_ci": {
+            "replicates": 1000,
+            "infinite_replicates": 0,
+            "ci95_raw_days": [
+              515.5558147342122,
+              712.7253599067033
+            ],
+            "ci95_ceil_days": [
+              516,
+              713
+            ]
+          }
+        }
+      },
+      "46": {
+        "W_days": 46,
+        "H_days": 91,
+        "d10_horizon_days": 182,
+        "d10_latest_admissible_T0_utc": "2026-02-10T00:00:00",
+        "population_152126_after_D10": 147685,
+        "d10_removed_from_152126": 4441,
+        "d10_retained_share": 0.970807,
+        "measured_gap_pairs": 128248,
+        "open_ended_pairs": 367,
+        "open_ended_share_of_extended_set": 0.002853,
+        "no_instant_at_or_before_tau1_LIVE_per_0021": 19070,
+        "EXTENDED_reference": {
+          "p99_raw_days": 720.4717326502143,
+          "p99_is_finite": true,
+          "threshold_days": 721,
+          "applied": {
+            "live": 146426,
+            "not_live_total": 1259,
+            "not_live_measured_gap": 892,
+            "not_live_open_ended": 367,
+            "realised_rate_vs_measured_gap_pairs": 0.006955,
+            "realised_rate_vs_extended_set": 0.009789,
+            "realised_rate_vs_post_D10_population": 0.008525,
+            "live_share_of_post_D10_population": 0.991475
+          },
+          "clustered_ci": {
+            "replicates": 1000,
+            "infinite_replicates": 0,
+            "ci95_raw_days": [
+              590.5307924218889,
+              972.7229946996216
+            ],
+            "ci95_ceil_days": [
+              591,
+              973
+            ]
+          }
+        },
+        "MEASURED_ONLY_reference": {
+          "p99_raw_days": 579.0638422540547,
+          "threshold_days": 580,
+          "applied": {
+            "live": 146046,
+            "not_live_total": 1639,
+            "not_live_measured_gap": 1272,
+            "not_live_open_ended": 367,
+            "realised_rate_vs_measured_gap_pairs": 0.009918,
+            "realised_rate_vs_extended_set": 0.012743,
+            "realised_rate_vs_post_D10_population": 0.011098,
+            "live_share_of_post_D10_population": 0.988902
+          },
+          "clustered_ci": {
+            "replicates": 1000,
+            "infinite_replicates": 0,
+            "ci95_raw_days": [
+              507.58892546288666,
+              671.8190971488809
+            ],
+            "ci95_ceil_days": [
+              508,
+              672
+            ]
+          }
+        }
+      },
+      "60": {
+        "W_days": 60,
+        "H_days": 91,
+        "d10_horizon_days": 182,
+        "d10_latest_admissible_T0_utc": "2026-02-10T00:00:00",
+        "population_152126_after_D10": 147685,
+        "d10_removed_from_152126": 4441,
+        "d10_retained_share": 0.970807,
+        "measured_gap_pairs": 128343,
+        "open_ended_pairs": 432,
+        "open_ended_share_of_extended_set": 0.003355,
+        "no_instant_at_or_before_tau1_LIVE_per_0021": 18910,
+        "EXTENDED_reference": {
+          "p99_raw_days": 757.6314555280518,
+          "p99_is_finite": true,
+          "threshold_days": 758,
+          "applied": {
+            "live": 146402,
+            "not_live_total": 1283,
+            "not_live_measured_gap": 851,
+            "not_live_open_ended": 432,
+            "realised_rate_vs_measured_gap_pairs": 0.006631,
+            "realised_rate_vs_extended_set": 0.009963,
+            "realised_rate_vs_post_D10_population": 0.008687,
+            "live_share_of_post_D10_population": 0.991313
+          },
+          "clustered_ci": {
+            "replicates": 1000,
+            "infinite_replicates": 0,
+            "ci95_raw_days": [
+              613.6387442129629,
+              1160.9011632203076
+            ],
+            "ci95_ceil_days": [
+              614,
+              1161
+            ]
+          }
+        },
+        "MEASURED_ONLY_reference": {
+          "p99_raw_days": 582.0084658151911,
+          "threshold_days": 583,
+          "applied": {
+            "live": 145971,
+            "not_live_total": 1714,
+            "not_live_measured_gap": 1282,
+            "not_live_open_ended": 432,
+            "realised_rate_vs_measured_gap_pairs": 0.009989,
+            "realised_rate_vs_extended_set": 0.01331,
+            "realised_rate_vs_post_D10_population": 0.011606,
+            "live_share_of_post_D10_population": 0.988394
+          },
+          "clustered_ci": {
+            "replicates": 1000,
+            "infinite_replicates": 0,
+            "ci95_raw_days": [
+              518.1952417077366,
+              690.8090366029193
+            ],
+            "ci95_ceil_days": [
+              519,
+              691
+            ]
+          }
+        }
+      },
+      "75": {
+        "W_days": 75,
+        "H_days": 91,
+        "d10_horizon_days": 182,
+        "d10_latest_admissible_T0_utc": "2026-02-10T00:00:00",
+        "population_152126_after_D10": 147685,
+        "d10_removed_from_152126": 4441,
+        "d10_retained_share": 0.970807,
+        "measured_gap_pairs": 128485,
+        "open_ended_pairs": 517,
+        "open_ended_share_of_extended_set": 0.004008,
+        "no_instant_at_or_before_tau1_LIVE_per_0021": 18683,
+        "EXTENDED_reference": {
+          "p99_raw_days": 884.8520832938895,
+          "p99_is_finite": true,
+          "threshold_days": 885,
+          "applied": {
+            "live": 146412,
+            "not_live_total": 1273,
+            "not_live_measured_gap": 756,
+            "not_live_open_ended": 517,
+            "realised_rate_vs_measured_gap_pairs": 0.005884,
+            "realised_rate_vs_extended_set": 0.009868,
+            "realised_rate_vs_post_D10_population": 0.00862,
+            "live_share_of_post_D10_population": 0.99138
+          },
+          "clustered_ci": {
+            "replicates": 1000,
+            "infinite_replicates": 0,
+            "ci95_raw_days": [
+              650.2229090596551,
+              1284.660471034233
+            ],
+            "ci95_ceil_days": [
+              651,
+              1285
+            ]
+          }
+        },
+        "MEASURED_ONLY_reference": {
+          "p99_raw_days": 589.5110554096324,
+          "threshold_days": 590,
+          "applied": {
+            "live": 145884,
+            "not_live_total": 1801,
+            "not_live_measured_gap": 1284,
+            "not_live_open_ended": 517,
+            "realised_rate_vs_measured_gap_pairs": 0.009993,
+            "realised_rate_vs_extended_set": 0.013961,
+            "realised_rate_vs_post_D10_population": 0.012195,
+            "live_share_of_post_D10_population": 0.987805
+          },
+          "clustered_ci": {
+            "replicates": 1000,
+            "infinite_replicates": 0,
+            "ci95_raw_days": [
+              518.2589788317376,
+              712.7253599067033
+            ],
+            "ci95_ceil_days": [
+              519,
+              713
+            ]
+          }
+        }
+      },
+      "91": {
+        "W_days": 91,
+        "H_days": 91,
+        "d10_horizon_days": 182,
+        "d10_latest_admissible_T0_utc": "2026-02-10T00:00:00",
+        "population_152126_after_D10": 147685,
+        "d10_removed_from_152126": 4441,
+        "d10_retained_share": 0.970807,
+        "measured_gap_pairs": 128592,
+        "open_ended_pairs": 706,
+        "open_ended_share_of_extended_set": 0.00546,
+        "no_instant_at_or_before_tau1_LIVE_per_0021": 18387,
+        "EXTENDED_reference": {
+          "p99_raw_days": 1229.0125611550995,
+          "p99_is_finite": true,
+          "threshold_days": 1230,
+          "applied": {
+            "live": 146401,
+            "not_live_total": 1284,
+            "not_live_measured_gap": 578,
+            "not_live_open_ended": 706,
+            "realised_rate_vs_measured_gap_pairs": 0.004495,
+            "realised_rate_vs_extended_set": 0.009931,
+            "realised_rate_vs_post_D10_population": 0.008694,
+            "live_share_of_post_D10_population": 0.991306
+          },
+          "clustered_ci": {
+            "replicates": 1000,
+            "infinite_replicates": 1,
+            "ci95_raw_days": [
+              747.2274612158234,
+              1755.6117183542617
+            ],
+            "ci95_ceil_days": [
+              748,
+              1756
+            ]
+          }
+        },
+        "MEASURED_ONLY_reference": {
+          "p99_raw_days": 631.8031044554186,
+          "threshold_days": 632,
+          "applied": {
+            "live": 145719,
+            "not_live_total": 1966,
+            "not_live_measured_gap": 1260,
+            "not_live_open_ended": 706,
+            "realised_rate_vs_measured_gap_pairs": 0.009798,
+            "realised_rate_vs_extended_set": 0.015205,
+            "realised_rate_vs_post_D10_population": 0.013312,
+            "live_share_of_post_D10_population": 0.986688
+          },
+          "clustered_ci": {
+            "replicates": 1000,
+            "infinite_replicates": 0,
+            "ci95_raw_days": [
+              558.478101917267,
+              792.4665229170068
+            ],
+            "ci95_ceil_days": [
+              559,
+              793
+            ]
+          }
+        }
+      },
+      "107": {
+        "W_days": 107,
+        "H_days": 91,
+        "d10_horizon_days": 198,
+        "d10_latest_admissible_T0_utc": "2026-01-25T00:00:00",
+        "population_152126_after_D10": 147384,
+        "d10_removed_from_152126": 4742,
+        "d10_retained_share": 0.968828,
+        "measured_gap_pairs": 128476,
+        "open_ended_pairs": 745,
+        "open_ended_share_of_extended_set": 0.005765,
+        "no_instant_at_or_before_tau1_LIVE_per_0021": 18163,
+        "EXTENDED_reference": {
+          "p99_raw_days": 1286.5211190169525,
+          "p99_is_finite": true,
+          "threshold_days": 1287,
+          "applied": {
+            "live": 146095,
+            "not_live_total": 1289,
+            "not_live_measured_gap": 544,
+            "not_live_open_ended": 745,
+            "realised_rate_vs_measured_gap_pairs": 0.004234,
+            "realised_rate_vs_extended_set": 0.009975,
+            "realised_rate_vs_post_D10_population": 0.008746,
+            "live_share_of_post_D10_population": 0.991254
+          },
+          "clustered_ci": {
+            "replicates": 1000,
+            "infinite_replicates": 1,
+            "ci95_raw_days": [
+              786.1567450611217,
+              2199.4897585340727
+            ],
+            "ci95_ceil_days": [
+              787,
+              2200
+            ]
+          }
+        },
+        "MEASURED_ONLY_reference": {
+          "p99_raw_days": 631.8031044554186,
+          "threshold_days": 632,
+          "applied": {
+            "live": 145364,
+            "not_live_total": 2020,
+            "not_live_measured_gap": 1275,
+            "not_live_open_ended": 745,
+            "realised_rate_vs_measured_gap_pairs": 0.009924,
+            "realised_rate_vs_extended_set": 0.015632,
+            "realised_rate_vs_post_D10_population": 0.013706,
+            "live_share_of_post_D10_population": 0.986294
+          },
+          "clustered_ci": {
+            "replicates": 1000,
+            "infinite_replicates": 0,
+            "ci95_raw_days": [
+              555.6604104291216,
+              789.1866612410851
+            ],
+            "ci95_ceil_days": [
+              556,
+              790
+            ]
+          }
+        }
+      },
+      "108": {
+        "W_days": 108,
+        "H_days": 91,
+        "d10_horizon_days": 199,
+        "d10_latest_admissible_T0_utc": "2026-01-24T00:00:00",
+        "population_152126_after_D10": 147370,
+        "d10_removed_from_152126": 4756,
+        "d10_retained_share": 0.968736,
+        "measured_gap_pairs": 128467,
+        "open_ended_pairs": 751,
+        "open_ended_share_of_extended_set": 0.005812,
+        "no_instant_at_or_before_tau1_LIVE_per_0021": 18152,
+        "EXTENDED_reference": {
+          "p99_raw_days": 1292.0283982776575,
+          "p99_is_finite": true,
+          "threshold_days": 1293,
+          "applied": {
+            "live": 146088,
+            "not_live_total": 1282,
+            "not_live_measured_gap": 531,
+            "not_live_open_ended": 751,
+            "realised_rate_vs_measured_gap_pairs": 0.004133,
+            "realised_rate_vs_extended_set": 0.009921,
+            "realised_rate_vs_post_D10_population": 0.008699,
+            "live_share_of_post_D10_population": 0.991301
+          },
+          "clustered_ci": {
+            "replicates": 1000,
+            "infinite_replicates": 1,
+            "ci95_raw_days": [
+              786.8651644504098,
+              2199.4897585340727
+            ],
+            "ci95_ceil_days": [
+              787,
+              2200
+            ]
+          }
+        },
+        "MEASURED_ONLY_reference": {
+          "p99_raw_days": 631.8031044554186,
+          "threshold_days": 632,
+          "applied": {
+            "live": 145344,
+            "not_live_total": 2026,
+            "not_live_measured_gap": 1275,
+            "not_live_open_ended": 751,
+            "realised_rate_vs_measured_gap_pairs": 0.009925,
+            "realised_rate_vs_extended_set": 0.015679,
+            "realised_rate_vs_post_D10_population": 0.013748,
+            "live_share_of_post_D10_population": 0.986252
+          },
+          "clustered_ci": {
+            "replicates": 1000,
+            "infinite_replicates": 0,
+            "ci95_raw_days": [
+              558.478101917267,
+              789.1866612410851
+            ],
+            "ci95_ceil_days": [
+              559,
+              790
+            ]
+          }
+        }
+      },
+      "120": {
+        "W_days": 120,
+        "H_days": 91,
+        "d10_horizon_days": 211,
+        "d10_latest_admissible_T0_utc": "2026-01-12T00:00:00",
+        "population_152126_after_D10": 147136,
+        "d10_removed_from_152126": 4990,
+        "d10_retained_share": 0.967198,
+        "measured_gap_pairs": 128422,
+        "open_ended_pairs": 731,
+        "open_ended_share_of_extended_set": 0.00566,
+        "no_instant_at_or_before_tau1_LIVE_per_0021": 17983,
+        "EXTENDED_reference": {
+          "p99_raw_days": 1299.9694928588276,
+          "p99_is_finite": true,
+          "threshold_days": 1300,
+          "applied": {
+            "live": 145859,
+            "not_live_total": 1277,
+            "not_live_measured_gap": 546,
+            "not_live_open_ended": 731,
+            "realised_rate_vs_measured_gap_pairs": 0.004252,
+            "realised_rate_vs_extended_set": 0.009887,
+            "realised_rate_vs_post_D10_population": 0.008679,
+            "live_share_of_post_D10_population": 0.991321
+          },
+          "clustered_ci": {
+            "replicates": 1000,
+            "infinite_replicates": 0,
+            "ci95_raw_days": [
+              813.2702711970526,
+              2199.4897585340727
+            ],
+            "ci95_ceil_days": [
+              814,
+              2200
+            ]
+          }
+        },
+        "MEASURED_ONLY_reference": {
+          "p99_raw_days": 641.3280434500116,
+          "threshold_days": 642,
+          "applied": {
+            "live": 145122,
+            "not_live_total": 2014,
+            "not_live_measured_gap": 1283,
+            "not_live_open_ended": 731,
+            "realised_rate_vs_measured_gap_pairs": 0.009991,
+            "realised_rate_vs_extended_set": 0.015594,
+            "realised_rate_vs_post_D10_population": 0.013688,
+            "live_share_of_post_D10_population": 0.986312
+          },
+          "clustered_ci": {
+            "replicates": 1000,
+            "infinite_replicates": 0,
+            "ci95_raw_days": [
+              572.358770917872,
+              884.8875301839215
+            ],
+            "ci95_ceil_days": [
+              573,
+              885
+            ]
+          }
+        }
+      },
+      "150": {
+        "W_days": 150,
+        "H_days": 91,
+        "d10_horizon_days": 241,
+        "d10_latest_admissible_T0_utc": "2025-12-13T00:00:00",
+        "population_152126_after_D10": 146602,
+        "d10_removed_from_152126": 5524,
+        "d10_retained_share": 0.963688,
+        "measured_gap_pairs": 128079,
+        "open_ended_pairs": 779,
+        "open_ended_share_of_extended_set": 0.006045,
+        "no_instant_at_or_before_tau1_LIVE_per_0021": 17744,
+        "EXTENDED_reference": {
+          "p99_raw_days": 1404.669184007675,
+          "p99_is_finite": true,
+          "threshold_days": 1405,
+          "applied": {
+            "live": 145322,
+            "not_live_total": 1280,
+            "not_live_measured_gap": 501,
+            "not_live_open_ended": 779,
+            "realised_rate_vs_measured_gap_pairs": 0.003912,
+            "realised_rate_vs_extended_set": 0.009933,
+            "realised_rate_vs_post_D10_population": 0.008731,
+            "live_share_of_post_D10_population": 0.991269
+          },
+          "clustered_ci": {
+            "replicates": 1000,
+            "infinite_replicates": 4,
+            "ci95_raw_days": [
+              902.6463435484114,
+              2199.4897585340727
+            ],
+            "ci95_ceil_days": [
+              903,
+              2200
+            ]
+          }
+        },
+        "MEASURED_ONLY_reference": {
+          "p99_raw_days": 661.0605549307498,
+          "threshold_days": 662,
+          "applied": {
+            "live": 144549,
+            "not_live_total": 2053,
+            "not_live_measured_gap": 1274,
+            "not_live_open_ended": 779,
+            "realised_rate_vs_measured_gap_pairs": 0.009947,
+            "realised_rate_vs_extended_set": 0.015932,
+            "realised_rate_vs_post_D10_population": 0.014004,
+            "live_share_of_post_D10_population": 0.985996
+          },
+          "clustered_ci": {
+            "replicates": 1000,
+            "infinite_replicates": 0,
+            "ci95_raw_days": [
+              587.2551996166508,
+              908.8935495444387
+            ],
+            "ci95_ceil_days": [
+              588,
+              909
+            ]
+          }
+        }
+      },
+      "180": {
+        "W_days": 180,
+        "H_days": 91,
+        "d10_horizon_days": 271,
+        "d10_latest_admissible_T0_utc": "2025-11-13T00:00:00",
+        "population_152126_after_D10": 145845,
+        "d10_removed_from_152126": 6281,
+        "d10_retained_share": 0.958712,
+        "measured_gap_pairs": 127606,
+        "open_ended_pairs": 836,
+        "open_ended_share_of_extended_set": 0.006509,
+        "no_instant_at_or_before_tau1_LIVE_per_0021": 17403,
+        "EXTENDED_reference": {
+          "p99_raw_days": 1405.8130333381587,
+          "p99_is_finite": true,
+          "threshold_days": 1406,
+          "applied": {
+            "live": 144608,
+            "not_live_total": 1237,
+            "not_live_measured_gap": 401,
+            "not_live_open_ended": 836,
+            "realised_rate_vs_measured_gap_pairs": 0.003142,
+            "realised_rate_vs_extended_set": 0.009631,
+            "realised_rate_vs_post_D10_population": 0.008482,
+            "live_share_of_post_D10_population": 0.991518
+          },
+          "clustered_ci": {
+            "replicates": 1000,
+            "infinite_replicates": 6,
+            "ci95_raw_days": [
+              926.0257278267846,
+              2469.3532119203496
+            ],
+            "ci95_ceil_days": [
+              927,
+              2470
+            ]
+          }
+        },
+        "MEASURED_ONLY_reference": {
+          "p99_raw_days": 691.729372553997,
+          "threshold_days": 692,
+          "applied": {
+            "live": 143735,
+            "not_live_total": 2110,
+            "not_live_measured_gap": 1274,
+            "not_live_open_ended": 836,
+            "realised_rate_vs_measured_gap_pairs": 0.009984,
+            "realised_rate_vs_extended_set": 0.016428,
+            "realised_rate_vs_post_D10_population": 0.014467,
+            "live_share_of_post_D10_population": 0.985533
+          },
+          "clustered_ci": {
+            "replicates": 1000,
+            "infinite_replicates": 0,
+            "ci95_raw_days": [
+              591.0182662182577,
+              897.1188837817201
+            ],
+            "ci95_ceil_days": [
+              592,
+              898
+            ]
+          }
+        }
+      },
+      "213": {
+        "W_days": 213,
+        "H_days": 91,
+        "d10_horizon_days": 304,
+        "d10_latest_admissible_T0_utc": "2025-10-11T00:00:00",
+        "population_152126_after_D10": 144852,
+        "d10_removed_from_152126": 7274,
+        "d10_retained_share": 0.952184,
+        "measured_gap_pairs": 126762,
+        "open_ended_pairs": 949,
+        "open_ended_share_of_extended_set": 0.007431,
+        "no_instant_at_or_before_tau1_LIVE_per_0021": 17141,
+        "EXTENDED_reference": {
+          "p99_raw_days": 1653.4218190416252,
+          "p99_is_finite": true,
+          "threshold_days": 1654,
+          "applied": {
+            "live": 143580,
+            "not_live_total": 1272,
+            "not_live_measured_gap": 323,
+            "not_live_open_ended": 949,
+            "realised_rate_vs_measured_gap_pairs": 0.002548,
+            "realised_rate_vs_extended_set": 0.00996,
+            "realised_rate_vs_post_D10_population": 0.008781,
+            "live_share_of_post_D10_population": 0.991219
+          },
+          "clustered_ci": {
+            "replicates": 1000,
+            "infinite_replicates": 45,
+            "ci95_raw_days": [
+              1127.2071295624585,
+              2817.7849382970894
+            ],
+            "ci95_ceil_days": [
+              1128,
+              2818
+            ]
+          }
+        },
+        "MEASURED_ONLY_reference": {
+          "p99_raw_days": 702.1278922153263,
+          "threshold_days": 703,
+          "applied": {
+            "live": 142635,
+            "not_live_total": 2217,
+            "not_live_measured_gap": 1268,
+            "not_live_open_ended": 949,
+            "realised_rate_vs_measured_gap_pairs": 0.010003,
+            "realised_rate_vs_extended_set": 0.01736,
+            "realised_rate_vs_post_D10_population": 0.015305,
+            "live_share_of_post_D10_population": 0.984695
+          },
+          "clustered_ci": {
+            "replicates": 1000,
+            "infinite_replicates": 0,
+            "ci95_raw_days": [
+              605.3207399137991,
+              911.5072632876502
+            ],
+            "ci95_ceil_days": [
+              606,
+              912
+            ]
+          }
+        }
+      }
+    },
+    "W_coupling": {
+      "EXTENDED_reference_threshold_span": [
+        716,
+        1654
+      ],
+      "MEASURED_ONLY_reference_threshold_span": [
+        589,
+        703
+      ],
+      "note": "the threshold is a function of W and the two are not independent robustness axes (decisions/0038 SS6)"
+    },
+    "frozen_threshold_counterfactual": {
+      "EXTENDED_reference": {
+        "frozen_threshold_days": 1293,
+        "by_arm": {
+          "38": {
+            "refitted_threshold_days": 716,
+            "refitted_realised_rate_vs_extended_set": 0.010002,
+            "frozen_threshold_not_live_total": 774,
+            "frozen_threshold_realised_rate_vs_extended_set": 0.006025,
+            "frozen_threshold_realised_rate_vs_measured_gap_pairs": 0.003325
+          },
+          "46": {
+            "refitted_threshold_days": 721,
+            "refitted_realised_rate_vs_extended_set": 0.009789,
+            "frozen_threshold_not_live_total": 796,
+            "frozen_threshold_realised_rate_vs_extended_set": 0.006189,
+            "frozen_threshold_realised_rate_vs_measured_gap_pairs": 0.003345
+          },
+          "60": {
+            "refitted_threshold_days": 758,
+            "refitted_realised_rate_vs_extended_set": 0.009963,
+            "frozen_threshold_not_live_total": 865,
+            "frozen_threshold_realised_rate_vs_extended_set": 0.006717,
+            "frozen_threshold_realised_rate_vs_measured_gap_pairs": 0.003374
+          },
+          "75": {
+            "refitted_threshold_days": 885,
+            "refitted_realised_rate_vs_extended_set": 0.009868,
+            "frozen_threshold_not_live_total": 953,
+            "frozen_threshold_realised_rate_vs_extended_set": 0.007387,
+            "frozen_threshold_realised_rate_vs_measured_gap_pairs": 0.003393
+          },
+          "91": {
+            "refitted_threshold_days": 1230,
+            "refitted_realised_rate_vs_extended_set": 0.009931,
+            "frozen_threshold_not_live_total": 1236,
+            "frozen_threshold_realised_rate_vs_extended_set": 0.009559,
+            "frozen_threshold_realised_rate_vs_measured_gap_pairs": 0.004122
+          },
+          "107": {
+            "refitted_threshold_days": 1287,
+            "refitted_realised_rate_vs_extended_set": 0.009975,
+            "frozen_threshold_not_live_total": 1277,
+            "frozen_threshold_realised_rate_vs_extended_set": 0.009882,
+            "frozen_threshold_realised_rate_vs_measured_gap_pairs": 0.004141
+          },
+          "108": {
+            "refitted_threshold_days": 1293,
+            "refitted_realised_rate_vs_extended_set": 0.009921,
+            "frozen_threshold_not_live_total": 1282,
+            "frozen_threshold_realised_rate_vs_extended_set": 0.009921,
+            "frozen_threshold_realised_rate_vs_measured_gap_pairs": 0.004133
+          },
+          "120": {
+            "refitted_threshold_days": 1300,
+            "refitted_realised_rate_vs_extended_set": 0.009887,
+            "frozen_threshold_not_live_total": 1305,
+            "frozen_threshold_realised_rate_vs_extended_set": 0.010104,
+            "frozen_threshold_realised_rate_vs_measured_gap_pairs": 0.00447
+          },
+          "150": {
+            "refitted_threshold_days": 1405,
+            "refitted_realised_rate_vs_extended_set": 0.009933,
+            "frozen_threshold_not_live_total": 1361,
+            "frozen_threshold_realised_rate_vs_extended_set": 0.010562,
+            "frozen_threshold_realised_rate_vs_measured_gap_pairs": 0.004544
+          },
+          "180": {
+            "refitted_threshold_days": 1406,
+            "refitted_realised_rate_vs_extended_set": 0.009631,
+            "frozen_threshold_not_live_total": 1421,
+            "frozen_threshold_realised_rate_vs_extended_set": 0.011063,
+            "frozen_threshold_realised_rate_vs_measured_gap_pairs": 0.004584
+          },
+          "213": {
+            "refitted_threshold_days": 1654,
+            "refitted_realised_rate_vs_extended_set": 0.00996,
+            "frozen_threshold_not_live_total": 1560,
+            "frozen_threshold_realised_rate_vs_extended_set": 0.012215,
+            "frozen_threshold_realised_rate_vs_measured_gap_pairs": 0.00482
+          }
+        }
+      },
+      "MEASURED_ONLY_reference": {
+        "frozen_threshold_days": 632,
+        "by_arm": {
+          "38": {
+            "refitted_threshold_days": 589,
+            "refitted_realised_rate_vs_extended_set": 0.012649,
+            "frozen_threshold_not_live_total": 1428,
+            "frozen_threshold_realised_rate_vs_extended_set": 0.011115,
+            "frozen_threshold_realised_rate_vs_measured_gap_pairs": 0.008429
+          },
+          "46": {
+            "refitted_threshold_days": 580,
+            "refitted_realised_rate_vs_extended_set": 0.012743,
+            "frozen_threshold_not_live_total": 1449,
+            "frozen_threshold_realised_rate_vs_extended_set": 0.011266,
+            "frozen_threshold_realised_rate_vs_measured_gap_pairs": 0.008437
+          },
+          "60": {
+            "refitted_threshold_days": 583,
+            "refitted_realised_rate_vs_extended_set": 0.01331,
+            "frozen_threshold_not_live_total": 1528,
+            "frozen_threshold_realised_rate_vs_extended_set": 0.011866,
+            "frozen_threshold_realised_rate_vs_measured_gap_pairs": 0.00854
+          },
+          "75": {
+            "refitted_threshold_days": 590,
+            "refitted_realised_rate_vs_extended_set": 0.013961,
+            "frozen_threshold_not_live_total": 1624,
+            "frozen_threshold_realised_rate_vs_extended_set": 0.012589,
+            "frozen_threshold_realised_rate_vs_measured_gap_pairs": 0.008616
+          },
+          "91": {
+            "refitted_threshold_days": 632,
+            "refitted_realised_rate_vs_extended_set": 0.015205,
+            "frozen_threshold_not_live_total": 1966,
+            "frozen_threshold_realised_rate_vs_extended_set": 0.015205,
+            "frozen_threshold_realised_rate_vs_measured_gap_pairs": 0.009798
+          },
+          "107": {
+            "refitted_threshold_days": 632,
+            "refitted_realised_rate_vs_extended_set": 0.015632,
+            "frozen_threshold_not_live_total": 2020,
+            "frozen_threshold_realised_rate_vs_extended_set": 0.015632,
+            "frozen_threshold_realised_rate_vs_measured_gap_pairs": 0.009924
+          },
+          "108": {
+            "refitted_threshold_days": 632,
+            "refitted_realised_rate_vs_extended_set": 0.015679,
+            "frozen_threshold_not_live_total": 2026,
+            "frozen_threshold_realised_rate_vs_extended_set": 0.015679,
+            "frozen_threshold_realised_rate_vs_measured_gap_pairs": 0.009925
+          },
+          "120": {
+            "refitted_threshold_days": 642,
+            "refitted_realised_rate_vs_extended_set": 0.015594,
+            "frozen_threshold_not_live_total": 2061,
+            "frozen_threshold_realised_rate_vs_extended_set": 0.015958,
+            "frozen_threshold_realised_rate_vs_measured_gap_pairs": 0.010356
+          },
+          "150": {
+            "refitted_threshold_days": 662,
+            "refitted_realised_rate_vs_extended_set": 0.015932,
+            "frozen_threshold_not_live_total": 2185,
+            "frozen_threshold_realised_rate_vs_extended_set": 0.016957,
+            "frozen_threshold_realised_rate_vs_measured_gap_pairs": 0.010978
+          },
+          "180": {
+            "refitted_threshold_days": 692,
+            "refitted_realised_rate_vs_extended_set": 0.016428,
+            "frozen_threshold_not_live_total": 2304,
+            "frozen_threshold_realised_rate_vs_extended_set": 0.017938,
+            "frozen_threshold_realised_rate_vs_measured_gap_pairs": 0.011504
+          },
+          "213": {
+            "refitted_threshold_days": 703,
+            "refitted_realised_rate_vs_extended_set": 0.01736,
+            "frozen_threshold_not_live_total": 2478,
+            "frozen_threshold_realised_rate_vs_extended_set": 0.019403,
+            "frozen_threshold_realised_rate_vs_measured_gap_pairs": 0.012062
+          }
+        }
+      }
+    }
+  },
+  "weighting_sensitivity_NOT_ADOPTED": {
+    "distinct_account_gap_p99_raw_days": 190.8343724116072,
+    "distinct_account_gap_p99_ceil_days": 191,
+    "n_distinct_account_gap_keys": 93075
+  },
+  "withdrawn_pooled_basis_for_continuity": {
+    "pooled_p99_raw_days": 3.4431932062376234,
+    "pooled_p99_ceil_days": 4,
+    "n_pooled_gaps": 25862249,
+    "pooled_median_days": 7.001917671274256e-07,
+    "bracketing_pairs_failing_pooled_threshold_rate": 0.341839
+  },
+  "open_ended_bucket_diagnostic_post_D10": {
+    "n": 751,
+    "tau1_past_global_sweep_end": 0,
+    "tau1_past_pull_instant": 0,
+    "tau1_past_the_accounts_own_last_instant": 751,
+    "global_sweep_end_utc": "2026-08-10T20:48:00"
+  },
+  "provenance": {
+    "records_scanned": 27656813,
+    "accounts_in_sweep": 2549,
+    "distinct_insertion_instants": 25864798,
+    "exact_ties_collapsed": 1792015,
+    "gaps_per_account_median": 7812.0,
+    "calibration_curve": "processed/step5/calibration.npz, READ NOT REFITTED",
+    "rid_clamped_below_first_knot": 1862,
+    "rid_clamped_above_last_knot": 5094,
+    "waterfall_reproduced": [
+      201900,
+      178165,
+      155131,
+      152126,
+      128099
+    ],
+    "sweep_first_instant_utc": "2012-12-02T05:25:39",
+    "sweep_last_instant_utc": "2026-08-10T20:48:00",
+    "scripts": [
+      "src/step7_a4_instants.py",
+      "src/step7_a4_bracketing.py",
+      "src/step7_a4_bootstrap.py",
+      "src/step7_a4_arms.py",
+      "src/step7_a4_supp.py",
+      "src/step7_a4_figures.py",
+      "src/step7_a4_deliver.py"
+    ],
+    "chart": "artifacts/step7-gap-distribution-a4.png"
+  },
+  "corroborations_and_divergences_against_the_record": {
+    "reproduced_exactly": {
+      "waterfall": [
+        201900,
+        178165,
+        155131,
+        152126,
+        128099
+      ],
+      "pooled_p99_days": 3.4431932062376234,
+      "pooled_p99_ceil_days": 4,
+      "gaps_per_account_median": 7812.0,
+      "measured_only_p99_raw_days": 631.8031044554186,
+      "largest_tie_group": 298,
+      "pre_D10_class_counts": {
+        "measured": 129630,
+        "open_ended": 4246,
+        "no_pre_tau1": 18250,
+        "total": 152126
+      }
+    },
+    "divergences_from_figures_in_the_record": {
+      "0040_SS2_open_ended_after_D10": {
+        "record": "894 / 130,524 = 0.685%",
+        "a4_measures": "751 / 129,218 = 0.5812%",
+        "cause": "the record's figure subtracts only the 3,352 tau1-past-pull pairs from the open-ended bucket. D10 is 91 days stricter than that and removes 3,495 open-ended, 1,163 measured and 98 no-pre-tau1 pairs. 0040's CONCLUSION is unaffected - the share is well under 1% and the extended 99th is finite."
+      },
+      "task_sheet_line_242_bracketing_gaps_exceeding_the_pooled_99th": {
+        "record": "34.12% on the 152,126",
+        "a4_measures": 0.341839,
+        "cause": "different population - A4 measures on the post-D10 set"
+      },
+      "task_sheet_line_246_weighting_lever": {
+        "record": "190 d on the frozen population",
+        "a4_measures": 191,
+        "cause": "post-D10 population"
+      },
+      "task_sheet_line_235_W_coupling": {
+        "record": "576 -> 697 days across the arms",
+        "a4_measures_measured_only": [
+          589,
+          703
+        ],
+        "a4_measures_extended": [
+          716,
+          1654
+        ],
+        "cause": "post-D10 population and a wider arm list"
+      },
+      "task_sheet_line_267_approved_counts": {
+        "record": "live 128,354; measured-gap 1,276; no-after 4,246; no-before 18,250, on the 152,126",
+        "a4_measures": "on the post-D10 147,370: live 146,088; measured-gap 531; open-ended 751; no-before 18,152 and LIVE. The no-before bucket is no longer an exclusion at all.",
+        "cause": "0040 SS1 and SS2, both of which this run implements"
+      },
+      "task_sheet_line_248_inertness": {
+        "record": "5.37% / 94.63% on the 152,126 at the 99th",
+        "a4_measures": "41.42% / 58.58% (extended) or 62.93% / 37.07% (measured-only) on the post-D10 population",
+        "cause": "0040 SS1 removed the branch that supplied 94.63%"
+      }
+    }
+  },
+  "JUDGEMENT_CALLS_THE_SPEC_DOES_NOT_SETTLE": [
+    "1. WHICH REFERENCE SET. Extended (1,293 d) vs measured-gap-only (632 d). 0040 SS2 reasons toward extended; task-sheet.md line 266 still states measured-only. Largest lever in the step. A4 proposes extended and reports both in full.",
+    "2. np.interp CLAMPING. 1,862 records fall below the first calibration knot and 5,094 above the last. np.interp clamps them to the endpoint knot times, so they become exact ties and collapse under 0037's rule. Extrapolating or dropping them instead would change every number downstream. The spec says read the curve; it does not say what to do outside its support.",
+    "3. AN ABSENT SUCCESSOR INSTANT IS SCORED AS AN INFINITE GAP, not as undefined. This is what makes edge case (i) redundant rather than a separate ruling, and it is a definition A4 supplies.",
+    "4. BOUNDARY: not live iff gap >= T. 0025 reason (a) implies it; no entry states it. An instant exactly equal to tau1 is treated as 'at or before tau1'.",
+    "5. DERIVATION = APPLICATION holds on the TESTED set (129,218), not on the full post-D10 population (147,370). The 18,152 no-pre-tau1 pairs are in the application population and are unconditionally live, so they contribute no gap to the reference. 0038 SS2.1's identity requirement is satisfiable only up to that subset, and A4 states so rather than claiming an identity it does not have.",
+    "6. PER-ARM D10. D10 is a function of W, so Step 13's arms each re-run it and each derives on its own post-D10 population. Freezing D10 at W = 108 across arms would hold the population constant instead. The spec requires derive-after-D10 but does not say which of these it means for the arms.",
+    "7. BOOTSTRAP CLUSTERING UNIT is the account. A pair also belongs to a show, and show-level clustering is not modelled here; W's own interval is show-clustered.",
+    "8. THE ARM LIST is a superset of the brief's (38 and 60/75/91/120/180 added).",
+    "9. THE 99th PERCENTILE is not A4's call and was not re-examined (task-sheet line 251)."
+  ],
+  "GATE_DISCIPLINE": "A4 proposes and stops. Nothing is adopted here, Step 8 is not begun, and no approval is recorded by this instance."
+}
