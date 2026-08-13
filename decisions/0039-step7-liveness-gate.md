@@ -7,7 +7,7 @@
 | **Date** | 2026-08-13 |
 | **Gate** | **4 of 5.** Step 1 ✓, Step 5 ✓, Step 6 ✓, **Step 7 ✓**, Step 8 outstanding |
 | **Also** | Corrects `decisions/0038` §5; records the reference set, the right-censoring refinement |
-| **Status** | Closed. **Step 8 is unblocked.** |
+| **Status** | **REOPENED 2026-08-13 by `decisions/0040`** after Red Team's gate review. The approval below is **suspended**: the rule contradicted `0021` on 76.8% of its exclusions, derivation ran before D10 rather than after, and §2, §6 and §7 each carry an error. **Step 8 is NOT unblocked.** |
 
 ---
 
@@ -33,8 +33,12 @@ rate **0.9843%** of measured-gap pairs.
 
 ## 2. The dual run agreed on everything
 
-**Both arms produced identical figures on every published number** — threshold, raw percentile, all
-four counts, the realised rate, and all five Step 13 arms with their rates. Both reported every
+**CORRECTED (`0040`): "identical on every published number" is false as written.** The two markdown
+artifacts publish **34.1%** and **36.96%** for the same quantity on the same population — a
+ceiling-versus-raw comparator difference, with **both computing 0.34121 internally**, so it is not a
+computational divergence, but **the two public artifacts contradict each other on their face.** What is
+true: both arms produced identical figures for the threshold, the raw percentile, all four counts, the
+realised rate, and all five Step 13 arms with their rates. Both reported every
 percentile convention agreeing to the digit.
 
 **That is what the frozen spec bought.** Three runs earlier the arms were four days apart on the gap
@@ -82,11 +86,15 @@ pairs, 15.63% of all pairs.
 
 ## 6. The right-censoring refinement
 
-**Roughly 79% of the "no instant after `τ1`" bucket is right-censoring, not silence.** Instance A
-measures 3,367 of 4,246 against the sweep end; instance B measures 3,352 against the pull date. The
-difference is definitional.
+**Roughly 79% of the "no instant after `τ1`" bucket is right-censoring, not silence.**
 
-**Only about 880 accounts genuinely went dark** inside the observed span.
+**CORRECTED (`0040`): the divergence recorded here does not exist.** Instance A reports **both**
+figures — `of_which_tau1_past_global_sweep_end: 3367` and `of_which_tau1_past_pull_instant: 3352` —
+and **B's 3,352 matches A's pull-instant figure exactly.** Two references, one dataset, no
+disagreement; the entry invented a divergence between arms that agreed.
+
+**Only about 880 PAIRS genuinely went dark** inside the observed span — **879 and 894 on the two
+references, and they are pairs, not accounts**, which the entry also had wrong.
 
 **This supersedes `0038` §7's figure**, which instance A showed may have been tautological: testing
 `τ1` against the account's *own* last instant is true by the bucket's definition, at 100% by
@@ -100,6 +108,12 @@ construction. Measured against an external reference it is ~79%.
 - **The quota property** (`0038` §4). The level is set by the exclusion rate, not by any feature of the
   data. Across the 90th–99.9th the threshold moves by a factor of 57 while the realised rate tracks
   `100 − p` exactly. **The data selects which pairs, never how many.**
+- **WITHDRAWN (`0040`): the conservative-direction argument.** Every defence of erring high cited Step
+  14 **bias 2** — *accounts that **stop** logging are disproportionately the ones that would have
+  scored never-started.* **That mechanism is silent on accounts that started LATE**, which is what the
+  18,250 bucket was. The argument reached the 1,276 gap-test exclusions and the ~880 genuine silences —
+  **about 9% of the filter — and nothing else.** It was carried forward here as though it covered the
+  whole rule. It does not, and it is withdrawn as a justification for the edge-case branches.
 - **The inertness** (§4 above).
 - **The `W`-coupling** (`0038` §6). Refit per arm: **576 / 590 / 632 / 662 / 697 days**, rates
   0.996 / 0.994 / 0.984 / 0.985 / 0.996%. **Freezing 632 across arms delivers 0.834% at `W = 46` and
