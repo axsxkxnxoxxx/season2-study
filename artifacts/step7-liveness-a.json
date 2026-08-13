@@ -1,0 +1,238 @@
+{
+  "step": 7,
+  "instance": "a",
+  "status": "PROPOSED - GATE, awaiting Human Lead approval. Not adopted.",
+  "date": "2026-08-13",
+  "api_calls": 0,
+  "spec": "task-sheet.md Step 7 lines 226-254, as ruled by decisions/0036; continuous instants per 0029; ceiling per 0025; insertion time per 0021; tau1 anchor per 0034; W=108 per 0026",
+  "inputs": {
+    "records_scanned": 27656813,
+    "accounts_scanned": 2549,
+    "calibration": "processed/step5/calibration.npz READ, NOT REFITTED, 10918 knots; insertion instant = np.interp(rid, knot_rid, knot_time)",
+    "calibration_curve_span_utc": [
+      "2012-12-02",
+      "2026-08-10"
+    ],
+    "records_clamped_below_curve": 1862,
+    "records_clamped_above_curve": 5094,
+    "step5_waterfall_asserted": {
+      "computed": [
+        201900,
+        178165,
+        155131,
+        152126,
+        128099
+      ],
+      "published": [
+        201900,
+        178165,
+        155131,
+        152126,
+        128099
+      ],
+      "match": true
+    }
+  },
+  "gap_distribution": {
+    "definition": "interval between consecutive insertion instants on one account, continuous, days, not floored",
+    "n_gaps": 27654264,
+    "n_accounts": 2549,
+    "gaps_per_account": {
+      "n_users_with_gaps": 2549,
+      "min": 9,
+      "median": 8247.0,
+      "mean": 10849.063946645743,
+      "p90": 22727.600000000002,
+      "max": 60945
+    },
+    "zero_length_gaps": 1792015,
+    "zero_length_share": 0.064801,
+    "percentiles_days": {
+      "50": 6.258349727701258e-07,
+      "75": 0.01977884363176094,
+      "90": 0.3372535382299511,
+      "95": 0.9117634024913936,
+      "98": 1.9139782991736554,
+      "99": 3.1605649624875642,
+      "99.5": 5.5966725229369185,
+      "99.9": 18.34180425827325,
+      "100": 3196.2712693346953
+    },
+    "mean_days": 0.23126867681230062,
+    "max_days": 3196.2712693346953,
+    "chart": "artifacts/step7-gap-distribution-a.png"
+  },
+  "threshold": {
+    "percentile": 99.0,
+    "raw_days": 3.1605649852752755,
+    "ci95_days": {
+      "lo": 3.150329113006592,
+      "hi": 3.1718599796295166,
+      "method": "normal-approx binomial order statistics"
+    },
+    "ADOPTED_ROUNDED_UP_days": 4,
+    "variants_raw_days": {
+      "A_all_consecutive_records_gap_weighted": 3.1605649852752755,
+      "B_distinct_insertion_instants_gap_weighted": 3.4431932353973194,
+      "C_all_consecutive_records_user_equal_weighted": 6.904678821563721
+    },
+    "variants_ceiling_days": {
+      "A_all_consecutive_records_gap_weighted": 4,
+      "B_distinct_insertion_instants_gap_weighted": 4,
+      "C_all_consecutive_records_user_equal_weighted": 7
+    },
+    "percentile_curve_days": {
+      "90": {
+        "raw": 0.33725353479385367,
+        "ceil": 1
+      },
+      "95": {
+        "raw": 0.9117634028196331,
+        "ceil": 1
+      },
+      "97": {
+        "raw": 1.1552271962165825,
+        "ceil": 2
+      },
+      "98": {
+        "raw": 1.9139783549308755,
+        "ceil": 2
+      },
+      "99": {
+        "raw": 3.1605649852752755,
+        "ceil": 4
+      },
+      "99.5": {
+        "raw": 5.596672489643089,
+        "ceil": 6
+      },
+      "99.9": {
+        "raw": 18.341804149633106,
+        "ceil": 19
+      },
+      "99.99": {
+        "raw": 135.80593010402913,
+        "ceil": 136
+      }
+    }
+  },
+  "rule_statement": "A user-show pair counts as LIVE if, on that pair own tau1 = [[T0]] + 108 x 24h, the interval between the LAST insertion instant at or before tau1 and the FIRST insertion instant after tau1 on that account is STRICTLY LESS THAN 4 days. Insertion instants are account-wide evidence: every record in the sweep, all shows and all movies. No insertion instant after tau1 -> not live. No insertion instant at or before tau1 -> not live. The test is on that ONE bracketing gap, never on every gap in the sweep. The filter is PAIR-LEVEL and no user is dropped wholesale.",
+  "W_used": 108,
+  "W_source": "decisions/0026; the Step 6 artifacts state 107 and 107.7135 and neither is the adopted value",
+  "threshold_derived_independently_of_W": true,
+  "counts": {
+    "population": {
+      "label": "Step 5 analysis population (waterfall line 1)",
+      "n_pairs": 201900,
+      "n_users": 2481
+    },
+    "pairs_total": 201900,
+    "live": 98915,
+    "not_live_measured_gap_ge_threshold": 59080,
+    "not_live_no_instant_after_tau1": 5209,
+    "not_live_no_instant_at_or_before_tau1": 38696,
+    "not_live_total": 102985,
+    "shares": {
+      "live": 0.489921,
+      "not_live_measured_gap_ge_threshold": 0.29262,
+      "not_live_no_instant_after_tau1": 0.0258,
+      "not_live_no_instant_at_or_before_tau1": 0.191659,
+      "not_live_total": 0.510079
+    }
+  },
+  "pair_level_evidence": {
+    "users_with_at_least_one_live_pair": 1949,
+    "users_with_at_least_one_not_live_pair": 2469,
+    "users_that_are_mixed": 1937
+  },
+  "right_censoring": {
+    "pull_instant_utc": "2026-08-11T00:00:00Z",
+    "pairs_with_tau1_after_pull": 3684,
+    "of_which_no_instant_after_tau1": 3684,
+    "no_instant_after_tau1_with_tau1_before_pull": 1525
+  },
+  "counts_on_tau1_observable_subset": {
+    "pairs_total": 198216,
+    "live": 98915,
+    "not_live_measured_gap_ge_threshold": 59080,
+    "not_live_no_instant_after_tau1": 1525,
+    "not_live_no_instant_at_or_before_tau1": 38696
+  },
+  "bracketing_gap_distribution": {
+    "n": 157995,
+    "median": 2.010144779353782,
+    "mean": 47.24692134744548,
+    "percentiles": {
+      "10": 0.3073981683171459,
+      "25": 0.8285443486066328,
+      "50": 2.010144779353782,
+      "75": 9.034569681016384,
+      "90": 81.28830472699194,
+      "95": 240.48807137471934,
+      "99": 913.355941220566
+    },
+    "share_ge_threshold": 0.3739358840469635,
+    "note": "the bracketing gap is LENGTH-BIASED: a longer gap is more likely to contain an arbitrary instant, so this distribution sits far above the reference gap distribution the threshold was read off"
+  },
+  "no_evidence_bucket_diagnostics": {
+    "no_before_n": 38696,
+    "days_tau1_to_first_ever_insertion_pctl": {
+      "5": 102.9,
+      "25": 607.7,
+      "50": 1578.1,
+      "75": 2744.7,
+      "95": 5986.1
+    },
+    "no_before_with_tau1_before_curve_start": 8037,
+    "all_pairs_with_tau1_before_curve_start": 8037,
+    "no_after_days_last_insertion_to_tau1_pctl": {
+      "5": 12.5,
+      "50": 72.4,
+      "95": 248.8
+    }
+  },
+  "threshold_sensitivity_for_step13": {
+    "90": {
+      "threshold_days": 1,
+      "live": 55015,
+      "not_live_measured_gap": 102980
+    },
+    "95": {
+      "threshold_days": 1,
+      "live": 55015,
+      "not_live_measured_gap": 102980
+    },
+    "97": {
+      "threshold_days": 2,
+      "live": 78633,
+      "not_live_measured_gap": 79362
+    },
+    "98": {
+      "threshold_days": 2,
+      "live": 78633,
+      "not_live_measured_gap": 79362
+    },
+    "99": {
+      "threshold_days": 4,
+      "live": 98915,
+      "not_live_measured_gap": 59080
+    },
+    "99.5": {
+      "threshold_days": 6,
+      "live": 109517,
+      "not_live_measured_gap": 48478
+    },
+    "99.9": {
+      "threshold_days": 19,
+      "live": 128560,
+      "not_live_measured_gap": 29435
+    },
+    "99.99": {
+      "threshold_days": 136,
+      "live": 146473,
+      "not_live_measured_gap": 11522
+    }
+  },
+  "row_level_detail": "processed/step7/a/verify_ds/pair_liveness.csv (NOT public - carries user_idx)",
+  "integrity_note": "A concurrent process wrote and deleted files in artifacts/ and processed/step7/a/ during this run. These numbers come from the isolated re-run in processed/step7/a/verify_ds/. Files named *-run1254* are NOT this instance output."
+}

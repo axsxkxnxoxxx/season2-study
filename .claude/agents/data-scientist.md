@@ -39,8 +39,8 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
   artifacts state 107 and 107.7135 and neither is the adopted value** — both predate the ceiling ruling.
   Take `W` from the decision entry, never from the artifacts.
 
-- **Step 7, derive liveness threshold. GATE, dual implementation. NOT LAUNCHED — the threshold
-  percentile is proposed at the 99th and is UNRULED. Do not begin until the Human Lead rules.** Two
+- **Step 7, derive liveness threshold. GATE, dual implementation. LAUNCHED 2026-08-13; both rulings
+  are made (`decisions/0036`) and the artifacts are with the Human Lead, unapproved.** Two
   separate things are defined and must not be confused: the threshold is a gap length derived from the
   data; the rule is how it is applied. Derive the threshold independently and do not use `W` as an input
   to the derivation.
@@ -51,11 +51,19 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
     - **The gap is the interval between CONSECUTIVE INSERTION INSTANTS on the account, as a continuous
       instant difference** — not claimed dates, and not floored to whole days before the percentile is
       taken (`decisions/0029`).
-    - **The threshold is the 99th PERCENTILE of the observed gap distribution, rounded UP**
-      (`decisions/0036`, `0025`). At the 95th one ordinary gap in twenty trips the threshold; at the
-      99th it is one in a hundred, and a false-dead removes a pair against a bias that already runs
-      down. "Well beyond the normal gap" is withdrawn: it is unreproducible across two isolated
-      instances, the same defect that cost Step 6 a full dual run.
+    - **The reference distribution is the BRACKETING-GAP distribution itself** (`decisions/0037`,
+      withdrawing `0036` §1's basis). `0036` §1's "one in a hundred" is true of a uniformly drawn gap
+      and **false of the gap this rule tests**: the bracketing gap is **length-biased**, since a gap of
+      length `L` covers `L` of calendar time and so is likelier to contain a fixed instant. Both arms
+      measured **37.4%** of bracketing gaps exceeding the pooled-99th threshold. Take the percentile on
+      the bracketing-gap distribution so the stated rate is the rate delivered. **The percentile
+      remains the 99th, rounded UP** (`0025`), unless the Human Lead rules otherwise.
+    - **The gap sequence is defined on DISTINCT insertion instants** (`decisions/0037`). Per account:
+      every record's insertion instant, sorted ascending, **runs of EXACTLY equal instants collapsed to
+      one** — exact equality only, **no rounding or bucketing to any resolution** — then consecutive
+      differences. **Not** one gap per consecutive pair of *records*, which double-counts a batch
+      insert. A sub-second gap between two genuinely distinct instants is real and retained. This
+      ambiguity produced a real divergence: one arm read 4 days from it and the other 7.
     - **The test applies to the GAP BRACKETING `τ1`, not to every gap in the sweep** (`decisions/0036`).
       Take the last insertion instant at or before `τ1` and the first after it, and test that one gap.
       A whole-sweep test compounds the false-dead rate with the number of gaps — at the 99th percentile

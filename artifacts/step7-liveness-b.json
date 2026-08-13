@@ -1,0 +1,179 @@
+{
+  "step": 7,
+  "instance": "a",
+  "run_tag": "ds_run_1254",
+  "status": "PROPOSED. Gate. Not adopted by the producing agent.",
+  "spec_source": "task-sheet.md Step 7 lines 226-254; decisions/0036, 0034, 0029, 0026, 0025, 0021",
+  "api_calls": 0,
+  "namespace_collision_warning": "Another process wrote into processed/step7/a/ and into src/step7_*_a.py during this run and overwrote one intermediate file. Every number below was regenerated end to end by the single file src/step7_a_run1254.py into processed/step7/a/_snapshot_ds_run_1254/. Establish which run is which before diffing.",
+
+  "inputs": {
+    "records_scanned": 27656813,
+    "episode_records": 24893556,
+    "movie_records": 2763257,
+    "accounts_in_scan": 2549,
+    "calibration_curve": "processed/step5/calibration.npz, READ not refit",
+    "rid_clamped_below_first_knot": 1862,
+    "rid_clamped_above_last_knot": 5094,
+    "step5_waterfall_reproduced": [201900, 178165, 155131, 152126, 128099],
+    "step5_waterfall_published": [201900, 178165, 155131, 152126, 128099],
+    "step5_waterfall_match": true
+  },
+
+  "gap_distribution": {
+    "definition": "continuous difference between consecutive insertion instants on the same account, insertion instant = np.interp(rid, knot_rid, knot_time); all records, all shows and movies; not floored to days",
+    "n_gaps": 27654264,
+    "n_accounts": 2549,
+    "mean_days": 0.2312686768,
+    "share_under_one_second": 0.5928675954,
+    "share_under_one_day": 0.9610634367,
+    "percentiles_days": {
+      "50": 6.258349728e-07,
+      "75": 0.0197788436,
+      "90": 0.3372535382,
+      "95": 0.9117634025,
+      "97.5": 1.5347210511,
+      "99": 3.1605649625,
+      "99.5": 5.5966725229,
+      "99.9": 18.3418042583,
+      "100": 3196.2712693347
+    }
+  },
+
+  "threshold": {
+    "percentile": 99.0,
+    "percentile_value_days_continuous": 3.1605649625,
+    "rounding": "ceiling to whole days, decisions/0025",
+    "THRESHOLD_DAYS": 4,
+    "percentile_interpolation": "numpy default linear",
+    "derived_independently_of_W": true
+  },
+
+  "rule_statement": "A user-show pair counts as LIVE if, on that pair's own clock, the account shows an insertion instant at or before tau1 = [[T0]] + 108 x 24h and an insertion instant after tau1, and the gap between those two adjacent instants is strictly less than 4 days. Evidence is account-wide: every record on the account, other shows and movies included. The test is pair-level, because tau1 is pair-specific; one account can be live for one show and not live for another, and no user is ever dropped wholesale. Insertion instants only; claimed watched_at plays no part. Anchored at tau1; tau2 plays no part. Exactly one gap is tested, the one bracketing tau1, never every gap in the sweep. If there is no insertion instant after tau1 the gap is open-ended and the pair is NOT LIVE. If there is no insertion instant at or before tau1 there is no pre-tau1 evidence and the pair is NOT LIVE.",
+
+  "counts": {
+    "PRIMARY_analysis_population_201900": {
+      "n_pairs": 201900,
+      "live": 98915,
+      "not_live_measured_gap_ge_threshold": 59080,
+      "not_live_no_instant_after_tau1": 5209,
+      "not_live_no_instant_at_or_before_tau1": 38696,
+      "not_live_total": 102985,
+      "live_share": 0.489921
+    },
+    "frame_all_pairs_220107": {
+      "n_pairs": 220107, "live": 100158,
+      "not_live_measured_gap_ge_threshold": 61664,
+      "not_live_no_instant_after_tau1": 5218,
+      "not_live_no_instant_at_or_before_tau1": 53067,
+      "live_share": 0.455042
+    },
+    "has_s2_evidence_178165": {
+      "n_pairs": 178165, "live": 87691,
+      "not_live_measured_gap_ge_threshold": 50386,
+      "not_live_no_instant_after_tau1": 4253,
+      "not_live_no_instant_at_or_before_tau1": 35835,
+      "live_share": 0.49219
+    },
+    "t0_not_contaminated_155131": {
+      "n_pairs": 155131, "live": 86832,
+      "not_live_measured_gap_ge_threshold": 45796,
+      "not_live_no_instant_after_tau1": 4253,
+      "not_live_no_instant_at_or_before_tau1": 18250,
+      "live_share": 0.559733
+    },
+    "w_estimation_sample_128099": {
+      "n_pairs": 128099, "live": 82369,
+      "not_live_measured_gap_ge_threshold": 40572,
+      "not_live_no_instant_after_tau1": 4120,
+      "not_live_no_instant_at_or_before_tau1": 1038,
+      "live_share": 0.64301
+    },
+    "analysis_pop_tau1_at_or_before_pull_198216": {
+      "n_pairs": 198216, "live": 98915,
+      "not_live_measured_gap_ge_threshold": 59080,
+      "not_live_no_instant_after_tau1": 1525,
+      "not_live_no_instant_at_or_before_tau1": 38696,
+      "live_share": 0.499026
+    },
+    "analysis_pop_tau1_after_pull_3684": {
+      "n_pairs": 3684, "live": 0,
+      "not_live_no_instant_after_tau1": 3684,
+      "live_share": 0.0,
+      "note": "tau1 falls after the 2026-08-11 pull instant, so no insertion instant after tau1 can exist. Structurally not live."
+    },
+    "analysis_pop_t0_contaminated_subset_23034": {
+      "n_pairs": 23034, "live": 859,
+      "not_live_measured_gap_ge_threshold": 4590,
+      "not_live_no_instant_after_tau1": 0,
+      "not_live_no_instant_at_or_before_tau1": 17585,
+      "live_share": 0.037293
+    }
+  },
+
+  "pair_level_not_user_level": {
+    "users_in_analysis_population": 2481,
+    "users_with_at_least_one_live_pair": 1949,
+    "users_with_at_least_one_not_live_pair": 2469,
+    "users_mixed": 1937,
+    "note": "1937 of 2481 users are live for some shows and not live for others. A user-level filter is not available even as an approximation."
+  },
+
+  "bracketing_gap_distribution_analysis_population": {
+    "n_pairs_with_a_measured_gap": 157995,
+    "median_days": 2.0101447794,
+    "mean_days": 47.2469213474,
+    "percentiles_days": {
+      "10": 0.3073981683, "25": 0.8285443486, "50": 2.0101447794,
+      "75": 9.034569681, "90": 81.288304727, "95": 240.4880713747,
+      "99": 913.3559412206
+    },
+    "share_at_or_above_threshold": 0.373935884
+  },
+
+  "flagged_for_the_gate": {
+    "length_bias": "The gap bracketing a fixed instant is a length-biased draw from the pooled distribution: a long gap covers more calendar time and is therefore far likelier to contain tau1. 37.4% of the pairs with a measured gap fail at the 99th-percentile threshold, not 1%. The 'one in a hundred' reasoning in decisions/0036 sec 1 holds for a uniformly drawn gap and does not transfer to the sec 2 rule shape.",
+    "no_pre_tau1_evidence_class": "38,696 of 201,900 pairs, 19.2%, have no insertion instant at or before tau1. These are accounts whose Trakt record begins after tau1 - old S1 completions imported later. They fall to 1,038 in the 128,099 sample and to 18,250 once contaminated T0 is excluded, so the class is dominated by early or corrupt T0.",
+    "unit_of_the_gap_distribution": "Adopted: one gap per consecutive pair of RECORDS. 59.3% of those gaps are under one second because records arrive in insert batches. Reading 'consecutive insertion instants' as distinct instants instead gives a 99th percentile of 6.03 days and a threshold of 7 days. The spec does not settle this and it moves the threshold from 4 to 7 days."
+  },
+
+  "sensitivity_distinct_second_instants": {
+    "n_gaps": 11994497,
+    "p99_days": 6.034000615,
+    "threshold_days": 7
+  },
+
+  "percentile_sensitivity_on_analysis_population": {
+    "90": {"threshold_days": 1, "live_pairs": 55015, "live_share": 0.272486},
+    "95": {"threshold_days": 1, "live_pairs": 55015, "live_share": 0.272486},
+    "97.5": {"threshold_days": 2, "live_pairs": 78633, "live_share": 0.389465},
+    "99": {"threshold_days": 4, "live_pairs": 98915, "live_share": 0.489921},
+    "99.5": {"threshold_days": 6, "live_pairs": 109517, "live_share": 0.542432},
+    "99.9": {"threshold_days": 19, "live_pairs": 128560, "live_share": 0.636751}
+  },
+
+  "threshold_grid_live_share_of_201900": {
+    "1": 0.272486, "2": 0.389465, "3": 0.450059, "4": 0.489921, "6": 0.542432,
+    "8": 0.577093, "12": 0.608049, "19": 0.636751, "30": 0.662293, "45": 0.679728,
+    "60": 0.693938, "90": 0.70787, "120": 0.720362, "180": 0.735468, "365": 0.757063
+  },
+
+  "judgement_calls_the_spec_did_not_settle": [
+    "Unit of the gap distribution: per record pair (adopted) vs per distinct insertion instant. Threshold 4 days vs 7 days.",
+    "Population contributing to the gap distribution: all 2,549 accounts in the scan, unrestricted.",
+    "Percentile interpolation: numpy default linear on the pooled continuous gaps.",
+    "Ceiling applied in whole DAYS, matching Step 6's unit; the spec says 'take the ceiling of the percentile' without naming a unit.",
+    "Comparison sense: live iff gap strictly < threshold, dead at gap >= threshold, taken from the wording of decisions/0025 reason (a).",
+    "Population the rule is reported on: the Step 5 analysis population of 201,900 is PRIMARY; every waterfall line is reported alongside it.",
+    "Precedence when both edge cases could apply: an account with zero records in the scan is counted as no-instant-at-or-before-tau1.",
+    "Right-censoring is not filtered here: 3,684 pairs have tau1 after the pull instant and are structurally not live. Step 9's D10 censoring, not Step 7's job, but the count is reported so it is not mistaken for behaviour.",
+    "np.interp clamps rid outside the knot range rather than extrapolating; 6,956 records, 0.025%."
+  ],
+
+  "files": {
+    "chart": "artifacts/step7-gap-distribution-a.png",
+    "row_level_detail": "processed/step7/a/_snapshot_ds_run_1254/pair_liveness_ds_run_1254.csv",
+    "full_results": "processed/step7/a/_snapshot_ds_run_1254/results.json",
+    "code": "src/step7_a_run1254.py"
+  }
+}
