@@ -266,7 +266,7 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
       length** — that reduces `the-100` to `the` and is a third key. **They were defined only inside one
       instance's code, which the other is forbidden to read.** **The 76-against-75 divergence is
       REPORTED, NOT RECONCILED.**
-    - **THE COLUMN SET IS ENUMERATED — 88 NAMES, EXACTLY THESE** (`0080`, extended by `0081`).
+    - **THE COLUMN SET IS ENUMERATED — 89 NAMES, EXACTLY THESE** (`0080`; 88 at `0081`, 89 at `0082`).
       `abandonment_point_p`, `action_count_s1_checkin`, `action_count_s1_other`, `action_count_s1_scrobble`
       `action_count_s1_watch`, `action_count_s2_checkin`, `action_count_s2_other`, `action_count_s2_scrobble`
       `action_count_s2_watch`, `air_period`, `cadence_boundary_distance_days`, `cadence_bucket`
@@ -274,25 +274,29 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
       `e1_starts_at_1`, `e2_internal_gap`, `e2_starts_at_1`, `exclusion`
       `gap_days`, `has_s3_or_later_evidence`, `in_apply`, `in_deriv`
       `live`, `max_episode_in_A_H`, `max_season_number`, `n_A`
-      `n_A_H`, `outcome`, `pool_completers`, `pool_completers_proxy`
-      `s1_E`, `s1_F`, `s1_L`, `s1_aired_episodes_reported`
-      `s1_aired_lt_listed`, `s1_completion_date`, `s1_completion_used_a_post_cutoff_record`, `s1_count_disagreement`
-      `s1_episode_count_reported`, `s1_exposure_years`, `s1_finale_date`, `s1_premiere_date`
-      `s1_season_first_aired`, `s1_total_runtime`, `s2_E`, `s2_F`
-      `s2_L`, `s2_aired_episodes_reported`, `s2_aired_lt_listed`, `s2_count_disagreement`
-      `s2_episode_count_reported`, `s2_finale_date`, `s2_finale_year`, `s2_premiere_date`
-      `s2_season_first_aired`, `s2_span_days`, `s2_total_runtime`, `s2_weekly_span_days`
-      `season_numbers`, `seasons_returned`, `show_aired_episodes`, `show_airs_day`
-      `show_certification`, `show_comment_count`, `show_country`, `show_first_aired`
-      `show_genres`, `show_language`, `show_languages`, `show_rating`
-      `show_runtime`, `show_status`, `show_subgenres`, `show_trakt_id`
-      `show_votes`, `show_year`, `silent_at_tau1`, `size_quintile`
-      `size_quintile_per_year`, `size_quintile_raw_count`, `t0_binding_term`, `t0_date`
-      `tau1`, `tau2`, `title`, `user_idx`
+      `n_A_H`, `outcome`, `p_at_bound`, `pool_completers`
+      `pool_completers_proxy`, `s1_E`, `s1_F`, `s1_L`
+      `s1_aired_episodes_reported`, `s1_aired_lt_listed`, `s1_completion_date`, `s1_completion_used_a_post_cutoff_record`
+      `s1_count_disagreement`, `s1_episode_count_reported`, `s1_exposure_years`, `s1_finale_date`
+      `s1_premiere_date`, `s1_season_first_aired`, `s1_total_runtime`, `s2_E`
+      `s2_F`, `s2_L`, `s2_aired_episodes_reported`, `s2_aired_lt_listed`
+      `s2_count_disagreement`, `s2_episode_count_reported`, `s2_finale_date`, `s2_finale_year`
+      `s2_premiere_date`, `s2_season_first_aired`, `s2_span_days`, `s2_total_runtime`
+      `s2_weekly_span_days`, `season_numbers`, `seasons_returned`, `show_aired_episodes`
+      `show_airs_day`, `show_certification`, `show_comment_count`, `show_country`
+      `show_first_aired`, `show_genres`, `show_language`, `show_languages`
+      `show_rating`, `show_runtime`, `show_status`, `show_subgenres`
+      `show_trakt_id`, `show_votes`, `show_year`, `silent_at_tau1`
+      `size_quintile`, `size_quintile_per_year`, `size_quintile_raw_count`, `t0_binding_term`
+      `t0_date`, `tau1`, `tau2`, `title`
+      `user_idx`
+      **`p_at_bound` is NEW** (`0082`) — **a boolean separating the two meanings of `p = 1.0`: TRUE
+      where the rank numerator saturated at `L2`, FALSE where the pair left at the final episode**, null
+      where `p` is null. **Step 10 publishes the abandonment distribution off `abandonment_point_p`, so
+      the two must be separable in it.** **Report the split of the `p = 1.0` rows — 1,246 at position 5
+      and 1,230 post-liveness on APPLY — into the two classes; they must sum to those totals.**
       **`silent_at_tau1` is IN** (`0081`): the only way to recompute the **Continued-and-silent count,
-      652**, from this table, since `live` is true for every Continued pair regardless of silence.
-      **Same argument as `0079`'s drop set — a required input must not live in a working file.**
-      **Dropped and free:** `f2_in_A_H` (derivable) and `max_episode_in_A`.
+      652**, from this table. **Dropped and free:** `f2_in_A_H` (derivable) and `max_episode_in_A`.
     - **COLUMN NAMES ARE FIXED** (`0077`). The rerun gave **88 against 87 columns for the SAME
       contents**, and **Step 8b's schema would inherit it.** **Rule: use the spec's own vocabulary where
       the spec defines the thing; otherwise the more explicit form.** Adopted: **`in_apply` /

@@ -329,9 +329,9 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
 - [ ] **Enforce the set-membership drop rule**: an episode whose `number` is not in the season's listed set `E` is dropped. This is an implementation check, not a data check — under set membership `|D| ≤ L` holds by construction
 - [ ] **Every boundary test is the half-open UTC-instant form** of Step 1 §2.4. `date(watched_at) <= T1` must not appear anywhere in the implementation
 - [ ] **THE LIVENESS SILENCE TEST IS STRICT.** The rule is *"no insertion instant **after** `τ1`"*, so a pair is silent iff it has **no insertion instant `> τ1`** — an instant falling exactly **at** `τ1` is **not** after it and does **not** make the account live. **Stated here, in the step that applies the rule** (`0068`); it was determinable from the rule text and said nowhere in Step 8. **AND THE EVIDENCE IS RESTRICTED TO RECORDS DATED BEFORE `τ_pull`.** Human Lead ruling, 2026-08-13 (`0070`). **This is applying an existing ruling consistently, not a new one:** **D11, approved at the Step 1 gate, makes `τ_pull` a global frozen cutoff and discards records at or after it from EVERY computation** — and the silence test is a computation. **The unstated version produced the reported-not-reconciled 792 (A) against 791 (B) at Step 7**, where one arm applied the restriction and the other did not. **Measured before ruling, and it does not disturb the approved gate: exclusions are 703 on APPLY and 99 on DERIV either way**, because no insertion instant exceeds the clamp at 2026-08-10T20:48Z and D10 already forces `τ1 ≤ τ_pull − 91 d`.
-- [ ] **THE COLUMN SET IS ENUMERATED, NOT COUNTED — 88 NAMES, EXACTLY THESE.** Human Lead ruling,
-      2026-08-13 (`0080`, extended to 88 by `0081`), replacing `0077` §3's count. **Converged is not
-      specified**, and **Step 8b's schema is built on this vocabulary**, so it is fixed before the
+- [ ] **THE COLUMN SET IS ENUMERATED, NOT COUNTED — 89 NAMES, EXACTLY THESE.** Human Lead ruling
+      (`0080`, extended to 88 by `0081` and to 89 by `0082`), replacing `0077` §3's count. **Converged
+      is not specified**, and **Step 8b's schema is built on this vocabulary**, so it is fixed before the
       schema exists. Emit exactly these, no more and no fewer:
       `abandonment_point_p`, `action_count_s1_checkin`, `action_count_s1_other`, `action_count_s1_scrobble`
       `action_count_s1_watch`, `action_count_s2_checkin`, `action_count_s2_other`, `action_count_s2_scrobble`
@@ -340,30 +340,31 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
       `e1_starts_at_1`, `e2_internal_gap`, `e2_starts_at_1`, `exclusion`
       `gap_days`, `has_s3_or_later_evidence`, `in_apply`, `in_deriv`
       `live`, `max_episode_in_A_H`, `max_season_number`, `n_A`
-      `n_A_H`, `outcome`, `pool_completers`, `pool_completers_proxy`
-      `s1_E`, `s1_F`, `s1_L`, `s1_aired_episodes_reported`
-      `s1_aired_lt_listed`, `s1_completion_date`, `s1_completion_used_a_post_cutoff_record`, `s1_count_disagreement`
-      `s1_episode_count_reported`, `s1_exposure_years`, `s1_finale_date`, `s1_premiere_date`
-      `s1_season_first_aired`, `s1_total_runtime`, `s2_E`, `s2_F`
-      `s2_L`, `s2_aired_episodes_reported`, `s2_aired_lt_listed`, `s2_count_disagreement`
-      `s2_episode_count_reported`, `s2_finale_date`, `s2_finale_year`, `s2_premiere_date`
-      `s2_season_first_aired`, `s2_span_days`, `s2_total_runtime`, `s2_weekly_span_days`
-      `season_numbers`, `seasons_returned`, `show_aired_episodes`, `show_airs_day`
-      `show_certification`, `show_comment_count`, `show_country`, `show_first_aired`
-      `show_genres`, `show_language`, `show_languages`, `show_rating`
-      `show_runtime`, `show_status`, `show_subgenres`, `show_trakt_id`
-      `show_votes`, `show_year`, `silent_at_tau1`, `size_quintile`
-      `size_quintile_per_year`, `size_quintile_raw_count`, `t0_binding_term`, `t0_date`
-      `tau1`, `tau2`, `title`, `user_idx`
-      **`silent_at_tau1` is IN the set** (`0081`). **It is the only way to recompute the
-      Continued-and-silent count from this table**: the liveness rule's second conjunct is
-      `NOT Continued`, so **`live` is true for every Continued pair regardless of silence.** That count
-      is **652** — the size of the outcome-conditioning, the figure that closed the rule objection at
-      `0063` §1, and a published Step 14 limitation. **Its input living in Step 7's working files rather
-      than in this table is the same shape as the position-3 drop set, which `0079` ruled must be a
-      deliverable rather than a working file. Same argument, same fix.**
+      `n_A_H`, `outcome`, `p_at_bound`, `pool_completers`
+      `pool_completers_proxy`, `s1_E`, `s1_F`, `s1_L`
+      `s1_aired_episodes_reported`, `s1_aired_lt_listed`, `s1_completion_date`, `s1_completion_used_a_post_cutoff_record`
+      `s1_count_disagreement`, `s1_episode_count_reported`, `s1_exposure_years`, `s1_finale_date`
+      `s1_premiere_date`, `s1_season_first_aired`, `s1_total_runtime`, `s2_E`
+      `s2_F`, `s2_L`, `s2_aired_episodes_reported`, `s2_aired_lt_listed`
+      `s2_count_disagreement`, `s2_episode_count_reported`, `s2_finale_date`, `s2_finale_year`
+      `s2_premiere_date`, `s2_season_first_aired`, `s2_span_days`, `s2_total_runtime`
+      `s2_weekly_span_days`, `season_numbers`, `seasons_returned`, `show_aired_episodes`
+      `show_airs_day`, `show_certification`, `show_comment_count`, `show_country`
+      `show_first_aired`, `show_genres`, `show_language`, `show_languages`
+      `show_rating`, `show_runtime`, `show_status`, `show_subgenres`
+      `show_trakt_id`, `show_votes`, `show_year`, `silent_at_tau1`
+      `size_quintile`, `size_quintile_per_year`, `size_quintile_raw_count`, `t0_binding_term`
+      `t0_date`, `tau1`, `tau2`, `title`
+      `user_idx`
+      **`p_at_bound` is NEW** (`0082`). **`silent_at_tau1` is IN** (`0081`) — the only way to recompute
+      the **Continued-and-silent count, 652**, from this table, since the rule's second conjunct is
+      `NOT Continued` so **`live` is true for every Continued pair regardless of silence**; that count
+      closed the rule objection at `0063` §1 and is a published Step 14 limitation, and **its input
+      living in Step 7's working files is the same shape as `0079`'s drop set.**
       **Two columns stay DROPPED and both are free:** **`f2_in_A_H`**, derivable as
       `max_episode_in_A_H == s2_F`, and **`max_episode_in_A`**, read by nothing downstream.
+      ***The count moved 88 → 89 as a mechanical consequence of adding `p_at_bound`; it is stated here
+      rather than left to be recounted.***
 - [ ] **COLUMN NAMES ARE FIXED, NOT LEFT TO THE INSTANCE.** Human Lead ruling, 2026-08-13 (`0077`).
       The rerun produced **88 columns against 87 for the SAME CONTENTS** — `in_population_APPLY` against
       `in_apply`, `n_rec_s1_watch` against `action_count_s1_watch`, `tau1_utc` against `tau1`,
@@ -540,6 +541,16 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
       counts. `CLAUDE.md`: *"a skipped user silently read as empty becomes a false 'never started' in
       the headline"*; rule and evidence at `artifacts/step0-access-and-setup.md` §7. **This can fail on
       real data, and it fails in the direction of the result.**
+- [ ] **`p_at_bound` — A BOOLEAN SEPARATING THE TWO MEANINGS OF `p = 1.0`.** Human Lead ruling,
+      2026-08-13 (`0082`). **`p = 1.0` carries two meanings computed differently**: the pair **left at
+      the final episode**, or **the abandonment point is at its bound** — the rank numerator saturated
+      at `L2`. **`p_at_bound` is TRUE where `p = 1.0` arises from the bound and FALSE where it arises
+      from the final episode**; null where `p` is null. **Step 10 publishes the abandonment distribution
+      off `abandonment_point_p`, so the two meanings must be separable in it** — a distribution with a
+      spike at 1.0 means two different things about viewers and the column cannot say which.
+      **Report the split of the `p = 1.0` rows into the two classes, on both populations the invariant
+      states: 1,246 at position 5 and 1,230 post-liveness on APPLY**, which are the totals both arms
+      published and which the two classes must sum to.
 - [ ] **EVERY INVARIANT NAMES THE POPULATION IT RUNS ON, AT THE POINT OF USE — AND ACCOUNTS FOR EVERY
       ROW IN IT.** Human Lead ruling, 2026-08-13 (`0080`). **This is the provenance rule applied to
       invariants rather than to figures:** an invariant that **passes on one population and was never run

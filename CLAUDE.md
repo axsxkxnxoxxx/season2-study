@@ -67,6 +67,14 @@ So after any edit: grep all EIGHT surfaces for the superseded strings and requir
 
 **Registering a string as a false positive disarms the control against it.** Do it only when the legitimate reading is verified live under the *adopted* rule, and withdraw the row the moment it stops being. `9.6830%` was registered as legitimate and was superseded on four surfaces at the time — the exemption was granted to the one string the control most needed to catch.
 
+## Generated files that function as checks
+
+**A check nobody can see is not a check.** Human Lead ruling, 2026-08-13 (`0082`). **A generated file that functions as a check is COMMITTED** — a verification living only in a working tree verifies nothing anyone else can rely on, and it is invisible to all eight propagation surfaces, which is where the defects this project keeps finding actually hide.
+
+**Condition, and it is not optional: a committed generated file states WHAT GENERATED IT and WHEN.** Otherwise it becomes the stale-figure problem the provenance rule exists to prevent — a file that looks authoritative, is read as current, and was produced by a pipeline that has since moved. **A generated file without its provenance is worse than no file**, because it is trusted.
+
+**This governs the generated artifacts that already exist**, including `src/step7_regenerate_derived.py`'s output blocks and the stamps it writes.
+
 ## Derived figures
 
 **When a bound endpoint moves, every figure computed from it moves.** Correcting an endpoint and leaving its derived quantities behind has now happened twice in consecutive entries. So each endpoint carries a written list, and **the list is checked as a set whenever that endpoint moves** — not the figure that prompted the correction, the whole set.
