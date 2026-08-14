@@ -343,20 +343,31 @@ def absent_is_allowed(arm, path):
 
 
 def check_ratios_written(arm):
-    """B1: assert the written quotient IS this arm's numerator over this arm's denominator."""
+    """Assert every written quotient IS this arm's numerator over this arm's denominator.
+
+    B1 covered the started-and-left quotient only. B4 (Red Team 13): the never-started
+    quotient was written by the script and checked by nothing -- the identical structure to
+    the hard-coded literal B1 replaced -- and arm a's published 0.2813 turned out to be on
+    the OTHER arm's convention, so one arm ran two conventions in one six-line block.
+    """
     doc = json.load(open(ARMS[arm] + ".json"))
     bad = []
     for pop in POPS:
         se = doc.get("sampling_error", {}).get(pop, {}).get("bound_endpoints")
         if not se:
             continue
-        want = round(D[pop]["sl"]["width"] / RATIO_DENOMINATORS[arm][pop], 4)
-        got = se.get("started_and_left_bound_width_over_sampling_width")
-        if got is None or abs(got - want) > 5e-5:
-            bad.append((pop, got, want))
-        assert abs(RATIO_DENOMINATORS[arm][pop]
-                   - RATIO_DENOMINATORS["b" if arm == "a" else "a"][pop]) > 1e-9, \
-            "the two arms' denominators must stay distinct"
+        for key, band, dens in (
+                ("started_and_left_bound_width_over_sampling_width", "sl", RATIO_DENOMINATORS),
+                ("never_started_bound_width_over_sampling_width", "ns", NS_RATIO_DENOMINATORS)):
+            want = round(D[pop][band]["width"] / dens[arm][pop], 4)
+            got = se.get(key)
+            if got is None or abs(got - want) > 5e-5:
+                bad.append((pop, key, got, want))
+            other = dens["b" if arm == "a" else "a"][pop]
+            assert abs(dens[arm][pop] - other) > 1e-9, \
+                f"{band}: the two arms' denominators must stay distinct"
+    # Arm a must use ONE convention. Both its denominators are floor-endpoint CIs, so both
+    # ratios are computed the same way -- which 0.2813 was not.
     return bad
 
 
@@ -506,8 +517,8 @@ if __name__ == "__main__":
                 print(f"      {'ok  ' if why else 'FAIL'} {x}" + (f"  ({why})" if why else ""))
                 if not why:
                     failures.append(f"absent and not allowlisted: arm {arm} {x}")
-        for pop, got, want in check_ratios_written(arm):
-            failures.append(f"arm {arm} {pop}: ratio written {got}, this arm's own gives {want}")
+        for pop, key, got, want in check_ratios_written(arm):
+            failures.append(f"arm {arm} {pop} {key}: written {got}, this arm's own gives {want}")
     # The .md bodies were checked by nothing (Red Team 12, non-blocking 3). They are now
     # checked by the same register, through the same checker, before this script exits.
     try:

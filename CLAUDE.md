@@ -107,6 +107,8 @@ So: `src/step7_regenerate_derived.py` reads the stored counts and writes **every
 
 **A file-level stamp declares a file's STATUS, never its individual values.** Exempting a whole file because a stamp appears in its head exempted 19 `.md` and 16 `.json` files — the entire Step 7 artifact set, including both **operative** deliverables — and a wrong ratio survived a passing check inside one of them. A wholly superseded file is exempted by **name, in the source, with a reason**; a partially superseded one is checked value by value.
 
+**Known limit, stated because it is not closed:** both controls walk **numeric leaves only**. A superseded figure written inside a JSON **string** — a note, a narrative field, an estimand description — is invisible to `json_numbers()` and to `verify()`. The `.json` half of the negative control cannot see narrative fields at all.
+
 **Check with `src/check_surfaces.py`, not with `grep`.** Matching is numeric, at a tolerance, across all seven surfaces. Textual grep cannot see the JSONs: the register stores 4-dp strings and the JSON stores 6-dp literals, so `9.6830` is not a substring of `9.682997`. Every value that survived review 11 was one whose registered form rounds up and therefore could never match.
 
 **The dual diff cannot catch a propagation failure.** Both members of a pair are byte-identical by design, so an error written into both is invisible to it. Propagation is checked by grep, never by the diff.

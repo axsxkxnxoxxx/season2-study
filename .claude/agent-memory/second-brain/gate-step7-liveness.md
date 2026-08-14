@@ -235,7 +235,7 @@ back, with the verification in the transcript. It exists because `0049` recorded
 done — **and control 4 exists because read-back by itself let #13 through.**
 
 > **Surface 7 is why this file matters beyond continuity.** `0052` §2: this memory mislabelled the
-> Continued ceiling **73.6537%** as a *"Continued floor"* and concluded it could not be reconstructed;
+> Continued ceiling **73.6537%** *(itself SUPERSEDED by 73.6995%, `0054`)* as a *"Continued floor"* and concluded it could not be reconstructed;
 > **`0051` §2 adopted that diagnosis without checking it against the arms' own JSON** — *"the exact
 > failure `0046` §0 exists to prevent, committed in the entry that corrected two other instances of
 > it"* — issued a wrong correction, and **a Step 9 instance reading the corrected line against its own

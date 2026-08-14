@@ -28,9 +28,12 @@ was reverted in the entry and not in the body. **`0057` reached the ratio and mi
 regeneration reached both operands and missed the ratio.** Same class, inverted, one entry later.
 
 **Four paths added**, started-and-left and never-started, each population, **each divided by that arm's
-own denominator.** The never-started denominators are now named too (`NS_RATIO_DENOMINATORS`), because
-`0058` §3 records that the arms were **correctly** left divergent there — 0.2813 against 0.27211 — and
-an unnamed denominator is how that divergence would quietly become one number.
+own denominator.** The never-started denominators are now named too (`NS_RATIO_DENOMINATORS`). ~~because `0058` §3
+records that the arms were correctly left divergent there — 0.2813 against 0.27211~~ **WITHDRAWN
+(`0060`): that citation was false.** `0.2813` was computed on **arm b's** convention, so the pair was
+one convention on two bootstraps. **Naming the denominators was right; the reason given was not, and
+naming them is what exposed it** — the script then wrote `0.2818` on arm a's own convention while every
+prose surface still said `0.2813`, which is how Red Team found it.
 
 **`bb-a.md`'s `0.5090` line is struck**, with the reason: `0.7922` is the other arm's denominator.
 

@@ -311,8 +311,16 @@ width the ratio is 0.5090, i.e. 50.9%.**~~ ***STRUCK (`0059`): `0.7922` IS THE O
 DENOMINATOR.*** **This arm divides by the floor endpoint's own bootstrap CI, `0.7602`, giving
 `0.4032 / 0.7602 = 0.5304`** — see the generated block above, which is written from this arm's own
 inputs. **The two arms use different conventions, the spec fixes neither, and the divergence is
-REPORTED not reconciled** (`CLAUDE.md`); the never-started ratio was correctly left divergent at
-`0.2813` against `0.27211` in these same files, which is the proof this one should have been.
+REPORTED not reconciled** (`CLAUDE.md`).
+~~The never-started ratio was correctly left divergent at `0.2813` against `0.27211` in these same
+files, which is the proof this one should have been.~~ ***WITHDRAWN (`0060`): that sentence was false
+and was itself an instance of the defect it was cited to certify.*** **`0.2813` is `0.307138 / 1.092`,
+and `1.092` is the UNDER-THE-RULE point estimate's CI — the OTHER arm's convention.** So `0.2813`
+against `0.27211` was **one convention on two arms' bootstraps**, not two conventions diverging, which
+is why they sit 0.009 apart while the genuine two-convention pair sits 0.021 apart. **Arm a was running
+two conventions in one six-line block.** **This arm's never-started ratio is now `0.307138 / 1.09 =
+0.2818` on its own floor-endpoint CI**, matching its started-and-left convention, and the genuinely
+divergent pair is **0.2818 (a) against 0.2721 (b)**.
 **Sampling error still dominates, but by roughly half as much as originally stated.**
 
 ---

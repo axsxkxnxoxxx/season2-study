@@ -150,7 +150,7 @@ survives only as the never-started **component** of 703.)*
 - **Superseded, never to be restated as current: `[9.6830%, 10.0405%]`, width `0.3575 pp`** (APPLY).
   Its floor did not cover the case the rule guards against: **if the 90 channel pairs in truth
   continued, the started-and-left numerator is 18,952 and the floor is 9.6372%** — 0.0458 pp below the
-  published 9.6830%, on a bound 0.3575 pp wide. By `0047` §3's own test that was **a non-covering
+  published 9.6830%, on a bound 0.3575 pp wide *(both SUPERSEDED: 9.6372% on 0.4032 pp)*. By `0047` §3's own test that was **a non-covering
   endpoint, and it would have been the fifth consecutive one**.
 - **Width is `0.4032 pp`, not 0.4033.** `793 / 196,654 = 0.40325%` exactly (instance A). **`0.4033` is
   a rounding artifact differenced from rounded endpoints** (instance B), reported as an unreconciled
@@ -192,7 +192,7 @@ denominators, floor was not a floor) and `0046`'s **[16.7146%, 16.9704%]** (mixe
   both hold: 16.9704 + 10.0405 + 73.6537 = 100.66%"*.** That was this file's text until 2026-08-13.
 - **73.6537% is the Continued CEILING on APPLY: `(144,140 + 703) / 196,654`.** It states a population
   and it reconstructs exactly. **Both arms publish it** — `bb-a.md` §5, `bb-b.md` §4.3 — and both JSONs
-  carry `ceiling_pct: 73.6537…`. **This memory mislabelled it a floor and concluded it could not be
+  carry `ceiling_pct: 73.6537…` *(SUPERSEDED by 73.6995%; both JSONs now carry it, regenerated)*. **This memory mislabelled it a floor and concluded it could not be
   reconstructed; `0051` §2 adopted that diagnosis without checking it against the arms' own JSON, and
   the resulting "correction" left `task-sheet.md` presenting Continued as a point, 73.2962%.** A Step 9
   instance reading that against its own deliverable **would have deleted a correct number.** `0052` §2

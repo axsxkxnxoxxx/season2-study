@@ -33,23 +33,24 @@ SURFACES = {
 }
 sys.path.insert(0, str(Path(__file__).parent))
 from step7_register import (SUPERSEDED, SUPERSEDED_IN, ADOPTED, ADOPTED_IN, LEGITIMATE,
-                            EXTREME_NONE_READINGS, SUCCESSOR,
+                            DECLARE_SCOPED, DECLARE_JSON_PATH, SUCCESSOR,
                             file_is_wholly_superseded, scoped)
 
 TOL = 5e-5
 NUM = re.compile(r"(?<![\w.])(\d{1,3}(?:,\d{3})*(?:\.\d+)?|\d+\.\d+)(?![\w])")
-MARK = re.compile(r"SUPERSEDED|superseding|WITHDRAWN|withdraw|~~|no legitimate|"
-                  r"not to be restated|must not be|pre-widening|was ALT|PF-LIMIT|"
-                  r"legitimate|register|corrected|ADOPTED|un-?widened|rounding artifact|not 0\\.4033|vs 0\\.4033", re.I)
-# A hit is DECLARED, not a defect, when its own context says which reading it is. The
-# extreme-NONE column of the two-extremes table is the main one: both arms were asked for it.
-# DECLARE says WHICH READING this occurrence is, so the value is not the adopted one.
-# Narrowed with B2: bare "superseded" is gone -- MARK already covers it, and having it here
-# too re-created the adjacent-contradiction pattern as a pass.
-DECLARE = re.compile(r"extreme[_ ]NONE|extreme NONE|un-?widened|proposed_pct|"
-                     r"_DERIVED|share_of_population|_scope|SUPERSEDED_computed_under|"
-                     r"superseded_strings", re.I)
-CONTEXT = 2   # a marker may wrap one line; 6 was too wide (Red Team 12)
+MARK = re.compile(r"SUPERSEDED|superseded|superseding|WITHDRAWN|withdrawn|~~|"
+                  r"no legitimate reading|must not be restated|not to be restated|"
+                  r"pre-widening|un-?widened|rounding artifact|STRUCK|struck", re.I)
+for _dead in ("corrected", "register", "legitimate|", "ADOPTED"):
+    assert _dead not in MARK.pattern, f"B5: {_dead!r} is still in MARK"
+assert "\\." not in MARK.pattern, "B5: an escaped-dot alternative that can never match"
+
+# B6. DECLARE is per-value AND per-file. There is no general branch: the general one
+# disarmed the control for values its phrase had nothing to do with.
+DECLARE_PATH = re.compile(DECLARE_JSON_PATH, re.I)
+
+CONTEXT = 2   # MARK's window: a marker may wrap onto the line above or below. The SUCCESSOR
+#             rule deliberately does NOT use this window -- it runs on the emitting line (B7).
 
 
 def near(x, target):
@@ -92,7 +93,7 @@ def text_numbers(path):
         blk = "\n".join(lines[max(0, i - 1 - CONTEXT): i + CONTEXT])
         for m in NUM.finditer(line):
             try:
-                out.append((float(m.group(1).replace(",", "")), f"line {i}", blk))
+                out.append((float(m.group(1).replace(",", "")), f"line {i}", blk, line))
             except ValueError:
                 pass
     return out
@@ -103,7 +104,7 @@ def scan():
     for surface, files in SURFACES.items():
         for f in files:
             is_json = f.endswith(".json")
-            items = ([(v, p, p) for v, p in json_numbers(f)] if is_json
+            items = ([(v, p, p, p) for v, p in json_numbers(f)] if is_json
                      else text_numbers(f))
             # A file whose head carries a supersession stamp declares its whole body.
             # B2 (Red Team 12). The whole-file exemption is GONE. A file is exempt only if
@@ -112,7 +113,7 @@ def scan():
             # entire Step 7 artifact set INCLUDING BOTH OPERATIVE DELIVERABLES, and is how a
             # wrong ratio survived a passing check. The operative pair is not exemptible.
             whole_file = file_is_wholly_superseded(f)
-            for val, where, line in items:
+            for val, where, line, raw in items:
                 if whole_file:
                     allowed.add((f, whole_file))
                 for s, what in list(SUPERSEDED.items()) + [
@@ -122,18 +123,24 @@ def scan():
                             continue
                         # a JSON leaf can never be "labelled" -- there is no prose to carry
                         # a marker, which is exactly why review 11 found six of them there.
+                        # MARK may open one line above, so it reads the context block.
                         labelled = bool(line and MARK.search(line))
-                        declared = bool(line and DECLARE.search(line))
-                        if s in EXTREME_NONE_READINGS and line and \
-                                re.search(r"extreme[_ ]NONE", line, re.I):
+                        # B6: declared only where the register scopes it, by file AND value.
+                        declared = False
+                        if is_json and DECLARE_PATH.search(where):
                             declared = True
-                        # self-declaring: the successor value is on the same line/context,
-                        # so the text is narrating the transition rather than asserting the
-                        # superseded value as current.
-                        succ = SUCCESSOR.get(s)
-                        if succ is not None and line and any(
+                        for frag, table in DECLARE_SCOPED.items():
+                            pat = table.get(round(s, 4))
+                            if frag in f and pat and line and re.search(pat, line, re.I):
+                                declared = True
+                        # B7: the successor rule runs on the EMITTING LINE, not the context
+                        # block. On the block it was already satisfied non-adversarially --
+                        # the adopted 6-dp width 0.403246 is within tolerance of 0.4032 and
+                        # self-declared 0.4033 two lines away in either direction.
+                        succ = SUCCESSOR.get(round(s, 4))
+                        if succ is not None and raw and any(
                                 near(float(m.group(1).replace(",", "")), succ)
-                                for m in NUM.finditer(line)):
+                                for m in NUM.finditer(raw)):
                             declared = True
                         if not labelled and not declared:
                             neg.append((surface, f, where, val, what,

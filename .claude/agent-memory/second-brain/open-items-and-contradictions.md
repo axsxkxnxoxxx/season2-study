@@ -205,7 +205,7 @@ point is the mislabelling, not the value, and the value has since moved.**
    **I did not check the arms' JSON, where the figure and its key were sitting.**
 
 **What it cost.** **`0051` §2 adopted this diagnosis without checking it against the arms' own JSON**
-and asserted *"73.6537% is on no population"* — `0052` §2 calls that *"the exact failure `0046` §0
+and asserted *"73.6537% is on no population"* *(the figure is itself SUPERSEDED by 73.6995%, `0054`)* — `0052` §2 calls that *"the exact failure `0046` §0
 exists to prevent, committed in the entry that corrected two other instances of it"* — **and
 attributed the number to Red Team while doing so.** The correction was worse than the error: it left
 `task-sheet.md` presenting Continued as a **point, 73.2962%**, with the parenthetical *"no Continued

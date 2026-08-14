@@ -55,9 +55,15 @@ arm b's.** Arm a's own is `0.7602`, which gives `0.5304`.
 width**; **b** divides by the CI width of the **under-the-rule point estimate**. **The spec fixes
 neither, so it is a spec ambiguity — report it, do not reconcile it.**
 
-**Red Team's proof that the reconciliation was wrong is internal to the same files:** the
-**never-started** ratio was correctly left divergent at **0.2813 (a)** against **0.27211 (b)**. Same
-figure class, two treatments, one entry.
+~~**Red Team's proof that the reconciliation was wrong is internal to the same files:** the
+never-started ratio was correctly left divergent at **0.2813 (a)** against **0.27211 (b)**. Same
+figure class, two treatments, one entry.~~ **WITHDRAWN 2026-08-14 (`0060`). The sentence was false and
+I published it twice.** `0.2813` is `0.307138 / 1.092`, and **`1.092` is the under-the-rule point
+estimate's CI — arm b's convention.** So that pair was **one convention on two bootstraps**, not two
+conventions diverging. **The conclusion stands and the evidence for it does not:** reconciling the
+started-and-left conventions was still wrong, but this was not the proof. **The genuinely divergent
+never-started pair is 0.2818 (a) against 0.2721 (b)**, and arm a's `0.2813` was itself an instance of
+the defect it was cited to certify.
 
 **Reverted.** `RATIO_DENOMINATORS` names both, per arm, so **no expression in the script can produce one
 arm's ratio from the other arm's denominator without the substitution being visible** — and an assert

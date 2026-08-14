@@ -54,6 +54,11 @@ SUCCESSOR = {9.6830: 9.6372, 0.0503: 0.0961, 73.3466: 73.3924, 73.6537: 73.6995,
 SUPERSEDED_IN = {
     ("bb-a", 0.5090): "arm b's ratio, written into arm a's file by 0057. Arm a's is 0.5304",
     ("bb-a", 0.0690): "arm a's DERIV ratio pre-widening (0.0672/0.9744). Arm a's is 0.1309",
+    # B4 (Red Team 13). 0.2813 = 0.307138 / 1.092, and 1.092 is the UNDER-THE-RULE point
+    # estimate's CI width -- arm b's convention. Arm a's own convention, used for its
+    # started-and-left ratio, is the FLOOR ENDPOINT's CI, 1.09, giving 0.2818. Arm a was
+    # running two conventions in one six-line block. 0060 takes the floor-endpoint one.
+    ("bb-a", 0.2813): "computed on arm b's convention (under-the-rule CI 1.092). Arm a's is 0.2818",
 }
 
 # ------------------------------------------------------------------------------- adopted
@@ -72,11 +77,22 @@ ADOPTED = {
 # Per-arm, so the positive half reaches this entry's OWN corrections -- which it did not,
 # and that is how B1 stayed invisible to both scripts.
 ADOPTED_IN = {
+    # started-and-left
     ("bb-a", 0.5304): "arm a, APPLY: 0.403246 / 0.7602, its own floor-endpoint CI",
     ("bb-a", 0.1309): "arm a, DERIV: 0.127570 / 0.9744",
     ("bb-b", 0.5090): "arm b, APPLY: 0.403246 / 0.7922, the under-the-rule point estimate's CI",
     ("bb-b", 0.1310): "arm b, DERIV: 0.127570 / 0.9737",
+    # never-started (B4). 0059 covered four values and all four were started-and-left.
+    ("bb-a", 0.2818): "arm a, APPLY: 0.307138 / 1.09, its own floor-endpoint CI -- SAME convention "
+                      "as its S&L ratio, which 0.2813 was not",
+    ("bb-b", 0.2721): "arm b, APPLY: 0.307138 / 1.12872, the under-the-rule point estimate's CI",
 }
+# The two DERIV never-started ratios are the third and fourth of the four. Both are exactly
+# 0.0, because the DERIV never-started bound is DEGENERATE -- [6.2055%, 6.2055%], width 0.0,
+# zero never-started exclusions. They are NOT registered: 0.0 matches somewhere in almost
+# every file, so a row for it would disarm nothing and flag everything. Stated here rather
+# than left as two silently missing entries.
+DERIV_NS_RATIOS_ARE_ZERO_BY_DEGENERACY = True
 
 # --------------------------------------------------------------------------- legitimate
 LEGITIMATE = {
@@ -91,7 +107,31 @@ LEGITIMATE = {
 # as extreme ALL, so the NONE column IS 9.6830 / 11.3619 / 73.6537 / 82.4327. Correct where
 # labelled as that extreme; superseded wherever it stands as the adopted figure. This is a
 # CONTEXT exemption, not a value exemption, and glossary row `16,744` already carries it.
-EXTREME_NONE_READINGS = {9.6830, 11.3619, 73.6537, 82.4327}
+# B6 (Red Team 13): this was a value table whose branch was UNREACHABLE -- the general
+# DECLARE regex already contained `extreme[_ ]NONE`, so the value scoping never ran and the
+# general branch disarmed the control for values the two-extremes table has nothing to do
+# with. DECLARE is now per-value AND per-file, and this is the table it is built from.
+#
+# Load-bearing only in the verification arms' deliverables, which are the files that carry
+# the two-extremes table and are deliberately not on the whole-file allowlist.
+DECLARE_SCOPED = {
+    "step7-deriv-floor-check": {
+        9.6830: r"extreme[_ ]NONE",
+        11.3619: r"extreme[_ ]NONE",
+        73.6537: r"extreme[_ ]NONE",
+        82.4327: r"extreme[_ ]NONE",
+    },
+}
+# Structural markers in a JSON PATH, which is not prose and cannot carry an inline note.
+# Applied to json paths only, never to text lines.
+DECLARE_JSON_PATH = r"_DERIVED|_scope|superseded_strings|SUPERSEDED_computed_under|_superseded_note"
+
+# KNOWN LIMIT, recorded 2026-08-14 (0060), found by Red Team on review 13.
+# Both controls walk NUMERIC LEAVES only. A superseded figure written inside a JSON STRING
+# -- a narrative field, a note, an estimand description -- is invisible to json_numbers()
+# and to verify(). It is not a defect today, and it is not closed: the .json half of the
+# negative control cannot see narrative fields at all.
+JSON_STRING_FIELDS_ARE_NOT_CHECKED = True
 
 # ----------------------------------------------------- wholly superseded, one line each
 WHOLLY_SUPERSEDED_FILES = {

@@ -210,10 +210,10 @@
       "n": 147370,
       "proposed_count": 16744,
       "my_count": 16744,
-      "proposed_pct": 11.3619,
       "verdict": "CONFIRMED",
       "_superseded_note": "this row verifies the extreme-NONE floor, which is 11.361878 and correct as that extreme; the ADOPTED DERIV floor is 11.3015 (extreme ALL). 0059.",
-      "my_pct_extreme_NONE": 11.361878
+      "my_pct_extreme_NONE": 11.361878,
+      "proposed_pct_extreme_NONE": 11.3619
     },
     {
       "row": "S&L ceiling",
