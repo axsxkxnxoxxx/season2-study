@@ -57,6 +57,16 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
       Continued condition is not. **Structural, not incidental:** `τ2 > τ1`, so a pair silent after
       `τ1` is silent after `τ2` and **can produce no evidence in the `[τ1, τ2)` window the Continued
       test reads** — it is scored "left" **by construction**.
+    - **THE SILENCE TEST'S EVIDENCE IS RESTRICTED TO RECORDS DATED BEFORE `τ_pull`.** Human Lead
+      ruling 2, 2026-08-13 (`0070`, propagated here by `0071`). **This applies an existing ruling
+      consistently; it is not a new one.** **D11, approved at the Step 1 gate, makes `τ_pull` a GLOBAL
+      FROZEN CUTOFF and discards records at or after it from EVERY computation** — and the silence test
+      is a computation. **The unstated version produced the reported-not-reconciled 792 (A) against 791
+      (B) at Step 7**, where one arm applied the restriction and the other did not. **Measured before
+      the ruling, because Step 7 is an approved gate: exclusions are 703 on APPLY and 99 on DERIV either
+      way**, since no insertion instant exceeds the clamp at 2026-08-10T20:48Z and D10 already forces
+      `τ1 ≤ τ_pull − 91 d`. **The restriction is inert on the exclusion set and bites on the robustness
+      tail.** **Step 13 re-runs the rule at eight arms; the scope holds at every one.**
     - **EVERY FIGURE STATES ITS POPULATION.** **DERIV** = Step 5 line 4 less D10, **147,370**, requires
       S2 evidence. **APPLY** = line 1 less D10, **196,654**, what Step 8 filters.
     - **Exclusions at `W = 108`: APPLY 703 from 216 accounts (604 never-started + 99 started-and-left);
@@ -85,6 +95,13 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
 
 - **Step 9, headline result. Chained, dual implementation.** Of users who completed S1, compute the
   share who never started S2, who started and left, and who continued, with confidence intervals.
+  **CONSUME STEP 8's OUTPUT. DO NOT REBUILD DERIV AND DO NOT COMPUTE D4.** Human Lead rulings 1 and 7,
+  2026-08-13 (`0070`, propagated here by `0071`). **Step 8 now emits BOTH populations** — APPLY
+  **196,654** and DERIV **147,370** — **and the D4 count.** **Rebuilding either is the second definition
+  those rulings exist to prevent**, and a second definition of one figure is the defect this study has
+  hit most often (`0058`, `0061`, `0062`). **If Step 8's output does not carry DERIV or D4, say so and
+  stop — do not reconstruct them.** A reconstruction that agrees today is still a second definition
+  tomorrow, and the dual diff cannot see it, because both instances would rebuild the same way.
   **THE BOOTSTRAP IS UNSPECIFIED AND THIS BLOCKS STEP 9** (`0056`). The two Step 7 arms diverged on all
   three of `B`, seed and statistic — **A: 4,000 / 20260813 / movements; B: 2,000 / 20260814 / levels** —
   so CIs built three ways **prove nothing when diffed.** **`0052` §6's "unreconciled and now specified"
