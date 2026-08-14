@@ -115,6 +115,12 @@ So: `src/step7_regenerate_derived.py` reads the stored counts and writes **every
 
 **The numeric controls cannot see a claim.** This chain withdraws claims about as often as it corrects figures, so `WITHDRAWN_PHRASES` in `src/step7_register.py` holds the withdrawn ones and `check_surfaces.py` scans `.md` text and JSON strings for any occurrence outside a strikethrough or a withdrawal note.
 
+**Three blindness classes, and only two are checked.** The controls see **wrong numbers** (`check_surfaces.py`, numerically, at both precisions) and **withdrawn claims** (`WITHDRAWN_PHRASES`). They do not see **a withdrawn ARGUMENT built from correct statistics.**
+
+The instance that named the class: `0054` §3 argued the widened floor from *"the 90 have p5 margin 1.7 days, minimum 0.13."* `0055` §2 withdrew that as cherry-picked — the same 90 have median 44.5, and the correct ground carries no margin statistic at all. **But 1.7 and 0.13 are correct statistics**, withdrawn only as *grounds*, so there is no superseded number for the numeric half to match; and the argument was paraphrased rather than quoted, so there is no phrase for the phrase half to match. **It survived in `second-brain`'s memory across three files and nine entries, and only a reading agent found it.**
+
+**No control is built for this.** A withdrawn argument is recognised by what it *claims*, not by its text or its digits, and a checker that tried would be a prose checker. **What stands in for one: when an entry withdraws a ground rather than a figure, say so in the withdrawn-claims register and name the statistics that are still true but no longer load-bearing** — the statistic is not wrong, the use of it is.
+
 **Known limit, still open:** both numeric halves walk **numeric leaves only**, so a superseded *figure* inside a JSON **string** remains invisible to them. **Do not record a gap as harmless without checking whether it is currently occupied** — this one was written down as *"not a defect today"* while a defect was sitting in it, in four files.
 
 **Check with `src/check_surfaces.py`, not with `grep`.** Matching is numeric, at a tolerance, across all seven surfaces. Textual grep cannot see the JSONs: the register stores 4-dp strings and the JSON stores 6-dp literals, so `9.6830` is not a substring of `9.682997`. Every value that survived review 11 was one whose registered form rounds up and therefore could never match.

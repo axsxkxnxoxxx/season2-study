@@ -7,7 +7,7 @@
 >
 > *Date note, recorded rather than silently adjusted: the approval is dated **2026-08-13** as the Human
 > Lead gave it, while `0060`–`0063` — including `0063`, which carries the 652 measurement §3 rests on —
-> are dated **2026-08-14**. Flagged to the Human Lead for confirmation or correction. The decision log
+> are dated **2026-08-13**. Flagged to the Human Lead for confirmation or correction. The decision log
 > is a public tracked artifact and `0058` §6 corrected a date drift in the other direction; neither is
 > fixed here without a ruling.*
 

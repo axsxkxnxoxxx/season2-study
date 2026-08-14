@@ -4,10 +4,13 @@
 | :--- | :--- |
 | **Decision** | **2.5 fixed:** every bound width is now `(ceil_n − floor_n) / n`, not a difference of two 6-dp rounded percentages — the construction the register itself names as a rounding artifact. **The rule objection is CLOSED ON MEASUREMENT**: Red Team's no-conjunct-2 alternative **is PF-LIMIT**, adopted at `0041` and superseded at `0046`, and the 652 it asked for is printed in `0045` §1. **Everything else from review 15 is LOGGED AS OUTSTANDING, not fixed.** |
 | **Decided by** | Human Lead |
-| **Date** | 2026-08-14 |
+| **Date** | 2026-08-13 |
 | **Occasioned by** | Red Team's **fifteenth** Step 7 HOLD |
 | **Verified by** | `check_surfaces.py` **PASS**, `step7_regenerate_derived.py` **PASS**, `step7_floor_extremes.py` **11/11 CONFIRMED** |
 | **Status** | Closed. **Step 7's approval is drafted for the Human Lead at `artifacts/step7-gate-approval-DRAFT.md` and is UNSIGNED.** |
+
+
+> **DATE CORRECTED 2026-08-13.** This entry was written and dated **2026-08-14**. The clock had advanced mid-session and the date was taken from it rather than from the working day the entry belongs to. **Corrected in place across every surface, with this note, exactly as `0058` §6 did** — the decision log is a public tracked artifact and a date that quietly moves is worth less than one that visibly did. **Ruled by the Human Lead: the dates on `0060`–`0063` are wrong, not the approval.** The Step 7 approval at `0064` stands at **2026-08-13**, and with this correction it no longer predates `0063`, which carries the 652 measurement it rests on.
 
 ---
 

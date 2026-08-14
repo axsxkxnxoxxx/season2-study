@@ -2,7 +2,7 @@
 
 Season 2 abandonment study. Continuity role: glossary, consistency checks, coverage of the
 decision log. `decisions/` is the artifact of record; this memory never duplicates or edits it.
-Current through `decisions/0064`, 2026-08-14. **Gates 1 (amended, re-approved), 5, 6 and 7 closed,
+Current through `decisions/0064`, 2026-08-13. **Gates 1 (amended, re-approved), 5, 6 and 7 closed,
 FOUR of five. STEP 8 IS THE REMAINING GATE and may now launch.** `W = 108`, `τ1` = 108 d,
 `τ2` = 199 d. **Step 7 APPROVED 2026-08-13 (`0064`), UNCONDITIONALLY, with a nine-item residual
 PUBLISHED not resolved** — record `artifacts/step7-gate-approval.md`. Rule is **ALT-BROAD**, no

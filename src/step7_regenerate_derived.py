@@ -117,7 +117,7 @@ def derive(c):
     corner_hi_cont = n - ns_ceil - sl_floor     # ns ceiling / sl floor corner
     excess = 2 * ns_x + sl_x + ch
 
-    # 2.5 (Red Team 15), fixed 2026-08-14 (0063). Every width was a DIFFERENCE OF TWO 6-dp
+    # 2.5 (Red Team 15), fixed 2026-08-13 (0063). Every width was a DIFFERENCE OF TWO 6-dp
     # ROUNDED PERCENTAGES -- which is precisely the construction SUPERSEDED[0.4033] names as
     # "a rounding artifact". It showed: the SAME 793 pairs on the SAME 196,654 gave
     # sl.width = 0.403246 and cont.width = 0.403247 in one generated block, one quantity with
@@ -212,7 +212,7 @@ from step7_register import SUPERSEDED, SUPERSEDED_IN, ADOPTED_IN   # noqa: E402
 # post-liveness point estimate in three places and must not move.
 
 # ------------------------------ 3z. ONE DEFINITION PER STATEMENT AND PER FIGURE
-# Human Lead ruling, 2026-08-14 (0062). B8 and B10 were the SAME LITERAL living in two
+# Human Lead ruling, 2026-08-13 (0062). B8 and B10 were the SAME LITERAL living in two
 # writers -- the .md one and the .json one -- where one was edited and the other was not.
 # Two copies of a sentence is two places to withdraw it from, and the withdrawal reached one.
 #

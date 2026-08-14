@@ -4,11 +4,14 @@
 | :--- | :--- |
 | **Decision** | **B8:** the withdrawn "proof" sentence is removed from **all three writers** in `src/step7_regenerate_derived.py` — the `.md` block, the `.json` `_DERIVED` field, and the source comment that gave the withdrawn claim as the reason `NS_RATIO_DENOMINATORS` exists. Regenerated and confirmed gone from all four operative files. **Both controls were structurally blind to it**, and the JSON string-field gap recorded yesterday as *"not a defect today"* **was already a defect on the day it was recorded**. The register now holds **withdrawn phrases as well as values**, checked against `.md` text and JSON strings. |
 | **Decided by** | Human Lead |
-| **Date** | 2026-08-14 |
+| **Date** | 2026-08-13 |
 | **Occasioned by** | Red Team's **fourteenth** Step 7 HOLD |
 | **Amends** | `0060` §2 (a withdrawal that reached three of four places); `0060` §6 (a limit recorded as hypothetical while it was live) |
 | **Verified by** | `check_surfaces.py` **PASS — negative, phrase and positive halves**; `step7_regenerate_derived.py` **PASS**; `step7_floor_extremes.py` **10/10 CONFIRMED** |
 | **Status** | Closed. **The gate is OPEN. B9 and B10's remainder are NOT addressed here** — see §5. |
+
+
+> **DATE CORRECTED 2026-08-13.** This entry was written and dated **2026-08-14**. The clock had advanced mid-session and the date was taken from it rather than from the working day the entry belongs to. **Corrected in place across every surface, with this note, exactly as `0058` §6 did** — the decision log is a public tracked artifact and a date that quietly moves is worth less than one that visibly did. **Ruled by the Human Lead: the dates on `0060`–`0063` are wrong, not the approval.** The Step 7 approval at `0064` stands at **2026-08-13**, and with this correction it no longer predates `0063`, which carries the 652 measurement it rests on.
 
 ---
 

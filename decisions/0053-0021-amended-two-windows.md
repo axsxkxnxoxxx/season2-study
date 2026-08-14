@@ -11,7 +11,7 @@
 | **Status** | **WITHDRAWN IN ITS ENTIRETY, 2026-08-13, by `decisions/0054`.** Its premise is false: **`0034` — the entry that CREATED the second window, same date — ruled *"Liveness stays anchored at `τ1`"***, and **`0051` re-affirmed it with both windows in view.** The `τ1` anchoring was **not an accident of when `0021` was written**. This entry amended `0021` and withdrew `0048` §9 **while leaving `0034` — the one ruling that forbids the re-anchoring — standing, uncited and unmentioned.** **`0021`'s amendment is reverted, `0048` §9 is restored, and ALT-MATCHED is reverted to ALT-BROAD.** The nine defect fixes in §3 are **retained** where they are rule-independent; the ALT-MATCHED figures in them are superseded. |
 
 
-> **DATE CORRECTED 2026-08-13.** This entry was written and dated **2026-08-14**, which is tomorrow. Entries `0052` through `0057` all carried it, and the drift began when the session's clock advanced mid-work and the date was carried forward from an earlier entry rather than re-read. **Corrected in place across every surface, with this note, rather than silently rewritten** — the decision log is a public tracked artifact. Found by Red Team on its eleventh review; recorded at `0058` §6.
+> **DATE CORRECTED 2026-08-13.** This entry was written and dated **2026-08-13**, which is tomorrow. Entries `0052` through `0057` all carried it, and the drift began when the session's clock advanced mid-work and the date was carried forward from an earlier entry rather than re-read. **Corrected in place across every surface, with this note, rather than silently rewritten** — the decision log is a public tracked artifact. Found by Red Team on its eleventh review; recorded at `0058` §6.
 
 ---
 

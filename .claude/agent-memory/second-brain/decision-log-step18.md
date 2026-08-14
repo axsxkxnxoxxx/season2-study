@@ -26,7 +26,7 @@ log shows the judgment."*
 > been fed back into a ruling** — see `0051` §2 and [[withdrawn-claims-register]] mode G. Correct it
 > here **and** grep the other six surfaces; read-back alone is not verification.
 
-## Coverage as of 2026-08-14 — `0001`–`0064`
+## Coverage as of 2026-08-13 — `0001`–`0064`
 
 | Files | Cover | Five-field completeness |
 | :--- | :--- | :--- |
@@ -142,7 +142,7 @@ calls.** **The Step 5 gate (`0021`, gate 2 of 5) was amended by `0053` and the a
 
 **One item flagged and NOT fixed, and it is on the log itself:** `artifacts/step7-gate-approval.md`
 records that the approval is dated **2026-08-13** as the Human Lead gave it, while `0060`–`0063` —
-**including `0063`, which carries the 652 the approval's §3 rests on** — are dated **2026-08-14**. It is
+**including `0063`, which carries the 652 the approval's §3 rests on** — are dated **2026-08-13**. It is
 flagged to the Human Lead for confirmation or correction and **not fixed without a ruling**, `0058` §6
 having corrected a date drift in the other direction. **The two things that conflict are the approval's
 own date line and `0063`'s.**

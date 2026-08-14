@@ -1,15 +1,15 @@
 ---
 name: open-items-and-contradictions
-description: Live register of open items and cross-step contradictions in the Season 2 study, each with its two conflicting sources named — re-verified 2026-08-14 after decisions/0055-0064 and the Step 7 gate approval, with V7 closed as an error of mine that reached a ruling and T1-T4 new
+description: Live register of open items and cross-step contradictions in the Season 2 study, each with its two conflicting sources named — re-verified 2026-08-13 after decisions/0055-0064 and the Step 7 gate approval, with V7 closed as an error of mine that reached a ruling and T1-T4 new
 metadata:
   type: project
 ---
 
-# Open items and contradictions — re-verified 2026-08-14 (third pass, through `0064`)
+# Open items and contradictions — re-verified 2026-08-13 (third pass, through `0064`)
 
 ---
 
-## NEW — surfaced 2026-08-14 by the pass over `0055`–`0064`
+## NEW — surfaced 2026-08-13 by the pass over `0055`–`0064`
 
 **None of these is a disposition. Each names its two conflicting sources and stops.**
 
@@ -18,7 +18,7 @@ metadata:
 - **`0055` §2 withdrew `0054` §3's margin argument as cherry-picked**, in terms: *"p5 supported the
   claim, the median contradicted it, and only p5 was quoted"* — the same 90 pairs have **p5 = 1.6552 and
   median = 44.5272**, and *"the correct ground carries no margin statistic at all."*
-- **This memory carried it as live supporting reasoning in three files until 2026-08-14** —
+- **This memory carried it as live supporting reasoning in three files until 2026-08-13** —
   `glossary-terms-and-thresholds.md`, `gate-step7-liveness.md` and `withdrawn-claims-register.md`, each
   stating *"the 90 have p5 margin 1.7 days, minimum 0.13."* **Corrected in this pass.**
 
@@ -44,14 +44,14 @@ numbered propagation failure on surface 7, are the Human Lead's calls.
 
 **Carried by `0063` as an outstanding control defect, not fixed.** Recorded here because **the other half
 of it was mine**: this glossary's trap table was headed *"REGISTER — canonical location"* until
-2026-08-14. **That half is corrected** — the table now states that `src/step7_register.py` governs and
+2026-08-13. **That half is corrected** — the table now states that `src/step7_register.py` governs and
 the glossary mirrors it. **The `artifacts/` half is untouched and is not mine to touch.**
 
 ### T3. The approval and the entry its central figure rests on are dated a day apart
 
 - **`artifacts/step7-gate-approval.md`** and **`decisions/0064`**: dated **2026-08-13**, *"as stated by
   the Human Lead."*
-- **`decisions/0060`–`0063`**: dated **2026-08-14** — **including `0063`, which carries the 652
+- **`decisions/0060`–`0063`**: dated **2026-08-13** — **including `0063`, which carries the 652
   measurement the approval's §3 rests on.**
 
 **Already flagged in the approval itself**, which records it rather than silently adjusting it and says
@@ -91,7 +91,7 @@ things that conflict are `WHOLLY_SUPERSEDED_FILES`'s coverage and the files' own
 
 ---
 
-## STATUS of U1 and U2, re-checked 2026-08-14
+## STATUS of U1 and U2, re-checked 2026-08-13
 
 - **U1 (`0054` §7 published the superseded `0.4033` rounding artifact its own §6 named): APPEARS ACTIONED.** `0055` §5
   corrected `0054` §7 in place to **0.4032 pp**, and separately found **the same artifact had survived in
@@ -171,7 +171,7 @@ identically**, so the dual-implementation diff cannot catch this class at all. F
 >   **Appears actioned.**
 > - **V2 (`decisions/README.md` has no row for `0050`):** the index now matches `0050`–`0054`.
 >   **Appears actioned.**
-> - **V3 (gate checklist states PF-LIMIT as the rule): CLOSED, verified 2026-08-14.** `decisions/README.md`
+> - **V3 (gate checklist states PF-LIMIT as the rule): CLOSED, verified 2026-08-13.** `decisions/README.md`
 >   line 93 now reads *"**Step 7** liveness rule — **APPROVED by the Human Lead, 2026-08-13** ([0064]…).
 >   **ALT-BROAD: not live iff no insertion after `τ1` AND NOT Continued**, silence anchored at `τ1` and
 >   only at `τ1`, channel window `(τ1, τ2)` open… **Approval is UNCONDITIONAL with the §4 residual open
@@ -352,7 +352,7 @@ unmarked in a public artifact. Same file, line 37: *"`τ2` plays no part"*, with
 superseded Step 7 artifacts got no such header.**
 
 ### V9. `decisions/0034` still states the clause `0049` withdrew
-### CLOSED, verified 2026-08-14 — amended in place with a marker, exactly as `0048` §8 requires
+### CLOSED, verified 2026-08-13 — amended in place with a marker, exactly as `0048` §8 requires
 
 **`decisions/0034` line 35 now reads:** *"~~`τ2` plays no part in the liveness test.~~ **AMENDED
 2026-08-13 (`0051`): under ALT-BROAD `τ2` DOES play a part** — the rule's second conjunct is the
@@ -1008,7 +1008,7 @@ namespace is not part of the task description and separating it does not weaken 
 to Steps 7 and 9 (`data-scientist` / `-b`) and Step 8 (`analytics-engineer` / `-b`). No output was
 lost, and the identical inputs are themselves evidence the collision never reached the computation.
 
-### Critical path, updated 2026-08-14 after `0064`
+### Critical path, updated 2026-08-13 after `0064`
 
 Steps 1 (amended and re-approved), 3, 4 (stopped), 2, 5, 6 and **7** are done. **FOUR gates closed of
 five. STEP 8 IS THE ONLY GATE LEFT AND IT MAY NOW LAUNCH.** **Step 7 ran nine times and is

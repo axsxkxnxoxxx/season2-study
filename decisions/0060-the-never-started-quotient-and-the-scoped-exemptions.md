@@ -4,13 +4,16 @@
 | :--- | :--- |
 | **Decision** | **B4:** arm a's never-started ratio takes the **floor-endpoint CI** — `0.307138 / 1.09 = 0.2818` — matching its own started-and-left convention, so **one arm no longer runs two conventions in one six-line block**. `check_ratios_written()` extended to the never-started quotient; **all four ratios in `ADOPTED_IN`**. **The "proof" sentence is WITHDRAWN from three places.** **B5:** `MARK` corrected to what `0059` §2 claimed. **B6:** the unreachable branch deleted, `DECLARE` **scoped per file and per value**. **B7:** the successor rule runs on the **emitting line**. The JSON string-field gap is recorded as a known limit. |
 | **Decided by** | Human Lead |
-| **Date** | 2026-08-14 |
+| **Date** | 2026-08-13 |
 | **Occasioned by** | Red Team's **thirteenth** Step 7 HOLD |
 | **Amends** | `0058` §3 and `0059` §1 (a false citation, published twice); `0059` §2 (a control property the control lacked) |
 | **Verified by** | `check_surfaces.py` **PASS**; `step7_regenerate_derived.py` **PASS**; `step7_floor_extremes.py` **10/10 CONFIRMED** |
 | **Status** | Closed. **Step 7 goes to Red Team. The gate is OPEN.** |
 
-*(Dated the 14th, correctly: `0052`–`0059` were corrected to the 13th at `0058` §6 because they had been dated a day ahead. The clock has since advanced. The correction was not reversed.)*
+~~*(Dated the 14th, correctly: `0052`–`0059` were corrected to the 13th at `0058` §6 because they had been dated a day ahead. The clock has since advanced. The correction was not reversed.)*~~ ***WITHDRAWN — see the date note below.*** The reasoning was wrong in the same way `0058` §6's drift was: the date was taken from the clock rather than from the working day, and "correctly" was asserted rather than checked.
+
+
+> **DATE CORRECTED 2026-08-13.** This entry was written and dated **2026-08-14**. The clock had advanced mid-session and the date was taken from it rather than from the working day the entry belongs to. **Corrected in place across every surface, with this note, exactly as `0058` §6 did** — the decision log is a public tracked artifact and a date that quietly moves is worth less than one that visibly did. **Ruled by the Human Lead: the dates on `0060`–`0063` are wrong, not the approval.** The Step 7 approval at `0064` stands at **2026-08-13**, and with this correction it no longer predates `0063`, which carries the 652 measurement it rests on.
 
 ---
 

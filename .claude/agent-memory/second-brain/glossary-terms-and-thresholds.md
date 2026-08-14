@@ -1,13 +1,13 @@
 ---
 name: glossary-terms-and-thresholds
-description: Live glossary of every term, threshold and constant in the Season 2 abandonment study, each tagged with the step, decision and gate that fixed it and which population its figures are on — current through decisions/0064, the Step 7 gate APPROVAL (ALT-BROAD, unconditional), 2026-08-14
+description: Live glossary of every term, threshold and constant in the Season 2 abandonment study, each tagged with the step, decision and gate that fixed it and which population its figures are on — current through decisions/0064, the Step 7 gate APPROVAL (ALT-BROAD, unconditional), 2026-08-13
 metadata:
   type: reference
 ---
 
 # Glossary — terms, thresholds, and where each was set
 
-**Current through `decisions/0064`, 2026-08-14** — Steps 3, 4, 2, 5, 6, the Step 1 §7 amendment, and
+**Current through `decisions/0064`, 2026-08-13** — Steps 3, 4, 2, 5, 6, the Step 1 §7 amendment, and
 the **Step 7 liveness gate, APPROVED**. This is an index, not a substitute for the artifacts. Verify
 against the file before acting on any row.
 
@@ -338,7 +338,7 @@ comparable to it.
 
 ### Known false-positive traps — a blind grep produces WRONG ANSWERS on every string below
 
-> **STRUCTURAL NOTE, 2026-08-14.** This table was previously **orphaned** — its header row sat three
+> **STRUCTURAL NOTE, 2026-08-13.** This table was previously **orphaned** — its header row sat three
 > paragraphs above its data rows, so it rendered as broken. `0063` §3 item S7 records *"the glossary trap
 > table is structurally orphaned"* as a carried defect. **Repaired here.** The prose that caused it now
 > sits below the table, where it belongs.
@@ -639,7 +639,7 @@ than argued**, publishing as a Step 14 limitation.
 
 **Open and flagged, not fixed:** the approval is dated **2026-08-13** as the Human Lead gave it, while
 `0060`–`0063` — **including `0063`, which carries the 652 the approval's §3 rests on** — are dated
-**2026-08-14**. The approval record flags this to the Human Lead for confirmation or correction and
+**2026-08-13**. The approval record flags this to the Human Lead for confirmation or correction and
 **does not fix it without a ruling**, `0058` §6 having corrected a date drift in the other direction.
 
 ### The residual — PUBLISHED, not resolved. Nine items, `artifacts/step7-gate-approval.md` §4

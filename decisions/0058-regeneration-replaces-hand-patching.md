@@ -57,7 +57,7 @@ neither, so it is a spec ambiguity — report it, do not reconcile it.**
 
 ~~**Red Team's proof that the reconciliation was wrong is internal to the same files:** the
 never-started ratio was correctly left divergent at **0.2813 (a)** against **0.27211 (b)**. Same
-figure class, two treatments, one entry.~~ **WITHDRAWN 2026-08-14 (`0060`). The sentence was false and
+figure class, two treatments, one entry.~~ **WITHDRAWN 2026-08-13 (`0060`). The sentence was false and
 I published it twice.** `0.2813` is `0.307138 / 1.092`, and **`1.092` is the under-the-rule point
 estimate's CI — arm b's convention.** So that pair was **one convention on two bootstraps**, not two
 conventions diverging. **The conclusion stands and the evidence for it does not:** reconciling the
@@ -112,7 +112,7 @@ and must recompute it.** In the generated block, in the JSON key name, and in `C
 
 ## 6. Dates — corrected in place, not silently
 
-**`0052` through `0057` were all dated 2026-08-14. Today is 2026-08-13.** The drift began when the
+**`0052` through `0057` were all dated 2026-08-13. Today is 2026-08-13.** The drift began when the
 session clock advanced mid-work and the date was carried from an earlier entry rather than re-read.
 
 **Corrected on every surface — 49 files — and each of the six entries carries a note saying so**, rather

@@ -126,7 +126,7 @@ DECLARE_SCOPED = {
 # Applied to json paths only, never to text lines.
 DECLARE_JSON_PATH = r"_DERIVED|_scope|superseded_strings|SUPERSEDED_computed_under|_superseded_note"
 
-# WITHDRAWN CLAIMS -- prose, not numbers. Added 2026-08-14 (0061).
+# WITHDRAWN CLAIMS -- prose, not numbers. Added 2026-08-13 (0061).
 #
 # B8: a withdrawn sentence was struck in the three places a human had typed it and left in the
 # one place a SCRIPT typed it, so the generator wrote it back to all four operative files on
@@ -153,12 +153,12 @@ WITHDRAWN_PHRASES = {
         "0052 SS6's claim about the bootstrap spec; it was never specified. Struck 0056 SS8"),
 }
 
-# KNOWN LIMIT, recorded 2026-08-14 (0060), found by Red Team on review 13.
+# KNOWN LIMIT, recorded 2026-08-13 (0060), found by Red Team on review 13.
 # Both controls walk NUMERIC LEAVES only. A superseded figure written inside a JSON STRING
 # -- a narrative field, a note, an estimand description -- is invisible to json_numbers()
 # and to verify().
 #
-# AMENDED 2026-08-14 (0061): this was recorded as "not a defect today". It was ALREADY a defect
+# AMENDED 2026-08-13 (0061): this was recorded as "not a defect today". It was ALREADY a defect
 # on the day it was recorded -- B8 was live in a .json string under _DERIVED and in .md prose
 # carrying no numbers, in all four operative deliverables, at the moment the limit was written
 # down as hypothetical. Recording a gap as harmless is not the same as checking whether it is.

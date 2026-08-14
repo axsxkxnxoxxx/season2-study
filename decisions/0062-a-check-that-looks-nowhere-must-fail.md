@@ -4,11 +4,14 @@
 | :--- | :--- |
 | **Decision** | **B9:** `check_ratios_written()` skipped arm b in full and reported OK. **A missing path is now a failure, never a skip** — arm b's ratios are reached at their real location, regenerated, and `bb-b.json`'s `bound_width` corrected `0.403245 → 0.403246`. **Every allowlist and skip path in all three scripts audited** for the same shape; four more found and closed. **The generator now holds ONE definition per statement and per figure, rendered by both writers, with the two halves COMPARED off disk** — 72 figures and 8 statements, both arms. `LEGITIMATE` consulted; `ADOPTED_IN` distinguishes `.md` from `.json`; the surviving `assert` in `step7_floor_extremes.py` reported instead. **The covering qualifier propagated to all eight surfaces.** |
 | **Decided by** | Human Lead |
-| **Date** | 2026-08-14 |
+| **Date** | 2026-08-13 |
 | **Occasioned by** | Red Team's **fourteenth** Step 7 HOLD, item B9 and the four smaller items |
 | **Amends** | `0060` §1 (a coverage claim true for one arm of two) |
 | **Verified by** | `check_surfaces.py` **PASS**, `step7_regenerate_derived.py` **PASS**, `step7_floor_extremes.py` **11/11 CONFIRMED** |
 | **Status** | Closed. **Step 7 goes to Red Team. The gate is OPEN.** |
+
+
+> **DATE CORRECTED 2026-08-13.** This entry was written and dated **2026-08-14**. The clock had advanced mid-session and the date was taken from it rather than from the working day the entry belongs to. **Corrected in place across every surface, with this note, exactly as `0058` §6 did** — the decision log is a public tracked artifact and a date that quietly moves is worth less than one that visibly did. **Ruled by the Human Lead: the dates on `0060`–`0063` are wrong, not the approval.** The Step 7 approval at `0064` stands at **2026-08-13**, and with this correction it no longer predates `0063`, which carries the 652 measurement it rests on.
 
 ---
 
