@@ -152,9 +152,16 @@ assert RATIO_DENOMINATORS["a"]["APPLY"] != RATIO_DENOMINATORS["b"]["APPLY"], \
     "the conventions must stay distinct -- reconciling them is what 0058 reverted"
 
 
-# The never-started ratio has its own denominators, and 0058 SS3 records that the arms were
-# CORRECTLY left divergent on it (a 0.2813, b 0.27211). Naming them keeps that divergence
-# intact instead of quietly making the two ratios share one convention.
+# The never-started ratio has its own denominators, and they are named for the same reason the
+# started-and-left ones are: an unnamed denominator is how one arm's convention quietly becomes
+# both arms'.
+#
+# The earlier justification here -- that 0058 SS3 recorded the arms as CORRECTLY divergent on this
+# ratio at (a 0.2813, b 0.27211) -- is WITHDRAWN (0060 SS2, 0061). It was false. 0.2813 is
+# 0.307138 / 1.092, and 1.092 is the UNDER-THE-RULE point estimate's CI, which is arm b's
+# convention -- so that pair was one convention on two bootstraps, not two conventions diverging.
+# Naming the denominators is what exposed it: the script then wrote arm a's own 0.2818 while every
+# prose surface still said 0.2813. The practice was right and the reason given for it was not.
 NS_RATIO_DENOMINATORS = {"a": {"APPLY": 1.09, "DERIV": 0.7626},
                          "b": {"APPLY": 1.1287197092145753, "DERIV": 0.7420068751051554}}
 assert NS_RATIO_DENOMINATORS["a"]["APPLY"] != NS_RATIO_DENOMINATORS["b"]["APPLY"]
@@ -303,9 +310,12 @@ def apply_json(arm):
             "by a value-wide substitution."),
         "bound_over_sampling_width_TWO_CONVENTIONS_NOT_RECONCILED": {
             "why": ("CLAUDE.md: any divergence is a bug or a spec ambiguity -- report it, do not "
-                    "reconcile it. 0057 wrote arm b's denominator into arm a's file; 0058 reverts "
-                    "that. The never-started ratio was correctly left divergent (a 0.2813, "
-                    "b 0.27211) in the same files, which is the proof this one was wrong."),
+                    "reconcile it. 0057 wrote arm b's denominator into arm a's file and 0058 "
+                    "reverted it. WITHDRAWN from this field by 0061: the sentence that followed "
+                    "here cited the never-started ratio (a 0.2813, b 0.27211) as proof of correct "
+                    "divergence. It was false -- 0.2813 was computed on arm b's convention, so the "
+                    "pair was one convention on two bootstraps. The reconciliation was still wrong; "
+                    "that was not the evidence for it."),
             "this_arm": arm, "this_arm_recomputed": r,
             "other_convention_denominator": RATIO_DENOMINATORS["b" if arm == "a" else "a"],
             "this_arms_ratio_is_computed_from_this_arms_denominator": {
@@ -422,17 +432,23 @@ def md_block(arm):
           f"**This arm (`{arm}`) divides by the {RATIO_DENOMINATORS[arm]['convention']}.** The other "
           f"arm divides by the {RATIO_DENOMINATORS['b' if arm == 'a' else 'a']['convention']}. "
           "**The spec fixes neither, so this is a spec ambiguity and is reported, not resolved** — "
-          "`0057` wrote the other arm's denominator into this file and `0058` reverted it. The "
-          "never-started ratio was correctly left divergent in the same files, which is the proof.", "",
+          "`0057` wrote the other arm's denominator into this file and `0058` reverted it. "
+          "*(A sentence here cited the never-started ratio as proof of correct divergence. "
+          "**Withdrawn by `0061`: it was false** — that pair was one convention on two bootstraps, "
+          "and it was itself an instance of the defect it was cited to certify.)*", "",
           "| | Denominator | Bound ÷ it | Sub-interval ÷ it |",
           "| :--- | ---: | ---: | ---: |"]
     for pop in POPS:
         L.append(f"| {pop} | {r[pop]['denominator']:.4f} | **{r[pop]['ratio']:.4f}** | "
                  f"{r[pop]['sub_interval_ratio']:.4f} |")
     L += ["",
-          "**The arm's own published ratio is retained in place above and marked superseded.** Its "
-          "denominator was the CI of the PRE-widening floor point and was not re-bootstrapped; the "
-          "recomputation here reuses it, and that limit is stated rather than hidden.", "",
+          "*(A sentence here claimed the arm's own published ratio was **retained in place above and "
+          "marked superseded**. **Withdrawn by `0061`** — it was the same hard-coded literal `0059` "
+          "removed from the JSON half after finding that nothing checked it and it was false, and it "
+          "is false on its face for arm `b`, whose published ratio IS its current one. It survived in "
+          "the `.md` writer because the numeric controls cannot see a claim.)* **The limit that IS "
+          "real and is stated rather than hidden: the denominator above is the CI of the "
+          "PRE-widening floor point and was not re-bootstrapped; the recomputation reuses it.**", "",
           "### Per-`W` series — NOT regenerated, and that is a scope statement", "",
           "**The per-`W` sensitivity series in this deliverable was computed under the CLOSED "
           "channel window `(τ1, τ2]` and under the un-widened floor, at every arm.** It is not "

@@ -34,6 +34,7 @@ SURFACES = {
 sys.path.insert(0, str(Path(__file__).parent))
 from step7_register import (SUPERSEDED, SUPERSEDED_IN, ADOPTED, ADOPTED_IN, LEGITIMATE,
                             DECLARE_SCOPED, DECLARE_JSON_PATH, SUCCESSOR,
+                            WITHDRAWN_PHRASES,
                             file_is_wholly_superseded, scoped)
 
 TOL = 5e-5
@@ -55,6 +56,31 @@ CONTEXT = 2   # MARK's window: a marker may wrap onto the line above or below. T
 
 def near(x, target):
     return abs(x - target) < (TOL if target < 1000 else 0.5)
+
+
+def json_strings(path):
+    """(string value, json path) for every string leaf.
+
+    0061: the numeric half cannot see a WITHDRAWN CLAIM, because a claim is prose. B8 lived in
+    a .json string under _DERIVED and in .md text carrying no numbers, in all four operative
+    deliverables, while the gap was recorded as hypothetical.
+    """
+    out = []
+
+    def walk(o, p):
+        if isinstance(o, dict):
+            for k, v in o.items():
+                walk(v, f"{p}.{k}")
+        elif isinstance(o, list):
+            for i, v in enumerate(o):
+                walk(v, f"{p}[{i}]")
+        elif isinstance(o, str):
+            out.append((o, p))
+    try:
+        walk(json.load(open(path)), "")
+    except Exception:
+        return []
+    return out
 
 
 def json_numbers(path):
@@ -97,6 +123,33 @@ def text_numbers(path):
             except ValueError:
                 pass
     return out
+
+
+STRUCK = re.compile(r"~~|WITHDRAWN|withdrawn|struck|STRUCK|FALSE:|was false", re.I)
+
+
+def scan_phrases():
+    """Every occurrence of a withdrawn claim outside a strikethrough or a withdrawal note."""
+    hits = []
+    for surface, files in SURFACES.items():
+        for f in files:
+            if file_is_wholly_superseded(f):
+                continue
+            if f.endswith(".json"):
+                items = [(v, p, v) for v, p in json_strings(f)]
+            else:
+                try:
+                    lines = Path(f).read_text().split("\n")
+                except (UnicodeDecodeError, OSError):
+                    continue
+                items = [(l, f"line {i}", "\n".join(lines[max(0, i - 2):i + 1]))
+                         for i, l in enumerate(lines, 1)]
+            for text, where, ctx in items:
+                low = text.lower()
+                for phrase, why in WITHDRAWN_PHRASES.items():
+                    if phrase in low and not STRUCK.search(ctx):
+                        hits.append((surface, f, where, phrase, why, text.strip()[:110]))
+    return hits
 
 
 def scan():
@@ -156,6 +209,7 @@ def scan():
 
 if __name__ == "__main__":
     neg, pos, pos_in, allowed = scan()
+    phrase_hits = scan_phrases()
     n_files = sum(len(v) for v in SURFACES.values())
     print(f"seven surfaces, {n_files} files, numeric matching at tol {TOL} "
           f"-- 4-dp and 6-dp forms both matched\n")
@@ -167,6 +221,15 @@ if __name__ == "__main__":
         print(f"  [{s}] {f} {where}: {val}  ({what})")
         if line:
             print(f"        {line}")
+    print()
+
+    print("PHRASE HALF -- withdrawn CLAIMS, which the numeric halves cannot see (0061):")
+    if not phrase_hits:
+        print("  none\n")
+    for surface, f, where, phrase, why, text in phrase_hits:
+        print(f"  [{surface}] {f} {where}: {phrase!r}")
+        print(f"        {why}")
+        print(f"        {text}")
     print()
 
     print("POSITIVE HALF -- adopted values, surfaces that own them:")
@@ -194,7 +257,7 @@ if __name__ == "__main__":
     for v, why in LEGITIMATE.items():
         print(f"  {v}: {why}")
 
-    if neg or missing or miss_in:
+    if neg or missing or miss_in or phrase_hits:
         print("\nFAIL")
         sys.exit(1)
     print("\nPASS -- both halves, all seven surfaces.")

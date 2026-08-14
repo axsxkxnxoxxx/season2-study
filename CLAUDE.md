@@ -107,7 +107,11 @@ So: `src/step7_regenerate_derived.py` reads the stored counts and writes **every
 
 **A file-level stamp declares a file's STATUS, never its individual values.** Exempting a whole file because a stamp appears in its head exempted 19 `.md` and 16 `.json` files — the entire Step 7 artifact set, including both **operative** deliverables — and a wrong ratio survived a passing check inside one of them. A wholly superseded file is exempted by **name, in the source, with a reason**; a partially superseded one is checked value by value.
 
-**Known limit, stated because it is not closed:** both controls walk **numeric leaves only**. A superseded figure written inside a JSON **string** — a note, a narrative field, an estimand description — is invisible to `json_numbers()` and to `verify()`. The `.json` half of the negative control cannot see narrative fields at all.
+**A withdrawal is a correction, and a generated file cannot be corrected by hand.** A withdrawn sentence was struck in the three places a human had typed it and left in the generator, which wrote it back over all four operative deliverables on the next run — the same file then asserting it in a generated block and striking it 240 lines lower in prose. **If a claim is emitted by a script, the script is where it is withdrawn.**
+
+**The numeric controls cannot see a claim.** This chain withdraws claims about as often as it corrects figures, so `WITHDRAWN_PHRASES` in `src/step7_register.py` holds the withdrawn ones and `check_surfaces.py` scans `.md` text and JSON strings for any occurrence outside a strikethrough or a withdrawal note.
+
+**Known limit, still open:** both numeric halves walk **numeric leaves only**, so a superseded *figure* inside a JSON **string** remains invisible to them. **Do not record a gap as harmless without checking whether it is currently occupied** — this one was written down as *"not a defect today"* while a defect was sitting in it, in four files.
 
 **Check with `src/check_surfaces.py`, not with `grep`.** Matching is numeric, at a tolerance, across all seven surfaces. Textual grep cannot see the JSONs: the register stores 4-dp strings and the JSON stores 6-dp literals, so `9.6830` is not a substring of `9.682997`. Every value that survived review 11 was one whose registered form rounds up and therefore could never match.
 

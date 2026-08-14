@@ -126,12 +126,46 @@ DECLARE_SCOPED = {
 # Applied to json paths only, never to text lines.
 DECLARE_JSON_PATH = r"_DERIVED|_scope|superseded_strings|SUPERSEDED_computed_under|_superseded_note"
 
+# WITHDRAWN CLAIMS -- prose, not numbers. Added 2026-08-14 (0061).
+#
+# B8: a withdrawn sentence was struck in the three places a human had typed it and left in the
+# one place a SCRIPT typed it, so the generator wrote it back to all four operative files on
+# every run. Both controls were structurally blind: the .md form carries NO NUMBERS, and the
+# .json form is a STRING under _DERIVED, which verify() skips by key. A numeric control cannot
+# see a withdrawn claim, and this chain withdraws claims as often as it corrects figures.
+#
+# So the register now holds phrases as well as values. Each is a fragment of a claim that has
+# been withdrawn; every occurrence outside a strikethrough or a withdrawal note is a defect.
+WITHDRAWN_PHRASES = {
+    "which is the proof": (
+        "cited the never-started ratio (a 0.2813, b 0.27211) as proof that reconciling the "
+        "started-and-left conventions was wrong. FALSE: 0.2813 is 0.307138/1.092, arm b's "
+        "convention, so the pair was one convention on two bootstraps. Withdrawn 0060 SS2"),
+    "retained in place above and marked superseded": (
+        "a hard-coded literal that nothing checked and that was false; replaced by an assertion "
+        "in check_ratios_written(). Withdrawn from the JSON half at 0059 and still emitted into "
+        "the .md half -- Red Team 14, B10"),
+    "everything else in this file stands": (
+        "a stamp that affirmatively certified superseded figures. Withdrawn 0056 SS4"),
+    "cannot enter the list": (
+        "the LIVE_ELSEWHERE mechanism, which never fired. Withdrawn 0059"),
+    "unreconciled and now specified": (
+        "0052 SS6's claim about the bootstrap spec; it was never specified. Struck 0056 SS8"),
+}
+
 # KNOWN LIMIT, recorded 2026-08-14 (0060), found by Red Team on review 13.
 # Both controls walk NUMERIC LEAVES only. A superseded figure written inside a JSON STRING
 # -- a narrative field, a note, an estimand description -- is invisible to json_numbers()
-# and to verify(). It is not a defect today, and it is not closed: the .json half of the
-# negative control cannot see narrative fields at all.
-JSON_STRING_FIELDS_ARE_NOT_CHECKED = True
+# and to verify().
+#
+# AMENDED 2026-08-14 (0061): this was recorded as "not a defect today". It was ALREADY a defect
+# on the day it was recorded -- B8 was live in a .json string under _DERIVED and in .md prose
+# carrying no numbers, in all four operative deliverables, at the moment the limit was written
+# down as hypothetical. Recording a gap as harmless is not the same as checking whether it is.
+#
+# PARTIALLY CLOSED: WITHDRAWN_PHRASES above is checked against .md text AND against JSON string
+# values. Still open: a superseded NUMBER inside a JSON string is invisible to the numeric half.
+JSON_STRING_FIELDS_ARE_NOT_NUMERICALLY_CHECKED = True
 
 # ----------------------------------------------------- wholly superseded, one line each
 WHOLLY_SUPERSEDED_FILES = {

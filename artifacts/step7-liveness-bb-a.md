@@ -74,14 +74,14 @@ reviews 9–11 was a value a patch reached in one place and missed in another.
 
 ### Bound ÷ sampling width — TWO CONVENTIONS, NOT RECONCILED
 
-**This arm (`a`) divides by the CI width of the FLOOR ENDPOINT's own bootstrap distribution.** The other arm divides by the CI width of the UNDER-THE-RULE point estimate. **The spec fixes neither, so this is a spec ambiguity and is reported, not resolved** — `0057` wrote the other arm's denominator into this file and `0058` reverted it. The never-started ratio was correctly left divergent in the same files, which is the proof.
+**This arm (`a`) divides by the CI width of the FLOOR ENDPOINT's own bootstrap distribution.** The other arm divides by the CI width of the UNDER-THE-RULE point estimate. **The spec fixes neither, so this is a spec ambiguity and is reported, not resolved** — `0057` wrote the other arm's denominator into this file and `0058` reverted it. *(A sentence here cited the never-started ratio as proof of correct divergence. **Withdrawn by `0061`: it was false** — that pair was one convention on two bootstraps, and it was itself an instance of the defect it was cited to certify.)*
 
 | | Denominator | Bound ÷ it | Sub-interval ÷ it |
 | :--- | ---: | ---: | ---: |
 | APPLY | 0.7602 | **0.5304** | 0.1264 |
 | DERIV | 0.9744 | **0.1309** | 0.1309 |
 
-**The arm's own published ratio is retained in place above and marked superseded.** Its denominator was the CI of the PRE-widening floor point and was not re-bootstrapped; the recomputation here reuses it, and that limit is stated rather than hidden.
+*(A sentence here claimed the arm's own published ratio was **retained in place above and marked superseded**. **Withdrawn by `0061`** — it was the same hard-coded literal `0059` removed from the JSON half after finding that nothing checked it and it was false, and it is false on its face for arm `b`, whose published ratio IS its current one. It survived in the `.md` writer because the numeric controls cannot see a claim.)* **The limit that IS real and is stated rather than hidden: the denominator above is the CI of the PRE-widening floor point and was not re-bootstrapped; the recomputation reuses it.**
 
 ### Per-`W` series — NOT regenerated, and that is a scope statement
 
