@@ -440,25 +440,66 @@ def main() -> None:
     outcome = np.where(K["never"], "never_started",
                        np.where(K["contd"], "continued", "started_and_left"))
 
+    # S3-or-later evidence on that show, for D4 -- and a table column, because D4
+    # reads it and Step 9 does not hold the episode-level evidence (0077 Sec 3).
+    has_s3 = np.isin(comp_pair, b["s3_pairs"])
+    has_any_s2_record = np.isin(comp_pair, b["s2_any_rec_pairs"])
+
     # discovery channel: TWO booleans (0070 ruling 3)
+    # EVERY COUNT STATES ITS POPULATION (0077 Sec 1): the overlap is 324 of the
+    # 5,694-username Step 3 DISCOVERY POOL and 178 of the 2,549 ACCOUNTS PULLED.
+    # 0070 ruling 3 gave "324 users" with no population -- a count without its
+    # population is the shape that has recurred through this entire chain.
     users = json.loads((P5 / "user_index.json").read_text())["users"]
+    pool_rows = [json.loads(line)
+                 for line in open(ROOT / "raw" / "step3" / "user_pool.jsonl")]
     pool = {}
-    for line in open(ROOT / "raw" / "step3" / "user_pool.jsonl"):
-        d = json.loads(line)
-        pool[d["slug"]] = (bool(d["in_a"]), bool(d["in_b"]))
-        pool.setdefault(d["username"], (bool(d["in_a"]), bool(d["in_b"])))
-    ch = np.array([pool.get(users[i], (False, False)) for i in range(len(users))])
+    for d in pool_rows:
+        flags = (bool(d["in_a"]), bool(d["in_b"]))
+        pool[d["slug"].lower()] = flags
+        pool.setdefault(d["username"].lower(), flags)
+    ch = np.array([pool.get(str(users[i]).lower(), (False, False))
+                   for i in range(len(users))])
     in_a_u, in_b_u = ch[:, 0].astype(bool), ch[:, 1].astype(bool)
+
+    led_final: dict = {}
+    for line in open(ROOT / "processed" / "step4" / "pull_ledger.jsonl"):
+        d = json.loads(line)
+        led_final[str(d.get("slug") or d.get("username")).lower()] = d
+    pulled = [k for k, d in led_final.items() if d.get("outcome") == "complete"]
+
+    def _split(flags: list[tuple[bool, bool]]) -> dict:
+        return {"n": len(flags),
+                "channel_A_only": sum(1 for a, bb in flags if a and not bb),
+                "channel_B_only": sum(1 for a, bb in flags if bb and not a),
+                "BOTH": sum(1 for a, bb in flags if a and bb),
+                "NEITHER": sum(1 for a, bb in flags if not a and not bb)}
+
+    accts5 = np.unique(u_idx[line5])
     R["discovery_channel"] = {
         "form": "TWO BOOLEAN COLUMNS, not one categorical (decisions/0070 ruling 3)",
-        "pool_users": sum(1 for _ in open(ROOT / "raw" / "step3" / "user_pool.jsonl")),
-        "accounts_in_the_analysis_population": int(len(np.unique(u_idx[line5]))),
-        "accounts_channel_A_only": int((in_a_u & ~in_b_u)[np.unique(u_idx[line5])].sum()),
-        "accounts_channel_B_only": int((~in_a_u & in_b_u)[np.unique(u_idx[line5])].sum()),
-        "accounts_in_BOTH": int((in_a_u & in_b_u)[np.unique(u_idx[line5])].sum()),
-        "accounts_in_NEITHER": int((~in_a_u & ~in_b_u)[np.unique(u_idx[line5])].sum()),
-        "note": ("324 of the 5,694 pooled users are in both channels; one categorical "
-                 "column would drop the overlap or assign it arbitrarily"),
+        "every_figure_states_its_population": (
+            "decisions/0077 Sec 1 -- 0070 ruling 3 stated '324 users' with NO POPULATION. "
+            "Both populations are measured here rather than restated"),
+        "step3_discovery_pool": _split([(bool(d["in_a"]), bool(d["in_b"]))
+                                        for d in pool_rows]),
+        "accounts_pulled_step4_complete": _split([pool.get(k, (False, False))
+                                                  for k in pulled]),
+        "accounts_in_the_APPLY_position5_population": _split(
+            [(bool(in_a_u[i]), bool(in_b_u[i])) for i in accts5]),
+        "pool_file_rows_vs_distinct_slugs": {
+            "rows": len(pool_rows),
+            "distinct_slugs_case_insensitive": len({d["slug"].lower() for d in pool_rows}),
+            "note": ("the pool file holds 5,694 ROWS and 5,693 distinct slugs "
+                     "case-insensitively -- one account appears as two case variants. "
+                     "The published population is the row count, 5,694, and the overlap "
+                     "is 324 under both readings; measured rather than assumed inert"),
+        },
+        "why_two_flags": ("Step 11 tests whether discovery method biased the pool, so a "
+                          "single categorical value would either DROP the overlap or assign "
+                          "it arbitrarily, and the arbitrary assignment would be invisible "
+                          "in the dual diff. Two flags let Step 11 cut on either channel or "
+                          "on the overlap"),
     }
 
     # per-pair action counts by type (0070 ruling 4)
@@ -491,6 +532,7 @@ def main() -> None:
         "n_A": nA[sel], "n_A_H": nAH[sel],
         "f2_in_A_H": K["f2_in_AH"][sel],
         "max_episode_in_A_H": m_H[sel],
+        "has_s3_or_later_evidence": has_s3[sel],
         "s1_completion_used_a_post_cutoff_record": comp_post_cutoff[sel],
     })
     for j, nm in enumerate(act_names):
@@ -510,8 +552,43 @@ def main() -> None:
                     "are built from their outcome states and rebuilding them downstream "
                     "would be a second definition of the filter"),
         "columns": int(len(tab.columns)),
+        "column_names": list(tab.columns),
         "action_is_counts_not_a_column": True,
         "discovery_channel_is_two_booleans": True,
+        "column_names_are_fixed_by_0077": {
+            "rule": ("use the spec's own vocabulary at the point the spec defines the thing; "
+                     "where the spec does not name it, prefer the more explicit form"),
+            "adopted_names_present": {
+                nm: bool(nm in tab.columns) for nm in
+                ["in_apply", "in_deriv", "tau1", "tau2", "n_A", "n_A_H",
+                 "max_episode_in_A_H", "f2_in_A_H", "action_count_s1_watch",
+                 "action_count_s1_scrobble", "action_count_s1_checkin",
+                 "action_count_s1_other", "action_count_s2_watch",
+                 "action_count_s2_scrobble", "action_count_s2_checkin",
+                 "action_count_s2_other", "discovered_channel_a", "discovered_channel_b",
+                 "t0_binding_term", "t0_date", "s1_completion_date",
+                 "has_s3_or_later_evidence", "s1_completion_used_a_post_cutoff_record",
+                 "live", "outcome"]},
+            "superseded_forms_absent": {
+                nm: bool(nm not in tab.columns) for nm in
+                ["in_population_APPLY", "n_rec_s1_watch", "tau1_utc", "tau2_utc",
+                 "max_episode_in_AH", "T0_binding_term", "action", "discovery_channel"]},
+            "count_ruled": 89,
+            "count_emitted": int(len(tab.columns)),
+            "THE_89_IS_NOT_REACHABLE_FROM_THE_NAMED_LIST": (
+                "REPORTED AS A DEFECT, NOT WORKED AROUND. 0077 Sec 3 fixes the names and "
+                "states 89 columns, keeping 'both instances' extra columns' and naming TWO: "
+                "has_s3_or_later_evidence and s1_completion_used_a_post_cutoff_record. This "
+                "instance's previous run emitted 87 columns INCLUDING the second of those; "
+                "adding the first gives 88. Reaching 89 requires ONE FURTHER COLUMN THAT "
+                "0077 DOES NOT NAME. Set arithmetic on the figures 0077 itself gives -- "
+                "88 against 87, union 89 -- implies an intersection of 86 and therefore one "
+                "unnamed column on the other arm; the alternative reading is that 89 was "
+                "formed as 87 + 2 while the 87 already contained one of the two. Either way "
+                "an isolated instance cannot identify it from any surface it is permitted to "
+                "read, and INVENTING a column to hit the count would produce a different "
+                "89th and make the diff worse, not better. 88 emitted, defect reported"),
+        },
     }
 
     # =====================================================================
@@ -626,10 +703,8 @@ def main() -> None:
     }
 
     # --- D4 ----------------------------------------------------------------
-    s3_pairs = b["s3_pairs"]
-    s2_any_rec = b["s2_any_rec_pairs"]
-    has_s3 = np.isin(comp_pair, s3_pairs)
-    has_any_s2_record = np.isin(comp_pair, s2_any_rec)
+    # has_s3 / has_any_s2_record are computed once, above, and are also emitted
+    # as the table column `has_s3_or_later_evidence` (0077 Sec 3).
     d4mask = K["never"] & has_s3 & ~has_any_s2_record
     d4 = {}
     for nm, msk in (("APPLY_position5", line5), ("APPLY_position6_post_liveness", line6),

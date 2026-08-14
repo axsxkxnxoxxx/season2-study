@@ -360,7 +360,10 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
 - [ ] Include per row: outcome state, abandonment point, discovery channel, and all Step 2 show fields.
 - [ ] **DISCOVERY CHANNEL IS TWO BOOLEAN COLUMNS, NOT ONE CATEGORICAL.** Human Lead ruling, 2026-08-13
       (`0070`). **324 of the 5,694-username Step 3 DISCOVERY POOL are in BOTH channels; on the 2,549 accounts
-      actually pulled the overlap is 178.** ***`0070` ruling 3 stated "324 users" with NO POPULATION;
+      actually pulled the overlap is 178 — both measured on the position-5 build of 2026-08-13 and
+      reproduced by both arms** (`0078`). *(A third reading is stated in no ruling: **174 of the 2,422
+      accounts in the APPLY position-5 population**, instance B. **Publish the first two; the third is
+      recorded so it is not later read as a divergence.**)* ***`0070` ruling 3 stated "324 users" with NO POPULATION;
       both figures and their populations are given here by `0077`*** — **a count without its population
       is the shape that has recurred through this entire chain**, and it recurred in the ruling written
       to fix a different unlabelled figure. **Step 11 tests whether discovery method biased the pool**,
@@ -388,6 +391,8 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
 
 **Required counts, all to `artifacts/`, counts and aggregates only**
 
+- [ ] **EVERY COUNT NAMES THE PIPELINE IT WAS MEASURED ON, NOT ONLY ITS POPULATION.** Human Lead ruling, 2026-08-13 (`0078`) — **`0047`'s standing rule one layer down.** A count without its provenance **can be correct when written and wrong when read**, because the build moved underneath it and nothing in the text says which build it belongs to. **Write the pipeline at the point of use.**
+
 - [ ] **Both drop counts**: per show, and **per outcome** — the second being pairs whose entire S2
       evidence was dropped, **reported as a share of Never started AT POSITION 5 = 33,373, with the
       post-liveness 32,769 reported alongside.** Human Lead ruling, 2026-08-13 (`0070`). **The drop
@@ -403,12 +408,14 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
 - [ ] **Never-started post-window diagnostic (D8)**, measured over `H`, not to the pull date. **Unchanged by `decisions/0034` but no longer D3's symmetric counterpart** — D8 measures over `[τ1, τ2)` and D3′ over `[τ2, τ2 + H)`. **D8(ii) is the only bound on the never-started boundary**, and its size is Step 14's ledger item 10
 - [ ] **Split-artifact counts (D9)**, both halves: the fabricated never-started row and the silently
       deleted S1-failing counterpart. **RETAIN THE 58,345 PAIRS THAT FAIL THE S1
-      COMPLETION RULE — POSITION 3's RULE — AS A SIDE OUTPUT.** Human Lead ruling, 2026-08-13 (`0075`),
+      COMPLETION RULE — POSITION 3's RULE — AS A SIDE OUTPUT. 58,345 pairs, position-3 rule, measured on
+      the position-5 build of 2026-08-13, reproduced independently by both arms** (`0078`). Human Lead ruling, 2026-08-13 (`0075`),
       ***restated by `0077` because it was UNMEASURABLE as written.*** **Position 3 removes ZERO rows
       from the waterfall** — line 1 is already the S1-completer population (`0068`) — **so "position 3's
       drop set" named an empty set**, and both arms had to choose an interpretation to compute anything.
       **They chose the same one and a ruling exists to stop them having to choose.** **The set is the
-      pair universe less the completers: 58,345 pairs**, carrying each pair's distinct-episode counts
+      pair universe less the completers: 58,345 pairs — position-3 rule, position-5 build of
+      2026-08-13** — carrying each pair's distinct-episode counts
       and the show's threshold, which is what half (b) reads. **NOT the set-membership drop rule, which
       is a different rule and deletes 0 records** — naming it would put the wrong rule in the spec.
       **Half (b) is measured on these rows and cannot be computed without them.** Instance A
@@ -431,6 +438,13 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
       Manhunt**, remakes and national versions rather than split metadata. **The loose count is reported
       because it BOUNDS HOW WRONG STRICT COULD BE**, and **the error runs OPPOSITE to D9's own
       lower-bound caveat** — which is why it publishes rather than being resolved away.
+      **REPORT BOTH HALVES UNDER BOTH KEYS — FOUR NUMBERS, NOT THREE.** Human Lead ruling, 2026-08-13
+      (`0078`), closing the one live asymmetry: **instance A published half (b) under strict only while
+      instance B published it under both.** **The requirement follows from `0074` ruling 5's own
+      reason** — the loose count is published **because it bounds how wrong strict could be**, and that
+      reason **applies to half (b) exactly as it applies to half (a)**. **Publishing the bound for one
+      half and withholding it for the other leaves the reader unable to bound the total**, and the error
+      runs opposite to D9's own lower-bound caveat, which is the direction they were not warned about.
 - [ ] **Right-censoring removal as TWO lines** — the `max(W, 91)` term and the incremental `+ H` term — each with its upward direction on the headline named
 - [ ] **Retained-pair counts PER AIR PERIOD after right-censoring, not only in aggregate.** Human Lead decision, 2026-08-12 (`decisions/0033-step8-per-air-period-censoring-counts.md`), closing the Product review's finding 5. **97.40% of pairs survive right-censoring at `W = 108`** — **restated here because there is NO aggregate line above stating it** (`0068`), and **corrected from 97.6% by `0070`.** **KEEP THE MANDATED FILTER ORDER; the published percentage is what moves.** `0033`'s figures — 97.6 / 98.0 / 97.5 / 96.0, and 89.7% for 2023–2025 at `W = 213` — were computed on the **position-3** output (220,107). **The mandated order censors the position-4 output (201,900)**, which gives **97.40 / 97.8 / 97.4 / 95.9 and 89.5%**, and **turns the documented 10.3% loss into 10.5%.** **The order was set at `0029` on the stated ground that censoring is objective and independent of behaviour while contamination is not; the 10.3% predates it. Changing a filter order to preserve a published percentage is backwards.** **That aggregate hides that the loss is cohort-asymmetric**: at the Step 13 arm of `W = 213` the 2023–2025 cohort loses **10.5%** of its pairs against **3.0%** pre-2020 — **BOTH on the mandated order.** **10.5% not `0030`'s 10.3%, and 3.0% not its comparator 2.7%**, which were measured in the opposite order to the one this step mandates (`0070`, comparator corrected by `0073`). **`0070` moved the first figure and left the second**, so the sentence carried two orders at once — **found independently by both Step 8 instances**, which is what a dual run is for. Report it **for every `W` arm Step 13 tests**, since the asymmetry widens with `W` and the arms now run to 213. Without this line, whether the modern cohort survives to the headline in usable numbers is invisible — and it is the cohort a roadmap cares about most.
 - [ ] **`pull_date`, the earliest and latest per-user fetch dates, and the count of records discarded for `watched_at >= pull_date`**

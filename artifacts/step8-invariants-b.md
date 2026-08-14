@@ -2,7 +2,7 @@
 
 **Step 8 is a GATE and this document is a PROPOSAL.** Nothing here is adopted. This instance does not adopt its own proposal, does not begin Step 8b or Step 9, and records no approval — that is the Human Lead's alone. Zero API calls; every figure is computed from data already on disk.
 
-**This is the RERUN ordered after Red Team's first Step 8 review returned HOLD.** `decisions/0074`, `0075` and `0076` all postdate the first run. It overwrites the previous `-b` deliverables.
+**This is the RERUN ordered by the Human Lead on `decisions/0077`, which no arm had executed against.** `0077` fixes the discovery-channel overlap's missing population, restates `0075` ruling 2 — which named an empty set, since position 3 removes zero rows — and fixes the column names. `0074`, `0075` and `0076` postdate the first run and are also carried. This overwrites the previous `-b` deliverables.
 
 ## How to read this report
 

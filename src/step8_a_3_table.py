@@ -20,6 +20,12 @@ that principle applied to the row set. Under the position-7 reading anything nee
 pairs reconstructs them, and a reconstruction that agrees today is still a second definition
 tomorrow -- invisible to the dual diff, because both instances would rebuild the same way.
 
+THE COLUMN NAMES ARE FIXED BY decisions/0077 AND THE TABLE IS 89 COLUMNS. The previous dual run
+produced 88 against 87 for the same contents, all of it naming, and Step 8b defines the schema
+Steps 9-13 write into DIRECTLY (0066), so the divergence would have been inherited. Both arms'
+extra columns are kept: `has_s3_or_later_evidence` (D4 reads it) and
+`s1_completion_used_a_post_cutoff_record` (the open D11-at-position-3 question reads it).
+
 Output: processed/step8/a/analysis_table.csv.gz   (position-5 rows, one per user-show pair)
         processed/step8/a/position5_table.npz     (working table for the diagnostics stage)
         processed/step8/a/outcomes.json
@@ -132,6 +138,11 @@ def main():
     assert led.in_a.reindex(users).notna().all(), "a pulled user is missing from the ledger"
 
     ac = a.act_counts
+    # COLUMN NAMES ARE FIXED BY decisions/0077, NOT CHOSEN HERE. The rerun produced 88 columns
+    # against 87 for the same contents and every difference was naming, so Step 8b's schema --
+    # which Steps 9-13 write into DIRECTLY, with no conversion layer (0066) -- would have
+    # inherited the divergence. The rule: use the spec's own vocabulary at the point the spec
+    # defines the thing; where the spec does not name it, prefer the more explicit form.
     t = pd.DataFrame({
         "user_idx": a.pair_user[keep],
         "show_trakt_id": a.pair_show[keep],
@@ -140,30 +151,33 @@ def main():
         "live": r["live"][keep],
         "silent_at_tau1": r["silent"][keep],
         "abandonment_point_p": r["p"][keep],
-        "in_channel_a": in_a[a.pair_user[keep]],
-        "in_channel_b": in_b[a.pair_user[keep]],
-        "in_population_APPLY": True,
-        "in_population_DERIV": pos5d[keep],
-        "T0_utc_date": pd.to_datetime(a.t0[keep], unit="s").date,
-        "tau1_utc": pd.to_datetime(r["tau1"][keep], unit="s"),
-        "tau2_utc": pd.to_datetime(r["tau2"][keep], unit="s"),
-        "T0_binding_term": np.where(positions["binds_both"][keep], "both",
+        "discovered_channel_a": in_a[a.pair_user[keep]],
+        "discovered_channel_b": in_b[a.pair_user[keep]],
+        "in_apply": True,
+        "in_deriv": pos5d[keep],
+        "t0_date": pd.to_datetime(a.t0[keep], unit="s").date,
+        "tau1": pd.to_datetime(r["tau1"][keep], unit="s"),
+        "tau2": pd.to_datetime(r["tau2"][keep], unit="s"),
+        "t0_binding_term": np.where(positions["binds_both"][keep], "both",
                                     np.where(positions["binds_fin"][keep], "s2_finale",
                                              "s1_completion")),
-        "s1_completion_date_utc": pd.to_datetime(positions["s1_date"][keep], unit="s").date,
-        "n_A_distinct_s2_before_tau1": r["kA"][keep],
-        "n_AH_distinct_s2_before_tau2": r["kAH"][keep],
+        "s1_completion_date": pd.to_datetime(positions["s1_date"][keep], unit="s").date,
+        "s1_completion_used_a_post_cutoff_record": positions["used_post_cutoff"][keep],
+        "n_A": r["kA"][keep],
+        "n_A_H": r["kAH"][keep],
         "max_episode_in_A": r["mA"][keep],
-        "max_episode_in_AH": r["mH"][keep],
+        "max_episode_in_A_H": r["mH"][keep],
         "has_s3_or_later_evidence": a.has_s3[keep],
-        "n_rec_s1_watch": ac[keep, 0, 0], "n_rec_s1_checkin": ac[keep, 0, 1],
-        "n_rec_s1_scrobble": ac[keep, 0, 2], "n_rec_s1_other": ac[keep, 0, 3],
-        "n_rec_s2_watch": ac[keep, 1, 0], "n_rec_s2_checkin": ac[keep, 1, 1],
-        "n_rec_s2_scrobble": ac[keep, 1, 2], "n_rec_s2_other": ac[keep, 1, 3],
+        "action_count_s1_watch": ac[keep, 0, 0], "action_count_s1_checkin": ac[keep, 0, 1],
+        "action_count_s1_scrobble": ac[keep, 0, 2], "action_count_s1_other": ac[keep, 0, 3],
+        "action_count_s2_watch": ac[keep, 1, 0], "action_count_s2_checkin": ac[keep, 1, 1],
+        "action_count_s2_scrobble": ac[keep, 1, 2], "action_count_s2_other": ac[keep, 1, 3],
     })
     t = t.merge(frame, on="show_trakt_id", how="left", validate="many_to_one")
     assert len(t) == int(pos5.sum()) == 196654
     assert int(t.live.sum()) == int(pos6.sum())
+    assert t.shape[1] == 89, f"the column set is fixed at 89 by 0077; this is {t.shape[1]}"
+    assert t.columns.is_unique
     t.to_csv(os.path.join(OUT, "analysis_table.csv.gz"), index=False, compression="gzip")
 
     np.savez_compressed(
@@ -189,14 +203,50 @@ def main():
         "discovery_channel": "two boolean columns (0070 ruling 3)",
         "action": "per-pair counts by action type, S1 and S2 separately (0070 ruling 4)",
         "step2_show_fields_carried": int(frame.shape[1] - 1),
+        "column_names": list(t.columns),
+        "column_naming_ruling": "decisions/0077: names are FIXED, not left to the instance, and "
+                                "the table is 89 columns. Renamed here from this instance's "
+                                "previous run: in_channel_* -> discovered_channel_*, "
+                                "in_population_APPLY/DERIV -> in_apply/in_deriv, tau1_utc/tau2_utc "
+                                "-> tau1/tau2, T0_utc_date -> t0_date, T0_binding_term -> "
+                                "t0_binding_term, s1_completion_date_utc -> s1_completion_date, "
+                                "n_A_distinct_s2_before_tau1 -> n_A, n_AH_distinct_s2_before_tau2 "
+                                "-> n_A_H, max_episode_in_AH -> max_episode_in_A_H, n_rec_s{1,2}_* "
+                                "-> action_count_s{1,2}_*. ADDED: "
+                                "s1_completion_used_a_post_cutoff_record, the other instance's "
+                                "extra column, which 0077 keeps.",
+        "column_count_note": "0077's adopted-name table also lists `f2_in_A_H`. This instance has "
+                             "no such column and adding one would make 90, against the 89 the "
+                             "same ruling fixes; 89 is reachable from this instance's 88 only by "
+                             "adding exactly the one extra column named for the other arm. The "
+                             "quantity is carried as `max_episode_in_A_H`, and `F2 in A_H` is "
+                             "exactly `max_episode_in_A_H == s2_F`, a Step 2 frame field already "
+                             "on the row. REPORTED, NOT RECONCILED.",
     }
-    res["channel_counts_on_the_table_position_5_APPLY"] = {
-        "pairs_channel_a": int(in_a[a.pair_user[keep]].sum()),
-        "pairs_channel_b": int(in_b[a.pair_user[keep]].sum()),
-        "pairs_in_both": int((in_a[a.pair_user[keep]] & in_b[a.pair_user[keep]]).sum()),
-        "accounts_channel_a": int(in_a.sum()), "accounts_channel_b": int(in_b.sum()),
-        "accounts_in_both": int((in_a & in_b).sum()),
+    pool = [json.loads(l) for l in open(os.path.join(ROOT, "raw/step3/user_pool.jsonl"))]
+    pool_a = sum(1 for r_ in pool if r_.get("in_a"))
+    pool_b = sum(1 for r_ in pool if r_.get("in_b"))
+    pool_both = sum(1 for r_ in pool if r_.get("in_a") and r_.get("in_b"))
+    res["channel_counts"] = {
+        "note": "0070 ruling 3 gave '324 users in both' with NO POPULATION; decisions/0077 states "
+                "both figures and both populations. They are not a divergence -- they are two "
+                "populations. Counts only; no username leaves raw/.",
+        "on_the_step3_discovery_pool": {
+            "population": int(len(pool)), "channel_a": pool_a, "channel_b": pool_b,
+            "in_both": pool_both, "expected_by_0077": {"population": 5694, "in_both": 324}},
+        "on_the_accounts_actually_pulled": {
+            "population": int(in_a.size), "channel_a": int(in_a.sum()),
+            "channel_b": int(in_b.sum()), "in_both": int((in_a & in_b).sum()),
+            "expected_by_0077": {"population": 2549, "in_both": 178}},
+        "on_the_table_row_set_position_5_APPLY": {
+            "pairs_channel_a": int(in_a[a.pair_user[keep]].sum()),
+            "pairs_channel_b": int(in_b[a.pair_user[keep]].sum()),
+            "pairs_in_both": int((in_a[a.pair_user[keep]] & in_b[a.pair_user[keep]]).sum()),
+            "accounts_channel_a": int(in_a.sum()), "accounts_channel_b": int(in_b.sum()),
+            "accounts_in_both": int((in_a & in_b).sum())},
     }
+    res["channel_counts_on_the_table_position_5_APPLY"] = \
+        res["channel_counts"]["on_the_table_row_set_position_5_APPLY"]
     with open(os.path.join(OUT, "outcomes.json"), "w") as fh:
         json.dump(res, fh, indent=2)
     print(json.dumps(res, indent=2))

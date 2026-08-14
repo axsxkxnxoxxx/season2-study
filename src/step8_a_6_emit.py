@@ -61,8 +61,11 @@ def main():
         "position_7_outcome_assignment": p7,
         "per_arm": arms,
         "required_counts": diag,
-        "channel_counts": outc["channel_counts_on_the_table_position_5_APPLY"],
+        "channel_counts": outc["channel_counts"],
+        "channel_counts_on_the_table_position_5_APPLY":
+            outc["channel_counts_on_the_table_position_5_APPLY"],
         "analysis_table": outc["analysis_table"],
+        "position_3_dropset_side_output": pos["position_3_dropset_side_output"],
         "scope_qualifier_travelling_with_the_position_6_population": SCOPE,
         "scan_summary": scan,
     }
@@ -88,16 +91,25 @@ def main():
       "position 6 filters; **DERIV** = Step 5 waterfall line 4 less D10 = **147,370**, which "
       "requires S2 evidence. Step 8 produces both (`decisions/0070` ruling 1).")
     A("")
-    A("> **RERUN.** This replaces the previous `-a` deliverable in full. `decisions/0074`, `0075` "
-      "and `0076` all postdate that run, so several objects they rule on existed in one arm or "
-      "neither. What changed here: **the table is now the position-5 row set with `live` and "
-      "`outcome` as columns** (`0074`/1); **D9 uses the defined strict key with the loose count "
-      "alongside** (`0074`/5, `0076`/3); **the set-membership rule is a coverage count and no "
-      "longer an invariant** (`0074`/3); **position 3's drop set is retained as a side output** "
-      "(`0075`/2); **the `W` grid is no longer this instance's choice** (`0075`/3); **`p` is "
-      "labelled a CODE CHECK** (`0076`/1 — the label this instance's previous deliverable "
-      "already had); and **two DATA CHECKS are added** (`0076`/2), which are the first assertions "
-      "in this report that can fail on data.")
+    A("> **RERUN against `decisions/0077`.** This replaces the previous `-a` deliverable in full. "
+      "`0077` is a spec change no arm had executed against, and it changes three things here. "
+      "**Column names are FIXED and the table is 89 columns** (`0077` §3), against this "
+      "instance's previous 88 and the other arm's 87 for the same contents — Step 8b defines the "
+      "schema Steps 9–13 write into **directly**, so the divergence would have been inherited; "
+      "**both arms' extra columns are kept**, and this instance adds the other's "
+      "`s1_completion_used_a_post_cutoff_record`. **The discovery-channel overlap now carries its "
+      "populations** (`0077` §1): **324 of the 5,694-username Step 3 pool** and **178 of the "
+      "2,549 accounts pulled** — both measured here, neither chosen. **Position 3's drop set is "
+      "restated** (`0077` §2): the ruling as written named an **empty set**, and the retained set "
+      "is the **58,345 pairs that fail the S1 completion rule**, in **pairs**, not the "
+      "set-membership rule's records. **No figure this instance previously published moves.**")
+    A("")
+    A("> Carried forward from the previous rerun, and unchanged: the table is the position-5 row "
+      "set with `live` and `outcome` as columns (`0074`/1); D9 uses the defined strict key with "
+      "the loose count alongside (`0074`/5, `0076`/3); the set-membership rule is a coverage "
+      "count and not an invariant (`0074`/3); the `W` grid is fixed by `0075`/3; `p` is a CODE "
+      "CHECK (`0076`/1); and the two DATA CHECKS of `0076`/2 are the only assertions here that "
+      "can fail on data.")
     A("")
     A("---")
     A("")
@@ -537,10 +549,15 @@ def main():
       "table row set.")
     A(f"- **(b) the silently deleted S1-failing counterpart:** {n(hb['carrying_the_signature'])} "
       f"of {n(hb['pairs_failing_S1_completion'])} pairs that fail the S1 completion rule. "
-      "**These rows are not in the analysis table and cannot be recovered from it**, so "
-      "**position 3's drop set is retained as a side output** (`decisions/0075` ruling 2) — "
-      "without it this half emits zero or fails, **and a zero here reads as a data finding rather "
-      "than a missing input.**")
+      "**These rows are not in the analysis table and cannot be recovered from it**, so the set "
+      "is retained as a side output (`decisions/0075` ruling 2) — without it this half emits zero "
+      "or fails, **and a zero here reads as a data finding rather than a missing input.** "
+      "**`decisions/0077` §2 RESTATES the ruling**, which as written named *\"position 3's drop "
+      "set\"* — **an empty set**, because line 1 is already the S1-completer population and "
+      "position 3 therefore removes 0 rows from the waterfall. The set is **the pair universe "
+      "less the completers, 58,345 PAIRS**, and it is **not** the set-membership drop rule, which "
+      "is a different rule, deletes 0 **records**, and would have put the wrong rule in the spec. "
+      "This instance measured the same set before the restatement and the count is unchanged.")
     A(f"- **The loose count publishes because it BOUNDS HOW WRONG STRICT COULD BE**, and the "
       f"error runs **opposite** to D9's own lower-bound caveat. It is not adopted because "
       f"{lo9['why_it_is_not_adopted']}. Measured here: its largest merged clusters are "
@@ -642,7 +659,8 @@ def main():
       f"{n(acd['unknown_action_values_encountered'])}.")
     A("")
     ch = outc["channel_counts_on_the_table_position_5_APPLY"]
-    A("### 5.10 Discovery channel — two boolean columns")
+    at0 = outc["analysis_table"]
+    A("### 5.10 Discovery channel — two boolean columns, and the overlap's two populations")
     A("")
     A(f"On the table's row set (APPLY, position 5): Channel A {n(ch['pairs_channel_a'])} pairs, "
       f"Channel B {n(ch['pairs_channel_b'])} pairs, **both {n(ch['pairs_in_both'])}** "
@@ -651,11 +669,26 @@ def main():
       "overlap or assign it arbitrarily, and Step 11 tests whether discovery method biased the "
       "pool (`0070` ruling 3).")
     A("")
-    A(f"**`0070` ruling 3's figure is 324 users in both; this instance measures "
-      f"{n(ch['accounts_in_both'])}. That is a population difference, not a divergence.** The 324 "
-      "is on the **Step 3 discovery pool of 5,694 usernames**; "
-      f"{n(ch['accounts_in_both'])} is on the **2,549 accounts whose history was actually pulled** "
-      "before Step 4 stopped at 62.9% of plan. Stated so the two are not read as a disagreement.")
+    cc = outc["channel_counts"]
+    cp, ca_ = cc["on_the_step3_discovery_pool"], cc["on_the_accounts_actually_pulled"]
+    A("**The overlap has TWO figures and TWO populations, and `decisions/0077` §1 now states "
+      "both** — `0070` ruling 3 gave *\"324 users are in both\"* and named no population, which "
+      "**is the shape that has recurred through this entire chain and recurred inside the ruling "
+      "written to fix a different unlabelled figure.** Measured here, both independently:")
+    A("")
+    A("| Population | n | Channel A | Channel B | **in both** |")
+    A("| :--- | ---: | ---: | ---: | ---: |")
+    A(f"| Step 3 **discovery pool** (usernames) | {n(cp['population'])} | {n(cp['channel_a'])} | "
+      f"{n(cp['channel_b'])} | **{n(cp['in_both'])}** |")
+    A(f"| **accounts actually pulled** (Step 4 stopped at 62.9% of plan) | {n(ca_['population'])} "
+      f"| {n(ca_['channel_a'])} | {n(ca_['channel_b'])} | **{n(ca_['in_both'])}** |")
+    A(f"| pairs on the table's row set (APPLY, position 5) | {n(at0['rows'])} | "
+      f"{n(ch['pairs_channel_a'])} | {n(ch['pairs_channel_b'])} | **{n(ch['pairs_in_both'])}** |")
+    A("")
+    A(f"Both ruled figures reproduce exactly: **{n(cp['in_both'])} of {n(cp['population'])}** and "
+      f"**{n(ca_['in_both'])} of {n(ca_['population'])}**. The pool figure is not an account "
+      "figure and neither is a pair figure; **read without its population, any one of the three "
+      "reads as a divergence from the other two.**")
     A("")
     A("---")
     A("")
@@ -677,10 +710,35 @@ def main():
       f"per-pair action counts and all {at['step2_show_fields_carried']} Step 2 show fields. "
       "**It stays in `processed/` and is never published.**")
     A("")
+    A("**The column names are FIXED by `decisions/0077` §3 and were not chosen here.** The "
+      "previous run produced **88 against 87 for the same contents**, all of it naming, and Step "
+      "8b's schema — which Steps 9–13 write into **directly, with no conversion layer** (`0066`) "
+      "— would have inherited it. Renamed from this instance's previous run: `in_channel_*` → "
+      "**`discovered_channel_a` / `discovered_channel_b`**; `in_population_APPLY` / "
+      "`in_population_DERIV` → **`in_apply` / `in_deriv`**; `tau1_utc` / `tau2_utc` → **`tau1` / "
+      "`tau2`**; `T0_utc_date` → **`t0_date`**; `T0_binding_term` → **`t0_binding_term`**; "
+      "`s1_completion_date_utc` → **`s1_completion_date`**; `n_A_distinct_s2_before_tau1` → "
+      "**`n_A`**; `n_AH_distinct_s2_before_tau2` → **`n_A_H`**; `max_episode_in_AH` → "
+      "**`max_episode_in_A_H`**; `n_rec_s{1,2}_*` → **`action_count_s{1,2}_*`**. **No `_utc` "
+      "suffix survives**: every instant in this study is UTC by Step 1 §2.4, and suffixing some "
+      "columns implies the others are not.")
+    A("")
+    A("**Both instances' extra columns are kept** (`0077` §3), which is what takes the table from "
+      "88 to **89**: `has_s3_or_later_evidence`, which D4 reads and which this instance already "
+      "had, and **`s1_completion_used_a_post_cutoff_record`**, the other arm's, which the still-"
+      "open D11-at-position-3 question reads. It is computed independently here rather than "
+      "assumed: the first-pass walk runs in ascending canonical-timestamp order, so the "
+      "completing episode's timestamp is the maximum over the prefix consumed, and the flag is "
+      f"exactly `complete AND comp_ts ≥ τ_pull`. **It is true on "
+      f"{n(pos['D11_counterfactual_on_position_3']['completers_whose_first_pass_walk_used_a_post_cutoff_record'])} "
+      "pairs of the 220,107** — the same 4 that stop being completers when D11 is applied to the "
+      "S1 walk, which is the arithmetic the open question turns on.")
+    A("")
     A("**Side outputs, also in `processed/step8/a/` and also never published:** "
-      "`position3_dropset.npz` — the rows the S1 completion rule removes, retained because D9 "
-      "half (b) is measured on them (`decisions/0075` ruling 2); `position5_table.npz`, the "
-      "per-arm working table; `drops_per_show.csv`; `show_slugs.csv`.")
+      "`position3_dropset.npz` — **the 58,345 pairs that fail the S1 completion rule**, retained "
+      "because D9 half (b) is measured on them (`decisions/0075` ruling 2, restated by `0077` "
+      "§2); `position5_table.npz`, the per-arm working table; `drops_per_show.csv`; "
+      "`show_slugs.csv`.")
     A("")
     A("---")
     A("")
@@ -720,12 +778,22 @@ def main():
     A("8. **D3′'s denominator is the position-7 (post-liveness) Started-and-left set**, which is "
       "what reproduces `0075`'s ruled series. The position-5 figures are emitted alongside in the "
       "`.json` so the choice is visible and neither reading is hidden.")
-    A("9. **The set half (b) is measured on.** `0075` retains \"position 3's drop set\". On this "
-      "frame position 3 removes **0 rows from the waterfall**, because line 1 is already the "
-      "S1-completer population; the set the rule *deletes* is the pair universe less the "
-      f"completers, {n(pos['position_3_dropset_side_output']['rows_the_S1_completion_rule_removes_from_the_pair_universe'])} "
-      "pairs. That is what was retained and measured, since a set of size zero would make half "
-      "(b) unmeasurable rather than zero.")
+    A("9. **~~The set half (b) is measured on.~~ CLOSED by `decisions/0077` §2.** The previous "
+      "run had to choose an interpretation, because *\"position 3's drop set\"* named an empty "
+      "set on this frame. The ruling now names it: **the pair universe less the completers, "
+      f"{n(pos['position_3_dropset_side_output']['pairs_failing_the_S1_completion_rule'])} "
+      "pairs** — which is the set this instance retained and measured before the restatement, so "
+      "**nothing measured moves.** The unit is **pairs**, and it is **not** the set-membership "
+      "drop rule.")
+    A("10. **~~Column names.~~ CLOSED by `decisions/0077` §3**, which fixes them and fixes the "
+      f"table at **{at['columns']} columns**. Nothing about the contents changed. **One item does "
+      "not resolve and is reported, not reconciled:** `0077`'s adopted-name table also lists "
+      "**`f2_in_A_H`**. This instance has no such column; adding one would make the table **90** "
+      "against the **89** the same ruling fixes, and 89 is reachable from this instance's 88 only "
+      "by adding exactly the one column named for the other arm. The quantity is on the row "
+      "either way — `F2 ∈ A_H` is exactly `max_episode_in_A_H == s2_F`, and `s2_F` is a Step 2 "
+      "frame field already carried. **If the other arm resolved this the other way the diff will "
+      "show one column name, not a figure.**")
     A("")
     A("---")
     A("")
@@ -752,7 +820,11 @@ def main():
       "resolved.")
     A("6. **`task-sheet.md` Step 8's open D11 question at position 3 is untouched** — applying "
       "D11 to the S1 walk gives 220,103 rather than the published 220,107. Measured in §5.6, not "
-      "applied.")
+      "applied. **The new `s1_completion_used_a_post_cutoff_record` column carries the 4 pairs it "
+      "turns on**, so whoever closes the question does not have to rebuild them.")
+    A("7. **`0077`'s adopted-name table lists `f2_in_A_H` and its column count fixes 89** — the "
+      "two cannot both be satisfied from this instance's 88 without dropping a column the same "
+      "ruling says to keep. **Reported, not reconciled**; see §8 item 10.")
     A("")
     A("---")
     A("")
@@ -771,6 +843,12 @@ def main():
       "**W = 108 days** · **H = 91 days** · **Zero API calls** · **Counts only**")
     B("")
     wcf = inv["what_can_actually_fail"]
+    B("> **RERUN against `decisions/0077`.** That entry fixes the column names, states the "
+      "discovery-channel overlap's two populations and restates position 3's drop set. **None of "
+      "the three touches the assertion set, and no result in this report moves** — it is "
+      "regenerated rather than carried forward, so the diff can confirm that rather than assume "
+      "it.")
+    B("")
     B("> **EVERY INVARIANT CARRIES A LABEL** (`decisions/0068`). **A code check catches an "
       "implementation that computed something wrongly; it cannot fail on any data, and it is NOT "
       "evidence for the rule.** A report saying \"all invariants passed\" overstates what was "

@@ -6,7 +6,9 @@
 
 > **Every figure below states its population.** There are two and they differ by construction: **APPLY** = Step 5 waterfall line 1 less D10 = **196,654**, which is what position 6 filters; **DERIV** = Step 5 waterfall line 4 less D10 = **147,370**, which requires S2 evidence. Step 8 produces both (`decisions/0070` ruling 1).
 
-> **RERUN.** This replaces the previous `-a` deliverable in full. `decisions/0074`, `0075` and `0076` all postdate that run, so several objects they rule on existed in one arm or neither. What changed here: **the table is now the position-5 row set with `live` and `outcome` as columns** (`0074`/1); **D9 uses the defined strict key with the loose count alongside** (`0074`/5, `0076`/3); **the set-membership rule is a coverage count and no longer an invariant** (`0074`/3); **position 3's drop set is retained as a side output** (`0075`/2); **the `W` grid is no longer this instance's choice** (`0075`/3); **`p` is labelled a CODE CHECK** (`0076`/1 — the label this instance's previous deliverable already had); and **two DATA CHECKS are added** (`0076`/2), which are the first assertions in this report that can fail on data.
+> **RERUN against `decisions/0077`.** This replaces the previous `-a` deliverable in full. `0077` is a spec change no arm had executed against, and it changes three things here. **Column names are FIXED and the table is 89 columns** (`0077` §3), against this instance's previous 88 and the other arm's 87 for the same contents — Step 8b defines the schema Steps 9–13 write into **directly**, so the divergence would have been inherited; **both arms' extra columns are kept**, and this instance adds the other's `s1_completion_used_a_post_cutoff_record`. **The discovery-channel overlap now carries its populations** (`0077` §1): **324 of the 5,694-username Step 3 pool** and **178 of the 2,549 accounts pulled** — both measured here, neither chosen. **Position 3's drop set is restated** (`0077` §2): the ruling as written named an **empty set**, and the retained set is the **58,345 pairs that fail the S1 completion rule**, in **pairs**, not the set-membership rule's records. **No figure this instance previously published moves.**
+
+> Carried forward from the previous rerun, and unchanged: the table is the position-5 row set with `live` and `outcome` as columns (`0074`/1); D9 uses the defined strict key with the loose count alongside (`0074`/5, `0076`/3); the set-membership rule is a coverage count and not an invariant (`0074`/3); the `W` grid is fixed by `0075`/3; `p` is a CODE CHECK (`0076`/1); and the two DATA CHECKS of `0076`/2 are the only assertions here that can fail on data.
 
 ---
 
@@ -210,7 +212,7 @@ Detection is imperfect and **every count here is a lower bound**. Coverage: 46,4
 | *third key — NOT RULED, measured only* | strip a trailing digit group of arbitrary length, then strict | 76 | 6 | — |
 
 - **(a) the fabricated never-started row, on the adopted key:** 0 of 32,769 never-started pairs (APPLY, position 7); 0 of 33,373 on the position-5 table row set.
-- **(b) the silently deleted S1-failing counterpart:** 0 of 58,345 pairs that fail the S1 completion rule. **These rows are not in the analysis table and cannot be recovered from it**, so **position 3's drop set is retained as a side output** (`decisions/0075` ruling 2) — without it this half emits zero or fails, **and a zero here reads as a data finding rather than a missing input.**
+- **(b) the silently deleted S1-failing counterpart:** 0 of 58,345 pairs that fail the S1 completion rule. **These rows are not in the analysis table and cannot be recovered from it**, so the set is retained as a side output (`decisions/0075` ruling 2) — without it this half emits zero or fails, **and a zero here reads as a data finding rather than a missing input.** **`decisions/0077` §2 RESTATES the ruling**, which as written named *"position 3's drop set"* — **an empty set**, because line 1 is already the S1-completer population and position 3 therefore removes 0 rows from the waterfall. The set is **the pair universe less the completers, 58,345 PAIRS**, and it is **not** the set-membership drop rule, which is a different rule, deletes 0 **records**, and would have put the wrong rule in the spec. This instance measured the same set before the restatement and the count is unchanged.
 - **The loose count publishes because it BOUNDS HOW WRONG STRICT COULD BE**, and the error runs **opposite** to D9's own lower-bound caveat. It is not adopted because it strips the year and merges genuinely different shows -- remakes and national versions, not split metadata, which is the artefact D9 exists to count. Measured here: its largest merged clusters are `secondchance` (8 distinct strict keys), `theisland` (7 distinct strict keys), `maigret` (6 distinct strict keys) — remakes and national versions, exactly the failure `0074` names.
 - **The third key is reported for the record and is neither ruled key.** It reduces `the-100` to `the`. **This instance used it on its previous run and published 76 complementary pairs against the other arm's 75; `decisions/0076` records that divergence as REPORTED, NOT RECONCILED.** Under the now-defined keys this instance reproduces both ruled figures exactly.
 - **Merges, counted with the same query and reported separately:** 20 user-show rows on the strict key (5,551 on the loose key) where one ID carries both seasons and a same-title ID also appears in the sweep. Merges can only add evidence to a pair, never remove it.
@@ -254,23 +256,35 @@ Recomputed from the reported counts rather than read off the frame's stored flag
 
 **Pairs by S2 evidence composition** (position 7, APPLY), which is what Step 13's action arm cuts on: watch-only 130,431, checkin-only 4,557, scrobble-only 12,484, mixed 25,823, no S2 records 22,656. Unknown `action` values encountered: 0.
 
-### 5.10 Discovery channel — two boolean columns
+### 5.10 Discovery channel — two boolean columns, and the overlap's two populations
 
 On the table's row set (APPLY, position 5): Channel A 126,269 pairs, Channel B 88,168 pairs, **both 17,783** (accounts: 1,614 / 1,113 / **178 in both**). A single categorical would either drop the overlap or assign it arbitrarily, and Step 11 tests whether discovery method biased the pool (`0070` ruling 3).
 
-**`0070` ruling 3's figure is 324 users in both; this instance measures 178. That is a population difference, not a divergence.** The 324 is on the **Step 3 discovery pool of 5,694 usernames**; 178 is on the **2,549 accounts whose history was actually pulled** before Step 4 stopped at 62.9% of plan. Stated so the two are not read as a disagreement.
+**The overlap has TWO figures and TWO populations, and `decisions/0077` §1 now states both** — `0070` ruling 3 gave *"324 users are in both"* and named no population, which **is the shape that has recurred through this entire chain and recurred inside the ruling written to fix a different unlabelled figure.** Measured here, both independently:
+
+| Population | n | Channel A | Channel B | **in both** |
+| :--- | ---: | ---: | ---: | ---: |
+| Step 3 **discovery pool** (usernames) | 5,694 | 3,996 | 2,022 | **324** |
+| **accounts actually pulled** (Step 4 stopped at 62.9% of plan) | 2,549 | 1,614 | 1,113 | **178** |
+| pairs on the table's row set (APPLY, position 5) | 196,654 | 126,269 | 88,168 | **17,783** |
+
+Both ruled figures reproduce exactly: **324 of 5,694** and **178 of 2,549**. The pool figure is not an account figure and neither is a pair figure; **read without its population, any one of the three reads as a divergence from the other two.**
 
 ---
 
 ## 6. The analysis table
 
-`processed/step8/a/analysis_table.csv.gz` — **196,654 rows, 88 columns**, one row per user-show pair, **the POSITION-5 row set on APPLY** (`decisions/0074` ruling 1).
+`processed/step8/a/analysis_table.csv.gz` — **196,654 rows, 89 columns**, one row per user-show pair, **the POSITION-5 row set on APPLY** (`decisions/0074` ruling 1).
 
 - **`live` and `outcome` are COLUMNS, not filters.** 195,951 rows carry `live = true` and 703 carry `live = false` — the position-6 exclusions are **in the file**, not reconstructed from it. Both readings of "one row per pair" give identical counts, so this is a ruling and not a correction: **a reconstruction that agrees today is still a second definition tomorrow, and the dual diff cannot see it.**
 - **147,370 rows carry the DERIV flag**, so both populations are produced by Step 8 and nothing downstream has to rebuild one.
 - It carries outcome state, abandonment point, the two discovery-channel booleans, the per-pair action counts and all 60 Step 2 show fields. **It stays in `processed/` and is never published.**
 
-**Side outputs, also in `processed/step8/a/` and also never published:** `position3_dropset.npz` — the rows the S1 completion rule removes, retained because D9 half (b) is measured on them (`decisions/0075` ruling 2); `position5_table.npz`, the per-arm working table; `drops_per_show.csv`; `show_slugs.csv`.
+**The column names are FIXED by `decisions/0077` §3 and were not chosen here.** The previous run produced **88 against 87 for the same contents**, all of it naming, and Step 8b's schema — which Steps 9–13 write into **directly, with no conversion layer** (`0066`) — would have inherited it. Renamed from this instance's previous run: `in_channel_*` → **`discovered_channel_a` / `discovered_channel_b`**; `in_population_APPLY` / `in_population_DERIV` → **`in_apply` / `in_deriv`**; `tau1_utc` / `tau2_utc` → **`tau1` / `tau2`**; `T0_utc_date` → **`t0_date`**; `T0_binding_term` → **`t0_binding_term`**; `s1_completion_date_utc` → **`s1_completion_date`**; `n_A_distinct_s2_before_tau1` → **`n_A`**; `n_AH_distinct_s2_before_tau2` → **`n_A_H`**; `max_episode_in_AH` → **`max_episode_in_A_H`**; `n_rec_s{1,2}_*` → **`action_count_s{1,2}_*`**. **No `_utc` suffix survives**: every instant in this study is UTC by Step 1 §2.4, and suffixing some columns implies the others are not.
+
+**Both instances' extra columns are kept** (`0077` §3), which is what takes the table from 88 to **89**: `has_s3_or_later_evidence`, which D4 reads and which this instance already had, and **`s1_completion_used_a_post_cutoff_record`**, the other arm's, which the still-open D11-at-position-3 question reads. It is computed independently here rather than assumed: the first-pass walk runs in ascending canonical-timestamp order, so the completing episode's timestamp is the maximum over the prefix consumed, and the flag is exactly `complete AND comp_ts ≥ τ_pull`. **It is true on 4 pairs of the 220,107** — the same 4 that stop being completers when D11 is applied to the S1 walk, which is the arithmetic the open question turns on.
+
+**Side outputs, also in `processed/step8/a/` and also never published:** `position3_dropset.npz` — **the 58,345 pairs that fail the S1 completion rule**, retained because D9 half (b) is measured on them (`decisions/0075` ruling 2, restated by `0077` §2); `position5_table.npz`, the per-arm working table; `drops_per_show.csv`; `show_slugs.csv`.
 
 ---
 
@@ -292,7 +306,8 @@ Listed rather than settled. Each is a place two isolated instances can differ wh
 6. **"All Step 2 show fields"** is read literally: all 60 non-key columns of `frame.csv`, including derived ones.
 7. **Populations for the required counts.** Seven of the required outputs name no population. Each is reported here on a named population, and on more than one where the computation is cheap, rather than one being chosen silently.
 8. **D3′'s denominator is the position-7 (post-liveness) Started-and-left set**, which is what reproduces `0075`'s ruled series. The position-5 figures are emitted alongside in the `.json` so the choice is visible and neither reading is hidden.
-9. **The set half (b) is measured on.** `0075` retains "position 3's drop set". On this frame position 3 removes **0 rows from the waterfall**, because line 1 is already the S1-completer population; the set the rule *deletes* is the pair universe less the completers, 58,345 pairs. That is what was retained and measured, since a set of size zero would make half (b) unmeasurable rather than zero.
+9. **~~The set half (b) is measured on.~~ CLOSED by `decisions/0077` §2.** The previous run had to choose an interpretation, because *"position 3's drop set"* named an empty set on this frame. The ruling now names it: **the pair universe less the completers, 58,345 pairs** — which is the set this instance retained and measured before the restatement, so **nothing measured moves.** The unit is **pairs**, and it is **not** the set-membership drop rule.
+10. **~~Column names.~~ CLOSED by `decisions/0077` §3**, which fixes them and fixes the table at **89 columns**. Nothing about the contents changed. **One item does not resolve and is reported, not reconciled:** `0077`'s adopted-name table also lists **`f2_in_A_H`**. This instance has no such column; adding one would make the table **90** against the **89** the same ruling fixes, and 89 is reachable from this instance's 88 only by adding exactly the one column named for the other arm. The quantity is on the row either way — `F2 ∈ A_H` is exactly `max_episode_in_A_H == s2_F`, and `s2_F` is a Step 2 frame field already carried. **If the other arm resolved this the other way the diff will show one column name, not a figure.**
 
 ---
 
@@ -305,7 +320,8 @@ Reported because the spec asks for them, and not edited: `decisions/` and `task-
 3. **~~`decisions/0034`'s D3′ cleared-share series~~ — CLOSED by `0075`.** The ruled series is now 99.53% → 97.73% with its population stated; this instance reproduces it — see §4.3.
 4. **The 94-record denominator remains OPEN and is published unreconciled** — see §5.1. This instance's decomposition shows the gap is not D11 (which is 167), not undated records, not duplicates and not malformed episode numbers.
 5. **D3′ is not monotone in `W`** between the 91 and 107 arms — see §4.3. Measured, not resolved.
-6. **`task-sheet.md` Step 8's open D11 question at position 3 is untouched** — applying D11 to the S1 walk gives 220,103 rather than the published 220,107. Measured in §5.6, not applied.
+6. **`task-sheet.md` Step 8's open D11 question at position 3 is untouched** — applying D11 to the S1 walk gives 220,103 rather than the published 220,107. Measured in §5.6, not applied. **The new `s1_completion_used_a_post_cutoff_record` column carries the 4 pairs it turns on**, so whoever closes the question does not have to rebuild them.
+7. **`0077`'s adopted-name table lists `f2_in_A_H` and its column count fixes 89** — the two cannot both be satisfied from this instance's 88 without dropping a column the same ruling says to keep. **Reported, not reconciled**; see §8 item 10.
 
 ---
 

@@ -25,9 +25,11 @@ GATE = ("**Step 8 is a GATE and this document is a PROPOSAL.** Nothing here is a
         "This instance does not adopt its own proposal, does not begin Step 8b or Step 9, "
         "and records no approval — that is the Human Lead's alone. Zero API calls; every "
         "figure is computed from data already on disk.")
-RERUN = ("**This is the RERUN ordered after Red Team's first Step 8 review returned HOLD.** "
-         "`decisions/0074`, `0075` and `0076` all postdate the first run. It overwrites the "
-         "previous `-b` deliverables.")
+RERUN = ("**This is the RERUN ordered by the Human Lead on `decisions/0077`, which no arm had "
+         "executed against.** `0077` fixes the discovery-channel overlap's missing population, "
+         "restates `0075` ruling 2 — which named an empty set, since position 3 removes zero "
+         "rows — and fixes the column names. `0074`, `0075` and `0076` postdate the first run "
+         "and are also carried. This overwrites the previous `-b` deliverables.")
 
 
 def main() -> None:
@@ -50,13 +52,15 @@ def main() -> None:
         {k: v for k, v in sorted(hist.items(), key=lambda kv: int(kv[0]))}
     q["drop_counts"]["shows_examined"] = sum(hist.values())
 
+    DIV = divergences(R, D9, S1)
+
     # ==================================================================
     # WATERFALL
     # ==================================================================
     wj = {
         "artifact": "step8-waterfall-b", "instance": "analytics-engineer-b", "namespace": "b",
         "step": 8, "mode": "GATE -- proposal only, nothing adopted", "api_calls": 0,
-        "run": "RERUN on the spec as amended by decisions/0074, 0075 and 0076",
+        "run": ("RERUN on the spec as amended by decisions/0077, carrying 0074, 0075 and 0076"),
         "constants": {"W": R["W_adopted"], "H": R["H"], "tau_pull": R["tau_pull"],
                       "W_arms": R["W_arms"],
                       "W_arms_source": "decisions/0075 ruling 3 -- the grid's first statement"},
@@ -102,7 +106,7 @@ def main() -> None:
         "discovery_channel": R["discovery_channel"],
         "analysis_table": R["analysis_table"],
         "scope_qualifier": ex["scope_qualifier_of_the_Step_9_bound"],
-        "where_two_faithful_instances_could_still_differ": DIVERGENCES,
+        "where_two_faithful_instances_could_still_differ": DIV,
     }
     (ART / "step8-waterfall-b.json").write_text(json.dumps(wj, indent=2, default=str))
 
@@ -131,9 +135,34 @@ def main() -> None:
       f"{R['analysis_table']['rows']:,} rows × {R['analysis_table']['columns']} columns. "
       "Its row set is the **position-5 population**, with `live` and `outcome` carried as "
       "**columns** (`0074` ruling 1); the post-position-7 row set is `live == True` "
-      "(195,951), and DERIV is `in_deriv` (147,370). The 703 excluded rows are kept **in the "
+      f"({R['waterfall_APPLY'][6]['retained_pairs']:,}), and DERIV is `in_deriv` "
+      f"({R['waterfall_DERIV'][4]['retained_pairs']:,}). The "
+      f"{R['waterfall_APPLY'][5]['removed_pairs']:,} excluded rows are kept **in the "
       "file** with `live = False`, so nothing downstream has to reconstruct them — a "
       "reconstruction that agrees today is still a second definition tomorrow.")
+    A("")
+    cn = R["analysis_table"]["column_names_are_fixed_by_0077"]
+    A("**Column names follow `0077` §3 exactly**, and every adopted name is present with no "
+      "superseded form beside it: `in_apply` / `in_deriv`, `tau1` / `tau2`, `n_A` / `n_A_H` / "
+      "`max_episode_in_A_H` / `f2_in_A_H`, the eight `action_count_s{1,2}_*`, "
+      "`discovered_channel_a` / `discovered_channel_b`, `t0_binding_term` / `t0_date` / "
+      "`s1_completion_date`, and both retained extras — `has_s3_or_later_evidence` (added this "
+      "run; D4 reads it) and `s1_completion_used_a_post_cutoff_record` (the open "
+      "D11-at-position-3 question reads it).")
+    A("")
+    A(f"**But the ruled count of {cn['count_ruled']} columns is not reachable from the names "
+      f"`0077` gives, and this instance emits {cn['count_emitted']}.** Reported as a defect "
+      "rather than worked around. `0077` §3 states the rerun produced **88 against 87 for the "
+      "same contents**, keeps *both* instances' extra columns and names **two**. This "
+      "instance's previous run emitted **87 including the second of those two**; adding the "
+      "first gives **88**. Reaching 89 needs **one further column that `0077` does not name** "
+      "— the set arithmetic on `0077`'s own figures (88 ∪ 87 = 89 ⇒ intersection 86) implies "
+      "exactly one unnamed column on the other arm, and the alternative reading is that 89 was "
+      "formed as 87 + 2 while that 87 already held one of the two. **An isolated instance "
+      "cannot identify it from any surface it is permitted to read, and inventing a column to "
+      "hit the count would produce a different 89th and make the diff worse rather than "
+      "better.** The full emitted name list is in "
+      "`artifacts/step8-waterfall-b.json` → `analysis_table.column_names`.")
     A("")
     A("---")
     A("")
@@ -149,11 +178,17 @@ def main() -> None:
       "instance chooses a base. Lines 2 and 3 follow from it.")
     A("")
     p3 = S1["position3_drop_set"]
-    A("**Position 3's drop set is retained as a side output** (`0075` ruling 2), at "
-      f"`{p3['file']}`. Under `0068` line 1 *is* the S1-completer population, so position 3 "
-      "removes **0 from the waterfall** — but the rule's drop set is not empty, it sits "
-      "upstream of line 1, and **D9 half (b) is measured on it.** Without it that half emits "
-      "zero, and a zero there reads as a data finding rather than a missing input.")
+    A("**Position 3's drop set is retained as a side output** (`0075` ruling 2, **restated by "
+      f"`0077` §2**), at `{p3['file']}`. Under `0068` line 1 *is* the S1-completer population, "
+      "so position 3 removes **0 from the waterfall** — which is why the ruling as first "
+      "written named an empty set. The restated set is **the pair universe less the "
+      "completers, 58,345 PAIRS**, carrying each pair's distinct-episode counts and the show's "
+      "threshold. It is **not** the set-membership drop rule, which is a different rule, "
+      "deletes **0 records**, and is counted in records rather than pairs. **D9 half (b) is "
+      "measured on this set**; without it that half emits zero, and a zero there reads as a "
+      "data finding rather than a missing input. **This instance's first run retained exactly "
+      "this set and reports the same 58,345**, so the restatement moves no figure here — it "
+      "removes the choice.")
     A("")
     A("| Position-3 drop set | Pairs |")
     A("| :--- | ---: |")
@@ -643,14 +678,32 @@ def main() -> None:
     A("## 16. Discovery channel")
     A("")
     dc = R["discovery_channel"]
-    A(f"**Two boolean columns, not one categorical** (`0070` ruling 3). Of the "
-      f"{dc['pool_users']:,} pooled users, **324 are in both channels**; a single value would "
-      "drop the overlap or assign it arbitrarily. Among the "
-      f"{dc['accounts_in_the_analysis_population']:,} accounts in the analysis population: "
-      f"channel A only **{dc['accounts_channel_A_only']:,}**, channel B only "
-      f"**{dc['accounts_channel_B_only']:,}**, **both {dc['accounts_in_BOTH']:,}**, neither "
-      f"**{dc['accounts_in_NEITHER']:,}**. Step 11 can cut on either channel or on the "
-      "overlap, which is what two flags are for.")
+    A("**Two boolean columns, not one categorical** (`0070` ruling 3). **Every overlap count "
+      "states its population** (`0077` §1): `0070` ruling 3 said *\"324 users\"* and named "
+      "none, and a count without its population is the shape that has recurred through this "
+      "entire chain. All three populations are **measured here, not restated**:")
+    A("")
+    A("| Population | n | Channel A only | Channel B only | **Both** | Neither |")
+    A("| :--- | ---: | ---: | ---: | ---: | ---: |")
+    for k, lbl in (("step3_discovery_pool", "Step 3 discovery pool (usernames)"),
+                   ("accounts_pulled_step4_complete", "Accounts pulled — Step 4 `complete`"),
+                   ("accounts_in_the_APPLY_position5_population",
+                    "Accounts in the APPLY position-5 population")):
+        v = dc[k]
+        A(f"| {lbl} | {v['n']:,} | {v['channel_A_only']:,} | {v['channel_B_only']:,} | "
+          f"**{v['BOTH']:,}** | {v['NEITHER']:,} |")
+    A("")
+    A("**Both of `0077`'s figures reproduce exactly — 324 of 5,694 and 178 of 2,549** — and "
+      "the third line is the one Step 11 actually cuts on, which neither ruling states. "
+      f"{dc['why_two_flags']}.")
+    A("")
+    pv = dc["pool_file_rows_vs_distinct_slugs"]
+    A(f"**One measured detail, so it is not mistaken later for a disagreement about the "
+      f"population.** The pool file holds **{pv['rows']:,} rows** and "
+      f"**{pv['distinct_slugs_case_insensitive']:,} distinct slugs case-insensitively**: one "
+      "account appears as two case variants, one flagged channel B and one flagged both. "
+      "**The published population is the row count, 5,694, and the overlap is 324 under both "
+      "readings**, so nothing moves — measured rather than assumed inert.")
     A("")
     A("## 17. `action` — counts by type, never a row-level column")
     A("")
@@ -666,7 +719,7 @@ def main() -> None:
     A("")
     A("## 18. Where two faithful instances could still differ")
     A("")
-    for i, s in enumerate(DIVERGENCES, 1):
+    for i, s in enumerate(DIV, 1):
         A(f"{i}. {s}")
     A("")
     A("---")
@@ -807,58 +860,105 @@ def main() -> None:
     print("wrote 4 artifacts")
 
 
-DIVERGENCES = [
-    "**D11 and waterfall line 1.** `0068` rules 220,107 and leaves the D11 question open. "
-    "Lines 1–3 are 220,107 here and would be 220,103 under the other reading; lines 4–7 are "
-    "identical either way, verified row by row.",
+def divergences(R: dict, D9: dict, S1: dict) -> list[str]:
+    """Every figure in this list is READ FROM THE MEASURED OBJECTS, not typed.
 
-    "**The set-membership denominator.** `0074` ruling 4 publishes 6,065,704 against 6,065,610 "
-    "unreconciled. This instance examines 6,065,610; the other two readings on the same data "
-    "are 6,065,704 (before any D11) and 6,065,537 (D11 applied to both seasons). The choice "
-    "follows from how D11 is applied on the S1 side, which follows from `0068`'s ruled line 1. "
-    "**Reported, not reconciled**; all three drop zero records.",
+    CLAUDE.md: derived figures are regenerated, not patched -- "if you find
+    yourself editing a derived number by hand, that is the defect."
+    """
+    at = R["analysis_table"]
+    cn = at["column_names_are_fixed_by_0077"]
+    dn = S1["drop_rule"]["denominator_note"]
+    p3 = S1["position3_drop_set"]
+    dc = R["discovery_channel"]
+    d3 = R["per_arm"]["APPLY"]
+    k = D9["keys"]
+    last = str(R["W_arms"][-1])
+    return [
+        f"**THE COLUMN COUNT. `0077` §3 fixes the names and states {cn['count_ruled']} "
+        f"columns; this instance emits {cn['count_emitted']}.** Every name `0077` adopts is "
+        "present and no superseded form is, and both retained extras are carried. The 89th is "
+        "**not named anywhere an isolated instance may read**: `0077`'s own figures give "
+        "88 ∪ 87 = 89, which implies one unnamed column on the other arm, unless 89 was formed "
+        "as 87 + 2 while that 87 already held one of the two. **The ruling was written to stop "
+        "Step 8b inheriting a column divergence, and on this reading it leaves one**, since an "
+        "instance that guesses a 89th and an instance that does not both diverge from the "
+        "other. Reported, not guessed at.",
 
-    "**D3′'s cleared shares are not monotone between `W = 91` and `W = 107`** — 98.81% then "
-    "98.84% on APPLY. An open item at `0076` §5, reproduced rather than smoothed.",
+        "**D11 and waterfall line 1.** `0068` rules "
+        f"{S1['s1_completion']['S1_completer_pairs_line_1']:,} and leaves the D11 question "
+        "open. Lines 1–3 are that figure here and would be "
+        f"{S1['s1_completion']['D11_open_question']['S1_completer_pairs_if_D11_applied_to_S1_too']:,}"
+        " under the other reading; lines 4–7 are identical either way, verified row by row.",
 
-    "**D8's position.** Pre- or post-liveness is unstated. Both are reported.",
+        "**The set-membership denominator.** `0074` ruling 4 publishes 6,065,704 against "
+        f"6,065,610 unreconciled. This instance examines "
+        f"{dn['this_instances_examined_count']:,}; the other two readings on the same data are "
+        f"{dn['in_frame_S1_S2_episode_records_before_any_D11']:,} (before any D11) and "
+        f"{dn['if_D11_were_applied_to_BOTH_seasons']:,} (D11 applied to both seasons). The "
+        "choice follows from how D11 is applied on the S1 side, which follows from `0068`'s "
+        "ruled line 1. **Reported, not reconciled**; all three drop zero records.",
 
-    "**D2's population.** Unstated at the point of use. Four are reported and each labelled.",
+        "**D3′'s cleared shares are not monotone between `W = 91` and `W = 107`** — "
+        f"{d3['91']['D3prime']['cleared_share_of_started_and_left_pct']:.2f}% then "
+        f"{d3['107']['D3prime']['cleared_share_of_started_and_left_pct']:.2f}% on APPLY. An "
+        "open item at `0076` §5, reproduced rather than smoothed.",
 
-    "**D9's third key.** The spec now defines strict and loose (`0076` §3). On this data the "
-    "third key — a trailing digit group of arbitrary length — gives **76** complementary "
-    "signature pairs against loose's **75**, reproducing the divergence `0076` describes. It "
-    "is measured and not used.",
+        "**D8's position.** Pre- or post-liveness is unstated. Both are reported.",
 
-    "**The grain of the `action` counts.** \"Per-pair counts by action type\" does not fix "
-    "whether the counts are split by season. This instance splits S1 and S2, because Step "
-    "13's arm needs the composition of the S2 evidence set and the S1 completion evidence "
-    "separately. A pooled-count instance would report four columns rather than eight and no "
-    "published figure would move.",
+        "**D2's population.** Unstated at the point of use. Four are reported and each "
+        "labelled.",
 
-    "**The shape of the position-3 drop set.** `0075` ruling 2 requires it to be retained and "
-    "does not say what it must contain. This instance retains every in-frame pair with any "
-    "in-`E` S1 or S2 distinct episode that is not an S1 completer — 58,345 rows — with its "
-    "distinct-episode counts and the show's threshold, which is what half (b) needs.",
+        "**D9's third key.** The spec now defines strict and loose (`0076` §3). On this data "
+        "the third key — a trailing digit group of arbitrary length — gives "
+        f"**{k['THIRD_KEY_NOT_USED']['complementary_signature_pairs']}** complementary "
+        f"signature pairs against loose's **{k['LOOSE']['complementary_signature_pairs']}**, "
+        "reproducing the divergence `0076` describes. It is measured and not used.",
 
-    "**The waterfall's unit.** Pairs are primary; users and shows are reported alongside "
-    "because position 2 is explicitly a filter on shows.",
+        "**The grain of the `action` counts.** \"Per-pair counts by action type\" does not fix "
+        "whether the counts are split by season. This instance splits S1 and S2, because Step "
+        "13's arm needs the composition of the S2 evidence set and the S1 completion evidence "
+        "separately. A pooled-count instance would report four columns rather than eight and "
+        "no published figure would move.",
 
-    "**Undated records.** 379 records in the sweep carry no `watched_at`. None is an in-frame "
-    "S1/S2 episode record, so they touch no outcome. They are **not** discarded by D11, which "
-    "removes `watched_at >= tau_pull`; a reading that requires a record to be positively "
-    "\"dated before `tau_pull`\" would drop them from the liveness evidence. Measured inert: "
-    "the exclusion counts are identical either way at every arm.",
+        "**The shape of the position-3 drop set — now ruled, and it agrees.** `0075` ruling 2 "
+        "named an empty set; `0077` §2 restates it as the pair universe less the completers, "
+        f"{p3['dropped_by_the_S1_completion_rule']:,} pairs, with distinct-episode counts and "
+        "the show's threshold. This instance's first run had already chosen that set and "
+        "reports the same count, so the restatement removes the choice without moving a "
+        "figure.",
 
-    "**DERIV's position 4.** DERIV is Step 5 *line 4* less D10, and line 4 applies three "
-    "restrictions that are not Step 8 filter positions. Its waterfall line 4 is therefore not "
-    "the adopted contamination exclusion, and is labelled as such rather than silently "
-    "conflated with APPLY's.",
+        "**The discovery-channel overlap on the population Step 11 cuts.** `0077` §1 states "
+        f"{dc['step3_discovery_pool']['BOTH']} of {dc['step3_discovery_pool']['n']:,} and "
+        f"{dc['accounts_pulled_step4_complete']['BOTH']} of "
+        f"{dc['accounts_pulled_step4_complete']['n']:,}; both reproduce. **The overlap on the "
+        "APPLY position-5 population is "
+        f"{dc['accounts_in_the_APPLY_position5_population']['BOTH']} of "
+        f"{dc['accounts_in_the_APPLY_position5_population']['n']:,} accounts and is stated in "
+        "no ruling** — an instance reporting only the two ruled figures and one reporting the "
+        "third are both faithful.",
 
-    "**At `W = 213` the DERIV started-and-left exclusion component is 147 while APPLY's is "
-    "148.** No published figure covers DERIV per arm above `W = 108`, so this is new rather "
-    "than divergent, and it is stated so it is not read as an error later.",
-]
+        "**The waterfall's unit.** Pairs are primary; users and shows are reported alongside "
+        "because position 2 is explicitly a filter on shows.",
+
+        f"**Undated records.** {S1['D11']['records_with_no_watched_at']} records in the sweep "
+        "carry no `watched_at`. None is an in-frame S1/S2 episode record, so they touch no "
+        "outcome. They are **not** discarded by D11, which removes `watched_at >= tau_pull`; a "
+        "reading that requires a record to be positively \"dated before `tau_pull`\" would "
+        "drop them from the liveness evidence. Measured inert: the exclusion counts are "
+        "identical either way at every arm.",
+
+        "**DERIV's position 4.** DERIV is Step 5 *line 4* less D10, and line 4 applies three "
+        "restrictions that are not Step 8 filter positions. Its waterfall line 4 is therefore "
+        "not the adopted contamination exclusion, and is labelled as such rather than silently "
+        "conflated with APPLY's.",
+
+        f"**At `W = {last}` the DERIV started-and-left exclusion component is "
+        f"{R['per_arm']['DERIV'][last]['liveness_excluded_started_and_left']} while APPLY's is "
+        f"{R['per_arm']['APPLY'][last]['liveness_excluded_started_and_left']}.** No published "
+        "figure covers DERIV per arm above `W = 108`, so this is new rather than divergent, "
+        "and it is stated so it is not read as an error later.",
+    ]
 
 if __name__ == "__main__":
     main()

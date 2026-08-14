@@ -28,11 +28,14 @@ What this stage does, and nothing else:
     reads: the distinct S2 episodes in E2 with their canonical instants, plus
     the running max episode number in instant order, so |A|, |A_H|, F2 in A_H
     and max(A_H) are all searchsorted lookups at any tau.
-  * POSITION 3's DROP SET IS RETAINED AS A SIDE OUTPUT (decisions/0075 ruling 2).
-    D9 half (b) is measured on the rows the S1 completion rule REMOVES, so it
-    cannot be computed without them, and no line of Step 8 said to keep them --
-    an instance that does not retain them emits ZERO, and a zero there reads as
-    a data finding rather than a missing input.
+  * POSITION 3's DROP SET IS RETAINED AS A SIDE OUTPUT (decisions/0075 ruling 2,
+    RESTATED by decisions/0077 Sec 2). Position 3 removes ZERO rows from the
+    waterfall, because line 1 is already the S1-completer population (0068), so
+    "position 3's drop set" named an empty set as first written. The restated
+    set is THE PAIR UNIVERSE LESS THE COMPLETERS -- 58,345 pairs -- carrying each
+    pair's distinct-episode counts and the show's threshold, which is what D9
+    half (b) reads. It is NOT the set-membership drop rule, which is a different
+    rule and deletes 0 records.
 
 Out: processed/step8/b/base.npz, processed/step8/b/stage1.json,
      processed/step8/b/position3_drop_set.csv.gz  (side output, 0075)
@@ -330,6 +333,13 @@ def main() -> None:
     prov["position3_drop_set"] = {
         "retained_because": ("decisions/0075 ruling 2 -- D9 half (b) is measured on the rows "
                              "position 3 REMOVES and cannot be computed without them"),
+        "restated_by_0077": ("position 3 removes ZERO rows from the waterfall, so the ruling "
+                             "as first written named an empty set. The restated set is THE "
+                             "PAIR UNIVERSE LESS THE COMPLETERS, ruled at 58,345 PAIRS -- not "
+                             "the set-membership drop rule, which is a different rule, deletes "
+                             "0 RECORDS, and whose unit is records rather than pairs"),
+        "ruled_count_58345": int(drop3.sum()) == 58_345,
+        "unit": "PAIRS",
         "file": "processed/step8/b/position3_drop_set.csv.gz",
         "in_frame_pairs_with_ANY_in_E_S1_or_S2_distinct_episode": int(len(all_ev_pairs)),
         "of_which_S1_completers_line_1": int(is_completer.sum()),

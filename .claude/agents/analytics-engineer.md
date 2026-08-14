@@ -265,7 +265,8 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
       collides with the population flags); **`t0_binding_term` / `t0_date` / `s1_completion_date`**.
       **Keep `has_s3_or_later_evidence` and `s1_completion_used_a_post_cutoff_record`** — D4 reads the
       first, the open D11-at-position-3 question reads the second. **89 columns.**
-    - **POSITION 3's DROP SET IS THE 58,345 PAIRS THAT FAIL THE S1 COMPLETION RULE** (`0075`, restated
+    - **POSITION 3's DROP SET IS THE 58,345 PAIRS THAT FAIL THE S1 COMPLETION RULE — position-3 rule,
+      position-5 build of 2026-08-13** (`0075`, restated
       by `0077`). **Position 3 removes ZERO rows from the waterfall** — line 1 is already the
       S1-completer population — **so the ruling as written named an empty set and both arms had to
       choose an interpretation.** It is the **pair universe less the completers**, carrying each pair's
@@ -274,6 +275,17 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
     - **THE DISCOVERY-CHANNEL OVERLAP IS 324 OF THE 5,694 STEP 3 POOL AND 178 OF THE 2,549 ACCOUNTS
       PULLED** (`0077`). **`0070` ruling 3 gave "324 users" with no population** — the shape that has
       recurred through this whole chain, in the ruling written to fix a different unlabelled figure.
+    - **EVERY COUNT NAMES THE PIPELINE IT WAS MEASURED ON, NOT ONLY ITS POPULATION** (`0078`) —
+      **`0047`'s rule one layer down.** A count without its provenance **can be correct when written and
+      wrong when read.** **58,345 pairs, position-3 rule, position-5 build of 2026-08-13.** **Channel
+      overlap: 324 of 5,694 on the Step 3 pool and 178 of 2,549 on the accounts pulled, same build**;
+      a third reading, **174 of 2,422 in the APPLY position-5 population**, is recorded and not
+      published, so it is not later read as a divergence.
+    - **D9 REPORTS BOTH HALVES UNDER BOTH KEYS** (`0078`). `0074` ruling 5 makes **strict primary and
+      loose alongside because the loose count BOUNDS HOW WRONG STRICT COULD BE** — **that reason applies
+      to half (b) exactly as to half (a)**, so **four numbers, not three**: half (a) strict and loose,
+      half (b) strict and loose. Reporting half (b) under strict alone **publishes the bound for one
+      half and withholds it for the other**, and the error runs opposite to D9's own lower-bound caveat.
     - The table goes to `processed/`; the filter waterfall and invariant report, counts only, to
       `artifacts/`.
 - **Step 8b, output schema. Chained. NOT LAUNCHED.** Define the JSON schema the Step 16 visualization

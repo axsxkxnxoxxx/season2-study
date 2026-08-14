@@ -17,13 +17,21 @@ Both populations are carried from here on (decisions/0070 ruling 1):
   APPLY = Step 5 waterfall line 1 less D10 = 196,654   (what position 6 filters)
   DERIV = Step 5 waterfall line 4 less D10 = 147,370   (requires S2 evidence)
 
-POSITION 3's DROP SET IS RETAINED AS A SIDE OUTPUT (Human Lead ruling, decisions/0075). D9 half
-(b) is measured on the rows the S1 completion rule REMOVES, so it cannot be computed without
-them, and they are not recoverable from the analysis table. Note the shape of it on this frame:
-waterfall line 1 is already the S1-COMPLETER population (0068), so position 3 removes 0 rows FROM
-THE WATERFALL, while the S1 completion rule removes 58,345 pairs from the pair universe. The side
-output is the latter -- the rows the rule deletes -- because that is the set half (b) needs. A
-zero here would read as a data finding rather than a missing input, which is why it is a file.
+POSITION 3's DROP SET IS RETAINED AS A SIDE OUTPUT (Human Lead ruling, decisions/0075, RESTATED
+BY decisions/0077 because as written it named an EMPTY SET). Waterfall line 1 is already the
+S1-COMPLETER population (0068), so position 3 removes 0 rows FROM THE WATERFALL. The set 0077
+fixes is the pair universe less the completers -- THE 58,345 PAIRS THAT FAIL THE S1 COMPLETION
+RULE, position 3's own rule -- carrying each pair's distinct-episode counts and the show's
+threshold, which is what D9 half (b) reads. It is NOT the set-membership drop rule, which is a
+different rule and deletes 0 records. Half (b) cannot be computed without these rows and they are
+not recoverable from the analysis table; a zero here would read as a data finding rather than a
+missing input, which is why it is a file.
+
+`s1_completion_used_a_post_cutoff_record` is computed here and carried onto the analysis table
+(column set fixed at 89 by decisions/0077). The walk runs over distinct episodes in ascending
+canonical-timestamp order, so the completing episode's timestamp is the maximum over the prefix
+the walk consumed: the flag is exactly `complete & (comp_ts >= tau_pull)`. It reads on the OPEN
+D11-at-position-3 question that 0068 lists and does not resolve.
 
 Output: processed/step8/a/positions.npz, processed/step8/a/positions.json,
         processed/step8/a/position3_dropset.npz
@@ -95,6 +103,10 @@ def main():
     complete_d11, comp_ts_d11 = s1_completion(s1_ptr, s1_num, s1_ts, pair_show, F1, need1,
                                               upper=TAU_PULL)
     s1_date = floor_day(np.where(complete, comp_ts, 0))
+
+    # did the first-pass walk consume a record dated at or after tau_pull? The walk runs in
+    # ascending canonical-timestamp order, so comp_ts is the maximum over the prefix consumed.
+    used_post_cutoff = complete & (comp_ts >= TAU_PULL)
 
     # ---- the clock (Step 1 SS6): T0 = max(S2 finale, first-pass S1 completion) ------------
     t0 = np.maximum(fin2_epoch, s1_date)
@@ -202,6 +214,7 @@ def main():
     np.savez_compressed(
         os.path.join(OUT, "positions.npz"),
         complete=complete, complete_d11=complete_d11, comp_ts=comp_ts, s1_date=s1_date,
+        used_post_cutoff=used_post_cutoff,
         t0=t0, fin2_epoch=fin2_epoch, binds_fin=binds_fin, binds_s1=binds_s1,
         binds_both=binds_both, L1=L1, F1=F1, L2=L2, need1=need1,
         pos1=pos1, pos2=pos2, pos3=pos3, pos4=pos4, pos4_deriv=pos4_deriv,
@@ -274,19 +287,28 @@ def main():
             "pairs_that_stop_being_completers_under_D11": int((complete & ~complete_d11).sum()),
             "completers_whose_completion_date_moves_under_D11": int(
                 (complete & complete_d11 & (comp_ts != comp_ts_d11)).sum()),
+            "completers_whose_first_pass_walk_used_a_post_cutoff_record": int(
+                used_post_cutoff.sum()),
         },
         "position_3_dropset_side_output": {
-            "ruling": "decisions/0075: retained because D9 half (b) is measured on the rows "
-                      "position 3 removes and no line of Step 8 said to keep them. An instance "
-                      "that does not keep them emits zero or fails, and a zero here reads as a "
-                      "DATA FINDING rather than a MISSING INPUT.",
+            "ruling": "decisions/0075 ruling 2, RESTATED by decisions/0077 because as written it "
+                      "named an EMPTY SET: position 3 removes 0 rows from the waterfall, since "
+                      "line 1 is already the S1-completer population (0068). The set retained is "
+                      "the pair universe less the completers -- the pairs that FAIL the S1 "
+                      "COMPLETION RULE, position 3's own rule -- carrying each pair's "
+                      "distinct-episode counts and the show's threshold, which is what D9 half "
+                      "(b) reads. NOT the set-membership drop rule, which is a different rule and "
+                      "deletes 0 records. Both arms had to choose an interpretation to compute "
+                      "anything; they chose this one and 0077 makes it the ruling.",
             "file": "processed/step8/a/position3_dropset.npz",
-            "rows_the_S1_completion_rule_removes_from_the_pair_universe": int(dropped3.sum()),
+            "pairs_failing_the_S1_completion_rule": int(dropped3.sum()),
+            "expected_by_0077": 58345,
             "rows_position_3_removes_from_the_waterfall": int(pos2.sum() - pos3.sum()),
             "why_those_two_differ": "waterfall line 1 is already the S1-completer population "
                                     "(0068), so the waterfall figure is 0 by construction. The "
                                     "set half (b) needs is the rows the RULE deletes, which is "
                                     "the pair universe less the completers.",
+            "unit": "PAIRS, not records (0077 SS2)",
             "pair_universe": int(n_pairs),
         },
         "T0_binding_term_three_ways_on_position_5_APPLY": {

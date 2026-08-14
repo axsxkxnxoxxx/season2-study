@@ -2,6 +2,8 @@
 
 **Owner:** Analytics Engineer (`a`) · **Mode:** GATE, dual implementation · **W = 108 days** · **H = 91 days** · **Zero API calls** · **Counts only**
 
+> **RERUN against `decisions/0077`.** That entry fixes the column names, states the discovery-channel overlap's two populations and restates position 3's drop set. **None of the three touches the assertion set, and no result in this report moves** — it is regenerated rather than carried forward, so the diff can confirm that rather than assume it.
+
 > **EVERY INVARIANT CARRIES A LABEL** (`decisions/0068`). **A code check catches an implementation that computed something wrongly; it cannot fail on any data, and it is NOT evidence for the rule.** A report saying "all invariants passed" overstates what was verified unless it names which ones could have failed.
 
 **Result: 8 checks ran and all passed.** **5 cannot fail on any data** (CODE CHECK); **1 is a code check by construction with force only as specified**; and **2 CAN FAIL ON REAL DATA** (DATA CHECK). The 703 line is **not an invariant** and is reported separately below as a population reconciliation.
