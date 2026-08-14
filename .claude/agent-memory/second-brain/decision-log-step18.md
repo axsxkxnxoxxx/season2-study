@@ -1,6 +1,6 @@
 ---
 name: decision-log-step18
-description: Coverage map of the decision log of record in decisions/ (0001-0054), which judgments still have no file, and assembled five-field text pending handoff to the Human Lead
+description: Coverage map of the decision log of record in decisions/ (0001-0064, through the Step 7 gate approval), which judgments still have no file, and assembled five-field text pending handoff to the Human Lead
 metadata:
   type: project
 ---
@@ -26,7 +26,7 @@ log shows the judgment."*
 > been fed back into a ruling** — see `0051` §2 and [[withdrawn-claims-register]] mode G. Correct it
 > here **and** grep the other six surfaces; read-back alone is not verification.
 
-## Coverage as of 2026-08-13 — `0001`–`0054`
+## Coverage as of 2026-08-14 — `0001`–`0064`
 
 | Files | Cover | Five-field completeness |
 | :--- | :--- | :--- |
@@ -51,7 +51,7 @@ log shows the judgment."*
 | **`0034`** | **Step 1 §7 amended. Continued at `τ2` = 199 days.** Gate 1 reopened as an amendment and re-approved | **Full, and it is now the strongest entry in the log on the "where a reviewer disagreed" field** — eleven rounds, the rule never broken, four failed anchor grounds tabled with how each failed, and Red Team's "should not be cut" recorded as **not followed**. See [[amendment-step1-continued-boundary]] |
 
 ### `0035`–`0050` — the Step 7 block. Sixteen entries, five Red Team HOLDs, gate still OPEN.
-### (The block now runs to `0054` — twenty entries, eight reviews, seven HOLDs. See below.)
+### (The block now runs to `0064` — **thirty entries, fifteen reviews, fifteen HOLDs, gate APPROVED.** See below.)
 
 **Read [[gate-step7-liveness]] first. The individual entries are each correct about what they
 decided; only the sequence shows what happened, and the sequence is the Step 18 material.**
@@ -100,11 +100,52 @@ decided; only the sequence shows what happened, and the sequence is the Step 18 
    **Neither arm flagged either, and the gate's own Check line is "dual implementation diff."** The
    write-up should not claim the diff caught them; a human reading two artifacts did.
 
-**Gate checklist:** **Steps 1 (amended and re-approved), 5 and 6 closed. Steps 7 and 8 open.** Three
-of five. **Step 7 has been approved twice and reopened twice, has run nine times, and is with Red Team
-after its eighth review — seven of the eight returned HOLD. Step 8 has never launched.** **The Step 5
-gate (`0021`, gate 2 of 5) was amended by `0053` and the amendment reverted by `0054` the same day; it
-stands as approved.**
+### `0055`–`0064` — the machinery catching up, and the approval. Ten entries, seven Red Team HOLDs.
+
+**The shape of this block is different from every other, and Step 18 should say so in one sentence:
+the ANALYSIS stopped moving at `0055` and the RECORD took nine more entries to become true about it.**
+
+| Files | Cover | Five-field completeness |
+| :--- | :--- | :--- |
+| **`0055`** | DERIV floor widened to 11.3015%; **the margin argument withdrawn as cherry-picked**; the grep control and the seventh surface; propagation #14–#17 | **Full, and §2 is the best "why not the obvious defence" in the block.** It refuses its own predecessor's supporting statistic on the ground that *"p5 supported the claim, the median contradicted it, and only p5 was quoted"* — **and then refuses margin statistics as a class**, because *"admissibility sets an endpoint; plausibility does not enter."* Both arms reached that independently and went further than the entry did. **Its §3 also records the control's own limit on its first run: a negative grep passes on a figure that was never written** |
+| **`0056`** | Sub-interval corrected to [9.6372%, 9.7333%]; **`9.6830` DE-REGISTERED**; the dependency list | **Full, and the "what it costs" field is the sharpest admission in the log:** registering `9.6830` as a false positive *"disarmed the grep control against the one string it most needed to catch, on four surfaces, in the section that created the control"* |
+| **`0057`** | The JSON halves; transitive dependency lists; **the channel window fixed to `(τ1, τ2)` OPEN**; surface 7 is the DIRECTORY; U2 measured at three | **Full. §5 is the model for closing a carried ambiguity**: it does not split the difference, it shows the adopted warrant already decides — *"at `s = τ2` that remainder is EMPTY"* — and then explains why fixing it at `W = 108`, where both forms are inert, is not premature: **at `W = 213` the boundary is the data's own edge** |
+| **`0058`** | **Regeneration replaces hand-patching**; the two ratio conventions REPORTED not reconciled; dates corrected | **Full, and it is the entry that changes the METHOD rather than a number.** *"Eleven entries of one error class is a method that cannot converge, and `0057` was the twelfth."* **§6's date correction is a model of the log's own honesty rule** — a public tracked artifact corrected in place with a note, not silently rewritten |
+| **`0059`** | The quotient is a target path; **the whole-file exemption DELETED**; **one register** | **Full. Its B2 finding is the one a reader should be shown**: the old exemption covered *"the entire Step 7 artifact set including both OPERATIVE deliverables, and it is why a wrong ratio survived a passing check."* **A stamp 300 lines above a value is not the point of use** |
+| **`0060`** | Arm a runs one convention (`0.2818`); exemptions scoped per file and per value; **a sentence withdrawn from three places** | **Full, and §2 is the block's mode-G echo:** the figure cited as proof *"was itself an instance of the defect it was cited to certify, and I published it twice without checking which denominator produced it — the same failure as adopting Red Team's 73.6537% without checking its population at `0051`"* |
+| **`0061`** | **Withdrawn CLAIMS are emitted by the generator**; the register holds phrases | **Full. Its finding is structural and generalises past this study:** a sentence was struck *"in the three places a human had typed it and left in the one place a SCRIPT types it."* **Both controls were blind by construction** — the `.md` form carries no numbers, the `.json` form is a string `verify()` skips |
+| **`0062`** | **A check that looks nowhere must FAIL**; one definition per statement; the covering qualifier on eight surfaces | **Full, and §1's sentence is the one to lift: *"an empty result and a clean result are the same value, and only the control knows which it produced."*** §4 also records what the controls **cannot** do: *"a missing qualifier is neither a wrong number nor a withdrawn claim. Red Team found it by grep on an idea"* |
+| **`0063`** | Widths from counts; **the rule objection closed on MEASUREMENT (652)**; the residual **logged, not fixed** | **Full, and it is the entry that breaks the cascade.** It fixes one thing and **logs seven findings as outstanding rather than correcting them under a blocking review** — after twelve consecutive entries in which the correcting entry introduced the next defect, **that is the change of method.** Its §1 also does the harder thing: it answers a challenge **in the direction that keeps the rule** and says *"the number that answers it is one Red Team could have read"* |
+| **`0064`** | **STEP 7 GATE APPROVED. ALT-BROAD, UNCONDITIONAL, residual published** | **Full, and its §3 is the case for approval stated as a distinction rather than a verdict:** reviews **1–8 changed what is measured**, reviews **9–15 changed where numbers were written, which were checked, and whether a claim about a check was true.** **§2 records two amendments the Human Lead made to the drafters' own wording** — demoting *"blocking Step 9, not Step 8"* to Red Team's recommendation, and **confirming rather than accepting** the "with these open, not around them" framing. **That is the five-field format's "where a reviewer disagreed" field working on the drafter** |
+
+**What Step 18 should take from `0055`–`0064`:**
+
+1. **Approving with a published residual is a decision, and it should be presented as one.** Nine items
+   are open, the approval is **unconditional**, and the Human Lead confirmed the framing in terms. The
+   alternative — conditioning the gate on them — would have blocked Step 8 on **control defects that
+   change no published figure.**
+2. **The distinction between reviews 1–8 and 9–15 is the whole argument** and it is falsifiable:
+   *"not one changed the rule, the population, the exclusion counts, or any bound endpoint."*
+3. **A challenge answered with a number already in the record is worth recording as such.** `0063` §1
+   does not soften it: the premise was false, **and the study had printed the refuting figure at `0045`.**
+4. **Mode H — asserted actions never taken — is the block's dominant failure** and is now in
+   [[withdrawn-claims-register]] with ten instances. The remedy that worked is **making the claim assert
+   itself**, not making it more carefully.
+5. **`0057` §7's counting rule must survive into the write-up: `#1`–`#18` is a surfaces-1–5 count and
+   reads as a total without it.**
+
+**Gate checklist:** **Steps 1 (amended and re-approved), 5, 6 and 7 closed. FOUR of five. Step 8 is the
+only gate left and it MAY NOW LAUNCH.** **Step 7 was approved twice, reopened twice, and approved a
+third and final time at `0064` — fifteen Red Team reviews, fifteen HOLDs, nine dual runs, zero API
+calls.** **The Step 5 gate (`0021`, gate 2 of 5) was amended by `0053` and the amendment reverted by
+`0054` the same day; it stands as approved.**
+
+**One item flagged and NOT fixed, and it is on the log itself:** `artifacts/step7-gate-approval.md`
+records that the approval is dated **2026-08-13** as the Human Lead gave it, while `0060`–`0063` —
+**including `0063`, which carries the 652 the approval's §3 rests on** — are dated **2026-08-14**. It is
+flagged to the Human Lead for confirmation or correction and **not fixed without a ruling**, `0058` §6
+having corrected a date drift in the other direction. **The two things that conflict are the approval's
+own date line and `0063`'s.**
 
 **Four entries now credit `second-brain` by name** — `0022`, `0028`, `0029` and `0035`, all four
 propagation gaps found on a post-gate consistency pass. Recorded without comment: the role is
@@ -119,11 +160,15 @@ continuity, and the log is the Human Lead's.
    each corrected its predecessor and each introduced a defect doing it. Instance A's line from
    inside `0045` — *"the seventh instance, inside the entry correcting the sixth"* — is the honest
    summary, and `0046` §0 names the cause as motivated number-selection rather than inattention.
-3. **Four standing controls came out of thirteen propagation failures** (nine through `0050`, then
-   #12 at `0052` §5 and #13 at `0054` §5; the fourth control is `CLAUDE.md` §Propagation's seven
-   surfaces with read-back **plus grep**), each written after the same
-   failure recurred somewhere new. A write-up that reports the controls without the failure count
-   makes the process look more orderly than it was.
+3. **Six standing controls came out of TWENTY-ONE propagation failures**, each written after the same
+   failure recurred somewhere new: item 46's five-file surface; `0046` §0's population rule; `0049` §6's
+   launch-snapshot practice; `CLAUDE.md` §Propagation's **seven** surfaces with read-back **plus grep**;
+   `0055` §3's **positive** counterpart (grep the corrected string, require non-zero); and `0058`–`0062`'s
+   **regeneration from one register**, whose governing rule is *"a check that finds nothing because it
+   looked nowhere must fail."* **`#1`–`#18` is a surfaces-1–5 count and must never be published as a
+   total; #19–#21 are the first found on surfaces 6 and 7.** A write-up that reports the controls without
+   the failure count makes the process look more orderly than it was — **and one that reports 18 as the
+   total repeats the error the count itself records.**
 4. **The dual-implementation regime's limits are now measured, not asserted.** `0040` §7 (agreement
    was the design goal), `0047` §4 (DERIV's diff is literally `0 = 0`), `0050` §0 (both halves
    carried every defect identically). **These belong beside the Step 6 block's success case, or the
@@ -258,11 +303,10 @@ ambiguity**. **This is the precedent [[open-items-and-contradictions]] X1 turns 
    threshold was **deleted** at `0042`. `0029` is still recorded Open on it and README item 30 still
    says Step 7 must not launch until it is ruled; both are **overtaken, not closed**
    ([[open-items-and-contradictions]] V4, V11).
-2b. **The Step 7 gate itself, when it closes.** It is with Red Team after a fifth review. The
-   closing entry should state which of the five propagation files it touched and which it
-   deliberately did not (item 46), and it inherits `0048` §9's open item: **`0021` licenses one
-   direction of a biconditional and the converse is asserted, not justified** — now a Step 14
-   limitation rather than a blocker.
+2b. ~~**The Step 7 gate itself, when it closes.**~~ **CLOSED as `0064`, 2026-08-13.** It inherited
+   `0048` §9's open item — **`0021` licenses one direction of a biconditional and the converse is
+   asserted, not justified** — and that is now **residual item 1**, a Step 14 limitation published with
+   the result rather than a blocker. **The remaining gate entry to write is Step 8's.**
 3. **The gap hypothesis**, if and when it is assigned an owner (README items 3 and 8).
 4. **Ratification of `0005`–`0008`**, which are the only Open entries in the log.
 5. **Whether to resume the Step 4 pull or sample the pool down** (README items 11 and 19). Every

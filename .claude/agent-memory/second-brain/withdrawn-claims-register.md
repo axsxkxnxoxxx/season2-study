@@ -1,6 +1,6 @@
 ---
 name: withdrawn-claims-register
-description: The study's own error log — claims asserted and later withdrawn or corrected, organised by failure mode, covering Steps 1 through 7 including the Step 7 liveness gate's eight-entry self-correction cascade, mode F, and mode G (a stale memory fed back into a ruling)
+description: The study's own error log — claims asserted and later withdrawn or corrected, organised by failure mode, covering Steps 1 through 7 including the liveness gate's twelve-entry self-correction cascade, mode F, mode G (a stale memory fed back into a ruling) and mode H (an asserted action never taken); current through decisions/0064
 metadata:
   type: project
 ---
@@ -8,11 +8,12 @@ metadata:
 # Withdrawn-claims register
 
 **Why this file exists:** every claim below was asserted confidently, survived at least one review,
-and was later found false. The value is not the list — it is the **taxonomy**, because the same six
+and was later found false. The value is not the list — it is the **taxonomy**, because the same seven
 failure modes keep recurring and each one is checkable in advance.
 
-**How to apply:** when reviewing any gate artifact, run all six checks below. They are cheap and
-they have all caught something.
+**How to apply:** when reviewing any gate artifact, run all seven checks below. They are cheap and
+they have all caught something. **Mode H is the one to run on `0055`–`0063` and on Step 8**, because it
+is the mode that survives a review: an entry claiming a check was run reads exactly like one where it was.
 
 ## The failure modes, and the check that catches each
 
@@ -24,6 +25,33 @@ they have all caught something.
 | **D** | **A unit or order-of-magnitude error that nobody re-derived** | Sanity-check any figure that crosses a unit boundary — per-minute vs per-hour, nanoseconds vs microseconds — against a second route to the same number |
 | **F** | **A figure measured on one population or configuration, quoted as if measured on another.** **Added 2026-08-13. It is the study's most frequent single error** — at least nine instances, seven of them inside the Step 7 block, and it is what `0046` §0's standing rule exists to stop | **Name the population at the point of use, every time.** For an interval endpoint, name the population it is computed on **and** the estimand it bounds, and check they are the same population (`0047` §3). Mode C is its ancestor — C is a *cost* against a dead baseline, F is *any* figure against the wrong population |
 | **G** | **A stale or wrong record fed back into a ruling and adopted without being checked against the producer.** **NEW, added 2026-08-13.** Distinct from F: F is a figure quoted against the wrong population; **G is a figure a SECONDARY record says is wrong, believed over the primary output that produced it** | **Check the producer, not the summary.** Grep the arms' JSON for the key before recording any figure as unreconstructible, wrong, or unpopulated. **A figure that an independent reviewer has cleared and that you cannot reproduce is first a claim about your reconstruction.** And: **a sum that reconciles is not a split that reconciles** — check every component against a second route, not the total |
+| **H** | **AN ASSERTED ACTION OR PROPERTY THAT WAS NEVER TAKEN OR NEVER HELD** — an entry saying an edit was made, a check was run, or a control has a property, when it did not. **NEW, added 2026-08-14, and it is the dominant mode of `0055`–`0063`.** *This is my classification of a pattern the entries name individually; it is not a Human Lead ruling.* Distinct from A: A over-reasons from real definitions; **H states a fact about the world that a single look would refute** | **Make the claim assert itself, or do not make it.** `0060` B5's fix is the model — four `assert _dead not in MARK.pattern` lines run at import, *"so this claim cannot go stale silently again."* And: **an empty result and a clean result are the same value.** Every check that can return "nothing found" must say whether it found nothing **or looked at nothing** (`0062`) |
+
+## Mode H — the instances, and there are ten in nine entries
+
+**`0049`'s header** asserted a five-file propagation pass that did not happen (`0050` opens by saying
+so) · **`0052` §6** *"unreconciled and now specified"* — the bootstrap **was never specified in any
+file** · **`0055` §5a** *"is stamped, not rewritten"*, asserting a step deliberately held · **`0055`
+§5c** added a register row **that was not added** · **`0056` §4** *"every occurrence below is
+superseded, and each is marked inline"* — **false in both files**, with the withdrawn bound under an
+**OPERATIVE** heading and as an arm's **recommendation** · **`0057` §1** *"fifteen values corrected in
+each file, listed and verified individually"* — **false**, a key whitelist walked past three regions ·
+**`0058` §3** *"Reverted"* — reverted in the entry and **not in the body** · **`0059` §2** *"`MARK` no
+longer matches `corrected`, `register`, `legitimate` or `ADOPTED`"* — **all four were still there**, a
+string replace that failed to match and was not asserted on · **`0060` §1** *"the run fails if any
+written quotient is not this arm's numerator over this arm's denominator"* — **true for arm a only** ·
+**`0062` §3** *"every derived figure"* — **false by four** (`0063` §3 item 2.2).
+
+**Three of these were named at the time as *"the third consecutive blocker of that exact shape"*
+(`0060` B5), *"the fourth asserted-but-not-taken action in three entries, and this one was inside the
+correction for the third"* (`0057` §2), and *"a fourth docstring asserting a code property the code
+lacked"* (`0062` §4).** The mode was visible to the participants and kept recurring anyway, which is
+why it belongs in the taxonomy rather than in the narrative.
+
+**And the deepest instance is a limit recorded as hypothetical while it was live:** `0060` §6 wrote the
+JSON-string gap down as *"not a defect today."* **It was already a defect on the day it was recorded** —
+B8 was live in a `.json` string under `_DERIVED` and in `.md` prose carrying no numbers, in all four
+operative deliverables (`0061`). **Recording a gap as harmless is not the same as checking whether it is.**
 
 ---
 
@@ -153,7 +181,9 @@ seven that can be said of."*
 | *"Step 7's own dual run **cannot exercise the rule**… the rule is first exercised at Step 8"* | `0046` §7 | **Too pessimistic and refuted by instance B.** The rule **is** exercised on APPLY. **What is true is narrower and is the operative warning: only the APPLY figures carry information, and DERIV's diff is literally `0 = 0` at every arm** |
 | *"73.6537% is on no population"* | `0051` §2 | **It is the Continued ceiling on 196,654** — `(144,140 + 703)/196,654` — and **both arms publish it, both JSONs carry the key.** Withdrawn by `0052` §2. **Mode G**, above |
 | *"The ruling has since been read as 'after `τ1`' only by accident of when it was written"* | `0053` §1 — the premise of an **amendment to an approved gate** | **False. `0034` — the entry that CREATED the second window, the same date — ruled it in terms: *"Liveness stays anchored at `τ1`."*** `0051` re-affirmed it with both windows in view. **`0053` amended `0021` and withdrew `0048` §9 while leaving `0034` standing, uncited and unmentioned**, so the adopted rule contradicted a live ruling in an approved gate. **`0053` withdrawn in its entirety by `0054`** — the only entry in the log so withdrawn |
-| *"The pair could not have produced the evidence the Continued test reads"* — the warrant written into `0021` | `0053` §1 | **False for the pairs the rule was adopted to capture.** A record inserted at `s` can carry any `watched_at ≤ s`, and **`0021` Adoption 3 keeps post-dated records** — so an account last active at `s ∈ (τ1, τ2)` **could** have produced Continued evidence, failing only for evidence dated in `(s, τ2)`. **The 90 have p5 margin 1.7 days and a minimum of 0.13** |
+| *"The pair could not have produced the evidence the Continued test reads"* — the warrant written into `0021` | `0053` §1 | **False for the pairs the rule was adopted to capture.** A record inserted at `s` can carry any `watched_at ≤ s`, and **`0021` Adoption 3 keeps post-dated records** — so an account last active at `s ∈ (τ1, τ2)` **could** have produced Continued evidence, failing only for evidence dated in `(s, τ2)`. **Do NOT restate the p5-margin support — see the next row** |
+| *"The 90 have **p5 margin 1.7 days, minimum 0.13** — demonstrably alive for ~89 of the 91 days"* — the support offered for the row above | `0054` §3, and **restated in this memory until 2026-08-14** | **WITHDRAWN AS CHERRY-PICKED (`0055` §2). That is the tail; the record's own median for the same 90 is 44.5 days**, so for half of them roughly half the Continued window is unobserved. **p5 supported the claim, the median contradicted it, and only p5 was quoted.** Instance B reproduced **p5 = 1.6552, median = 44.5272 on the same 90 pairs.** **The correct ground carries NO margin statistic at all**: a floor is a **worst case, not an expectation**, and even at 0.13 days the Continued condition — which reads **distinct episodes** — is satisfiable by a single binge. **Admissibility sets an endpoint; plausibility does not enter. Both figures are inadmissible.** Both arms argued the whole **class** out of endpoint justification: admissibility is **binary** and a margin **continuous** (A), it is a property of the **support** not the **measure** (B), and `p5 = 1.7` **removes zero pairs from the admissible set** — while reintroducing *"an unowned threshold into the one step whose history is the removal of exactly that shape."* **The median is the figure that would have been quoted had the conclusion needed defending the other way** |
+| *"Not one of the four rules drops conjunct 2 — it is the alternative nobody has priced"* | Red Team's **fifteenth** review, the last substantive challenge to the rule | **False. PF-LIMIT IS the no-conjunct-2 rule**, adopted `0041`/`0042` and superseded `0046`/`0048` — *"the rule family was tested against exactly this alternative, before ALT-BROAD existed."* **And the 652 it asked for had been printed since `0045` §1**, whose table gives PF-LIMIT's DERIV split as `751 = 0 NS + 652 Continued + 99 S&L`. **Closed on measurement** (`0063` §1): dropping conjunct 2 excludes **652 Continued pairs on evidence they demonstrably produced**, which is the one thing a liveness rule cannot coherently do. **What survives is real and is now measured: the outcome-conditioning is 652 on BOTH populations** |
 | *"ALT-BROAD cut a continuous failure mode at one end, so cut it at `τ2` instead"* | `0052` §1 | **The continuity argument is symmetric and refutes ALT-MATCHED from the other end just as forcefully. It proves NO instant in `[τ1, τ2]` is warranted — not that `τ2` is.** Confirmed by a sweep neither arm was asked for: **smooth, monotone, no elbow, no plateau** |
 | *"Widening the floor would have been the FIFTH consecutive bound with a non-covering endpoint"* — the stated reason for preferring ALT-MATCHED | `0052` §4 | **Exactly backwards. Widening to 18,952 is what MAKES the endpoint covering** (`0054` §1). **The rejection reason named the defect the alternative repairs** |
 | *"`task-sheet.md`'s 'the silence test is anchored at `τ1` and only at `τ1`' is false"* | `0053` §3 defect 1 | **Withdrawn with `0053`. The clause is TRUE and is restored** — `0034`, `0051`, `0054` |

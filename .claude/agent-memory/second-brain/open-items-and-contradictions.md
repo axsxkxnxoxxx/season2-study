@@ -1,11 +1,107 @@
 ---
 name: open-items-and-contradictions
-description: Live register of open items and cross-step contradictions in the Season 2 study, each with its two conflicting sources named — re-verified 2026-08-13 after decisions/0051-0054, the ALT-MATCHED revert and the widened floor, with V7 closed as an error of mine that reached a ruling
+description: Live register of open items and cross-step contradictions in the Season 2 study, each with its two conflicting sources named — re-verified 2026-08-14 after decisions/0055-0064 and the Step 7 gate approval, with V7 closed as an error of mine that reached a ruling and T1-T4 new
 metadata:
   type: project
 ---
 
-# Open items and contradictions — re-verified 2026-08-13 (second pass, through `0054`)
+# Open items and contradictions — re-verified 2026-08-14 (third pass, through `0064`)
+
+---
+
+## NEW — surfaced 2026-08-14 by the pass over `0055`–`0064`
+
+**None of these is a disposition. Each names its two conflicting sources and stops.**
+
+### T1. A withdrawn ARGUMENT survived in this memory for nine entries, and no control could see it
+
+- **`0055` §2 withdrew `0054` §3's margin argument as cherry-picked**, in terms: *"p5 supported the
+  claim, the median contradicted it, and only p5 was quoted"* — the same 90 pairs have **p5 = 1.6552 and
+  median = 44.5272**, and *"the correct ground carries no margin statistic at all."*
+- **This memory carried it as live supporting reasoning in three files until 2026-08-14** —
+  `glossary-terms-and-thresholds.md`, `gate-step7-liveness.md` and `withdrawn-claims-register.md`, each
+  stating *"the 90 have p5 margin 1.7 days, minimum 0.13."* **Corrected in this pass.**
+
+**Why it is worth a register entry rather than a silent fix.** It is **the B8 blindness class on surface
+7**: a withdrawn *argument*, not a withdrawn figure. **It carries no superseded number** — 1.7 and 0.13
+are correct statistics, withdrawn only as *grounds* — **and it is in no `WITHDRAWN_PHRASES` row**, so the
+numeric half of `check_surfaces.py` sees nothing wrong and the phrase half has no key to match. **The
+same shape `0062` §4 named for the covering qualifier: *"a missing qualifier is neither a wrong number nor
+a withdrawn claim."*** Here it is the mirror image — a **present** claim that is neither.
+
+**The two things that conflict are `0055` §2 and this memory's own three copies.** Whether a
+`WITHDRAWN_ARGUMENTS` band should exist alongside `WITHDRAWN_PHRASES`, and whether this counts as a
+numbered propagation failure on surface 7, are the Human Lead's calls.
+
+### T2. Two files still name this glossary as the canonical register; the source says otherwise
+
+- **`src/step7_register.py` docstring**, from `0059` B3: *"there were TWO hand-maintained registers…
+  Two registers is one register plus a defect waiting. **Everything that decides whether a number is
+  correct lives here and nowhere else.**"*
+- **`artifacts/step7-liveness-bb-{a,b}.md:3`**, the hand stamp: recorded at **`0063` §3 item S7** as
+  *"stale and names the glossary as canonical register — **B3's two-registers defect reinstated in
+  prose**, outside `BEGIN…END`, carrying no number and no phrase so no control sees it."*
+
+**Carried by `0063` as an outstanding control defect, not fixed.** Recorded here because **the other half
+of it was mine**: this glossary's trap table was headed *"REGISTER — canonical location"* until
+2026-08-14. **That half is corrected** — the table now states that `src/step7_register.py` governs and
+the glossary mirrors it. **The `artifacts/` half is untouched and is not mine to touch.**
+
+### T3. The approval and the entry its central figure rests on are dated a day apart
+
+- **`artifacts/step7-gate-approval.md`** and **`decisions/0064`**: dated **2026-08-13**, *"as stated by
+  the Human Lead."*
+- **`decisions/0060`–`0063`**: dated **2026-08-14** — **including `0063`, which carries the 652
+  measurement the approval's §3 rests on.**
+
+**Already flagged in the approval itself**, which records it rather than silently adjusting it and says
+neither is fixed without a ruling, since **`0058` §6 corrected a date drift in the other direction** (all
+of `0052`–`0057` had been dated a day ahead). **Noted here so it is not lost between the artifact and the
+log.** **Not mine to resolve.**
+
+### T4. The propagation-failure count is still stated against five surfaces in every consuming file
+
+- **`0057` §7:** *"All eighteen numbered propagation failures were found on surfaces 1–5… **The count is
+  not renumbered — 18 is a true count of surfaces 1–5 — but it must never be published as a total**,
+  which is how it reads without the bullet now in Step 14."*
+- **`0044` §3.1, README item 46, `0050`, `0052` §5, `0054` §5** all count against **five surfaces**, and
+  **README item 46 still reads "five times now."**
+
+**`0055` §5b logged this as U2 and `0057` §7 carried it to Step 14 as measured and non-zero at three
+(#19, #20, #21). Whether the count should be restated against seven surfaces was explicitly left
+undecided** — *"not decided here"* (`0055`), *"the count is not renumbered"* (`0057`). **It is the Human
+Lead's call and it is still open.** The two things that conflict are `0057` §7's counting rule and README
+item 46's wording.
+
+### T5. V8's nine superseded artifacts are now handled by an ALLOWLIST, not by a forward pointer
+
+- **V8, below:** nine superseded Step 7 deliverables in `artifacts/` publish 632 d, 1,293 d, PF-LIMIT and
+  ALT as their proposals **with no header naming what superseded them**, and `step7-liveness-alt-a.md`
+  line 162 carries *"the exclusion set is empty on DERIV at every arm from 38 to 213"* — **the exact
+  claim `0049` defect #4 called false in five files** — live and unmarked in a public artifact.
+- **`src/step7_register.py` `WHOLLY_SUPERSEDED_FILES`** now names each of them by name with a reason,
+  e.g. `"step7-liveness-alt-a": "the ALT rule, superseded by ALT-BROAD (0048)"`.
+
+**These are different remedies for different readers and only one of them has been applied.** The
+allowlist tells **the control** to stop flagging the file; **a header would tell a HUMAN reader the file
+is superseded and by what.** `0029` put such a header on both Step 6 artifacts and
+`artifacts/s1-completer-diagnostic.md` opens with one, so the repo's own practice exists. **The two
+things that conflict are `WHOLLY_SUPERSEDED_FILES`'s coverage and the files' own unmarked headers.**
+**Recorded, not disposed** — V8 may well be intended to stay open now that Step 7 is closed.
+
+---
+
+## STATUS of U1 and U2, re-checked 2026-08-14
+
+- **U1 (`0054` §7 published the `0.4033` artifact its own §6 named): APPEARS ACTIONED.** `0055` §5
+  corrected `0054` §7 in place to **0.4032 pp**, and separately found **the same artifact had survived in
+  `task-sheet.md`** after being fixed in the decision entry — *"the correction landed in the decision
+  entry and not in the file an agent reads, which is the failure this entry exists to control, committed
+  inside it."* **Found by the `analytics-engineer`, which declined to fix it because its brief said not
+  to touch the APPLY figures, and reported it instead.** `0.4033` is now a `SUPERSEDED` row with
+  successor `0.4032`. **The two-arm divergence itself still stands unreconciled, correctly** — it is the
+  ratio conventions, residual item 9.
+- **U2 (surfaces 6 and 7 added after the count was fixed): CARRIED, and now measured.** See **T4**.
 
 **Why this file exists:** Second Brain surfaces contradictions and names the two things that
 conflict. It does not decide, arbitrate, or fix. Every entry names its two sources so the Human
@@ -14,7 +110,7 @@ Lead can rule without re-reading the corpus.
 **How to apply:** re-check each entry against the files before raising it. Several close by
 ordinary progress rather than by a decision.
 
-**The decision log of record is `decisions/`** — `README.md` plus `0001`–`0054`. Where a decision
+**The decision log of record is `decisions/`** — `README.md` plus `0001`–`0064`. Where a decision
 file and this memory differ, `decisions/` governs on who decided what and when; the deliverable it
 approves governs on substance. I never edit `decisions/` — I report.
 
@@ -61,9 +157,11 @@ be restated against seven surfaces is the Human Lead's call, not mine.**
 
 ## The `0035`–`0050` pass — V1–V11. Most were actioned by `0051`. Re-checked 2026-08-13.
 
-**Context for all of these: the propagation surface has now failed THIRTEEN times** (#12 at `0052` §5,
-#13 at `0054` §5), and **both halves of every dual pair have carried each defect identically**, so the
-dual-implementation diff cannot catch this class at all. Full arc in [[gate-step7-liveness]].
+**Context for all of these: the propagation surface has now failed TWENTY-ONE times.** **`#1`–`#18` is a
+SURFACES-1–5 count and must never be published as a total** (`0057` §7); **#19 and #20 are on surface 6,
+#21 is on surface 7 — this memory.** **Both halves of every dual pair have carried each defect
+identically**, so the dual-implementation diff cannot catch this class at all. Full arc in
+[[gate-step7-liveness]].
 
 > **Status re-check, 2026-08-13, by grep only, during a window in which the spec files are being
 > edited by others — so these readings may be mid-flight and none is a disposition.**
@@ -73,8 +171,13 @@ dual-implementation diff cannot catch this class at all. Full arc in [[gate-step
 >   **Appears actioned.**
 > - **V2 (`decisions/README.md` has no row for `0050`):** the index now matches `0050`–`0054`.
 >   **Appears actioned.**
-> - **V3 (gate checklist states PF-LIMIT as the rule):** the Step 5 checklist line now records the
->   `0053` amendment and its same-day withdrawal by `0054`. **Appears actioned.**
+> - **V3 (gate checklist states PF-LIMIT as the rule): CLOSED, verified 2026-08-14.** `decisions/README.md`
+>   line 93 now reads *"**Step 7** liveness rule — **APPROVED by the Human Lead, 2026-08-13** ([0064]…).
+>   **ALT-BROAD: not live iff no insertion after `τ1` AND NOT Continued**, silence anchored at `τ1` and
+>   only at `τ1`, channel window `(τ1, τ2)` open… **Approval is UNCONDITIONAL with the §4 residual open
+>   and published**"*, with both bounds and both exclusion counts. **The PF-LIMIT sentence is gone and
+>   the box is ticked.** The Step 5 line also records the `0053` amendment and its same-day withdrawal.
+>   **Step 8 is the one unticked box.**
 > - **V4 (README items 30/31 unstruck):** item 30 now carries `~~…~~ **CLOSED**`. **Appears actioned.**
 > - **V7:** **not open — it was wrong.** See below.
 > - **V5, V6, V8–V11:** not re-verified this pass. **V8 in particular is now surface 6 of seven**
@@ -249,6 +352,14 @@ unmarked in a public artifact. Same file, line 37: *"`τ2` plays no part"*, with
 superseded Step 7 artifacts got no such header.**
 
 ### V9. `decisions/0034` still states the clause `0049` withdrew
+### CLOSED, verified 2026-08-14 — amended in place with a marker, exactly as `0048` §8 requires
+
+**`decisions/0034` line 35 now reads:** *"~~`τ2` plays no part in the liveness test.~~ **AMENDED
+2026-08-13 (`0051`): under ALT-BROAD `τ2` DOES play a part** — the rule's second conjunct is the
+**Continued** test, read at `τ2`. **What this ruling actually fixed, and what stands, is that the SILENCE
+test is `τ1`-anchored**, which is what ALT-BROAD implements. The rule reads two instants: silence at
+`τ1`, Continued at `τ2`."* **Strikethrough plus marker plus the surviving substance — the convention was
+applied.** Original entry retained below for the reasoning.
 
 - **`decisions/0034` line 35:** *"…which is tested at `τ1`. **`τ2` plays no part in the liveness
   test.** Written into the Step 7 spec so…"*
@@ -897,15 +1008,19 @@ namespace is not part of the task description and separating it does not weaken 
 to Steps 7 and 9 (`data-scientist` / `-b`) and Step 8 (`analytics-engineer` / `-b`). No output was
 lost, and the identical inputs are themselves evidence the collision never reached the computation.
 
-### Critical path, updated 2026-08-13 after `0054`
+### Critical path, updated 2026-08-14 after `0064`
 
-Steps 1 (amended and re-approved), 3, 4 (stopped), 2, 5 and 6 are done. **Three gates closed of
-five.** **Step 7 has run nine times and is STILL OPEN** — approved at `0039` and suspended, approved
-at `0042` and reopened, rule changed at `0046`, at `0048`, at `0052`, and **changed back at `0054`.**
-It sits with Red Team after its **eighth** review; **seven of the eight returned HOLD.**
+Steps 1 (amended and re-approved), 3, 4 (stopped), 2, 5, 6 and **7** are done. **FOUR gates closed of
+five. STEP 8 IS THE ONLY GATE LEFT AND IT MAY NOW LAUNCH.** **Step 7 ran nine times and is
+APPROVED** (`0064`, Human Lead, 2026-08-13, **unconditionally, residual published**) — approved at
+`0039` and suspended, approved at `0042` and reopened, rule changed at `0046`, at `0048`, at `0052`,
+**changed back at `0054`**, and approved a third and final time after **fifteen Red Team reviews, all
+fifteen HOLD.** **Reviews 1–8 contested the rule; reviews 9–15 contested the record, and not one of
+them changed the rule, the population, the exclusion counts or any bound endpoint.**
 
-**The rule is ALT-BROAD**, restored: *not live iff no insertion instant after `τ1` **AND** not
-Continued.* **Silence anchored at `τ1` and only at `τ1`** (`0034`, `0051`, `0054`). **The
+**The rule is ALT-BROAD**, restored and approved: *not live iff no insertion instant after `τ1` **AND**
+not Continued.* **Silence anchored at `τ1` and only at `τ1`** (`0034`, `0051`, `0054`); **the channel
+window is `(τ1, τ2)`, OPEN at `τ2`** (`0057`). **The
 started-and-left bound is widened** to cover the 90 APPLY / 89 DERIV channel pairs that may in truth be
 Continued: **APPLY [9.6372%, 10.0405%]**, **DERIV [11.3015%, 11.4291%]**. **Gate 2 (`0021`) was
 amended by `0053` and the amendment reverted by `0054` the same day** — it stands as approved.

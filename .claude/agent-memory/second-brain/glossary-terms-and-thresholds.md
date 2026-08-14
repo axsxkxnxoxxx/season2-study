@@ -1,15 +1,21 @@
 ---
 name: glossary-terms-and-thresholds
-description: Live glossary of every term, threshold and constant in the Season 2 abandonment study, each tagged with the step, decision and gate that fixed it and which population its figures are on — current through decisions/0054, the ALT-MATCHED revert and the widened started-and-left floor (2026-08-13)
+description: Live glossary of every term, threshold and constant in the Season 2 abandonment study, each tagged with the step, decision and gate that fixed it and which population its figures are on — current through decisions/0064, the Step 7 gate APPROVAL (ALT-BROAD, unconditional), 2026-08-14
 metadata:
   type: reference
 ---
 
 # Glossary — terms, thresholds, and where each was set
 
-**Current through `decisions/0054`, 2026-08-13** — Steps 3, 4, 2, 5, 6, the Step 1 §7 amendment, and
-the Step 7 liveness gate (still OPEN). This is an index, not a substitute for the artifacts. Verify
+**Current through `decisions/0064`, 2026-08-14** — Steps 3, 4, 2, 5, 6, the Step 1 §7 amendment, and
+the **Step 7 liveness gate, APPROVED**. This is an index, not a substitute for the artifacts. Verify
 against the file before acting on any row.
+
+> **THIS FILE IS NOT THE REGISTER. `src/step7_register.py` is** — one register, imported by both
+> `src/check_surfaces.py` and `src/step7_regenerate_derived.py` (`0059` B3: *"Two registers is one
+> register plus a defect waiting"*). The trap table below is a **reading aid that mirrors it**, and
+> where the two differ **the source file governs**. `0063` §3 item S7 records the stale `bb-{a,b}.md:3`
+> stamp naming the glossary as canonical as a **carried defect**; this notice is the other half of it.
 
 > **This file is PROPAGATION SURFACE 7** (`CLAUDE.md` §Propagation, added 2026-08-13). A ruling lands
 > here as well as in `decisions/` and the five spec files, and **surfaces 6 (`artifacts/`) and 7 (this
@@ -31,20 +37,20 @@ Status vocabulary: **FIXED** (set and gate closed) · **DEFERRED** (form fixed, 
 | Term | Value / status | Where set | Gate |
 | :--- | :--- | :--- | :--- |
 | **`W`** — the window, in days | **FIXED: `W = 108 days`.** The **ceiling** of the **90th percentile** (107.7135) of the **continuous** lag from clock start to first S2 episode, on the **C1 subset (25,120 pairs, 206 shows, 2,050 users)** of the 128,099 clean-record sample. **Applies to all pairs.** Precision: **±18 days, show-clustered** — not the decimals. **Since `0034`, `W` no longer assigns every outcome state on its own**: `τ1` assigns never-started, `τ2 = τ1 + H` assigns Continued. **Precision history: 107 (`-a`, floored) → 107.7135 (`-b`, raw) → 108 (adopted ceiling).** Neither artifact figure is the adopted value; both predate `0025`. | Rule: `0024` (percentile) + `0025` (unit and ceiling). Value: `0026`. Propagated into Steps 7, 8, 13 and both Step 6 artifacts by `0029` | **Step 6 gate, APPROVED 2026-08-12, `0026`. Gate 3 of 5** |
-| **Liveness rule** | **THERE IS NO THRESHOLD. The rule is ALT-BROAD:** *a pair is **not live iff BOTH** the account shows **no insertion instant after that pair's `τ1`** AND the pair is **NOT Continued**.* **Restored by `0054` after being superseded by ALT-MATCHED at `0052` for one day.** A numeric threshold was derived three times (632 d, 1,293 d) and **DELETED at `0042`** — the headline could not distinguish 787 from 2,200 days. **No parameter of its own; FULLY DETERMINED BY `W`** (`0044` — "no free parameter" is withdrawn). Basis unchanged: **insertion time**, not claimed `watched_at` (`0021` ruling 2); stored play-`id` calibration a required input that **neither instance refits** (`0022`, `0029`); **pair-level, never a wholesale user drop** (`0034`). **The SILENCE test is anchored at `τ1` and ONLY at `τ1`** — ruled at `0034` (*"Liveness stays anchored at `τ1`. Liveness licenses trusting a null, and the null is `\|A\| = 0`, which is tested at `τ1`"*), re-affirmed at `0051` with both windows in view, and re-affirmed again at `0054`. **The Continued conjunct is read at `τ2`** (`0049` — *"`τ2` plays no part"* is withdrawn), and that is the ONLY role `τ2` has in the rule. **Do not reintroduce a pre-`τ1` requirement in any form — withdrawn twice** (`0040` §1, `0042` §3), both for contradicting gate `0021`. **Do not re-anchor the silence test at `τ2` in any form — tried once as ALT-MATCHED and reverted** (`0052` → `0054`) | Rule `0048`, restored `0054`; deletion `0042`; coupling `0044`; anchor `0034`, `0051`, `0054`; corrections `0043`, `0045`–`0052` | **Step 7 gate, still OPEN.** Approved twice (`0039`, `0042`) and reopened twice; **eight Red Team reviews, seven HOLDs.** **Step 8 has not launched** |
+| **Liveness rule** | **APPROVED. THERE IS NO THRESHOLD. The rule is ALT-BROAD:** *a pair is **not live iff BOTH** the account shows **no insertion instant after that pair's `τ1`** AND the pair is **NOT Continued**.* **Silence anchored at `τ1` and ONLY at `τ1`; the channel window is `(τ1, τ2)`, OPEN at `τ2`** (`0057` §5 — `(τ1, τ2]` was **wrong, not ambiguous**: at `s = τ2` the unobserved remainder is empty, so the pair must not be conceded). **Restored by `0054` after being superseded by ALT-MATCHED at `0052` for one day.** A numeric threshold was derived three times (632 d, 1,293 d) and **DELETED at `0042`** — the headline could not distinguish 787 from 2,200 days. **No parameter of its own; FULLY DETERMINED BY `W`** (`0044` — "no free parameter" is withdrawn). Basis unchanged: **insertion time**, not claimed `watched_at` (`0021` ruling 2); stored play-`id` calibration a required input that **neither instance refits** (`0022`, `0029`); **pair-level, never a wholesale user drop** (`0034`). **The SILENCE test is anchored at `τ1` and ONLY at `τ1`** — ruled at `0034` (*"Liveness stays anchored at `τ1`. Liveness licenses trusting a null, and the null is `\|A\| = 0`, which is tested at `τ1`"*), re-affirmed at `0051` with both windows in view, and re-affirmed again at `0054`. **The Continued conjunct is read at `τ2`** (`0049` — *"`τ2` plays no part"* is withdrawn), and that is the ONLY role `τ2` has in the rule. **Do not reintroduce a pre-`τ1` requirement in any form — withdrawn twice** (`0040` §1, `0042` §3), both for contradicting gate `0021`. **Do not re-anchor the silence test at `τ2` in any form — tried once as ALT-MATCHED and reverted** (`0052` → `0054`) | Rule `0048`, restored `0054`; deletion `0042`; coupling `0044`; anchor `0034`, `0051`, `0054`; window `0057`; corrections `0043`, `0045`–`0063` | **Step 7 gate, APPROVED 2026-08-13, `0064`. Gate 4 of 5.** Record `artifacts/step7-gate-approval.md`. **UNCONDITIONAL — the §4 residual publishes with the result and is not a condition.** Approved twice before (`0039`, `0042`) and reopened twice; **fifteen Red Team reviews, fifteen HOLDs.** **Step 8 may launch and is the remaining gate** |
 | **S1 completion rule** | **FIXED.** `F1 ∈ D1` **and** `\|D1\| ≥ ceil(0.90 × L1)`, distinct episodes, membership by the listed set `E1`. Now applied against **real** `E1` from the Step 2 frame, not a proxy (`0019`). | Step 1 §4 | **Step 1 gate, APPROVED 2026-08-10** |
 | **Contamination exclusion rule** | **FIXED.** Exclude **16,665** pairs whose S2 evidence is *entirely* air-date-stamped, plus **1,542** with no S2 evidence and a fabricated binding clock start. Total **18,207**; retains **201,900 of 220,107 (91.73%)**. Disjoint by construction. | Step 5 §9, revision 6 | **Step 5 gate, APPROVED 2026-08-12, `0021`. Gate 2 of 5** |
-| **Filter order** | **FIXED by `0029`, ahead of the gate.** **1.** Step 2 frame → **2.** `L2 = 1` exclusion → **3.** S1 completion rule → **4.** contamination exclusion → **5.** right-censoring → **6.** liveness rule → **7.** outcome assignment **at two instants** (`\|A\| = 0` at `τ1`, Continued at `τ2`, per `0034`). **Why it had to be fixed:** the final row set commutes — every filter is row-wise — but the **required per-filter sample size does not**, so two faithful instances could report different waterfalls on an identical table and the diff could not tell that from a bug. **Contamination before right-censoring** was already required. **Right-censoring before liveness** is the one genuine choice: censoring is a property of the clock and `pull_date`, objective and behaviour-independent, so running it first measures liveness's marginal cost on a fully observable population — the number Step 9's bound needs. **Since ALT-BROAD, waterfall line 6 is OUTCOME-CONDITIONAL and must be reported as such** — the Continued test is evaluated before liveness applies. **That is permitted, and both arms proved it independently:** the two are **row-local predicates on the position-5 output and commute exactly**, and `0029`'s rationale concerns per-filter **sample size**, which cannot reach position 7 because **outcome assignment removes no rows** — positions 1–6 are filters, **position 7 is an annotation** contributing no waterfall line. **The monotone invariant is coded `>=`, not `>`** (`0047`, reason corrected by `0049`): decrease is **strict on both populations under ALT-BROAD**, and `>=` is kept anyway **so the invariant does not encode a property of one rule**. **Expect 703 at position 6; treat a mismatch as a POPULATION defect before an implementation one** — Step 7 built APPLY from the Step 5 pair table, not through positions 1–5. **Producing 604 means the withdrawn ALT was implemented, and that IS a divergence. Producing 793 means ALT-MATCHED was implemented, and that IS a divergence too** — `0053` §3 defect 2 briefly made 793 the expected count and `0054` §5 reverted it, after **both `analytics-engineer` files carried "EXPECT 793" at line 77 and "EXPECT 703" at line 88, ten lines apart, each declaring the other a divergence, identical in both copies so the dual diff could not see them, in the file Step 8 launches from** (propagation failure #13). **Branch decomposition, ALT-BROAD:** branch (i) `\|A\| = 0` → 33,373 → **604**; branch (ii) `\|A\| ≥ 1 ∧ ¬Continued` → 19,141 → **99**; total **703** | `0029`; liveness spec `0046`–`0052`, `0054`, written into `task-sheet.md` Step 8 | Step 8 gate, **still not approved** — the order is fixed, the gate is not. **Step 8 has never launched** |
+| **Filter order** | **FIXED by `0029`, ahead of the gate.** **1.** Step 2 frame → **2.** `L2 = 1` exclusion → **3.** S1 completion rule → **4.** contamination exclusion → **5.** right-censoring → **6.** liveness rule → **7.** outcome assignment **at two instants** (`\|A\| = 0` at `τ1`, Continued at `τ2`, per `0034`). **Why it had to be fixed:** the final row set commutes — every filter is row-wise — but the **required per-filter sample size does not**, so two faithful instances could report different waterfalls on an identical table and the diff could not tell that from a bug. **Contamination before right-censoring** was already required. **Right-censoring before liveness** is the one genuine choice: censoring is a property of the clock and `pull_date`, objective and behaviour-independent, so running it first measures liveness's marginal cost on a fully observable population — the number Step 9's bound needs. **Since ALT-BROAD, waterfall line 6 is OUTCOME-CONDITIONAL and must be reported as such** — the Continued test is evaluated before liveness applies. **That is permitted, and both arms proved it independently:** the two are **row-local predicates on the position-5 output and commute exactly**, and `0029`'s rationale concerns per-filter **sample size**, which cannot reach position 7 because **outcome assignment removes no rows** — positions 1–6 are filters, **position 7 is an annotation** contributing no waterfall line. **The monotone invariant is coded `>=`, not `>`** (`0047`, reason corrected by `0049`): decrease is **strict on both populations under ALT-BROAD**, and `>=` is kept anyway **so the invariant does not encode a property of one rule**. **Expect 703 at position 6; treat a mismatch as a POPULATION defect before an implementation one** — Step 7 built APPLY from the Step 5 pair table, not through positions 1–5. **Producing 604 means the withdrawn ALT was implemented, and that IS a divergence. Producing 793 means ALT-MATCHED was implemented, and that IS a divergence too** — `0053` §3 defect 2 briefly made 793 the expected count and `0054` §5 reverted it, after **both `analytics-engineer` files carried "EXPECT 793" at line 77 and "EXPECT 703" at line 88, ten lines apart, each declaring the other a divergence, identical in both copies so the dual diff could not see them, in the file Step 8 launches from** (propagation failure #13). **Branch decomposition, ALT-BROAD:** branch (i) `\|A\| = 0` → 33,373 → **604**; branch (ii) `\|A\| ≥ 1 ∧ ¬Continued` → 19,141 → **99**; total **703** | `0029`; liveness spec `0046`–`0052`, `0054`, written into `task-sheet.md` Step 8 | Step 8 gate, **NOT approved — it is the ONE REMAINING GATE.** The order is fixed, the gate is not. **Step 8 MAY NOW LAUNCH** (`0064`) and has never yet done so |
 
-## Step 7 — the liveness vocabulary. Gate OPEN. Full arc in [[gate-step7-liveness]]
+## Step 7 — the liveness vocabulary. **Gate APPROVED, `0064`.** Full arc in [[gate-step7-liveness]]
 
 ### The candidate rules, and the status of each
 
 | Name | Rule | Status |
 | :--- | :--- | :--- |
-| **ALT-BROAD** | not live iff **no insertion after `τ1`** AND **NOT Continued** | **ADOPTED `0048` → superseded by ALT-MATCHED `0052` → RESTORED `0054`, 2026-08-13.** Current, **with the started-and-left floor widened to cover the 90**. Gate still open pending Red Team |
+| **ALT-BROAD** | not live iff **no insertion after `τ1`** AND **NOT Continued** | **ADOPTED `0048` → superseded by ALT-MATCHED `0052` → RESTORED `0054` → APPROVED `0064`, 2026-08-13.** The rule, **with the started-and-left floor widened to cover the 90**. **Uncontested by Red Team from review 5** |
 | **ALT** | not live iff no insertion after `τ1` AND **`\|A\| = 0`** | **SUPERSEDED** by `0048`. Guarded one null of two |
-| **PF-LIMIT** | not live iff **no insertion after `τ1`** (alone) | **SUPERSEDED** by `0046`. Deleted 751 pairs with no stated warrant |
+| **PF-LIMIT** | not live iff **no insertion after `τ1`** (alone) | **SUPERSEDED** by `0046`. Deleted 751 pairs with no stated warrant. **`0063` §1: PF-LIMIT IS the "drop conjunct 2" alternative** — Red Team's fifteenth review proposed it as *"the one nobody has priced"*, and it was adopted at `0041`/`0042` and superseded before ALT-BROAD existed. It excludes **652 Continued pairs on evidence they demonstrably produced** |
 | **ALT-MATCHED** | one silence test per null, at the instant that null is read — silence at `τ1` for never-started, at **`τ2`** for started-and-left | **PROPOSED and recorded (`0050` §4) → ADOPTED (`0052` §1) → REVERTED (`0054`).** See the full history below. **Never cite it as the rule; never drop it from the record** |
 | *PF-BRACKET* | instant at or before `τ1` **and** one after — the literal reading of `0041` §4's withdrawn wording | **Never a candidate.** Priced at 18,903 exclusions from 1,434 of 2,402 accounts, to show what the wording cost |
 
@@ -74,11 +80,29 @@ review found it.
    amended `0021` and withdrew `0048` §9 **while leaving `0034` standing, uncited and unmentioned.**
 3. **The warrant was false for the very pairs it was adopted to capture.** A record inserted at instant
    `s` can carry any `watched_at ≤ s`, and `0021` Adoption 3 keeps post-dated records — so an account
-   last active at `s ∈ (τ1, τ2)` **could** have produced Continued evidence. The 90 have **p5 margin
-   1.7 days, minimum 0.13 days**: demonstrably alive for ~89 of the 91 days, with full opportunity.
+   last active at `s ∈ (τ1, τ2)` **could** have produced Continued evidence.
    **And the continuity argument is symmetric** — it proves **no** instant in `[τ1, τ2]` is warranted,
    not that `τ2` is. `0054` §3 names the error class: *correcting a predecessor by overshooting into
    the mirror-image defect.*
+
+> **THE MARGIN ARGUMENT IS WITHDRAWN (`0055` §2) AND MUST NOT BE RESTATED.** `0054` §3 supported
+> reason 3 with *"the 90 have **p5 margin 1.7 days, minimum 0.13** — demonstrably alive for ~89 of the
+> 91 days."* **That is the tail, and the record's own median for the same 90 is 44.5 days**, so for half
+> of them roughly half the Continued window is unobserved. **p5 supported the claim, the median
+> contradicted it, and only p5 was quoted.** Instance B reproduced **p5 = 1.6552 and median = 44.5272 on
+> the same 90 pairs**, confirming the cherry-picking arithmetically.
+>
+> **The correct ground carries NO margin statistic at all.** A floor is a **worst case, not an
+> expectation**: the question is whether a channel pair *can* in truth be Continued, and it can — even
+> at margin 0.13 days it could have completed S2 inside the unobserved remainder, since the Continued
+> condition reads **distinct episodes** and a single binge clears it. **Admissibility sets an endpoint;
+> plausibility does not enter. p5 = 1.7 and median = 44.5 are BOTH inadmissible.** Both arms went
+> further and argued the whole class out of endpoint justification — A: admissibility is **binary**,
+> a margin is **continuous**, so no margin value can discharge the question (*"would the statistic at any
+> value move the endpoint? If not, it is commentary"*); B: **admissibility is a property of the support,
+> plausibility of the measure**, and `p5 = 1.7` removes **zero** pairs from the admissible set — and it
+> would **reintroduce an unowned threshold into the one step whose history is the removal of exactly
+> that shape.** Margin statistics belong in Step 14 as a statement about **resolving power** only.
 
 **`0052` §4 declined to widen the floor because that *"would have been the fifth consecutive bound with
 a non-covering endpoint."* `0054` §1: that is exactly backwards — widening to 18,952 is what MAKES the
@@ -138,12 +162,73 @@ survives only as the never-started **component** of 703.)*
 | *conditional sub-interval* | ***[9.6372%, 9.7333%]*** | ***0.0961 pp*** | *the **99 and the 90** — **NOT A BOUND**; the conditioning constrains the **604** only* |
 | *~~superseded sub-interval~~* | *~~[9.6830%, 9.7333%]~~* | *~~0.0503 pp~~* | *withdrawn `0056` — correct only under the un-widened floor* |
 
+| **Continued** | **[73.2962%, 73.6995%]** | **0.4032 pp** | 144,140 → 144,933. **Same span as the S&L bound — the same excluded pairs — so the two widths are ONE NUMBER** (`0063` §2) |
+
 **On DERIV, n = 147,370:**
 
 | Bound | Interval | Width | Over |
 | :--- | :--- | ---: | :--- |
-| **Never-started** | **[6.2055%, 6.2055%]** | **0** | **DEGENERATE** — the dual control is `x = x` here |
-| **Started-and-left** | **[11.3015%, 11.4291%]** | **0.1276 pp** | the 99 exclusions **plus the 89 DERIV channel pairs** = 188 |
+| **Never-started** | **[6.2055%, 6.2055%]** | **0** | **DEGENERATE** — the dual control is `x = x` here. 9,145 → 9,145 |
+| **Started-and-left** | **[11.3015%, 11.4291%]** | **0.1276 pp** | 16,655 → 16,843: the 99 exclusions **plus the 89 DERIV channel pairs** = 188 |
+| **Continued** | **[82.3655%, 82.4930%]** | **0.1276 pp** | 121,382 → 121,570 |
+
+**EVERY WIDTH IS A COUNT OVER A DENOMINATOR, `(ceil_n − floor_n) / n` — never a difference of two
+rounded percentages** (`0063` §2). `derive()` did the latter and produced `APPLY.sl.width 0.403246`
+against `APPLY.cont.width 0.403247` — **one quantity, two values, an ulp apart, from the same 793 pairs
+on the same 196,654.** The register held the diagnosis (`0.4033` is *"a rounding artifact"*) **and the
+generator committed the disease.** Two asserts now enforce it, including that the S&L and Continued
+widths are equal. **`bb-b.json`'s `0.403245 → 0.403246` at `0062` landed on the exact form by
+coincidence, not by construction.**
+
+### The bound's SCOPE QUALIFIER — it publishes WITH the bound, every time (`0062` §4)
+
+> **The bound is covering with respect to INSERTION-DORMANCY, exhaustively; open only across CHANNEL
+> CLASSES (D4, D9).**
+
+**The rule it states:** *concede every pair dormant before the instant at which its own state-defining
+null is read* — `τ1` for never-started, `τ2` for Continued. **Exhaustive, not open-ended:** every pair
+either was inserting through its test instant or was not, yielding **32,769** and **18,952** with **no
+residue**. **D4 and D9 publish alongside, never folded in.** It exists because pure admissibility **has
+no stopping rule** (instance A, `0055` §5c), so *"covering"* full stop would be an overclaim.
+
+**Flag any publication of the bound that omits it.** It lived **only in `decisions/` for six entries**
+while Step 9 publishes the bound it qualifies; `0062` put it on all eight surfaces via `STATEMENTS`, so
+it cannot be edited out of one half. **Carried defect (`0063` §3 item 2.4): it exists in FIVE wordings
+across eight surfaces, and the `analytics-engineer` pair carries the FIRST CLAUSE ONLY** while
+instructing that any table carrying the bound carries the qualifier. **No control catches this** — a
+missing qualifier is neither a wrong number nor a withdrawn phrase; Red Team found it by grep on an idea.
+The `REQUIRED_PHRASES` mirror of `WITHDRAWN_PHRASES` is the named fix and **is not built**.
+
+### The SIX ratios — bound ÷ account-clustered sampling width. TWO CONVENTIONS, REPORTED NOT RECONCILED
+
+**`CLAUDE.md` requires divergences be reported and not reconciled. `0057` §2 reconciled these; `0058`
+REVERTED that.** The two arms divide by different denominators, so **one value is right in one arm and
+wrong in the other** — which is the case `SUPERSEDED_IN` exists for, and it is why `0.5090` sat wrong in
+arm a through two reviews. **The spec fixes neither convention** (residual item 9).
+
+| | **arm a** — divides by the **floor endpoint's own bootstrap CI** | **arm b** — divides by the **CI of the under-the-rule point estimate** |
+| :--- | ---: | ---: |
+| **APPLY started-and-left** | **0.5304** = 0.403246 / **0.7602** | **0.5090** = 0.403246 / **0.7922** |
+| **DERIV started-and-left** | **0.1309** = 0.127570 / **0.9744** | **0.1310** = 0.127570 / **0.9737** |
+| **APPLY never-started** | **0.2818** = 0.307138 / **1.09** | **0.2721** = 0.307138 / **1.12872** |
+| *DERIV never-started* | *0.0* | *0.0* |
+
+**AN ARM MUST RUN ONE CONVENTION** (`0060` §1). Arm a's published **`0.2813` is SUPERSEDED IN ARM A** —
+it is `0.307138 / 1.092`, and **1.092 is the under-the-rule CI, arm b's convention**, so arm a was
+running two conventions in one six-line block while its S&L ratio used the floor-endpoint CI.
+
+**The two DERIV never-started ratios are both exactly `0.0` by degeneracy and are DELIBERATELY NOT
+REGISTERED** — `0.0` matches somewhere in nearly every file, so a row would flag everything and disarm
+nothing. **Stated so two silently missing entries are not mistaken for an omission.**
+
+**Withdrawn, and it was published twice:** *"the never-started ratio was correctly left divergent at
+`0.2813` against `0.27211`, which is the proof this one should have been"* — **false.** That pair was
+**one convention on two arms' bootstraps**, which is why it sits 0.009 apart while the genuine
+two-convention pair sits 0.021 apart. **The figure cited as proof was itself an instance of the defect it
+was cited to certify**, and `0060` §2 names it as *"the same failure as adopting Red Team's 73.6537%
+without checking its population at `0051`."* It is now a **`WITHDRAWN_PHRASES` entry** keyed on
+*"which is the proof"*. Also withdrawn: `0053`'s ratios **NS 27.4% / S&L 52.7% / Continued 27.9%**
+(off `0.4033`), `0052` §6's **45%**, and `0055` §6's **50.9%** as a single reconciled figure.
 
 **The started-and-left floor was WIDENED by `0054`, and this is the correction that matters most.**
 
@@ -251,27 +336,89 @@ never-started COMPONENT at `W = 125`** (`0050` defect 5, re-affirmed as a known 
 the never-started component**; **125 and 180 are not in the mandated grid**, so only 684 and 881 are
 comparable to it.
 
-### Known false-positive traps — do not trust a blind grep on any of these
+### Known false-positive traps — a blind grep produces WRONG ANSWERS on every string below
 
-| String | Legitimate use | Illegitimate use |
+> **STRUCTURAL NOTE, 2026-08-14.** This table was previously **orphaned** — its header row sat three
+> paragraphs above its data rows, so it rendered as broken. `0063` §3 item S7 records *"the glossary trap
+> table is structurally orphaned"* as a carried defect. **Repaired here.** The prose that caused it now
+> sits below the table, where it belongs.
+
+| String | LEGITIMATE reading | ILLEGITIMATE reading |
 | :--- | :--- | :--- |
-**THE BOUND'S SCOPE QUALIFIER (`0062`), which for six entries existed only in `decisions/`:** the started-and-left bound is **covering with respect to INSERTION-DORMANCY, exhaustively; open only across CHANNEL CLASSES (D4, D9).** Rule: *concede every pair dormant before the instant at which its own state-defining null is read* — `τ1` for never-started, `τ2` for Continued. **Exhaustive, not open-ended**; yields 32,769 and 18,952 with no residue. **D4 and D9 publish alongside.** Flag any publication of the bound that omits it.
-
-**MATCH NUMERICALLY, NOT TEXTUALLY (`0058`).** These rows are written at 4 dp and the JSON deliverables store 6-dp literals, so `9.6830` is **not** a substring of `9.682997`. **`src/check_surfaces.py` parses every number-shaped token on all seven surfaces and compares at a tolerance**, which is the only form of this check that can see the `.json` halves — six superseded values survived Red Team review 11 there precisely because their registered form rounds **up**.
-
-**REGISTER — canonical location, per `CLAUDE.md` `## Propagation`. A row is added only when the legitimate reading is verified live UNDER THE ADOPTED RULE, and withdrawn the moment it is not; registering a string exempts it from the grep control (`0056` §3).**
-
-| **`632`** | Frozen-D10 never-started **component** at `W = 125` (`0050` d5, `0051` §3 item 9) | A **deleted threshold** in days |
+| **`632`** | Frozen-D10 never-started **component** at `W = 125` (`0050` d5, `0051` §3 item 9) | A **deleted threshold** in days. Deleted thresholds: **4 · 504 · 632 · 914 · 1,293** |
 | **`703`** | **Correct and current** — ALT-BROAD's APPLY exclusion count | — |
 | **`793`** | **ALT-MATCHED's** APPLY exclusion count — history only | Anywhere as the current expected count. `0054` §5 fixed *"EXPECT 793"* in both `analytics-engineer` files |
-| **`9.6830%`** | **NOWHERE — registration WITHDRAWN (`0056`).** The sub-interval floor moved with the bound floor to **9.6372%**; the conditioning constrains the 604, not the 90 | **Every hit is a defect.** Both the bound floor and the sub-interval floor are **9.6372%** |
 | **`16,744`** | **Three** legitimate readings: post-liveness S&L **count** on **147,271** → 11.3695% (`bb-a.md:109`); the same count at `step7-sensitivity-b.md:76`; and the DERIV floor under **extreme NONE** in the two-extremes table | the **adopted** DERIV S&L floor — that is **16,655 → 11.3015%** |
-| **`0.0672`** | DERIV exclusion **share of population**, `99 / 147,370` = 0.0672% (`bb-a.md:65`) | the DERIV bound **width** — that is **0.1276 pp** |
-| **`0.0503`** | **Nowhere (`0057`).** It was the conditional sub-interval width `99 / 196,654` | **Every hit is a defect** — the sub-interval is `189 / 196,654` = **0.0961 pp**, because the conditioning constrains the 604, not the 90 |
-| **`0.3575`** | **Only as `703 / 196,654` = 0.3575% — the APPLY exclusion SHARE OF POPULATION** (`bb-a.md:107`, `bb-b.md:93`) | as the S&L bound **width** in pp — that is **0.4032**. Same string, two meanings, one live |
-| **`73.3466`** | **Nowhere (`0057`).** It was the Continued value in the attainable-corner floor row | **Every hit is a defect** — with the 90 conceded the row reads **73.3924%** (`144,329 / 196,654`) |
-| **`0.4033`** | Nowhere. It is B's rounding artifact | Anywhere as the bound width — it is **0.4032** |
-| **`73.6537%`** | The **Continued ceiling** as of `0052`, superseded by `0054` | As a **floor**, ever. It was never one |
+| **`19,042`** | post-liveness started-and-left **POINT ESTIMATE** on APPLY. Also in `waterfall.APPLY_final_states` and `ordering_commutation_check` | the S&L bound **floor** — that is **18,952**. **`0057` §1: a value-wide substitution would have corrupted three point estimates and the commutation check.** The patch matched on **key as well as value** |
+| **`0.0672`** | DERIV exclusion **SHARE OF POPULATION**, `99 / 147,370` = 0.0672% (`bb-a.md:65`) | the DERIV bound **width** — that is **0.1276 pp** |
+| **`0.3575`** | APPLY exclusion **SHARE OF POPULATION**, `703 / 196,654` = 0.3575% (`bb-a.md:107`, `bb-b.md:93`) | the S&L bound **width** in pp — that is **0.4032**. Same string, two meanings, one live |
+| **`0.5090`** | **arm b's** APPLY S&L ratio, `0.403246 / 0.7922` — **CURRENT AND CORRECT THERE** | in **arm a**, whose own is **0.5304**. `SUPERSEDED_IN`, not `SUPERSEDED` |
+| **`0.2813`** | **nowhere as arm a's** — it is arm b's convention on arm a's numerator | in `bb-a`. Arm a's is **0.2818**. `SUPERSEDED_IN` |
+| **`9.6830` / `11.3619` / `73.6537` / `82.4327`** | **ONLY** as the **extreme-NONE column** of the two-extremes table, and **only in `step7-deriv-floor-check-*`** — the verification arms' deliverables, which are deliberately not on the whole-file allowlist | **everywhere else, every hit is a defect.** Adopted: **9.6372 / 11.3015 / 73.6995 / 82.4930** |
+| **`0.0503`** | **NOWHERE (`0057`).** It was the sub-interval width `99 / 196,654` | **every hit is a defect** — the sub-interval is `189 / 196,654` = **0.0961 pp**; the conditioning constrains the 604, not the 90 |
+| **`73.3466`** | **NOWHERE (`0057`).** It was the Continued value in the attainable-corner floor row | **every hit is a defect** — with the 90 conceded the row reads **73.3924%** |
+| **`0.4033`** | **NOWHERE.** It is B's rounding artifact | anywhere as the bound width — it is **0.4032** |
+| **`0.4703`** | **NOWHERE.** arm a's S&L ÷ sampling ratio **pre-widening** | anywhere — it is **0.5304** |
+
+**THE `9.6830` REGISTRATION WAS WITHDRAWN AS A GLOBAL EXEMPTION (`0056`), AND THAT MATTERS.** It was
+registered as *"both the superseded bound floor and the legitimate floor of the conditional
+sub-interval."* **The second half is false** — the sub-interval's conditioning constrains the **604** and
+says nothing about the **90**, so its floor moved with the bound floor to **9.6372%**. **Registering it
+as exempt disarmed the grep control against the one string it most needed to catch, on four surfaces, in
+the section that created the control.** Its **only** surviving reading is the scoped extreme-NONE one
+above.
+
+**THE EXEMPTION SCOPING WAS ITSELF BROKEN, AND ONLY THE FIX MAKES THESE ROWS TRUE (`0060` B6).**
+`EXTREME_NONE_READINGS` guarded four values on a line matching `extreme[_ ]NONE` — but **the general
+`DECLARE` branch three lines above already contained `extreme[_ ]NONE`, so the value-scoped branch could
+never change an outcome.** *"The register documented it as a CONTEXT exemption, not a value exemption;
+the code did neither."* The phrase was disarming the control against `0.0503`, `0.4033`, `0.4703` and the
+scoped `0.5090` / `0.0690` — **values the two-extremes table has nothing to do with** — and the same held
+for `un-?widened`, `_scope`, `share_of_population`, `proposed_pct`. **The general branch is deleted;
+`DECLARE_SCOPED` is keyed by FILE and by VALUE.** JSON **path** markers are separated into
+`DECLARE_JSON_PATH` and applied to paths only, **because a path is structure and a line is a claim.**
+
+**MATCH NUMERICALLY, NOT TEXTUALLY (`0058`).** These rows are written at 4 dp and the JSON deliverables
+store 6-dp literals, so `9.6830` is **not** a substring of `9.682997`. **`src/check_surfaces.py` parses
+every number-shaped token on all seven surfaces and compares at a tolerance** — the only form of this
+check that can see the `.json` halves. **Six superseded values survived Red Team review 11 there
+precisely because their registered form rounds UP.**
+
+**A LINE CARRYING BOTH A SUPERSEDED VALUE AND ITS SUCCESSOR IS SELF-DECLARING** — it is narrating the
+transition, which is what a record is for (`SUCCESSOR`). **The rule runs on the EMITTING LINE, not a
+±2-line window** (`0060` B7): the adopted 6-dp width `0.403246` is within tolerance of `0.4032` and
+appears in every bound table, so a window let `0.4033` self-declare from two lines away. *"A successor two
+lines away is a coincidence; on the same line it is a sentence."*
+
+**KNOWN LIMIT, recorded not closed (`0060` §6, amended `0061`):** both controls walk **numeric leaves
+only**, so a superseded **number** inside a JSON **string** is invisible to `json_numbers()` and
+`verify()`. Recorded as *"not a defect today"* — and it **was already a defect on the day it was
+recorded**. Partially closed: `WITHDRAWN_PHRASES` is now checked against `.md` text **and** JSON string
+values. **Recording a gap as harmless is not the same as checking whether it is.**
+
+### WITHDRAWN PHRASES — prose, not numbers. `src/step7_register.py`, added `0061`
+
+**A numeric control cannot see a withdrawn claim, and this chain withdraws claims as often as it corrects
+figures.** Each is a fragment; every occurrence outside a strikethrough or withdrawal note is a defect.
+
+| Phrase key | What it claimed |
+| :--- | :--- |
+| *"which is the proof"* | the `0.2813` / `0.27211` divergence proved the S&L reconciliation wrong. **False** — one convention on two bootstraps. Withdrawn `0060` §2 |
+| *"retained in place above and marked superseded"* | a hard-coded literal nothing checked and that was false. Withdrawn from the JSON half at `0059` and **still emitted into the `.md` half** |
+| *"everything else in this file stands"* | a stamp that **affirmatively certified superseded figures**. Withdrawn `0056` §4 |
+| *"cannot enter the list"* | the `LIVE_ELSEWHERE` mechanism, **which never fired**. Withdrawn `0059` |
+| *"unreconciled and now specified"* | `0052` §6 on the bootstrap spec. **It was never specified in any file.** Struck `0056` §8 |
+
+**B8 is why this half exists.** A withdrawn sentence was struck **in the three places a human had typed
+it and left in the one place a SCRIPT types it**, so the generator wrote it back to all four operative
+files on every run. **Both controls were structurally blind:** the `.md` form carries **no numbers**, and
+the `.json` form is a **string under `_DERIVED`**, which `verify()` skips by key. `bb-a.md` therefore
+contradicted itself inside one file — line 77, inside the block headed *"GENERATED, do not hand-edit"*,
+**asserted** it; line 316, in hand prose 240 lines lower, **struck** it.
+
+**Carried defect (`0063` §3 item S6, the one the Human Lead named as first to fix): THE REGENERATOR NEVER
+RUNS THE PHRASE HALF** — *"the thing that wrote B8 into four files still does not check for withdrawn
+phrases after writing."*
 
 ### The seven propagation surfaces — `CLAUDE.md` §Propagation, 2026-08-13
 
@@ -283,15 +430,94 @@ recorded.** All seven are checked on every edit:
 | 1 | `task-sheet.md` | |
 | 2–3 | `.claude/agents/data-scientist.md`, `data-scientist-b.md` | Byte-identical by design |
 | 4–5 | `.claude/agents/analytics-engineer.md`, `analytics-engineer-b.md` | The files Step 8 launches from |
-| **6** | **`artifacts/`** | Deliverables carrying superseded figures are **stamped**, not left to read as current. **Never checked before 2026-08-13** |
-| **7** | **`.claude/agent-memory/second-brain/`** | **This memory. It is fed back into rulings, and stale memory here has already caused a wrong one** (`0052` §2). **Never checked before 2026-08-13**, and it is what Red Team's **eighth** Step 7 review found |
+| **6** | **`artifacts/`** | Deliverables carrying superseded figures are **stamped**, not left to read as current. **Never checked before 2026-08-13.** *Carried defect: still suffix-filtered while 7 was fixed (`0063` §3, S-items)* |
+| **7** | **`.claude/agent-memory/second-brain/`** — **THE DIRECTORY, NOT ONE FILE IN IT** (`0057` §6) | **This memory. It is fed back into rulings, and stale memory here has already caused a wrong one** (`0052` §2). **Never checked before 2026-08-13**, and it is what Red Team's **eighth** Step 7 review found |
+
+**Surface 7 is the DIRECTORY.** `0056` propagated to *"`second-brain`'s glossary"* and reported it as a
+surface. **The glossary was corrected; `open-items-and-contradictions.md` was not**, and it carried the
+corrected bound and its withdrawn sub-interval **one line apart, both blessed with a check mark** — that
+is **propagation failure #21**. *"A propagation was scoped to a file and reported as a surface."*
+`0062` further found `SURFACES["7 second-brain"]` **globbed `*.md` only, so a `.json` in this directory
+was outside the control entirely**; it now globs every file.
+
+**TWENTY-ONE numbered propagation failures. `#1`–`#18` are a SURFACES-1–5 COUNT and MUST NEVER BE
+PUBLISHED AS A TOTAL** (`0057` §7). They were found on surfaces 1–5 because those were the only surfaces
+checked; **6 and 7 were added after the count was fixed**, and their failure rate was recorded as
+*"unmeasured, not zero."* **It is now measured and non-zero at three:**
+
+| # | Where | What |
+| :-- | :--- | :--- |
+| **19** | surface 6 | the stamp that **certified superseded figures** — found **inside the fix added for surface 6** |
+| **20** | surface 6 | **both `.json` halves left behind** while the `.md` halves were corrected |
+| **21** | surface 7 | `open-items-and-contradictions.md`'s **blessed sub-interval** |
+
+**The count is not renumbered — 18 is a true count of surfaces 1–5 — but it reads as a total without the
+Step 14 bullet, and whether to restate it against seven surfaces is the Human Lead's call.**
 
 **Read-back PLUS grep. Read-back alone is not verification.** Reading an edit back proves the new text
 landed; **only grep proves the old text is gone**, and a file can hold both at once — three consecutive
 propagation failures were exactly that, an adopted figure and its superseded predecessor in the same
-file, sometimes ten lines apart, each declaring the other wrong. After any edit: grep all seven
-surfaces for the superseded strings, require **zero hits** except where a string is explicitly named as
-superseded at the point of use, and report the hit counts.
+file, sometimes ten lines apart, each declaring the other wrong.
+
+**AND THE NEGATIVE GREP IS NOT SUFFICIENT ALONE (`0055` §3).** **A figure that was never written returns
+zero hits on every superseded form of itself** — the DERIV bound existed on **no** surface, so a mandated
+negative grep reported a clean pass on a file set containing the defect. **So: grep the CORRECTED string
+too and require NON-ZERO.** A defect has two shapes — the wrong figure present and the right figure
+missing — and the negative half sees only the first.
+
+**A GREP HIT IS NOT A DEFECT UNTIL THE LINE IS READ.** Run the trap table above first.
+
+### The machinery, and why hand-patching was abandoned
+
+**Four consecutive decisions corrected these artifacts by hand-patching individual values, and every
+finding in reviews 9, 10 and 11 was a value a patch reached in one file and missed in another** — or
+reached in the `.md` and missed in the `.json`, or **reached a ratio and missed its numerator**.
+*"Eleven entries of one error class is a method that cannot converge"* (`0058` §1).
+
+| File | What it is |
+| :--- | :--- |
+| **`src/step7_register.py`** | **THE single register** (`0059` B3). Four entry kinds — `SUPERSEDED` (wrong everywhere) · `SUPERSEDED_IN` (wrong in one file, right in another) · `ADOPTED` / `ADOPTED_IN` · `LEGITIMATE` (looks superseded, is not; **registering one DISARMS the control against it**, so each carries its reason). Plus `WITHDRAWN_PHRASES`, `WHOLLY_SUPERSEDED_FILES`, `DECLARE_SCOPED` |
+| **`src/step7_regenerate_derived.py`** | Writes **every** derived figure into **both halves of both arms from ONE EXPRESSION EACH**. 84 target paths, 30 ratio rows |
+| **`src/check_surfaces.py`** | Replaces textual grep — **numeric matching at both precisions** across all seven surfaces, **plus a withdrawn-phrase half** and a positive half |
+| **`src/step7_floor_extremes.py`** | The two-extremes / channel verification. **11/11 CONFIRMED, 0 REFUTED**. Its surviving `assert at_tau2 == 0` is now **a compared row with a verdict**, not an assertion |
+
+**THE WHOLE-FILE EXEMPTION IS DELETED (`0059` B2).** The old rule — any file with `SUPERSEDED` in its
+first 45 lines is exempt in whole — **exempted 19 `.md` and 16 `.json` files, the entire Step 7 artifact
+set including both OPERATIVE deliverables**, and it is why a wrong ratio survived a passing check. A file
+is exempt **only by name, in the source, with a reason**, and **`step7-liveness-bb-{a,b}` are NOT
+exemptible** — they are only *partially* superseded. **A stamp 300 lines above a value is not the point
+of use.**
+
+> ### **A CHECK THAT FINDS NOTHING BECAUSE IT LOOKED NOWHERE MUST FAIL (`0062`).**
+>
+> `check_ratios_written()` skipped **arm b in full** and reported OK: it read `sampling_error`, arm b
+> stores its bootstrap under `bootstrap`, and `ABSENT_OK["b"]` allowlisted the absence — so it **checked
+> zero rows and returned an empty failure list, which reads identically to "everything is right."**
+> `0060` §1's coverage claim was **true for one arm of two**.
+>
+> **The pattern in one sentence: an empty result and a clean result are the same value, and only the
+> control knows which it produced.** Four more of the same shape were found and closed —
+> `except Exception: return []` on file reads (a file that fails to parse contributes zero numbers and
+> the scan passes); the input cross-check's `if u:`; an `ABSENT_OK` entry that never fires; and surface
+> 7's `*.md`-only glob. **Every place that can return "nothing found" now says whether it found nothing
+> OR looked at nothing.** Coverage is printed every run.
+>
+> **This was the third control in six entries that reported clean while looking at nothing.**
+
+**ONE DEFINITION PER STATEMENT AND PER FIGURE (`0062` §3).** `STATEMENTS` holds 8 sentences,
+`figure_table()` holds 72 figures; **both writers render those two objects and neither contains prose of
+its own about the figures.** `compare_halves()` reads both rendered halves **off disk** and compares key
+by key, **failing on comparing zero figures.** *Carried defect (`0063` §3 item 2.1): `compare_halves()`
+CANNOT FAIL as built* — both sides are `figure_table(arm)` serialized twice in one process from the same
+`D`, and it does not compare the `.md` a reader sees.
+
+**THE DEPENDENCY LISTS CLOSE TRANSITIVELY, TO FIXPOINT (`0057` §3).** When an endpoint moves, check its
+list **and the list of every figure on that list**. `0056`'s lists were **one hop deep and the gap had
+already bitten**: `1,307 / 100.6646%` left live in both `data-scientist` files was **failure #16, "the
+severe one," two hops from the floor.** *"The list written to prevent #16's class did not reach #16."*
+
+**The dual diff cannot catch a propagation failure.** Both members of a pair are byte-identical by
+design, so an error written into both is invisible to it.
 
 **The dual diff cannot catch a propagation failure.** Both members of a pair are byte-identical by
 design, so an error written into both is invisible to it.
@@ -353,7 +579,104 @@ fixed and verified; limits routed to Step 14; channel measured at 297 pairs** ·
 housekeeping — its §2 "V7 correction" was WRONG and is withdrawn by `0052`** · **`0052` ALT-MATCHED
 ADOPTED; `0051` §2 withdrawn; channel corrected to 52.4%** · **`0053` `0021` amended for two windows —
 WITHDRAWN IN ITS ENTIRETY by `0054`** · **`0054` ALT-BROAD RESTORED, the S&L floor widened, `0053`
-withdrawn, `0021`'s amendment reverted, `0048` §9 restored**.
+withdrawn, `0021`'s amendment reverted, `0048` §9 restored** · **`0055` the DERIV floor widened, the
+margin argument withdrawn, the grep control and the seventh surface** · **`0056` the four derived
+figures corrected, `9.6830` de-registered, the dependency list** · **`0057` the JSON halves, transitive
+lists, the channel window fixed OPEN, surface 7 is the DIRECTORY** · **`0058` regeneration replaces
+hand-patching; the two ratio conventions REPORTED not reconciled; the dates corrected** · **`0059` one
+register; the whole-file exemption deleted; the quotient is a target path** · **`0060` arm a runs one
+convention (`0.2818`); the exemptions scoped per file and per value** · **`0061` withdrawn claims are
+emitted by the generator; the register holds PHRASES** · **`0062` a check that looks nowhere must FAIL;
+one definition per statement; the covering qualifier propagated to eight surfaces** · **`0063` widths
+from counts; the rule objection closed on measurement (652); the residual logged** · **`0064` STEP 7
+GATE APPROVED — ALT-BROAD, UNCONDITIONAL, residual published**.
+
+### `0064` — the approval, and what it turned on
+
+**APPROVED by the Human Lead in writing, 2026-08-13. Record: `artifacts/step7-gate-approval.md`.
+Gate 4 of 5 closed. Step 8 may launch and is the remaining gate.**
+
+**Red Team reviewed fifteen times and returned HOLD fifteen times.** The division that carried the
+approval:
+
+- **Reviews 1–8 contested the RULE** and changed what is measured: the bias-2 sign correction, the
+  withdrawal of *"no free parameter"*, the derivation and **deletion** of the numeric threshold, four
+  rule generations, the widened floor, the `τ1` anchoring.
+- **Reviews 9–15 found PROPAGATION AND CONTROL defects in figures derived from an UNCHANGED rule. Not
+  one changed the rule, the population, the exclusion counts, or any bound endpoint on its own
+  arithmetic.** They changed **where numbers were written, which numbers were checked, and whether a
+  claim about a check was true.** *"Seven entries were needed for the machinery to catch up with an
+  analysis that had already stopped moving."*
+
+**From review 5 the rule statement was not contested. From review 8 Red Team explicitly cleared the `τ1`
+anchoring, the ALT-MATCHED revert, `0021`'s restoration and `0048` §9. In reviews 12, 13 and 15 it
+independently RECOMPUTED the arithmetic** — both partitions, all four widths, both attainable corners to
+exactly 100%, the excess identity, all six sampling ratios — **and confirmed it each time.**
+
+**The last substantive challenge, review 15's, closed ON MEASUREMENT** (`0063` §1). Its premise —
+*"not one of the four rules drops conjunct 2"* — **is false: PF-LIMIT IS the no-conjunct-2 rule**, and
+`0045` §1's table has given its DERIV split as `751 = 0 NS + 652 Continued + 99 S&L` since `0045`.
+**The 652 Red Team asked for was already printed in the record.**
+
+| | n | ALT-BROAD | **cont ∧ silent** | no conjunct 2 | growth |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| **APPLY** | 196,654 | 703 | **652** | **1,355** | 1.93× |
+| **DERIV** | 147,370 | 99 | **652** | **751** | 7.59× |
+
+**Dropping conjunct 2 excludes 652 Continued pairs on evidence they demonstrably produced.** Liveness
+exists to stop a null being trusted; **Continued is not a null**, and excluding a pair whose positive
+evidence is in hand is the one thing the rule cannot coherently do. **What survives is the size of the
+outcome-conditioning: 652 on BOTH populations** — 0.3315% of APPLY, 0.4424% of DERIV — **measured rather
+than argued**, publishing as a Step 14 limitation.
+
+**Two amendments the Human Lead made to the drafted approval:**
+
+1. **The bootstrap placement is RED TEAM'S RECOMMENDATION, not a ruling.** *"Blocking Step 9, not Step
+   8"* came from review 12 and the draft carried it as settled. **The Human Lead has not ruled on where
+   the unspecified bootstrap blocks**, and approving the gate does not rule on it.
+2. **The approval is UNCONDITIONAL, and the framing is the Human Lead's own** — they **confirmed**
+   *"given with these open and published, not around them"* **rather than accepting it as the drafter's**.
+
+**Open and flagged, not fixed:** the approval is dated **2026-08-13** as the Human Lead gave it, while
+`0060`–`0063` — **including `0063`, which carries the 652 the approval's §3 rests on** — are dated
+**2026-08-14**. The approval record flags this to the Human Lead for confirmation or correction and
+**does not fix it without a ruling**, `0058` §6 having corrected a date drift in the other direction.
+
+### The residual — PUBLISHED, not resolved. Nine items, `artifacts/step7-gate-approval.md` §4
+
+**The approval is unconditional. None of this is a condition on the gate and none of it gates Step 8.**
+**Confirmed by the Human Lead in those terms:** the residual **publishes with the result.**
+
+**Limitations of the rule (Step 14):** **1.** the **biconditional gap** — `0021` licenses *insertion
+after `τ1` ⟹ live*, sufficiency only; ALT-BROAD **narrows** where the converse is asserted from
+PF-LIMIT's 1,355 to 703 and **does not justify it**. **2.** liveness is **outcome-conditional** through
+conjunct 2; `ordering_commutation_check` shows the two filter orders agree on **observed counts, not that
+the estimand is unchanged** — **size 652**. **3.** the **calibration residual**, discharged at `W = 108`
+only, while Step 13 runs to 213. **4.** the **population mismatch** — bounds on position-5, shares
+post-liveness, and **on DERIV the point estimate lies outside its own bound**. **5.** **297 pairs remain
+in the channel** the warrant describes — 207 never-started, whose null `0021` licenses, and 90
+started-and-left, whom the widened floor now admits.
+
+**Blocking Step 9, not Step 8 — RED TEAM'S RECOMMENDATION, NOT a Human Lead ruling:** **6.** the
+**bootstrap is unspecified**; the two arms diverged on `B`, seed **and** statistic; `0052` §6's *"now
+specified"* is struck; **Step 9's CIs are not diffable until all three are fixed.**
+
+**Control defects, carried (`0063` §3):** **7.** `compare_halves()` cannot fail; **four sub-interval
+ratios are outside every control** and arm a's is checked by nothing; the `_DERIVED` block is
+**write-only**; the covering qualifier exists in **five wordings** and the `analytics-engineer` pair
+carries **one clause**; `LEGITIMATE` disarms nothing while two registers say it does; seven smaller items
+including **the regenerator never running the phrase half**; and DF-3's closed-form window
+`(τ1, τ2]` still in `specs/step7-deriv-floor-verification.md`'s Background, **a completed task's brief**,
+where inertness is **not** expected at `W = 213` — which is Step 13's grid.
+
+**Reported, not reconciled — `CLAUDE.md`:** **8.** robustness survival **792 (A) against 791 (B)**, off
+by exactly one on each population, consistent with a `≤ τ_pull` restriction **A states and B does not**;
+**neither arm flagged it.** **9.** **the two sampling-width conventions. The spec fixes neither.**
+
+**Verification standing at the time of drafting:** `check_surfaces.py` **PASS** (negative, phrase and
+positive halves, seven surfaces) · `step7_regenerate_derived.py` **PASS** (84 target paths, 30 ratio
+rows, both halves compared) · `step7_floor_extremes.py` **11/11 CONFIRMED, 0 REFUTED** · both dual pairs
+**byte-identical apart from `name:`** · **zero API calls in the entire `0055`–`0064` chain.**
 
 **`0053` is the only entry in the log withdrawn in its entirety.** Its **nine defect fixes are
 retained** where they are rule-independent; their ALT-MATCHED figures are superseded.
