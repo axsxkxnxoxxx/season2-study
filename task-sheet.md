@@ -332,6 +332,70 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
 
 ---
 
+## Step 8b: Output schema
+
+**Owner:** Analytics Engineer
+**Mode:** Chained
+
+**Defined in a prior session and never propagated.** Added to this file 2026-08-13 (`decisions/0066`)
+with two amendments that postdate its drafting, both marked below.
+
+- [ ] **Define the JSON schema the Step 16 visualization reads from.**
+- [ ] **One entry per tested `W` arm.** ***AMENDED:*** the original said *"per tested combination of `W`
+      and liveness threshold."* **There is no liveness threshold.** A numeric threshold was derived
+      three times — 632 d, then 1,293 d — and **DELETED** (`0042`); the adopted rule is **parameter-free**
+      (`0048`, approved `0064`). **The key is `W` alone.** `632` and `1,293` must not reappear as schema
+      keys — and note that **`632` is also the legitimate frozen-D10 never-started component at
+      `W = 125`**, so a blind grep for the deleted threshold produces a false positive there (`0051` §3).
+- [ ] **Each entry carries, for that arm:** the **three outcome shares**; a **confidence interval on
+      each**; the **bounds** (below); the **retained row count**; the **abandonment distribution**; and
+      the **filter waterfall counts**.
+- [ ] **THE BOUNDS ARE TWO, NOT ONE, AND BOTH POPULATIONS CARRY THEM.** ***AMENDED:*** the original said
+      *"floor and ceiling bound,"* singular. Step 9 publishes **two**:
+      - **Never started** — floor and ceiling. **No conditional sub-interval**: the sub-interval
+        conditions on *this bound's own* exclusion set, so it does not exist for never-started
+        (`CLAUDE.md`, `## Derived figures`). **The schema records it as structurally absent, with the
+        reason, rather than omitting the field** — an absent field and an inapplicable one must not look
+        alike. **On DERIV this bound is DEGENERATE**, `[6.2055%, 6.2055%]`, width 0.0, and the schema
+        must be able to express a zero-width bound without it reading as missing data.
+      - **Started and left** — floor, ceiling, **and the conditional sub-interval**, which is the
+        started-and-left share *given that every never-started exclusion is a true decline*. **Its
+        conditioning constrains the 604 and says nothing about the 90**, so its floor moves with the
+        bound floor (`0056`). **On DERIV the sub-interval COINCIDES with the bound**, because the
+        never-started exclusion component is 0 there — the schema must record coincidence as a measured
+        fact, not by writing the same numbers twice with no note.
+      - **Both on APPLY (n = 196,654) and DERIV (n = 147,370). Every bound field states its population**
+        (standing rule, `0047`). **APPLY and DERIV are separate arithmetic, never one field with a
+        population flag.**
+- [ ] **Continued has a CEILING and it is part of the entry** (`0050`, `0052`). **The three ceilings
+      cannot all hold** — APPLY sums to 100.7104%, DERIV to 100.1276% — so **the schema must carry the
+      three-ceiling sum and its excess per population**, and must not permit a consumer to read three
+      ceilings as simultaneous. **Continued must not be emitted as a point.**
+- [ ] **Carry the scope qualifier as a field, not as prose in a caption** (`0062`): the bound is
+      **covering with respect to insertion-dormancy, exhaustively; open only across channel classes
+      (D4, D9)**. **D4 and D9 publish alongside and are never folded in**, so the schema has slots for
+      them.
+- [ ] **Emit a placeholder file with illustrative values and the IDENTICAL schema**, so Step 16 can be
+      built before results exist. **The placeholder must be unmistakable as one** — a top-level flag a
+      consumer cannot miss, and values that cannot be mistaken for measurements. **A placeholder that
+      reads as data is the failure mode**, and this study has spent seven entries on figures that were
+      superseded and looked current.
+- [ ] **Steps 9 through 13 write into this schema DIRECTLY. No conversion layer.** That is the point of
+      the step: a conversion layer is a second definition of every figure, and **two definitions of one
+      figure is the defect this study has hit most often** (`0058`, `0061`, `0062`).
+- [ ] **The two arms of a dual step write the same schema and are diffed in it.** Step 9 is dual, so the
+      schema must hold **both arms' values for a figure where the arms legitimately differ** — the
+      **bound ÷ sampling width ratios use two conventions and are REPORTED, NOT RECONCILED** (`0058`,
+      `0063`). **A schema with one slot per figure would force a reconciliation the spec forbids.**
+- [ ] **The bootstrap is unspecified and Step 9's CIs are not diffable until it is fixed** — `B`, seed
+      and levels-vs-movements all differ between the arms. The schema must **record which bootstrap
+      settings produced each CI**, so an unfixed spec is visible in the output rather than silent.
+
+**Deliver:** schema definition, placeholder file.
+
+**Review:** Engineering, on whether Steps 9 through 13 can write into it without restructuring their
+outputs.
+
 ## Step 9: Headline result
 
 **Owner:** Data Scientist, dual implementation

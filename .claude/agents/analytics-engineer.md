@@ -123,6 +123,50 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
       (`decisions/0033`) — the aggregate 97.6% hides a cohort-asymmetric loss.
     - The table goes to `processed/`; the filter waterfall and invariant report, counts only, to
       `artifacts/`.
+- **Step 8b, output schema. Chained. NOT LAUNCHED.** Define the JSON schema the Step 16 visualization
+  reads from, and emit a placeholder file with illustrative values and the identical schema so Step 16
+  can be built before results exist. **Defined in a prior session and never propagated; added here
+  2026-08-13 (`decisions/0066`) with two amendments that postdate its drafting.**
+    - **One entry per `W` arm. AMENDED — the original said "per combination of `W` and liveness
+      threshold." THERE IS NO LIVENESS THRESHOLD.** One was derived three times, 632 d then 1,293 d,
+      and **deleted** (`0042`); the adopted rule is **parameter-free** (`0048`, approved `0064`). **The
+      key is `W` alone**, and neither number may reappear as a schema key. *(`632` is also the
+      legitimate frozen-D10 never-started component at `W = 125`, so a blind grep produces a false
+      positive there.)*
+    - Each entry carries, for that arm: the **three outcome shares**, a **confidence interval on each**,
+      the **bounds**, the **retained row count**, the **abandonment distribution**, and the **filter
+      waterfall counts**.
+    - **THE BOUNDS ARE TWO, NOT ONE. AMENDED — the original said "floor and ceiling bound," singular.**
+      **Never started:** floor and ceiling, and **NO conditional sub-interval** — the sub-interval
+      conditions on that bound's own exclusion set, so for never-started it does not exist. **Record it
+      as structurally absent WITH THE REASON; an absent field and an inapplicable one must not look
+      alike.** On **DERIV** this bound is **degenerate**, `[6.2055%, 6.2055%]`, and a **zero-width bound
+      must not read as missing data**. **Started and left:** floor, ceiling **and the conditional
+      sub-interval** — the S&L share given every never-started exclusion is a true decline, whose
+      conditioning constrains the **604** and says nothing about the **90**, so its floor moves with the
+      bound floor (`0056`). On **DERIV the sub-interval COINCIDES with the bound** and coincidence is
+      **recorded as a measured fact**, not by writing the same numbers twice unremarked.
+    - **Both bounds on BOTH populations** — APPLY 196,654 and DERIV 147,370 — **separate arithmetic,
+      never one field with a population flag**, and **every bound field states its population** (`0047`).
+    - **Continued has a CEILING and it is part of the entry.** The **three ceilings cannot all hold**
+      (APPLY 100.7104%, DERIV 100.1276%), so carry **the sum and the excess per population** and do not
+      let a consumer read three ceilings as simultaneous. **Continued is never emitted as a point.**
+    - **The scope qualifier is a FIELD, not caption prose** (`0062`): covering with respect to
+      **insertion-dormancy, exhaustively; open only across channel classes (D4, D9)**. **D4 and D9
+      publish alongside and are never folded in**, so the schema has slots for them.
+    - **The placeholder must be unmistakable as one** — a top-level flag a consumer cannot miss, values
+      that cannot be mistaken for measurements. **A placeholder that reads as data is the failure mode.**
+    - **Steps 9–13 write into this schema DIRECTLY. No conversion layer** — a conversion layer is a
+      second definition of every figure, and **two definitions of one figure is the defect this study
+      has hit most often** (`0058`, `0061`, `0062`).
+    - **Dual steps are diffed IN this schema.** Where the two arms legitimately differ it must hold
+      both: the **bound ÷ sampling width ratios use two conventions and are REPORTED, NOT RECONCILED**
+      (`0058`, `0063`). **One slot per figure would force a reconciliation the spec forbids.**
+    - **Record which bootstrap settings produced each CI.** `B`, seed and levels-vs-movements differ
+      between the arms and **the spec fixes none of them**, so an unfixed spec must be visible in the
+      output rather than silent.
+    - **Deliver:** schema definition, placeholder file. **Review: Engineering**, on whether Steps 9–13
+      can write into it without restructuring their outputs.
 
 ## Where files go
 
