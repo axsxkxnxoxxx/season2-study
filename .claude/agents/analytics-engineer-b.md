@@ -77,6 +77,10 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
   9–15 found propagation and control defects in figures derived from an unchanged rule.** **The approval
   is UNCONDITIONAL and the residual is published, not resolved.**
     - **A pair is NOT LIVE iff BOTH: no insertion instant after that pair's `τ1`, AND NOT Continued**
+      — **and "after" is STRICT** (`0068`): silent means **no insertion instant `> τ1`**, so an instant
+      falling exactly **at** `τ1` does **not** make the account live. *(Separate and NOT resolved:
+      whether insertion evidence is restricted to `≤ τ_pull` — that ambiguity produced the
+      reported-not-reconciled 792/791 split at Step 7.)*
       (`0048`, restored by `0054`). **The silence test is anchored at `τ1` and ONLY at `τ1`.** **Both Never started and Started-and-left are nulls** —
       only Continued rests on positive evidence. **Note this makes liveness outcome-conditional on the
       Continued test as well as on `|A|`**, which is permitted for the same reason: row-local predicates
@@ -113,8 +117,26 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
       `τ1 = ⟦T0⟧ + W × 24h`, and the Continued condition at `τ2 = ⟦T0⟧ + (W + H) × 24h` on `A_H`.
       **`|A| ≥ 1` at `τ1` remains a conjunct of Continued** — dropping it puts a day-150 starter
       completing by day 190 in two states at once.
-    - **Invariants.** Outcome states are mutually exclusive and sum to the sample; filter counts
-      decrease monotonically; distinct episodes never exceed season length; **`A ⊆ A_H` on every row**.
+    - **Invariants, EACH LABELLED CODE CHECK or DATA CHECK** (`0068` — the two read-back instances
+      split 4-of-6 against 6-of-6 on how many cannot fail on data alone, so the label is now stated
+      rather than inferred). **A code check catches an implementation that computed something wrongly;
+      it cannot fail on any data and is NOT evidence for the rule.**
+        - Outcome states mutually exclusive and summing to **the post-position-7 row set** — the rows
+          remaining after outcome assignment, which is the only thing "the sample" can mean. **CODE
+          CHECK**: Step 1 §7's partition is proved exhaustive and disjoint.
+        - Filter counts decrease monotonically, **coded `>=` not `>`**. **CODE CHECK**: filters only
+          remove rows, so it fails only on an implementation that adds them. **Load-bearing in fact —
+          position 2 removes exactly 0 pairs on this frame**, measured independently by both instances.
+        - Distinct episodes never exceed season length. **CODE CHECK**: the set-membership drop rule
+          already establishes `|D| ≤ L` by construction.
+        - **`A ⊆ A_H` on every row. CODE CHECK**: true by construction since `τ1 < τ2`.
+        - Clock start on or after the S2 finale, on or after the first-pass S1 completion, and equal to
+          one of them. **CODE CHECK BY CONSTRUCTION, DATA CHECK AS SPECIFIED** — `T0` is a `max()`, so
+          the clauses hold for any correct one; **the force comes from recomputing the S1 completion
+          date INDEPENDENTLY rather than reading back the pipeline's value.**
+        - **The 703 expectation is NOT an invariant** — it is a **population reconciliation** on
+          **APPLY = 196,654**, the position-5 output, and a mismatch is a population defect before an
+          implementation one. **On DERIV = 147,370 the count is 99, all started-and-left.**
       **The old invariant "no clock start precedes an S2 premiere" is VACUOUS under a finale-anchored
       clock and catches nothing** — it is replaced by: clock start is on or after the S2 finale date,
       on or after the first-pass S1 completion date, and **equals one of the two**. That check must
@@ -124,7 +146,10 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
     - **Required counts to `artifacts/`, aggregates only:** the two drop counts, D2, **D3′** (per Step
       13 arm, with its cleared count and share), D8, D9, right-censoring removal as **two lines**, and
       **retained-pair counts PER AIR PERIOD after right-censoring for every `W` arm**
-      (`decisions/0033`) — the aggregate 97.6% hides a cohort-asymmetric loss.
+      (`decisions/0033`) — **the aggregate 97.6% of pairs surviving right-censoring at `W = 108`,
+      source `0030` and `0033`, hides a cohort-asymmetric loss.** *(`0068`: the figure is restated with
+      its source because `task-sheet.md` argued against "the aggregate line above" when no line above
+      stated it.)*
     - The table goes to `processed/`; the filter waterfall and invariant report, counts only, to
       `artifacts/`.
 - **Step 8b, output schema. Chained. NOT LAUNCHED.** Define the JSON schema the Step 16 visualization
