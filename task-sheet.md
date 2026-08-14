@@ -329,6 +329,42 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
 - [ ] **Enforce the set-membership drop rule**: an episode whose `number` is not in the season's listed set `E` is dropped. This is an implementation check, not a data check — under set membership `|D| ≤ L` holds by construction
 - [ ] **Every boundary test is the half-open UTC-instant form** of Step 1 §2.4. `date(watched_at) <= T1` must not appear anywhere in the implementation
 - [ ] **THE LIVENESS SILENCE TEST IS STRICT.** The rule is *"no insertion instant **after** `τ1`"*, so a pair is silent iff it has **no insertion instant `> τ1`** — an instant falling exactly **at** `τ1` is **not** after it and does **not** make the account live. **Stated here, in the step that applies the rule** (`0068`); it was determinable from the rule text and said nowhere in Step 8. **AND THE EVIDENCE IS RESTRICTED TO RECORDS DATED BEFORE `τ_pull`.** Human Lead ruling, 2026-08-13 (`0070`). **This is applying an existing ruling consistently, not a new one:** **D11, approved at the Step 1 gate, makes `τ_pull` a global frozen cutoff and discards records at or after it from EVERY computation** — and the silence test is a computation. **The unstated version produced the reported-not-reconciled 792 (A) against 791 (B) at Step 7**, where one arm applied the restriction and the other did not. **Measured before ruling, and it does not disturb the approved gate: exclusions are 703 on APPLY and 99 on DERIV either way**, because no insertion instant exceeds the clamp at 2026-08-10T20:48Z and D10 already forces `τ1 ≤ τ_pull − 91 d`.
+- [ ] **THE COLUMN SET IS ENUMERATED, NOT COUNTED — 87 NAMES, EXACTLY THESE.** Human Lead ruling,
+      2026-08-13 (`0080`), replacing `0077` §3's count. **The arms converged on these names this run,
+      but CONVERGED IS NOT SPECIFIED and nothing prevents the next run from diverging.** **Step 8b's
+      schema is built on this vocabulary, so it is fixed before the schema exists.** Emit exactly these,
+      no more and no fewer:
+      `abandonment_point_p`, `action_count_s1_checkin`, `action_count_s1_other`, `action_count_s1_scrobble`
+      `action_count_s1_watch`, `action_count_s2_checkin`, `action_count_s2_other`, `action_count_s2_scrobble`
+      `action_count_s2_watch`, `air_period`, `cadence_boundary_distance_days`, `cadence_bucket`
+      `completers_per_year`, `discovered_channel_a`, `discovered_channel_b`, `e1_internal_gap`
+      `e1_starts_at_1`, `e2_internal_gap`, `e2_starts_at_1`, `exclusion`
+      `gap_days`, `has_s3_or_later_evidence`, `in_apply`, `in_deriv`
+      `live`, `max_episode_in_A_H`, `max_season_number`, `n_A`
+      `n_A_H`, `outcome`, `pool_completers`, `pool_completers_proxy`
+      `s1_E`, `s1_F`, `s1_L`, `s1_aired_episodes_reported`
+      `s1_aired_lt_listed`, `s1_completion_date`, `s1_completion_used_a_post_cutoff_record`, `s1_count_disagreement`
+      `s1_episode_count_reported`, `s1_exposure_years`, `s1_finale_date`, `s1_premiere_date`
+      `s1_season_first_aired`, `s1_total_runtime`, `s2_E`, `s2_F`
+      `s2_L`, `s2_aired_episodes_reported`, `s2_aired_lt_listed`, `s2_count_disagreement`
+      `s2_episode_count_reported`, `s2_finale_date`, `s2_finale_year`, `s2_premiere_date`
+      `s2_season_first_aired`, `s2_span_days`, `s2_total_runtime`, `s2_weekly_span_days`
+      `season_numbers`, `seasons_returned`, `show_aired_episodes`, `show_airs_day`
+      `show_certification`, `show_comment_count`, `show_country`, `show_first_aired`
+      `show_genres`, `show_language`, `show_languages`, `show_rating`
+      `show_runtime`, `show_status`, `show_subgenres`, `show_trakt_id`
+      `show_votes`, `show_year`, `size_quintile`, `size_quintile_per_year`
+      `size_quintile_raw_count`, `t0_binding_term`, `t0_date`, `tau1`
+      `tau2`, `title`, `user_idx`
+      **Three columns one arm emitted are DROPPED by this list**: `f2_in_A_H` (derivable —
+      `max_episode_in_A_H == s2_F`), `max_episode_in_A`, and **`silent_at_tau1`**. ***Stated because it
+      is a real loss, not a tidy-up:*** **`silent_at_tau1` is NOT recoverable from `live` and `outcome`
+      on Continued rows** — `live` is true for every Continued pair regardless of silence — **so
+      dropping it means the count of Continued-and-silent pairs cannot be recomputed from this table.**
+      That count is **652**, the size of the outcome-conditioning, which is what closed the rule
+      objection at `0063` §1 and publishes as a Step 14 limitation. **It remains recomputable from the
+      Step 7 masks; it is no longer recomputable from Step 8's table.** **Add it back and the set is 88
+      if that trade is not wanted.**
 - [ ] **COLUMN NAMES ARE FIXED, NOT LEFT TO THE INSTANCE.** Human Lead ruling, 2026-08-13 (`0077`).
       The rerun produced **88 columns against 87 for the SAME CONTENTS** — `in_population_APPLY` against
       `in_apply`, `n_rec_s1_watch` against `action_count_s1_watch`, `tau1_utc` against `tau1`,
@@ -501,6 +537,33 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
       counts. `CLAUDE.md`: *"a skipped user silently read as empty becomes a false 'never started' in
       the headline"*; rule and evidence at `artifacts/step0-access-and-setup.md` §7. **This can fail on
       real data, and it fails in the direction of the result.**
+- [ ] **EVERY INVARIANT NAMES THE POPULATION IT RUNS ON, AT THE POINT OF USE — AND ACCOUNTS FOR EVERY
+      ROW IN IT.** Human Lead ruling, 2026-08-13 (`0080`). **This is the provenance rule applied to
+      invariants rather than to figures:** an invariant that **passes on one population and was never run
+      on another reads as a pass on both.** **The dual run diverged on the coverage of five of the
+      eight**, and one gap was a real hole: **one arm asserted `p` on 19,042 rows and the non-S&L clause
+      on 177,513, summing to 196,555 against a 196,654-row table — 99 rows covered by neither clause**,
+      and those 99 are exactly the started-and-left liveness exclusions. **A passing invariant whose
+      coverage the instance chose is a code check on the instance's choice.**
+      **EVERY invariant reports `rows_asserted + rows_not_asserted = rows_in_the_stated_population`, and
+      the identity must hold.** The populations:
+      **1. Outcome partition** — **the 196,654 position-5 row set AND the 195,951 live subset, both
+      stated**, and the DERIV pair 147,370 / 147,271. The table carries all position-5 rows, so the
+      partition holds on both and neither substitutes for the other.
+      **2. Monotone filter counts** — **BOTH chains**, APPLY's seven positions and DERIV's.
+      **3. `|D| ≤ L`** — **both seasons, on every pair the set-membership rule examines**, with the pair
+      count and the record count stated. One arm ran S1 and S2 on 278,452 pairs, the other S2 only on
+      196,654; **the wider is required and the narrower does not substitute.**
+      **4. `A ⊆ A_H`** — the **196,654 position-5 row set**, every row.
+      **5. Clock start** — the **196,654 position-5 row set**, every row, with the first-pass S1
+      completion date **recomputed independently**, which is the only thing giving this one force.
+      **6. `p ∈ (0, 1]`** — **all 19,141 Started-and-left rows at position 5**, null on the other
+      **177,513**. **19,141 + 177,513 = 196,654 exactly**, and that identity is what closes the hole.
+      **Do not take the numerator post-liveness and the denominator pre-liveness.**
+      **7. No account dropped wholesale** — **both populations**: the 2,422 accounts in APPLY's
+      position-5 row set and DERIV's, each reporting accounts holding both a live and a not-live pair.
+      **8. No `access_denied` or skipped account read as empty** — **the full account ledger, in
+      ACCOUNTS**, with the skipped classes counted separately and the pairs they contribute stated.
 - [ ] **EVERY INVARIANT BELOW CARRIES A LABEL — CODE CHECK or DATA CHECK.** Human Lead ruling, 2026-08-13 (`0068`), resolving a live divergence: **the two read-back instances split 4-of-6 against 6-of-6** on how many cannot fail on data alone. **A code check catches an implementation that computed something wrongly; it cannot fail on any data, and it is not evidence for the rule.** A data check can fail on data. **The count is four pure code checks, one that is a code check by construction and a genuine cross-check as specified, and one item that is not an invariant at all** — which is why both readings were defensible and neither was stated.
 - [ ] **Assert invariant: outcome states are mutually exclusive and sum to THE POST-POSITION-7 ROW SET** — the rows remaining after outcome assignment, which is the only population the phrase can mean and was not stated (`0068`). **CODE CHECK.** Step 1 §7's partition is proved exhaustive and disjoint, so this can only catch an assignment coded wrongly.
 - [ ] Assert invariant, every row: **`A ⊆ A_H`** (`decisions/0034`). **CODE CHECK, not a data check** — true by construction since `τ1 < τ2`, so it can only catch an implementation that computed the two sets wrongly and is not evidence for the rule

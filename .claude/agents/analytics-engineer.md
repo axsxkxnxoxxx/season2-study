@@ -237,6 +237,17 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
       requires `|A| ≥ 1` so `m_H` exists, and **set membership bounds the rank numerator in `[1, L2]`**
       — **no data configuration puts `p` outside `(0, 1]`.** Both instances proved this independently.
       **Keep it; it proves the code, not the rule.**
+    - **EVERY INVARIANT NAMES THE POPULATION IT RUNS ON AND ACCOUNTS FOR EVERY ROW IN IT** (`0080`) —
+      **the provenance rule applied to invariants.** An invariant that **passes on one population and was
+      never run on another reads as a pass on both**, and the dual run **diverged on five of the eight**.
+      **One gap was real: `p` asserted on 19,042 rows with a 177,513 non-S&L clause sums to 196,555
+      against a 196,654-row table — 99 rows in neither**, and those 99 are the started-and-left liveness
+      exclusions. **Every invariant reports `rows_asserted + rows_not_asserted = rows_in_the_stated_population`.**
+      **1** partition — 196,654 **and** 195,951, both, plus DERIV. **2** monotone — **both chains**.
+      **3** `|D| ≤ L` — **both seasons**, every pair the rule examines. **4** `A ⊆ A_H` — 196,654.
+      **5** clock start — 196,654, S1 completion **recomputed independently**. **6** `p` — **all 19,141
+      S&L rows**, null on 177,513; **19,141 + 177,513 = 196,654.** **7** wholesale drop — **both
+      populations**. **8** skipped-as-empty — **the full ledger, in ACCOUNTS.**
     - **TWO NEW INVARIANTS, BOTH DATA CHECKS** (`0076`), **because the set had none.**
         - **No account is dropped wholesale by the pair-level liveness filter** — assert that the count
           of accounts holding **both a live and a not-live pair** is greater than zero, and report it.
@@ -255,6 +266,34 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
       length** — that reduces `the-100` to `the` and is a third key. **They were defined only inside one
       instance's code, which the other is forbidden to read.** **The 76-against-75 divergence is
       REPORTED, NOT RECONCILED.**
+    - **THE COLUMN SET IS ENUMERATED — 87 NAMES, EXACTLY THESE** (`0080`, replacing `0077` §3's count).
+      **Converged is not specified**, and **Step 8b's schema is built on this vocabulary.**
+      `abandonment_point_p`, `action_count_s1_checkin`, `action_count_s1_other`, `action_count_s1_scrobble`
+      `action_count_s1_watch`, `action_count_s2_checkin`, `action_count_s2_other`, `action_count_s2_scrobble`
+      `action_count_s2_watch`, `air_period`, `cadence_boundary_distance_days`, `cadence_bucket`
+      `completers_per_year`, `discovered_channel_a`, `discovered_channel_b`, `e1_internal_gap`
+      `e1_starts_at_1`, `e2_internal_gap`, `e2_starts_at_1`, `exclusion`
+      `gap_days`, `has_s3_or_later_evidence`, `in_apply`, `in_deriv`
+      `live`, `max_episode_in_A_H`, `max_season_number`, `n_A`
+      `n_A_H`, `outcome`, `pool_completers`, `pool_completers_proxy`
+      `s1_E`, `s1_F`, `s1_L`, `s1_aired_episodes_reported`
+      `s1_aired_lt_listed`, `s1_completion_date`, `s1_completion_used_a_post_cutoff_record`, `s1_count_disagreement`
+      `s1_episode_count_reported`, `s1_exposure_years`, `s1_finale_date`, `s1_premiere_date`
+      `s1_season_first_aired`, `s1_total_runtime`, `s2_E`, `s2_F`
+      `s2_L`, `s2_aired_episodes_reported`, `s2_aired_lt_listed`, `s2_count_disagreement`
+      `s2_episode_count_reported`, `s2_finale_date`, `s2_finale_year`, `s2_premiere_date`
+      `s2_season_first_aired`, `s2_span_days`, `s2_total_runtime`, `s2_weekly_span_days`
+      `season_numbers`, `seasons_returned`, `show_aired_episodes`, `show_airs_day`
+      `show_certification`, `show_comment_count`, `show_country`, `show_first_aired`
+      `show_genres`, `show_language`, `show_languages`, `show_rating`
+      `show_runtime`, `show_status`, `show_subgenres`, `show_trakt_id`
+      `show_votes`, `show_year`, `size_quintile`, `size_quintile_per_year`
+      `size_quintile_raw_count`, `t0_binding_term`, `t0_date`, `tau1`
+      `tau2`, `title`, `user_idx`
+      **Dropped, one arm each:** `f2_in_A_H` (derivable), `max_episode_in_A`, and **`silent_at_tau1`**
+      — **the last is NOT recoverable from `live` and `outcome` on Continued rows, so the
+      Continued-and-silent count (652, the outcome-conditioning size, `0063` §1) is no longer
+      recomputable from this table.** It stays recomputable from the Step 7 masks.
     - **COLUMN NAMES ARE FIXED** (`0077`). The rerun gave **88 against 87 columns for the SAME
       contents**, and **Step 8b's schema would inherit it.** **Rule: use the spec's own vocabulary where
       the spec defines the thing; otherwise the more explicit form.** Adopted: **`in_apply` /
