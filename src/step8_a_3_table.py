@@ -12,7 +12,15 @@ either would mean a superseded rule had been implemented. A mismatch is treated 
 defect before an implementation one -- and, this being a gate, it is reported rather than
 reconciled.
 
-Output: processed/step8/a/analysis_table.csv.gz   (position-7 rows, one per user-show pair)
+THE TABLE IS THE POSITION-5 ROW SET -- 196,654 rows on APPLY -- WITH `live` AND `outcome` AS
+COLUMNS (Human Lead ruling, decisions/0074 ruling 1). Both readings of "one row per pair" give
+identical counts, so this is a ruling and not a correction: rulings 0070/1 and 0070/7 established
+that downstream CONSUMES rather than REBUILDS, and carrying the liveness result as a column is
+that principle applied to the row set. Under the position-7 reading anything needing the excluded
+pairs reconstructs them, and a reconstruction that agrees today is still a second definition
+tomorrow -- invisible to the dual diff, because both instances would rebuild the same way.
+
+Output: processed/step8/a/analysis_table.csv.gz   (position-5 rows, one per user-show pair)
         processed/step8/a/position5_table.npz     (working table for the diagnostics stage)
         processed/step8/a/outcomes.json
 """
@@ -114,8 +122,8 @@ def main():
         "waterfall_line_6_is_outcome_conditional": True,
     }
 
-    # ---- the analysis table ------------------------------------------------------------------
-    keep = np.flatnonzero(pos6)
+    # ---- the analysis table: the POSITION-5 row set (0074 ruling 1) ---------------------------
+    keep = np.flatnonzero(pos5)
     users = json.load(open(os.path.join(P5, "user_index.json")))["users"]
     led = pd.read_json(os.path.join(P4, "pull_ledger.jsonl"), lines=True)
     led = led[led.is_data == True].drop_duplicates("slug", keep="last").set_index("slug")
@@ -129,6 +137,8 @@ def main():
         "show_trakt_id": a.pair_show[keep],
         "outcome": pd.Categorical.from_codes(r["outcome"][keep],
                                              ["never_started", "started_and_left", "continued"]),
+        "live": r["live"][keep],
+        "silent_at_tau1": r["silent"][keep],
         "abandonment_point_p": r["p"][keep],
         "in_channel_a": in_a[a.pair_user[keep]],
         "in_channel_b": in_b[a.pair_user[keep]],
@@ -152,7 +162,8 @@ def main():
         "n_rec_s2_scrobble": ac[keep, 1, 2], "n_rec_s2_other": ac[keep, 1, 3],
     })
     t = t.merge(frame, on="show_trakt_id", how="left", validate="many_to_one")
-    assert len(t) == int(pos6.sum())
+    assert len(t) == int(pos5.sum()) == 196654
+    assert int(t.live.sum()) == int(pos6.sum())
     t.to_csv(os.path.join(OUT, "analysis_table.csv.gz"), index=False, compression="gzip")
 
     np.savez_compressed(
@@ -167,13 +178,19 @@ def main():
         "path": "processed/step8/a/analysis_table.csv.gz",
         "rows": int(len(t)),
         "columns": int(t.shape[1]),
-        "unit": "one row per user-show pair, position-7 output on APPLY",
+        "unit": "one row per user-show pair, THE POSITION-5 ROW SET on APPLY (0074 ruling 1)",
+        "grain_ruling": "position 5, with `live` and `outcome` carried as COLUMNS. Downstream "
+                        "consumes rather than rebuilds; a position-7 table would force anything "
+                        "needing the 703 excluded pairs to reconstruct them, and a reconstruction "
+                        "that agrees today is a second definition tomorrow.",
+        "rows_live_position_6_retained": int(t.live.sum()),
+        "rows_not_live_position_6_excluded": int((~t.live).sum()),
         "DERIV_rows_flagged_within_it": int(pos5d[keep].sum()),
         "discovery_channel": "two boolean columns (0070 ruling 3)",
         "action": "per-pair counts by action type, S1 and S2 separately (0070 ruling 4)",
         "step2_show_fields_carried": int(frame.shape[1] - 1),
     }
-    res["channel_counts_on_position_7_APPLY"] = {
+    res["channel_counts_on_the_table_position_5_APPLY"] = {
         "pairs_channel_a": int(in_a[a.pair_user[keep]].sum()),
         "pairs_channel_b": int(in_b[a.pair_user[keep]].sum()),
         "pairs_in_both": int((in_a[a.pair_user[keep]] & in_b[a.pair_user[keep]]).sum()),

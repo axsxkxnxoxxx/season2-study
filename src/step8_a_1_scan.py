@@ -7,7 +7,12 @@ What this stage produces, and the rule each thing obeys:
 
   * Set-membership drop rule (Step 1 SS3.2): an episode record counts toward a season iff its
     `number` is a member of that season's listed set E. Records failing it are DROPPED and
-    counted, per show and per pair. Never a numeric range 1..F.
+    counted, per show and per pair. Never a numeric range 1..F. It is a COVERAGE COUNT and NOT
+    an invariant (Human Lead ruling, decisions/0074): records examined and records dropped are
+    reported; nothing is asserted.
+  * The records-examined denominator is reported with its full decomposition, because the dual
+    run split 6,065,704 against 6,065,610 and decisions/0074 ruling 4 publishes both UNRECONCILED
+    rather than picking one.
   * Dedup (Step 1 SS2.1/2.2): distinct (show, season, number) per user, canonical timestamp =
     the MINIMUM watched_at across its records; ties broken by episode number then smallest
     event id.
@@ -135,6 +140,30 @@ def main():
     n_base_undated = int((base & ts_missing).sum())
     n_base_at_or_after_pull = int((base & at_or_after_pull).sum())
 
+    # the records-examined denominator, decomposed. 0074 ruling 4 publishes 6,065,704 against
+    # 6,065,610 unreconciled; the decomposition is emitted so the diff can be localised rather
+    # than left as a bare pair of numbers.
+    _bu, _br = user[base].astype(np.int64), rid[base].astype(np.int64)
+    _dupfree = int(np.unique(_bu * (10 ** 13) + (_br % (10 ** 13))).size)
+    denom_variants = {
+        "reported_by_this_instance": n_base_records,
+        "definition": "episode records (kind == episode) whose show is in the Step 2 frame and "
+                      "whose season is 1 or 2, counted BEFORE the set-membership drop rule and "
+                      "BEFORE D11",
+        "undated_watched_at_null": n_base_undated,
+        "discarded_by_D11_watched_at_ge_tau_pull": n_base_at_or_after_pull,
+        "after_D11": int(n_base_records - n_base_undated - n_base_at_or_after_pull),
+        "exact_duplicate_user_play_id_records": int(n_base_records - _dupfree),
+        "records_with_number_le_0": int((base & (number <= 0)).sum()),
+        "note": "decisions/0074 ruling 4 reports 6,065,704 (A) against 6,065,610 (B) UNRECONCILED, "
+                "both with 0 drops. The gap is 94. None of the axes decomposed here produces it: "
+                "the D11 restriction moves the figure by 167, the undated count is 0, exact "
+                "duplicate (user, play id) records are 0, and no record carries a non-positive "
+                "number. Red Team's non-blocking finding that the predicted gap is 167 rather "
+                "than 94 is consistent with this measurement. Reported, not reconciled.",
+    }
+    del _bu, _br
+
     # ---- set-membership drop rule ---------------------------------------------------------
     # built on every DATED in-frame S1/S2 record; the D11 cutoff is carried as a timestamp
     # predicate rather than applied here (see the module docstring)
@@ -249,6 +278,7 @@ def main():
         "records_missing_watched_at": int(ts_missing.sum()),
         "records_discarded_watched_at_ge_tau_pull": int(at_or_after_pull.sum()),
         "in_frame_S1S2_episode_records": n_base_records,
+        "record_denominator_reconciliation": denom_variants,
         "in_frame_S1S2_records_undated": n_base_undated,
         "in_frame_S1S2_records_discarded_by_D11": n_base_at_or_after_pull,
         "in_frame_S1S2_records_after_D11": int(n_base_records - n_base_undated

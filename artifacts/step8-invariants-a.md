@@ -2,29 +2,34 @@
 
 **Owner:** Analytics Engineer (`a`) · **Mode:** GATE, dual implementation · **W = 108 days** · **H = 91 days** · **Zero API calls** · **Counts only**
 
-> **EVERY INVARIANT CARRIES A LABEL** (`decisions/0068`). **A code check catches an implementation that computed something wrongly; it cannot fail on any data, and it is NOT evidence for the rule.** A report saying "all invariants passed" overstates what was verified unless it names which ones could have failed. **Four of the six required invariants here cannot fail on data at all.**
+> **EVERY INVARIANT CARRIES A LABEL** (`decisions/0068`). **A code check catches an implementation that computed something wrongly; it cannot fail on any data, and it is NOT evidence for the rule.** A report saying "all invariants passed" overstates what was verified unless it names which ones could have failed.
 
-**Result: 7 checks ran and all passed — 6 labelled CODE CHECK and 1 labelled CODE CHECK BY CONSTRUCTION, DATA CHECK AS SPECIFIED.**
+**Result: 8 checks ran and all passed.** **5 cannot fail on any data** (CODE CHECK); **1 is a code check by construction with force only as specified**; and **2 CAN FAIL ON REAL DATA** (DATA CHECK). The 703 line is **not an invariant** and is reported separately below as a population reconciliation.
 
-**How this maps onto `0070` §4's count of the required set** — *four pure code checks, one that is a code check by construction and a genuine cross-check as specified, and one item that is not an invariant at all*: **items 1–4 are the four pure code checks**; **item 5 is the hybrid**; **item 6 is the set-membership check**, which Step 8's own bullet labels a code check; **item 7 is an extra this instance added** and is labelled as such; and **the 703 line is the item that is not an invariant**, reported separately below as a population reconciliation.
+**This set is eight, and it was six until `decisions/0076`.** That entry corrected `p` from DATA CHECK to **CODE CHECK** — the label this instance's previous deliverable already carried, and the correction *inverts* the published figure: on the pre-`0076` set the true count was **five of six unfalsifiable with ZERO pure data checks**, not "four of six". `0076` then added the two checks that can actually fail, **because the set had none**. **Neither of those two is a formality here**: check 7 separates a pair-level liveness implementation from an account-level one, which the 703-from-216-accounts figure alone cannot do, and check 8 is the one that would fail *in the direction of the result*.
+
+**The set-membership drop rule is NOT in this list.** `decisions/0074` ruling 3 makes it a **coverage count**: records examined and records dropped are reported in the waterfall deliverable, and nothing is asserted. Step 8's own bullet already called it *"an implementation check, not a data check"*.
 
 | # | Invariant | Label | Coverage | Result |
 | :-- | :--- | :--- | ---: | :--- |
 | 1 | outcome states are mutually exclusive and sum to the post-position-7 row set | **CODE CHECK** | 195,951 | PASS |
 | 2 | filter counts decrease monotonically, coded >= and not > | **CODE CHECK** | 7 | PASS |
 | 3 | distinct episodes never exceed season length | **CODE CHECK** | 278,452 | PASS |
-| 4 | A is a subset of A_H on every row | **CODE CHECK** | 195,951 | PASS |
-| 5 | clock start is on or after the S2 finale date, on or after the first-pass S1 completion date, and equal to one of the two | **CODE CHECK BY CONSTRUCTION, DATA CHECK AS SPECIFIED** | 195,951 | PASS |
-| 6 | the set-membership drop rule is enforced | **CODE CHECK** | 6,065,704 | PASS |
-| 7 | EXTRA, not required by the spec: p lies in (0, 1] on every Started-and-left row and is null everywhere else | **CODE CHECK** | 19,042 | PASS |
+| 4 | A is a subset of A_H on every row | **CODE CHECK** | 196,654 | PASS |
+| 5 | clock start is on or after the S2 finale date, on or after the first-pass S1 completion date, and equal to one of the two | **CODE CHECK BY CONSTRUCTION, DATA CHECK AS SPECIFIED** | 196,654 | PASS |
+| 6 | p lies in (0, 1] on every Started-and-left row and is null everywhere else | **CODE CHECK** | 19,141 | PASS |
+| 7 | no account is dropped wholesale by the pair-level liveness filter | **DATA CHECK** | 2,422 | PASS |
+| 8 | no access_denied or otherwise skipped account is read as empty | **DATA CHECK** | 2,884 | PASS |
 
 ### 1. outcome states are mutually exclusive and sum to the post-position-7 row set
 
 **CODE CHECK.** Step 1 SS7's partition is proved exhaustive and disjoint, so this can only catch an assignment coded wrongly. It is not evidence for the rule.
 
 - `coverage_rows` = `195951`
+- `population` = `the POST-POSITION-7 row set = 195,951 (0068 fixes this as the only population the phrase can mean). The table is the position-5 row set (0074 ruling 1), so the field below reports the partition there too -- the assertion is on the post-position-7 set as specified.`
 - `exactly_one_state_per_row` = `True`
 - `sum_equals_row_set` = `True`
+- `also_partitions_the_position_5_table_row_set` = `True`
 - **result: PASS**
 
 ### 2. filter counts decrease monotonically, coded >= and not >
@@ -50,9 +55,11 @@
 
 **CODE CHECK.** true by construction since tau1 < tau2 and both sets are prefixes of the same timestamp-ordered episode list; it can only catch the two sets being computed wrongly or the bounds transposed. Not evidence for the rule.
 
-- `coverage_rows` = `195951`
+- `coverage_rows` = `196654`
+- `population` = `APPLY, position 5 -- the analysis table's row set (0074 ruling 1)`
 - `rows_where_A_exceeds_A_H` = `0`
 - `rows_where_max_A_exceeds_max_A_H` = `0`
+- `also_holds_on_the_post_position_7_row_set` = `True`
 - **result: PASS**
 
 ### 5. clock start is on or after the S2 finale date, on or after the first-pass S1 completion date, and equal to one of the two
@@ -60,7 +67,8 @@
 **CODE CHECK BY CONSTRUCTION, DATA CHECK AS SPECIFIED.** T0 is a max(), so the two inequalities and the equality hold for any correct implementation. The force comes from recomputing the first-pass S1 completion date INDEPENDENTLY from the episode records rather than reading back the pipeline's value: a disagreement there is a real finding. Read back rather than recomputed, this degrades to a code check and proves nothing.
 
 - `replaces` = `the withdrawn 'no clock start precedes an S2 premiere', vacuous under a finale-anchored clock`
-- `coverage_rows` = `195951`
+- `coverage_rows` = `196654`
+- `population` = `APPLY, position 5 -- the analysis table's row set (0074 ruling 1)`
 - `on_or_after_S2_finale` = `True`
 - `on_or_after_first_pass_S1_completion` = `True`
 - `equals_one_of_the_two` = `True`
@@ -79,24 +87,57 @@
 - `tie_break_note` = `Step 1 SS2.2 breaks exactly-equal timestamps by episode number then smallest event id. The recomputation applies that tiebreak; the agreement counts above are reported rather than a choice being made about whether a tiebreak difference would count as a failure.`
 - **result: PASS**
 
-### 6. the set-membership drop rule is enforced
+### 6. p lies in (0, 1] on every Started-and-left row and is null everywhere else
 
-**CODE CHECK.** an implementation check, not a data check (Step 1 SS3.2). The data check is the drop count, reported in diagnostics.json.
+**CODE CHECK.** SPECIFIED by decisions/0074 ruling 2; LABEL CORRECTED from DATA CHECK to CODE CHECK by decisions/0076 on both instances' own proof. Started-and-left requires |A| >= 1, so max(A_H) exists; set membership bounds the rank numerator in [1, L2]. NO data configuration puts p outside (0, 1]. It fails only on the withdrawn raw-ratio form max(A_H)/L2, which can exceed 1 where S2 numbering has a gap. It is kept because Step 10 publishes p -- but it proves the code, not the rule.
 
-- `coverage_records_examined` = `6065704`
-- `records_surviving_with_number_outside_E` = `0`
-- `dropped_records` = `0`
-- **result: PASS**
-
-### 7. EXTRA, not required by the spec: p lies in (0, 1] on every Started-and-left row and is null everywhere else
-
-**CODE CHECK.** secured by the set rule (A subset E2, so max(A_H) is in E2); it catches the withdrawn raw-ratio form max(A_H)/L2, which can exceed 1 where S2 numbering has a gap.
-
-- `coverage_rows` = `19042`
+- `coverage_rows` = `19141`
+- `population` = `APPLY, position 5 -- the analysis table's row set (0074 ruling 1)`
 - `min` = `0.038461538461538464`
 - `max` = `1.0`
 - `nulls_among_started_and_left` = `0`
 - `non_null_outside_started_and_left` = `0`
+- **result: PASS**
+
+### 7. no account is dropped wholesale by the pair-level liveness filter
+
+**DATA CHECK.** CLAUDE.md and Step 7: 'One account can be live for one show and not another. Never drop a user wholesale.' 703 pairs from 216 accounts is consistent with a pair-level AND an account-level implementation, and nothing in the exclusion set distinguished them. Asserting that at least one account holds BOTH a live and a not-live pair separates them. THIS CAN FAIL ON REAL DATA (decisions/0076).
+
+- `population` = `APPLY, position 5 = 196,654`
+- `coverage_accounts_with_a_position_5_pair` = `2422`
+- `accounts_touched_by_the_exclusion` = `216`
+- `accounts_holding_BOTH_a_live_and_a_not_live_pair` = `215`
+- `accounts_all_of_whose_position_5_pairs_are_excluded` = `1`
+- `of_those_accounts_holding_more_than_one_position_5_pair` = `0`
+- `reading` = `accounts in the last line held exactly one position-5 pair unless the count above is non-zero; for a single-pair account 'wholesale' and 'pair-level' are indistinguishable and no inference is available either way.`
+- `assertion` = `accounts_holding_BOTH_a_live_and_a_not_live_pair > 0`
+- **result: PASS**
+
+### 8. no access_denied or otherwise skipped account is read as empty
+
+**DATA CHECK.** CLAUDE.md: 'a skipped user silently read as empty becomes a false never started in the headline'; rule and evidence at artifacts/step0-access-and-setup.md SS7. A skipped account must stay distinguishable downstream and must never contribute a never-started pair. THIS CAN FAIL ON REAL DATA, AND IT FAILS IN THE DIRECTION OF THE RESULT (decisions/0076).
+
+- `population` = `APPLY, position 5 = 196,654`
+- `coverage_ledger_rows` = `2884`
+- `coverage_accounts_in_the_user_index` = `2549`
+- `skip_classes_present_in_the_ledger`:
+    - `discarded_over_tolerance` = `287`
+    - `skipped_length_forecast` = `38`
+- `ledger_outcomes_not_classified_as_skip_or_complete` = `[]`
+- `HTTP_403_responses_in_the_whole_run` = `0`
+- `access_denied_accounts` = `0`
+- `accounts_whose_FINAL_ledger_state_is_a_skip_class` = `325`
+- `of_those_present_in_the_user_index` = `0`
+- `of_those_contributing_a_position_5_pair` = `0`
+- `of_those_contributing_a_pair_scored_NEVER_STARTED` = `0`
+- `accounts_skipped_and_never_yielding_data` = `325`
+- `those_accounts_contributing_a_NEVER_STARTED_pair` = `0`
+- `accounts_skipped_on_one_attempt_but_yielding_data_on_another`:
+    - `count` = `7`
+    - `position_5_pairs` = `604`
+    - `never_started_pairs` = `119`
+    - `note` = `not a violation -- these accounts have a real parsed history and their never-started rows rest on evidence, not on absence. Reported so the assertion's scope is visible.`
+- `assertion` = `no account whose final ledger state is a skip class, and no account that was skipped and never yielded data, contributes a pair scored never-started`
 - **result: PASS**
 
 ---
@@ -116,8 +157,11 @@
 
 ## What the invariant set does and does not establish
 
-- It establishes that **the definition on paper is the definition in the code**: the partition is exhaustive and disjoint as assigned, no filter position adds rows, no episode set exceeds its season, `A` sits inside `A_H`, the clock is the `max()` it is defined to be, and membership was tested by set and never by the numeric range `1..F`.
-- It establishes **nothing about whether the rules are right**. Four of these checks cannot fail on any data. The one with force is the clock-start check, and only because the first-pass S1 completion date is **recomputed independently from the episode records**; read back from the pipeline's own value it would prove nothing.
+- It establishes that **the definition on paper is the definition in the code**: the partition is exhaustive and disjoint as assigned, no filter position adds rows, no episode set exceeds its season, `A` sits inside `A_H`, `p` is a rank and not the withdrawn raw ratio, and the clock is the `max()` it is defined to be.
+- It establishes **almost nothing about whether the rules are right**. 5 of these checks cannot fail on any data.
+- **Three checks have force.** The clock-start check, and only because the first-pass S1 completion date is **recomputed independently from the episode records** — read back from the pipeline's own value it would prove nothing. And the two `0076` data checks, which test two named failure modes of this study rather than two properties of arithmetic: an account-level liveness filter masquerading as a pair-level one, and a skipped account silently read as a never-starter.
 - **The withdrawn invariant** — "no clock start precedes an S2 premiere" — is vacuous under a finale-anchored clock and catches nothing. It is replaced by the three-part check above, whose equality clause is the part that does work.
+- **What check 7 found, since a passing data check should still report what it saw:** 215 of 216 accounts touched by the exclusion hold both a live and a not-live pair, and the 1 whose position-5 pairs are all excluded held exactly one such pair (0 held more than one). The filter is pair-level in fact and not only in intent.
+- **What check 8 found:** 325 accounts are recorded in a skip class (discarded_over_tolerance 287, skipped_length_forecast 38), 0 HTTP 403 responses occurred in the entire run and 0 accounts are recorded `access_denied`. **None of the skipped accounts reaches the user index at all**, so none contributes a pair of any kind, let alone a never-started one. Separately, 7 accounts were skipped on one attempt and yielded data on another; they contribute 604 position-5 pairs including 119 never-started, which rest on a real parsed history and are not violations. Reported so the assertion's scope is visible rather than assumed.
 
 *Generated by `src/step8_a_6_emit.py` from `processed/step8/a/invariants.json`.*

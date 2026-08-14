@@ -53,7 +53,15 @@ def main():
     D["drop_counts"] = {
         "rule": "set membership (Step 1 SS3.2): a record is dropped when its number is not in "
                 "that season's listed set E. Never the numeric range 1..F.",
+        "status": "A COVERAGE COUNT, NOT AN INVARIANT (Human Lead ruling, decisions/0074 ruling "
+                  "3). Step 8's own bullet already calls it 'an implementation check, not a data "
+                  "check'. Records examined and records dropped are REPORTED; nothing is "
+                  "asserted. Asserting it would add another pass to a report where five of eight "
+                  "checks cannot fail.",
         "coverage_records_examined": scan_sum["in_frame_S1S2_episode_records"],
+        "coverage_records_dropped": scan_sum["dropped_by_set_membership_records"],
+        "records_examined_denominator_reported_unreconciled": scan_sum[
+            "record_denominator_reconciliation"],
         "per_show": {
             "shows_examined": int(len(drops)),
             "shows_with_any_dropped_record": int((drops.dropped_records > 0).sum()),
@@ -147,10 +155,26 @@ def main():
 
     # ---- 5. D3' and the 3,440, restated with its population -------------------------------
     arms = json.load(open(os.path.join(OUT, "arms.json")))
-    D["D3_prime"] = {"per_arm": {str(e["W_days"]): e["D3_prime"] for e in arms["arms"]},
-                     "note": "each arm's denominator is its own (0068). The 95.98%-at-W=46 to "
-                             "91.34%-at-W=213 cleared series in decisions/0034 was measured on a "
-                             "different population and is not comparable to these."}
+    D["D3_prime"] = {
+        "per_arm": {str(e["W_days"]): e["D3_prime"] for e in arms["arms"]},
+        "population_at_the_point_of_use": "STEP 8's RIGHT-CENSORED POPULATIONS. The headline "
+                                          "series is APPLY, position-7 output (post-liveness), "
+                                          "at each arm on its own denominator (0068).",
+        "ruled_series": "decisions/0075: 99.53% of Started-and-left cleared at W = 46 down to "
+                        "97.73% at W = 213 on APPLY. SUPERSEDED at this point of use: 0034's "
+                        "95.98% -> 91.34%, measured on the amendment's UNCENSORED estimation "
+                        "sample of 128,099 and carrying no population where it was used.",
+        "measured_series_APPLY_position_7": {
+            str(e["W_days"]): e["D3_prime"]["APPLY"]["cleared_share_of_all_started_and_left"]
+            for e in arms["arms"]},
+        "non_monotone_step_reported_not_resolved": "the cleared share is not monotone in W: it "
+                                                   "rises between W = 91 and W = 107 before "
+                                                   "resuming its fall. Both the clearance bound "
+                                                   "and the Started-and-left denominator move "
+                                                   "with W and they do not move together. Listed "
+                                                   "open at decisions/0076 SS5; reported here, "
+                                                   "not resolved.",
+    }
     D["the_3440"] = {
         "value": 3440,
         "what": "Started-and-left pairs completing S2 at any point before tau_pull",
@@ -181,54 +205,132 @@ def main():
             piv[c] = False
     slugs = pd.read_csv(os.path.join(OUT, "show_slugs.csv")).drop_duplicates("show_trakt_id")
     piv = piv.merge(slugs, left_on="s", right_on="show_trakt_id", how="left")
-    piv["base"] = (piv.show_slug.fillna("").str.replace(r"(-\d+)+$", "", regex=True))
-    piv = piv[piv.base != ""]
+    raw = piv.show_slug.fillna("")
 
-    s1_only = piv[piv.s1 & ~piv.s2][["u", "base", "s"]].rename(columns={"s": "id_s1"})
-    s2_only = piv[piv.s2 & ~piv.s1][["u", "base", "s"]].rename(columns={"s": "id_s2"})
-    cand = s1_only.merge(s2_only, on=["u", "base"])
-    cand = cand[cand.id_s1 != cand.id_s2]
-    both = piv[piv.s1 & piv.s2][["u", "base", "s"]]
-    merge_cand = both.merge(piv[["u", "base", "s"]], on=["u", "base"])
-    merge_cand = merge_cand[merge_cand.s_x != merge_cand.s_y]
-
+    # THE TWO KEYS, defined in the spec by decisions/0076 because "strict" and "loose" had
+    # existed only inside one instance's code, which the other is forbidden to read.
+    #   STRICT: lowercase the slug and drop every non-alphanumeric character. Strip NOTHING else.
+    #   LOOSE:  remove a TRAILING FOUR-DIGIT YEAR first, then apply the strict transform.
+    # Neither strips a trailing digit group of arbitrary length -- that reduces `the-100` to
+    # `the` and is a THIRD key. This instance used the third key on its previous run and
+    # published 76 complementary pairs against the other arm's 75; that divergence is REPORTED,
+    # NOT RECONCILED, and the third key is measured below purely so the record is complete.
+    keys = {
+        "strict": raw.str.lower().str.replace(r"[^a-z0-9]", "", regex=True),
+        "loose": (raw.str.replace(r"-\d{4}$", "", regex=True)
+                  .str.lower().str.replace(r"[^a-z0-9]", "", regex=True)),
+        "third_key_trailing_digit_groups_NOT_RULED": (
+            raw.str.replace(r"(-\d+)+$", "", regex=True)
+            .str.lower().str.replace(r"[^a-z0-9]", "", regex=True)),
+    }
+    failed_s1 = ~positions["complete"]
     pk = pd.DataFrame({"u": a.pair_user.astype(np.int64), "s": a.pair_show,
                        "row": np.arange(a.n)})
-    sigA = pk.merge(cand[["u", "id_s1"]].drop_duplicates(), left_on=["u", "s"],
-                    right_on=["u", "id_s1"])
-    sigB = pk.merge(cand[["u", "id_s2"]].drop_duplicates(), left_on=["u", "s"],
-                    right_on=["u", "id_s2"])
-    has_sigA = np.zeros(a.n, dtype=bool)
-    has_sigA[sigA.row.to_numpy()] = True
-    has_sigB = np.zeros(a.n, dtype=bool)
-    has_sigB[sigB.row.to_numpy()] = True
-    failed_s1 = ~positions["complete"]
+
+    def d9_for(key_series):
+        p = piv.assign(base=key_series)
+        p = p[p.base != ""]
+        s1_only = p[p.s1 & ~p.s2][["u", "base", "s"]].rename(columns={"s": "id_s1"})
+        s2_only = p[p.s2 & ~p.s1][["u", "base", "s"]].rename(columns={"s": "id_s2"})
+        cand = s1_only.merge(s2_only, on=["u", "base"])
+        cand = cand[cand.id_s1 != cand.id_s2]
+        both = p[p.s1 & p.s2][["u", "base", "s"]]
+        mc = both.merge(p[["u", "base", "s"]], on=["u", "base"])
+        mc = mc[mc.s_x != mc.s_y]
+        sA = np.zeros(a.n, dtype=bool)
+        sB = np.zeros(a.n, dtype=bool)
+        if len(cand):
+            sA[pk.merge(cand[["u", "id_s1"]].drop_duplicates(), left_on=["u", "s"],
+                        right_on=["u", "id_s1"]).row.to_numpy()] = True
+            sB[pk.merge(cand[["u", "id_s2"]].drop_duplicates(), left_on=["u", "s"],
+                        right_on=["u", "id_s2"]).row.to_numpy()] = True
+        return {
+            "coverage_rows_examined": int(p.shape[0]),
+            "complementary_signature_id_pairs": int(cand.shape[0]),
+            "half_a_never_started_carrying_the_signature_APPLY_position_7": int(
+                (pos6 & r["never"] & sA).sum()),
+            "half_a_never_started_carrying_the_signature_APPLY_position_5": int(
+                (pos5 & r["never"] & sA).sum()),
+            "half_b_S1_failing_pairs_carrying_the_signature": int((failed_s1 & sB).sum()),
+            "merges_user_show_rows_where_one_ID_carries_both_seasons_and_a_same_title_ID_also_"
+            "appears": int(mc[["u", "s_x"]].drop_duplicates().shape[0]),
+        }
+
+    by_key = {k: d9_for(v) for k, v in keys.items()}
+    st, lo = by_key["strict"], by_key["loose"]
+
+    # what loose merges that strict does not, named rather than asserted
+    lp = piv.assign(base=keys["loose"])
+    lp = lp[lp.base != ""]
+    strict_of = keys["strict"]
+    merged_titles = (lp.assign(strict=strict_of[lp.index])
+                     .groupby("base").strict.nunique().sort_values(ascending=False))
+    top_merged = [{"loose_key": k, "distinct_strict_keys_merged": int(v)}
+                  for k, v in merged_titles.head(5).items() if v > 1]
 
     D["D9_split_artifacts"] = {
         "signature": "two show IDs in one user's sweep with complementary season coverage (one "
                      "carrying S1 and not S2, the other S2 and not S1) whose normalised slugs "
                      "agree. Detection is imperfect and every count here is a LOWER BOUND "
                      "(Step 1 SS10.0b).",
+        "key_ruling": "decisions/0074 ruling 5 adopts the STRICT key; decisions/0076 defines "
+                      "both keys in the spec. STRICT = lowercase, drop every non-alphanumeric "
+                      "character, strip nothing else. LOOSE = remove a trailing four-digit year "
+                      "first, then strict. The loose count publishes alongside because it BOUNDS "
+                      "HOW WRONG STRICT COULD BE, and the error runs OPPOSITE to D9's own "
+                      "lower-bound caveat.",
         "coverage": {"show_ids_with_a_slug": int(slugs.shape[0]),
-                     "user_show_coverage_rows_examined": int(piv.shape[0]),
-                     "candidate_complementary_id_pairs": int(cand.shape[0])},
-        "half_a_fabricated_never_started_row": {
-            "population": "APPLY position 7, scored Never started",
-            "never_started": int((pos6 & r["never"]).sum()),
-            "carrying_the_signature": int((pos6 & r["never"] & has_sigA).sum()),
-            "share_of_never_started": share(int((pos6 & r["never"] & has_sigA).sum()),
-                                            int((pos6 & r["never"]).sum())),
-            "direction": "DOWN -- the row is fabricated directly into the headline category"},
-        "half_b_silently_deleted_S1_failing_counterpart": {
-            "population": "pairs on frame shows in the pair universe that FAIL the S1 completion "
-                          "rule, i.e. rows position 3 removes -- retained as a side output "
-                          "because they are not in the analysis table and cannot be recovered "
-                          "from it",
-            "pairs_failing_S1_completion": int(failed_s1.sum()),
-            "carrying_the_signature": int((failed_s1 & has_sigB).sum())},
+                     "user_show_coverage_rows_examined": int(piv.shape[0])},
+        "ADOPTED_strict_key": {
+            "complementary_signature_id_pairs": st["complementary_signature_id_pairs"],
+            "half_a_fabricated_never_started_row": {
+                "population": "APPLY, position 7 (post-liveness), scored Never started",
+                "never_started": int((pos6 & r["never"]).sum()),
+                "carrying_the_signature": st[
+                    "half_a_never_started_carrying_the_signature_APPLY_position_7"],
+                "share_of_never_started": share(
+                    st["half_a_never_started_carrying_the_signature_APPLY_position_7"],
+                    int((pos6 & r["never"]).sum())),
+                "on_APPLY_position_5_the_table_row_set": {
+                    "never_started": int((pos5 & r["never"]).sum()),
+                    "carrying_the_signature": st[
+                        "half_a_never_started_carrying_the_signature_APPLY_position_5"]},
+                "direction": "DOWN -- the row is fabricated directly into the headline category"},
+            "half_b_silently_deleted_S1_failing_counterpart": {
+                "population": "pairs in the pair universe that FAIL the S1 completion rule -- the "
+                              "rows position 3 removes, RETAINED AS A SIDE OUTPUT (0075) because "
+                              "half (b) cannot be computed without them and they are not "
+                              "recoverable from the analysis table",
+                "side_output": "processed/step8/a/position3_dropset.npz",
+                "pairs_failing_S1_completion": int(failed_s1.sum()),
+                "carrying_the_signature": st["half_b_S1_failing_pairs_carrying_the_signature"]},
+        },
+        "REPORTED_ALONGSIDE_loose_key": {
+            "complementary_signature_id_pairs": lo["complementary_signature_id_pairs"],
+            "half_a_APPLY_position_7": lo[
+                "half_a_never_started_carrying_the_signature_APPLY_position_7"],
+            "half_b": lo["half_b_S1_failing_pairs_carrying_the_signature"],
+            "why_it_is_not_adopted": "it strips the year and merges genuinely different shows -- "
+                                     "remakes and national versions, not split metadata, which is "
+                                     "the artefact D9 exists to count",
+            "largest_clusters_it_merges": top_merged,
+        },
+        "third_key_measured_only_so_the_record_is_complete": {
+            "definition": "strip a trailing digit group of ARBITRARY length, then strict. NOT "
+                          "either ruled key: it reduces `the-100` to `the`.",
+            "complementary_signature_id_pairs": by_key[
+                "third_key_trailing_digit_groups_NOT_RULED"]["complementary_signature_id_pairs"],
+            "half_a_APPLY_position_7": by_key["third_key_trailing_digit_groups_NOT_RULED"][
+                "half_a_never_started_carrying_the_signature_APPLY_position_7"],
+            "note": "this instance used this key on its previous run and published 76 "
+                    "complementary pairs against the other arm's 75. decisions/0076 records that "
+                    "divergence as REPORTED, NOT RECONCILED.",
+        },
         "merges_counted_with_the_same_query_and_reported_separately": {
-            "user_show_rows_where_one_ID_carries_both_seasons_and_a_same_title_ID_also_appears":
-                int(merge_cand[["u", "s_x"]].drop_duplicates().shape[0]),
+            "strict_key": st["merges_user_show_rows_where_one_ID_carries_both_seasons_and_a_same_"
+                             "title_ID_also_appears"],
+            "loose_key": lo["merges_user_show_rows_where_one_ID_carries_both_seasons_and_a_same_"
+                            "title_ID_also_appears"],
             "note": "merges can only add evidence to a pair, never remove it (Step 1 SS10.0b)"},
     }
 
@@ -305,6 +407,17 @@ def main():
 
     # ---- 10. outcome counts and the horizon pairing ----------------------------------------
     D["outcome_counts"] = {
+        "APPLY_position_5_THE_TABLE_ROW_SET": {
+            "never_started": int((pos5 & r["never"]).sum()),
+            "started_and_left": int((pos5 & r["left"]).sum()),
+            "continued": int((pos5 & r["continued"]).sum()),
+            "not_live": int((pos5 & r["not_live"]).sum()),
+            "total": int(pos5.sum())},
+        "DERIV_position_5": {"never_started": int((pos5d & r["never"]).sum()),
+                             "started_and_left": int((pos5d & r["left"]).sum()),
+                             "continued": int((pos5d & r["continued"]).sum()),
+                             "not_live": int((pos5d & r["not_live"]).sum()),
+                             "total": int(pos5d.sum())},
         "APPLY_position_7": {"never_started": int((pos6 & r["never"]).sum()),
                              "started_and_left": int((pos6 & r["left"]).sum()),
                              "continued": int((pos6 & r["continued"]).sum()),
@@ -322,10 +435,13 @@ def main():
                     "withdrawn and must not be reinstated",
             "p_equals_1_residual_APPLY_position_7": int(
                 (pos6 & r["left"] & (r["p"] == 1.0)).sum()),
-            "p_min": float(np.nanmin(r["p"][pos6 & r["left"]])),
-            "p_max": float(np.nanmax(r["p"][pos6 & r["left"]])),
-            "rows_with_p_null_outside_started_and_left": int(
-                (pos6 & ~r["left"] & ~np.isnan(r["p"])).sum())},
+            "p_equals_1_residual_APPLY_position_5": int(
+                (pos5 & r["left"] & (r["p"] == 1.0)).sum()),
+            "p_min": float(np.nanmin(r["p"][pos5 & r["left"]])),
+            "p_max": float(np.nanmax(r["p"][pos5 & r["left"]])),
+            "population_of_the_range": "APPLY, position 5 -- the table's row set",
+            "rows_with_p_non_null_outside_started_and_left": int(
+                (pos5 & ~r["left"] & ~np.isnan(r["p"])).sum())},
     }
 
     # ---- 11. action counts by type (0070 ruling 4) -----------------------------------------
@@ -361,6 +477,12 @@ def main():
 
     # =====================================================================================
     # INVARIANTS. Every one carries a label: CODE CHECK or DATA CHECK (0068).
+    #
+    # The set is EIGHT (decisions/0076): five pure code checks, one code-by-construction with
+    # force only as specified, and TWO that can fail on real data. Before 0076 it was six, of
+    # which FIVE could not fail and ZERO were pure data checks -- 0074 had labelled `p` a data
+    # check and 0076 corrected it to CODE CHECK on both instances' own proof. The
+    # set-membership rule is NOT in this list: 0074 ruling 3 makes it a coverage count.
     # =====================================================================================
     inv = []
 
@@ -371,8 +493,14 @@ def main():
         "why": "Step 1 SS7's partition is proved exhaustive and disjoint, so this can only catch "
                "an assignment coded wrongly. It is not evidence for the rule.",
         "coverage_rows": int(pos6.sum()),
+        "population": "the POST-POSITION-7 row set = 195,951 (0068 fixes this as the only "
+                      "population the phrase can mean). The table is the position-5 row set "
+                      "(0074 ruling 1), so the field below reports the partition there too -- "
+                      "the assertion is on the post-position-7 set as specified.",
         "exactly_one_state_per_row": bool((states.sum(axis=0) == 1).all()),
         "sum_equals_row_set": int(states.sum()) == int(pos6.sum()),
+        "also_partitions_the_position_5_table_row_set": bool(
+            (np.stack([r["never"], r["left"], r["continued"]])[:, pos5].sum(axis=0) == 1).all()),
         "passed": bool((states.sum(axis=0) == 1).all()) and int(states.sum()) == int(pos6.sum()),
     })
 
@@ -416,17 +544,20 @@ def main():
         "why": "true by construction since tau1 < tau2 and both sets are prefixes of the same "
                "timestamp-ordered episode list; it can only catch the two sets being computed "
                "wrongly or the bounds transposed. Not evidence for the rule.",
-        "coverage_rows": int(pos6.sum()),
-        "rows_where_A_exceeds_A_H": int((r["kA"][pos6] > r["kAH"][pos6]).sum()),
-        "rows_where_max_A_exceeds_max_A_H": int((r["mA"][pos6] > r["mH"][pos6]).sum()),
-        "passed": bool((r["kA"][pos6] <= r["kAH"][pos6]).all()
-                       and (r["mA"][pos6] <= r["mH"][pos6]).all()),
+        "coverage_rows": int(pos5.sum()),
+        "population": "APPLY, position 5 -- the analysis table's row set (0074 ruling 1)",
+        "rows_where_A_exceeds_A_H": int((r["kA"][pos5] > r["kAH"][pos5]).sum()),
+        "rows_where_max_A_exceeds_max_A_H": int((r["mA"][pos5] > r["mH"][pos5]).sum()),
+        "also_holds_on_the_post_position_7_row_set": bool(
+            (r["kA"][pos6] <= r["kAH"][pos6]).all()),
+        "passed": bool((r["kA"][pos5] <= r["kAH"][pos5]).all()
+                       and (r["mA"][pos5] <= r["mH"][pos5]).all()),
     })
 
     t0, fin, s1d = a.t0, positions["fin2_epoch"], positions["s1_date"]
-    c1 = bool((t0[pos6] >= fin[pos6]).all())
-    c2 = bool((t0[pos6] >= s1d[pos6]).all())
-    c3 = bool(((t0[pos6] == fin[pos6]) | (t0[pos6] == s1d[pos6])).all())
+    c1 = bool((t0[pos5] >= fin[pos5]).all())
+    c2 = bool((t0[pos5] >= s1d[pos5]).all())
+    c3 = bool(((t0[pos5] == fin[pos5]) | (t0[pos5] == s1d[pos5])).all())
     inv.append({
         "name": "clock start is on or after the S2 finale date, on or after the first-pass S1 "
                 "completion date, and equal to one of the two",
@@ -438,7 +569,8 @@ def main():
                "recomputed, this degrades to a code check and proves nothing.",
         "replaces": "the withdrawn 'no clock start precedes an S2 premiere', vacuous under a "
                     "finale-anchored clock",
-        "coverage_rows": int(pos6.sum()),
+        "coverage_rows": int(pos5.sum()),
+        "population": "APPLY, position 5 -- the analysis table's row set (0074 ruling 1)",
         "on_or_after_S2_finale": c1,
         "on_or_after_first_pass_S1_completion": c2,
         "equals_one_of_the_two": c3,
@@ -450,32 +582,123 @@ def main():
         "passed": c1 and c2 and c3,
     })
 
+    p_sl = r["p"][pos5 & r["left"]]
     inv.append({
-        "name": "the set-membership drop rule is enforced",
+        "name": "p lies in (0, 1] on every Started-and-left row and is null everywhere else",
         "label": "CODE CHECK",
-        "why": "an implementation check, not a data check (Step 1 SS3.2). The data check is the "
-               "drop count, reported in diagnostics.json.",
-        "coverage_records_examined": scan_sum["in_frame_S1S2_episode_records"],
-        "records_surviving_with_number_outside_E": 0,
-        "dropped_records": scan_sum["dropped_by_set_membership_records"],
-        "passed": True,
-    })
-
-    p_sl = r["p"][pos6 & r["left"]]
-    inv.append({
-        "name": "EXTRA, not required by the spec: p lies in (0, 1] on every Started-and-left row "
-                "and is null everywhere else",
-        "label": "CODE CHECK",
-        "why": "secured by the set rule (A subset E2, so max(A_H) is in E2); it catches the "
+        "why": "SPECIFIED by decisions/0074 ruling 2; LABEL CORRECTED from DATA CHECK to CODE "
+               "CHECK by decisions/0076 on both instances' own proof. Started-and-left requires "
+               "|A| >= 1, so max(A_H) exists; set membership bounds the rank numerator in "
+               "[1, L2]. NO data configuration puts p outside (0, 1]. It fails only on the "
                "withdrawn raw-ratio form max(A_H)/L2, which can exceed 1 where S2 numbering has "
-               "a gap.",
-        "coverage_rows": int((pos6 & r["left"]).sum()),
+               "a gap. It is kept because Step 10 publishes p -- but it proves the code, not the "
+               "rule.",
+        "coverage_rows": int((pos5 & r["left"]).sum()),
+        "population": "APPLY, position 5 -- the analysis table's row set (0074 ruling 1)",
         "min": float(np.nanmin(p_sl)), "max": float(np.nanmax(p_sl)),
         "nulls_among_started_and_left": int(np.isnan(p_sl).sum()),
-        "non_null_outside_started_and_left": int((pos6 & ~r["left"] & ~np.isnan(r["p"])).sum()),
+        "non_null_outside_started_and_left": int((pos5 & ~r["left"] & ~np.isnan(r["p"])).sum()),
         "passed": bool(np.nanmin(p_sl) > 0 and np.nanmax(p_sl) <= 1.0
                        and np.isnan(p_sl).sum() == 0
-                       and int((pos6 & ~r["left"] & ~np.isnan(r["p"])).sum()) == 0),
+                       and int((pos5 & ~r["left"] & ~np.isnan(r["p"])).sum()) == 0),
+    })
+
+    # ---- DATA CHECK 1: no account is dropped wholesale by the pair-level liveness filter ----
+    # decisions/0076. 703 pairs from 216 accounts is consistent with BOTH a pair-level and an
+    # account-level implementation, and nothing in the set distinguished them. This can fail on
+    # real data.
+    nl = pos5 & r["not_live"]
+    lv_ = pos5 & ~r["not_live"]
+    u_nl = np.unique(a.pair_user[nl])
+    u_lv = np.unique(a.pair_user[lv_])
+    u_mixed = np.intersect1d(u_nl, u_lv)
+    u_wholesale = np.setdiff1d(u_nl, u_lv)
+    # of the wholesale accounts, how many held only ONE position-5 pair -- for those the two
+    # implementations are indistinguishable and no inference is available either way
+    cnt = pd.Series(a.pair_user[pos5]).value_counts()
+    whole_multi = int((cnt.reindex(u_wholesale).fillna(0) > 1).sum())
+    inv.append({
+        "name": "no account is dropped wholesale by the pair-level liveness filter",
+        "label": "DATA CHECK",
+        "why": "CLAUDE.md and Step 7: 'One account can be live for one show and not another. "
+               "Never drop a user wholesale.' 703 pairs from 216 accounts is consistent with a "
+               "pair-level AND an account-level implementation, and nothing in the exclusion set "
+               "distinguished them. Asserting that at least one account holds BOTH a live and a "
+               "not-live pair separates them. THIS CAN FAIL ON REAL DATA (decisions/0076).",
+        "population": "APPLY, position 5 = 196,654",
+        "coverage_accounts_with_a_position_5_pair": int(np.unique(a.pair_user[pos5]).size),
+        "accounts_touched_by_the_exclusion": int(u_nl.size),
+        "accounts_holding_BOTH_a_live_and_a_not_live_pair": int(u_mixed.size),
+        "accounts_all_of_whose_position_5_pairs_are_excluded": int(u_wholesale.size),
+        "of_those_accounts_holding_more_than_one_position_5_pair": whole_multi,
+        "reading": "accounts in the last line held exactly one position-5 pair unless the count "
+                   "above is non-zero; for a single-pair account 'wholesale' and 'pair-level' "
+                   "are indistinguishable and no inference is available either way.",
+        "assertion": "accounts_holding_BOTH_a_live_and_a_not_live_pair > 0",
+        "passed": bool(u_mixed.size > 0),
+    })
+
+    # ---- DATA CHECK 2: no access_denied or skipped account is read as empty ----------------
+    # decisions/0076. CLAUDE.md: "a skipped user silently read as empty becomes a false 'never
+    # started' in the headline." This fails in the direction of the result.
+    led2 = pd.read_json(os.path.join(P4, "pull_ledger.jsonl"), lines=True)
+    users = json.load(open(os.path.join(P5, "user_index.json")))["users"]
+    uslug = pd.Index(users)
+    SKIP = {"discarded_over_tolerance", "skipped_length_forecast", "error_short_read",
+            "access_denied", "private", "skipped"}
+    last = led2.drop_duplicates("slug", keep="last")
+    final_skip = set(last.loc[last.outcome.isin(SKIP), "slug"])
+    ever_skip = set(led2.loc[led2.outcome.isin(SKIP), "slug"])
+    ever_data = set(led2.loc[led2.is_data == True, "slug"])
+    unknown_outcomes = sorted(set(led2.outcome) - SKIP - {"complete"})
+    # 403s never occurred in this pull; measured from the request log rather than assumed
+    n_403 = sum(1 for line in open(os.path.join(ROOT, "logs/api_requests.ndjson"))
+                if '"status": 403' in line)
+
+    def rows_for(slugset):
+        idx = uslug.get_indexer(sorted(slugset))
+        present = idx[idx >= 0]
+        if present.size == 0:
+            return 0, 0, 0
+        m = np.isin(a.pair_user, present)
+        return int(present.size), int((m & pos5).sum()), int((m & pos5 & r["never"]).sum())
+
+    fs_users, fs_pairs, fs_never = rows_for(final_skip)
+    es_users, es_pairs, es_never = rows_for(ever_skip - ever_data)
+    retried = sorted(ever_skip & ever_data)
+    rt_users, rt_pairs, rt_never = rows_for(set(retried))
+    inv.append({
+        "name": "no access_denied or otherwise skipped account is read as empty",
+        "label": "DATA CHECK",
+        "why": "CLAUDE.md: 'a skipped user silently read as empty becomes a false never started "
+               "in the headline'; rule and evidence at artifacts/step0-access-and-setup.md SS7. "
+               "A skipped account must stay distinguishable downstream and must never contribute "
+               "a never-started pair. THIS CAN FAIL ON REAL DATA, AND IT FAILS IN THE DIRECTION "
+               "OF THE RESULT (decisions/0076).",
+        "population": "APPLY, position 5 = 196,654",
+        "coverage_ledger_rows": int(led2.shape[0]),
+        "coverage_accounts_in_the_user_index": int(len(users)),
+        "skip_classes_present_in_the_ledger": {k: int((last.outcome == k).sum())
+                                               for k in sorted(SKIP)
+                                               if (last.outcome == k).any()},
+        "ledger_outcomes_not_classified_as_skip_or_complete": unknown_outcomes,
+        "HTTP_403_responses_in_the_whole_run": n_403,
+        "access_denied_accounts": int((last.outcome == "access_denied").sum()),
+        "accounts_whose_FINAL_ledger_state_is_a_skip_class": int(len(final_skip)),
+        "of_those_present_in_the_user_index": fs_users,
+        "of_those_contributing_a_position_5_pair": fs_pairs,
+        "of_those_contributing_a_pair_scored_NEVER_STARTED": fs_never,
+        "accounts_skipped_and_never_yielding_data": int(len(ever_skip - ever_data)),
+        "those_accounts_contributing_a_NEVER_STARTED_pair": es_never,
+        "accounts_skipped_on_one_attempt_but_yielding_data_on_another": {
+            "count": len(retried), "position_5_pairs": rt_pairs,
+            "never_started_pairs": rt_never,
+            "note": "not a violation -- these accounts have a real parsed history and their "
+                    "never-started rows rest on evidence, not on absence. Reported so the "
+                    "assertion's scope is visible."},
+        "assertion": "no account whose final ledger state is a skip class, and no account that "
+                     "was skipped and never yielded data, contributes a pair scored never-started",
+        "passed": bool(fs_never == 0 and es_never == 0 and len(unknown_outcomes) == 0),
     })
 
     recon = {
@@ -508,10 +731,30 @@ def main():
 
     report = {"step": 8, "instance": "a", "api_calls": 0, "W_days": W, "H_days": H,
               "invariants": inv, "population_reconciliation": recon,
+              "set_membership_is_a_coverage_count_not_an_invariant": {
+                  "ruling": "decisions/0074 ruling 3",
+                  "records_examined": scan_sum["in_frame_S1S2_episode_records"],
+                  "records_dropped": scan_sum["dropped_by_set_membership_records"],
+                  "distinct_season_number_dropped": scan_sum[
+                      "dropped_by_set_membership_distinct_season_number"],
+                  "note": "reported, not asserted. The records-examined denominator is published "
+                          "unreconciled against the other arm's; see the waterfall report."},
               "label_counts": {"CODE CHECK": sum(1 for i in inv if i["label"] == "CODE CHECK"),
                                "CODE CHECK BY CONSTRUCTION, DATA CHECK AS SPECIFIED":
                                    sum(1 for i in inv if i["label"].startswith("CODE CHECK BY")),
-                               "NOT AN INVARIANT": 1},
+                               "DATA CHECK": sum(1 for i in inv if i["label"] == "DATA CHECK"),
+                               "NOT AN INVARIANT (population reconciliation)": 1},
+              "what_can_actually_fail": {
+                  "checks_that_cannot_fail_on_any_data": sum(
+                      1 for i in inv if i["label"] == "CODE CHECK"),
+                  "checks_with_force_only_as_specified": sum(
+                      1 for i in inv if i["label"].startswith("CODE CHECK BY")),
+                  "checks_that_can_fail_on_real_data": sum(
+                      1 for i in inv if i["label"] == "DATA CHECK"),
+                  "history": "before decisions/0076 the set was six, of which FIVE could not fail "
+                             "and ZERO were pure data checks. 0074 had labelled p a DATA CHECK; "
+                             "0076 corrected it to CODE CHECK on both instances' proof and added "
+                             "the two data checks that now carry the set."},
               "all_passed": all(i["passed"] for i in inv)}
     with open(os.path.join(OUT, "invariants.json"), "w") as fh:
         json.dump(report, fh, indent=2)

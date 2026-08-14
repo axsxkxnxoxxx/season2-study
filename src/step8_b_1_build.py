@@ -28,8 +28,14 @@ What this stage does, and nothing else:
     reads: the distinct S2 episodes in E2 with their canonical instants, plus
     the running max episode number in instant order, so |A|, |A_H|, F2 in A_H
     and max(A_H) are all searchsorted lookups at any tau.
+  * POSITION 3's DROP SET IS RETAINED AS A SIDE OUTPUT (decisions/0075 ruling 2).
+    D9 half (b) is measured on the rows the S1 completion rule REMOVES, so it
+    cannot be computed without them, and no line of Step 8 said to keep them --
+    an instance that does not retain them emits ZERO, and a zero there reads as
+    a data finding rather than a missing input.
 
-Out: processed/step8/b/base.npz, processed/step8/b/stage1.json
+Out: processed/step8/b/base.npz, processed/step8/b/stage1.json,
+     processed/step8/b/position3_drop_set.csv.gz  (side output, 0075)
 """
 from __future__ import annotations
 
@@ -122,6 +128,7 @@ def main() -> None:
 
     # ---- the S1/S2 record slice the drop rule applies to -------------------
     m12 = is_ep & in_frame_show & ((r_season == 1) | (r_season == 2))
+    m12_pre = m12.copy()
     prov["records"] = {
         "in_frame_S1_S2_episode_records_before_D11": int(m12.sum()),
         "in_frame_S1_S2_episode_records_dropped_by_D11": int((m12 & d11_drop).sum()),
@@ -153,11 +160,29 @@ def main() -> None:
                         (show_ids[ss] << 20) | (se << 12) | np.clip(sn, 0, 4095))
     in_E = np.isin(rec_code, valid_codes) & ~bad_num
     prov["drop_rule"] = {
+        "status": ("A COVERAGE COUNT, NOT AN INVARIANT (decisions/0074 ruling 3). Step 8's "
+                   "own bullet calls it 'an implementation check, not a data check'. Records "
+                   "examined and records dropped are REPORTED; nothing is asserted"),
         "rule": "number must be a MEMBER of the season's listed set E, else the record is dropped",
         "records_examined": int(len(sn)),
         "records_dropped": int((~in_E).sum()),
         "records_dropped_missing_season_or_number": int(bad_num.sum()),
         "coverage": "every in-frame S1/S2 episode record surviving D11 was tested",
+        "denominator_note": {
+            "what_this_instance_counts": ("in-frame S1/S2 episode records after D11 has been "
+                                          "applied to the S2 side; the S1 side is carried "
+                                          "unfiltered because decisions/0068 rules waterfall "
+                                          "line 1 at 220,107 AS PUBLISHED and that value needs "
+                                          "the 4 pairs whose completing record is post-cutoff"),
+            "in_frame_S1_S2_episode_records_before_any_D11": int(m12_pre.sum()),
+            "this_instances_examined_count": int(len(sn)),
+            "if_D11_were_applied_to_BOTH_seasons": int((m12_pre & ~d11_drop).sum()),
+            "reported_unreconciled": ("decisions/0074 ruling 4 publishes 6,065,704 against "
+                                      "6,065,610, both reporting 0 drops, and rules the "
+                                      "difference REPORTED NOT RECONCILED. All three readings "
+                                      "are stated here; this instance does not reconcile them, "
+                                      "and nothing downstream depends on the denominator"),
+        },
     }
 
     # per-show drop counts (records, and distinct (season, number) pairs)
@@ -279,6 +304,47 @@ def main() -> None:
         "distinct_in_E2_S2_episodes": int(len(p2)),
     }
 
+    # ================= POSITION 3's DROP SET (decisions/0075 ruling 2) =======
+    # The rows the S1 completion rule REMOVES. Two kinds, and BOTH are needed:
+    #   * pairs carrying in-E1 S1 evidence that fails the rule;
+    #   * pairs carrying in-E2 S2 evidence and NO in-E1 S1 evidence at all --
+    #     these never appear in the S1 walk, and they are exactly D9 half (b),
+    #     "the silently deleted S1-failing counterpart".
+    all_ev_pairs = np.unique(d_pc)
+    n_s1_dist = np.zeros(len(all_ev_pairs), dtype=np.int64)
+    n_s2_dist = np.zeros(len(all_ev_pairs), dtype=np.int64)
+    pos_all = np.searchsorted(all_ev_pairs, d_pc)
+    np.add.at(n_s1_dist, pos_all[d_se == 1], 1)
+    np.add.at(n_s2_dist, pos_all[d_se == 2], 1)
+    is_completer = np.isin(all_ev_pairs, comp_pair)
+    drop3 = ~is_completer
+    d3_show_idx = (all_ev_pairs % n_shows).astype(np.int64)
+    pd.DataFrame({
+        "user_idx": all_ev_pairs[drop3] // n_shows,
+        "show_trakt_id": show_ids[d3_show_idx[drop3]],
+        "distinct_S1_episodes_in_E1": n_s1_dist[drop3],
+        "distinct_S2_episodes_in_E2": n_s2_dist[drop3],
+        "S1_threshold_ceil_0_90_L1": THR1[d3_show_idx[drop3]],
+        "S1_finale_number": F1[d3_show_idx[drop3]],
+    }).to_csv(OUT / "position3_drop_set.csv.gz", index=False, compression="gzip")
+    prov["position3_drop_set"] = {
+        "retained_because": ("decisions/0075 ruling 2 -- D9 half (b) is measured on the rows "
+                             "position 3 REMOVES and cannot be computed without them"),
+        "file": "processed/step8/b/position3_drop_set.csv.gz",
+        "in_frame_pairs_with_ANY_in_E_S1_or_S2_distinct_episode": int(len(all_ev_pairs)),
+        "of_which_S1_completers_line_1": int(is_completer.sum()),
+        "dropped_by_the_S1_completion_rule": int(drop3.sum()),
+        "dropped_carrying_S1_evidence_that_fails_the_rule":
+            int((drop3 & (n_s1_dist > 0)).sum()),
+        "dropped_carrying_S2_evidence_and_NO_S1_evidence":
+            int((drop3 & (n_s1_dist == 0) & (n_s2_dist > 0)).sum()),
+        "dropped_carrying_S2_evidence_at_all": int((drop3 & (n_s2_dist > 0)).sum()),
+        "note": ("under decisions/0068 waterfall line 1 IS the S1-completer population, so "
+                 "position 3 removes 0 FROM THE WATERFALL. The rule's drop set is not empty; "
+                 "it sits upstream of line 1 and is retained here rather than discarded"),
+    }
+    d9b_pairs = all_ev_pairs[drop3 & (n_s1_dist == 0) & (n_s2_dist > 0)]
+
     # =============================== assemble ===============================
     np.savez(
         OUT / "base.npz",
@@ -292,6 +358,9 @@ def main() -> None:
         s2_ts=t2, s2_num=n2, s2_runmax=runmax, f2_ts=f2_ts,
         all_s1_pairs=s1_pair, all_s1_is_completer=ok,
         dropped_s2_pair=dropped_s2_pair,
+        pos3_drop_pairs=all_ev_pairs[drop3],
+        pos3_drop_s2_only_pairs=d9b_pairs,
+        all_ev_pairs=all_ev_pairs, all_ev_n_s1=n_s1_dist, all_ev_n_s2=n_s2_dist,
         s3_pairs=np.unique(r_user[m_s3].astype(np.int64) * n_shows + show_idx[m_s3]),
         s2_any_rec_pairs=np.unique(r_user[m_s2_any].astype(np.int64) * n_shows
                                    + show_idx[m_s2_any]),

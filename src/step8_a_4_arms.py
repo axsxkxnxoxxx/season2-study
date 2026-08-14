@@ -11,9 +11,11 @@ Three Step 8 outputs are per-`W`-arm, not per adopted value:
 D10 is RE-DERIVED at each arm and never frozen (decisions/0047): right-censoring contains W.
 H is held constant at 91 across every arm (D10, Step 13), or D3' and D8 stop being comparable.
 
-The arm grid is the operative series quoted at task-sheet Steps 7 and 13:
-38 / 46 / 77 / 91 / 107 / 108 / 150 / 213. Step 8 itself names no grid; the source is named here
-so the choice is visible rather than silent.
+THE ARM GRID IS 38 / 46 / 77 / 91 / 107 / 108 / 150 / 213 DAYS, fixed by the Human Lead at
+decisions/0075 and written down there and at task-sheet Step 13 for the first time anywhere. It
+is no longer an instance's choice: it had previously travelled only as the INDEX of a reported
+series, which is a reading rather than a specification, and two instances on different grids
+produce tables that cannot be diffed at all.
 
 Output: processed/step8/a/arms.json
 """
@@ -48,9 +50,8 @@ def main():
 
     out = {"step": 8, "instance": "a", "stage": 4, "api_calls": 0, "H_days": H,
            "arm_grid": ARMS,
-           "arm_grid_source": "the operative series quoted at task-sheet Step 7 (the ALT-BROAD "
-                              "per-arm exclusion series) and Step 13 (decisions/0044). Step 8 "
-                              "names no grid of its own.",
+           "arm_grid_source": "decisions/0075 and task-sheet Step 13, the first statement of the "
+                              "grid anywhere. Not this instance's choice.",
            "censoring_denominator": {
                "APPLY_position_4_output": int(pos4.sum()),
                "DERIV_position_4_output": int(pos4d.sum()),
@@ -73,13 +74,22 @@ def main():
         m3 = a.maxnum_before(k3)
         completes = (m3 == a.F2) & (k3 >= a.need2)
 
+        # D3' -- the cleared share is the 99.53%-at-W=46 to 97.73%-at-W=213 series decisions/0075
+        # fixes ON STEP 8's RIGHT-CENSORED POPULATIONS. The population is named in the field, not
+        # left to a caption: 0034's 95.98% -> 91.34% was measured on the amendment's UNCENSORED
+        # estimation sample and is superseded at this point of use.
         d3 = {}
-        for name, sl, tot in (("APPLY", pos6 & r["left"], int((pos6 & r["left"]).sum())),
-                              ("DERIV", pos6d & r["left"], int((pos6d & r["left"]).sum()))):
+        for name, sl in (("APPLY", pos6 & r["left"]), ("DERIV", pos6d & r["left"]),
+                         ("APPLY_position_5", pos5 & r["left"]),
+                         ("DERIV_position_5", pos5d & r["left"])):
+            tot = int(sl.sum())
             cl = sl & cleared_ok
             n_cl = int(cl.sum())
             d3[name] = {
-                "population": name + ", position-7 output at this arm (post-liveness)",
+                "population": (name.replace("_position_5", "") + ", right-censored, "
+                               + ("position-5 output (pre-liveness)" if name.endswith("_position_5")
+                                  else "position-7 output (post-liveness)")
+                               + f", at W = {W} d, H = 91 d"),
                 "all_started_and_left": tot,
                 "cleared_count": n_cl,
                 "cleared_share_of_all_started_and_left": round(n_cl / tot, 6) if tot else None,
@@ -87,6 +97,11 @@ def main():
                     float((cl & completes).sum() / n_cl), 6) if n_cl else None,
                 "count_completing_in_tau2_to_tau2_plus_H": int((cl & completes).sum()),
             }
+        d3["ruled_series"] = ("decisions/0075: the cleared share runs 99.53% at W = 46 down to "
+                              "97.73% at W = 213 ON STEP 8's RIGHT-CENSORED POPULATIONS (APPLY). "
+                              "0034's 95.98% -> 91.34% was measured on the amendment's UNCENSORED "
+                              "estimation sample and is superseded at this point of use. Each "
+                              "arm's denominator is its own (0068).")
 
         entry = {
             "W_days": W,

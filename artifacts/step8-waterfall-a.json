@@ -128,7 +128,7 @@
       150,
       213
     ],
-    "arm_grid_source": "the operative series quoted at task-sheet Step 7 (the ALT-BROAD per-arm exclusion series) and Step 13 (decisions/0044). Step 8 names no grid of its own.",
+    "arm_grid_source": "decisions/0075 and task-sheet Step 13, the first statement of the grid anywhere. Not this instance's choice.",
     "censoring_denominator": {
       "APPLY_position_4_output": 201900,
       "DERIV_position_4_output": 152126,
@@ -217,7 +217,7 @@
         },
         "D3_prime": {
           "APPLY": {
-            "population": "APPLY, position-7 output at this arm (post-liveness)",
+            "population": "APPLY, right-censored, position-7 output (post-liveness), at W = 38 d, H = 91 d",
             "all_started_and_left": 19433,
             "cleared_count": 19355,
             "cleared_share_of_all_started_and_left": 0.995986,
@@ -225,13 +225,30 @@
             "count_completing_in_tau2_to_tau2_plus_H": 1753
           },
           "DERIV": {
-            "population": "DERIV, position-7 output at this arm (post-liveness)",
+            "population": "DERIV, right-censored, position-7 output (post-liveness), at W = 38 d, H = 91 d",
             "all_started_and_left": 17054,
             "cleared_count": 16979,
             "cleared_share_of_all_started_and_left": 0.995602,
             "share_completing_in_tau2_to_tau2_plus_H": 0.090347,
             "count_completing_in_tau2_to_tau2_plus_H": 1534
-          }
+          },
+          "APPLY_position_5": {
+            "population": "APPLY, right-censored, position-5 output (pre-liveness), at W = 38 d, H = 91 d",
+            "all_started_and_left": 19485,
+            "cleared_count": 19404,
+            "cleared_share_of_all_started_and_left": 0.995843,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.090342,
+            "count_completing_in_tau2_to_tau2_plus_H": 1753
+          },
+          "DERIV_position_5": {
+            "population": "DERIV, right-censored, position-5 output (pre-liveness), at W = 38 d, H = 91 d",
+            "all_started_and_left": 17106,
+            "cleared_count": 17028,
+            "cleared_share_of_all_started_and_left": 0.99544,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.090087,
+            "count_completing_in_tau2_to_tau2_plus_H": 1534
+          },
+          "ruled_series": "decisions/0075: the cleared share runs 99.53% at W = 46 down to 97.73% at W = 213 ON STEP 8's RIGHT-CENSORED POPULATIONS (APPLY). 0034's 95.98% -> 91.34% was measured on the amendment's UNCENSORED estimation sample and is superseded at this point of use. Each arm's denominator is its own (0068)."
         }
       },
       {
@@ -306,7 +323,7 @@
         },
         "D3_prime": {
           "APPLY": {
-            "population": "APPLY, position-7 output at this arm (post-liveness)",
+            "population": "APPLY, right-censored, position-7 output (post-liveness), at W = 46 d, H = 91 d",
             "all_started_and_left": 19445,
             "cleared_count": 19354,
             "cleared_share_of_all_started_and_left": 0.99532,
@@ -314,13 +331,30 @@
             "count_completing_in_tau2_to_tau2_plus_H": 1664
           },
           "DERIV": {
-            "population": "DERIV, position-7 output at this arm (post-liveness)",
+            "population": "DERIV, right-censored, position-7 output (post-liveness), at W = 46 d, H = 91 d",
             "all_started_and_left": 17080,
             "cleared_count": 16994,
             "cleared_share_of_all_started_and_left": 0.994965,
             "share_completing_in_tau2_to_tau2_plus_H": 0.085854,
             "count_completing_in_tau2_to_tau2_plus_H": 1459
-          }
+          },
+          "APPLY_position_5": {
+            "population": "APPLY, right-censored, position-5 output (pre-liveness), at W = 46 d, H = 91 d",
+            "all_started_and_left": 19501,
+            "cleared_count": 19404,
+            "cleared_share_of_all_started_and_left": 0.995026,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.085756,
+            "count_completing_in_tau2_to_tau2_plus_H": 1664
+          },
+          "DERIV_position_5": {
+            "population": "DERIV, right-censored, position-5 output (pre-liveness), at W = 46 d, H = 91 d",
+            "all_started_and_left": 17136,
+            "cleared_count": 17044,
+            "cleared_share_of_all_started_and_left": 0.994631,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.085602,
+            "count_completing_in_tau2_to_tau2_plus_H": 1459
+          },
+          "ruled_series": "decisions/0075: the cleared share runs 99.53% at W = 46 down to 97.73% at W = 213 ON STEP 8's RIGHT-CENSORED POPULATIONS (APPLY). 0034's 95.98% -> 91.34% was measured on the amendment's UNCENSORED estimation sample and is superseded at this point of use. Each arm's denominator is its own (0068)."
         }
       },
       {
@@ -395,7 +429,7 @@
         },
         "D3_prime": {
           "APPLY": {
-            "population": "APPLY, position-7 output at this arm (post-liveness)",
+            "population": "APPLY, right-censored, position-7 output (post-liveness), at W = 77 d, H = 91 d",
             "all_started_and_left": 19352,
             "cleared_count": 19173,
             "cleared_share_of_all_started_and_left": 0.99075,
@@ -403,13 +437,30 @@
             "count_completing_in_tau2_to_tau2_plus_H": 1411
           },
           "DERIV": {
-            "population": "DERIV, position-7 output at this arm (post-liveness)",
+            "population": "DERIV, right-censored, position-7 output (post-liveness), at W = 77 d, H = 91 d",
             "all_started_and_left": 17009,
             "cleared_count": 16846,
             "cleared_share_of_all_started_and_left": 0.990417,
             "share_completing_in_tau2_to_tau2_plus_H": 0.073252,
             "count_completing_in_tau2_to_tau2_plus_H": 1234
-          }
+          },
+          "APPLY_position_5": {
+            "population": "APPLY, right-censored, position-5 output (pre-liveness), at W = 77 d, H = 91 d",
+            "all_started_and_left": 19431,
+            "cleared_count": 19242,
+            "cleared_share_of_all_started_and_left": 0.990273,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.073329,
+            "count_completing_in_tau2_to_tau2_plus_H": 1411
+          },
+          "DERIV_position_5": {
+            "population": "DERIV, right-censored, position-5 output (pre-liveness), at W = 77 d, H = 91 d",
+            "all_started_and_left": 17088,
+            "cleared_count": 16915,
+            "cleared_share_of_all_started_and_left": 0.989876,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.072953,
+            "count_completing_in_tau2_to_tau2_plus_H": 1234
+          },
+          "ruled_series": "decisions/0075: the cleared share runs 99.53% at W = 46 down to 97.73% at W = 213 ON STEP 8's RIGHT-CENSORED POPULATIONS (APPLY). 0034's 95.98% -> 91.34% was measured on the amendment's UNCENSORED estimation sample and is superseded at this point of use. Each arm's denominator is its own (0068)."
         }
       },
       {
@@ -484,7 +535,7 @@
         },
         "D3_prime": {
           "APPLY": {
-            "population": "APPLY, position-7 output at this arm (post-liveness)",
+            "population": "APPLY, right-censored, position-7 output (post-liveness), at W = 91 d, H = 91 d",
             "all_started_and_left": 19234,
             "cleared_count": 19005,
             "cleared_share_of_all_started_and_left": 0.988094,
@@ -492,13 +543,30 @@
             "count_completing_in_tau2_to_tau2_plus_H": 1255
           },
           "DERIV": {
-            "population": "DERIV, position-7 output at this arm (post-liveness)",
+            "population": "DERIV, right-censored, position-7 output (post-liveness), at W = 91 d, H = 91 d",
             "all_started_and_left": 16906,
             "cleared_count": 16698,
             "cleared_share_of_all_started_and_left": 0.987697,
             "share_completing_in_tau2_to_tau2_plus_H": 0.065577,
             "count_completing_in_tau2_to_tau2_plus_H": 1095
-          }
+          },
+          "APPLY_position_5": {
+            "population": "APPLY, right-censored, position-5 output (pre-liveness), at W = 91 d, H = 91 d",
+            "all_started_and_left": 19323,
+            "cleared_count": 19079,
+            "cleared_share_of_all_started_and_left": 0.987373,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.065779,
+            "count_completing_in_tau2_to_tau2_plus_H": 1255
+          },
+          "DERIV_position_5": {
+            "population": "DERIV, right-censored, position-5 output (pre-liveness), at W = 91 d, H = 91 d",
+            "all_started_and_left": 16995,
+            "cleared_count": 16772,
+            "cleared_share_of_all_started_and_left": 0.986878,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.065287,
+            "count_completing_in_tau2_to_tau2_plus_H": 1095
+          },
+          "ruled_series": "decisions/0075: the cleared share runs 99.53% at W = 46 down to 97.73% at W = 213 ON STEP 8's RIGHT-CENSORED POPULATIONS (APPLY). 0034's 95.98% -> 91.34% was measured on the amendment's UNCENSORED estimation sample and is superseded at this point of use. Each arm's denominator is its own (0068)."
         }
       },
       {
@@ -573,7 +641,7 @@
         },
         "D3_prime": {
           "APPLY": {
-            "population": "APPLY, position-7 output at this arm (post-liveness)",
+            "population": "APPLY, right-censored, position-7 output (post-liveness), at W = 107 d, H = 91 d",
             "all_started_and_left": 19056,
             "cleared_count": 18835,
             "cleared_share_of_all_started_and_left": 0.988403,
@@ -581,13 +649,30 @@
             "count_completing_in_tau2_to_tau2_plus_H": 1157
           },
           "DERIV": {
-            "population": "DERIV, position-7 output at this arm (post-liveness)",
+            "population": "DERIV, right-censored, position-7 output (post-liveness), at W = 107 d, H = 91 d",
             "all_started_and_left": 16754,
             "cleared_count": 16562,
             "cleared_share_of_all_started_and_left": 0.98854,
             "share_completing_in_tau2_to_tau2_plus_H": 0.061285,
             "count_completing_in_tau2_to_tau2_plus_H": 1015
-          }
+          },
+          "APPLY_position_5": {
+            "population": "APPLY, right-censored, position-5 output (pre-liveness), at W = 107 d, H = 91 d",
+            "all_started_and_left": 19154,
+            "cleared_count": 18914,
+            "cleared_share_of_all_started_and_left": 0.98747,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.061172,
+            "count_completing_in_tau2_to_tau2_plus_H": 1157
+          },
+          "DERIV_position_5": {
+            "population": "DERIV, right-censored, position-5 output (pre-liveness), at W = 107 d, H = 91 d",
+            "all_started_and_left": 16852,
+            "cleared_count": 16641,
+            "cleared_share_of_all_started_and_left": 0.987479,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.060994,
+            "count_completing_in_tau2_to_tau2_plus_H": 1015
+          },
+          "ruled_series": "decisions/0075: the cleared share runs 99.53% at W = 46 down to 97.73% at W = 213 ON STEP 8's RIGHT-CENSORED POPULATIONS (APPLY). 0034's 95.98% -> 91.34% was measured on the amendment's UNCENSORED estimation sample and is superseded at this point of use. Each arm's denominator is its own (0068)."
         }
       },
       {
@@ -662,7 +747,7 @@
         },
         "D3_prime": {
           "APPLY": {
-            "population": "APPLY, position-7 output at this arm (post-liveness)",
+            "population": "APPLY, right-censored, position-7 output (post-liveness), at W = 108 d, H = 91 d",
             "all_started_and_left": 19042,
             "cleared_count": 18819,
             "cleared_share_of_all_started_and_left": 0.988289,
@@ -670,13 +755,30 @@
             "count_completing_in_tau2_to_tau2_plus_H": 1146
           },
           "DERIV": {
-            "population": "DERIV, position-7 output at this arm (post-liveness)",
+            "population": "DERIV, right-censored, position-7 output (post-liveness), at W = 108 d, H = 91 d",
             "all_started_and_left": 16744,
             "cleared_count": 16550,
             "cleared_share_of_all_started_and_left": 0.988414,
             "share_completing_in_tau2_to_tau2_plus_H": 0.060785,
             "count_completing_in_tau2_to_tau2_plus_H": 1006
-          }
+          },
+          "APPLY_position_5": {
+            "population": "APPLY, right-censored, position-5 output (pre-liveness), at W = 108 d, H = 91 d",
+            "all_started_and_left": 19141,
+            "cleared_count": 18899,
+            "cleared_share_of_all_started_and_left": 0.987357,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.060638,
+            "count_completing_in_tau2_to_tau2_plus_H": 1146
+          },
+          "DERIV_position_5": {
+            "population": "DERIV, right-censored, position-5 output (pre-liveness), at W = 108 d, H = 91 d",
+            "all_started_and_left": 16843,
+            "cleared_count": 16630,
+            "cleared_share_of_all_started_and_left": 0.987354,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.060493,
+            "count_completing_in_tau2_to_tau2_plus_H": 1006
+          },
+          "ruled_series": "decisions/0075: the cleared share runs 99.53% at W = 46 down to 97.73% at W = 213 ON STEP 8's RIGHT-CENSORED POPULATIONS (APPLY). 0034's 95.98% -> 91.34% was measured on the amendment's UNCENSORED estimation sample and is superseded at this point of use. Each arm's denominator is its own (0068)."
         }
       },
       {
@@ -751,7 +853,7 @@
         },
         "D3_prime": {
           "APPLY": {
-            "population": "APPLY, position-7 output at this arm (post-liveness)",
+            "population": "APPLY, right-censored, position-7 output (post-liveness), at W = 150 d, H = 91 d",
             "all_started_and_left": 18676,
             "cleared_count": 18376,
             "cleared_share_of_all_started_and_left": 0.983937,
@@ -759,13 +861,30 @@
             "count_completing_in_tau2_to_tau2_plus_H": 984
           },
           "DERIV": {
-            "population": "DERIV, position-7 output at this arm (post-liveness)",
+            "population": "DERIV, right-censored, position-7 output (post-liveness), at W = 150 d, H = 91 d",
             "all_started_and_left": 16433,
             "cleared_count": 16154,
             "cleared_share_of_all_started_and_left": 0.983022,
             "share_completing_in_tau2_to_tau2_plus_H": 0.053609,
             "count_completing_in_tau2_to_tau2_plus_H": 866
-          }
+          },
+          "APPLY_position_5": {
+            "population": "APPLY, right-censored, position-5 output (pre-liveness), at W = 150 d, H = 91 d",
+            "all_started_and_left": 18801,
+            "cleared_count": 18478,
+            "cleared_share_of_all_started_and_left": 0.98282,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.053253,
+            "count_completing_in_tau2_to_tau2_plus_H": 984
+          },
+          "DERIV_position_5": {
+            "population": "DERIV, right-censored, position-5 output (pre-liveness), at W = 150 d, H = 91 d",
+            "all_started_and_left": 16558,
+            "cleared_count": 16256,
+            "cleared_share_of_all_started_and_left": 0.981761,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.053273,
+            "count_completing_in_tau2_to_tau2_plus_H": 866
+          },
+          "ruled_series": "decisions/0075: the cleared share runs 99.53% at W = 46 down to 97.73% at W = 213 ON STEP 8's RIGHT-CENSORED POPULATIONS (APPLY). 0034's 95.98% -> 91.34% was measured on the amendment's UNCENSORED estimation sample and is superseded at this point of use. Each arm's denominator is its own (0068)."
         }
       },
       {
@@ -840,7 +959,7 @@
         },
         "D3_prime": {
           "APPLY": {
-            "population": "APPLY, position-7 output at this arm (post-liveness)",
+            "population": "APPLY, right-censored, position-7 output (post-liveness), at W = 213 d, H = 91 d",
             "all_started_and_left": 18054,
             "cleared_count": 17644,
             "cleared_share_of_all_started_and_left": 0.97729,
@@ -848,13 +967,30 @@
             "count_completing_in_tau2_to_tau2_plus_H": 816
           },
           "DERIV": {
-            "population": "DERIV, position-7 output at this arm (post-liveness)",
+            "population": "DERIV, right-censored, position-7 output (post-liveness), at W = 213 d, H = 91 d",
             "all_started_and_left": 15868,
             "cleared_count": 15483,
             "cleared_share_of_all_started_and_left": 0.975737,
             "share_completing_in_tau2_to_tau2_plus_H": 0.046373,
             "count_completing_in_tau2_to_tau2_plus_H": 718
-          }
+          },
+          "APPLY_position_5": {
+            "population": "APPLY, right-censored, position-5 output (pre-liveness), at W = 213 d, H = 91 d",
+            "all_started_and_left": 18202,
+            "cleared_count": 17765,
+            "cleared_share_of_all_started_and_left": 0.975992,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.045933,
+            "count_completing_in_tau2_to_tau2_plus_H": 816
+          },
+          "DERIV_position_5": {
+            "population": "DERIV, right-censored, position-5 output (pre-liveness), at W = 213 d, H = 91 d",
+            "all_started_and_left": 16015,
+            "cleared_count": 15603,
+            "cleared_share_of_all_started_and_left": 0.974274,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.046017,
+            "count_completing_in_tau2_to_tau2_plus_H": 718
+          },
+          "ruled_series": "decisions/0075: the cleared share runs 99.53% at W = 46 down to 97.73% at W = 213 ON STEP 8's RIGHT-CENSORED POPULATIONS (APPLY). 0034's 95.98% -> 91.34% was measured on the amendment's UNCENSORED estimation sample and is superseded at this point of use. Each arm's denominator is its own (0068)."
         }
       }
     ]
@@ -868,7 +1004,19 @@
     "H_days": 91,
     "drop_counts": {
       "rule": "set membership (Step 1 SS3.2): a record is dropped when its number is not in that season's listed set E. Never the numeric range 1..F.",
+      "status": "A COVERAGE COUNT, NOT AN INVARIANT (Human Lead ruling, decisions/0074 ruling 3). Step 8's own bullet already calls it 'an implementation check, not a data check'. Records examined and records dropped are REPORTED; nothing is asserted. Asserting it would add another pass to a report where five of eight checks cannot fail.",
       "coverage_records_examined": 6065704,
+      "coverage_records_dropped": 0,
+      "records_examined_denominator_reported_unreconciled": {
+        "reported_by_this_instance": 6065704,
+        "definition": "episode records (kind == episode) whose show is in the Step 2 frame and whose season is 1 or 2, counted BEFORE the set-membership drop rule and BEFORE D11",
+        "undated_watched_at_null": 0,
+        "discarded_by_D11_watched_at_ge_tau_pull": 167,
+        "after_D11": 6065537,
+        "exact_duplicate_user_play_id_records": 0,
+        "records_with_number_le_0": 0,
+        "note": "decisions/0074 ruling 4 reports 6,065,704 (A) against 6,065,610 (B) UNRECONCILED, both with 0 drops. The gap is 94. None of the axes decomposed here produces it: the D11 restriction moves the figure by 167, the undated count is 0, exact duplicate (user, play id) records are 0, and no record carries a non-positive number. Red Team's non-blocking finding that the predicted gap is 167 rather than 94 is consistent with this measurement. Reported, not reconciled."
+      },
       "per_show": {
         "shows_examined": 1138,
         "shows_with_any_dropped_record": 0,
@@ -976,7 +1124,7 @@
       "per_arm": {
         "38": {
           "APPLY": {
-            "population": "APPLY, position-7 output at this arm (post-liveness)",
+            "population": "APPLY, right-censored, position-7 output (post-liveness), at W = 38 d, H = 91 d",
             "all_started_and_left": 19433,
             "cleared_count": 19355,
             "cleared_share_of_all_started_and_left": 0.995986,
@@ -984,17 +1132,34 @@
             "count_completing_in_tau2_to_tau2_plus_H": 1753
           },
           "DERIV": {
-            "population": "DERIV, position-7 output at this arm (post-liveness)",
+            "population": "DERIV, right-censored, position-7 output (post-liveness), at W = 38 d, H = 91 d",
             "all_started_and_left": 17054,
             "cleared_count": 16979,
             "cleared_share_of_all_started_and_left": 0.995602,
             "share_completing_in_tau2_to_tau2_plus_H": 0.090347,
             "count_completing_in_tau2_to_tau2_plus_H": 1534
-          }
+          },
+          "APPLY_position_5": {
+            "population": "APPLY, right-censored, position-5 output (pre-liveness), at W = 38 d, H = 91 d",
+            "all_started_and_left": 19485,
+            "cleared_count": 19404,
+            "cleared_share_of_all_started_and_left": 0.995843,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.090342,
+            "count_completing_in_tau2_to_tau2_plus_H": 1753
+          },
+          "DERIV_position_5": {
+            "population": "DERIV, right-censored, position-5 output (pre-liveness), at W = 38 d, H = 91 d",
+            "all_started_and_left": 17106,
+            "cleared_count": 17028,
+            "cleared_share_of_all_started_and_left": 0.99544,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.090087,
+            "count_completing_in_tau2_to_tau2_plus_H": 1534
+          },
+          "ruled_series": "decisions/0075: the cleared share runs 99.53% at W = 46 down to 97.73% at W = 213 ON STEP 8's RIGHT-CENSORED POPULATIONS (APPLY). 0034's 95.98% -> 91.34% was measured on the amendment's UNCENSORED estimation sample and is superseded at this point of use. Each arm's denominator is its own (0068)."
         },
         "46": {
           "APPLY": {
-            "population": "APPLY, position-7 output at this arm (post-liveness)",
+            "population": "APPLY, right-censored, position-7 output (post-liveness), at W = 46 d, H = 91 d",
             "all_started_and_left": 19445,
             "cleared_count": 19354,
             "cleared_share_of_all_started_and_left": 0.99532,
@@ -1002,17 +1167,34 @@
             "count_completing_in_tau2_to_tau2_plus_H": 1664
           },
           "DERIV": {
-            "population": "DERIV, position-7 output at this arm (post-liveness)",
+            "population": "DERIV, right-censored, position-7 output (post-liveness), at W = 46 d, H = 91 d",
             "all_started_and_left": 17080,
             "cleared_count": 16994,
             "cleared_share_of_all_started_and_left": 0.994965,
             "share_completing_in_tau2_to_tau2_plus_H": 0.085854,
             "count_completing_in_tau2_to_tau2_plus_H": 1459
-          }
+          },
+          "APPLY_position_5": {
+            "population": "APPLY, right-censored, position-5 output (pre-liveness), at W = 46 d, H = 91 d",
+            "all_started_and_left": 19501,
+            "cleared_count": 19404,
+            "cleared_share_of_all_started_and_left": 0.995026,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.085756,
+            "count_completing_in_tau2_to_tau2_plus_H": 1664
+          },
+          "DERIV_position_5": {
+            "population": "DERIV, right-censored, position-5 output (pre-liveness), at W = 46 d, H = 91 d",
+            "all_started_and_left": 17136,
+            "cleared_count": 17044,
+            "cleared_share_of_all_started_and_left": 0.994631,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.085602,
+            "count_completing_in_tau2_to_tau2_plus_H": 1459
+          },
+          "ruled_series": "decisions/0075: the cleared share runs 99.53% at W = 46 down to 97.73% at W = 213 ON STEP 8's RIGHT-CENSORED POPULATIONS (APPLY). 0034's 95.98% -> 91.34% was measured on the amendment's UNCENSORED estimation sample and is superseded at this point of use. Each arm's denominator is its own (0068)."
         },
         "77": {
           "APPLY": {
-            "population": "APPLY, position-7 output at this arm (post-liveness)",
+            "population": "APPLY, right-censored, position-7 output (post-liveness), at W = 77 d, H = 91 d",
             "all_started_and_left": 19352,
             "cleared_count": 19173,
             "cleared_share_of_all_started_and_left": 0.99075,
@@ -1020,17 +1202,34 @@
             "count_completing_in_tau2_to_tau2_plus_H": 1411
           },
           "DERIV": {
-            "population": "DERIV, position-7 output at this arm (post-liveness)",
+            "population": "DERIV, right-censored, position-7 output (post-liveness), at W = 77 d, H = 91 d",
             "all_started_and_left": 17009,
             "cleared_count": 16846,
             "cleared_share_of_all_started_and_left": 0.990417,
             "share_completing_in_tau2_to_tau2_plus_H": 0.073252,
             "count_completing_in_tau2_to_tau2_plus_H": 1234
-          }
+          },
+          "APPLY_position_5": {
+            "population": "APPLY, right-censored, position-5 output (pre-liveness), at W = 77 d, H = 91 d",
+            "all_started_and_left": 19431,
+            "cleared_count": 19242,
+            "cleared_share_of_all_started_and_left": 0.990273,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.073329,
+            "count_completing_in_tau2_to_tau2_plus_H": 1411
+          },
+          "DERIV_position_5": {
+            "population": "DERIV, right-censored, position-5 output (pre-liveness), at W = 77 d, H = 91 d",
+            "all_started_and_left": 17088,
+            "cleared_count": 16915,
+            "cleared_share_of_all_started_and_left": 0.989876,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.072953,
+            "count_completing_in_tau2_to_tau2_plus_H": 1234
+          },
+          "ruled_series": "decisions/0075: the cleared share runs 99.53% at W = 46 down to 97.73% at W = 213 ON STEP 8's RIGHT-CENSORED POPULATIONS (APPLY). 0034's 95.98% -> 91.34% was measured on the amendment's UNCENSORED estimation sample and is superseded at this point of use. Each arm's denominator is its own (0068)."
         },
         "91": {
           "APPLY": {
-            "population": "APPLY, position-7 output at this arm (post-liveness)",
+            "population": "APPLY, right-censored, position-7 output (post-liveness), at W = 91 d, H = 91 d",
             "all_started_and_left": 19234,
             "cleared_count": 19005,
             "cleared_share_of_all_started_and_left": 0.988094,
@@ -1038,17 +1237,34 @@
             "count_completing_in_tau2_to_tau2_plus_H": 1255
           },
           "DERIV": {
-            "population": "DERIV, position-7 output at this arm (post-liveness)",
+            "population": "DERIV, right-censored, position-7 output (post-liveness), at W = 91 d, H = 91 d",
             "all_started_and_left": 16906,
             "cleared_count": 16698,
             "cleared_share_of_all_started_and_left": 0.987697,
             "share_completing_in_tau2_to_tau2_plus_H": 0.065577,
             "count_completing_in_tau2_to_tau2_plus_H": 1095
-          }
+          },
+          "APPLY_position_5": {
+            "population": "APPLY, right-censored, position-5 output (pre-liveness), at W = 91 d, H = 91 d",
+            "all_started_and_left": 19323,
+            "cleared_count": 19079,
+            "cleared_share_of_all_started_and_left": 0.987373,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.065779,
+            "count_completing_in_tau2_to_tau2_plus_H": 1255
+          },
+          "DERIV_position_5": {
+            "population": "DERIV, right-censored, position-5 output (pre-liveness), at W = 91 d, H = 91 d",
+            "all_started_and_left": 16995,
+            "cleared_count": 16772,
+            "cleared_share_of_all_started_and_left": 0.986878,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.065287,
+            "count_completing_in_tau2_to_tau2_plus_H": 1095
+          },
+          "ruled_series": "decisions/0075: the cleared share runs 99.53% at W = 46 down to 97.73% at W = 213 ON STEP 8's RIGHT-CENSORED POPULATIONS (APPLY). 0034's 95.98% -> 91.34% was measured on the amendment's UNCENSORED estimation sample and is superseded at this point of use. Each arm's denominator is its own (0068)."
         },
         "107": {
           "APPLY": {
-            "population": "APPLY, position-7 output at this arm (post-liveness)",
+            "population": "APPLY, right-censored, position-7 output (post-liveness), at W = 107 d, H = 91 d",
             "all_started_and_left": 19056,
             "cleared_count": 18835,
             "cleared_share_of_all_started_and_left": 0.988403,
@@ -1056,17 +1272,34 @@
             "count_completing_in_tau2_to_tau2_plus_H": 1157
           },
           "DERIV": {
-            "population": "DERIV, position-7 output at this arm (post-liveness)",
+            "population": "DERIV, right-censored, position-7 output (post-liveness), at W = 107 d, H = 91 d",
             "all_started_and_left": 16754,
             "cleared_count": 16562,
             "cleared_share_of_all_started_and_left": 0.98854,
             "share_completing_in_tau2_to_tau2_plus_H": 0.061285,
             "count_completing_in_tau2_to_tau2_plus_H": 1015
-          }
+          },
+          "APPLY_position_5": {
+            "population": "APPLY, right-censored, position-5 output (pre-liveness), at W = 107 d, H = 91 d",
+            "all_started_and_left": 19154,
+            "cleared_count": 18914,
+            "cleared_share_of_all_started_and_left": 0.98747,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.061172,
+            "count_completing_in_tau2_to_tau2_plus_H": 1157
+          },
+          "DERIV_position_5": {
+            "population": "DERIV, right-censored, position-5 output (pre-liveness), at W = 107 d, H = 91 d",
+            "all_started_and_left": 16852,
+            "cleared_count": 16641,
+            "cleared_share_of_all_started_and_left": 0.987479,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.060994,
+            "count_completing_in_tau2_to_tau2_plus_H": 1015
+          },
+          "ruled_series": "decisions/0075: the cleared share runs 99.53% at W = 46 down to 97.73% at W = 213 ON STEP 8's RIGHT-CENSORED POPULATIONS (APPLY). 0034's 95.98% -> 91.34% was measured on the amendment's UNCENSORED estimation sample and is superseded at this point of use. Each arm's denominator is its own (0068)."
         },
         "108": {
           "APPLY": {
-            "population": "APPLY, position-7 output at this arm (post-liveness)",
+            "population": "APPLY, right-censored, position-7 output (post-liveness), at W = 108 d, H = 91 d",
             "all_started_and_left": 19042,
             "cleared_count": 18819,
             "cleared_share_of_all_started_and_left": 0.988289,
@@ -1074,17 +1307,34 @@
             "count_completing_in_tau2_to_tau2_plus_H": 1146
           },
           "DERIV": {
-            "population": "DERIV, position-7 output at this arm (post-liveness)",
+            "population": "DERIV, right-censored, position-7 output (post-liveness), at W = 108 d, H = 91 d",
             "all_started_and_left": 16744,
             "cleared_count": 16550,
             "cleared_share_of_all_started_and_left": 0.988414,
             "share_completing_in_tau2_to_tau2_plus_H": 0.060785,
             "count_completing_in_tau2_to_tau2_plus_H": 1006
-          }
+          },
+          "APPLY_position_5": {
+            "population": "APPLY, right-censored, position-5 output (pre-liveness), at W = 108 d, H = 91 d",
+            "all_started_and_left": 19141,
+            "cleared_count": 18899,
+            "cleared_share_of_all_started_and_left": 0.987357,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.060638,
+            "count_completing_in_tau2_to_tau2_plus_H": 1146
+          },
+          "DERIV_position_5": {
+            "population": "DERIV, right-censored, position-5 output (pre-liveness), at W = 108 d, H = 91 d",
+            "all_started_and_left": 16843,
+            "cleared_count": 16630,
+            "cleared_share_of_all_started_and_left": 0.987354,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.060493,
+            "count_completing_in_tau2_to_tau2_plus_H": 1006
+          },
+          "ruled_series": "decisions/0075: the cleared share runs 99.53% at W = 46 down to 97.73% at W = 213 ON STEP 8's RIGHT-CENSORED POPULATIONS (APPLY). 0034's 95.98% -> 91.34% was measured on the amendment's UNCENSORED estimation sample and is superseded at this point of use. Each arm's denominator is its own (0068)."
         },
         "150": {
           "APPLY": {
-            "population": "APPLY, position-7 output at this arm (post-liveness)",
+            "population": "APPLY, right-censored, position-7 output (post-liveness), at W = 150 d, H = 91 d",
             "all_started_and_left": 18676,
             "cleared_count": 18376,
             "cleared_share_of_all_started_and_left": 0.983937,
@@ -1092,17 +1342,34 @@
             "count_completing_in_tau2_to_tau2_plus_H": 984
           },
           "DERIV": {
-            "population": "DERIV, position-7 output at this arm (post-liveness)",
+            "population": "DERIV, right-censored, position-7 output (post-liveness), at W = 150 d, H = 91 d",
             "all_started_and_left": 16433,
             "cleared_count": 16154,
             "cleared_share_of_all_started_and_left": 0.983022,
             "share_completing_in_tau2_to_tau2_plus_H": 0.053609,
             "count_completing_in_tau2_to_tau2_plus_H": 866
-          }
+          },
+          "APPLY_position_5": {
+            "population": "APPLY, right-censored, position-5 output (pre-liveness), at W = 150 d, H = 91 d",
+            "all_started_and_left": 18801,
+            "cleared_count": 18478,
+            "cleared_share_of_all_started_and_left": 0.98282,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.053253,
+            "count_completing_in_tau2_to_tau2_plus_H": 984
+          },
+          "DERIV_position_5": {
+            "population": "DERIV, right-censored, position-5 output (pre-liveness), at W = 150 d, H = 91 d",
+            "all_started_and_left": 16558,
+            "cleared_count": 16256,
+            "cleared_share_of_all_started_and_left": 0.981761,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.053273,
+            "count_completing_in_tau2_to_tau2_plus_H": 866
+          },
+          "ruled_series": "decisions/0075: the cleared share runs 99.53% at W = 46 down to 97.73% at W = 213 ON STEP 8's RIGHT-CENSORED POPULATIONS (APPLY). 0034's 95.98% -> 91.34% was measured on the amendment's UNCENSORED estimation sample and is superseded at this point of use. Each arm's denominator is its own (0068)."
         },
         "213": {
           "APPLY": {
-            "population": "APPLY, position-7 output at this arm (post-liveness)",
+            "population": "APPLY, right-censored, position-7 output (post-liveness), at W = 213 d, H = 91 d",
             "all_started_and_left": 18054,
             "cleared_count": 17644,
             "cleared_share_of_all_started_and_left": 0.97729,
@@ -1110,16 +1377,45 @@
             "count_completing_in_tau2_to_tau2_plus_H": 816
           },
           "DERIV": {
-            "population": "DERIV, position-7 output at this arm (post-liveness)",
+            "population": "DERIV, right-censored, position-7 output (post-liveness), at W = 213 d, H = 91 d",
             "all_started_and_left": 15868,
             "cleared_count": 15483,
             "cleared_share_of_all_started_and_left": 0.975737,
             "share_completing_in_tau2_to_tau2_plus_H": 0.046373,
             "count_completing_in_tau2_to_tau2_plus_H": 718
-          }
+          },
+          "APPLY_position_5": {
+            "population": "APPLY, right-censored, position-5 output (pre-liveness), at W = 213 d, H = 91 d",
+            "all_started_and_left": 18202,
+            "cleared_count": 17765,
+            "cleared_share_of_all_started_and_left": 0.975992,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.045933,
+            "count_completing_in_tau2_to_tau2_plus_H": 816
+          },
+          "DERIV_position_5": {
+            "population": "DERIV, right-censored, position-5 output (pre-liveness), at W = 213 d, H = 91 d",
+            "all_started_and_left": 16015,
+            "cleared_count": 15603,
+            "cleared_share_of_all_started_and_left": 0.974274,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.046017,
+            "count_completing_in_tau2_to_tau2_plus_H": 718
+          },
+          "ruled_series": "decisions/0075: the cleared share runs 99.53% at W = 46 down to 97.73% at W = 213 ON STEP 8's RIGHT-CENSORED POPULATIONS (APPLY). 0034's 95.98% -> 91.34% was measured on the amendment's UNCENSORED estimation sample and is superseded at this point of use. Each arm's denominator is its own (0068)."
         }
       },
-      "note": "each arm's denominator is its own (0068). The 95.98%-at-W=46 to 91.34%-at-W=213 cleared series in decisions/0034 was measured on a different population and is not comparable to these."
+      "population_at_the_point_of_use": "STEP 8's RIGHT-CENSORED POPULATIONS. The headline series is APPLY, position-7 output (post-liveness), at each arm on its own denominator (0068).",
+      "ruled_series": "decisions/0075: 99.53% of Started-and-left cleared at W = 46 down to 97.73% at W = 213 on APPLY. SUPERSEDED at this point of use: 0034's 95.98% -> 91.34%, measured on the amendment's UNCENSORED estimation sample of 128,099 and carrying no population where it was used.",
+      "measured_series_APPLY_position_7": {
+        "38": 0.995986,
+        "46": 0.99532,
+        "77": 0.99075,
+        "91": 0.988094,
+        "107": 0.988403,
+        "108": 0.988289,
+        "150": 0.983937,
+        "213": 0.97729
+      },
+      "non_monotone_step_reported_not_resolved": "the cleared share is not monotone in W: it rises between W = 91 and W = 107 before resuming its fall. Both the clearance bound and the Started-and-left denominator move with W and they do not move together. Listed open at decisions/0076 SS5; reported here, not resolved."
     },
     "the_3440": {
       "value": 3440,
@@ -1132,25 +1428,68 @@
     },
     "D9_split_artifacts": {
       "signature": "two show IDs in one user's sweep with complementary season coverage (one carrying S1 and not S2, the other S2 and not S1) whose normalised slugs agree. Detection is imperfect and every count here is a LOWER BOUND (Step 1 SS10.0b).",
+      "key_ruling": "decisions/0074 ruling 5 adopts the STRICT key; decisions/0076 defines both keys in the spec. STRICT = lowercase, drop every non-alphanumeric character, strip nothing else. LOOSE = remove a trailing four-digit year first, then strict. The loose count publishes alongside because it BOUNDS HOW WRONG STRICT COULD BE, and the error runs OPPOSITE to D9's own lower-bound caveat.",
       "coverage": {
         "show_ids_with_a_slug": 46428,
-        "user_show_coverage_rows_examined": 747478,
-        "candidate_complementary_id_pairs": 76
+        "user_show_coverage_rows_examined": 747478
       },
-      "half_a_fabricated_never_started_row": {
-        "population": "APPLY position 7, scored Never started",
-        "never_started": 32769,
-        "carrying_the_signature": 6,
-        "share_of_never_started": 0.000183,
-        "direction": "DOWN -- the row is fabricated directly into the headline category"
+      "ADOPTED_strict_key": {
+        "complementary_signature_id_pairs": 0,
+        "half_a_fabricated_never_started_row": {
+          "population": "APPLY, position 7 (post-liveness), scored Never started",
+          "never_started": 32769,
+          "carrying_the_signature": 0,
+          "share_of_never_started": 0.0,
+          "on_APPLY_position_5_the_table_row_set": {
+            "never_started": 33373,
+            "carrying_the_signature": 0
+          },
+          "direction": "DOWN -- the row is fabricated directly into the headline category"
+        },
+        "half_b_silently_deleted_S1_failing_counterpart": {
+          "population": "pairs in the pair universe that FAIL the S1 completion rule -- the rows position 3 removes, RETAINED AS A SIDE OUTPUT (0075) because half (b) cannot be computed without them and they are not recoverable from the analysis table",
+          "side_output": "processed/step8/a/position3_dropset.npz",
+          "pairs_failing_S1_completion": 58345,
+          "carrying_the_signature": 0
+        }
       },
-      "half_b_silently_deleted_S1_failing_counterpart": {
-        "population": "pairs on frame shows in the pair universe that FAIL the S1 completion rule, i.e. rows position 3 removes -- retained as a side output because they are not in the analysis table and cannot be recovered from it",
-        "pairs_failing_S1_completion": 58345,
-        "carrying_the_signature": 28
+      "REPORTED_ALONGSIDE_loose_key": {
+        "complementary_signature_id_pairs": 75,
+        "half_a_APPLY_position_7": 6,
+        "half_b": 27,
+        "why_it_is_not_adopted": "it strips the year and merges genuinely different shows -- remakes and national versions, not split metadata, which is the artefact D9 exists to count",
+        "largest_clusters_it_merges": [
+          {
+            "loose_key": "secondchance",
+            "distinct_strict_keys_merged": 8
+          },
+          {
+            "loose_key": "theisland",
+            "distinct_strict_keys_merged": 7
+          },
+          {
+            "loose_key": "maigret",
+            "distinct_strict_keys_merged": 6
+          },
+          {
+            "loose_key": "hunted",
+            "distinct_strict_keys_merged": 6
+          },
+          {
+            "loose_key": "missing",
+            "distinct_strict_keys_merged": 6
+          }
+        ]
+      },
+      "third_key_measured_only_so_the_record_is_complete": {
+        "definition": "strip a trailing digit group of ARBITRARY length, then strict. NOT either ruled key: it reduces `the-100` to `the`.",
+        "complementary_signature_id_pairs": 76,
+        "half_a_APPLY_position_7": 6,
+        "note": "this instance used this key on its previous run and published 76 complementary pairs against the other arm's 75. decisions/0076 records that divergence as REPORTED, NOT RECONCILED."
       },
       "merges_counted_with_the_same_query_and_reported_separately": {
-        "user_show_rows_where_one_ID_carries_both_seasons_and_a_same_title_ID_also_appears": 5871,
+        "strict_key": 20,
+        "loose_key": 5551,
         "note": "merges can only add evidence to a pair, never remove it (Step 1 SS10.0b)"
       }
     },
@@ -1225,6 +1564,20 @@
       "direction": "listed exceeding aired raises L2, which tightens ceil(0.90*L2) and pushes pairs that would have been Continued into Started-and-left -- it OVERSTATES abandonment; the same effect on S1 raises L1 and shrinks the population, non-randomly, on shows with messy metadata (Step 1 SS3.4)"
     },
     "outcome_counts": {
+      "APPLY_position_5_THE_TABLE_ROW_SET": {
+        "never_started": 33373,
+        "started_and_left": 19141,
+        "continued": 144140,
+        "not_live": 703,
+        "total": 196654
+      },
+      "DERIV_position_5": {
+        "never_started": 9145,
+        "started_and_left": 16843,
+        "continued": 121382,
+        "not_live": 99,
+        "total": 147370
+      },
       "APPLY_position_7": {
         "never_started": 32769,
         "started_and_left": 19042,
@@ -1242,9 +1595,11 @@
         "defined_only_for_started_and_left": true,
         "form": "rank: |{e in E2 : e <= max(A_H)}| / L2; the raw ratio max(A_H)/L2 is withdrawn and must not be reinstated",
         "p_equals_1_residual_APPLY_position_7": 1230,
+        "p_equals_1_residual_APPLY_position_5": 1246,
         "p_min": 0.038461538461538464,
         "p_max": 1.0,
-        "rows_with_p_null_outside_started_and_left": 0
+        "population_of_the_range": "APPLY, position 5 -- the table's row set",
+        "rows_with_p_non_null_outside_started_and_left": 0
       }
     },
     "action_counts": {
@@ -1275,19 +1630,22 @@
     }
   },
   "channel_counts": {
-    "pairs_channel_a": 125922,
-    "pairs_channel_b": 87754,
-    "pairs_in_both": 17725,
+    "pairs_channel_a": 126269,
+    "pairs_channel_b": 88168,
+    "pairs_in_both": 17783,
     "accounts_channel_a": 1614,
     "accounts_channel_b": 1113,
     "accounts_in_both": 178
   },
   "analysis_table": {
     "path": "processed/step8/a/analysis_table.csv.gz",
-    "rows": 195951,
-    "columns": 86,
-    "unit": "one row per user-show pair, position-7 output on APPLY",
-    "DERIV_rows_flagged_within_it": 147271,
+    "rows": 196654,
+    "columns": 88,
+    "unit": "one row per user-show pair, THE POSITION-5 ROW SET on APPLY (0074 ruling 1)",
+    "grain_ruling": "position 5, with `live` and `outcome` carried as COLUMNS. Downstream consumes rather than rebuilds; a position-7 table would force anything needing the 703 excluded pairs to reconstruct them, and a reconstruction that agrees today is a second definition tomorrow.",
+    "rows_live_position_6_retained": 195951,
+    "rows_not_live_position_6_excluded": 703,
+    "DERIV_rows_flagged_within_it": 147370,
     "discovery_channel": "two boolean columns (0070 ruling 3)",
     "action": "per-pair counts by action type, S1 and S2 separately (0070 ruling 4)",
     "step2_show_fields_carried": 60
@@ -1304,6 +1662,16 @@
     "records_missing_watched_at": 379,
     "records_discarded_watched_at_ge_tau_pull": 1734,
     "in_frame_S1S2_episode_records": 6065704,
+    "record_denominator_reconciliation": {
+      "reported_by_this_instance": 6065704,
+      "definition": "episode records (kind == episode) whose show is in the Step 2 frame and whose season is 1 or 2, counted BEFORE the set-membership drop rule and BEFORE D11",
+      "undated_watched_at_null": 0,
+      "discarded_by_D11_watched_at_ge_tau_pull": 167,
+      "after_D11": 6065537,
+      "exact_duplicate_user_play_id_records": 0,
+      "records_with_number_le_0": 0,
+      "note": "decisions/0074 ruling 4 reports 6,065,704 (A) against 6,065,610 (B) UNRECONCILED, both with 0 drops. The gap is 94. None of the axes decomposed here produces it: the D11 restriction moves the figure by 167, the undated count is 0, exact duplicate (user, play id) records are 0, and no record carries a non-positive number. Red Team's non-blocking finding that the predicted gap is 167 rather than 94 is consistent with this measurement. Reported, not reconciled."
+    },
     "in_frame_S1S2_records_undated": 0,
     "in_frame_S1S2_records_discarded_by_D11": 167,
     "in_frame_S1S2_records_after_D11": 6065537,

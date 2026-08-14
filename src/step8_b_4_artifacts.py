@@ -25,18 +25,30 @@ GATE = ("**Step 8 is a GATE and this document is a PROPOSAL.** Nothing here is a
         "This instance does not adopt its own proposal, does not begin Step 8b or Step 9, "
         "and records no approval — that is the Human Lead's alone. Zero API calls; every "
         "figure is computed from data already on disk.")
-
-
-def fmt(n) -> str:
-    return f"{n:,}" if isinstance(n, int) else (f"{n:.4f}" if isinstance(n, float) else str(n))
+RERUN = ("**This is the RERUN ordered after Red Team's first Step 8 review returned HOLD.** "
+         "`decisions/0074`, `0075` and `0076` all postdate the first run. It overwrites the "
+         "previous `-b` deliverables.")
 
 
 def main() -> None:
     R = json.loads((OUT / "results.json").read_text())
     I = json.loads((OUT / "invariants.json").read_text())
     D9 = json.loads((OUT / "d9.json").read_text())
+    S1 = json.loads((OUT / "stage1.json").read_text())
     q = R["required_counts"]
     ex = R["emitted_beyond_the_required_list"]
+    rec = I["population_reconciliation_703_and_99"]
+
+    # the per-show drop count, as a DISTRIBUTION -- the required count belongs in
+    # artifacts/, and 1,138 identical rows would be noise rather than a count.
+    import csv
+    hist: dict[str, int] = {}
+    with open(OUT / "drop_counts_per_show.csv") as fh:
+        for row in csv.DictReader(fh):
+            hist[row["dropped_records"]] = hist.get(row["dropped_records"], 0) + 1
+    q["drop_counts"]["per_show_distribution_records_dropped_to_shows"] = \
+        {k: v for k, v in sorted(hist.items(), key=lambda kv: int(kv[0]))}
+    q["drop_counts"]["shows_examined"] = sum(hist.values())
 
     # ==================================================================
     # WATERFALL
@@ -44,8 +56,10 @@ def main() -> None:
     wj = {
         "artifact": "step8-waterfall-b", "instance": "analytics-engineer-b", "namespace": "b",
         "step": 8, "mode": "GATE -- proposal only, nothing adopted", "api_calls": 0,
+        "run": "RERUN on the spec as amended by decisions/0074, 0075 and 0076",
         "constants": {"W": R["W_adopted"], "H": R["H"], "tau_pull": R["tau_pull"],
-                      "W_arms": R["W_arms"]},
+                      "W_arms": R["W_arms"],
+                      "W_arms_source": "decisions/0075 ruling 3 -- the grid's first statement"},
         "populations": {
             "APPLY": {"n": 196654, "definition": "waterfall line 1 less D10; the position-5 "
                                                  "output; what position 6 filters"},
@@ -55,6 +69,8 @@ def main() -> None:
         "waterfall_APPLY": R["waterfall_APPLY"],
         "waterfall_DERIV": R["waterfall_DERIV"],
         "step5_waterfall_reasserted": R["step5_waterfall_reasserted"],
+        "position3_drop_set_side_output": S1["position3_drop_set"],
+        "set_membership_coverage_count": S1["drop_rule"],
         "liveness": {
             "rule": ("NOT LIVE iff BOTH (no insertion instant > tau1) AND (NOT Continued). "
                      "ALT-BROAD, decisions/0048, restored 0054, APPROVED 0064"),
@@ -75,6 +91,7 @@ def main() -> None:
             "per_arm_DERIV": {str(w): R["per_arm"]["DERIV"][str(w)]["liveness_excluded"]
                               for w in W_ARMS},
         },
+        "population_reconciliation_703_and_99": rec,
         "outcome_states": {p: {"position5": ex[p]["states_position5"],
                                "position7": R["per_arm"][p]["108"]["states_at_position7"]}
                            for p in ("APPLY", "DERIV")},
@@ -85,6 +102,7 @@ def main() -> None:
         "discovery_channel": R["discovery_channel"],
         "analysis_table": R["analysis_table"],
         "scope_qualifier": ex["scope_qualifier_of_the_Step_9_bound"],
+        "where_two_faithful_instances_could_still_differ": DIVERGENCES,
     }
     (ART / "step8-waterfall-b.json").write_text(json.dumps(wj, indent=2, default=str))
 
@@ -93,6 +111,8 @@ def main() -> None:
     A("# Step 8 — filter waterfall and required counts (instance `b`)")
     A("")
     A(GATE)
+    A("")
+    A(RERUN)
     A("")
     A("**Every figure below states its population.** There are two and they differ by "
       "construction: **APPLY = 196,654** (waterfall line 1 less D10 — the position-5 output, "
@@ -103,20 +123,21 @@ def main() -> None:
       f"`tau_pull = {R['tau_pull']}` (`0011`). `tau1 = ⟦T0⟧ + W × 24h`, "
       f"`tau2 = ⟦T0⟧ + (W + H) × 24h = ⟦T0⟧ + 199 days`. Every boundary test is the "
       "half-open UTC-instant form of Step 1 §2.4; `date(watched_at) <= T1` appears nowhere "
-      "in the implementation.")
+      "in the implementation. **The `W` arm grid is 38 / 46 / 77 / 91 / 107 / 108 / 150 / 213 "
+      "days** (`0075` ruling 3, the first statement of it in any file).")
     A("")
     A("**The analysis table is in `processed/`, not here.** "
       "`processed/step8/b/analysis_table.csv.gz`, "
       f"{R['analysis_table']['rows']:,} rows × {R['analysis_table']['columns']} columns. "
-      "Its row set is the **position-5 population**, carrying the position-6 flag `live` and "
-      "the position-7 `outcome`; the post-position-7 row set is `live == True`, DERIV is "
-      "`in_deriv`. The 703 excluded rows are kept **in the file** with `live = False`, "
-      "because Step 9's bound endpoints are built from their outcome states and rebuilding "
-      "them downstream would be a second definition of the filter.")
+      "Its row set is the **position-5 population**, with `live` and `outcome` carried as "
+      "**columns** (`0074` ruling 1); the post-position-7 row set is `live == True` "
+      "(195,951), and DERIV is `in_deriv` (147,370). The 703 excluded rows are kept **in the "
+      "file** with `live = False`, so nothing downstream has to reconstruct them — a "
+      "reconstruction that agrees today is still a second definition tomorrow.")
     A("")
     A("---")
     A("")
-    A("## 1. The filter order")
+    A("## 1. The filter order, and the side output it needs")
     A("")
     A("Applied in **exactly** this order (`decisions/0029`). The final row set commutes; the "
       "per-filter sample size does not, which is the whole reason the order is mandated.")
@@ -126,6 +147,30 @@ def main() -> None:
     A("")
     A("**Waterfall line 1 is the S1-completer population, 220,107 pairs** (`0068`). No "
       "instance chooses a base. Lines 2 and 3 follow from it.")
+    A("")
+    p3 = S1["position3_drop_set"]
+    A("**Position 3's drop set is retained as a side output** (`0075` ruling 2), at "
+      f"`{p3['file']}`. Under `0068` line 1 *is* the S1-completer population, so position 3 "
+      "removes **0 from the waterfall** — but the rule's drop set is not empty, it sits "
+      "upstream of line 1, and **D9 half (b) is measured on it.** Without it that half emits "
+      "zero, and a zero there reads as a data finding rather than a missing input.")
+    A("")
+    A("| Position-3 drop set | Pairs |")
+    A("| :--- | ---: |")
+    A(f"| in-frame pairs with any in-`E` S1 or S2 distinct episode | "
+      f"{p3['in_frame_pairs_with_ANY_in_E_S1_or_S2_distinct_episode']:,} |")
+    A(f"| of which S1 completers — **waterfall line 1** | {p3['of_which_S1_completers_line_1']:,} |")
+    A(f"| **dropped by the S1 completion rule** | {p3['dropped_by_the_S1_completion_rule']:,} |")
+    A(f"| — carrying S1 evidence that fails the rule | "
+      f"{p3['dropped_carrying_S1_evidence_that_fails_the_rule']:,} |")
+    A(f"| — carrying S2 evidence and **no S1 evidence at all** | "
+      f"{p3['dropped_carrying_S2_evidence_and_NO_S1_evidence']:,} |")
+    A(f"| — carrying S2 evidence of any kind | "
+      f"{p3['dropped_carrying_S2_evidence_at_all']:,} |")
+    A("")
+    A("The 278,452 figure is one of the four readings `0068` surveyed before ruling on line 1; "
+      "it reproduces here exactly, which is a cross-check on the base rather than a second "
+      "candidate for it.")
     A("")
     A("## 2. Waterfall — APPLY")
     A("")
@@ -144,6 +189,7 @@ def main() -> None:
       "monotone-decrease invariant is coded `>=` and not `>`: **two positions here "
       "legitimately remove nothing.**")
     A("")
+    cc = R["step5_waterfall_reasserted"]["adopted_rule_json_cross_check"]
     A("**Position 4 is narrower than its name.** The adopted Step 5 rule (`0021`) is two "
       "disjoint exclusions — S2 evidence entirely air-date-stamped "
       f"({R['waterfall_APPLY'][3]['removed_all_S2_evidence_air_date_stamped']:,}) and a "
@@ -153,6 +199,17 @@ def main() -> None:
       f"was re-asserted line by line before it was used: measured "
       f"{R['step5_waterfall_reasserted']['measured']}, expected "
       f"{R['step5_waterfall_reasserted']['expected']}.")
+    A("")
+    A("**`processed/step5/adopted_rule.json` is now read and cross-checked, not worked "
+      "around.** `0074` ruling 6 made `processed/` the eighth propagation surface and "
+      "corrected that file, which had carried revision-3 figures (4,849 removed / 215,258 "
+      f"retained). It now states **{cc['file_says_removed']:,} removed / "
+      f"{cc['file_says_retained']:,} retained of {cc['file_says_of_total']:,}**, and this "
+      f"instance measures **{cc['measured_removed']:,} / {cc['measured_retained']:,} of "
+      f"{cc['measured_of_total']:,}** — agreement **{cc['agrees']}**, component by component. "
+      "On the first run this file was the reason the Step 5 waterfall had to be re-asserted "
+      "line by line; the re-assertion is kept, because a corrected surface is a reason to "
+      "cross-check it and not a reason to stop checking.")
     A("")
     A("## 3. Waterfall — DERIV")
     A("")
@@ -166,7 +223,8 @@ def main() -> None:
       "stated rather than hidden: DERIV is *Step 5 line 4* less D10, and line 4 applies three "
       "further restrictions — `has_s2`, `T0` not contaminated, completing record not "
       "post-dated — none of which is a Step 8 filter position. Emitting it here is what stops "
-      "Step 9 rebuilding the population, which would be a second definition of it.")
+      "Step 9 rebuilding the population, which would be a second definition of it "
+      "(`0070` ruling 1).")
     A("")
     A("## 4. Position 6 — liveness, and the population reconciliation")
     A("")
@@ -177,7 +235,6 @@ def main() -> None:
       "before `tau_pull`** (`0070` ruling 2). The stored play-`id` isotonic calibration at "
       "`processed/step5/calibration.npz` is **read and never refitted** (`0029`).")
     A("")
-    rec = I["population_reconciliation_703_and_99"]
     A("| Population | n (position 5) | Excluded | Never started | Started and left | Accounts |")
     A("| :--- | ---: | ---: | ---: | ---: | ---: |")
     for p in ("APPLY", "DERIV"):
@@ -196,7 +253,7 @@ def main() -> None:
       "commute exactly, and `0029`'s ordering rationale concerns per-filter sample size, "
       "which cannot reach position 7 because outcome assignment removes no rows.")
     A("")
-    A("**Per-`W`-arm exclusion counts on APPLY**, so the `W`-coupling is visible:")
+    A("**Per-`W`-arm exclusion counts, so the `W`-coupling is visible:**")
     A("")
     A("| `W` | " + " | ".join(str(w) for w in W_ARMS) + " |")
     A("| :--- | " + " | ".join("---:" for _ in W_ARMS) + " |")
@@ -236,9 +293,10 @@ def main() -> None:
     A("### Retained pairs per air period after right-censoring, every `W` arm")
     A("")
     A("**Measured on the position-4 output (201,900), which is what the mandated order "
-      "censors.** `0033`'s 97.6 / 98.0 / 97.5 / 96.0 and 89.7% were computed on the "
-      "**position-3** output; `0070` ruling 8 keeps the order and moves the published "
-      "percentage.")
+      "censors** (`0070` ruling 8). `0033`'s 97.6 / 98.0 / 97.5 / 96.0 and 89.7% were computed "
+      "on the **position-3** output; the order was set at `0029` on the ground that censoring "
+      "is objective and independent of behaviour, and **changing a filter order to preserve a "
+      "published percentage would be backwards.**")
     A("")
     A("| `W` | all | pre-2020 | 2020–2022 | 2023–2025 |")
     A("| :--- | ---: | ---: | ---: | ---: |")
@@ -256,31 +314,37 @@ def main() -> None:
     c108 = R["censoring_per_air_period"]["108"]
     c213 = R["censoring_per_air_period"]["213"]
     A(f"**The aggregate hides a cohort-asymmetric loss.** At `W = 108` the pooled retention is "
-      f"**{c108['ALL']['retained_pct']:.2f}%**, and at `W = 213` the 2023–2025 cohort retains "
+      f"**{c108['ALL']['retained_pct']:.2f}%** — the figure `0070` corrected from 97.6% — and "
+      f"the per-cohort line is **{c108['pre-2020']['retained_pct']:.1f} / "
+      f"{c108['2020-2022']['retained_pct']:.1f} / {c108['2023-2025']['retained_pct']:.1f}**. "
+      f"At `W = 213` the 2023–2025 cohort retains "
       f"**{c213['2023-2025']['retained_pct']:.2f}%** against "
       f"**{c213['pre-2020']['retained_pct']:.2f}%** pre-2020 — a **"
       f"{100 - c213['2023-2025']['retained_pct']:.1f}%** loss against "
-      f"**{100 - c213['pre-2020']['retained_pct']:.1f}%**. Without this line, whether the "
-      "modern cohort survives to the headline in usable numbers is invisible.")
-    A("")
-    A("**The comparator moved too, and the record does not say so.** `0070` corrected the "
-      "2023–2025 loss from 10.3% to 10.5% when it kept the mandated order, but the pre-2020 "
-      f"figure it is stated against — **2.7%** — was computed in the same superseded order "
-      f"and is **{100 - c213['pre-2020']['retained_pct']:.1f}%** here. The task sheet's "
-      "sentence *\"10.5% of its pairs against 2.7% pre-2020\"* therefore mixes one figure "
-      "from the mandated order with one from the order it replaced. **Reported, not "
-      "reconciled** — it is a propagation gap in the derived-figure list, not a disagreement "
-      "about the rule.")
+      f"**{100 - c213['pre-2020']['retained_pct']:.1f}%**. Both figures reproduce the task "
+      "sheet's corrected pair (10.5% against 3.0%, `0070` ruling 8 and `0073` §1). Without "
+      "this line, whether the modern cohort survives to the headline in usable numbers is "
+      "invisible — and it is the cohort a roadmap cares about most.")
     A("")
     A("## 6. Drop counts — per show and per outcome")
     A("")
     d = q["drop_counts"]
+    dn = S1["drop_rule"]["denominator_note"]
+    A("**This is a COVERAGE COUNT, not an invariant** (`0074` ruling 3). Records examined and "
+      "records dropped are reported; nothing is asserted.")
+    A("")
     A(f"- Records examined for set membership: **{d['records_examined']:,}**")
     A(f"- Records dropped (`number ∉ E`, or a missing season/number): "
       f"**{d['records_dropped_total']:,}**")
     A(f"- Distinct dropped `(season, number)` pairs: "
       f"**{d['distinct_season_number_pairs_dropped']:,}**; shows with any drop: "
-      f"**{d['shows_with_any_drop']:,}** of 1,138")
+      f"**{d['shows_with_any_drop']:,}** of {d['shows_examined']:,}")
+    A(f"- **Per show**, as a distribution over the {d['shows_examined']:,} shows examined "
+      "(records dropped → shows): "
+      + ", ".join(f"**{k} → {v:,}**"
+                  for k, v in d["per_show_distribution_records_dropped_to_shows"].items())
+      + ". The full per-show file is `processed/step8/b/drop_counts_per_show.csv`; it is "
+        "reproduced here as a distribution rather than 1,138 identical rows.")
     A(f"- **Per outcome**: pairs whose entire S2 evidence was dropped — "
       f"**{d['per_outcome_pairs_whose_entire_S2_evidence_was_dropped']:,}**")
     A(f"  - as a share of Never started **at position 5 = "
@@ -294,16 +358,37 @@ def main() -> None:
       "— position 5 (`0070` ruling 6). The difference between the two denominators is exactly "
       "the 604 never-started liveness exclusions, and that is itself informative.")
     A("")
-    A("**This zero is a measured zero.** Every one of the "
-      f"{d['records_examined']:,} in-frame S1/S2 episode records surviving D11 was tested for "
-      "membership in its season's listed set `E`, and none failed. The per-show file is "
-      "`processed/step8/b/drop_counts_per_show.csv`. Direction had any been dropped: it would "
-      "**inflate** Never started, the same direction as D4 and D9.")
+    A("### The denominator, all three readings")
+    A("")
+    A("`0074` ruling 4 publishes **6,065,704 against 6,065,610**, both reporting 0 drops, and "
+      "rules the difference **reported, not reconciled**. This instance's examined count is "
+      f"**{dn['this_instances_examined_count']:,}**. The other two readings on the same data "
+      "are stated so the figure is not mistaken for a disagreement about the rule:")
+    A("")
+    A("| Reading | Records |")
+    A("| :--- | ---: |")
+    A(f"| in-frame S1/S2 episode records, **before any D11** | "
+      f"{dn['in_frame_S1_S2_episode_records_before_any_D11']:,} |")
+    A(f"| **this instance** — D11 applied to the S2 side, S1 side carried | "
+      f"{dn['this_instances_examined_count']:,} |")
+    A(f"| D11 applied to **both** seasons | {dn['if_D11_were_applied_to_BOTH_seasons']:,} |")
+    A("")
+    A("The S1 side is carried unfiltered here for one reason: `0068` rules waterfall line 1 at "
+      "**220,107 as published**, and 4 pairs complete S1 only on a record `D11` would discard. "
+      "**The three readings differ by 94 and by 73 records respectively, all of them "
+      "post-cutoff, and all three report 0 drops.** Nothing downstream depends on the "
+      "denominator. **Reported, not reconciled**, per `CLAUDE.md`.")
+    A("")
+    A(f"**The zero is a measured zero.** Every one of the {d['records_examined']:,} records "
+      "was tested for membership in its season's listed set `E`, and none failed. The per-show "
+      "file is `processed/step8/b/drop_counts_per_show.csv`. Direction had any been dropped: "
+      "it would **inflate** Never started, the same direction as D4 and D9.")
     A("")
     A("## 7. D2 — negative-lag report, split THREE ways")
     A("")
-    A("A tie is its own category, not a tiebreak (`0070` ruling 5). **168 pairs in line 1 have "
-      "both terms of the `max()` binding on the same date**; of those, "
+    A("A tie is its own category, not a tiebreak (`0070` ruling 5). **"
+      f"{q['D2_negative_lag']['tie_pairs_in_line1']} pairs in line 1 have both terms of the "
+      "`max()` binding on the same date**; of those, "
       f"{q['D2_negative_lag']['by_population']['position3_220107']['BOTH_terms_bind_tie']} "
       "also carry a negative lag.")
     A("")
@@ -328,7 +413,7 @@ def main() -> None:
       "its own and each population's is its own** (`0069` item 5).")
     A("")
     for pop in ("APPLY", "DERIV"):
-        A(f"**{pop}**")
+        A(f"**{pop}** — Step 8's right-censored population at each arm")
         A("")
         A("| `W` | Started-and-left | cleared | cleared share | completing | share completing |")
         A("| :--- | ---: | ---: | ---: | ---: | ---: |")
@@ -339,6 +424,21 @@ def main() -> None:
               f"{x['cleared_share_of_started_and_left_pct']:.2f}% | "
               f"{x['completing_within_the_horizon']:,} | {x['share_completing_pct']:.2f}% |")
         A("")
+    a46 = q["D3prime"]["per_arm"]["APPLY"]["46"]["cleared_share_of_started_and_left_pct"]
+    a213 = q["D3prime"]["per_arm"]["APPLY"]["213"]["cleared_share_of_started_and_left_pct"]
+    A(f"**The cleared-share series on APPLY is {a46:.2f}% at `W = 46` down to {a213:.2f}% at "
+      "`W = 213`**, which is the series `0075` ruling 1 adopts. The superseded 95.98% → 91.34% "
+      "was measured on the **amendment's uncensored estimation sample**; the population is "
+      "stated here at the point of use, on Step 8's right-censored populations.")
+    A("")
+    a91 = q["D3prime"]["per_arm"]["APPLY"]["91"]["cleared_share_of_started_and_left_pct"]
+    a107 = q["D3prime"]["per_arm"]["APPLY"]["107"]["cleared_share_of_started_and_left_pct"]
+    A(f"**The series is not monotone between `W = 91` ({a91:.2f}%) and `W = 107` "
+      f"({a107:.2f}%)** — an open item at `0076` §5, reproduced here rather than smoothed. The "
+      "clearance condition contains `W` twice, once in `tau2` and once in the `+ 2H` horizon, "
+      "and the Started-and-left denominator is itself re-derived at every arm, so the series "
+      "is not required to be monotone. **Reported, not resolved.**")
+    A("")
     t34 = q["D3prime"]["the_3440"]
     A(f"**Reported alongside and labelled a COUNT, not a rate: {t34['count']:,} "
       "Started-and-left pairs completing S2 at any point before `tau_pull`.**")
@@ -348,12 +448,6 @@ def main() -> None:
     A(f"- **Exposure weighting, stated at the point of use:** {t34['exposure_weighting']}.")
     A("- **Restated, not recomputed.** The spec forbids reporting it against APPLY or DERIV, "
       "so no analogue of it is computed on either population here.")
-    A("")
-    A("**The measured cleared shares here do not match the 95.98% / 91.34% the task sheet "
-      "quotes.** Those figures carry no population at their point of use; they are consistent "
-      "with an **uncensored** sample, whose recent-`T0` pairs fail the clearance. Every "
-      "figure in the table above is on the named, right-censored population at the named arm. "
-      "**Reported, not reconciled.**")
     A("")
     A("## 9. D8 — never-started post-window diagnostic")
     A("")
@@ -377,44 +471,70 @@ def main() -> None:
     A("")
     A(f"Signature: {D9['signature']}. **{D9['detection']}**")
     A("")
-    A(f"- Candidate `(user, show)` pairs examined across the whole sweep: "
-      f"**{D9['candidate_user_show_pairs_examined']:,}**")
-    A(f"- Complementary signature pairs, **LOOSE** title key: "
-      f"**{D9['complementary_signature_pairs_LOOSE_key']:,}**")
-    A(f"- Complementary signature pairs, **STRICT** title key: "
-      f"**{D9['complementary_signature_pairs_STRICT_key']:,}**")
+    A(f"Candidate `(user, show)` pairs examined across the whole sweep: "
+      f"**{D9['candidate_user_show_pairs_examined']:,}** — "
+      f"{D9['sides']['A_side_S1_not_S2']:,} carrying S1 and not S2, "
+      f"{D9['sides']['B_side_S2_not_S1']:,} carrying S2 and not S1, "
+      f"{D9['sides']['both_seasons']:,} carrying both.")
     A("")
-    A("| Half | Population / position | Count (loose) | Count (strict) | "
-      "Share of Never started (loose) |")
-    A("| :--- | :--- | ---: | ---: | ---: |")
+    A("### The keys, which are now defined in the spec")
+    A("")
+    A("**`0074` ruling 5 ruled STRICT; `0076` §3 defined both keys**, because \"strict\" and "
+      "\"loose\" had existed only inside one instance's code and the ruled key was undefined "
+      "on every surface an isolated instance reads.")
+    A("")
+    A("| Key | Definition | Complementary signature pairs |")
+    A("| :--- | :--- | ---: |")
+    for k, v in D9["keys"].items():
+        A(f"| `{k}` | {v['definition']} | {v['complementary_signature_pairs']:,} |")
+    A("")
+    A("**The two admissible readings of \"a trailing four-digit year\" agree on this data** — "
+      "restricting the four digits to `19xx`/`20xx` and not restricting them both give "
+      f"{D9['keys']['LOOSE']['complementary_signature_pairs']}. **The third key — a trailing "
+      "digit group of arbitrary length, which reduces `the-100` to `the` — gives "
+      f"{D9['keys']['THIRD_KEY_NOT_USED']['complementary_signature_pairs']} here.** That is "
+      "not a key of this study; it is measured so that the divergence `0076` describes is "
+      "visible on this instance's own data rather than only in the decision log.")
+    A("")
+    A("### Half (a) — fabricated never-started rows")
+    A("")
+    A("| Population / position | Never started | STRICT (ruled) | LOOSE (alongside) | "
+      "Share, loose |")
+    A("| :--- | ---: | ---: | ---: | ---: |")
     for k, v in D9["half_a_fabricated_never_started_rows"].items():
-        A(f"| (a) fabricated Never started rows | {k} | "
+        A(f"| {k} | {v['never_started_n']:,} | {v['carrying_a_split_signature_STRICT']:,} | "
           f"{v['carrying_a_split_signature_LOOSE']:,} | "
-          f"{v['carrying_a_split_signature_STRICT']:,} | "
           f"{v['share_of_never_started_pct_LOOSE']:.4f}% |")
+    A("")
+    A("### Half (b) — the silently deleted S1-failing counterparts")
+    A("")
     hb = D9["half_b_silently_deleted_S1_failing_counterparts"]
-    A(f"| **(b) the silent half** — in-frame pairs dropped at S1 completion carrying the same "
-      f"signature | not on any retained population | {hb['in_frame_B_side_pairs_LOOSE']:,} | "
-      f"{hb['in_frame_B_side_pairs_STRICT']:,} | — |")
+    A("**Measured on position 3's retained drop set** (`0075` ruling 2). These are pairs that "
+      f"{hb['why_they_are_invisible_otherwise']}.")
+    A("")
+    A("| | STRICT (ruled) | LOOSE (alongside) |")
+    A("| :--- | ---: | ---: |")
+    A(f"| B-side pairs on frame shows | {hb['STRICT']['B_side_pairs_in_frame']:,} | "
+      f"{hb['LOOSE']['B_side_pairs_in_frame']:,} |")
+    A(f"| of those, present in the retained position-3 drop set | "
+      f"{hb['STRICT']['of_those_present_in_the_retained_position3_drop_set']:,} | "
+      f"{hb['LOOSE']['of_those_present_in_the_retained_position3_drop_set']:,} |")
+    A(f"| of those, in the S2-evidence-and-no-S1-evidence subset | "
+      f"{hb['STRICT']['of_those_in_the_S2_evidence_and_NO_S1_evidence_subset']:,} | "
+      f"{hb['LOOSE']['of_those_in_the_S2_evidence_and_NO_S1_evidence_subset']:,} |")
+    A("")
+    A(f"Every one of the {hb['LOOSE']['B_side_pairs_in_frame']} loose-key B-side pairs is "
+      "accounted for inside the retained drop set — **which is the check that the side output "
+      "is the right population and not merely a convenient one.**")
     A("")
     nf = D9["normalisation_finding"]
-    A("**The spec gives no title-normalisation rule, and the choice of one decides the whole "
-      "number.** Two were run:")
-    A("")
-    A(f"- **loose** — {nf['loose_key']}")
-    A(f"- **strict** — {nf['strict_key']}")
-    A("")
     A(f"**{nf['what_it_shows']}.** The largest loose clusters are "
       + ", ".join(f"`{k}` ({v})" for k, v in nf["largest_loose_clusters"].items())
-      + " — franchises with several distinct shows, not split metadata.")
+      + " — remakes and national versions, not split metadata.")
     A("")
-    A(f"**Consequence, stated because it runs opposite to the caveat the spec supplies:** "
-      f"{nf['consequence']}.")
+    A(f"**Why the loose count publishes even though strict is ruled:** {nf['consequence']}.")
     A("")
-    A(f"**{D9['same_title_multi_ID_groups']['count']:,} same-title multi-ID groups** were also "
-      f"counted. {D9['same_title_multi_ID_groups']['note']}.")
-    A("")
-    A(f"Direction of half (a): {D9['direction']}.")
+    A(f"Direction: {D9['direction']}.")
     A("")
     A("## 11. D4 — S3 without S2")
     A("")
@@ -501,8 +621,12 @@ def main() -> None:
     A("**Emitted beyond the required list** (`processed/step8/b/results.json`, "
       "`emitted_beyond_the_required_list`), because Step 9 and Step 10 would otherwise "
       "rebuild them: the liveness exclusions decomposed, the insertion-dormancy channel pairs "
-      "— **90 started-and-left and 207 never-started on APPLY, 89 and 3 on DERIV** — and the "
-      "`p = 1.0` residual "
+      f"— **{ex['APPLY']['insertion_dormancy_channel_pairs']['started_and_left']} "
+      f"started-and-left and "
+      f"{ex['APPLY']['insertion_dormancy_channel_pairs']['never_started']} never-started on "
+      f"APPLY, {ex['DERIV']['insertion_dormancy_channel_pairs']['started_and_left']} and "
+      f"{ex['DERIV']['insertion_dormancy_channel_pairs']['never_started']} on DERIV** — and "
+      "the `p = 1.0` residual "
       f"({ex['APPLY']['p_equals_1_residual_post_position_7']:,} on APPLY, "
       f"{ex['DERIV']['p_equals_1_residual_post_position_7']:,} on DERIV, post-position-7).")
     A("")
@@ -513,7 +637,8 @@ def main() -> None:
       f"{ex['account_base']['accounts_in_the_sweep']:,} accounts are in the sweep and "
       f"{ex['account_base']['accounts_reaching_the_position_5_population']:,} reach the "
       "position-5 population. Accounts that were skipped, discarded over tolerance or never "
-      "attempted are **absent, not empty**, and none of them contributes a row.")
+      "attempted are **absent, not empty** — asserted as a data check, not assumed; see "
+      "`artifacts/step8-invariants-b.md` §8.")
     A("")
     A("## 16. Discovery channel")
     A("")
@@ -524,7 +649,8 @@ def main() -> None:
       f"{dc['accounts_in_the_analysis_population']:,} accounts in the analysis population: "
       f"channel A only **{dc['accounts_channel_A_only']:,}**, channel B only "
       f"**{dc['accounts_channel_B_only']:,}**, **both {dc['accounts_in_BOTH']:,}**, neither "
-      f"**{dc['accounts_in_NEITHER']:,}**.")
+      f"**{dc['accounts_in_NEITHER']:,}**. Step 11 can cut on either channel or on the "
+      "overlap, which is what two flags are for.")
     A("")
     A("## 17. `action` — counts by type, never a row-level column")
     A("")
@@ -535,7 +661,8 @@ def main() -> None:
       "instance's choice**; the spec says \"counts by action type\" and does not fix the "
       "grain. Step 1 already ruled that check-ins count as watching alongside `scrobble` and "
       "`watch`, because `action` is a property of the logging client rather than of the "
-      "viewing, so it is **not an outcome variable**.")
+      "viewing, so it is **not an outcome variable**. Step 13's arm reads the counts: "
+      "check-in-only iff its `checkin` count is positive and `scrobble` and `watch` are zero.")
     A("")
     A("## 18. Where two faithful instances could still differ")
     A("")
@@ -557,16 +684,21 @@ def main() -> None:
     B("")
     B(GATE)
     B("")
+    B(RERUN)
+    B("")
     B("## How to read this report")
     B("")
     B(f"**{I['how_to_read_this_report']}**")
     B("")
-    B(f"Counts: **{I['counts']['pure_code_checks']} pure code checks**, "
-      f"**{I['counts']['code_check_by_construction_and_data_check_as_specified']} that is a "
-      "code check by construction and a genuine cross-check as specified**, "
-      f"**{I['counts']['additional_range_check_emitted']} additional range check emitted**, "
-      f"and **{I['counts']['items_that_are_not_invariants']} item that is not an invariant at "
-      "all** — the 703 expectation, which is a population reconciliation.")
+    c = I["counts"]
+    B(f"Counts: **{c['pure_code_checks']} pure code checks**, "
+      f"**{c['code_check_by_construction_and_data_check_as_specified']} that is a code check "
+      "by construction and a genuine cross-check as specified**, and "
+      f"**{c['genuine_data_checks']} that can fail on real data** — both added by "
+      f"`decisions/0076`, because before it the set had **zero**. "
+      f"**{c['items_reported_but_not_asserted']} further items are reported and NOT "
+      "asserted**: the set-membership drop rule, which is a coverage count (`0074` ruling 3), "
+      "and the 703 expectation, which is a population reconciliation.")
     B("")
     B("| # | Invariant | Label | Result |")
     B("| :-- | :--- | :--- | :--- |")
@@ -574,16 +706,20 @@ def main() -> None:
         B(f"| {i} | {iv['invariant']} | **{iv['label']}** | "
           f"**{'PASS' if iv['passes'] else 'FAIL'}** |")
     B("")
-    B(f"**All invariants pass: {I['all_pass']}.** That statement says the code computed what "
-      "it was told to. It is **not** evidence for the liveness rule, for the outcome "
-      "definition, or for any published share.")
+    B(f"**All invariants pass: {I['all_pass']}.** For six of the eight that statement says the "
+      "code computed what it was told to. It is **not** evidence for the liveness rule, for "
+      "the outcome definition, or for any published share. **The two that could have failed "
+      "are §7 and §8, and what they found is reported in full below rather than as a tick.**")
     B("")
     for i, iv in enumerate(I["invariants"], 1):
         B(f"## {i}. {iv['invariant']}")
         B("")
         B(f"**Label: {iv['label']}.** "
-          f"{iv.get('why_it_cannot_fail_on_data', iv.get('what_gives_it_force', ''))}.")
+          f"{iv.get('why_it_cannot_fail_on_data', iv.get('why_it_can_fail', iv.get('what_gives_it_force', '')))}.")
         B("")
+        if "label_note" in iv:
+            B(f"**On the label:** {iv['label_note']}.")
+            B("")
         if "why_ge_not_gt" in iv:
             B(f"**Why `>=` and not `>`:** {iv['why_ge_not_gt']}.")
             B("")
@@ -593,7 +729,7 @@ def main() -> None:
               f"{iv['positions_removing_zero_APPLY']}")
             B("")
         for k in ("result", "checked", "independent_recomputation",
-                  "second_external_cross_check", "clauses_on_the_position_5_population",
+                  "clauses_on_the_position_5_population",
                   "the_equality_clause_cannot_discriminate_on"):
             if k in iv:
                 B(f"**{k.replace('_', ' ')}**")
@@ -605,9 +741,47 @@ def main() -> None:
         if "form" in iv:
             B(f"Form: `{iv['form']}`.")
             B("")
+        if "reading" in iv:
+            B(f"**Reading:** {iv['reading']}.")
+            B("")
         B(f"**Result: {'PASS' if iv['passes'] else 'FAIL'}.**")
         B("")
-    B("## The 703 expectation is NOT an invariant")
+    B("## What the two data checks actually found")
+    B("")
+    wh = I["invariants"][6]["checked"]
+    B(f"**Wholesale dropping.** On APPLY, **{wh['APPLY']['accounts_holding_BOTH_a_live_and_a_not_live_pair']} "
+      f"of the {wh['APPLY']['accounts_supplying_at_least_one_not_live_pair']} accounts that "
+      "supply a liveness exclusion also keep at least one live pair.** An account-level filter "
+      "would make that number exactly zero, so this discriminates between the two "
+      "implementations, which the 703-from-216 figure alone does not. The single account whose "
+      "pairs are all not-live holds exactly one pair in the population, where the two "
+      "implementations are indistinguishable by construction.")
+    B("")
+    ad = I["invariants"][7]["checked"]
+    B(f"**Skipped accounts read as empty.** Zero `access_denied` and zero `private_or_absent` "
+      "were recorded across the whole Step 4 pull, so the 403-skip path never fired. The "
+      f"skipped accounts nevertheless exist — **{ad['accounts_by_final_outcome'].get('discarded_over_tolerance', 0)} "
+      f"discarded over tolerance and {ad['accounts_by_final_outcome'].get('skipped_length_forecast', 0)} "
+      "skipped on the length forecast** — and **none of them is parsed, indexed, or present in "
+      "the table**: of the "
+      f"{ad['accounts_in_the_parsed_sweep']:,} accounts in the parsed sweep, "
+      f"{ad['parsed_accounts_whose_final_ledger_outcome_is_NOT_complete']} have a non-complete "
+      f"final ledger outcome and {ad['parsed_accounts_with_no_ledger_row_at_all']} have no "
+      "ledger row at all. They are **absent, not empty**, which is what the rule requires.")
+    B("")
+    B("## Reported and NOT asserted (1) — the set-membership drop rule")
+    B("")
+    cov = I["coverage_count_not_an_invariant"]
+    B(f"{cov['status']}.")
+    B("")
+    B(f"- Records examined: **{cov['records_examined']:,}**")
+    B(f"- Records dropped: **{cov['records_dropped']:,}**")
+    B("")
+    B("The denominator has three readings on this data and `0074` ruling 4 publishes two of "
+      "them unreconciled; all three are tabulated in "
+      "`artifacts/step8-waterfall-b.md` §6.")
+    B("")
+    B("## Reported and NOT asserted (2) — the 703 expectation")
     B("")
     B(f"{rec['this_is_NOT_an_invariant'].capitalize()}.")
     B("")
@@ -634,39 +808,38 @@ def main() -> None:
 
 
 DIVERGENCES = [
-    "**The analysis table's row set.** The spec says \"build one row per user-show pair\" and "
-    "\"write the table to `processed/`\" without naming which position's rows. This instance "
-    "emits the **position-5** population with `live` and `outcome` as columns, so the "
-    "post-position-7 set is a filter on it and Step 9 does not have to rebuild the 703. An "
-    "instance emitting only the post-position-7 rows would be equally faithful and would "
-    "produce a file with 195,951 rows. **No published count differs; the file shape does.**",
-
     "**D11 and waterfall line 1.** `0068` rules 220,107 and leaves the D11 question open. "
     "Lines 1–3 are 220,107 here and would be 220,103 under the other reading; lines 4–7 are "
-    "identical either way, verified.",
+    "identical either way, verified row by row.",
 
-    "**D3′'s cleared shares.** The task sheet quotes 95.98% at `W = 46` falling to 91.34% at "
-    "`W = 213` with no population at the point of use. On the named, right-censored "
-    "populations this instance measures 99.53% and 97.73% on APPLY. The direction and the "
-    "shrinkage agree; the level does not. Reported, not reconciled.",
+    "**The set-membership denominator.** `0074` ruling 4 publishes 6,065,704 against 6,065,610 "
+    "unreconciled. This instance examines 6,065,610; the other two readings on the same data "
+    "are 6,065,704 (before any D11) and 6,065,537 (D11 applied to both seasons). The choice "
+    "follows from how D11 is applied on the S1 side, which follows from `0068`'s ruled line 1. "
+    "**Reported, not reconciled**; all three drop zero records.",
+
+    "**D3′'s cleared shares are not monotone between `W = 91` and `W = 107`** — 98.81% then "
+    "98.84% on APPLY. An open item at `0076` §5, reproduced rather than smoothed.",
 
     "**D8's position.** Pre- or post-liveness is unstated. Both are reported.",
 
     "**D2's population.** Unstated at the point of use. Four are reported and each labelled.",
 
-    "**D9's title-normalisation rule.** None is specified, and it decides the number: the "
-    "strict key (no year stripping) returns **0** complementary signature pairs, the loose "
-    "key (year stripped) returns **75**, and the loose key's largest clusters are remakes. "
-    "Two instances choosing differently would report 6 and 0 for half (a).",
-
-    "**The pre-2020 censoring comparator.** `0070` moved the 2023–2025 loss at `W = 213` from "
-    "10.3% to 10.5% but left the 2.7% it is compared against, which was computed in the "
-    "superseded order and is 3.0% under the mandated one.",
+    "**D9's third key.** The spec now defines strict and loose (`0076` §3). On this data the "
+    "third key — a trailing digit group of arbitrary length — gives **76** complementary "
+    "signature pairs against loose's **75**, reproducing the divergence `0076` describes. It "
+    "is measured and not used.",
 
     "**The grain of the `action` counts.** \"Per-pair counts by action type\" does not fix "
     "whether the counts are split by season. This instance splits S1 and S2, because Step "
     "13's arm needs the composition of the S2 evidence set and the S1 completion evidence "
-    "separately.",
+    "separately. A pooled-count instance would report four columns rather than eight and no "
+    "published figure would move.",
+
+    "**The shape of the position-3 drop set.** `0075` ruling 2 requires it to be retained and "
+    "does not say what it must contain. This instance retains every in-frame pair with any "
+    "in-`E` S1 or S2 distinct episode that is not an S1 completer — 58,345 rows — with its "
+    "distinct-episode counts and the show's threshold, which is what half (b) needs.",
 
     "**The waterfall's unit.** Pairs are primary; users and shows are reported alongside "
     "because position 2 is explicitly a filter on shows.",
@@ -685,13 +858,6 @@ DIVERGENCES = [
     "**At `W = 213` the DERIV started-and-left exclusion component is 147 while APPLY's is "
     "148.** No published figure covers DERIV per arm above `W = 108`, so this is new rather "
     "than divergent, and it is stated so it is not read as an error later.",
-
-    "**`processed/step5/adopted_rule.json` carries revision-3 figures** (`retained 215,258`, "
-    "`removed 4,849`) and is superseded by revision 6 (201,900 retained, 18,207 excluded). "
-    "This instance reads the exclusion from `pair_revision5.csv` and re-asserts the Step 5 "
-    "waterfall line by line before using it. `processed/` is not one of `CLAUDE.md`'s seven "
-    "propagation surfaces, so the grep control does not cover the file a Step 8 "
-    "implementation would reach for first.",
 ]
 
 if __name__ == "__main__":

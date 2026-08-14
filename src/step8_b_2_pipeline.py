@@ -160,7 +160,32 @@ def main() -> None:
         s5.append(s5[-1] & m)
     s5_counts = [int(x.sum()) for x in s5]
     assert s5_counts == STEP5_WATERFALL, (s5_counts, STEP5_WATERFALL)
-    R["step5_waterfall_reasserted"] = {"measured": s5_counts, "expected": STEP5_WATERFALL}
+    # processed/ is the EIGHTH propagation surface (0074 ruling 6). adopted_rule.json
+    # was corrected there; it is now READ and CROSS-CHECKED rather than worked around.
+    ar = json.loads((P5 / "adopted_rule.json").read_text())
+    ar6 = ar["_SUPERSEDED_FIGURES_CORRECTED_2026_08_13"]["approved_rule_revision_6"]
+    R["step5_waterfall_reasserted"] = {
+        "measured": s5_counts, "expected": STEP5_WATERFALL,
+        "adopted_rule_json_cross_check": {
+            "surface": ("processed/ is the eighth propagation surface (0074 ruling 6); "
+                        "processed/step5/adopted_rule.json carried revision-3 figures and was "
+                        "corrected. It is READ here and cross-checked, not worked around"),
+            "file_says_removed": ar6["removed"], "file_says_retained": ar6["retained"],
+            "file_says_of_total": ar6["of_total"],
+            "measured_removed": int((line3 & contam_excl).sum()),
+            "measured_retained": int(line4.sum()),
+            "measured_of_total": int(line3.sum()),
+            "components_file": ar6["components"],
+            "components_measured": {
+                "s2_evidence_entirely_air_date_stamped": int((line3 & all_air).sum()),
+                "no_s2_evidence_fabricated_binding_clock_start":
+                    int((line3 & t0c & ~has_s2_ev).sum())},
+            "agrees": (ar6["removed"] == int((line3 & contam_excl).sum())
+                       and ar6["retained"] == int(line4.sum())
+                       and ar6["of_total"] == int(line3.sum())),
+            "the_file_still_carries_the_superseded_block":
+                "FINAL.pair_level_reading = 4,849 removed / 215,258 retained, LABELLED superseded",
+        }}
     line4_step5 = s5[3]          # Step 5 line 4 -- the DERIV base before D10
 
     wf.append({"position": 4, "filter": "contamination exclusion (Step 5, decisions/0021)",

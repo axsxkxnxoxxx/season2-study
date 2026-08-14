@@ -5,6 +5,7 @@
   "step": 8,
   "mode": "GATE -- proposal only, nothing adopted",
   "api_calls": 0,
+  "run": "RERUN on the spec as amended by decisions/0074, 0075 and 0076",
   "constants": {
     "W": 108,
     "H": 91,
@@ -18,7 +19,8 @@
       108,
       150,
       213
-    ]
+    ],
+    "W_arms_source": "decisions/0075 ruling 3 -- the grid's first statement"
   },
   "populations": {
     "APPLY": {
@@ -187,7 +189,58 @@
       155131,
       152126,
       128099
-    ]
+    ],
+    "adopted_rule_json_cross_check": {
+      "surface": "processed/ is the eighth propagation surface (0074 ruling 6); processed/step5/adopted_rule.json carried revision-3 figures and was corrected. It is READ here and cross-checked, not worked around",
+      "file_says_removed": 18207,
+      "file_says_retained": 201900,
+      "file_says_of_total": 220107,
+      "measured_removed": 18207,
+      "measured_retained": 201900,
+      "measured_of_total": 220107,
+      "components_file": {
+        "s2_evidence_entirely_air_date_stamped": 16665,
+        "no_s2_evidence_fabricated_binding_clock_start": 1542
+      },
+      "components_measured": {
+        "s2_evidence_entirely_air_date_stamped": 16665,
+        "no_s2_evidence_fabricated_binding_clock_start": 1542
+      },
+      "agrees": true,
+      "the_file_still_carries_the_superseded_block": "FINAL.pair_level_reading = 4,849 removed / 215,258 retained, LABELLED superseded"
+    }
+  },
+  "position3_drop_set_side_output": {
+    "retained_because": "decisions/0075 ruling 2 -- D9 half (b) is measured on the rows position 3 REMOVES and cannot be computed without them",
+    "file": "processed/step8/b/position3_drop_set.csv.gz",
+    "in_frame_pairs_with_ANY_in_E_S1_or_S2_distinct_episode": 278452,
+    "of_which_S1_completers_line_1": 220107,
+    "dropped_by_the_S1_completion_rule": 58345,
+    "dropped_carrying_S1_evidence_that_fails_the_rule": 54634,
+    "dropped_carrying_S2_evidence_and_NO_S1_evidence": 3711,
+    "dropped_carrying_S2_evidence_at_all": 8885,
+    "note": "under decisions/0068 waterfall line 1 IS the S1-completer population, so position 3 removes 0 FROM THE WATERFALL. The rule's drop set is not empty; it sits upstream of line 1 and is retained here rather than discarded"
+  },
+  "set_membership_coverage_count": {
+    "status": "A COVERAGE COUNT, NOT AN INVARIANT (decisions/0074 ruling 3). Step 8's own bullet calls it 'an implementation check, not a data check'. Records examined and records dropped are REPORTED; nothing is asserted",
+    "rule": "number must be a MEMBER of the season's listed set E, else the record is dropped",
+    "records_examined": 6065610,
+    "records_dropped": 0,
+    "records_dropped_missing_season_or_number": 0,
+    "coverage": "every in-frame S1/S2 episode record surviving D11 was tested",
+    "denominator_note": {
+      "what_this_instance_counts": "in-frame S1/S2 episode records after D11 has been applied to the S2 side; the S1 side is carried unfiltered because decisions/0068 rules waterfall line 1 at 220,107 AS PUBLISHED and that value needs the 4 pairs whose completing record is post-cutoff",
+      "in_frame_S1_S2_episode_records_before_any_D11": 6065704,
+      "this_instances_examined_count": 6065610,
+      "if_D11_were_applied_to_BOTH_seasons": 6065537,
+      "reported_unreconciled": "decisions/0074 ruling 4 publishes 6,065,704 against 6,065,610, both reporting 0 drops, and rules the difference REPORTED NOT RECONCILED. All three readings are stated here; this instance does not reconcile them, and nothing downstream depends on the denominator"
+    },
+    "dropped_records_by_action": {
+      "watch": 0,
+      "checkin": 0,
+      "scrobble": 0,
+      "other": 0
+    }
   },
   "liveness": {
     "rule": "NOT LIVE iff BOTH (no insertion instant > tau1) AND (NOT Continued). ALT-BROAD, decisions/0048, restored 0054, APPROVED 0064",
@@ -267,6 +320,44 @@
       "213": 147
     }
   },
+  "population_reconciliation_703_and_99": {
+    "this_is_NOT_an_invariant": "it is a POPULATION RECONCILIATION, and the spec's own instruction to suspect the population before the implementation is what makes it one",
+    "APPLY": {
+      "denominator": 196654,
+      "expected": 703,
+      "measured": 703,
+      "expected_split": [
+        604,
+        99
+      ],
+      "measured_split": [
+        604,
+        99
+      ],
+      "expected_accounts": 216,
+      "measured_accounts": 216
+    },
+    "DERIV": {
+      "denominator": 147370,
+      "expected": 99,
+      "measured": 99,
+      "expected_split": [
+        0,
+        99
+      ],
+      "measured_split": [
+        0,
+        99
+      ],
+      "expected_accounts": 73,
+      "measured_accounts": 73
+    },
+    "superseded_answers_not_produced": {
+      "604_on_APPLY_is_ALT": true,
+      "793_on_APPLY_is_ALT_MATCHED_withdrawn": true
+    },
+    "reconciles": true
+  },
   "outcome_states": {
     "APPLY": {
       "position5": {
@@ -307,7 +398,11 @@
       "share_of_never_started_post_liveness_pct": 0.0,
       "denominator_note": "the drop count is a property of the filter, so it measures against what ENTERED it -- position 5. The post-liveness figure is reported alongside; the difference between the two denominators is exactly the never-started liveness exclusions (decisions/0070 ruling 6)",
       "coverage": "ZERO is a measured zero: every one of the 6,065,610 in-frame S1/S2 episode records surviving D11 was tested for membership in its season's listed set E, and none failed. This check did not look nowhere",
-      "direction": "would INFLATE Never started, the same direction as D4 and D9"
+      "direction": "would INFLATE Never started, the same direction as D4 and D9",
+      "per_show_distribution_records_dropped_to_shows": {
+        "0": 1138
+      },
+      "shows_examined": 1138
     },
     "D2_negative_lag": {
       "split": "THREE categories -- finale binds, S1 completion binds, BOTH bind (decisions/0070 ruling 5). A tie is its own category, not a tiebreak",
@@ -667,12 +762,35 @@
   "D9_split_artifact": {
     "signature": "one show ID carrying S1 and not S2 for that user, another carrying S2 and not S1, and the two slugs normalise to the same title key",
     "detection": "IMPERFECT -- Step 1 D9 states the count is a LOWER BOUND",
+    "ruled_key": "STRICT (decisions/0074 ruling 5), with the LOOSE count reported alongside",
     "candidate_user_show_pairs_examined": 726103,
-    "complementary_signature_pairs_LOOSE_key": 75,
-    "complementary_signature_pairs_STRICT_key": 0,
+    "sides": {
+      "A_side_S1_not_S2": 435643,
+      "B_side_S2_not_S1": 8834,
+      "both_seasons": 281626
+    },
+    "keys": {
+      "STRICT": {
+        "definition": "re.sub(r\"[^a-z0-9]\", \"\", slug.lower()) -- strip nothing else",
+        "complementary_signature_pairs": 0
+      },
+      "LOOSE": {
+        "definition": "remove a trailing four-digit year, then apply STRICT",
+        "complementary_signature_pairs": 75
+      },
+      "LOOSE_variant_any_trailing_4_digits": {
+        "definition": "'four-digit year' read as ANY trailing four-digit group",
+        "complementary_signature_pairs": 75,
+        "agrees_with_LOOSE": true,
+        "why_measured": "the phrase 'a trailing four-digit year' admits both a year-range reading and a bare four-digit reading; measured rather than assumed inert"
+      },
+      "THIRD_KEY_NOT_USED": {
+        "definition": "a trailing digit group of ARBITRARY length -- reduces `the-100` to `the`",
+        "complementary_signature_pairs": 76,
+        "status": "NOT a key of this study (0076 Sec 3). Measured here only so the divergence it caused is visible on this instance's own data"
+      }
+    },
     "normalisation_finding": {
-      "loose_key": "trailing four-digit year stripped, then non-alphanumerics stripped",
-      "strict_key": "non-alphanumerics stripped only -- no year stripping",
       "what_it_shows": "The STRICT key finds ZERO complementary pairs: no two distinct show IDs in this sweep carry the same slug modulo punctuation. The entire D9 signal therefore comes from year-stripping, which CANNOT distinguish a Trakt metadata split from a REMAKE or a national version sharing a title",
       "largest_loose_clusters": {
         "thetwilightzone": 10,
@@ -684,44 +802,55 @@
         "thetomandjerryshow": 2,
         "thesewoodsarehaunted": 2
       },
-      "consequence": "The loose counts are an UPPER bound on detected candidates, not evidence that splits occurred. D9's own lower-bound caveat concerns splits this signature misses; this finding concerns non-splits it catches. Both directions are live and the numbers must not be read as a measured split rate"
+      "consequence": "The loose count BOUNDS HOW WRONG STRICT COULD BE, and the error runs OPPOSITE to D9's own lower-bound caveat: D9 warns that its count misses splits, while the loose key catches non-splits. Both directions are live and neither number is a measured split rate"
     },
     "half_a_fabricated_never_started_rows": {
       "APPLY_position5": {
         "never_started_n": 33373,
-        "carrying_a_split_signature_LOOSE": 6,
         "carrying_a_split_signature_STRICT": 0,
+        "carrying_a_split_signature_LOOSE": 6,
+        "share_of_never_started_pct_STRICT": 0.0,
         "share_of_never_started_pct_LOOSE": 0.01797860545950319
       },
       "APPLY_position6_post_liveness": {
         "never_started_n": 32769,
-        "carrying_a_split_signature_LOOSE": 6,
         "carrying_a_split_signature_STRICT": 0,
+        "carrying_a_split_signature_LOOSE": 6,
+        "share_of_never_started_pct_STRICT": 0.0,
         "share_of_never_started_pct_LOOSE": 0.018309988098507736
       },
       "DERIV_position5": {
         "never_started_n": 9145,
-        "carrying_a_split_signature_LOOSE": 0,
         "carrying_a_split_signature_STRICT": 0,
+        "carrying_a_split_signature_LOOSE": 0,
+        "share_of_never_started_pct_STRICT": 0.0,
         "share_of_never_started_pct_LOOSE": 0.0
       },
       "DERIV_position6_post_liveness": {
         "never_started_n": 9145,
-        "carrying_a_split_signature_LOOSE": 0,
         "carrying_a_split_signature_STRICT": 0,
+        "carrying_a_split_signature_LOOSE": 0,
+        "share_of_never_started_pct_STRICT": 0.0,
         "share_of_never_started_pct_LOOSE": 0.0
       }
     },
     "half_b_silently_deleted_S1_failing_counterparts": {
-      "in_frame_B_side_pairs_LOOSE": 27,
-      "in_frame_B_side_pairs_STRICT": 0,
-      "note": "these carry S2 evidence and no S1 evidence, so they fail the S1 completion rule and never enter the population at all -- they are unreported unless counted here"
+      "the_input_this_half_needs": "POSITION 3's DROP SET, retained as a side output at stage 1 per decisions/0075 ruling 2. Half (b) is measured on the rows the S1 completion rule REMOVES, so it cannot be computed without them, and no line of Step 8 said to keep them. Without the retained set this half emits ZERO, and a zero here reads as a data finding rather than a missing input",
+      "position3_drop_set_pairs": 58345,
+      "of_which_carry_S2_evidence_and_NO_S1_evidence": 3711,
+      "STRICT": {
+        "B_side_pairs_in_frame": 0,
+        "of_those_present_in_the_retained_position3_drop_set": 0,
+        "of_those_in_the_S2_evidence_and_NO_S1_evidence_subset": 0
+      },
+      "LOOSE": {
+        "B_side_pairs_in_frame": 27,
+        "of_those_present_in_the_retained_position3_drop_set": 27,
+        "of_those_in_the_S2_evidence_and_NO_S1_evidence_subset": 27
+      },
+      "why_they_are_invisible_otherwise": "these pairs carry S2 evidence and no S1 evidence, so they fail the S1 completion rule and never enter the analysis population at all. They are unreported unless counted here, and they are the counterpart of the fabricated never-started rows half (a) counts"
     },
-    "same_title_multi_ID_groups": {
-      "count": 5997,
-      "note": "NOT a merge count. These are (user, show) rows where the user's sweep carries another show ID with the same LOOSE title key, and the largest clusters are Doctor Who, The Office and Avatar -- remakes and national versions, not merges. Reported so the figure is not mistaken for one. Merges proper can only ADD evidence to a pair, never remove it"
-    },
-    "direction": "DOWN on the never-started share; Step 9 bounds it and publishes it alongside"
+    "direction": "half (a) INFLATES Never started; half (b) removes a pair that should have been in the population. Step 9 bounds D9 and publishes it ALONGSIDE, never folded in"
   },
   "censoring_per_air_period_per_W_arm": {
     "38": {
@@ -976,5 +1105,19 @@
     "action_is_counts_not_a_column": true,
     "discovery_channel_is_two_booleans": true
   },
-  "scope_qualifier": "covering with respect to INSERTION-DORMANCY, exhaustively; open only across CHANNEL CLASSES (D4, D9). D4 and D9 publish alongside and are never folded in. Step 8 does not compute the bound, but it produces the position-6 population the bound is stated on, so any table or note carrying the bound carries this qualifier (decisions/0062)"
+  "scope_qualifier": "covering with respect to INSERTION-DORMANCY, exhaustively; open only across CHANNEL CLASSES (D4, D9). D4 and D9 publish alongside and are never folded in. Step 8 does not compute the bound, but it produces the position-6 population the bound is stated on, so any table or note carrying the bound carries this qualifier (decisions/0062)",
+  "where_two_faithful_instances_could_still_differ": [
+    "**D11 and waterfall line 1.** `0068` rules 220,107 and leaves the D11 question open. Lines 1\u20133 are 220,107 here and would be 220,103 under the other reading; lines 4\u20137 are identical either way, verified row by row.",
+    "**The set-membership denominator.** `0074` ruling 4 publishes 6,065,704 against 6,065,610 unreconciled. This instance examines 6,065,610; the other two readings on the same data are 6,065,704 (before any D11) and 6,065,537 (D11 applied to both seasons). The choice follows from how D11 is applied on the S1 side, which follows from `0068`'s ruled line 1. **Reported, not reconciled**; all three drop zero records.",
+    "**D3\u2032's cleared shares are not monotone between `W = 91` and `W = 107`** \u2014 98.81% then 98.84% on APPLY. An open item at `0076` \u00a75, reproduced rather than smoothed.",
+    "**D8's position.** Pre- or post-liveness is unstated. Both are reported.",
+    "**D2's population.** Unstated at the point of use. Four are reported and each labelled.",
+    "**D9's third key.** The spec now defines strict and loose (`0076` \u00a73). On this data the third key \u2014 a trailing digit group of arbitrary length \u2014 gives **76** complementary signature pairs against loose's **75**, reproducing the divergence `0076` describes. It is measured and not used.",
+    "**The grain of the `action` counts.** \"Per-pair counts by action type\" does not fix whether the counts are split by season. This instance splits S1 and S2, because Step 13's arm needs the composition of the S2 evidence set and the S1 completion evidence separately. A pooled-count instance would report four columns rather than eight and no published figure would move.",
+    "**The shape of the position-3 drop set.** `0075` ruling 2 requires it to be retained and does not say what it must contain. This instance retains every in-frame pair with any in-`E` S1 or S2 distinct episode that is not an S1 completer \u2014 58,345 rows \u2014 with its distinct-episode counts and the show's threshold, which is what half (b) needs.",
+    "**The waterfall's unit.** Pairs are primary; users and shows are reported alongside because position 2 is explicitly a filter on shows.",
+    "**Undated records.** 379 records in the sweep carry no `watched_at`. None is an in-frame S1/S2 episode record, so they touch no outcome. They are **not** discarded by D11, which removes `watched_at >= tau_pull`; a reading that requires a record to be positively \"dated before `tau_pull`\" would drop them from the liveness evidence. Measured inert: the exclusion counts are identical either way at every arm.",
+    "**DERIV's position 4.** DERIV is Step 5 *line 4* less D10, and line 4 applies three restrictions that are not Step 8 filter positions. Its waterfall line 4 is therefore not the adopted contamination exclusion, and is labelled as such rather than silently conflated with APPLY's.",
+    "**At `W = 213` the DERIV started-and-left exclusion component is 147 while APPLY's is 148.** No published figure covers DERIV per arm above `W = 108`, so this is new rather than divergent, and it is stated so it is not read as an error later."
+  ]
 }

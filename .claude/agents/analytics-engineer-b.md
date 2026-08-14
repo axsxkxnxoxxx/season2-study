@@ -197,9 +197,11 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
           CONSUMES rather than REBUILDS, and carrying the liveness result as a column is that principle
           applied to the row set.** **A reconstruction that agrees today is still a second definition
           tomorrow, and the dual diff cannot see it.**
-        - **2. The `p` invariant is SPECIFIED, not dropped. DATA CHECK** — `p ∈ (0, 1]` on every
-          Started-and-left row, null elsewhere. **Both instances ran it unprompted**, it is a data check
-          ***label corrected to CODE CHECK by `0076`***, and **Step 10 publishes `p`.**
+        - **2. The `p` invariant is SPECIFIED, not dropped. CODE CHECK** — `p ∈ (0, 1]` on every
+          Started-and-left row, null elsewhere. ***`0074` said DATA CHECK; corrected to CODE CHECK by
+          `0076`*** on both instances' proof: Started-and-left requires `|A| ≥ 1` so `m_H` exists, and
+          set membership bounds the rank numerator in `[1, L2]`. **Both instances ran it unprompted and
+          Step 10 publishes `p`, so it is kept — but it proves the code, not the rule.**
         - **3. The set-membership drop rule is a COVERAGE COUNT, NOT AN INVARIANT** — resolving the
           7-against-6 divergence. The spec already calls it *"an implementation check, not a data
           check."* **Report records examined and records dropped; do not assert it.**

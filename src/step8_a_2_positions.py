@@ -17,7 +17,16 @@ Both populations are carried from here on (decisions/0070 ruling 1):
   APPLY = Step 5 waterfall line 1 less D10 = 196,654   (what position 6 filters)
   DERIV = Step 5 waterfall line 4 less D10 = 147,370   (requires S2 evidence)
 
-Output: processed/step8/a/positions.npz, processed/step8/a/positions.json
+POSITION 3's DROP SET IS RETAINED AS A SIDE OUTPUT (Human Lead ruling, decisions/0075). D9 half
+(b) is measured on the rows the S1 completion rule REMOVES, so it cannot be computed without
+them, and they are not recoverable from the analysis table. Note the shape of it on this frame:
+waterfall line 1 is already the S1-COMPLETER population (0068), so position 3 removes 0 rows FROM
+THE WATERFALL, while the S1 completion rule removes 58,345 pairs from the pair universe. The side
+output is the latter -- the rows the rule deletes -- because that is the set half (b) needs. A
+zero here would read as a data finding rather than a missing input, which is why it is a file.
+
+Output: processed/step8/a/positions.npz, processed/step8/a/positions.json,
+        processed/step8/a/position3_dropset.npz
 """
 import json
 import os
@@ -180,6 +189,16 @@ def main():
     assert int(pos5_deriv.sum()) == 147370, f"DERIV is {int(pos5_deriv.sum())}"
     assert int((pos5_deriv & ~pos5).sum()) == 0, "DERIV must be a subset of APPLY"
 
+    # ---- position 3's drop set, retained as a side output (decisions/0075) -----------------
+    dropped3 = ~complete
+    np.savez_compressed(
+        os.path.join(OUT, "position3_dropset.npz"),
+        row=np.flatnonzero(dropped3).astype(np.int64),
+        pair_user=pair_user[dropped3], pair_show=pair_show[dropped3],
+        n_distinct_s1_episodes=np.diff(s1_ptr)[dropped3].astype(np.int32),
+        L1=L1[dropped3], F1=F1[dropped3], need1=need1[dropped3],
+    )
+
     np.savez_compressed(
         os.path.join(OUT, "positions.npz"),
         complete=complete, complete_d11=complete_d11, comp_ts=comp_ts, s1_date=s1_date,
@@ -255,6 +274,20 @@ def main():
             "pairs_that_stop_being_completers_under_D11": int((complete & ~complete_d11).sum()),
             "completers_whose_completion_date_moves_under_D11": int(
                 (complete & complete_d11 & (comp_ts != comp_ts_d11)).sum()),
+        },
+        "position_3_dropset_side_output": {
+            "ruling": "decisions/0075: retained because D9 half (b) is measured on the rows "
+                      "position 3 removes and no line of Step 8 said to keep them. An instance "
+                      "that does not keep them emits zero or fails, and a zero here reads as a "
+                      "DATA FINDING rather than a MISSING INPUT.",
+            "file": "processed/step8/a/position3_dropset.npz",
+            "rows_the_S1_completion_rule_removes_from_the_pair_universe": int(dropped3.sum()),
+            "rows_position_3_removes_from_the_waterfall": int(pos2.sum() - pos3.sum()),
+            "why_those_two_differ": "waterfall line 1 is already the S1-completer population "
+                                    "(0068), so the waterfall figure is 0 by construction. The "
+                                    "set half (b) needs is the rows the RULE deletes, which is "
+                                    "the pair universe less the completers.",
+            "pair_universe": int(n_pairs),
         },
         "T0_binding_term_three_ways_on_position_5_APPLY": {
             "S2_finale_binds": int((pos5 & binds_fin).sum()),
