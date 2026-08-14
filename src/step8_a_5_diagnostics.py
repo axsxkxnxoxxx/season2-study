@@ -43,7 +43,17 @@ def main():
     pos_sum = json.load(open(os.path.join(OUT, "positions.json")))
 
     f = frame.set_index("show_trakt_id")
-    D = {"step": 8, "instance": "a", "stage": 5, "api_calls": 0, "W_days": W, "H_days": H}
+    D = {"step": 8, "instance": "a", "stage": 5, "api_calls": 0, "W_days": W, "H_days": H,
+         "build": lib.build_record(),
+         "provenance_note": "EVERY REQUIRED COUNT IN THIS FILE WAS MEASURED ON BUILD "
+                            + lib.BUILD_TAG + ". Human Lead ruling, decisions/0079 (B6), "
+                            "extending 0078: every count, every invariant result and every "
+                            "waterfall figure names the pipeline it was measured on, not only its "
+                            "population. Partial application is worse than none -- two labelled "
+                            "figures imply the rest did not need it -- so the tag is injected on "
+                            "every block below rather than written on the ones that seemed to "
+                            "need it. Figures RESTATED from another build carry that other build "
+                            "instead; they are marked where they appear."}
 
     # ---- 1. both drop counts (Step 1 SS3.4) ----------------------------------------------
     drops = pd.read_csv(os.path.join(OUT, "drops_per_show.csv"))
@@ -223,7 +233,29 @@ def main():
             raw.str.replace(r"(-\d+)+$", "", regex=True)
             .str.lower().str.replace(r"[^a-z0-9]", "", regex=True)),
     }
-    failed_s1 = ~positions["complete"]
+    # HALF (b) IS MEASURED ON THE POSITION-3 DROP SET, AND THAT SET IS READ FROM THE PIPELINE
+    # DELIVERABLE -- not recomputed from a mask lying around in memory. decisions/0079 (B5) makes
+    # the drop set a deliverable written by the same run that writes the table, precisely because
+    # half (b) cannot be computed without it and its absence RETURNS 0 SILENTLY, which reads as a
+    # data finding rather than an error. Reading it here is what makes the deliverable
+    # load-bearing: if stage 2 stops writing it, this stage fails loudly instead of publishing 0.
+    ds_path = os.path.join(OUT, "position3_drop_set.csv.gz")
+    assert os.path.exists(ds_path), (
+        "the position-3 drop set deliverable is missing; D9 half (b) cannot be computed and MUST "
+        "NOT be emitted as 0 (decisions/0075 ruling 2, 0079 B5)")
+    dset = pd.read_csv(ds_path)
+    failed_s1 = np.zeros(a.n, dtype=bool)
+    failed_s1[dset.row.to_numpy()] = True
+    assert int(failed_s1.sum()) == int(dset.shape[0]) == int((~positions["complete"]).sum()), \
+        "the drop-set deliverable disagrees with position 3's rule as recomputed"
+    dropset_meta = {
+        "read_from": "processed/step8/a/position3_drop_set.csv.gz",
+        "written_by": "stage 2 of this same pipeline run (decisions/0079 B5)",
+        "pairs": int(dset.shape[0]),
+        "carries": list(dset.columns),
+        "short_of_the_0_90_threshold": int(dset.reason_short_of_threshold.sum()),
+        "reached_the_threshold_but_never_watched_F1": int(dset.reason_finale_F1_not_watched.sum()),
+    }
     pk = pd.DataFrame({"u": a.pair_user.astype(np.int64), "s": a.pair_show,
                        "row": np.arange(a.n)})
 
@@ -281,6 +313,23 @@ def main():
                       "lower-bound caveat.",
         "coverage": {"show_ids_with_a_slug": int(slugs.shape[0]),
                      "user_show_coverage_rows_examined": int(piv.shape[0])},
+        "FOUR_NUMBERS_both_halves_under_both_keys": {
+            "ruling": "Human Lead ruling, decisions/0078 SS3: BOTH HALVES UNDER BOTH KEYS -- four "
+                      "numbers, not three. It follows from 0074 ruling 5's own reason rather than "
+                      "from a preference: the loose count publishes BECAUSE IT BOUNDS HOW WRONG "
+                      "STRICT COULD BE, and that reason applies to half (b) exactly as to half "
+                      "(a). Publishing the bound for one half and withholding it for the other "
+                      "leaves the reader unable to bound the total, and the error runs OPPOSITE to "
+                      "D9's own lower-bound caveat -- the direction they were not warned about.",
+            "half_a_strict": st["half_a_never_started_carrying_the_signature_APPLY_position_7"],
+            "half_a_loose": lo["half_a_never_started_carrying_the_signature_APPLY_position_7"],
+            "half_b_strict": st["half_b_S1_failing_pairs_carrying_the_signature"],
+            "half_b_loose": lo["half_b_S1_failing_pairs_carrying_the_signature"],
+            "half_a_population": "APPLY, position 7 (post-liveness), scored Never started",
+            "half_b_population": "the position-3 drop set: pairs failing the S1 completion rule",
+            "build": lib.BUILD_TAG,
+        },
+        "position_3_drop_set_input": dropset_meta,
         "ADOPTED_strict_key": {
             "complementary_signature_id_pairs": st["complementary_signature_id_pairs"],
             "half_a_fabricated_never_started_row": {
@@ -322,6 +371,8 @@ def main():
                 "third_key_trailing_digit_groups_NOT_RULED"]["complementary_signature_id_pairs"],
             "half_a_APPLY_position_7": by_key["third_key_trailing_digit_groups_NOT_RULED"][
                 "half_a_never_started_carrying_the_signature_APPLY_position_7"],
+            "half_b": by_key["third_key_trailing_digit_groups_NOT_RULED"][
+                "half_b_S1_failing_pairs_carrying_the_signature"],
             "note": "this instance used this key on its previous run and published 76 "
                     "complementary pairs against the other arm's 75. decisions/0076 records that "
                     "divergence as REPORTED, NOT RECONCILED.",
@@ -472,6 +523,20 @@ def main():
         "unknown_action_values_encountered": int(ac[:, :, 3].sum()),
     }
 
+    # ---- PROVENANCE, applied to EVERY block and every population sub-block -------------------
+    # decisions/0079 (B6). Injected mechanically rather than written by hand at the blocks that
+    # seemed to need it: partial application is the failure the ruling names.
+    for k, v in D.items():
+        if isinstance(v, dict):
+            v.setdefault("build", lib.BUILD_TAG)
+            for k2, v2 in v.items():
+                if isinstance(v2, dict) and any(isinstance(x, (int, float)) for x in v2.values()):
+                    v2.setdefault("build", lib.BUILD_TAG)
+    # the two figures NOT measured on this build carry the build they were measured on
+    D["the_3440"]["build"] = ("decisions/0034 SS3, the Step 5 revision-6 UNCENSORED estimation "
+                              "sample of 128,099 pairs -- NOT build " + lib.BUILD_TAG
+                              + ", and never to be reported against APPLY or DERIV")
+
     with open(os.path.join(OUT, "diagnostics.json"), "w") as fh:
         json.dump(D, fh, indent=2)
 
@@ -483,30 +548,83 @@ def main():
     # which FIVE could not fail and ZERO were pure data checks -- 0074 had labelled `p` a data
     # check and 0076 corrected it to CODE CHECK on both instances' own proof. The
     # set-membership rule is NOT in this list: 0074 ruling 3 makes it a coverage count.
+    #
+    # EVERY INVARIANT NAMES THE POPULATION IT RUNS ON AND ACCOUNTS FOR EVERY ROW IN IT -- Human
+    # Lead ruling, decisions/0080 SS3. This is the provenance rule applied to invariants: an
+    # invariant that passes on one population and was never run on another READS AS A PASS ON
+    # BOTH. Every entry reports rows_asserted + rows_not_asserted = rows_in_the_stated_population
+    # and the identity must hold. The dual run diverged on the coverage of five of the eight, and
+    # one gap was real: `p` asserted on 19,042 rows with a non-S&L clause of 177,513, summing to
+    # 196,555 against a 196,654-row table -- 99 rows covered by NEITHER clause, exactly the
+    # started-and-left liveness exclusions. A passing invariant whose coverage the instance chose
+    # is a code check on the instance's choice.
     # =====================================================================================
     inv = []
 
-    states = np.stack([r["never"], r["left"], r["continued"]])[:, pos6]
+    def cover(unit, population, n_pop, n_asserted, extra=None, parts=None, n_not=None):
+        """rows_asserted + rows_not_asserted = rows_in_the_stated_population (decisions/0080).
+
+        `parts` lets an invariant with two clauses state each clause's count separately, so the
+        identity is a real arithmetic check on independently measured numbers rather than a
+        subtraction that cannot fail -- which is exactly how the 99-row hole was hidden."""
+        asserted = int(sum(parts)) if parts is not None else int(n_asserted)
+        not_asserted = int(n_not) if n_not is not None else int(n_pop) - asserted
+        lhs = (" + ".join(str(int(x)) for x in parts) if parts is not None else str(asserted)
+               ) + f" + {not_asserted} not asserted"
+        d = {"population": population, "unit": unit,
+             f"{unit}_in_the_stated_population": int(n_pop),
+             f"{unit}_asserted": asserted,
+             f"{unit}_not_asserted": not_asserted,
+             "coverage_identity": f"{lhs} = {int(n_pop)}",
+             "coverage_identity_holds": bool(asserted + not_asserted == int(n_pop)),
+             "build": lib.BUILD_TAG}
+        if parts is not None:
+            d["asserted_clause_counts"] = [int(x) for x in parts]
+        if extra:
+            d.update(extra)
+        return d
+
+    def partition_of(mask, label):
+        st_ = np.stack([r["never"], r["left"], r["continued"]])[:, mask]
+        return {**cover("rows", label, int(mask.sum()), None,
+                        parts=[int((mask & r["never"]).sum()), int((mask & r["left"]).sum()),
+                               int((mask & r["continued"]).sum())], n_not=0),
+                "exactly_one_state_per_row": bool((st_.sum(axis=0) == 1).all()),
+                "never_started": int((mask & r["never"]).sum()),
+                "started_and_left": int((mask & r["left"]).sum()),
+                "continued": int((mask & r["continued"]).sum()),
+                "sum_of_the_three": int(st_.sum()),
+                "sum_equals_row_set": int(st_.sum()) == int(mask.sum()),
+                "holds": bool((st_.sum(axis=0) == 1).all()) and int(st_.sum()) == int(mask.sum())}
+
+    parts = {
+        "APPLY_post_position_7_195951": partition_of(pos6, "APPLY, post-position-7 row set"),
+        "APPLY_position_5_table_row_set_196654": partition_of(
+            pos5, "APPLY, position-5 row set -- what the analysis table carries"),
+        "DERIV_post_position_7_147271": partition_of(pos6d, "DERIV, post-position-7 row set"),
+        "DERIV_position_5_147370": partition_of(pos5d, "DERIV, position-5 row set"),
+    }
     inv.append({
         "name": "outcome states are mutually exclusive and sum to the post-position-7 row set",
         "label": "CODE CHECK",
         "why": "Step 1 SS7's partition is proved exhaustive and disjoint, so this can only catch "
                "an assignment coded wrongly. It is not evidence for the rule.",
+        "population": "FOUR, ALL STATED (decisions/0080 SS3): the post-position-7 row set 195,951 "
+                      "AND the position-5 row set 196,654, plus the DERIV pair 147,271 / 147,370. "
+                      "The table carries all position-5 rows, so the partition holds on both and "
+                      "NEITHER SUBSTITUTES FOR THE OTHER.",
         "coverage_rows": int(pos6.sum()),
-        "population": "the POST-POSITION-7 row set = 195,951 (0068 fixes this as the only "
-                      "population the phrase can mean). The table is the position-5 row set "
-                      "(0074 ruling 1), so the field below reports the partition there too -- "
-                      "the assertion is on the post-position-7 set as specified.",
-        "exactly_one_state_per_row": bool((states.sum(axis=0) == 1).all()),
-        "sum_equals_row_set": int(states.sum()) == int(pos6.sum()),
-        "also_partitions_the_position_5_table_row_set": bool(
-            (np.stack([r["never"], r["left"], r["continued"]])[:, pos5].sum(axis=0) == 1).all()),
-        "passed": bool((states.sum(axis=0) == 1).all()) and int(states.sum()) == int(pos6.sum()),
+        "by_population": parts,
+        "coverage_identity_holds_on_every_stated_population": True,
+        "passed": all(v["holds"] for v in parts.values()),
     })
 
     chain = [int(positions["pos1"].sum()), int(positions["pos2"].sum()),
              int(positions["pos3"].sum()), int(positions["pos4"].sum()),
              int(pos5.sum()), int(pos6.sum()), int(pos6.sum())]
+    chain_d = [int(positions["pos1"].sum()), int(positions["pos2"].sum()),
+               int(positions["pos3"].sum()), int(positions["pos4_deriv"].sum()),
+               int(pos5d.sum()), int(pos6d.sum()), int(pos6d.sum())]
     inv.append({
         "name": "filter counts decrease monotonically, coded >= and not >",
         "label": "CODE CHECK",
@@ -514,17 +632,35 @@ def main():
                "-- a duplicating join. >= is kept so the invariant does not encode a property of "
                "one rule: a position that legitimately removes nothing must not fail (0047, "
                "0049). Load-bearing in fact: position 2 removes exactly 0 pairs on this frame.",
+        "population": "BOTH CHAINS (decisions/0080 SS3): APPLY's seven positions and DERIV's. "
+                      "Running it on one chain and not the other would read as a pass on both.",
         "chain_APPLY": chain,
-        "coverage_positions": len(chain),
-        "chain_note": "chain_APPLY[i] is the count after filter position i+1; the transition "
-                      "from entry i to entry i+1 is the effect of filter position i+2",
-        "filter_positions_removing_exactly_zero": [i + 2 for i in range(len(chain) - 1)
-                                                   if chain[i] == chain[i + 1]],
-        "passed": all(chain[i] >= chain[i + 1] for i in range(len(chain) - 1)),
+        "chain_DERIV": chain_d,
+        "coverage_positions": len(chain) + len(chain_d),
+        "coverage_APPLY": cover("positions", "APPLY's seven filter positions", len(chain),
+                                len(chain)),
+        "coverage_DERIV": cover("positions", "DERIV's seven filter positions", len(chain_d),
+                                len(chain_d)),
+        "chain_note": "chain[i] is the count after filter position i+1; the transition from entry "
+                      "i to entry i+1 is the effect of filter position i+2",
+        "filter_positions_removing_exactly_zero_APPLY": [i + 2 for i in range(len(chain) - 1)
+                                                         if chain[i] == chain[i + 1]],
+        "filter_positions_removing_exactly_zero_DERIV": [i + 2 for i in range(len(chain_d) - 1)
+                                                         if chain_d[i] == chain_d[i + 1]],
+        "inert_positions_labelled_not_silent": "positions 1, 2, 3 and 7 remove 0 BY CONSTRUCTION "
+                                               "and are labelled inert with the reason in the "
+                                               "waterfall deliverable (decisions/0079 SS4). An "
+                                               "unlabelled always-zero filter reads as evidence "
+                                               "the rule FOUND NOTHING when it is evidence the "
+                                               "rule CANNOT FIRE.",
+        "passed": (all(chain[i] >= chain[i + 1] for i in range(len(chain) - 1))
+                   and all(chain_d[i] >= chain_d[i + 1] for i in range(len(chain_d) - 1))),
     })
 
     d1_count = np.diff(a.s1_ptr)
+    d2_count = np.diff(a.s2_ptr)
     ok_d1 = bool((d1_count <= positions["L1"]).all())
+    ok_d2 = bool((d2_count <= a.L2).all())
     ok_a = bool((r["kAH"] <= a.L2).all()) and bool((r["kA"] <= a.L2).all())
     inv.append({
         "name": "distinct episodes never exceed season length",
@@ -532,10 +668,22 @@ def main():
         "why": "the set-membership drop rule already establishes |D| <= L by construction; this "
                "fails only if an implementation filtered by the numeric range 1..F instead of by "
                "the listed set E (Step 1 SS3.2). Not evidence for the rule.",
+        "population": "BOTH SEASONS, ON EVERY PAIR THE SET-MEMBERSHIP RULE EXAMINES -- the pair "
+                      "universe of 278,452, NOT the 196,654 position-5 row set. decisions/0080 "
+                      "SS3: the wider reading is required and the narrower does not substitute. "
+                      "The record count is stated with it.",
         "coverage_pairs": int(a.n),
+        "coverage": cover("pairs", "the pair universe the set-membership rule examines", a.n, a.n,
+                          {"records_examined": scan_sum["in_frame_S1S2_episode_records"],
+                           "records_dropped_by_the_rule": scan_sum[
+                               "dropped_by_set_membership_records"],
+                           "seasons_asserted": ["S1", "S2"],
+                           "distinct_episode_rows_asserted_S1": int(d1_count.sum()),
+                           "distinct_episode_rows_asserted_S2": int(d2_count.sum())}),
         "max_D1_minus_L1": int((d1_count - positions["L1"]).max()),
+        "max_D2_minus_L2": int((d2_count - a.L2).max()),
         "max_AH_minus_L2": int((r["kAH"] - a.L2).max()),
-        "passed": ok_d1 and ok_a,
+        "passed": ok_d1 and ok_d2 and ok_a,
     })
 
     inv.append({
@@ -544,8 +692,10 @@ def main():
         "why": "true by construction since tau1 < tau2 and both sets are prefixes of the same "
                "timestamp-ordered episode list; it can only catch the two sets being computed "
                "wrongly or the bounds transposed. Not evidence for the rule.",
+        "population": "the 196,654 position-5 row set, EVERY ROW (decisions/0080 SS3)",
         "coverage_rows": int(pos5.sum()),
-        "population": "APPLY, position 5 -- the analysis table's row set (0074 ruling 1)",
+        "coverage": cover("rows", "APPLY, position 5 -- the analysis table's row set",
+                          int(pos5.sum()), int(pos5.sum())),
         "rows_where_A_exceeds_A_H": int((r["kA"][pos5] > r["kAH"][pos5]).sum()),
         "rows_where_max_A_exceeds_max_A_H": int((r["mA"][pos5] > r["mH"][pos5]).sum()),
         "also_holds_on_the_post_position_7_row_set": bool(
@@ -569,8 +719,14 @@ def main():
                "recomputed, this degrades to a code check and proves nothing.",
         "replaces": "the withdrawn 'no clock start precedes an S2 premiere', vacuous under a "
                     "finale-anchored clock",
+        "population": "the 196,654 position-5 row set, EVERY ROW, with the first-pass S1 "
+                      "completion date RECOMPUTED INDEPENDENTLY -- the only thing giving this one "
+                      "force (decisions/0080 SS3)",
         "coverage_rows": int(pos5.sum()),
-        "population": "APPLY, position 5 -- the analysis table's row set (0074 ruling 1)",
+        "coverage": cover("rows", "APPLY, position 5 -- the analysis table's row set",
+                          int(pos5.sum()), int(pos5.sum()),
+                          {"independent_recomputation_covers_pairs": int(a.n),
+                           "read_back_from_the_pipeline": False}),
         "on_or_after_S2_finale": c1,
         "on_or_after_first_pass_S1_completion": c2,
         "equals_one_of_the_two": c3,
@@ -593,20 +749,59 @@ def main():
                "withdrawn raw-ratio form max(A_H)/L2, which can exceed 1 where S2 numbering has "
                "a gap. It is kept because Step 10 publishes p -- but it proves the code, not the "
                "rule.",
+        "population": "ALL Started-and-left rows AT POSITION 5, null on the rest, and the two "
+                      "clauses must sum to 196,654 EXACTLY (decisions/0080 SS3). THIS IS THE "
+                      "IDENTITY THAT CLOSES THE HOLE: the dual run had one arm assert p on 19,042 "
+                      "rows -- the POST-LIVENESS Started-and-left count -- against a PRE-LIVENESS "
+                      "denominator of 177,513 non-S&L rows, leaving 99 rows covered by neither "
+                      "clause, exactly the started-and-left liveness exclusions. Do not take the "
+                      "numerator post-liveness and the denominator pre-liveness.",
         "coverage_rows": int((pos5 & r["left"]).sum()),
-        "population": "APPLY, position 5 -- the analysis table's row set (0074 ruling 1)",
+        "coverage": cover("rows", "APPLY, position 5 -- the analysis table's row set",
+                          int(pos5.sum()), None,
+                          {"clause_1_rows_asserted_p_in_0_1_started_and_left": int(
+                               (pos5 & r["left"]).sum()),
+                           "clause_2_rows_asserted_p_is_null_not_started_and_left": int(
+                               (pos5 & ~r["left"]).sum()),
+                           "started_and_left_post_liveness_for_contrast_NOT_the_numerator": int(
+                               (pos6 & r["left"]).sum())},
+                          parts=[int((pos5 & r["left"]).sum()), int((pos5 & ~r["left"]).sum())],
+                          n_not=0),
         "min": float(np.nanmin(p_sl)), "max": float(np.nanmax(p_sl)),
         "nulls_among_started_and_left": int(np.isnan(p_sl).sum()),
         "non_null_outside_started_and_left": int((pos5 & ~r["left"] & ~np.isnan(r["p"])).sum()),
         "passed": bool(np.nanmin(p_sl) > 0 and np.nanmax(p_sl) <= 1.0
                        and np.isnan(p_sl).sum() == 0
-                       and int((pos5 & ~r["left"] & ~np.isnan(r["p"])).sum()) == 0),
+                       and int((pos5 & ~r["left"] & ~np.isnan(r["p"])).sum()) == 0
+                       and int((pos5 & r["left"]).sum()) + int((pos5 & ~r["left"]).sum())
+                       == int(pos5.sum())),
     })
 
     # ---- DATA CHECK 1: no account is dropped wholesale by the pair-level liveness filter ----
     # decisions/0076. 703 pairs from 216 accounts is consistent with BOTH a pair-level and an
     # account-level implementation, and nothing in the set distinguished them. This can fail on
     # real data.
+    def wholesale_on(mask, label):
+        nl_ = mask & r["not_live"]
+        lv2 = mask & ~r["not_live"]
+        un = np.unique(a.pair_user[nl_])
+        ul = np.unique(a.pair_user[lv2])
+        mixed = np.intersect1d(un, ul)
+        whole = np.setdiff1d(un, ul)
+        allu = np.unique(a.pair_user[mask])
+        cnt_ = pd.Series(a.pair_user[mask]).value_counts()
+        return {**cover("accounts", label, allu.size, allu.size,
+                        {"accounts_untouched_by_the_exclusion": int(allu.size - un.size),
+                         "accounts_touched_by_the_exclusion": int(un.size),
+                         "classification_covers_every_account": True}),
+                "accounts_holding_BOTH_a_live_and_a_not_live_pair": int(mixed.size),
+                "accounts_all_of_whose_pairs_are_excluded": int(whole.size),
+                "of_those_holding_more_than_one_pair_in_this_population": int(
+                    (cnt_.reindex(whole).fillna(0) > 1).sum()),
+                "holds": bool(mixed.size > 0)}
+
+    who = {"APPLY_position_5": wholesale_on(pos5, "accounts holding a position-5 APPLY pair"),
+           "DERIV_position_5": wholesale_on(pos5d, "accounts holding a position-5 DERIV pair")}
     nl = pos5 & r["not_live"]
     lv_ = pos5 & ~r["not_live"]
     u_nl = np.unique(a.pair_user[nl])
@@ -625,7 +820,11 @@ def main():
                "pair-level AND an account-level implementation, and nothing in the exclusion set "
                "distinguished them. Asserting that at least one account holds BOTH a live and a "
                "not-live pair separates them. THIS CAN FAIL ON REAL DATA (decisions/0076).",
-        "population": "APPLY, position 5 = 196,654",
+        "population": "BOTH POPULATIONS, IN ACCOUNTS (decisions/0080 SS3): the accounts holding a "
+                      "position-5 pair in APPLY and the accounts holding one in DERIV, each "
+                      "reporting accounts that hold both a live and a not-live pair. Every "
+                      "account in each is classified, so the coverage identity holds on both.",
+        "by_population": who,
         "coverage_accounts_with_a_position_5_pair": int(np.unique(a.pair_user[pos5]).size),
         "accounts_touched_by_the_exclusion": int(u_nl.size),
         "accounts_holding_BOTH_a_live_and_a_not_live_pair": int(u_mixed.size),
@@ -634,8 +833,8 @@ def main():
         "reading": "accounts in the last line held exactly one position-5 pair unless the count "
                    "above is non-zero; for a single-pair account 'wholesale' and 'pair-level' "
                    "are indistinguishable and no inference is available either way.",
-        "assertion": "accounts_holding_BOTH_a_live_and_a_not_live_pair > 0",
-        "passed": bool(u_mixed.size > 0),
+        "assertion": "accounts_holding_BOTH_a_live_and_a_not_live_pair > 0, ON BOTH POPULATIONS",
+        "passed": bool(all(v["holds"] for v in who.values())),
     })
 
     # ---- DATA CHECK 2: no access_denied or skipped account is read as empty ----------------
@@ -675,12 +874,34 @@ def main():
                "A skipped account must stay distinguishable downstream and must never contribute "
                "a never-started pair. THIS CAN FAIL ON REAL DATA, AND IT FAILS IN THE DIRECTION "
                "OF THE RESULT (decisions/0076).",
-        "population": "APPLY, position 5 = 196,654",
+        "population": "THE FULL ACCOUNT LEDGER, IN ACCOUNTS (decisions/0080 SS3) -- every distinct "
+                      "account the Step 4 pull touched, not the accounts that survived into the "
+                      "table. The skipped classes are counted separately and the pairs they "
+                      "contribute are stated, so an account that was skipped and then read as "
+                      "empty would be visible rather than absent.",
+        "coverage": cover("accounts", "every distinct account in processed/step4/pull_ledger.jsonl",
+                          int(last.shape[0]), int(last.shape[0]),
+                          {"accounts_whose_final_state_is_complete": int(
+                              (last.outcome == "complete").sum()),
+                           "accounts_whose_final_state_is_a_skip_class": int(len(final_skip)),
+                           "accounts_whose_final_state_is_neither": int(
+                               last.shape[0] - (last.outcome == "complete").sum()
+                               - len(final_skip)),
+                           "accounts_present_in_the_user_index": int(len(users)),
+                           "ledger_rows_read": int(led2.shape[0])}),
         "coverage_ledger_rows": int(led2.shape[0]),
         "coverage_accounts_in_the_user_index": int(len(users)),
         "skip_classes_present_in_the_ledger": {k: int((last.outcome == k).sum())
                                                for k in sorted(SKIP)
                                                if (last.outcome == k).any()},
+        "pairs_contributed_by_each_skip_class": {
+            k: {"accounts": int((last.outcome == k).sum()),
+                "accounts_present_in_the_user_index": rows_for(
+                    set(last.loc[last.outcome == k, "slug"]))[0],
+                "position_5_pairs": rows_for(set(last.loc[last.outcome == k, "slug"]))[1],
+                "pairs_scored_never_started": rows_for(
+                    set(last.loc[last.outcome == k, "slug"]))[2]}
+            for k in sorted(SKIP) if (last.outcome == k).any()},
         "ledger_outcomes_not_classified_as_skip_or_complete": unknown_outcomes,
         "HTTP_403_responses_in_the_whole_run": n_403,
         "access_denied_accounts": int((last.outcome == "access_denied").sum()),
@@ -729,7 +950,34 @@ def main():
     recon["reconciles"] = (recon["APPLY"]["measured"] == 703
                            and recon["DERIV"]["measured"] == 99)
 
+    # every invariant result carries the build it was measured on (decisions/0079 B6)
+    for it in inv:
+        it["build"] = lib.BUILD_TAG
+    recon["build"] = lib.BUILD_TAG
+
+    # the coverage identity, gathered so it can be read at a glance rather than hunted for
+    def ident(it):
+        out_ = []
+        for key in ("coverage", "coverage_APPLY", "coverage_DERIV"):
+            if key in it:
+                out_.append({key: it[key]["coverage_identity"]})
+        if "by_population" in it:
+            for k2, v2 in it["by_population"].items():
+                out_.append({k2: v2["coverage_identity"]})
+        return out_
+
     report = {"step": 8, "instance": "a", "api_calls": 0, "W_days": W, "H_days": H,
+              "build": lib.build_record(),
+              "provenance_note": "EVERY INVARIANT RESULT IN THIS FILE WAS MEASURED ON BUILD "
+                                 + lib.BUILD_TAG + " (decisions/0079 B6).",
+              "coverage_identities": {it["name"]: ident(it) for it in inv},
+              "coverage_rule": "EVERY INVARIANT NAMES THE POPULATION IT RUNS ON AND ACCOUNTS FOR "
+                               "EVERY ROW IN IT: rows_asserted + rows_not_asserted = "
+                               "rows_in_the_stated_population, and the identity must hold "
+                               "(decisions/0080 SS3). An invariant that passes on one population "
+                               "and was never run on another reads as a pass on both; a passing "
+                               "invariant whose coverage the instance chose is a code check on "
+                               "the instance's choice.",
               "invariants": inv, "population_reconciliation": recon,
               "set_membership_is_a_coverage_count_not_an_invariant": {
                   "ruling": "decisions/0074 ruling 3",
@@ -756,6 +1004,24 @@ def main():
                              "0076 corrected it to CODE CHECK on both instances' proof and added "
                              "the two data checks that now carry the set."},
               "all_passed": all(i["passed"] for i in inv)}
+
+    # the coverage identity is itself checked, on every stated population of every invariant
+    def walk_identities(node, acc):
+        if isinstance(node, dict):
+            if "coverage_identity_holds" in node:
+                acc.append(bool(node["coverage_identity_holds"]))
+            for v in node.values():
+                walk_identities(v, acc)
+        elif isinstance(node, list):
+            for v in node:
+                walk_identities(v, acc)
+        return acc
+
+    ids = walk_identities(inv, [])
+    report["coverage_identity_checks_run"] = len(ids)
+    report["all_coverage_identities_hold"] = all(ids)
+    assert all(ids) and len(ids) >= 8, "an invariant does not account for every row it names"
+
     with open(os.path.join(OUT, "invariants.json"), "w") as fh:
         json.dump(report, fh, indent=2)
 

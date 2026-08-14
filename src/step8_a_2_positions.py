@@ -42,6 +42,8 @@ import os
 import numpy as np
 import pandas as pd
 
+import step8_a_lib as lib
+
 ROOT = "/Users/alyanashantel/Documents/season2-study"
 P2 = os.path.join(ROOT, "processed/step2")
 P5 = os.path.join(ROOT, "processed/step5")
@@ -87,6 +89,7 @@ def main():
     pair_user = z["pair_user"]
     pair_show = z["pair_show"]
     s1_ptr, s1_num, s1_ts = z["s1_ptr"], z["s1_num"], z["s1_ts"]
+    s2_ptr = z["s2_ptr"]
     n_pairs = pair_user.size
 
     frame = pd.read_csv(os.path.join(P2, "frame.csv")).set_index("show_trakt_id")
@@ -201,15 +204,30 @@ def main():
     assert int(pos5_deriv.sum()) == 147370, f"DERIV is {int(pos5_deriv.sum())}"
     assert int((pos5_deriv & ~pos5).sum()) == 0, "DERIV must be a subset of APPLY"
 
-    # ---- position 3's drop set, retained as a side output (decisions/0075) -----------------
+    # ---- position 3's drop set: A DELIVERABLE, PRODUCED BY THIS PIPELINE RUN ----------------
+    # Human Lead ruling, decisions/0079 (B5): it is named in the deliverable list and written by
+    # the same run that writes the table, NOT by a helper script as a side file. D9 half (b)
+    # cannot be computed without it and its absence returns 0 SILENTLY -- a plausible-looking data
+    # finding rather than an error -- which is the failure decisions/0075 ruling 2 exists to
+    # prevent, so leaving the input as a working file would defeat the ruling requiring it.
+    # It carries each pair's DISTINCT-EPISODE COUNTS (both seasons) and the SHOW'S THRESHOLD,
+    # which is what half (b) reads. Stage 5 READS this file rather than recomputing the mask, so
+    # the deliverable is load-bearing and not merely written.
     dropped3 = ~complete
-    np.savez_compressed(
-        os.path.join(OUT, "position3_dropset.npz"),
-        row=np.flatnonzero(dropped3).astype(np.int64),
-        pair_user=pair_user[dropped3], pair_show=pair_show[dropped3],
-        n_distinct_s1_episodes=np.diff(s1_ptr)[dropped3].astype(np.int32),
-        L1=L1[dropped3], F1=F1[dropped3], need1=need1[dropped3],
-    )
+    dropset = pd.DataFrame({
+        "row": np.flatnonzero(dropped3).astype(np.int64),
+        "user_idx": pair_user[dropped3],
+        "show_trakt_id": pair_show[dropped3],
+        "n_distinct_s1_episodes": np.diff(s1_ptr)[dropped3].astype(np.int32),
+        "n_distinct_s2_episodes": np.diff(s2_ptr)[dropped3].astype(np.int32),
+        "s1_L": L1[dropped3], "s1_F": F1[dropped3],
+        "s1_completion_threshold_ceil_0_90_L1": need1[dropped3],
+        "s2_L": L2[dropped3],
+        "reason_short_of_threshold": (np.diff(s1_ptr)[dropped3] < need1[dropped3]),
+        "reason_finale_F1_not_watched": (np.diff(s1_ptr)[dropped3] >= need1[dropped3]),
+    })
+    dropset.to_csv(os.path.join(OUT, "position3_drop_set.csv.gz"), index=False,
+                   compression="gzip")
 
     np.savez_compressed(
         os.path.join(OUT, "positions.npz"),
@@ -224,10 +242,42 @@ def main():
 
     out = {
         "step": 8, "instance": "a", "stage": 2, "api_calls": 0,
+        "build": lib.build_record(),
+        "provenance_note": "EVERY COUNT IN THIS FILE WAS MEASURED ON BUILD " + lib.BUILD_TAG
+                           + " (decisions/0079 B6, extending 0078).",
         "W_days": W, "H_days": H, "tau_pull_utc": "2026-08-11T00:00:00Z",
         "filter_order": ["1 Step 2 frame", "2 L2 = 1 exclusion", "3 S1 completion rule",
                          "4 contamination exclusion (Step 5)", "5 right-censoring",
                          "6 liveness (stage 3)", "7 outcome assignment (stage 3)"],
+        "inert_filter_positions": {
+            "ruling": "Human Lead, decisions/0079 SS4. Positions 1, 2, 3 and 7 each remove 0 rows. "
+                      "KEEP them -- removing a position removes the check that would catch a "
+                      "future upstream change, and the point of a fixed order is that the "
+                      "waterfall is comparable across runs and arms. But LABEL them: an "
+                      "unlabelled always-zero filter reads as evidence THE RULE FOUND NOTHING "
+                      "when it is evidence THE RULE CANNOT FIRE -- the same defect as an "
+                      "unlabelled code check (0069).",
+            "1": {"filter": "Step 2 frame", "removed": 0, "inert": True,
+                  "why": "waterfall line 1 is already the frame (decisions/0068): the base is the "
+                         "S1-completer population ON FRAME SHOWS, so the frame join cannot remove "
+                         "a row that is in the base."},
+            "2": {"filter": "L2 = 1 exclusion", "removed": int(pos1.sum() - pos2.sum()),
+                  "inert": True,
+                  "why": "line 1 is already the L2 > 1 S1-completer population (0068) -- and 0 "
+                         "shows in the Step 2 frame have L2 = 1, measured, so the filter has "
+                         "nothing to fire on from either direction."},
+            "3": {"filter": "S1 completion rule", "removed": int(pos2.sum() - pos3.sum()),
+                  "inert_position_but_not_an_inert_rule": True,
+                  "why": "the POSITION is inert for the same reason -- line 1 is already the "
+                         "S1-completer population. THE RULE IS NOT INERT: it removes 58,345 pairs "
+                         "UPSTREAM of line 1, the study's largest single exclusion, which is why "
+                         "its drop set is a Step 8 DELIVERABLE (0079 SS1). A `0` here is evidence "
+                         "the rule cannot fire at this position, never evidence it found nothing.",
+                  "rule_removes_upstream_of_line_1": int(dropped3.sum())},
+            "7": {"filter": "outcome assignment", "removed": 0, "inert": True,
+                  "why": "it ANNOTATES and removes nothing (decisions/0046); every position-6 row "
+                         "receives exactly one of the three states."},
+        },
         "waterfall_APPLY": {
             "position_1_step2_frame": int(pos1.sum()),
             "position_2_L2_eq_1_excluded": int(pos2.sum()),
@@ -290,7 +340,19 @@ def main():
             "completers_whose_first_pass_walk_used_a_post_cutoff_record": int(
                 used_post_cutoff.sum()),
         },
-        "position_3_dropset_side_output": {
+        "position_3_drop_set_DELIVERABLE": {
+            "status": "A STEP 8 DELIVERABLE, PRODUCED BY THIS PIPELINE RUN -- Human Lead ruling, "
+                      "decisions/0079 (B5). Not a helper script's side file: D9 half (b) cannot be "
+                      "computed without it and its absence returns 0 SILENTLY, which reads as a "
+                      "data finding rather than an error. Stage 5 READS this file to build half "
+                      "(b)'s mask, so the deliverable is load-bearing.",
+            "written_by": "src/step8_a_2_positions.py, stage 2 of the same run that writes the "
+                          "analysis table",
+            "carries": ["row", "user_idx", "show_trakt_id", "n_distinct_s1_episodes",
+                        "n_distinct_s2_episodes", "s1_L", "s1_F",
+                        "s1_completion_threshold_ceil_0_90_L1", "s2_L",
+                        "reason_short_of_threshold", "reason_finale_F1_not_watched"],
+            "build": lib.BUILD_TAG,
             "ruling": "decisions/0075 ruling 2, RESTATED by decisions/0077 because as written it "
                       "named an EMPTY SET: position 3 removes 0 rows from the waterfall, since "
                       "line 1 is already the S1-completer population (0068). The set retained is "
@@ -300,8 +362,11 @@ def main():
                       "(b) reads. NOT the set-membership drop rule, which is a different rule and "
                       "deletes 0 records. Both arms had to choose an interpretation to compute "
                       "anything; they chose this one and 0077 makes it the ruling.",
-            "file": "processed/step8/a/position3_dropset.npz",
+            "file": "processed/step8/a/position3_drop_set.csv.gz",
             "pairs_failing_the_S1_completion_rule": int(dropped3.sum()),
+            "restated_by_0078_with_its_build": "58,345 pairs, position-3 rule, position-5 build of "
+                                               "2026-08-13, reproduced independently by both arms. "
+                                               "Measured again here on build " + lib.BUILD_TAG,
             "expected_by_0077": 58345,
             "rows_position_3_removes_from_the_waterfall": int(pos2.sum() - pos3.sum()),
             "why_those_two_differ": "waterfall line 1 is already the S1-completer population "

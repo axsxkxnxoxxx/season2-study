@@ -50,6 +50,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from step8_b_build_id import BUILD, provenance_block, stamp
+
 ROOT = Path("/Users/alyanashantel/Documents/season2-study")
 P2, P5 = ROOT / "processed" / "step2", ROOT / "processed" / "step5"
 OUT = ROOT / "processed" / "step8" / "b"
@@ -73,6 +75,7 @@ def main() -> None:
         "api_calls": 0,
         "adopts": "nothing -- Step 8 is a GATE",
         "tau_pull": "2026-08-11T00:00:00Z",
+        "provenance": provenance_block(),
     }
 
     # ------------------------------------------------------------------ frame
@@ -162,7 +165,13 @@ def main() -> None:
     rec_code = np.where(bad_num, -1,
                         (show_ids[ss] << 20) | (se << 12) | np.clip(sn, 0, 4095))
     in_E = np.isin(rec_code, valid_codes) & ~bad_num
+    pairs_examined_by_the_rule = int(len(np.unique(su * n_shows + ss)))
     prov["drop_rule"] = {
+        "measured_on_build": BUILD,
+        "pairs_examined": pairs_examined_by_the_rule,
+        "pairs_examined_note": ("the coverage unit invariant 3 states alongside the record "
+                                "count (decisions/0080 Sec 3, row 3): every pair the "
+                                "set-membership rule examines, BOTH SEASONS"),
         "status": ("A COVERAGE COUNT, NOT AN INVARIANT (decisions/0074 ruling 3). Step 8's "
                    "own bullet calls it 'an implementation check, not a data check'. Records "
                    "examined and records dropped are REPORTED; nothing is asserted"),
@@ -339,6 +348,17 @@ def main() -> None:
                              "the set-membership drop rule, which is a different rule, deletes "
                              "0 RECORDS, and whose unit is records rather than pairs"),
         "ruled_count_58345": int(drop3.sum()) == 58_345,
+        "ruled_figure_and_its_own_provenance": ("58,345 pairs -- POSITION-3 RULE, POSITION-5 "
+                                                "BUILD OF 2026-08-13, reproduced independently "
+                                                "by both arms (decisions/0078 Sec 2). This "
+                                                "build reproduces it again; the ruled figure "
+                                                "keeps the build it was ruled on and this "
+                                                "measurement carries this one"),
+        "deliverable": ("decisions/0079 Sec 1 -- a DELIVERABLE PRODUCED BY THE PIPELINE, named "
+                        "in the deliverable list and written by the same run that writes the "
+                        "table. Not a helper script's side file: D9 half (b) cannot be computed "
+                        "without it and its absence returns 0 SILENTLY, which reads as a data "
+                        "finding rather than an error"),
         "unit": "PAIRS",
         "file": "processed/step8/b/position3_drop_set.csv.gz",
         "in_frame_pairs_with_ANY_in_E_S1_or_S2_distinct_episode": int(len(all_ev_pairs)),
@@ -376,6 +396,11 @@ def main() -> None:
                                    + show_idx[m_s2_any]),
         act_key=act_u, act_n=act_n,
     )
+
+    # decisions/0079 Sec 2 -- EVERY count group carries the build it was measured on.
+    for v in prov.values():
+        if isinstance(v, dict):
+            stamp(v)
 
     prov["elapsed_s"] = time.time() - t0
     (OUT / "stage1.json").write_text(json.dumps(prov, indent=2))

@@ -266,8 +266,7 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
       length** — that reduces `the-100` to `the` and is a third key. **They were defined only inside one
       instance's code, which the other is forbidden to read.** **The 76-against-75 divergence is
       REPORTED, NOT RECONCILED.**
-    - **THE COLUMN SET IS ENUMERATED — 87 NAMES, EXACTLY THESE** (`0080`, replacing `0077` §3's count).
-      **Converged is not specified**, and **Step 8b's schema is built on this vocabulary.**
+    - **THE COLUMN SET IS ENUMERATED — 88 NAMES, EXACTLY THESE** (`0080`, extended by `0081`).
       `abandonment_point_p`, `action_count_s1_checkin`, `action_count_s1_other`, `action_count_s1_scrobble`
       `action_count_s1_watch`, `action_count_s2_checkin`, `action_count_s2_other`, `action_count_s2_scrobble`
       `action_count_s2_watch`, `air_period`, `cadence_boundary_distance_days`, `cadence_bucket`
@@ -287,13 +286,13 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
       `show_certification`, `show_comment_count`, `show_country`, `show_first_aired`
       `show_genres`, `show_language`, `show_languages`, `show_rating`
       `show_runtime`, `show_status`, `show_subgenres`, `show_trakt_id`
-      `show_votes`, `show_year`, `size_quintile`, `size_quintile_per_year`
-      `size_quintile_raw_count`, `t0_binding_term`, `t0_date`, `tau1`
-      `tau2`, `title`, `user_idx`
-      **Dropped, one arm each:** `f2_in_A_H` (derivable), `max_episode_in_A`, and **`silent_at_tau1`**
-      — **the last is NOT recoverable from `live` and `outcome` on Continued rows, so the
-      Continued-and-silent count (652, the outcome-conditioning size, `0063` §1) is no longer
-      recomputable from this table.** It stays recomputable from the Step 7 masks.
+      `show_votes`, `show_year`, `silent_at_tau1`, `size_quintile`
+      `size_quintile_per_year`, `size_quintile_raw_count`, `t0_binding_term`, `t0_date`
+      `tau1`, `tau2`, `title`, `user_idx`
+      **`silent_at_tau1` is IN** (`0081`): the only way to recompute the **Continued-and-silent count,
+      652**, from this table, since `live` is true for every Continued pair regardless of silence.
+      **Same argument as `0079`'s drop set — a required input must not live in a working file.**
+      **Dropped and free:** `f2_in_A_H` (derivable) and `max_episode_in_A`.
     - **COLUMN NAMES ARE FIXED** (`0077`). The rerun gave **88 against 87 columns for the SAME
       contents**, and **Step 8b's schema would inherit it.** **Rule: use the spec's own vocabulary where
       the spec defines the thing; otherwise the more explicit form.** Adopted: **`in_apply` /
@@ -303,7 +302,7 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
       (`0070` ruling 4's own words); **`discovered_channel_a` / `discovered_channel_b`** (`in_channel_*`
       collides with the population flags); **`t0_binding_term` / `t0_date` / `s1_completion_date`**.
       **Keep `has_s3_or_later_evidence` and `s1_completion_used_a_post_cutoff_record`** — D4 reads the
-      first, the open D11-at-position-3 question reads the second. **89 columns.**
+      first, the open D11-at-position-3 question reads the second. ~~**89 columns.**~~ ***SUPERSEDED — replaced by the 88-name ENUMERATION below (`0080`, `0081`); both instances reported it still reading as current.*** **`f2_in_A_H` is DROPPED as derivable.**
     - **POSITION 3's DROP SET IS THE 58,345 PAIRS THAT FAIL THE S1 COMPLETION RULE — position-3 rule,
       position-5 build of 2026-08-13** (`0075`, restated
       by `0077`). **Position 3 removes ZERO rows from the waterfall** — line 1 is already the

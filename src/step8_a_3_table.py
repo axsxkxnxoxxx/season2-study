@@ -48,6 +48,37 @@ W = 108
 H = 91
 DAY = 86400
 
+# THE COLUMN SET IS ENUMERATED, NOT COUNTED -- 87 NAMES, EXACTLY THESE. Human Lead ruling,
+# decisions/0080, replacing decisions/0077 SS3's COUNT of 89. The arms converged on these names on
+# the previous run, but CONVERGED IS NOT SPECIFIED and nothing prevents the next run from
+# diverging; Step 8b's schema is built on this vocabulary, with Steps 9-13 writing into it
+# directly and no conversion layer (0066), so it is fixed BEFORE the schema exists.
+# Transcribed from task-sheet.md Step 8. Emit exactly these, no more and no fewer.
+SPEC_COLUMNS = [
+    "abandonment_point_p", "action_count_s1_checkin", "action_count_s1_other",
+    "action_count_s1_scrobble", "action_count_s1_watch", "action_count_s2_checkin",
+    "action_count_s2_other", "action_count_s2_scrobble", "action_count_s2_watch", "air_period",
+    "cadence_boundary_distance_days", "cadence_bucket", "completers_per_year",
+    "discovered_channel_a", "discovered_channel_b", "e1_internal_gap", "e1_starts_at_1",
+    "e2_internal_gap", "e2_starts_at_1", "exclusion", "gap_days", "has_s3_or_later_evidence",
+    "in_apply", "in_deriv", "live", "max_episode_in_A_H", "max_season_number", "n_A", "n_A_H",
+    "outcome", "pool_completers", "pool_completers_proxy", "s1_E", "s1_F", "s1_L",
+    "s1_aired_episodes_reported", "s1_aired_lt_listed", "s1_completion_date",
+    "s1_completion_used_a_post_cutoff_record", "s1_count_disagreement",
+    "s1_episode_count_reported", "s1_exposure_years", "s1_finale_date", "s1_premiere_date",
+    "s1_season_first_aired", "s1_total_runtime", "s2_E", "s2_F", "s2_L",
+    "s2_aired_episodes_reported", "s2_aired_lt_listed", "s2_count_disagreement",
+    "s2_episode_count_reported", "s2_finale_date", "s2_finale_year", "s2_premiere_date",
+    "s2_season_first_aired", "s2_span_days", "s2_total_runtime", "s2_weekly_span_days",
+    "season_numbers", "seasons_returned", "show_aired_episodes", "show_airs_day",
+    "show_certification", "show_comment_count", "show_country", "show_first_aired", "show_genres",
+    "show_language", "show_languages", "show_rating", "show_runtime", "show_status",
+    "show_subgenres", "show_trakt_id", "show_votes", "show_year", "size_quintile",
+    "size_quintile_per_year", "size_quintile_raw_count", "t0_binding_term", "t0_date", "tau1",
+    "tau2", "title", "user_idx",
+]
+assert len(SPEC_COLUMNS) == len(set(SPEC_COLUMNS)) == 87
+
 
 def main():
     scan = np.load(os.path.join(OUT, "scan.npz"))
@@ -92,6 +123,9 @@ def main():
 
     res = {
         "step": 8, "instance": "a", "stage": 3, "api_calls": 0,
+        "build": lib.build_record(),
+        "provenance_note": "EVERY COUNT IN THIS FILE WAS MEASURED ON BUILD " + lib.BUILD_TAG
+                           + " (decisions/0079 B6, extending 0078).",
         "W_days": W, "H_days": H,
         "rule": "NOT LIVE iff (no insertion instant > tau1) AND (NOT Continued); evidence "
                 "restricted to records dated before tau_pull",
@@ -149,7 +183,6 @@ def main():
         "outcome": pd.Categorical.from_codes(r["outcome"][keep],
                                              ["never_started", "started_and_left", "continued"]),
         "live": r["live"][keep],
-        "silent_at_tau1": r["silent"][keep],
         "abandonment_point_p": r["p"][keep],
         "discovered_channel_a": in_a[a.pair_user[keep]],
         "discovered_channel_b": in_b[a.pair_user[keep]],
@@ -165,7 +198,6 @@ def main():
         "s1_completion_used_a_post_cutoff_record": positions["used_post_cutoff"][keep],
         "n_A": r["kA"][keep],
         "n_A_H": r["kAH"][keep],
-        "max_episode_in_A": r["mA"][keep],
         "max_episode_in_A_H": r["mH"][keep],
         "has_s3_or_later_evidence": a.has_s3[keep],
         "action_count_s1_watch": ac[keep, 0, 0], "action_count_s1_checkin": ac[keep, 0, 1],
@@ -176,8 +208,14 @@ def main():
     t = t.merge(frame, on="show_trakt_id", how="left", validate="many_to_one")
     assert len(t) == int(pos5.sum()) == 196654
     assert int(t.live.sum()) == int(pos6.sum())
-    assert t.shape[1] == 89, f"the column set is fixed at 89 by 0077; this is {t.shape[1]}"
     assert t.columns.is_unique
+    # 0080: the set is ENUMERATED. Assert set equality against the spec's own list, not a count --
+    # a count is arithmetically satisfiable by the wrong columns, which is how the previous run
+    # produced 88 against 87 for the same contents.
+    extra = sorted(set(t.columns) - set(SPEC_COLUMNS))
+    missing = sorted(set(SPEC_COLUMNS) - set(t.columns))
+    assert not extra and not missing, f"column set differs from decisions/0080: +{extra} -{missing}"
+    assert t.shape[1] == 87
     t.to_csv(os.path.join(OUT, "analysis_table.csv.gz"), index=False, compression="gzip")
 
     np.savez_compressed(
@@ -204,8 +242,29 @@ def main():
         "action": "per-pair counts by action type, S1 and S2 separately (0070 ruling 4)",
         "step2_show_fields_carried": int(frame.shape[1] - 1),
         "column_names": list(t.columns),
-        "column_naming_ruling": "decisions/0077: names are FIXED, not left to the instance, and "
-                                "the table is 89 columns. Renamed here from this instance's "
+        "column_names_sorted": sorted(t.columns),
+        "column_set_ruling": "decisions/0080: the set is 87 ENUMERATED NAMES, not a count. "
+                             "0077 SS3's count of 89 is REPLACED. Asserted here by SET EQUALITY "
+                             "against the spec's list, since a count is satisfiable by the wrong "
+                             "columns -- which is how the previous dual run produced 88 against 87 "
+                             "for the same contents. Column ORDER is not specified anywhere; this "
+                             "table is in construction order and the sorted list is emitted "
+                             "alongside so a name diff cannot be confused with an order diff.",
+        "columns_dropped_by_0080_relative_to_this_instance_previous_run": {
+            "max_episode_in_A": "not read by anything downstream (0080 SS2)",
+            "silent_at_tau1": "NOT A TIDY-UP AND STATED AS A REAL LOSS (0080 SS2): it is NOT "
+                              "recoverable from `live` and `outcome` on Continued rows, because "
+                              "`live` is true for every Continued pair regardless of silence -- "
+                              "the rule's second conjunct is NOT Continued. So the count of "
+                              "Continued-and-silent pairs, which is the SIZE OF THE "
+                              "OUTCOME-CONDITIONING and what closed the rule objection at 0063 "
+                              "SS1, can no longer be recomputed from this table. It remains "
+                              "recomputable from the Step 7 masks. The count is emitted as an "
+                              "AGGREGATE below so the figure itself is not lost with the column.",
+        },
+        "column_naming_ruling": "decisions/0077: names are FIXED, not left to the instance. "
+                                "Its COUNT of 89 is superseded by decisions/0080's enumerated 87. "
+                                "Renamed here from this instance's "
                                 "previous run: in_channel_* -> discovered_channel_*, "
                                 "in_population_APPLY/DERIV -> in_apply/in_deriv, tau1_utc/tau2_utc "
                                 "-> tau1/tau2, T0_utc_date -> t0_date, T0_binding_term -> "
@@ -215,35 +274,83 @@ def main():
                                 "-> action_count_s{1,2}_*. ADDED: "
                                 "s1_completion_used_a_post_cutoff_record, the other instance's "
                                 "extra column, which 0077 keeps.",
-        "column_count_note": "0077's adopted-name table also lists `f2_in_A_H`. This instance has "
-                             "no such column and adding one would make 90, against the 89 the "
-                             "same ruling fixes; 89 is reachable from this instance's 88 only by "
-                             "adding exactly the one extra column named for the other arm. The "
-                             "quantity is carried as `max_episode_in_A_H`, and `F2 in A_H` is "
-                             "exactly `max_episode_in_A_H == s2_F`, a Step 2 frame field already "
-                             "on the row. REPORTED, NOT RECONCILED.",
+        "column_count_note": "CLOSED by decisions/0080. 0077's adopted-name table listed "
+                             "`f2_in_A_H` and its count fixed 89, which could not both be "
+                             "satisfied; the enumerated 87 drops `f2_in_A_H` as derivable "
+                             "(`max_episode_in_A_H == s2_F`) and this instance now matches the "
+                             "list by set equality. The task-sheet bullet carrying 0077's '89 "
+                             "columns' still stands next to 0080's enumerated 87 in the same "
+                             "file; 0080 explicitly replaces it, and the residual is reported.",
+        "surviving_aggregate_of_the_dropped_silent_at_tau1_column": {
+            "what": "Continued pairs that are SILENT at tau1 -- the size of the "
+                    "outcome-conditioning in the liveness rule, the figure that closed the rule "
+                    "objection at decisions/0063 SS1 and publishes as a Step 14 limitation",
+            "value_APPLY_position_5": int((pos5 & r["continued"] & r["silent"]).sum()),
+            "value_APPLY_position_7_post_liveness": int((pos6 & r["continued"]
+                                                         & r["silent"]).sum()),
+            "value_DERIV_position_5": int((pos5d & r["continued"] & r["silent"]).sum()),
+            "expected_by_0080": 652,
+            "build": lib.BUILD_TAG,
+            "why_it_is_here": "0080 drops the column and states the loss rather than burying it. "
+                              "The COUNT is emitted as an aggregate so it does not vanish with the "
+                              "column; what is lost is the ability to recompute it row-by-row from "
+                              "the table, and that remains true.",
+        },
     }
     pool = [json.loads(l) for l in open(os.path.join(ROOT, "raw/step3/user_pool.jsonl"))]
     pool_a = sum(1 for r_ in pool if r_.get("in_a"))
     pool_b = sum(1 for r_ in pool if r_.get("in_b"))
     pool_both = sum(1 for r_ in pool if r_.get("in_a") and r_.get("in_b"))
+    # accounts PRESENT IN THE POSITION-5 ROW SET -- not all pulled accounts. This is the unit
+    # decisions/0079 (B7) assigns to Step 11, which recomputes the headline within each channel
+    # and therefore cuts THE ANALYSIS POPULATION, NOT THE POOL.
+    u5 = np.unique(a.pair_user[keep])
+    pu = a.pair_user[keep]
     res["channel_counts"] = {
-        "note": "0070 ruling 3 gave '324 users in both' with NO POPULATION; decisions/0077 states "
-                "both figures and both populations. They are not a divergence -- they are two "
-                "populations. Counts only; no username leaves raw/.",
+        "ruling": "PUBLISH THE OVERLAP IN BOTH UNITS, EACH WITH ITS CONSUMER NAMED -- Human Lead "
+                  "ruling, decisions/0079 (B7); all three readings publish, none is dropped. "
+                  "0070 ruling 3 gave '324 users in both' with NO POPULATION, which is the shape "
+                  "that has recurred through this whole chain -- inside the ruling written to fix "
+                  "a different unlabelled figure. Picking one unit leaves another consumer holding "
+                  "a wrong-unit figure. Counts only; no username leaves raw/.",
+        "build": lib.BUILD_TAG,
         "on_the_step3_discovery_pool": {
+            "unit": "discovery-pool USERNAMES",
+            "consumer": "Step 3's seeding-bias statement and Step 14 ledger item 1 -- the pool's "
+                        "composition",
             "population": int(len(pool)), "channel_a": pool_a, "channel_b": pool_b,
-            "in_both": pool_both, "expected_by_0077": {"population": 5694, "in_both": 324}},
+            "in_both": pool_both,
+            "restated_by_0078_with_its_build": "324 of 5,694, position-5 build of 2026-08-13, both "
+                                               "arms; measured again here on build " + lib.BUILD_TAG,
+            "expected_by_0077": {"population": 5694, "in_both": 324}},
         "on_the_accounts_actually_pulled": {
+            "unit": "ACCOUNTS PULLED",
+            "consumer": "Step 4 coverage reporting",
             "population": int(in_a.size), "channel_a": int(in_a.sum()),
             "channel_b": int(in_b.sum()), "in_both": int((in_a & in_b).sum()),
+            "restated_by_0078_with_its_build": "178 of 2,549, position-5 build of 2026-08-13, both "
+                                               "arms; measured again here on build " + lib.BUILD_TAG,
             "expected_by_0077": {"population": 2549, "in_both": 178}},
         "on_the_table_row_set_position_5_APPLY": {
-            "pairs_channel_a": int(in_a[a.pair_user[keep]].sum()),
-            "pairs_channel_b": int(in_b[a.pair_user[keep]].sum()),
-            "pairs_in_both": int((in_a[a.pair_user[keep]] & in_b[a.pair_user[keep]]).sum()),
-            "accounts_channel_a": int(in_a.sum()), "accounts_channel_b": int(in_b.sum()),
-            "accounts_in_both": int((in_a & in_b).sum())},
+            "unit": "ACCOUNTS and PAIRS in the position-5 population",
+            "consumer": "Step 11, which recomputes the headline within each channel and therefore "
+                        "cuts THE ANALYSIS POPULATION, NOT THE POOL (0079 B7, which also corrects "
+                        "the dictated mapping: the files show Step 11 on pairs/accounts and the "
+                        "pool statistic on usernames, the reverse of the dictation)",
+            "accounts_population": int(u5.size),
+            "accounts_channel_a": int(in_a[u5].sum()),
+            "accounts_channel_b": int(in_b[u5].sum()),
+            "accounts_in_both": int((in_a[u5] & in_b[u5]).sum()),
+            "pairs_population": int(keep.size),
+            "pairs_channel_a": int(in_a[pu].sum()),
+            "pairs_channel_b": int(in_b[pu].sum()),
+            "pairs_in_both": int((in_a[pu] & in_b[pu]).sum()),
+            "recorded_by_0078_as_a_third_reading": "174 of 2,422 accounts (instance B), recorded "
+                                                   "so it is not later read as a divergence; "
+                                                   "0079 B7 then PUBLISHES it, with 17,783 of "
+                                                   "196,654 pairs, naming Step 11 as its consumer",
+            "expected_by_0079": {"accounts_population": 2422, "accounts_in_both": 174,
+                                 "pairs_population": 196654, "pairs_in_both": 17783}},
     }
     res["channel_counts_on_the_table_position_5_APPLY"] = \
         res["channel_counts"]["on_the_table_row_set_position_5_APPLY"]

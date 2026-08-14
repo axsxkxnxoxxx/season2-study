@@ -20,6 +20,10 @@ THE OPERATORS, each with the line that fixes it:
 
 `date(watched_at) <= T1` appears nowhere: every bound is an instant comparison.
 """
+import hashlib
+import os
+import subprocess
+
 import numpy as np
 
 DAY = 86400
@@ -28,6 +32,78 @@ OFF = 10 ** 11
 TAU_PULL = int(np.datetime64("2026-08-11T00:00:00", "s").astype("int64"))
 
 NEVER, LEFT, CONT = 0, 1, 2
+
+ROOT = "/Users/alyanashantel/Documents/season2-study"
+SRC = os.path.join(ROOT, "src")
+
+# ---------------------------------------------------------------------------------------------
+# PROVENANCE. Every count, every invariant result and every waterfall figure carries the BUILD it
+# was measured on -- Human Lead ruling, decisions/0079 (B6), extending decisions/0078. A count
+# without its provenance can be correct when written and wrong when read, because the pipeline
+# moved underneath it and nothing in the text says which pipeline it belongs to. Partial
+# application is worse than none: two labelled figures imply the rest did not need it.
+#
+# The tag below is what appears at each point of use; this record is the one full definition.
+# ---------------------------------------------------------------------------------------------
+BUILD_TAG = "a/2026-08-14"
+BUILD_NAME = "position-5 build of 2026-08-14, instance `a`"
+STAGE_FILES = ["step8_a_lib.py", "step8_a_1_scan.py", "step8_a_2_positions.py",
+               "step8_a_3_table.py", "step8_a_4_arms.py", "step8_a_4b_slugs.py",
+               "step8_a_5_diagnostics.py", "step8_a_6_emit.py", "step8_a_run.py"]
+
+
+def _sha(path, n=12):
+    try:
+        with open(path, "rb") as fh:
+            return hashlib.sha256(fh.read()).hexdigest()[:n]
+    except OSError:
+        return None
+
+
+def build_record():
+    """The one full definition of this build. Cited by BUILD_TAG everywhere else."""
+    try:
+        head = subprocess.run(["git", "-C", ROOT, "rev-parse", "--short", "HEAD"],
+                              capture_output=True, text=True, timeout=20).stdout.strip()
+        dirty = bool(subprocess.run(["git", "-C", ROOT, "status", "--porcelain"],
+                                    capture_output=True, text=True, timeout=20).stdout.strip())
+    except Exception:
+        head, dirty = None, None
+    return {
+        "build_tag": BUILD_TAG,
+        "build_name": BUILD_NAME,
+        "instance": "a",
+        "run_date_utc": "2026-08-14",
+        "why_this_exists": "decisions/0079 (B6), extending decisions/0078: every count, every "
+                           "invariant result and every waterfall figure names the pipeline it was "
+                           "measured on, not only its population. Partial application is worse "
+                           "than none.",
+        "pipeline": "src/step8_a_run.py, one run, stages 1 -> 6 in order",
+        "stage_files_sha256_12": {f: _sha(os.path.join(SRC, f)) for f in STAGE_FILES},
+        "git_head_short": head,
+        "git_worktree_dirty_at_launch": dirty,
+        "parameters": {"W_days": 108, "H_days": 91,
+                       "tau_pull_utc": "2026-08-11T00:00:00Z",
+                       "filter_order": "decisions/0029, positions 1-7",
+                       "liveness_rule": "ALT-BROAD (0048/0054, approved 0064)",
+                       "arm_grid_days": [38, 46, 77, 91, 107, 108, 150, 213]},
+        "inputs": {"processed/step5/full_scan.npz": "size %d bytes, mtime %d (not hashed: 1.05 GB)"
+                   % (os.path.getsize(os.path.join(ROOT, "processed/step5/full_scan.npz")),
+                      int(os.path.getmtime(os.path.join(ROOT, "processed/step5/full_scan.npz")))),
+                   "processed/step5/calibration.npz": _sha(
+                       os.path.join(ROOT, "processed/step5/calibration.npz")),
+                   "processed/step5/pair_revision5.csv": _sha(
+                       os.path.join(ROOT, "processed/step5/pair_revision5.csv")),
+                   "processed/step2/frame.csv": _sha(os.path.join(ROOT, "processed/step2/frame.csv")),
+                   "processed/step4/pull_ledger.jsonl": _sha(
+                       os.path.join(ROOT, "processed/step4/pull_ledger.jsonl"))},
+        "spec_read": "task-sheet.md Step 8 as it stands, plus decisions/0066-0080",
+        "relation_to_the_2026_08_13_build": "this build reproduces the figures decisions/0078 and "
+                                            "0079 restate on the position-5 build of 2026-08-13 "
+                                            "(58,345 pairs; 324 of 5,694; 178 of 2,549; 703/99). "
+                                            "Where a figure agrees, that is measured here and "
+                                            "stated, not carried.",
+    }
 
 
 class Arms:

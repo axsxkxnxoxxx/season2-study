@@ -12,6 +12,10 @@ Output: artifacts/step8-waterfall-a.md, artifacts/step8-waterfall-a.json,
 """
 import json
 import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import step8_a_lib as lib
 
 ROOT = "/Users/alyanashantel/Documents/season2-study"
 OUT = os.path.join(ROOT, "processed/step8/a")
@@ -19,6 +23,19 @@ ART = os.path.join(ROOT, "artifacts")
 
 SCOPE = ("covering with respect to insertion-dormancy, exhaustively; open only across channel "
          "classes (D4, D9)")
+
+# every count, every invariant result and every waterfall figure carries the build it was measured
+# on (decisions/0079 B6, extending 0078). BT is the tag; the full definition is in section 0.
+BT = f"`{lib.BUILD_TAG}`"
+
+
+def btx(what="every figure in this section"):
+    """The build citation as plain text, for use inside a sentence."""
+    return f"Build: {what} measured on {BT} — {lib.BUILD_NAME}; see §0"
+
+
+def bt(what="every figure in this section"):
+    return f"*{btx(what)}.*"
 
 
 def n(x):
@@ -47,7 +64,13 @@ def main():
         "step": 8, "instance": "a", "mode": "GATE — proposes, adopts nothing",
         "api_calls": 0, "W_days": 108, "H_days": 91,
         "tau_pull_utc": "2026-08-11T00:00:00Z",
+        "build": lib.build_record(),
+        "provenance_note": "EVERY COUNT AND EVERY INVARIANT RESULT IN THIS FILE WAS MEASURED ON "
+                           "BUILD " + lib.BUILD_TAG + " unless it carries a different build at "
+                           "the point of use. Human Lead ruling, decisions/0079 (B6), extending "
+                           "0078. Partial application is worse than none.",
         "filter_order": pos["filter_order"],
+        "inert_filter_positions": pos["inert_filter_positions"],
         "waterfall": {
             "APPLY": {**wa, "position_6_liveness": lv["APPLY"]["retained"],
                       "position_7_outcome_assignment": p7["APPLY_post_liveness"]["total"]},
@@ -65,7 +88,9 @@ def main():
         "channel_counts_on_the_table_position_5_APPLY":
             outc["channel_counts_on_the_table_position_5_APPLY"],
         "analysis_table": outc["analysis_table"],
-        "position_3_dropset_side_output": pos["position_3_dropset_side_output"],
+        "position_3_drop_set_DELIVERABLE": pos["position_3_drop_set_DELIVERABLE"],
+        "surviving_aggregate_of_the_dropped_silent_at_tau1_column":
+            outc["analysis_table"]["surviving_aggregate_of_the_dropped_silent_at_tau1_column"],
         "scope_qualifier_travelling_with_the_position_6_population": SCOPE,
         "scan_summary": scan,
     }
@@ -91,25 +116,67 @@ def main():
       "position 6 filters; **DERIV** = Step 5 waterfall line 4 less D10 = **147,370**, which "
       "requires S2 evidence. Step 8 produces both (`decisions/0070` ruling 1).")
     A("")
-    A("> **RERUN against `decisions/0077`.** This replaces the previous `-a` deliverable in full. "
-      "`0077` is a spec change no arm had executed against, and it changes three things here. "
-      "**Column names are FIXED and the table is 89 columns** (`0077` §3), against this "
-      "instance's previous 88 and the other arm's 87 for the same contents — Step 8b defines the "
-      "schema Steps 9–13 write into **directly**, so the divergence would have been inherited; "
-      "**both arms' extra columns are kept**, and this instance adds the other's "
-      "`s1_completion_used_a_post_cutoff_record`. **The discovery-channel overlap now carries its "
-      "populations** (`0077` §1): **324 of the 5,694-username Step 3 pool** and **178 of the "
-      "2,549 accounts pulled** — both measured here, neither chosen. **Position 3's drop set is "
-      "restated** (`0077` §2): the ruling as written named an **empty set**, and the retained set "
-      "is the **58,345 pairs that fail the S1 completion rule**, in **pairs**, not the "
-      "set-membership rule's records. **No figure this instance previously published moves.**")
+    A("> **RERUN against `decisions/0078`, `0079` and `0080`.** This replaces the previous `-a` "
+      "deliverable in full. **None of the three is satisfiable by editing an artifact and `0078` "
+      "had never executed at all**, so everything below is regenerated from a fresh pipeline run. "
+      "What changed: **(1)** every count, every invariant result and every waterfall figure now "
+      "**carries the build it was measured on** (`0079` B6, extending `0078`) — see §0; **(2)** "
+      "the **position-3 drop set is a DELIVERABLE produced by the pipeline** and is now **read "
+      "back by the stage that computes D9 half (b)** (`0079` B5), so a missing input fails loudly "
+      "instead of publishing a silent 0; **(3)** the discovery-channel overlap **publishes in all "
+      "three units, each with its consumer named** (`0079` B7); **(4)** the **four inert filter "
+      "positions are labelled with the reason** (`0079` §4); **(5)** the column set is the **87 "
+      "ENUMERATED names** of `0080` §1, asserted by set equality rather than by count — which "
+      "**drops `silent_at_tau1` and `max_episode_in_A`** from this instance's previous 89; and "
+      "**(6)** **every invariant states its population and accounts for every row in it** "
+      "(`0080` §3). **D9 now reports four numbers, not three** (`0078` §3).")
     A("")
-    A("> Carried forward from the previous rerun, and unchanged: the table is the position-5 row "
-      "set with `live` and `outcome` as columns (`0074`/1); D9 uses the defined strict key with "
-      "the loose count alongside (`0074`/5, `0076`/3); the set-membership rule is a coverage "
-      "count and not an invariant (`0074`/3); the `W` grid is fixed by `0075`/3; `p` is a CODE "
-      "CHECK (`0076`/1); and the two DATA CHECKS of `0076`/2 are the only assertions here that "
-      "can fail on data.")
+    A("> **No figure this instance previously published moves**, apart from the two the rulings "
+      "add and the column count the rulings change.")
+    A("")
+    A("> Carried forward and unchanged: the table is the position-5 row set with `live` and "
+      "`outcome` as columns (`0074`/1); D9 uses the defined strict key with the loose count "
+      "alongside (`0074`/5, `0076`/3); the set-membership rule is a coverage count and not an "
+      "invariant (`0074`/3); the `W` grid is fixed by `0075`/3; `p` is a CODE CHECK (`0076`/1); "
+      "and the two DATA CHECKS of `0076`/2 are the only assertions here that can fail on data.")
+    A("")
+    A("---")
+    A("")
+    A("## 0. Provenance — what build every figure below was measured on")
+    A("")
+    A("**A count needs its PROVENANCE, not only its POPULATION** (`decisions/0078` §2, made "
+      "general by `0079` B6). `0047` fixed *which population produced this figure*; this is that "
+      "rule one layer down — *which build produced it*. **A count without its provenance can be "
+      "correct when written and wrong when read**, because the pipeline moved underneath it and "
+      "nothing in the text says which pipeline it belongs to. **Partial application is worse than "
+      "none**: two labelled figures imply the other counts and the eight invariants did not need "
+      "it.")
+    A("")
+    br = wjson["build"]
+    A(f"**Build {BT} — {lib.BUILD_NAME}.**")
+    A("")
+    A(f"| Field | Value |")
+    A("| :--- | :--- |")
+    A(f"| pipeline | `{br['pipeline']}` |")
+    A(f"| run date (UTC) | {br['run_date_utc']} |")
+    A(f"| git HEAD at launch | `{br['git_head_short']}`, worktree dirty: "
+      f"{br['git_worktree_dirty_at_launch']} |")
+    A(f"| parameters | `W` = 108 d, `H` = 91 d, `τ_pull` = 2026-08-11T00:00:00Z, filter order "
+      "`decisions/0029`, liveness ALT-BROAD |")
+    A(f"| stage files (sha256, 12) | "
+      + ", ".join(f"`{k}` {v}" for k, v in br["stage_files_sha256_12"].items() if v) + " |")
+    A(f"| inputs | `processed/step5/full_scan.npz` ({br['inputs']['processed/step5/full_scan.npz']}), "
+      f"`calibration.npz` `{br['inputs']['processed/step5/calibration.npz']}`, "
+      f"`pair_revision5.csv` `{br['inputs']['processed/step5/pair_revision5.csv']}`, "
+      f"`step2/frame.csv` `{br['inputs']['processed/step2/frame.csv']}`, "
+      f"`step4/pull_ledger.jsonl` `{br['inputs']['processed/step4/pull_ledger.jsonl']}` |")
+    A("")
+    A("**Every figure in this file was measured on that build unless it carries a different one "
+      "at the point of use.** Two do, and they are marked where they appear: **the 3,440**, which "
+      "is on Step 5's uncensored estimation sample of 128,099 (`decisions/0034` §3), and the "
+      "figures **restated** from the position-5 build of 2026-08-13 by `0078` — **58,345 pairs**, "
+      "**324 of 5,694**, **178 of 2,549** — each of which is **re-measured here on this build and "
+      "agrees**, which is stated rather than assumed.")
     A("")
     A("---")
     A("")
@@ -119,8 +186,8 @@ def main():
       "per-filter sample size does not, which is why the order is written down rather than left "
       "to each instance.")
     A("")
-    A("| # | Filter | APPLY: retained | removed | DERIV: retained | removed |")
-    A("| :-- | :--- | ---: | ---: | ---: | ---: |")
+    A("| # | Filter | APPLY: retained | removed | DERIV: retained | removed | inert? |")
+    A("| :-- | :--- | ---: | ---: | ---: | ---: | :--- |")
     rows = [
         ("1", "Step 2 frame", wa["position_1_step2_frame"], wd["position_1_step2_frame"]),
         ("2", "`L2 = 1` exclusion", wa["position_2_L2_eq_1_excluded"],
@@ -135,12 +202,42 @@ def main():
         ("7", "outcome assignment", p7["APPLY_post_liveness"]["total"],
          p7["DERIV_post_liveness"]["total"]),
     ]
+    INERT = {"1": "**INERT BY CONSTRUCTION** — line 1 is already the frame",
+             "2": "**INERT BY CONSTRUCTION** — line 1 is already the `L2 > 1` population, and 0 "
+                  "frame shows have `L2 = 1`",
+             "3": "**POSITION INERT, RULE NOT** — line 1 is already the S1-completer population; "
+                  "the rule removes 58,345 pairs upstream of it",
+             "4": "no — it fires",
+             "5": "no — it fires",
+             "6": "no — it fires",
+             "7": "**INERT BY CONSTRUCTION** — it annotates and removes nothing"}
     pa = pd_ = None
     for i, (k, name, va, vd) in enumerate(rows):
         ra = "—" if i == 0 else n(pa - va)
         rd = "—" if i == 0 else n(pd_ - vd)
-        A(f"| **{k}** | {name} | {n(va)} | {ra} | {n(vd)} | {rd} |")
+        A(f"| **{k}** | {name} | {n(va)} | {ra} | {n(vd)} | {rd} | {INERT[k]} |")
         pa, pd_ = va, vd
+    A("")
+    A(bt("every figure in this table"))
+    A("")
+    A("**Four positions remove zero BY CONSTRUCTION, and they are labelled rather than left to "
+      "read as findings** (`decisions/0079` §4). **Keep them: removing a position removes the "
+      "check that would catch a future upstream change**, and the point of a fixed order is that "
+      "the waterfall is comparable across runs and across arms. **But an unlabelled always-zero "
+      "filter reads as evidence THE RULE FOUND NOTHING when it is evidence THE RULE CANNOT "
+      "FIRE** — the same defect as an unlabelled code check (`0069`).")
+    A("")
+    ip = pos["inert_filter_positions"]
+    A("| Position | Removed | Why it cannot fire |")
+    A("| :--- | ---: | :--- |")
+    for k in ("1", "2", "3", "7"):
+        v = ip[k]
+        A(f"| **{k}** {v['filter']} | {n(v.get('removed', 0))} | {v['why']} |")
+    A("")
+    A(f"**Row 3 is the one that matters.** The position is inert; **the rule is the study's "
+      f"largest single exclusion — it removes "
+      f"{n(ip['3']['rule_removes_upstream_of_line_1'])} pairs upstream of line 1**, which is why "
+      "its drop set is a **deliverable** of this run (§6.1) and not a working file.")
     A("")
     A(f"**Line 1 is the S1-completer population, {n(wa['position_1_step2_frame'])} pairs** "
       "(`decisions/0068`) — user-show pairs whose user completed season 1, on a frame show. "
@@ -190,6 +287,8 @@ def main():
       f"{n(rcd['removed_incrementally_by_the_plus_H_term'])} | **UP** |")
     A(f"| total | {n(rc['total'])} | {n(rcd['total'])} | **UP** |")
     A("")
+    A(bt("both columns"))
+    A("")
     A("Both lines remove pairs whose clock start is recent, which on the uncapped "
       "`S1_completion_date` term means recent S1 completers — people who found an old show "
       "lately, have the whole series available, and are disproportionately likely to roll "
@@ -214,6 +313,8 @@ def main():
         A(f"| **{k}** | {n(lv[k]['population_entering'])} | **{n(e['total'])}** | "
           f"{n(e['never_started'])} | {n(e['started_and_left'])} | {n(e['accounts'])} | "
           f"{n(lv[k]['retained'])} |")
+    A("")
+    A(bt("every figure in this table"))
     A("")
     A(f"**This is a POPULATION RECONCILIATION, not an invariant** (`decisions/0068`). Expected "
       f"703 on APPLY = 196,654 (604 + 99, 216 accounts) and 99 on DERIV = 147,370 (0 + 99, 73 "
@@ -260,6 +361,8 @@ def main():
         A(f"| {lab} | {n(o['never_started'])} | {n(o['started_and_left'])} | "
           f"{n(o['continued'])} | {n(o['total'])} |")
     A("")
+    A(bt("every figure in this table"))
+    A("")
     A("**The two published categories are measured over different horizons and must never be "
       "described as measured alike**: never-started is a 108-day statement, Continued a 199-day "
       "statement (`0034`).")
@@ -304,6 +407,8 @@ def main():
           f"{pct(rp['2020-2022']['retained_share'], 1)} | "
           f"{pct(rp['2023-2025']['retained_share'], 1)} |")
     A("")
+    A(bt("every figure in this table, at every arm,"))
+    A("")
     r108 = a108["retained_per_air_period_APPLY"]
     r213 = next(e for e in arms["arms"] if e["W_days"] == 213)["retained_per_air_period_APPLY"]
     A(f"**The aggregate hides a cohort-asymmetric loss.** At `W = 108` "
@@ -343,6 +448,8 @@ def main():
           f"{n(x['never_started_component'])} | {n(x['started_and_left_component'])} | "
           f"{n(x['accounts'])} | {n(xd['total'])} |")
     A("")
+    A(bt("every figure in this table, at every arm,"))
+    A("")
     f_, l_ = arms["arms"][0]["liveness_exclusions_APPLY"], arms["arms"][-1][
         "liveness_exclusions_APPLY"]
     A(f"`W` and liveness are not independent axes: the rule has no parameter of its own but its "
@@ -375,6 +482,8 @@ def main():
           f"{pct(d['share_completing_in_tau2_to_tau2_plus_H'])} | "
           f"{pct(dd['cleared_share_of_all_started_and_left'])} |")
     A("")
+    A(bt("every figure in this table, at every arm,"))
+    A("")
     a46 = next(e for e in arms["arms"] if e["W_days"] == 46)["D3_prime"]["APPLY"]
     a213 = next(e for e in arms["arms"] if e["W_days"] == 213)["D3_prime"]["APPLY"]
     A(f"**The cleared-share series is "
@@ -401,9 +510,20 @@ def main():
       f"floor because {t['why_it_is_a_floor']}. The two figures do not bracket the quantity — "
       "both truncate observation and neither is a lower bound on the other.")
     A("")
+    A(f"*Build: **this figure is NOT on {BT}.** It was measured at `decisions/0034` §3 on the "
+      "Step 5 revision-6 **uncensored estimation sample of 128,099 pairs**, and it is restated "
+      "here rather than recomputed. **It must never be reported against APPLY or DERIV.** Saying "
+      "which build a figure came from is the whole point of the provenance rule, and this is the "
+      "figure in this deliverable that most needs it.*")
+    A("")
     A("---")
     A("")
     A("## 5. The other required counts")
+    A("")
+    A(f"**Every count in this section was measured on build {BT}** unless it says otherwise at "
+      "the point of use (`decisions/0079` B6). The two exceptions are marked where they appear: "
+      "the **3,440** in §4.3, and the figures `0078` restates from the **position-5 build of "
+      "2026-08-13**, which are re-measured here and agree.")
     A("")
     dc = diag["drop_counts"]
     A("### 5.1 Both drop counts (Step 1 §3.4) — a COVERAGE COUNT, not an invariant")
@@ -466,11 +586,13 @@ def main():
           f"{n(d['S2_finale_term_binds'])} | {n(d['S1_completion_term_binds'])} | "
           f"{n(d['both_terms_bind'])} |")
     A("")
-    bt = diag["D2_negative_lag"]["binding_term_split_of_the_whole_population_APPLY_position_5"]
+    A(bt("every figure in this table"))
+    A("")
+    btsplit = diag["D2_negative_lag"]["binding_term_split_of_the_whole_population_APPLY_position_5"]
     A(f"**A tie is its own category, not a tiebreak** (`0070` ruling 5). Over the whole "
-      f"position-5 APPLY population the binding term is the S2 finale on {n(bt['S2_finale_binds'])} "
-      f"pairs, the S1 completion on {n(bt['S1_completion_binds'])}, and **both on "
-      f"{n(bt['both_bind'])}** — the case a binary split has nowhere to put.")
+      f"position-5 APPLY population the binding term is the S2 finale on {n(btsplit['S2_finale_binds'])} "
+      f"pairs, the S1 completion on {n(btsplit['S1_completion_binds'])}, and **both on "
+      f"{n(btsplit['both_bind'])}** — the case a binary split has nowhere to put.")
     A("")
     A("S2-finale-term negative lags are the normal case for anyone who watched a weekly season "
       "while it aired and are information about the frame's cadence mix. **S1-term negative lags "
@@ -508,6 +630,8 @@ def main():
           f"{n(d['ii_count_satisfying_the_continued_condition_over_the_horizon'])} | "
           f"{pct(d['ii_share'])} |")
     A("")
+    A(bt("every figure in this table"))
+    A("")
     A("Measured over the fixed horizon `H`, never to the pull date, so the share is a rate and "
       "not an exposure-weighted mixture. **D8(ii) is the only bound on the never-started "
       "boundary** and its size is Step 14's ledger item 10. Direction: **down**.")
@@ -540,7 +664,27 @@ def main():
       f"{n(lo9['half_b'])} |")
     A(f"| *third key — NOT RULED, measured only* | strip a trailing digit group of arbitrary "
       f"length, then strict | {n(tk9['complementary_signature_id_pairs'])} | "
-      f"{n(tk9['half_a_APPLY_position_7'])} | — |")
+      f"{n(tk9['half_a_APPLY_position_7'])} | {n(tk9['half_b'])} |")
+    A("")
+    A(bt("every figure in this table"))
+    A("")
+    fn = d9["FOUR_NUMBERS_both_halves_under_both_keys"]
+    A("**BOTH HALVES UNDER BOTH KEYS — FOUR NUMBERS, NOT THREE** (`decisions/0078` §3, closing "
+      "the one live asymmetry between the arms). **This follows from `0074` ruling 5's own reason "
+      "rather than from a preference:** the loose count publishes **because it bounds how wrong "
+      "strict could be**, and **that reason applies to half (b) exactly as it applies to half "
+      "(a)**. Publishing the bound for one half and withholding it for the other **leaves the "
+      "reader unable to bound the total**, and the error runs **opposite** to D9's own "
+      "lower-bound caveat — the direction they were not warned about.")
+    A("")
+    A("| | strict (adopted) | loose (bound) |")
+    A("| :--- | ---: | ---: |")
+    A(f"| **half (a)** — fabricated never-started row | **{n(fn['half_a_strict'])}** | "
+      f"{n(fn['half_a_loose'])} |")
+    A(f"| **half (b)** — silently deleted S1-failing counterpart | **{n(fn['half_b_strict'])}** | "
+      f"{n(fn['half_b_loose'])} |")
+    A("")
+    A(bt("all four numbers"))
     A("")
     A(f"- **(a) the fabricated never-started row, on the adopted key:** "
       f"{n(ha['carrying_the_signature'])} of {n(ha['never_started'])} never-started pairs "
@@ -550,8 +694,10 @@ def main():
     A(f"- **(b) the silently deleted S1-failing counterpart:** {n(hb['carrying_the_signature'])} "
       f"of {n(hb['pairs_failing_S1_completion'])} pairs that fail the S1 completion rule. "
       "**These rows are not in the analysis table and cannot be recovered from it**, so the set "
-      "is retained as a side output (`decisions/0075` ruling 2) — without it this half emits zero "
-      "or fails, **and a zero here reads as a data finding rather than a missing input.** "
+      "is a **DELIVERABLE of this pipeline run** (`decisions/0079` B5, strengthening `0075` "
+      "ruling 2) — **and this section READS IT BACK from the file**, so if the stage stopped "
+      "writing it this figure would **fail loudly rather than publish a 0**, which is the whole "
+      "point: **a zero here reads as a data finding rather than a missing input.** "
       "**`decisions/0077` §2 RESTATES the ruling**, which as written named *\"position 3's drop "
       "set\"* — **an empty set**, because line 1 is already the S1-completer population and "
       "position 3 therefore removes 0 rows from the waterfall. The set is **the pair universe "
@@ -660,43 +806,78 @@ def main():
     A("")
     ch = outc["channel_counts_on_the_table_position_5_APPLY"]
     at0 = outc["analysis_table"]
-    A("### 5.10 Discovery channel — two boolean columns, and the overlap's two populations")
+    A("### 5.10 Discovery channel — two boolean columns, and the overlap in all three units")
     A("")
-    A(f"On the table's row set (APPLY, position 5): Channel A {n(ch['pairs_channel_a'])} pairs, "
-      f"Channel B {n(ch['pairs_channel_b'])} pairs, **both {n(ch['pairs_in_both'])}** "
-      f"(accounts: {n(ch['accounts_channel_a'])} / {n(ch['accounts_channel_b'])} / "
-      f"**{n(ch['accounts_in_both'])} in both**). A single categorical would either drop the "
-      "overlap or assign it arbitrarily, and Step 11 tests whether discovery method biased the "
-      "pool (`0070` ruling 3).")
+    A("A single categorical would either **drop the overlap or assign it arbitrarily**, and the "
+      "arbitrary assignment would be invisible in the dual diff since both instances would make "
+      "it the same way only by luck. **Two flags let Step 11 cut on either channel or on the "
+      "overlap** (`0070` ruling 3).")
     A("")
     cc = outc["channel_counts"]
     cp, ca_ = cc["on_the_step3_discovery_pool"], cc["on_the_accounts_actually_pulled"]
-    A("**The overlap has TWO figures and TWO populations, and `decisions/0077` §1 now states "
-      "both** — `0070` ruling 3 gave *\"324 users are in both\"* and named no population, which "
-      "**is the shape that has recurred through this entire chain and recurred inside the ruling "
-      "written to fix a different unlabelled figure.** Measured here, both independently:")
+    A("**PUBLISH THE OVERLAP IN BOTH UNITS, EACH WITH ITS CONSUMER NAMED** (`decisions/0079` B7) "
+      "— **all three readings publish; picking one leaves another consumer holding a wrong-unit "
+      "figure.** `0070` ruling 3 gave *\"324 users are in both\"* and named no population, **the "
+      "shape that has recurred through this entire chain, inside the ruling written to fix a "
+      "different unlabelled figure**; `0077` §1 then stated two and `0079` B7 all three. Measured "
+      "here, each independently:")
     A("")
-    A("| Population | n | Channel A | Channel B | **in both** |")
-    A("| :--- | ---: | ---: | ---: | ---: |")
-    A(f"| Step 3 **discovery pool** (usernames) | {n(cp['population'])} | {n(cp['channel_a'])} | "
-      f"{n(cp['channel_b'])} | **{n(cp['in_both'])}** |")
-    A(f"| **accounts actually pulled** (Step 4 stopped at 62.9% of plan) | {n(ca_['population'])} "
-      f"| {n(ca_['channel_a'])} | {n(ca_['channel_b'])} | **{n(ca_['in_both'])}** |")
-    A(f"| pairs on the table's row set (APPLY, position 5) | {n(at0['rows'])} | "
-      f"{n(ch['pairs_channel_a'])} | {n(ch['pairs_channel_b'])} | **{n(ch['pairs_in_both'])}** |")
+    A("| Reading | Unit | n | Channel A | Channel B | **in both** | Consumer |")
+    A("| :--- | :--- | ---: | ---: | ---: | ---: | :--- |")
+    A(f"| Step 3 **discovery pool** | usernames | {n(cp['population'])} | {n(cp['channel_a'])} | "
+      f"{n(cp['channel_b'])} | **{n(cp['in_both'])}** | Step 3's seeding-bias statement; **Step 14 "
+      "ledger item 1** — the pool's composition |")
+    A(f"| **accounts actually pulled** | accounts | {n(ca_['population'])} | {n(ca_['channel_a'])} "
+      f"| {n(ca_['channel_b'])} | **{n(ca_['in_both'])}** | **Step 4 coverage reporting** (the "
+      "pull stopped at 62.9% of plan) |")
+    A(f"| **position-5 population** | accounts | {n(ch['accounts_population'])} | "
+      f"{n(ch['accounts_channel_a'])} | {n(ch['accounts_channel_b'])} | "
+      f"**{n(ch['accounts_in_both'])}** | **Step 11**, which recomputes the headline within each "
+      "channel and so cuts **the analysis population, not the pool** |")
+    A(f"| **position-5 population** | pairs | {n(ch['pairs_population'])} | "
+      f"{n(ch['pairs_channel_a'])} | {n(ch['pairs_channel_b'])} | **{n(ch['pairs_in_both'])}** | "
+      "**Step 11**, same reading in the unit the headline is computed in |")
     A("")
-    A(f"Both ruled figures reproduce exactly: **{n(cp['in_both'])} of {n(cp['population'])}** and "
-      f"**{n(ca_['in_both'])} of {n(ca_['population'])}**. The pool figure is not an account "
-      "figure and neither is a pair figure; **read without its population, any one of the three "
-      "reads as a divergence from the other two.**")
+    A(bt("every figure in this table"))
+    A("")
+    A(f"All three reproduce: **{n(cp['in_both'])} of {n(cp['population'])}** usernames, "
+      f"**{n(ca_['in_both'])} of {n(ca_['population'])}** accounts pulled, and "
+      f"**{n(ch['accounts_in_both'])} of {n(ch['accounts_population'])}** accounts / "
+      f"**{n(ch['pairs_in_both'])} of {n(ch['pairs_population'])}** pairs in the position-5 "
+      "population. **`0078` restates the first two on the position-5 build of 2026-08-13 and "
+      f"records the third as unpublished; `0079` B7 publishes all three.** The pool figure is not "
+      "an account figure and neither is a pair figure; **read without its population, any one of "
+      "them reads as a divergence from the others.**")
+    A("")
+    A("**One correction to `0079` B7 as dictated, because the mapping is reversed against the "
+      "files** — and the ruling entry itself records the correction: it assigned **Step 11 to "
+      "users** and **the pool statistic to accounts**. Step 11 recomputes the headline, which is "
+      "over **pairs on the position-5 row set**, so it cuts the analysis population; and the pool "
+      "statistic is the **5,694 usernames**. The substance — both units, consumers named — is "
+      "executed as ruled.")
     A("")
     A("---")
     A("")
     A("## 6. The analysis table")
     A("")
+    A("**The deliverables of this run, all four named** (`task-sheet.md` Step 8 *Deliver*, as "
+      "amended by `decisions/0079` B5):")
+    A("")
+    A("| Deliverable | Path | Written by |")
+    A("| :--- | :--- | :--- |")
+    A("| analysis table | `processed/step8/a/analysis_table.csv.gz` | stage 3 |")
+    A("| **position-3 drop set — the 58,345 pairs failing the S1 completion rule** | "
+      "`processed/step8/a/position3_drop_set.csv.gz` | **stage 2 of the same run** (§6.1) |")
+    A("| filter waterfall and required counts | `artifacts/step8-waterfall-a.md` / `.json` | "
+      "stage 6 |")
+    A("| invariant report | `artifacts/step8-invariants-a.md` / `.json` | stage 6 |")
+    A("")
+    A("The run record, with per-stage return codes and timings, is `logs/step8_a_run.json`.")
+    A("")
     at = outc["analysis_table"]
     A(f"`{at['path']}` — **{n(at['rows'])} rows, {at['columns']} columns**, one row per user-show "
-      "pair, **the POSITION-5 row set on APPLY** (`decisions/0074` ruling 1).")
+      "pair, **the POSITION-5 row set on APPLY** (`decisions/0074` ruling 1). "
+      + btx("every count in this section") + ".")
     A("")
     A(f"- **`live` and `outcome` are COLUMNS, not filters.** {n(at['rows_live_position_6_retained'])} "
       f"rows carry `live = true` and {n(at['rows_not_live_position_6_excluded'])} carry "
@@ -710,35 +891,92 @@ def main():
       f"per-pair action counts and all {at['step2_show_fields_carried']} Step 2 show fields. "
       "**It stays in `processed/` and is never published.**")
     A("")
-    A("**The column names are FIXED by `decisions/0077` §3 and were not chosen here.** The "
-      "previous run produced **88 against 87 for the same contents**, all of it naming, and Step "
-      "8b's schema — which Steps 9–13 write into **directly, with no conversion layer** (`0066`) "
-      "— would have inherited it. Renamed from this instance's previous run: `in_channel_*` → "
-      "**`discovered_channel_a` / `discovered_channel_b`**; `in_population_APPLY` / "
-      "`in_population_DERIV` → **`in_apply` / `in_deriv`**; `tau1_utc` / `tau2_utc` → **`tau1` / "
-      "`tau2`**; `T0_utc_date` → **`t0_date`**; `T0_binding_term` → **`t0_binding_term`**; "
-      "`s1_completion_date_utc` → **`s1_completion_date`**; `n_A_distinct_s2_before_tau1` → "
-      "**`n_A`**; `n_AH_distinct_s2_before_tau2` → **`n_A_H`**; `max_episode_in_AH` → "
+    A("**THE COLUMN SET IS ENUMERATED, NOT COUNTED — 87 NAMES, EXACTLY THESE** "
+      "(`decisions/0080` §1, replacing `0077` §3's count). **The arms converged on these names "
+      "last run, but converged is not specified**, and Step 8b's schema is built on this "
+      "vocabulary with Steps 9–13 writing into it **directly, with no conversion layer** "
+      "(`0066`), so it is fixed **before** the schema exists. **This instance asserts SET "
+      "EQUALITY against the spec's list, not a count** — a count is arithmetically satisfiable by "
+      "the wrong columns, which is exactly how the previous run produced 88 against 87 for the "
+      "same contents. Column **order** is specified nowhere; this table is in construction order "
+      "and the sorted list is in the `.json` so an order difference cannot be mistaken for a name "
+      "difference.")
+    A("")
+    A("**Two columns are dropped relative to this instance's previous 89**, and one of them is a "
+      "real loss rather than a tidy-up:")
+    A("")
+    sil = at["surviving_aggregate_of_the_dropped_silent_at_tau1_column"]
+    A("- **`max_episode_in_A`** — nothing downstream reads it (`0080` §2). Cheap.")
+    A("- **`f2_in_A_H`** — never emitted by this instance; it is derivable as "
+      "`max_episode_in_A_H == s2_F`, and `0080` drops it from the set for that reason. **This "
+      "closes the one item this instance reported unreconciled last run**, where `0077` listed "
+      "the name and fixed a count that could not both be met.")
+    A(f"- **`silent_at_tau1` — STATED AS A REAL LOSS.** It is **not recoverable from `live` and "
+      "`outcome` on Continued rows**, because `live` is true for **every** Continued pair "
+      "regardless of silence — the rule's second conjunct is `NOT Continued`. **So the count of "
+      "Continued-and-silent pairs can no longer be recomputed from this table.** That count is "
+      f"**{n(sil['value_APPLY_position_5'])}** — the **size of the outcome-conditioning**, the "
+      "figure that closed the rule objection at `0063` §1 and publishes as a Step 14 limitation. "
+      "**It remains recomputable from the Step 7 masks, and it is emitted here as an aggregate** "
+      f"({n(sil['value_APPLY_position_5'])} on APPLY position 5, "
+      f"{n(sil['value_APPLY_position_7_post_liveness'])} post-liveness, "
+      f"{n(sil['value_DERIV_position_5'])} on DERIV position 5) **so the figure does not vanish "
+      "with the column** — but what is lost, row by row, stays lost. Adding the column back makes "
+      f"the set 88. {btx('these three counts')}.")
+    A("")
+    A("**The names themselves are `decisions/0077` §3's and were not chosen here.** Renamed from "
+      "this instance's earlier run: `in_channel_*` → **`discovered_channel_a` / "
+      "`discovered_channel_b`**; `in_population_APPLY` / `in_population_DERIV` → **`in_apply` / "
+      "`in_deriv`**; `tau1_utc` / `tau2_utc` → **`tau1` / `tau2`**; `T0_utc_date` → "
+      "**`t0_date`**; `T0_binding_term` → **`t0_binding_term`**; `s1_completion_date_utc` → "
+      "**`s1_completion_date`**; `n_A_distinct_s2_before_tau1` → **`n_A`**; "
+      "`n_AH_distinct_s2_before_tau2` → **`n_A_H`**; `max_episode_in_AH` → "
       "**`max_episode_in_A_H`**; `n_rec_s{1,2}_*` → **`action_count_s{1,2}_*`**. **No `_utc` "
       "suffix survives**: every instant in this study is UTC by Step 1 §2.4, and suffixing some "
       "columns implies the others are not.")
     A("")
-    A("**Both instances' extra columns are kept** (`0077` §3), which is what takes the table from "
-      "88 to **89**: `has_s3_or_later_evidence`, which D4 reads and which this instance already "
-      "had, and **`s1_completion_used_a_post_cutoff_record`**, the other arm's, which the still-"
-      "open D11-at-position-3 question reads. It is computed independently here rather than "
-      "assumed: the first-pass walk runs in ascending canonical-timestamp order, so the "
-      "completing episode's timestamp is the maximum over the prefix consumed, and the flag is "
-      f"exactly `complete AND comp_ts ≥ τ_pull`. **It is true on "
+    A("**Both instances' extra columns are kept** (`0077` §3, and both are in `0080`'s "
+      "enumeration): `has_s3_or_later_evidence`, which D4 reads, and "
+      "**`s1_completion_used_a_post_cutoff_record`**, which the still-open D11-at-position-3 "
+      "question reads. The second is computed independently here rather than assumed: the "
+      "first-pass walk runs in ascending canonical-timestamp order, so the completing episode's "
+      "timestamp is the maximum over the prefix consumed, and the flag is exactly `complete AND "
+      f"comp_ts ≥ τ_pull`. **It is true on "
       f"{n(pos['D11_counterfactual_on_position_3']['completers_whose_first_pass_walk_used_a_post_cutoff_record'])} "
       "pairs of the 220,107** — the same 4 that stop being completers when D11 is applied to the "
-      "S1 walk, which is the arithmetic the open question turns on.")
+      f"S1 walk, which is the arithmetic the open question turns on. {btx('that count')}.")
     A("")
-    A("**Side outputs, also in `processed/step8/a/` and also never published:** "
-      "`position3_dropset.npz` — **the 58,345 pairs that fail the S1 completion rule**, retained "
-      "because D9 half (b) is measured on them (`decisions/0075` ruling 2, restated by `0077` "
-      "§2); `position5_table.npz`, the per-arm working table; `drops_per_show.csv`; "
-      "`show_slugs.csv`.")
+    ds = pos["position_3_drop_set_DELIVERABLE"]
+    dsi = diag["D9_split_artifacts"]["position_3_drop_set_input"]
+    A("### 6.1 The position-3 drop set — a DELIVERABLE of this run, not a side file")
+    A("")
+    A(f"`processed/step8/a/position3_drop_set.csv.gz` — **{n(ds['pairs_failing_the_S1_completion_rule'])} "
+      "pairs, the pairs that FAIL the S1 completion rule.** **Human Lead ruling, "
+      "`decisions/0079` B5:** it is **named in the deliverable list**, **written by the same "
+      "pipeline run that writes the table** (stage 2 of `src/step8_a_run.py`), and carries **each "
+      "pair's distinct-episode counts and the show's threshold**, which is what D9 half (b) "
+      "reads.")
+    A("")
+    A(f"- **It is read back, not merely written.** The stage that computes half (b) loads this "
+      f"file and asserts it against position 3's recomputed rule ({n(dsi['pairs'])} rows agreeing "
+      "to the row). **If it were missing, that stage fails loudly instead of publishing 0** — "
+      "which is the failure `0075` ruling 2 exists to prevent, since **a zero here reads as a "
+      "data finding rather than a missing input.** A helper script's side file is not a thing the "
+      "next run is obliged to produce; a stage of this run is.")
+    A(f"- **Columns:** `{'`, `'.join(ds['carries'])}`.")
+    A(f"- **Why the pairs fail:** {n(dsi['short_of_the_0_90_threshold'])} never reached "
+      f"`ceil(0.90 × L1)` distinct S1 episodes; {n(dsi['reached_the_threshold_but_never_watched_F1'])} "
+      "reached the threshold but never watched the S1 finale `F1`.")
+    A("- **It is the pair universe less the completers — position 3's RULE, not its waterfall "
+      "line**, which is 0 by construction (`0077` §2). It is **not** the set-membership drop "
+      "rule, which is a different rule and deletes 0 **records**.")
+    A(f"- {btx('all four counts in this subsection')}. **`0078` restates the 58,345 as "
+      "*position-3 rule, position-5 build of 2026-08-13*; it is re-measured here on this build "
+      "and agrees.**")
+    A("")
+    A("**Other working files, also in `processed/step8/a/` and also never published:** "
+      "`position5_table.npz`, the per-arm working table; `drops_per_show.csv`; `show_slugs.csv`; "
+      "the stage `.json` outputs this report is generated from.")
     A("")
     A("---")
     A("")
@@ -778,22 +1016,29 @@ def main():
     A("8. **D3′'s denominator is the position-7 (post-liveness) Started-and-left set**, which is "
       "what reproduces `0075`'s ruled series. The position-5 figures are emitted alongside in the "
       "`.json` so the choice is visible and neither reading is hidden.")
-    A("9. **~~The set half (b) is measured on.~~ CLOSED by `decisions/0077` §2.** The previous "
-      "run had to choose an interpretation, because *\"position 3's drop set\"* named an empty "
-      "set on this frame. The ruling now names it: **the pair universe less the completers, "
-      f"{n(pos['position_3_dropset_side_output']['pairs_failing_the_S1_completion_rule'])} "
-      "pairs** — which is the set this instance retained and measured before the restatement, so "
-      "**nothing measured moves.** The unit is **pairs**, and it is **not** the set-membership "
-      "drop rule.")
-    A("10. **~~Column names.~~ CLOSED by `decisions/0077` §3**, which fixes them and fixes the "
-      f"table at **{at['columns']} columns**. Nothing about the contents changed. **One item does "
-      "not resolve and is reported, not reconciled:** `0077`'s adopted-name table also lists "
-      "**`f2_in_A_H`**. This instance has no such column; adding one would make the table **90** "
-      "against the **89** the same ruling fixes, and 89 is reachable from this instance's 88 only "
-      "by adding exactly the one column named for the other arm. The quantity is on the row "
-      "either way — `F2 ∈ A_H` is exactly `max_episode_in_A_H == s2_F`, and `s2_F` is a Step 2 "
-      "frame field already carried. **If the other arm resolved this the other way the diff will "
-      "show one column name, not a figure.**")
+    A("9. **~~The set half (b) is measured on.~~ CLOSED by `decisions/0077` §2 and made a "
+      "DELIVERABLE by `0079` B5.** The previous run had to choose an interpretation, because "
+      "*\"position 3's drop set\"* named an empty set on this frame. The ruling names it: **the "
+      "pair universe less the completers, "
+      f"{n(pos['position_3_drop_set_DELIVERABLE']['pairs_failing_the_S1_completion_rule'])} "
+      "pairs** — the set this instance retained and measured before the restatement, so **nothing "
+      "measured moves**; what changed this run is **who writes it and who reads it** (§6.1). The "
+      "unit is **pairs**, and it is **not** the set-membership drop rule.")
+    A("10. **~~Column names, and the 89-versus-`f2_in_A_H` contradiction.~~ CLOSED by "
+      f"`decisions/0080` §1**, which replaces the count with **{at['columns']} enumerated names** "
+      "and drops `f2_in_A_H` as derivable. **The item this instance reported unreconciled last "
+      "run is therefore resolved, and in the direction it flagged.** The trade `0080` makes — "
+      "dropping `silent_at_tau1` — is stated at the point of use in §6, with the "
+      f"{n(at['surviving_aggregate_of_the_dropped_silent_at_tau1_column']['value_APPLY_position_5'])} "
+      "emitted as an aggregate so the figure survives the column.")
+    A("11. **Column ORDER is specified nowhere.** This table is in construction order; the sorted "
+      "name list is in the `.json`. **If the arms differ here it is an order difference, not a "
+      "name difference**, and the enumerated set is identical either way.")
+    A("12. **The `build` label's granularity.** `0079` B6 requires every count to name its build "
+      "and does not say at what granularity. This instance defines the build once (§0, with stage "
+      "file hashes and the git HEAD) and cites a **tag** at each figure; the alternative — the "
+      "full record inline at every figure — carries the same information and reads worse. **A "
+      "figure measured on a different build says so instead** (the 3,440).")
     A("")
     A("---")
     A("")
@@ -820,11 +1065,24 @@ def main():
       "resolved.")
     A("6. **`task-sheet.md` Step 8's open D11 question at position 3 is untouched** — applying "
       "D11 to the S1 walk gives 220,103 rather than the published 220,107. Measured in §5.6, not "
-      "applied. **The new `s1_completion_used_a_post_cutoff_record` column carries the 4 pairs it "
+      "applied. **The `s1_completion_used_a_post_cutoff_record` column carries the 4 pairs it "
       "turns on**, so whoever closes the question does not have to rebuild them.")
-    A("7. **`0077`'s adopted-name table lists `f2_in_A_H` and its column count fixes 89** — the "
-      "two cannot both be satisfied from this instance's 88 without dropping a column the same "
-      "ruling says to keep. **Reported, not reconciled**; see §8 item 10.")
+    A("7. **~~`0077`'s `f2_in_A_H` against its count of 89.~~ CLOSED by `0080` §1.**")
+    A("8. **`task-sheet.md` still carries `0077`'s *\"The table is 89 columns\"* one bullet below "
+      f"`0080`'s enumerated {at['columns']}.** `0080` §1 says in terms that it replaces `0077` "
+      "§3's count, so the on-disk resolution is unambiguous and this instance followed the "
+      "enumeration — **but the superseded sentence is still readable as current in the same "
+      "file**, and the next isolated instance reads that file cold. **Reported, not edited**: "
+      "`task-sheet.md` is not this instance's to amend.")
+    A("9. **The `analytics-engineer` definition file carries the identical pair** — `0080`'s "
+      "enumerated 87 followed, four bullets later, by `0077`'s adopted-name list ending *\"The "
+      "table is 89 columns\"* **and still naming `f2_in_A_H` as an adopted name.** `0080` §1 "
+      "supersedes both, and `0080` §2 says in terms that `f2_in_A_H` is dropped as derivable — "
+      "**so the on-disk resolution is unambiguous and this instance followed it** — but **the "
+      "superseded sentence and the superseded name are both still readable as current**, on both "
+      "surfaces, in the file an isolated instance reads cold. **This is the same shape as the "
+      "defect `0080` was written to fix**, one layer down: a count left standing beside the "
+      "enumeration that replaced it. **Reported, not edited.**")
     A("")
     A("---")
     A("")
@@ -843,11 +1101,22 @@ def main():
       "**W = 108 days** · **H = 91 days** · **Zero API calls** · **Counts only**")
     B("")
     wcf = inv["what_can_actually_fail"]
-    B("> **RERUN against `decisions/0077`.** That entry fixes the column names, states the "
-      "discovery-channel overlap's two populations and restates position 3's drop set. **None of "
-      "the three touches the assertion set, and no result in this report moves** — it is "
-      "regenerated rather than carried forward, so the diff can confirm that rather than assume "
-      "it.")
+    B("> **RERUN against `decisions/0078`, `0079` and `0080`.** Two of the three reach this "
+      "report and both are structural rather than numerical. **`0079` B6: every invariant result "
+      "names the build it was measured on** — build " + BT + ", defined in full in the waterfall "
+      "deliverable §0. **`0080` §3: every invariant names the population it runs on and accounts "
+      "for every row in it**, reporting `rows_asserted + rows_not_asserted = "
+      "rows_in_the_stated_population`. **No invariant result moves**; the coverage of five of "
+      "them is now stated rather than chosen.")
+    B("")
+    B("> **Why that second one matters, in this report's own numbers.** `0080` §3 records that in "
+      "the previous dual run one arm asserted `p` on **19,042** rows — the *post-liveness* "
+      "Started-and-left count — against a *pre-liveness* non-S&L clause of **177,513**, summing "
+      "to **196,555 against a 196,654-row table**. **99 rows were covered by neither clause, and "
+      "those 99 are exactly the started-and-left liveness exclusions.** Neither report disclosed "
+      "the gap and no control could see it. **This report states both clauses and their sum for "
+      "every check** — see the coverage table below, where `p` reads **19,141 + 177,513 = "
+      "196,654** and the post-liveness 19,042 appears only as a labelled contrast.")
     B("")
     B("> **EVERY INVARIANT CARRIES A LABEL** (`decisions/0068`). **A code check catches an "
       "implementation that computed something wrongly; it cannot fail on any data, and it is NOT "
@@ -876,28 +1145,53 @@ def main():
       "deliverable, and nothing is asserted. Step 8's own bullet already called it *\"an "
       "implementation check, not a data check\"*.")
     B("")
-    B("| # | Invariant | Label | Coverage | Result |")
-    B("| :-- | :--- | :--- | ---: | :--- |")
+    B("| # | Invariant | Label | Result |")
+    B("| :-- | :--- | :--- | :--- |")
     for i, it in enumerate(inv["invariants"], 1):
-        covk = next((k for k in it if k.startswith("coverage")), None)
-        cov = n(it[covk]) if covk else "—"
-        B(f"| {i} | {it['name']} | **{it['label']}** | {cov} | "
+        B(f"| {i} | {it['name']} | **{it['label']}** | "
           f"{'PASS' if it['passed'] else '**FAIL**'} |")
     B("")
+    B("## Coverage — every invariant names its population and accounts for every row in it")
+    B("")
+    B("**`decisions/0080` §3.** This is the provenance rule applied to invariants: **an invariant "
+      "that passes on one population and was never run on another reads as a pass on both**, and "
+      "**a passing invariant whose coverage the instance chose is a code check on the instance's "
+      "choice.** The identity `asserted + not asserted = population` must hold on every stated "
+      "population.")
+    B("")
+    B("| # | Invariant | Population(s) as specified | Identity |")
+    B("| :-- | :--- | :--- | :--- |")
+    for i, it in enumerate(inv["invariants"], 1):
+        ids = inv["coverage_identities"][it["name"]]
+        cells = "; ".join(f"{k} — `{v}`" for d in ids for k, v in d.items())
+        B(f"| {i} | {it['name'][:52]}… | {it['population'].split('.')[0][:150]} | {cells} |")
+    B("")
+    B(f"**{inv['coverage_identity_checks_run']} coverage identities were checked and all hold: "
+      f"{inv['all_coverage_identities_hold']}.** The run asserts this, so a report that omitted a "
+      "population could not be written by this pipeline. " + btx("every count in this table")
+      + ".")
+    B("")
+
+    def render(node, ind=0):
+        pad = "    " * ind
+        for k2, v2 in node.items():
+            if isinstance(v2, dict):
+                B(f"{pad}- `{k2}`:")
+                render(v2, ind + 1)
+            elif isinstance(v2, list):
+                B(f"{pad}- `{k2}` = `{v2}`")
+            else:
+                B(f"{pad}- `{k2}` = `{v2}`")
+
     for i, it in enumerate(inv["invariants"], 1):
         B(f"### {i}. {it['name']}")
         B("")
         B(f"**{it['label']}.** {it['why']}")
         B("")
-        for k, v in it.items():
-            if k in ("name", "label", "why", "passed"):
-                continue
-            if isinstance(v, dict):
-                B(f"- `{k}`:")
-                for k2, v2 in v.items():
-                    B(f"    - `{k2}` = `{v2}`")
-            else:
-                B(f"- `{k}` = `{v}`")
+        B(f"**Population:** {it['population']}")
+        B("")
+        render({k: v for k, v in it.items()
+                if k not in ("name", "label", "why", "passed", "population")})
         B(f"- **result: {'PASS' if it['passed'] else 'FAIL'}**")
         B("")
     rec = inv["population_reconciliation"]
@@ -915,6 +1209,8 @@ def main():
         B(f"| **{k}** | {n(v['denominator'])} | {n(v['expected'])} | **{n(v['measured'])}** | "
           f"{n(v['measured_never_started'])} | {n(v['measured_started_and_left'])} | "
           f"{n(v['measured_accounts'])} |")
+    B("")
+    B(bt("every figure in this table"))
     B("")
     B(f"**It reconciles: {rec['reconciles']}.** Neither superseded answer was produced — ALT's "
       f"604 on APPLY: {rec['superseded_answers_not_produced']['ALT_604_on_APPLY']}; ALT-MATCHED's "
@@ -965,6 +1261,11 @@ def main():
                    "never-started, which rest on a real parsed history and are not violations. "
                    "Reported so the assertion's scope is visible rather than assumed."
        )(next(i for i in inv["invariants"] if i["name"].startswith("no access_denied"))))
+    B("")
+    B("")
+    B(f"*Every result in this report was measured on build {BT} — {lib.BUILD_NAME} "
+      "(`decisions/0079` B6). The full build record, with stage-file hashes and the git HEAD, is "
+      "in `artifacts/step8-waterfall-a.md` §0 and in the `.json` beside this file.*")
     B("")
     B("*Generated by `src/step8_a_6_emit.py` from `processed/step8/a/invariants.json`.*")
 

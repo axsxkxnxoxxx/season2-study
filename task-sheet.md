@@ -329,11 +329,10 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
 - [ ] **Enforce the set-membership drop rule**: an episode whose `number` is not in the season's listed set `E` is dropped. This is an implementation check, not a data check — under set membership `|D| ≤ L` holds by construction
 - [ ] **Every boundary test is the half-open UTC-instant form** of Step 1 §2.4. `date(watched_at) <= T1` must not appear anywhere in the implementation
 - [ ] **THE LIVENESS SILENCE TEST IS STRICT.** The rule is *"no insertion instant **after** `τ1`"*, so a pair is silent iff it has **no insertion instant `> τ1`** — an instant falling exactly **at** `τ1` is **not** after it and does **not** make the account live. **Stated here, in the step that applies the rule** (`0068`); it was determinable from the rule text and said nowhere in Step 8. **AND THE EVIDENCE IS RESTRICTED TO RECORDS DATED BEFORE `τ_pull`.** Human Lead ruling, 2026-08-13 (`0070`). **This is applying an existing ruling consistently, not a new one:** **D11, approved at the Step 1 gate, makes `τ_pull` a global frozen cutoff and discards records at or after it from EVERY computation** — and the silence test is a computation. **The unstated version produced the reported-not-reconciled 792 (A) against 791 (B) at Step 7**, where one arm applied the restriction and the other did not. **Measured before ruling, and it does not disturb the approved gate: exclusions are 703 on APPLY and 99 on DERIV either way**, because no insertion instant exceeds the clamp at 2026-08-10T20:48Z and D10 already forces `τ1 ≤ τ_pull − 91 d`.
-- [ ] **THE COLUMN SET IS ENUMERATED, NOT COUNTED — 87 NAMES, EXACTLY THESE.** Human Lead ruling,
-      2026-08-13 (`0080`), replacing `0077` §3's count. **The arms converged on these names this run,
-      but CONVERGED IS NOT SPECIFIED and nothing prevents the next run from diverging.** **Step 8b's
-      schema is built on this vocabulary, so it is fixed before the schema exists.** Emit exactly these,
-      no more and no fewer:
+- [ ] **THE COLUMN SET IS ENUMERATED, NOT COUNTED — 88 NAMES, EXACTLY THESE.** Human Lead ruling,
+      2026-08-13 (`0080`, extended to 88 by `0081`), replacing `0077` §3's count. **Converged is not
+      specified**, and **Step 8b's schema is built on this vocabulary**, so it is fixed before the
+      schema exists. Emit exactly these, no more and no fewer:
       `abandonment_point_p`, `action_count_s1_checkin`, `action_count_s1_other`, `action_count_s1_scrobble`
       `action_count_s1_watch`, `action_count_s2_checkin`, `action_count_s2_other`, `action_count_s2_scrobble`
       `action_count_s2_watch`, `air_period`, `cadence_boundary_distance_days`, `cadence_bucket`
@@ -353,18 +352,18 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
       `show_certification`, `show_comment_count`, `show_country`, `show_first_aired`
       `show_genres`, `show_language`, `show_languages`, `show_rating`
       `show_runtime`, `show_status`, `show_subgenres`, `show_trakt_id`
-      `show_votes`, `show_year`, `size_quintile`, `size_quintile_per_year`
-      `size_quintile_raw_count`, `t0_binding_term`, `t0_date`, `tau1`
-      `tau2`, `title`, `user_idx`
-      **Three columns one arm emitted are DROPPED by this list**: `f2_in_A_H` (derivable —
-      `max_episode_in_A_H == s2_F`), `max_episode_in_A`, and **`silent_at_tau1`**. ***Stated because it
-      is a real loss, not a tidy-up:*** **`silent_at_tau1` is NOT recoverable from `live` and `outcome`
-      on Continued rows** — `live` is true for every Continued pair regardless of silence — **so
-      dropping it means the count of Continued-and-silent pairs cannot be recomputed from this table.**
-      That count is **652**, the size of the outcome-conditioning, which is what closed the rule
-      objection at `0063` §1 and publishes as a Step 14 limitation. **It remains recomputable from the
-      Step 7 masks; it is no longer recomputable from Step 8's table.** **Add it back and the set is 88
-      if that trade is not wanted.**
+      `show_votes`, `show_year`, `silent_at_tau1`, `size_quintile`
+      `size_quintile_per_year`, `size_quintile_raw_count`, `t0_binding_term`, `t0_date`
+      `tau1`, `tau2`, `title`, `user_idx`
+      **`silent_at_tau1` is IN the set** (`0081`). **It is the only way to recompute the
+      Continued-and-silent count from this table**: the liveness rule's second conjunct is
+      `NOT Continued`, so **`live` is true for every Continued pair regardless of silence.** That count
+      is **652** — the size of the outcome-conditioning, the figure that closed the rule objection at
+      `0063` §1, and a published Step 14 limitation. **Its input living in Step 7's working files rather
+      than in this table is the same shape as the position-3 drop set, which `0079` ruled must be a
+      deliverable rather than a working file. Same argument, same fix.**
+      **Two columns stay DROPPED and both are free:** **`f2_in_A_H`**, derivable as
+      `max_episode_in_A_H == s2_F`, and **`max_episode_in_A`**, read by nothing downstream.
 - [ ] **COLUMN NAMES ARE FIXED, NOT LEFT TO THE INSTANCE.** Human Lead ruling, 2026-08-13 (`0077`).
       The rerun produced **88 columns against 87 for the SAME CONTENTS** — `in_population_APPLY` against
       `in_apply`, `n_rec_s1_watch` against `action_count_s1_watch`, `tau1_utc` against `tau1`,
@@ -382,8 +381,12 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
       `s1_completion_date`** — lower-case `t0`, no `_utc` suffix, since **every instant in this study is
       UTC by Step 1 §2.4 and a suffix on some columns implies the others are not.**
       **Keep both instances' extra columns**: **`has_s3_or_later_evidence`** (D4 reads it) and
-      **`s1_completion_used_a_post_cutoff_record`** (the D11 question at position 3 reads it). **The
-      table is 89 columns.**
+      **`s1_completion_used_a_post_cutoff_record`** (the D11 question at position 3 reads it).
+      ~~**The table is 89 columns.**~~ ***SUPERSEDED — the count is replaced by the ENUMERATION above
+      (`0080`, extended to 88 by `0081`). BOTH Step 8 instances reported this sentence still reading as
+      current one bullet below its replacement*** — the shape `0067` fixed at line 258 and `0076` fixed
+      in the `p` heading. **`f2_in_A_H`, named in the adopted list above, is DROPPED as derivable**
+      (`max_episode_in_A_H == s2_F`).
 - [ ] **THE TABLE IS THE POSITION-5 ROW SET: 196,654 rows on APPLY, with `live` and `outcome` AS
       COLUMNS.** Human Lead ruling, 2026-08-13 (`0074`). **Both readings of "one row per pair" give
       identical counts** — the dual run produced 195,951 × 86 at position 7 and 196,654 × 87 at position

@@ -41,9 +41,39 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from step8_b_build_id import BUILD, provenance_block, stamp
+
 ROOT = Path("/Users/alyanashantel/Documents/season2-study")
 P2, P5 = ROOT / "processed" / "step2", ROOT / "processed" / "step5"
 OUT = ROOT / "processed" / "step8" / "b"
+
+# decisions/0080 Sec 1 -- THE COLUMN SET IS ENUMERATED, NOT COUNTED. 87 names,
+# exactly these, no more and no fewer. Transcribed from task-sheet.md Step 8.
+COLUMNS_87 = [
+    "abandonment_point_p", "action_count_s1_checkin", "action_count_s1_other",
+    "action_count_s1_scrobble", "action_count_s1_watch", "action_count_s2_checkin",
+    "action_count_s2_other", "action_count_s2_scrobble", "action_count_s2_watch",
+    "air_period", "cadence_boundary_distance_days", "cadence_bucket",
+    "completers_per_year", "discovered_channel_a", "discovered_channel_b",
+    "e1_internal_gap", "e1_starts_at_1", "e2_internal_gap", "e2_starts_at_1",
+    "exclusion", "gap_days", "has_s3_or_later_evidence", "in_apply", "in_deriv",
+    "live", "max_episode_in_A_H", "max_season_number", "n_A", "n_A_H", "outcome",
+    "pool_completers", "pool_completers_proxy", "s1_E", "s1_F", "s1_L",
+    "s1_aired_episodes_reported", "s1_aired_lt_listed", "s1_completion_date",
+    "s1_completion_used_a_post_cutoff_record", "s1_count_disagreement",
+    "s1_episode_count_reported", "s1_exposure_years", "s1_finale_date",
+    "s1_premiere_date", "s1_season_first_aired", "s1_total_runtime", "s2_E", "s2_F",
+    "s2_L", "s2_aired_episodes_reported", "s2_aired_lt_listed", "s2_count_disagreement",
+    "s2_episode_count_reported", "s2_finale_date", "s2_finale_year", "s2_premiere_date",
+    "s2_season_first_aired", "s2_span_days", "s2_total_runtime", "s2_weekly_span_days",
+    "season_numbers", "seasons_returned", "show_aired_episodes", "show_airs_day",
+    "show_certification", "show_comment_count", "show_country", "show_first_aired",
+    "show_genres", "show_language", "show_languages", "show_rating", "show_runtime",
+    "show_status", "show_subgenres", "show_trakt_id", "show_votes", "show_year",
+    "size_quintile", "size_quintile_per_year", "size_quintile_raw_count",
+    "t0_binding_term", "t0_date", "tau1", "tau2", "title", "user_idx",
+]
+assert len(COLUMNS_87) == 87 and len(set(COLUMNS_87)) == 87
 
 TAU_PULL = 1786406400          # 2026-08-11T00:00:00Z, decisions/0011
 DAY = 86400
@@ -103,6 +133,11 @@ def main() -> None:
                "retained_pairs": int(line1.sum()), "removed_pairs": 0,
                "retained_users": int(len(np.unique(u_idx))),
                "retained_shows": int(len(np.unique(s_idx))),
+               "INERT": True,
+               "inert_reason": ("line 1 is ALREADY the frame. This position CANNOT FIRE; it is "
+                                "not evidence that the frame found nothing (decisions/0079 "
+                                "Sec 4). Kept because removing a position removes the check "
+                                "that would catch a future upstream change"),
                "note": ("line 1 is the S1-completer population, ruled at 220,107 by "
                         "decisions/0068; no instance chooses a base")})
     assert int(line1.sum()) == 220_107, int(line1.sum())
@@ -116,6 +151,12 @@ def main() -> None:
                "shows_examined": n_shows,
                "retained_users": int(len(np.unique(u_idx[line2]))),
                "retained_shows": int(len(np.unique(s_idx[line2]))),
+               "INERT": True,
+               "inert_reason": ("line 1 is already the L2 > 1 S1-completer population "
+                                "(decisions/0068), AND 0 of the 1,138 frame shows have "
+                                "L2 = 1. This position CANNOT FIRE. An unlabelled always-zero "
+                                "filter reads as evidence THE RULE FOUND NOTHING when it is "
+                                "evidence THE RULE CANNOT FIRE (decisions/0079 Sec 4)"),
                "coverage_note": ("0 of 1,138 frame shows have L2 = 1: this line is a "
                                  "measured zero on a examined population, not an empty check")})
 
@@ -125,6 +166,23 @@ def main() -> None:
                "removed_pairs": int((line2 & ~line3).sum()),
                "retained_users": int(len(np.unique(u_idx[line3]))),
                "retained_shows": int(len(np.unique(s_idx[line3]))),
+               "INERT": True,
+               "inert_reason": ("THE POSITION IS INERT; THE RULE IS NOT. Line 1 is already the "
+                                "S1-completer population (decisions/0068), so the position "
+                                "CANNOT FIRE -- but the S1 completion rule removes 58,345 "
+                                "pairs UPSTREAM of line 1, which is the study's largest single "
+                                "exclusion and is why its drop set is a deliverable "
+                                "(decisions/0079 Sec 1 and Sec 4). Reading this 0 as 'the rule "
+                                "found nothing' is exactly the misreading the label exists to "
+                                "prevent"),
+               "the_rules_drop_set_upstream_of_line_1": {
+                   "pairs": 58345,
+                   "file": "processed/step8/b/position3_drop_set.csv.gz",
+                   "provenance_of_the_ruled_figure": ("58,345 pairs -- position-3 rule, "
+                                                      "position-5 build of 2026-08-13 "
+                                                      "(decisions/0078); reproduced on this "
+                                                      "build"),
+               },
                "note": ("removes 0 by construction: decisions/0068 defines line 1 as the "
                         "S1-completer population, so the rule has already bound at line 1. "
                         "The rule was nevertheless computed independently at stage 1 "
@@ -189,6 +247,7 @@ def main() -> None:
     line4_step5 = s5[3]          # Step 5 line 4 -- the DERIV base before D10
 
     wf.append({"position": 4, "filter": "contamination exclusion (Step 5, decisions/0021)",
+               "INERT": False,
                "retained_pairs": int(line4.sum()),
                "removed_pairs": int((line3 & contam_excl).sum()),
                "removed_all_S2_evidence_air_date_stamped": int((line3 & all_air).sum()),
@@ -379,6 +438,7 @@ def main() -> None:
     K = keep_main
     line5, line6 = K["line5"], K["line6"]
     wf.append({"position": 5, "filter": "right-censoring",
+               "INERT": False,
                "retained_pairs": int(line5.sum()),
                "removed_pairs": int((line4 & ~line5).sum()),
                "removed_by_max_W_91_term": int((line4 & ~K["term1"]).sum()),
@@ -390,6 +450,7 @@ def main() -> None:
                "retained_users": int(len(np.unique(u_idx[line5]))),
                "retained_shows": int(len(np.unique(s_idx[line5])))})
     wf.append({"position": 6, "filter": "liveness (ALT-BROAD, approved 0064)",
+               "INERT": False,
                "retained_pairs": int(line6.sum()),
                "removed_pairs": int((line5 & ~line6).sum()),
                "outcome_conditional": True,
@@ -403,6 +464,12 @@ def main() -> None:
                "retained_shows": int(len(np.unique(s_idx[line6])))})
     wf.append({"position": 7, "filter": "outcome assignment (two instants)",
                "retained_pairs": int(line6.sum()), "removed_pairs": 0,
+               "INERT": True,
+               "inert_reason": ("outcome assignment ANNOTATES AND REMOVES NOTHING (0046), so "
+                                "this position cannot fire. Labelled per decisions/0079 Sec 4; "
+                                "it is also what permits position 6 to be outcome-conditional, "
+                                "since a filter that removes no rows cannot make per-filter "
+                                "sample sizes depend on the ordering"),
                "note": "an annotation, not a filter: it removes no rows",
                "retained_users": int(len(np.unique(u_idx[line6]))),
                "retained_shows": int(len(np.unique(s_idx[line6])))})
@@ -416,16 +483,40 @@ def main() -> None:
                                    "adopted exclusion plus the three line-4 restrictions "
                                    "(has_s2, T0 not contaminated, completing record not "
                                    "post-dated) that define the DERIV base"),
-         "retained_pairs": int(line4_step5.sum()),
+         "retained_pairs": int(line4_step5.sum()), "INERT": False,
          "removed_pairs": int((line3 & ~line4_step5).sum()),
          "step5_line_by_line": STEP5_WATERFALL[:4]},
         {"position": 5, "filter": "right-censoring", "retained_pairs": int(d5.sum()),
-         "removed_pairs": int((line4_step5 & ~d5).sum())},
-        {"position": 6, "filter": "liveness", "retained_pairs": int(d6.sum()),
+         "INERT": False, "removed_pairs": int((line4_step5 & ~d5).sum())},
+        {"position": 6, "filter": "liveness", "retained_pairs": int(d6.sum()), "INERT": False,
          "removed_pairs": int((d5 & ~d6).sum()), "outcome_conditional": True},
         {"position": 7, "filter": "outcome assignment", "retained_pairs": int(d6.sum()),
-         "removed_pairs": 0},
+         "removed_pairs": 0, "INERT": True,
+         "inert_reason": "outcome assignment annotates and removes nothing (0046)"},
     ]
+    # decisions/0079 Sec 2 -- every waterfall FIGURE carries the build it was measured on.
+    for w in wf:
+        stamp(w)
+    for w in R["waterfall_DERIV"]:
+        stamp(w)
+    R["inert_positions"] = {
+        "ruling": ("decisions/0079 Sec 4 -- positions 1, 2, 3 and 7 remove ZERO BY "
+                   "CONSTRUCTION. KEEP THEM AND LABEL THEM INERT, WITH THE REASON"),
+        "positions": [1, 2, 3, 7],
+        "why_kept": ("removing a position removes the check that would catch a future upstream "
+                     "change, and the point of a fixed order is that the waterfall is "
+                     "comparable across runs and across arms"),
+        "why_labelled": ("an unlabelled always-zero filter reads as evidence THE RULE FOUND "
+                         "NOTHING when it is evidence THE RULE CANNOT FIRE -- the same defect "
+                         "as an unlabelled code check (0069)"),
+        "reasons": {"1": "line 1 is already the frame",
+                    "2": ("line 1 is already the L2 > 1 S1-completer population (0068), and 0 "
+                          "of 1,138 frame shows have L2 = 1"),
+                    "3": ("same -- BUT THE RULE IS NOT INERT: it removes 58,345 pairs upstream "
+                          "of line 1, which is why its drop set is a deliverable"),
+                    "7": "outcome assignment annotates and removes nothing (0046)"},
+        "measured_on_build": BUILD,
+    }
     assert int(line5.sum()) == 196_654, int(line5.sum())
     assert int(d5.sum()) == 147_370, int(d5.sum())
 
@@ -476,17 +567,40 @@ def main() -> None:
                 "NEITHER": sum(1 for a, bb in flags if not a and not bb)}
 
     accts5 = np.unique(u_idx[line5])
+    pa, pb = in_a_u[u_idx][line5], in_b_u[u_idx][line5]
+    pairs_split = {"n": int(line5.sum()),
+                   "channel_A_only": int((pa & ~pb).sum()),
+                   "channel_B_only": int((pb & ~pa).sum()),
+                   "BOTH": int((pa & pb).sum()),
+                   "NEITHER": int((~pa & ~pb).sum())}
     R["discovery_channel"] = {
         "form": "TWO BOOLEAN COLUMNS, not one categorical (decisions/0070 ruling 3)",
         "every_figure_states_its_population": (
             "decisions/0077 Sec 1 -- 0070 ruling 3 stated '324 users' with NO POPULATION. "
-            "Both populations are measured here rather than restated"),
+            "All readings are measured here rather than restated"),
+        "PUBLISH_IN_BOTH_UNITS_EACH_WITH_ITS_CONSUMER": (
+            "decisions/0079 Sec 3 -- picking one unit leaves the other consumer holding a "
+            "WRONG-UNIT figure. All three readings publish, each with its consumer named"),
+        "consumers": {
+            "step3_discovery_pool": ("DISCOVERY-POOL USERNAMES. Consumer: Step 3's "
+                                     "seeding-bias statement and Step 14 ledger item 1 -- the "
+                                     "POOL's composition"),
+            "accounts_pulled_step4_complete": ("ACCOUNTS PULLED. Consumer: Step 4 coverage "
+                                               "reporting"),
+            "accounts_in_the_APPLY_position5_population": (
+                "ACCOUNTS and PAIRS in the position-5 population. Consumer: STEP 11, which "
+                "recomputes the headline within each channel and therefore cuts THE ANALYSIS "
+                "POPULATION, NOT THE POOL. 0079 Sec 3 corrects the mapping dictated in the "
+                "ruling, which had assigned Step 11 to the pool: the headline is over pairs on "
+                "the position-5 row set"),
+        },
         "step3_discovery_pool": _split([(bool(d["in_a"]), bool(d["in_b"]))
                                         for d in pool_rows]),
         "accounts_pulled_step4_complete": _split([pool.get(k, (False, False))
                                                   for k in pulled]),
         "accounts_in_the_APPLY_position5_population": _split(
             [(bool(in_a_u[i]), bool(in_b_u[i])) for i in accts5]),
+        "PAIRS_in_the_APPLY_position5_population": pairs_split,
         "pool_file_rows_vs_distinct_slugs": {
             "rows": len(pool_rows),
             "distinct_slugs_case_insensitive": len({d["slug"].lower() for d in pool_rows}),
@@ -530,7 +644,6 @@ def main() -> None:
         "t0_binding_term": binds[sel],
         "tau1": K["tau1"][sel], "tau2": K["tau2"][sel],
         "n_A": nA[sel], "n_A_H": nAH[sel],
-        "f2_in_A_H": K["f2_in_AH"][sel],
         "max_episode_in_A_H": m_H[sel],
         "has_s3_or_later_evidence": has_s3[sel],
         "s1_completion_used_a_post_cutoff_record": comp_post_cutoff[sel],
@@ -540,6 +653,11 @@ def main() -> None:
     show_cols = [c for c in frame.columns if c != "show_trakt_id"]
     tab = tab.merge(frame[["show_trakt_id"] + show_cols], on="show_trakt_id", how="left")
     assert len(tab) == int(sel.sum())
+
+    # decisions/0080 Sec 1 -- EXACTLY the 87 enumerated names, no more and no fewer.
+    emitted, ruled = set(tab.columns), set(COLUMNS_87)
+    assert emitted == ruled, {"extra": sorted(emitted - ruled), "missing": sorted(ruled - emitted)}
+    tab = tab[COLUMNS_87]
     tab.to_csv(OUT / "analysis_table.csv.gz", index=False, compression="gzip")
     R["analysis_table"] = {
         "path": "processed/step8/b/analysis_table.csv.gz",
@@ -555,39 +673,46 @@ def main() -> None:
         "column_names": list(tab.columns),
         "action_is_counts_not_a_column": True,
         "discovery_channel_is_two_booleans": True,
-        "column_names_are_fixed_by_0077": {
-            "rule": ("use the spec's own vocabulary at the point the spec defines the thing; "
-                     "where the spec does not name it, prefer the more explicit form"),
-            "adopted_names_present": {
-                nm: bool(nm in tab.columns) for nm in
-                ["in_apply", "in_deriv", "tau1", "tau2", "n_A", "n_A_H",
-                 "max_episode_in_A_H", "f2_in_A_H", "action_count_s1_watch",
-                 "action_count_s1_scrobble", "action_count_s1_checkin",
-                 "action_count_s1_other", "action_count_s2_watch",
-                 "action_count_s2_scrobble", "action_count_s2_checkin",
-                 "action_count_s2_other", "discovered_channel_a", "discovered_channel_b",
-                 "t0_binding_term", "t0_date", "s1_completion_date",
-                 "has_s3_or_later_evidence", "s1_completion_used_a_post_cutoff_record",
-                 "live", "outcome"]},
+        "column_set_is_ENUMERATED_by_0080": {
+            "ruling": ("decisions/0080 Sec 1 -- THE COLUMN SET IS ENUMERATED, NOT COUNTED: 87 "
+                       "NAMES, EXACTLY THESE, replacing 0077 Sec 3's count. The arms converged "
+                       "on these names but CONVERGED IS NOT SPECIFIED, and Step 8b's schema is "
+                       "built on this vocabulary, so it is fixed before the schema exists"),
+            "names_ruled": 87,
+            "names_emitted": int(len(tab.columns)),
+            "exact_match_to_the_enumerated_list": sorted(tab.columns) == sorted(COLUMNS_87),
+            "emitted_in_the_enumerated_order": list(tab.columns) == COLUMNS_87,
+            "changed_from_this_arms_previous_run": {
+                "dropped": ["f2_in_A_H"],
+                "why": ("0080 drops it as DERIVABLE -- f2_in_A_H == (max_episode_in_A_H == "
+                        "s2_F) -- and this arm emitted it, so this run removes it. The arm's "
+                        "previous 88 becomes 87"),
+                "added": [],
+            },
+            "what_the_87_drops_and_the_loss_it_carries": (
+                "0080 Sec 2: three columns are dropped, one arm each. f2_in_A_H and "
+                "max_episode_in_A are cheap. silent_at_tau1 is NOT: it is not recoverable from "
+                "`live` and `outcome` on Continued rows, because `live` is true for every "
+                "Continued pair regardless of silence, so THE COUNT OF CONTINUED-AND-SILENT "
+                "PAIRS (652 -- the size of the outcome-conditioning, which closed the rule "
+                "objection at 0063 Sec 1 and publishes as a Step 14 limitation) CANNOT BE "
+                "RECOMPUTED FROM THIS TABLE. It remains recomputable from the Step 7 masks. "
+                "This arm did not emit that column on either run, so nothing is lost HERE that "
+                "was not already absent -- but the loss is real and is stated at the point of "
+                "use rather than buried"),
+            "residual_defect_in_the_spec": (
+                "task-sheet.md Step 8 still carries 0077's bullet ending 'The table is 89 "
+                "columns' immediately below 0080's enumerated 87. 0080 says in terms that it "
+                "REPLACES 0077 Sec 3's count, and both figures 0077 names -- "
+                "has_s3_or_later_evidence and s1_completion_used_a_post_cutoff_record -- are "
+                "IN the enumerated 87, so the later ruling is self-consistent and is followed. "
+                "REPORTED as a live contradiction between two adjacent bullets in the spec, "
+                "not silently resolved"),
             "superseded_forms_absent": {
                 nm: bool(nm not in tab.columns) for nm in
                 ["in_population_APPLY", "n_rec_s1_watch", "tau1_utc", "tau2_utc",
-                 "max_episode_in_AH", "T0_binding_term", "action", "discovery_channel"]},
-            "count_ruled": 89,
-            "count_emitted": int(len(tab.columns)),
-            "THE_89_IS_NOT_REACHABLE_FROM_THE_NAMED_LIST": (
-                "REPORTED AS A DEFECT, NOT WORKED AROUND. 0077 Sec 3 fixes the names and "
-                "states 89 columns, keeping 'both instances' extra columns' and naming TWO: "
-                "has_s3_or_later_evidence and s1_completion_used_a_post_cutoff_record. This "
-                "instance's previous run emitted 87 columns INCLUDING the second of those; "
-                "adding the first gives 88. Reaching 89 requires ONE FURTHER COLUMN THAT "
-                "0077 DOES NOT NAME. Set arithmetic on the figures 0077 itself gives -- "
-                "88 against 87, union 89 -- implies an intersection of 86 and therefore one "
-                "unnamed column on the other arm; the alternative reading is that 89 was "
-                "formed as 87 + 2 while the 87 already contained one of the two. Either way "
-                "an isolated instance cannot identify it from any surface it is permitted to "
-                "read, and INVENTING a column to hit the count would produce a different "
-                "89th and make the diff worse, not better. 88 emitted, defect reported"),
+                 "max_episode_in_AH", "T0_binding_term", "action", "discovery_channel",
+                 "f2_in_A_H", "max_episode_in_A", "silent_at_tau1"]},
         },
     }
 
@@ -875,6 +1000,25 @@ def main() -> None:
              has_s3=has_s3, has_any_s2_record=has_any_s2_record,
              in_a=in_a_u[u_idx], in_b=in_b_u[u_idx], m_H=m_H,
              first_s2=first_s2, loc_ok=loc_ok, comp_date_mid=comp_date_mid)
+
+    # =====================================================================
+    # PROVENANCE -- decisions/0078 and 0079 Sec 2. EVERY count group, EVERY
+    # waterfall figure and EVERY per-arm result names the build it was measured
+    # on. Partial application is worse than none: two labelled figures imply the
+    # rest did not need it.
+    # =====================================================================
+    R["provenance"] = provenance_block()
+    for k, v in R.items():
+        if isinstance(v, dict) and k != "provenance":
+            stamp(v)
+    for v in req.values():
+        if isinstance(v, dict):
+            stamp(v)
+    for pop in ("APPLY", "DERIV"):
+        for arm in W_ARMS:
+            stamp(per_arm[pop][str(arm)])
+    for arm in W_ARMS:
+        stamp(censor_air[str(arm)])
 
     R["elapsed_s"] = time.time() - t
     (OUT / "results.json").write_text(json.dumps(R, indent=2, default=str))

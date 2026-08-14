@@ -41,6 +41,8 @@ import os
 import numpy as np
 import pandas as pd
 
+import step8_a_lib as lib
+
 ROOT = "/Users/alyanashantel/Documents/season2-study"
 P5 = os.path.join(ROOT, "processed/step5")
 P2 = os.path.join(ROOT, "processed/step2")
@@ -272,6 +274,9 @@ def main():
 
     summary = {
         "step": 8, "instance": "a", "stage": 1, "api_calls": 0,
+        "build": lib.build_record(),
+        "provenance_note": "EVERY COUNT IN THIS FILE WAS MEASURED ON BUILD " + lib.BUILD_TAG
+                           + " (decisions/0079 B6, extending 0078).",
         "what": "episode-level scan to pair-level primitives. GATE: adopts nothing.",
         "tau_pull_utc": "2026-08-11T00:00:00Z",
         "records_total": n_records,

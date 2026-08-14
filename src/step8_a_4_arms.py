@@ -49,6 +49,9 @@ def main():
     base_air_d = {p: int(((air == p) & pos4d).sum()) for p in periods}
 
     out = {"step": 8, "instance": "a", "stage": 4, "api_calls": 0, "H_days": H,
+           "build": lib.build_record(),
+           "provenance_note": "EVERY COUNT IN THIS FILE, AT EVERY ARM, WAS MEASURED ON BUILD "
+                              + lib.BUILD_TAG + " (decisions/0079 B6, extending 0078).",
            "arm_grid": ARMS,
            "arm_grid_source": "decisions/0075 and task-sheet Step 13, the first statement of the "
                               "grid anywhere. Not this instance's choice.",
@@ -105,6 +108,7 @@ def main():
 
         entry = {
             "W_days": W,
+            "build": lib.BUILD_TAG,
             "position_5_APPLY": int(pos5.sum()),
             "position_5_DERIV": int(pos5d.sum()),
             "right_censoring_two_lines_APPLY": {

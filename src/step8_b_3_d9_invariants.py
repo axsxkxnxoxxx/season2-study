@@ -43,6 +43,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from step8_b_build_id import BUILD, provenance_block, stamp
+
 ROOT = Path("/Users/alyanashantel/Documents/season2-study")
 P2, P4, P5 = (ROOT / "processed" / "step2", ROOT / "processed" / "step4",
               ROOT / "processed" / "step5")
@@ -302,6 +304,10 @@ def main() -> None:
 
     # ------------------------------------------------------------------ D9
     D9 = d9(m, frame, st1)
+    stamp(D9)
+    stamp(D9["half_b_silently_deleted_S1_failing_counterparts"])
+    for v in D9["half_a_fabricated_never_started_rows"].values():
+        stamp(v)
     (OUT / "d9.json").write_text(json.dumps(D9, indent=2))
     print(f"D9 done ({time.time()-t:.0f}s)", flush=True)
 
@@ -312,16 +318,25 @@ def main() -> None:
     nA, nAH = m["nA"], m["nAH"]
 
     # --- 1. outcome states partition the post-position-7 row set ----------
+    # decisions/0080 Sec 3 row 1: the population is the 196,654 position-5 row set
+    # AND the 195,951 live subset, BOTH STATED, plus the DERIV pair 147,370 /
+    # 147,271. The table carries all position-5 rows, so the partition holds on
+    # both and NEITHER SUBSTITUTES FOR THE OTHER.
     res = {}
-    for nm, msk in (("APPLY", line6), ("DERIV", m["deriv6"])):
+    for nm, msk in (("APPLY_position5_row_set", line5),
+                    ("APPLY_post_position_7_live_subset", line6),
+                    ("DERIV_position5_row_set", m["deriv5"]),
+                    ("DERIV_post_position_7_live_subset", m["deriv6"])):
         n = int(msk.sum())
         c = [int((msk & never).sum()), int((msk & contd).sum()), int((msk & sal).sum())]
         overlap = int((msk & ((never & contd) | (never & sal) | (contd & sal))).sum())
         unassigned = int((msk & ~(never | contd | sal)).sum())
-        res[nm] = {"post_position_7_rows": n, "never_started": c[0], "continued": c[1],
-                   "started_and_left": c[2], "sum": sum(c), "rows_in_two_states": overlap,
-                   "rows_in_no_state": unassigned, "passes": sum(c) == n and overlap == 0
-                                                             and unassigned == 0}
+        res[nm] = {"rows_in_the_stated_population": n, "never_started": c[0],
+                   "continued": c[1], "started_and_left": c[2], "sum": sum(c),
+                   "rows_in_two_states": overlap, "rows_in_no_state": unassigned,
+                   "rows_asserted": n, "rows_not_asserted": 0,
+                   "coverage_identity_holds": n + 0 == n,
+                   "passes": sum(c) == n and overlap == 0 and unassigned == 0}
     inv.append({
         "invariant": "outcome states are mutually exclusive and sum to the POST-POSITION-7 row set",
         "label": "CODE CHECK",
@@ -331,9 +346,19 @@ def main() -> None:
                                        "coded wrongly -- e.g. dropping the |A| >= 1 conjunct "
                                        "from Continued, which would put a day-150 starter "
                                        "completing by day 190 in two states at once"),
-        "population": "the rows remaining after outcome assignment, both populations",
+        "population": ("BOTH ROW SETS ON BOTH POPULATIONS (decisions/0080 Sec 3, row 1): the "
+                       "196,654 APPLY position-5 row set the table carries AND the 195,951 "
+                       "post-position-7 live subset, and the DERIV pair 147,370 / 147,271. "
+                       "Neither substitutes for the other -- an invariant that passes on one "
+                       "population and was never run on another READS AS A PASS ON BOTH"),
+        "coverage": {"unit": "rows",
+                     "identity_required": ("rows_asserted + rows_not_asserted = "
+                                           "rows_in_the_stated_population"),
+                     "holds_on_every_stated_population":
+                         all(v["coverage_identity_holds"] for v in res.values())},
         "result": res,
-        "passes": all(v["passes"] for v in res.values()),
+        "passes": all(v["passes"] for v in res.values())
+                  and all(v["coverage_identity_holds"] for v in res.values()),
     })
 
     # --- 2. filter counts decrease monotonically, coded >= ----------------
@@ -352,12 +377,32 @@ def main() -> None:
         "sequence_APPLY": seqA, "sequence_DERIV": seqD,
         "positions_removing_zero_APPLY": [i + 1 for i in range(1, len(seqA))
                                           if seqA[i] == seqA[i - 1]],
+        "population": ("BOTH CHAINS (decisions/0080 Sec 3, row 2): APPLY's seven positions and "
+                       "DERIV's seven"),
+        "coverage": {"unit": "filter positions",
+                     "APPLY": {"positions_in_the_chain": len(seqA),
+                               "transitions_asserted": len(seqA) - 1,
+                               "transitions_not_asserted": 0},
+                     "DERIV": {"positions_in_the_chain": len(seqD),
+                               "transitions_asserted": len(seqD) - 1,
+                               "transitions_not_asserted": 0},
+                     "identity_holds": True},
         "passes": all(seqA[i] <= seqA[i - 1] for i in range(1, len(seqA)))
-                  and all(seqD[i] <= seqD[i - 1] for i in range(1, len(seqD))),
+                  and all(seqD[i] <= seqD[i - 1] for i in range(1, len(seqD)))
+                  and len(seqA) == 7 and len(seqD) == 7,
     })
 
     # --- 3. distinct episodes never exceed season length ------------------
-    s2ok = bool((nAH[line5] <= L2[s_idx][line5]).all() and (nA[line5] <= nAH[line5]).all())
+    # decisions/0080 Sec 3 row 3: BOTH SEASONS, on EVERY PAIR THE SET-MEMBERSHIP
+    # RULE EXAMINES, with the pair count AND the record count stated. "The wider
+    # reading is required and the narrower does not substitute" -- so this runs on
+    # all 278,452 evidence-carrying pairs and not on the 196,654 table rows.
+    ev_pairs = b["all_ev_pairs"]
+    ev_s1, ev_s2 = b["all_ev_n_s1"], b["all_ev_n_s2"]
+    ev_show = (ev_pairs % m["n_shows"]).astype(np.int64)
+    viol_s1 = int((ev_s1 > L1[ev_show]).sum())
+    viol_s2 = int((ev_s2 > L2[ev_show]).sum())
+    n_ev = int(len(ev_pairs))
     inv.append({
         "invariant": "distinct episodes never exceed season length (|D| <= L)",
         "label": "CODE CHECK",
@@ -367,10 +412,36 @@ def main() -> None:
                                        "dropped, so D is a subset of E. It fails only if an "
                                        "implementation filtered by the numeric RANGE 1..F "
                                        "instead of by membership in E"),
-        "checked": {"max_|A_H|_minus_L2": int((nAH[line5] - L2[s_idx][line5]).max()),
-                    "rows_violating": int((nAH[line5] > L2[s_idx][line5]).sum()),
-                    "rows_examined": int(line5.sum())},
-        "passes": bool(s2ok),
+        "population": ("BOTH SEASONS, every pair the set-membership rule examines "
+                       "(decisions/0080 Sec 3, row 3). The narrower reading -- S2 only on the "
+                       "196,654 table rows -- DOES NOT SUBSTITUTE and is reported as a subset "
+                       "below, not as the check"),
+        "coverage": {
+            "unit": "pairs, and the records behind them",
+            "pairs_in_the_stated_population": n_ev,
+            "pairs_asserted_S1": n_ev, "pairs_asserted_S2": n_ev,
+            "pairs_not_asserted": 0,
+            "identity_holds": n_ev + 0 == n_ev,
+            "records_examined_by_the_set_membership_rule":
+                st1["drop_rule"]["records_examined"],
+            "pairs_examined_by_the_set_membership_rule": st1["drop_rule"]["pairs_examined"],
+            "records_dropped": st1["drop_rule"]["records_dropped"],
+        },
+        "checked": {
+            "S1_pairs_violating_|D1|_>_L1": viol_s1,
+            "S2_pairs_violating_|D2|_>_L2": viol_s2,
+            "max_|D1|_minus_L1": int((ev_s1 - L1[ev_show]).max()),
+            "max_|D2|_minus_L2": int((ev_s2 - L2[ev_show]).max()),
+            "narrower_reading_reported_not_substituted": {
+                "rows_examined": int(line5.sum()),
+                "rows_violating_|A_H|_>_L2": int((nAH[line5] > L2[s_idx][line5]).sum()),
+                "max_|A_H|_minus_L2": int((nAH[line5] - L2[s_idx][line5]).max()),
+                "rows_with_|A|_>_|A_H|": int((nA[line5] > nAH[line5]).sum()),
+            },
+        },
+        "passes": bool(viol_s1 == 0 and viol_s2 == 0
+                       and (nAH[line5] <= L2[s_idx][line5]).all()
+                       and (nA[line5] <= nAH[line5]).all()),
     })
 
     # --- 4. A subset of A_H on every row ----------------------------------
@@ -381,6 +452,11 @@ def main() -> None:
                                        "are prefixes of the same instant-ordered episode "
                                        "list; it can only catch the two sets being computed "
                                        "from different evidence, or tau2 computed below tau1"),
+        "population": ("the 196,654 APPLY position-5 row set, EVERY ROW (decisions/0080 Sec 3, "
+                       "row 4)"),
+        "coverage": {"unit": "rows", "rows_in_the_stated_population": int(line5.sum()),
+                     "rows_asserted": int(line5.sum()), "rows_not_asserted": 0,
+                     "identity_holds": True},
         "checked": {"rows_examined": int(line5.sum()),
                     "rows_with_|A|_>_|A_H|": int((nA[line5] > nAH[line5]).sum()),
                     "rows_with_tau2_<=_tau1": int((m["tau2"][line5] <= m["tau1"][line5]).sum())},
@@ -433,6 +509,18 @@ def main() -> None:
             "set_identity": ("the two implementations return the SAME (user, show) key set -- "
                              "checked as a set, not only as a count"),
         },
+        "population": ("the 196,654 APPLY position-5 row set, EVERY ROW, with the first-pass S1 "
+                       "completion date RECOMPUTED INDEPENDENTLY -- which is the only thing "
+                       "giving this one force (decisions/0080 Sec 3, row 5)"),
+        "coverage": {"unit": "rows", "rows_in_the_stated_population": int(sel.sum()),
+                     "rows_asserted": int((sel & have).sum()),
+                     "rows_not_asserted": int((sel & ~have).sum()),
+                     "rows_not_asserted_reason": ("rows the independent walk does not complete; "
+                                                  "if this is non-zero the two implementations "
+                                                  "disagree on the completer SET and that is "
+                                                  "itself the finding"),
+                     "identity_holds": int((sel & have).sum()) + int((sel & ~have).sum())
+                                       == int(sel.sum())},
         "clauses_on_the_position_5_population": {
             "rows_examined": int(sel.sum()),
             "T0_on_or_after_the_S2_finale_date": int((sel & ge_finale).sum()),
@@ -446,12 +534,19 @@ def main() -> None:
             "why": ("for those rows the invariant cannot tell a first-pass implementation "
                     "from a last-observed one"),
         },
-        "passes": bool((sel & have & ~(ge_finale & ge_comp & eq_one)).sum() == 0),
+        "passes": bool((sel & have & ~(ge_finale & ge_comp & eq_one)).sum() == 0
+                       and (sel & ~have).sum() == 0),
     })
 
     # --- 6. abandonment point in (0, 1] -----------------------------------
+    # decisions/0080 Sec 3 row 6, and Sec 3's worked example: the numerator must
+    # be taken at POSITION 5, not post-liveness. THIS ARM'S PREVIOUS RUN TOOK IT
+    # POST-LIVENESS -- 19,042 asserted against a 177,513 null clause, summing to
+    # 196,555 on a 196,654-row table, leaving 99 rows covered by NEITHER clause.
+    # Those 99 are exactly the started-and-left liveness exclusions. Fixed here:
+    # 19,141 + 177,513 = 196,654 exactly.
     p = m["p"]
-    psel = p[line6 & sal]
+    psel = p[line5 & sal]
     elsewhere = p[line5 & ~sal]
     inv.append({
         "invariant": "abandonment point p is in (0, 1] on every Started-and-left row, null elsewhere",
@@ -467,6 +562,26 @@ def main() -> None:
                                        "only on the withdrawn raw-ratio form p = m_H / L2, "
                                        "which can exceed 1 where S2 numbering has a gap"),
         "form": "p = |{e in E2 : e <= m_H}| / L2, rank form, read on A_H (0034)",
+        "population": ("ALL Started-and-left rows AT POSITION 5, null on the rest -- and the "
+                       "two must sum to the 196,654 position-5 row set EXACTLY "
+                       "(decisions/0080 Sec 3, row 6). DO NOT TAKE THE NUMERATOR POST-LIVENESS "
+                       "AND THE DENOMINATOR PRE-LIVENESS"),
+        "coverage": {
+            "unit": "rows",
+            "rows_in_the_stated_population": int(line5.sum()),
+            "rows_asserted_in_range_clause": int(len(psel)),
+            "rows_asserted_null_clause": int(len(elsewhere)),
+            "rows_not_asserted": int(line5.sum()) - int(len(psel)) - int(len(elsewhere)),
+            "identity_holds": int(len(psel)) + int(len(elsewhere)) == int(line5.sum()),
+            "corrected_this_run": ("this arm's previous run asserted the range clause on the "
+                                   "POST-LIVENESS 19,042 while the null clause ran on the "
+                                   "position-5 177,513 -- 196,555 against a 196,654-row table, "
+                                   "with 99 rows covered by NEITHER clause. Those 99 are "
+                                   "exactly the started-and-left liveness exclusions. That gap "
+                                   "is what decisions/0080 Sec 3 was written on, and it is "
+                                   "closed here"),
+            "started_and_left_rows_post_liveness_for_reference": int((line6 & sal).sum()),
+        },
         "checked": {"rows_examined": int(len(psel)), "min": float(np.nanmin(psel)),
                     "max": float(np.nanmax(psel)),
                     "rows_out_of_range": int(((psel <= 0) | (psel > 1)).sum()),
@@ -474,7 +589,8 @@ def main() -> None:
                     "non_started_and_left_rows_examined": int(len(elsewhere)),
                     "non_started_and_left_rows_that_are_NOT_null":
                         int((~np.isnan(elsewhere)).sum())},
-        "passes": bool(((psel > 0) & (psel <= 1)).all() and np.isnan(elsewhere).all()),
+        "passes": bool(((psel > 0) & (psel <= 1)).all() and np.isnan(elsewhere).all()
+                       and len(psel) + len(elsewhere) == int(line5.sum())),
     })
 
     # --- 7. DATA CHECK: no account dropped wholesale ----------------------
@@ -488,7 +604,15 @@ def main() -> None:
         only_nl = np.setdiff1d(accts_notlive, accts_live)
         # for the accounts that hold ONLY not-live pairs, how many pairs is that?
         sizes = np.bincount(u_idx[p5mask], minlength=int(u_idx.max()) + 1)
+        accts_all = np.unique(u_idx[p5mask])
         whole[nm] = {
+            "accounts_in_the_stated_population": int(len(accts_all)),
+            "accounts_asserted": int(len(accts_all)),
+            "accounts_not_asserted": 0,
+            "coverage_identity_holds": True,
+            "accounts_holding_only_live_pairs":
+                int(len(np.setdiff1d(accts_all, accts_notlive))),
+            "pairs_in_the_stated_population": int(p5mask.sum()),
             "accounts_supplying_at_least_one_not_live_pair": int(len(accts_notlive)),
             "accounts_holding_BOTH_a_live_and_a_not_live_pair": int(len(both)),
             "accounts_all_of_whose_pairs_are_not_live": int(len(only_nl)),
@@ -509,6 +633,14 @@ def main() -> None:
                             "exactly ZERO. CLAUDE.md and Step 7: 'One account can be live for "
                             "one show and not another. Never drop a user wholesale.' This can "
                             "fail on real data"),
+        "population": ("BOTH POPULATIONS, IN ACCOUNTS (decisions/0080 Sec 3, row 7): the "
+                       "accounts in APPLY's position-5 row set and the accounts in DERIV's, "
+                       "each reporting accounts holding both a live and a not-live pair"),
+        "coverage": {"unit": "accounts",
+                     "identity_required": ("accounts_asserted + accounts_not_asserted = "
+                                           "accounts_in_the_stated_population"),
+                     "holds_on_both_populations":
+                         all(v["coverage_identity_holds"] for v in whole.values())},
         "checked": whole,
         "reading": ("the accounts whose pairs are ALL not-live are not a counter-example: they "
                     "are mostly accounts holding a single pair in the population, for which "
@@ -542,6 +674,33 @@ def main() -> None:
     if len(contributes):
         ns_rows = int((line5 & never & np.isin(u_idx, contributes)).sum())
     pull_log = json.loads((ROOT / "logs" / "step4_pull_log.json").read_text())
+
+    # decisions/0080 Sec 3 row 8: the population is THE FULL ACCOUNT LEDGER, in
+    # ACCOUNTS, with the skipped classes counted SEPARATELY and the pairs they
+    # contribute STATED. Every ledger account is classified and asserted; none is
+    # left uncovered.
+    name_to_idx = {str(nm).lower(): i for i, nm in enumerate(users)}
+    per_class: dict = {}
+    asserted = 0
+    for outcome_name, keyset in sorted(
+            list(NOT_COMPLETE.items())
+            + [("complete", {k for k, d in led.items() if str(d.get("outcome")) == "complete"})]):
+        idxs = np.array(sorted({name_to_idx[k] for k in keyset if k in name_to_idx}),
+                        dtype=np.int64)
+        pairs = int((line5 & np.isin(u_idx, idxs)).sum()) if len(idxs) else 0
+        ns = int((line5 & never & np.isin(u_idx, idxs)).sum()) if len(idxs) else 0
+        per_class[outcome_name] = {
+            "accounts_in_the_ledger": len(keyset),
+            "of_those_present_in_the_parsed_sweep": int(len(idxs)),
+            "pairs_contributed_to_the_APPLY_position5_population": pairs,
+            "of_those_pairs_scored_NEVER_STARTED": ns,
+            "is_a_skipped_class": outcome_name != "complete",
+        }
+        asserted += len(keyset)
+    skipped_ns = sum(v["of_those_pairs_scored_NEVER_STARTED"]
+                     for k, v in per_class.items() if v["is_a_skipped_class"])
+    skipped_pairs = sum(v["pairs_contributed_to_the_APPLY_position5_population"]
+                        for k, v in per_class.items() if v["is_a_skipped_class"])
     inv.append({
         "invariant": ("NO access_denied OR SKIPPED ACCOUNT IS READ AS EMPTY -- no account "
                       "recorded access_denied, over-tolerance or otherwise skipped contributes "
@@ -553,6 +712,25 @@ def main() -> None:
                             "THE DIRECTION OF THE RESULT, which is the worst direction "
                             "available. Rule and evidence at "
                             "artifacts/step0-access-and-setup.md Sec 7"),
+        "population": ("THE FULL ACCOUNT LEDGER, IN ACCOUNTS (decisions/0080 Sec 3, row 8), "
+                       "with the skipped classes counted separately and the pairs they "
+                       "contribute stated"),
+        "coverage": {
+            "unit": "accounts",
+            "accounts_in_the_stated_population": len(led),
+            "accounts_asserted": asserted,
+            "accounts_not_asserted": len(led) - asserted,
+            "identity_holds": asserted == len(led),
+            "by_final_ledger_outcome": per_class,
+            "skipped_classes_total_pairs_contributed": skipped_pairs,
+            "skipped_classes_total_never_started_pairs_contributed": skipped_ns,
+            "a_second_class_checked_separately": {
+                "parsed_accounts_with_no_ledger_row_at_all": len(idx_unknown),
+                "why": ("an account present in the parsed sweep but absent from the ledger "
+                        "would be covered by no ledger class, so it is counted rather than "
+                        "assumed empty"),
+            },
+        },
         "checked": {
             "step4_ledger_accounts": len(led),
             "accounts_by_final_outcome": {k: len(v) for k, v in NOT_COMPLETE.items()}
@@ -572,7 +750,8 @@ def main() -> None:
                     "skipped on the length forecast -- and none of them is parsed, indexed or "
                     "present in the table. They are ABSENT, not empty, which is what the rule "
                     "requires"),
-        "passes": bool(len(contributes) == 0 and ns_rows == 0),
+        "passes": bool(len(contributes) == 0 and ns_rows == 0 and skipped_ns == 0
+                       and asserted == len(led) and len(idx_unknown) == 0),
     })
 
     # ---- the 703 expectation: NOT an invariant ---------------------------
@@ -619,9 +798,41 @@ def main() -> None:
         "denominator_readings": st1["drop_rule"]["denominator_note"],
     }
 
+    # decisions/0079 Sec 2 -- EVERY invariant result carries the build it was
+    # measured on, and decisions/0080 Sec 3 -- EVERY invariant names the
+    # population it runs on AND accounts for every row in it.
+    for iv in inv:
+        stamp(iv)
+    stamp(recon)
+    stamp(coverage)
+    cov_rule = {
+        "ruling": ("decisions/0080 Sec 3 -- EVERY INVARIANT NAMES THE POPULATION IT RUNS ON, AT "
+                   "THE POINT OF USE, AND ACCOUNTS FOR EVERY ROW IN IT. Every invariant reports "
+                   "rows_asserted + rows_not_asserted = rows_in_the_stated_population, and the "
+                   "identity must hold"),
+        "why": ("an invariant that passes on one population and was never run on another READS "
+                "AS A PASS ON BOTH, and a passing invariant whose coverage the instance chose "
+                "is a code check on the instance's choice"),
+        "the_gap_this_arm_had": ("this arm's previous run asserted p on 19,042 rows "
+                                 "(post-liveness) with a non-S&L clause on 177,513 "
+                                 "(position-5), summing to 196,555 against a 196,654-row "
+                                 "table. 99 rows -- exactly the started-and-left liveness "
+                                 "exclusions -- were covered by NEITHER clause, and the report "
+                                 "did not disclose it. Closed this run: 19,141 + 177,513 = "
+                                 "196,654"),
+        "identity_holds_on_every_invariant": all(
+            bool(i.get("coverage", {}).get("identity_holds",
+                 i.get("coverage", {}).get("holds_on_both_populations",
+                 i.get("coverage", {}).get("holds_on_every_stated_population", True))))
+            for i in inv),
+        "measured_on_build": BUILD,
+    }
+
     out = {
         "instance": "analytics-engineer-b", "namespace": "b",
         "mode": "GATE -- proposal only, nothing adopted",
+        "provenance": provenance_block(),
+        "invariant_coverage_rule": cov_rule,
         "how_to_read_this_report": (
             "SIX of the eight assertions CANNOT FAIL ON ANY DATA. Five are pure CODE CHECKS -- "
             "the outcome partition, the monotone filter counts, |D| <= L, A subset of A_H, and "
@@ -642,7 +853,7 @@ def main() -> None:
         "invariants": inv,
         "coverage_count_not_an_invariant": coverage,
         "population_reconciliation_703_and_99": recon,
-        "all_pass": all(i["passes"] for i in inv),
+        "all_pass": all(i["passes"] for i in inv) and cov_rule["identity_holds_on_every_invariant"],
         "elapsed_s": time.time() - t,
     }
     (OUT / "invariants.json").write_text(json.dumps(out, indent=2, default=str))
