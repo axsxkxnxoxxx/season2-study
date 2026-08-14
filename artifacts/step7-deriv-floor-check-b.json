@@ -1,0 +1,158 @@
+{
+  "instance": "data-scientist-b",
+  "namespace": "b",
+  "working_dir": "processed/step7/df_b/",
+  "task": "specs/step7-deriv-floor-verification.md",
+  "date": "2026-08-14",
+  "api_calls": 0,
+  "adopts": "nothing",
+  "rule": "ALT-BROAD (decisions/0048). NOT LIVE iff (no account insertion instant after that pair's tau1) AND (NOT Continued). Silence anchored at tau1 and only at tau1.",
+  "W": 108,
+  "H": 91,
+  "source_of_truth": {
+    "pair_level_arrays": "processed/step7/mm_b/pairs.npz, processed/step7/mm_b/outcomes.npz",
+    "cross_check_aggregates": "processed/step7/bb_b/waterfall.json, processed/step7/mm_b/channel.json",
+    "recomputation_scripts": [
+      "processed/step7/df_b/verify.py",
+      "processed/step7/df_b/diag.py",
+      "processed/step7/df_b/final.py"
+    ],
+    "note": "every figure below was recomputed from the pair-level boolean arrays, not read out of a stored aggregate; the stored aggregates were then asserted against the recomputation and agree exactly"
+  },
+
+  "verdict_on_the_proposed_correction": {
+    "population": "DERIV",
+    "n": 147370,
+    "channel_count": {"proposed": 89, "reproduced": 89, "verdict": "CONFIRMED"},
+    "sal_floor_extreme_ALL": {"proposed_count": 16655, "proposed_pct": 11.3015, "reproduced_count": 16655, "reproduced_pct": 11.3015, "verdict": "CONFIRMED"},
+    "sal_floor_extreme_NONE": {"proposed_count": 16744, "proposed_pct": 11.3619, "reproduced_count": 16744, "reproduced_pct": 11.3619, "verdict": "CONFIRMED"},
+    "sal_ceiling": {"proposed_count": 16843, "proposed_pct": 11.4291, "reproduced_count": 16843, "reproduced_pct": 11.4291, "moves_between_extremes": false, "verdict": "CONFIRMED"},
+    "continued_ceiling_extreme_ALL": {"proposed_count": 121570, "proposed_pct": 82.4930, "reproduced_count": 121570, "reproduced_pct": 82.4930, "verdict": "CONFIRMED"},
+    "summary": "all five proposed rows CONFIRMED; none refuted"
+  },
+
+  "DERIV": {
+    "n": 147370,
+    "population_definition": "Step 5 line 4 less D10, D10 re-derived at W = 108",
+    "position5_not_continued": 25988,
+    "live_and_not_continued": 25889,
+    "exclusions_total": 99,
+    "exclusions_never_started": 0,
+    "exclusions_started_and_left": 99,
+    "exclusions_continued": 0,
+    "retained_n": 147271,
+    "retained_never_started": 9145,
+    "retained_started_and_left": 16744,
+    "retained_continued": 121382,
+    "channel_count": 89,
+    "channel_including_never_started": 92,
+    "channel_never_started_component": 3,
+    "sal_floor_extreme_NONE": {"count": 16744, "pct": 11.3619},
+    "sal_floor_extreme_ALL": {"count": 16655, "pct": 11.3015},
+    "sal_ceiling": {"count": 16843, "pct": 11.4291},
+    "sal_bound_adopted": {"lo_pct": 11.3015, "hi_pct": 11.4291, "width_pp": 0.1276, "width_numerator_pairs": 188},
+    "sal_bound_unwidened_superseded": {"lo_pct": 11.3619, "hi_pct": 11.4291, "width_pp": 0.0672},
+    "continued_floor": {"count": 121382, "pct": 82.3655},
+    "continued_ceiling_extreme_NONE": {"count": 121481, "pct": 82.4327},
+    "continued_ceiling_extreme_ALL": {"count": 121570, "pct": 82.4930},
+    "never_started_floor": {"count": 9145, "pct": 6.2055},
+    "never_started_ceiling": {"count": 9145, "pct": 6.2055, "degenerate": true, "identity_with_unfiltered_position5_share": true},
+    "floor_movement_between_extremes_pp": 0.0604,
+    "ceiling_movement_between_extremes_pp": 0.0,
+    "post_liveness_point_estimates": {"never_started_pct": 6.2096, "started_and_left_pct": 11.3695, "continued_pct": 82.4208, "denominator": 147271},
+    "point_estimate_outside_its_own_bound": {"state": "never_started", "estimate_pct": 6.2096, "bound": [6.2055, 6.2055], "excess_pp": 0.0042, "cause": "the bound is on the position-5 population (147,370); the point estimate is post-liveness (147,271)"},
+    "three_ceilings": {"never_started_pct": 6.2055, "started_and_left_pct": 11.4291, "continued_pct": 82.4930, "sum_pct": 100.1276, "excess_pairs": 188, "excess_decomposition": "2 x 0 never-started exclusions + 99 started-and-left exclusions + 89 channel"}
+  },
+
+  "APPLY": {
+    "n": 196654,
+    "population_definition": "Step 5 line 1 less D10, D10 re-derived at W = 108",
+    "position5_not_continued": 52514,
+    "live_and_not_continued": 51811,
+    "exclusions_total": 703,
+    "exclusions_never_started": 604,
+    "exclusions_started_and_left": 99,
+    "exclusions_continued": 0,
+    "retained_n": 195951,
+    "retained_never_started": 32769,
+    "retained_started_and_left": 19042,
+    "retained_continued": 144140,
+    "channel_count": 90,
+    "channel_including_never_started": 297,
+    "channel_never_started_component": 207,
+    "sal_floor_extreme_NONE": {"count": 19042, "pct": 9.6830},
+    "sal_floor_extreme_ALL": {"count": 18952, "pct": 9.6372},
+    "sal_ceiling": {"count": 19745, "pct": 10.0405},
+    "sal_bound_adopted": {"lo_pct": 9.6372, "hi_pct": 10.0405, "width_pp": 0.4032, "width_numerator_pairs": 793},
+    "continued_floor": {"count": 144140, "pct": 73.2962},
+    "continued_ceiling_extreme_NONE": {"count": 144843, "pct": 73.6537},
+    "continued_ceiling_extreme_ALL": {"count": 144933, "pct": 73.6995},
+    "never_started_floor": {"count": 32769, "pct": 16.6633},
+    "never_started_ceiling": {"count": 33373, "pct": 16.9704, "identity_with_unfiltered_position5_share": true},
+    "floor_movement_between_extremes_pp": 0.0458,
+    "ceiling_movement_between_extremes_pp": 0.0,
+    "post_liveness_point_estimates": {"never_started_pct": 16.7231, "started_and_left_pct": 9.7177, "continued_pct": 73.5592, "denominator": 195951},
+    "three_ceilings": {"never_started_pct": 16.9704, "started_and_left_pct": 10.0405, "continued_pct": 73.6995, "sum_pct": 100.7104, "excess_pairs": 1397, "excess_decomposition": "2 x 604 never-started exclusions + 99 started-and-left exclusions + 90 channel = 1,397"}
+  },
+
+  "boundary_convention_sensitivity": {
+    "question": "spec writes the channel window (tau1, tau2]; task-sheet.md:350 and the agent definition write (tau1, tau2)",
+    "APPLY": {"open_exclusive": 90, "half_closed": 90, "closed": 90, "via_no_insertion_after_tau2_flag": 90},
+    "DERIV": {"open_exclusive": 89, "half_closed": 89, "closed": 89, "via_no_insertion_after_tau2_flag": 89},
+    "verdict": "INERT at W = 108. No pair has a last insertion instant exactly at tau1 or exactly at tau2. The disagreement is still a latent ambiguity and should be fixed to one form."
+  },
+
+  "margin_statistics_measured_not_used": {
+    "status": "REPORTED AS DIAGNOSTIC ONLY. No endpoint in this file is justified by a margin statistic.",
+    "definition": "unobserved remainder = (tau2 - last insertion instant), in days, over the channel pairs",
+    "APPLY_90": {"p0": 0.1333, "p1": 0.6302, "p5": 1.6552, "p10": 4.8107, "p25": 18.3625, "p50": 44.5272, "p75": 62.0671, "p90": 79.9743, "p95": 85.2489, "p100": 89.9279, "mean": 41.8297},
+    "DERIV_89": {"p0": 0.1333, "p1": 0.6246, "p5": 1.6519, "p10": 4.6961, "p25": 18.6941, "p50": 45.1116, "p75": 62.1124, "p90": 80.1915, "p95": 85.4189, "p100": 89.9279, "mean": 42.2077},
+    "finding": "0054's p5 = 1.7 and minimum = 0.13 and 0055's median = 44.5 are the SAME statistic on the SAME set (APPLY's 90): reproduced here as 1.6552, 0.1333 and 44.5272. 0055's cherry-picking charge is confirmed arithmetically.",
+    "recommendation": "no margin statistic belongs in an endpoint's justification; see the write-up section 5"
+  },
+
+  "defects_found": [
+    {
+      "id": "DF-1",
+      "severity": "high",
+      "where": "artifacts/step7-liveness-bb-a.md:185, :206 and artifacts/step7-liveness-bb-b.md:176, :184",
+      "what": "the un-widened DERIV started-and-left bound [11.3619%, 11.4291%] width 0.0672 pp and the un-widened DERIV Continued bound [82.3655%, 82.4327%] are printed with NO supersession stamp, in the deliverable pair named for the ADOPTED rule",
+      "why_it_is_a_defect": "0055 section 3 makes artifacts/ the seventh propagation surface and section 5a states artifacts would be 'stamped, not rewritten'. The stamp is absent: grep finds zero occurrences of 'superseded', '0055' or the corrected forms 11.3015 / 82.4930 / 16,655 / 121,570 anywhere in either bb file.",
+      "grep_control": "negative half FAILS (superseded forms present, unstamped); positive half FAILS (corrected forms absent)",
+      "action_taken": "reported, not fixed - propagation is assigned elsewhere"
+    },
+    {
+      "id": "DF-2",
+      "severity": "low",
+      "where": "decisions/0055 section 3, false-positive register, row '16,744'",
+      "what": "the register lists one legitimate reading (bb-a.md:109, post-liveness count on 147,271). A third exists: artifacts/step7-sensitivity-b.md:76 carries 16,744 as the parameter-free 0021 rule's started-and-left count on a different denominator.",
+      "why_it_is_a_defect": "an incomplete false-positive register makes the mandated grep control produce an unexplained hit and invites a propagation pass to 'correct' a correct number",
+      "action_taken": "reported, not fixed"
+    },
+    {
+      "id": "DF-3",
+      "severity": "low",
+      "where": "specs/step7-deriv-floor-verification.md item 1 vs task-sheet.md:350 and .claude/agents/data-scientist-b.md",
+      "what": "the channel window is written (tau1, tau2] in the spec and (tau1, tau2) in the task sheet and the agent definition",
+      "why_it_is_a_defect": "two forms of one predicate in the operative files. Measured inert at W = 108 on both populations, but inert is not the same as specified, and it need not stay inert at another arm.",
+      "action_taken": "reported and measured, not fixed"
+    },
+    {
+      "id": "DF-4",
+      "severity": "medium",
+      "where": "specs/step7-deriv-floor-verification.md item 3",
+      "what": "'the started-and-left ceiling, and whether it moves between the two extremes' admits two readings. Under the envelope reading (the adopted one) each endpoint is a separate worst case and the ceiling is unchanged: 16,843 DERIV / 19,745 APPLY. Under a joint-state reading, where both endpoints are evaluated in the one world 'all channel pairs are truly Continued', the ceiling would be 16,754 -> 11.3687% DERIV and 19,655 -> 9.9947% APPLY.",
+      "why_it_is_a_defect": "the four joint-state numbers are derivable from the same files and are NOT bound endpoints. Named here so a later instance cannot derive them and mistake them for the ceiling.",
+      "verdict": "the proposed table is CORRECT under the envelope reading, which is what a bound means",
+      "action_taken": "reported, not fixed"
+    }
+  ],
+
+  "snapshot_disagreements_with_on_disk_authority": [
+    {
+      "surface": ".claude/agents/data-scientist-b.md (my snapshotted definition)",
+      "finding": "carries 0055's corrections in full - 16,655 / 11.3015%, 121,570 / 82.4930%, width 0.1276 pp, and names 16,744 / 11.3619% / 0.0672 pp / 121,481 / 82.4327% as superseded. Agrees with task-sheet.md and decisions/0055 on every figure this task touches.",
+      "verdict": "no disagreement found on the figures in scope, except DF-3's boundary form"
+    }
+  ]
+}

@@ -42,6 +42,30 @@ Neither instance sees the other's work, asks about it, or reads its output folde
 
 Any divergence is either a bug or an ambiguity in the spec. Report it. Do not reconcile it.
 
+## Propagation
+
+A ruling lands in `decisions/` **and** in every file an agent reads. Recorded only in `decisions/` is not recorded.
+
+**There are seven surfaces**, and all seven are checked on every edit:
+
+1. `task-sheet.md`
+2. `.claude/agents/data-scientist.md`
+3. `.claude/agents/data-scientist-b.md`
+4. `.claude/agents/analytics-engineer.md`
+5. `.claude/agents/analytics-engineer-b.md`
+6. `artifacts/` — deliverables carrying superseded figures are stamped, not left to be read as current
+7. `.claude/agent-memory/second-brain/` — it is fed back into rulings, and stale memory has already caused a wrong one
+
+**Read-back plus grep. Read-back alone is not verification.** Human Lead ruling, 2026-08-14. Reading an edit back proves the new text landed. Only grep proves the old text is gone, and a file can hold both at once — three consecutive propagation failures were exactly that, an adopted figure and its superseded predecessor live in the same file, sometimes ten lines apart, each declaring the other wrong.
+
+So after any edit: grep all seven surfaces for the superseded strings and require **zero hits**, except where a string is explicitly named as superseded at the point of use. Report the hit counts.
+
+**And grep the corrected string too, requiring non-zero.** Added 2026-08-14 by the analytics-engineer, who found the negative half insufficient on the first run under it: **a figure that was never written returns zero hits on every superseded form of itself.** The DERIV bound was absent from all five spec files rather than present and stale, so the negative grep passed clean on a file set that contained the defect. A defect has two shapes — the wrong figure present, and the right figure missing — and the negative grep sees only the first.
+
+**A grep hit is not a defect until you read the line.** Two figures in this study are correct on one population and superseded on another, and a check that treats every hit as a defect chases them while a check that dismisses them misses the real ones. The register of known false positives lives in the decision entry that adds each one.
+
+**The dual diff cannot catch a propagation failure.** Both members of a pair are byte-identical by design, so an error written into both is invisible to it. Propagation is checked by grep, never by the diff.
+
 ## API discipline
 
 Losing Trakt access would end this study, so these rules outrank speed.

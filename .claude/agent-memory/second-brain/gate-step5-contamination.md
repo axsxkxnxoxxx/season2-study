@@ -171,6 +171,28 @@ Both are Human Lead rulings made **during** Step 5, and both bind steps that are
    premise was that import noise is not liveness evidence. It makes the play-`id` calibration a
    **required input to Step 7**, not a Step 5 diagnostic.
 
+   > **Ruling 2 was AMENDED and the amendment REVERTED, both on 2026-08-14.** `0053` amended it to
+   > *"an insertion after the window FOR THE QUESTION BEING ASKED proves the account was alive for
+   > that question"* — one window per null, `τ1` for never-started and `τ2` for started-and-left —
+   > on the premise that *"after the window closed"* was written when there was one window and had
+   > since been read as *"after `τ1`"* **only by accident.** **`0054` withdrew `0053` in its entirety
+   > and reverted the amendment.** The premise was false: **`0034`, the entry that created the second
+   > window on the same date, ruled *"Liveness stays anchored at `τ1`"*** and `0051` re-affirmed it
+   > with both windows in view. **`0053` amended this gate while leaving `0034` standing, uncited and
+   > unmentioned.** **Ruling 2 stands exactly as approved**, and `0048` §9's *"insertion after `τ1` ⟹
+   > live"* is restored.
+   >
+   > **Two things Step 18 should take from it.** First, the study's own gate-reopening rule was
+   > invoked correctly — `0053` **stated** it was an amendment to an approved gate rather than a
+   > gloss, which is the behaviour `0012` failed to show. Second, **stating it was not enough**: the
+   > check that would have stopped it is *"which live rulings does this amendment contradict,"* and
+   > nobody ran it until Red Team's seventh Step 7 HOLD.
+   >
+   > **`0021` Adoption 3 became load-bearing in the revert.** It keeps post-dated records, so a
+   > record inserted at instant `s` can carry any `watched_at ≤ s` — which is what falsifies `0053`'s
+   > warrant that a pair silent from `s ∈ (τ1, τ2)` *"could not have produced the evidence the
+   > Continued test reads."* It could; only evidence dated in `(s, τ2)` was out of reach.
+
 **Both were written into `task-sheet.md` as `0022` on 2026-08-12, before Steps 6 or 7 launched.**
 Step 6 now names the 128,099 sample, states that it **composes with D14 rather than replacing it**,
 publishes the waterfall, and says outright that **201,900 and 128,099 are different numbers**. Step 7

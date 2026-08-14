@@ -82,11 +82,36 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
   started-and-left** (`0050`). Taken over the 604 only, the **never-started** bound on a **single denominator** is
   **[16.6633%, 16.9704%] on APPLY, width 0.3071 pp**, ceiling equal to the unfiltered share **as an
   identity** — **identical under ALT and ALT-BROAD**, since the 99 started-and-left exclusions enter
-  neither endpoint. **Compute a SECOND bound on the started-and-left share over ALL 703 exclusions** (`0049`) —
-  **[9.6830%, 10.0405%], width 0.3575 pp on APPLY, both endpoints on 196,654.** **Not over the 99
+  neither endpoint. **Compute a SECOND bound on the started-and-left share over ALL exclusions AND
+  WIDENED TO COVER THE CHANNEL PAIRS — ON BOTH POPULATIONS, PUBLISHED SIDE BY SIDE** (`0049`, widened
+  on APPLY by `0054`, **widened on DERIV by `0055`**). **Every endpoint states its population at the
+  point of use.**
+  **APPLY, n = 196,654, over all 703 exclusions: [9.6372%, 10.0405%], width 0.4032 pp** — floor
+  `18,952 / 196,654`, ceiling `19,745 / 196,654`.
+  **DERIV, n = 147,370, over all 99 exclusions: [11.3015%, 11.4291%], width 0.1276 pp** — floor
+  `16,655 / 147,370`, ceiling `16,843 / 147,370`.
+  **The floor is 18,952 on APPLY, not 19,042, and 16,655 on DERIV, not 16,744:** the retained pairs
+  that are ¬Continued, live only because they inserted after `τ1`, and whose
+  last insertion falls inside `(τ1, τ2)` — **90 on APPLY, 89 on DERIV** — **could produce no evidence
+  dated after that instant**, so they
+  may in truth be Continued and **a floor must admit it**; `16,744 − 89 = 16,655`. `0049`'s **[9.6830%, 10.0405%] is
+  superseded** — its floor did not cover the case the filter exists to guard against, and `0052` §4
+  declined to widen it because that *"would have been the fifth consecutive bound with a non-covering
+  endpoint,"* **which is exactly backwards: widening is what makes it covering.**
+  **The widening is ONE-SIDED — the ceiling does not move on either population**, since the channel
+  pairs are already counted as started-and-left in it, and the ground is **admissibility, not
+  plausibility** (`0055` §2): a floor is a worst case, so **no margin statistic enters it, and p5 = 1.7
+  days and median = 44.5 days are both inadmissible.**
+  ***SUPERSEDED, named so it cannot be read as current (`0055` §1): the DERIV floor 16,744 → 11.3619%,
+  the DERIV width 0.0672 pp, and the DERIV Continued ceiling 121,481 → 82.4327%.*** They are `0054`'s
+  un-widened DERIV figures, left behind when APPLY alone was widened; **publishing that floor publishes
+  one 0.0604 pp ABOVE the case the filter exists to guard against.**
+  **Not over the 99
   alone**: the 604 rest on an untrusted `|A| = 0` and some may in truth have left, so a 99-only ceiling
   is not a ceiling on the unconditional estimand. Report [9.6830%, 9.7333%] only as a **labelled
-  conditional sub-interval**. **[16.7146%, 16.9704%] is superseded — it mixed
+  conditional sub-interval** — an **APPLY** figure. **On DERIV the bound and its conditional
+  sub-interval COINCIDE**, because the never-started exclusion component is 0 there; say so where it is
+  published. **[16.7146%, 16.9704%] is superseded — it mixed
   denominators and its floor sat 0.0513 pp above the case liveness guards against.** `0045`'s [16.7789%,
   17.0355%] is **superseded**: it mixed two denominators and its floor was not a floor. Report the **floor and ceiling**, not a single contestable number, and report
   the **S3-without-S2 bound (D4)** and the **split-artifact bound (D9)** alongside the liveness bound.
@@ -96,10 +121,20 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
   (D5)** which must be stated and not smoothed over. Both arms run on the same right-censored
   population, `max(W, 91) + H` (D10).
 
-    - **THERE ARE THREE CEILINGS AND THEY CANNOT ALL HOLD** (`0050`, `0052`). Never-started 16.9704%,
-      started-and-left 10.0405%, **Continued 73.6537%** (73.6995% was ALT-MATCHED's, withdrawn) — **each NS exclusion appears in ALL THREE ceiling numerators and each S&L in TWO — excess
-      2 × 604 + 99 = 1,307 pairs = 0.6646 pp, sum 100.6646%** (`0053`), so they are **alternative worst cases over one set, not simultaneous ones.** **Continued has a
-      ceiling because any EXCLUDED pair may in truth be Continued**; do not print it as a point.
+    - **THERE ARE THREE CEILINGS AND THEY CANNOT ALL HOLD** (`0050`, `0052`, `0054`). On APPLY:
+      never-started **16.9704%** (33,373), started-and-left **10.0405%** (19,745), **Continued 73.6995%**
+      (144,140 + 703 + the 90 = 144,933) — **sum 100.7104%.** **Those three are APPLY figures. State
+      the DERIV ceilings beside them, n = 147,370:** never-started **6.2055%**, started-and-left
+      **11.4291%** (16,843), **Continued 82.4930%** (121,570) — the Continued ceiling **corrected by
+      `0055` §1**, ***superseding 121,481 → 82.4327%***. **Each NS exclusion appears in ALL THREE
+      ceiling numerators — excess 2 each — and each S&L exclusion in TWO — excess 1 each; with the 90
+      admitted, 2 × 604 + 189 = 1,397 pairs = 0.7104 pp.** They are **alternative worst cases over one **The DERIV sum, which the record did not state anywhere** (instance A): 6.2055% + 11.4291% + 82.4930% = **100.1276% on 147,370**, excess **0.1276 pp = 188 pairs = 99 + 89.** **The excess equals the bound width on DERIV**, because the never-started exclusion component is 0 there, so each of the 188 is double-counted exactly once rather than some twice and some three times. **That coincidence is DERIV-only and must not be carried to APPLY**, where 604 never-started exclusions make excess (0.7104 pp) and width (0.4032 pp) different quantities.
+      set, not simultaneous ones.** **Continued has a ceiling because any EXCLUDED pair may in truth be
+      Continued**; do not print it as a point. *(Superseded, and the record keeps them: **73.6537%** and
+      **sum 100.6646%** were the pre-widening figures; **73.2962%** was `0051` §2's, which `0052` §2
+      withdrew because it printed Continued as a point. **73.6995% is the adopted ceiling — it is NOT
+      "ALT-MATCHED's, withdrawn,"** which is what these files said, and an instance following that would
+      have deleted the adopted number.)*
     - **The never-started bound is DEGENERATE on DERIV — [6.2055%, 6.2055%] — so the dual control is
       `x = x` there** (`0050`). The informative comparison is on APPLY.
     - **THE BOUNDS AND THE SHARES ARE ON DIFFERENT POPULATIONS** (`0052`). Bounds are on the

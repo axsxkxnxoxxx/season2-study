@@ -24,6 +24,13 @@ covering floor and ALT-MATCHED are **numerically identical:**
 | Continued ceiling | 144,933 → **73.6995%** | 144,933 → **73.6995%** |
 | Never-started | [16.6633%, 16.9704%] | identical, both arms |
 
+**AMENDED 2026-08-14 (`decisions/0055`): this table is APPLY only, and the entry that mandated a
+population label on every figure omitted one on its own decisive table.** The same identity holds on
+**DERIV, n = 147,370** — S&L **[11.3015%, 11.4291%]**, Continued ceiling **82.4930%** — but **the DERIV
+floor was widened nowhere.** Every file kept 16,744 → **11.3619%**, so §1's claim was implemented on one
+population of two. **Corrected to 16,655 → 11.3015% and 121,570 → 82.4930% by `0055`**, from figures
+already sitting in `step7-liveness-mm-{a,b}.md`.
+
 **What ALT-MATCHED actually did was move the point estimates** — S&L 9.7177% → 9.6762% — by deleting
 the 90 least-robust rows, **and pay for it with an amendment to an approved gate, a contradiction with
 `0034`, a fragility transfer, and a nine-defect propagation wave.**
@@ -63,9 +70,33 @@ post-dated records.** So an account last active at `s ∈ (τ1, τ2)` **could** 
 evidence — everything dated `≤ s`, which is inside the Continued window. It could only fail to produce
 evidence dated in `(s, τ2)`.
 
-**The 90 have p5 margin 1.7 days and a minimum of 0.13 days.** Some were **demonstrably alive for
-roughly 89 of the 91 days**, had full opportunity to generate the evidence, did not, and would have
-been deleted anyway.
+~~**The 90 have p5 margin 1.7 days and a minimum of 0.13 days.** Some were demonstrably alive for
+roughly 89 of the 91 days, had full opportunity to generate the evidence, did not, and would have been
+deleted anyway.~~ **WITHDRAWN 2026-08-14 (`decisions/0055`) — it cherry-picked the tail.** The record's
+own median for the same 90 is **44.5 days** (`0053` §5, instance B), so for half of them roughly half
+the Continued window is unobserved. p5 supported the claim and the median contradicted it, and only p5
+was quoted.
+
+**The correct ground carries no margin statistic at all.** A floor is a **worst case, not an
+expectation.** The question is whether a channel pair *can* in truth be Continued, and it can: silent
+from `s`, it may hold Continued evidence dated anywhere in `[F2 air, s]`, and even at margin 0.13 days
+it could have completed S2 inside the unobserved remainder. **Admissibility is what sets an endpoint;
+plausibility does not enter.** So p5 = 1.7 and median = 44.5 are **both inadmissible here** — the first
+was mine and the second is the one that would have been quoted had the conclusion needed defending the
+other way.
+
+**Measured, because the alternative was that the choice is numerically empty** (`src/step7_floor_extremes.py`,
+zero API calls, both populations, channel counts and both endpoints asserted):
+
+| | n | channel | floor, NONE Continued | floor, ALL Continued | **moves** | ceiling |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: |
+| **APPLY** | 196,654 | 90 | 19,042 → 9.6830% | **18,952 → 9.6372%** | **0.0458 pp** | 19,745 → 10.0405% |
+| **DERIV** | 147,370 | 89 | 16,744 → 11.3619% | **16,655 → 11.3015%** | **0.0604 pp** | 16,843 → 11.4291% |
+
+**The endpoint moves on both populations, so the choice is consequential** — and it is decided by
+admissibility, not by the movement's size. **The widening is one-sided: the ceiling does not move**,
+because the 90 are already counted as started-and-left in it. The Continued ceiling moves in lockstep
+with the floor.
 
 **And the continuity argument is symmetric.** `0052` §1 argued the warrant *"holds identically for a
 pair silent after `τ1 + ε` for any ε < 91 days,"* concluding ALT-BROAD cut it at one end. **That
@@ -115,6 +146,10 @@ apart from the `name:` field.
 - **Bound width: A gives 0.4032 pp exact (793/196,654); B gives 0.4033 pp, differenced from rounded
   endpoints, and computes its ratios from it.** **`0053` §6 promoted B's 52.7% ratio into the record —
   it is a rounding artifact and is withdrawn.**
+  **AMENDED 2026-08-14 (`0055`): §7 below and `task-sheet.md` then published 0.4033 — B's artifact —
+  four paragraphs after naming it as one.** **The width is 0.4032 pp**, `793 / 196,654 = 0.40325`.
+  Withdrawing one of B's rounding artifacts and adopting the other in the same entry is the error class
+  §3 names, committed in the entry that names it.
 
 ## 7. What is restored, and what the record now says
 
@@ -123,13 +158,18 @@ apart from the `name:` field.
 
 **Exclusions: APPLY 703 from 216 accounts (604 + 99); DERIV 99 from 73 accounts (0 + 99).**
 
-**The started-and-left bound is [9.6372%, 10.0405%], width 0.4033 pp**, both endpoints on 196,654 —
+**The started-and-left bound is [9.6372%, 10.0405%], width 0.4032 pp** *(corrected from 0.4033 by `0055`)*, both endpoints on 196,654 —
 **widened to admit that the 90 may in truth be Continued.** The Continued ceiling moves with it to
 **73.6995%**, and the three ceilings sum to **100.7104%**.
 
 ## 8. Scope
 
 - **Rule reverted. No rerun ordered** — every figure for both rules is already on record from four
-  arm-runs.
+  arm-runs. **AMENDED 2026-08-14 (`0055`): false for the adopted bound.** 18,952 is on record **only as
+  ALT-MATCHED's floor over 793 exclusions.** **No arm has ever asserted 18,952 as the floor over
+  ALT-BROAD's retained set**, and both operative deliverables still print 9.6830% — so a
+  dual-implementation step adopted a bound **neither instance had reproduced.** The arithmetic is the
+  same either way; the assurance is not. **Both `data-scientist` arms are now verifying it against their
+  own outputs** (`specs/step7-deriv-floor-verification.md`).
 - **Zero API calls**, including the sweep.
 - **Step 8 does not launch.**

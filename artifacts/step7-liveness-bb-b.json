@@ -1,4 +1,48 @@
 {
+  "_superseded_2026_08_14": {
+    "by": [
+      "decisions/0055",
+      "decisions/0054"
+    ],
+    "rule_unchanged": "ALT-BROAD; silence anchored at tau1 only",
+    "what_changed": "three bound endpoints, from widening the floor to admit the channel pairs",
+    "channel_pairs": {
+      "APPLY": 90,
+      "DERIV": 89
+    },
+    "APPLY": {
+      "sl_bound_printed": [
+        9.683,
+        10.0405
+      ],
+      "sl_bound_adopted": [
+        9.6372,
+        10.0405
+      ],
+      "sl_width_adopted_pp": 0.4032,
+      "continued_ceiling_printed": 73.6537,
+      "continued_ceiling_adopted": 73.6995
+    },
+    "DERIV": {
+      "sl_bound_printed": [
+        11.3619,
+        11.4291
+      ],
+      "sl_bound_adopted": [
+        11.3015,
+        11.4291
+      ],
+      "sl_width_adopted_pp": 0.1276,
+      "continued_ceiling_printed": 82.4327,
+      "continued_ceiling_adopted": 82.493
+    },
+    "ceilings_do_not_move": true,
+    "everything_else_stands": "exclusion counts, never-started bound, all point estimates",
+    "reconfirmed_by": [
+      "artifacts/step7-deriv-floor-check-a.md",
+      "artifacts/step7-deriv-floor-check-b.md"
+    ]
+  },
   "step": 7,
   "instance": "data-scientist-b",
   "namespace": "bb_b",

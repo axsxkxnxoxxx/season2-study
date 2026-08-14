@@ -1,15 +1,20 @@
 ---
 name: gate-step7-liveness
-description: The Step 7 liveness gate as a narrative — four rules in succession (632d, 1293d, PF-LIMIT, ALT, ALT-BROAD), five Red Team HOLDs, nine propagation failures, the warrant that finally selected the rule, and the five-entry self-correction cascade; still OPEN as of decisions/0050
+description: The Step 7 liveness gate as a narrative — five rules in succession (632d, 1293d, PF-LIMIT, ALT, ALT-BROAD) plus the ALT-MATCHED adopt-and-revert, seven Red Team HOLDs, thirteen propagation failures, the warrant that selected the rule, and the self-correction cascade; still OPEN as of decisions/0054
 metadata:
   type: project
 ---
 
 # Step 7, the liveness gate — the longest and messiest stretch of the study
 
-**Status as of `decisions/0050`, 2026-08-14: the gate is OPEN.** Sixteen decision entries
-(`0035`–`0050`), five Red Team reviews, seven dual runs, zero API calls throughout. Gate 4 of 5 has
-been approved twice and reopened twice. **Step 8 has never launched.**
+**Status as of `decisions/0054`, 2026-08-14: the gate is OPEN.** Twenty decision entries
+(`0035`–`0054`), **eight Red Team reviews and seven HOLDs**, nine dual runs, zero API calls
+throughout. Gate 4 of 5 has been approved twice and reopened twice. **Step 8 has never launched.**
+
+**The rule was changed and changed back inside one day.** `0052` adopted ALT-MATCHED; `0053` amended
+approved gate `0021` to fit it; `0054` reverted all of it — **ALT-MATCHED withdrawn, `0053` withdrawn
+in its entirety, `0021`'s amendment reverted, `0048` §9 restored** — and instead **widened the
+started-and-left floor** to cover the same 90 pairs. See the ALT-MATCHED section below.
 
 **Why this file exists:** the individual entries are each correct about what they decided. Only the
 sequence shows what actually happened, and the sequence is the Step 18 material.
@@ -24,12 +29,62 @@ sequence shows what actually happened, and the sequence is the Step 18 material.
 | 1b | **1,293 d** — same rule, extended reference set (open-ended entered as `+∞`) | `0041`, provisional | Never approved |
 | 2 | **PF-LIMIT** — not live iff **no insertion after `τ1`**. Threshold **DELETED** | `0042` **APPROVED** | **SUPERSEDED** by `0046` |
 | 3 | **ALT** — not live iff no insertion after `τ1` **AND `\|A\| = 0`** | `0046` | **SUPERSEDED** by `0048` |
-| 4 | **ALT-BROAD** — not live iff no insertion after `τ1` **AND NOT Continued** | `0048` **ADOPTED** | Current. Gate still open |
-| — | **ALT-MATCHED** — one silence test per null, at the instant that null is read | `0050` §4 | **RECORDED, NOT ADOPTED** |
+| 4 | **ALT-BROAD** — not live iff no insertion after `τ1` **AND NOT Continued** | `0048` **ADOPTED**; **restored `0054`** | **Current**, with the S&L floor widened. Gate still open |
+| 5 | **ALT-MATCHED** — one silence test per null: `τ1` for never-started, **`τ2`** for started-and-left | `0052` **ADOPTED** | **REVERTED by `0054`** |
 
-**ALT-MATCHED is the form that would close the residual channel `0050` measured. It was named and
-deliberately not adopted.** It must never be cited as the rule, and it must never be dropped from
-the record either — it is the acknowledged remainder.
+**Superseded status line, recorded because it is what went wrong: this memory carried ALT-MATCHED as
+*"RECORDED, NOT ADOPTED (`0050` §4)"* through its adoption AND its revert**, and Red Team's eighth
+Step 7 review found it. **The full status history is `0050` §4 proposed → `0052` §1 adopted → `0054`
+reverted.** It must never be cited as the rule, and it must never be dropped from the record either.
+
+### ALT-MATCHED — adopted and reverted inside one day
+
+**Adopted at `0052`**, on Red Team's sixth HOLD. The argument was ALT-BROAD's own warrant turned
+against it: *a pair silent through `[τ1, τ2)` cannot produce the evidence the Continued test reads* —
+**that holds identically for a pair silent after `τ1 + ε` for any ε < 91 days**, so the failure mode is
+continuous and ALT-BROAD **cut it at one end.** Both arms reran and confirmed every expectation: APPLY
+**703 → 793** (604 NS + **189** S&L, 256 accounts), never-started bound unchanged, DERIV **188**, and
+instance B confirmed the newly-excluded set **is** the channel set **by index equality, not by count**.
+
+**`0053` then amended `0021`** — an amendment to an approved gate, stated as such — reading *"after the
+window"* as *"after the window for the question being asked."* Measured stake: **90 APPLY and 89 DERIV
+exclusions show an insertion after `τ1`**, 47.3% of DERIV's whole exclusion set; under `0048` §9's
+gloss every one would have been forced live. **That count was 0 under ALT-BROAD**, which is why the
+conflict surfaced only then.
+
+**Reverted at `0054`**, on Red Team's seventh HOLD, for three reasons:
+
+1. **It bought nothing.** On all three identified sets, **ALT-BROAD-with-a-covering-floor and
+   ALT-MATCHED are numerically identical.** All ALT-MATCHED moved was the point estimate — S&L
+   9.7177% → 9.6762% — by deleting the 90 least-robust rows, **and it paid for that with an amendment
+   to an approved gate, a contradiction with `0034`, a fragility transfer, and a nine-defect
+   propagation wave.**
+2. **`0053`'s premise was false.** It claimed the `τ1` anchoring was *"only by accident of when `0021`
+   was written."* **`0034` — the entry that created the second window, the same date — ruled it in
+   terms: *"Liveness stays anchored at `τ1`."*** `0051` re-affirmed it with both windows in view.
+   **`0053` amended `0021` and withdrew `0048` §9 while leaving `0034` standing, uncited and
+   unmentioned** — so the adopted rule contradicted a live ruling in an approved gate.
+3. **The warrant was false for the pairs it was adopted to capture.** A record inserted at `s` can
+   carry any `watched_at ≤ s`, and `0021` Adoption 3 keeps post-dated records — so an account last
+   active at `s ∈ (τ1, τ2)` **could** have produced Continued evidence. The 90 have **p5 margin 1.7
+   days, minimum 0.13**: alive for ~89 of the 91 days, full opportunity, produced nothing.
+   **And the continuity argument is symmetric — it proves no instant in `[τ1, τ2]` is warranted, not
+   that `τ2` is.**
+
+> **`0054` §3 names the error class of this whole chain: *correcting a predecessor by overshooting
+> into the mirror-image defect.*** That belongs in Step 18 beside the five-entry cascade below.
+
+**The sweep neither arm was asked for** (`0054` §4, `src/step7_anchor_sweep.py`, zero API calls) swept
+the silence anchor `τ1 → τ2` with never-started held at `τ1`: APPLY S&L **99 → 108 → 120 → 143 → 154 →
+174 → 189**; APPLY total **703 → … → 793**; DERIV S&L **99 → … → 188**. **Smooth and monotone. No
+elbow, no plateau, no natural cut anywhere in the interval** — which is precisely why **the bound must
+be widened rather than a cut chosen.**
+
+**What survives the revert:** the widened started-and-left floor **[9.6372%, 10.0405%] on APPLY**, the
+Continued ceiling moving **73.6537% → 73.6995%**, `0053`'s **nine defect fixes where rule-independent**,
+and two new Step 14 limitations — the 90 are by construction the pairs closest to their own boundary
+(margin median **44.5 days** against the 604's **202.5**), and **D10 admits `τ2 = τ_pull`**, so 20 APPLY
+pairs have a zero-length post-`τ2` window and 2 are excluded by construction.
 
 **PF-BRACKET** is a fifth name in the record and was never a candidate: it is the *literal reading*
 of `0041` §4's withdrawn wording, priced at 18,903 exclusions from 1,434 of 2,402 accounts. It exists
@@ -46,10 +101,19 @@ only to show what the wording would have cost.
 | **3** | `0044` | **"No free parameter" is not what the evidence shows.** Deleting the threshold *made the coupling total*: PF-LIMIT's exclusion set **is** the open-ended bucket, a pure function of `W`, and **`W` was held at 108 for the entire sensitivity test that justified the deletion.** Plus **propagation failure #6** — neither `analytics-engineer` file stated the rule, and they are the first files the Step 8 instances read |
 | **4** | `0046`, `0048` | **The not-live branch had no stated warrant.** `0021` licenses *insertion after `τ1` ⟹ live* — a **sufficient** condition, not the biconditional. Held three times; the third was dispositive. `0046` answered it by adopting a rule the warrant reaches; `0048` found the answer still stopped short |
 | **5** | `0050` | **Propagation failure #9 — six defects live in all five files, produced by `0048` and `0049` themselves.** `0049`'s header asserted a five-file pass that did not happen. **Both members of every pair carried each defect identically**, so the dual diff would have shown agreement |
+| **6** | `0052` | **The residual channel had a warrant problem, not just a size.** Answered by adopting ALT-MATCHED — **later reverted.** The same review exposed **`0051` §2's wrong V7 correction**, propagation **#12** (Step 9's two mandated sentences reached `task-sheet.md` and **neither** `data-scientist` file), the surviving 1.5× coupling figure, and the A-vs-B ratio divergence |
+| **7** | `0054` | **The rule change bought nothing.** ALT-BROAD-with-a-covering-floor and ALT-MATCHED are **numerically identical on all three identified sets**, and `0053` had amended an approved gate **while leaving `0034` — the ruling that forbids the re-anchoring — standing and unmentioned.** Reverted. Also propagation **#13**: both `analytics-engineer` files carried *"EXPECT 793"* and *"EXPECT 703"* **ten lines apart**, and `task-sheet.md` Step 9 **never received `0053`'s pass at all** |
+| **8** | (this pass) | **A seventh propagation surface exists and is never checked — `second-brain`'s memory** — and `artifacts/` is the sixth and was not either. Answered by `CLAUDE.md` §Propagation: **seven surfaces, read-back PLUS grep** |
 
-**Red Team's standing contribution here is not a number. It is that four of the five HOLDs were
+**Red Team's standing contribution here is not a number. It is that six of the eight HOLDs were
 against the *record*, not the *rule*** — a contradicted gate, a wrong sign, an overclaimed property,
-and unpropagated text. Only HOLD 4 attacked the rule itself, and it is the one that changed it twice.
+unpropagated text, a rule change that bought nothing, and an unchecked propagation surface. Only HOLD
+4 attacked the rule itself, and it is the one that changed it twice.
+
+**HOLD 6 and HOLD 7 are a matched pair and Step 18 should present them that way:** the sixth found a
+real defect and the repair adopted was the wrong one; the seventh found that the *right* repair —
+widening a bound — had been rejected by `0052` §4 **for the very reason it fixed**. *"That is exactly
+backwards: widening to 18,952 is what makes the endpoint covering."*
 
 ---
 
@@ -117,7 +181,7 @@ from 1,355 pairs to 703. **It does not justify it.**
 
 ---
 
-## Nine propagation failures, and the three standing controls they produced
+## Thirteen propagation failures, and the four standing controls they produced
 
 **A ruling lands in a decision entry and not in the file the agents read.** README item 46, which
 still says "five times now."
@@ -133,8 +197,14 @@ still says "five times now."
 | 7 | The withdrawn "vary the liveness threshold" survived in the two files `0044` had itself named | `0046` |
 | 8 | Five stale `task-sheet.md` lines, incl. **line 332 carrying the superseded bound as operative Step 9 instruction** | `0048` |
 | 9 | **Six defects in all five files, produced by `0048` and `0049`**; `0049`'s header claimed a pass that did not happen | Red Team, `0050` |
+| 10–11 | **V1 and V5–V6**: the superseded ALT per-arm series live at Step 13 in both `data-scientist` files; `task-sheet.md` Step 14 restating a figure it withdraws four lines below | `second-brain`, into `0051` |
+| 12 | **Step 9's two mandated sentences reached `task-sheet.md` and NEITHER `data-scientist` file** — verified by grep returning zero matches across `.claude/agents/`. Step 9 is dual, `CLAUDE.md` sends the agent to its definition file, **and both copies carried the same omission, so the diff structurally could not see it** | `0052` §5 |
+| 13 | **Both `analytics-engineer` files carried "EXPECT 793" at line 77 and "EXPECT 703" at line 88** — two mutually exclusive instructions ten lines apart, each declaring the other's number a divergence, **identical in both copies**, in the file **Step 8 launches from**. **And `task-sheet.md` Step 9 never received `0053`'s pass at all** — still carrying 703, the non-covering bound, 73.6537% and 100.6646%. That is #12 **repeated one entry later in the same section** | `0054` §5 |
 
-**The three controls, each added because the same failure recurred somewhere new:**
+**#12 and #13 are the same defect one entry apart, and both were produced by the entry that fixed the
+previous one.** That is the propagation analogue of the self-correction cascade below.
+
+**The four controls, each added because the same failure recurred somewhere new:**
 
 1. **Item 46's five-file surface** (`0044` §3.1). *The propagation surface is `task-sheet.md` plus
    the four pipeline agent definitions, and an entry that changes a rule must state which of the five
@@ -152,8 +222,24 @@ still says "five times now."
    `decisions/` or the on-disk `task-sheet.md`, the on-disk file wins.* **The launch prompt, not the
    definition file, is the authority at launch.**
 
-**`0050` §0 adds the fourth, unnamed but practised:** every edit verified by reading the file back,
-with the verification in the transcript. It exists because `0049` recorded a pass it had not done.
+4. **`CLAUDE.md` §Propagation, 2026-08-14 — SEVEN surfaces, and read-back PLUS grep.** The five-file
+   surface is now seven: **`artifacts/`** (surface 6, deliverables carrying superseded figures are
+   stamped) and **`.claude/agent-memory/second-brain/`** (surface 7). **Neither was ever checked before
+   2026-08-14.** And: *"Read-back alone is not verification. Reading an edit back proves the new text
+   landed. Only grep proves the old text is gone, and a file can hold both at once — three consecutive
+   propagation failures were exactly that."* Require **zero grep hits** on every superseded string
+   except where explicitly named as superseded at the point of use, and **report the hit counts.**
+
+**`0050` §0 adds the practice control, unnamed but standing:** every edit verified by reading the file
+back, with the verification in the transcript. It exists because `0049` recorded a pass it had not
+done — **and control 4 exists because read-back by itself let #13 through.**
+
+> **Surface 7 is why this file matters beyond continuity.** `0052` §2: this memory mislabelled the
+> Continued ceiling **73.6537%** as a *"Continued floor"* and concluded it could not be reconstructed;
+> **`0051` §2 adopted that diagnosis without checking it against the arms' own JSON** — *"the exact
+> failure `0046` §0 exists to prevent, committed in the entry that corrected two other instances of
+> it"* — issued a wrong correction, and **a Step 9 instance reading the corrected line against its own
+> deliverable would have deleted a correct number.** **Stale memory is not a filing problem.**
 
 > **The dual-implementation control cannot catch this class at all.** Both halves of every pair
 > carried each `0050` defect identically. `0035` §1 is the general statement: *a dual pair whose two
@@ -174,9 +260,25 @@ not of any one entry.**
 | `0046` | `0045`'s rejection and its bound | §1's two explanations both wrong; §4's bound **mixed denominators again**; §7 too pessimistic; §2's table called 99 null-based pairs "directly observed" |
 | `0047` | `0046` §1, §4, §7 | **Missed `0046` §2's "751 directly observed"** — caught one entry later by Red Team's fourth review |
 
+**And it did not stop at five. Three more entries continued it, and the eighth is the one that reached
+furthest:**
+
+| Entry | Corrected | Introduced |
+| :--- | :--- | :--- |
+| `0051` | V1–V7 and housekeeping | **§2 declared 73.6537% *"on no population"*** — it is the Continued ceiling, both arms publish it, both JSONs carry it. **Adopted `second-brain`'s stale memory as a diagnosis without checking the arms' JSON**, and **attributed the number to Red Team while doing so.** The "correction" left `task-sheet.md` presenting Continued as a **point** |
+| `0052` | `0051` §2 entirely; the channel figure; four more | **Adopted ALT-MATCHED**, reverted two entries later. **§4 rejected the widened floor for the reason the widened floor repairs.** Its §4 floor 9.6373% and §7 figure 6.2096% both wrong |
+| `0053` | `0052` §4, §7 and nine defects | **Amended an approved gate on a false premise, leaving `0034` uncited.** **Mandated population labels and then omitted them four rows above the row that requires them.** Wrote ALT-BROAD's DERIV bound miss as 0.0041 against both arms' 0.0042. **Withdrawn in its entirety** |
+
 **Instance A's line, from inside `0045`: *"the seventh instance, inside the entry correcting the
 sixth."*** The named error class is **a figure measured on one configuration or population, quoted as
 if measured on another** — `0038` §5, `0039` §2, `0039` §6, `0042` §4, `0043` §2, `0045` §4.1, and on.
+
+**The cascade's final lesson, from `0054` §3, and it is different from `0046` §0's:** the failure is
+not only *reaching for the number that supports the ruling*. It is **overshooting into the mirror-image
+defect** — `0052` answered "ALT-BROAD cut a continuous failure mode at one end" by cutting it at the
+*other* end, on an argument that proves neither end is warranted. **`0054` §7 then published `0.4033`,
+the rounding artifact its own §6 had just named as one, one page apart.** Eleven entries in, the
+correcting entry is still the highest-risk place in the log.
 
 **`0046` §0 names the cause and it is not inattention:** *"It is reaching for the number that
 supports the ruling being written rather than checking which population produced it."*
@@ -214,6 +316,26 @@ first time in this step.**
 **The never-started bound is still degenerate on DERIV — [6.2055%, 6.2055%] — so that control is
 `x = x` there** (`0050` §3). The informative comparison is on APPLY.
 
+**The bootstraps became diffable for the first time at the `0053` run** — both B = 4,000,
+account-clustered, both levels and movements, seeds stated. Before that they were **not diffable at
+all** and nobody had said so: A used B = 4,000 / seed 20260813 / **movements**, B used 2,000 / seed
+20260814 / **levels**, and *"the spec fixes neither and Step 9 must attach confidence intervals"*
+(`0052` §6). **That gap survived `0049`, `0050` and `0051` unactioned while the gate's own Check line
+is "dual implementation diff."**
+
+**Two divergences reported and NOT reconciled, per `CLAUDE.md`** (`0054` §6):
+
+- **Robustness survival: instance A finds 792 of 793, instance B finds 791** — off by exactly one on
+  each population, **consistent with a `≤ τ_pull` restriction A states and B does not.** A spec
+  ambiguity; **neither arm flagged it and neither did `0053`.**
+- **Bound width: A gives 0.4032 pp exact (`793/196,654`); B gives 0.4033 pp differenced from rounded
+  endpoints and computes its ratios from it.** `0053` §6 promoted B's 52.7% ratio into the record;
+  **it is a rounding artifact and is withdrawn.**
+
+**Also reconciled, and it is A's figure: the bound-versus-sampling ratio is 45%, not 6%** (`0052` §6).
+B computed its 6% on the conditional sub-interval **it had itself argued is not the bound** —
+understating the systematic range against sampling error by **7.5×** and contradicting its own §4.2.
+
 **Both arms repeatedly argued against their own recommendations**, which is the reason the rulings
 had the evidence they needed: A recommended adopting ALT and named that it *"empties the unwarranted
 branch without warranting it"*; B recommended against ALT-BROAD and had already refuted its own
@@ -230,11 +352,21 @@ evidence."*
   absent users — they are pairs whose window closed before the account existed on the insertion
   clock.** Routed to Step 14. Note this bucket was subsequently *returned to the population* by
   `0040` §1, so its residue is a limitation, not an exclusion.
-- **The un-guarded channel, 297 pairs** (`0050` §4). The warrant holds identically for a pair silent
-  after `τ1 + ε` for any ε < 91 days — **the failure mode is continuous and the rule cuts it at one
-  end.** ALT-BROAD closes **703 of 1,000 such pairs (70.3%) and leaves 29.7% open**; last insertion
-  in the channel sits at median 51.4 days past `τ1`, p90 85.1, max 90.9 — filling the window. **The
-  90 started-and-left pairs in it are treated as observed by the new S&L bound.**
+- **The un-guarded channel, 297 pairs** (`0050` §4, **remeasured at `0052` §3**). The warrant holds
+  identically for a pair silent after `τ1 + ε` for any ε < 91 days — **the failure mode is continuous
+  and the rule cuts it at one end.** Last insertion in the channel sits at median 51.4 days past `τ1`,
+  p90 85.1, max 90.9 — filling the window.
+  **The channel figure is 52.4%, not 70.3%.** *`0050` §4's "ALT-BROAD closes 703 of 1,000 such pairs
+  (70.3%) and leaves 29.7% open" is **superseded** and must not be restated.* **Its denominator pooled
+  two categories with different coverage:** the channel's **207 never-started pairs are not in the
+  gap** — never-started is the null `|A| = 0` read at **`τ1`**, and **every one of the 207 has an
+  insertion after `τ1`**, which is exactly what `0021` licenses. **The added warrant implicates only
+  the 90 started-and-left pairs.** On the implicated set alone **ALT-BROAD closes 99 of 189 — 52.4%,
+  leaving 47.6% open.**
+  **And `0050` §4's disposition of the 90 — *"treated as observed by the new S&L bound"* — did not
+  carry its own consequence.** `0052` §4 carried it: if the 90 in truth continued, the S&L numerator is
+  18,952 and the floor is **9.6372%**, below the then-published 9.6830%. **`0054` widened the bound to
+  cover them** rather than deleting them, which is where the gate now stands.
 
 ## The calibration residual — discharged, with its limit
 

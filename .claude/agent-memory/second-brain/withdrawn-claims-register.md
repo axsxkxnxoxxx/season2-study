@@ -1,6 +1,6 @@
 ---
 name: withdrawn-claims-register
-description: The study's own error log — claims asserted and later withdrawn or corrected, organised by failure mode, covering Steps 1 through 7 including the Step 7 liveness gate's five-entry self-correction cascade and the new failure mode F it produced
+description: The study's own error log — claims asserted and later withdrawn or corrected, organised by failure mode, covering Steps 1 through 7 including the Step 7 liveness gate's eight-entry self-correction cascade, mode F, and mode G (a stale memory fed back into a ruling)
 metadata:
   type: project
 ---
@@ -8,13 +8,13 @@ metadata:
 # Withdrawn-claims register
 
 **Why this file exists:** every claim below was asserted confidently, survived at least one review,
-and was later found false. The value is not the list — it is the **taxonomy**, because the same four
+and was later found false. The value is not the list — it is the **taxonomy**, because the same six
 failure modes keep recurring and each one is checkable in advance.
 
-**How to apply:** when reviewing any gate artifact, run all four checks below. They are cheap and
+**How to apply:** when reviewing any gate artifact, run all six checks below. They are cheap and
 they have all caught something.
 
-## The four failure modes, and the check that catches each
+## The failure modes, and the check that catches each
 
 | # | Failure mode | The check |
 | :--- | :--- | :--- |
@@ -22,7 +22,37 @@ they have all caught something.
 | **B** | **Quoting a figure from a source that does not produce it.** Dominant mode in Steps 4–5, raised **four times** as B3, D3, F3 and again at round 4 | Grep the figure to a **file and a key**. An uncommitted figure is an **unverified** figure — proved when the decorative "164" was finally committed and turned out to also be **wrong** |
 | **C** | **Quoting a cost against a baseline that no longer exists** | For every cost in a rejected-alternatives table, name the population it is computed on and check that population is still the adopted one |
 | **D** | **A unit or order-of-magnitude error that nobody re-derived** | Sanity-check any figure that crosses a unit boundary — per-minute vs per-hour, nanoseconds vs microseconds — against a second route to the same number |
-| **F** | **A figure measured on one population or configuration, quoted as if measured on another.** **NEW, added 2026-08-14. It is now the study's most frequent single error** — at least nine instances, seven of them inside the Step 7 block, and it is what `0046` §0's standing rule exists to stop | **Name the population at the point of use, every time.** For an interval endpoint, name the population it is computed on **and** the estimand it bounds, and check they are the same population (`0047` §3). Mode C is its ancestor — C is a *cost* against a dead baseline, F is *any* figure against the wrong population |
+| **F** | **A figure measured on one population or configuration, quoted as if measured on another.** **Added 2026-08-14. It is the study's most frequent single error** — at least nine instances, seven of them inside the Step 7 block, and it is what `0046` §0's standing rule exists to stop | **Name the population at the point of use, every time.** For an interval endpoint, name the population it is computed on **and** the estimand it bounds, and check they are the same population (`0047` §3). Mode C is its ancestor — C is a *cost* against a dead baseline, F is *any* figure against the wrong population |
+| **G** | **A stale or wrong record fed back into a ruling and adopted without being checked against the producer.** **NEW, added 2026-08-14.** Distinct from F: F is a figure quoted against the wrong population; **G is a figure a SECONDARY record says is wrong, believed over the primary output that produced it** | **Check the producer, not the summary.** Grep the arms' JSON for the key before recording any figure as unreconstructible, wrong, or unpopulated. **A figure that an independent reviewer has cleared and that you cannot reproduce is first a claim about your reconstruction.** And: **a sum that reconciles is not a split that reconciles** — check every component against a second route, not the total |
+
+---
+
+## Mode G — the one instance, and it is this role's own
+
+**`second-brain`'s memory recorded the Continued CEILING 73.6537% as a *"Continued floor"* and
+concluded it *"cannot be reconstructed and states no population."*** Registered as open item V7.
+
+**It was wrong three ways.** It was never a floor. It reconstructs exactly —
+`(144,140 + 703) / 196,654` — and **both arms publish it**, `bb-a.md` §5 and `bb-b.md` §4.3, with
+**both JSONs carrying `ceiling_pct: 73.6537…`**. And my reconstruction failed only because my own
+APPLY split carried **144,141 / 19,140** where the arms carry **144,140 / 19,141** — **two
+off-by-ones that cancelled in the sum**, so the total checked out and the split never did.
+
+**What it cost, and this is why the mode exists.** **`0051` §2 adopted the diagnosis without checking
+it against the arms' own JSON**, asserted *"73.6537% is on no population,"* and **attributed the
+number to Red Team while doing so.** `0052` §2: *"the exact failure `0046` §0 exists to prevent,
+committed in the entry that corrected two other instances of it."* **The correction was worse than the
+error** — it left `task-sheet.md` presenting Continued as a **point, 73.2962%**, and **a Step 9
+instance reading that against its own deliverable would have deleted a correct number.** `0051` §2 is
+withdrawn in full.
+
+**And the deeper finding, from Red Team's eighth Step 7 review:** `second-brain`'s memory is a
+**seventh propagation surface that was never checked.** Five were; **`artifacts/` and this memory were
+not.** `CLAUDE.md` §Propagation now names all seven and requires **read-back plus grep**.
+
+> **Mode G's lesson, stated so it survives this incident:** *this memory is an index, not a source. It
+> is fed back into rulings, so a wrong entry here is a wrong ruling waiting for someone in a hurry.*
+> **Where this memory and an arm's own output differ, the arm governs.**
 
 ---
 
@@ -121,6 +151,12 @@ seven that can be said of."*
 | *"The 604 are **exactly** the pairs with no S2 record anywhere"* and *"the DERIV zero is **forced by construction**"* | `0046` §1 | **Counts right, both explanations wrong**, and both are the `|A| = 0` versus "no S2 record" conflation **§5 of the same entry warns against**. APPLY holds **23,260** such pairs and **22,656 stay live** — subset, not equality. And `has_s2` does **not** imply `|A| ≥ 1`: **9,145 DERIV pairs are never-started**, four line-4 pairs satisfy both conjuncts at every arm and are removed by D10. **The zero is a fact of the filter order and this pull date, not a theorem** |
 | *"Returning **every excluded pair** as a decliner reproduces the unfiltered population exactly"* — the ceiling identity | `0046` §4 | **False under ALT-BROAD**: it gives an **unattainable 17.3279%**, because the 99 S&L exclusions have `|A| ≥ 1` observed and **cannot** be never-started. **The identity still holds by a different route** — the ceiling returns **only the 604**. Corrected rather than left because **Step 9 reads this sentence** |
 | *"Step 7's own dual run **cannot exercise the rule**… the rule is first exercised at Step 8"* | `0046` §7 | **Too pessimistic and refuted by instance B.** The rule **is** exercised on APPLY. **What is true is narrower and is the operative warning: only the APPLY figures carry information, and DERIV's diff is literally `0 = 0` at every arm** |
+| *"73.6537% is on no population"* | `0051` §2 | **It is the Continued ceiling on 196,654** — `(144,140 + 703)/196,654` — and **both arms publish it, both JSONs carry the key.** Withdrawn by `0052` §2. **Mode G**, above |
+| *"The ruling has since been read as 'after `τ1`' only by accident of when it was written"* | `0053` §1 — the premise of an **amendment to an approved gate** | **False. `0034` — the entry that CREATED the second window, the same date — ruled it in terms: *"Liveness stays anchored at `τ1`."*** `0051` re-affirmed it with both windows in view. **`0053` amended `0021` and withdrew `0048` §9 while leaving `0034` standing, uncited and unmentioned**, so the adopted rule contradicted a live ruling in an approved gate. **`0053` withdrawn in its entirety by `0054`** — the only entry in the log so withdrawn |
+| *"The pair could not have produced the evidence the Continued test reads"* — the warrant written into `0021` | `0053` §1 | **False for the pairs the rule was adopted to capture.** A record inserted at `s` can carry any `watched_at ≤ s`, and **`0021` Adoption 3 keeps post-dated records** — so an account last active at `s ∈ (τ1, τ2)` **could** have produced Continued evidence, failing only for evidence dated in `(s, τ2)`. **The 90 have p5 margin 1.7 days and a minimum of 0.13** |
+| *"ALT-BROAD cut a continuous failure mode at one end, so cut it at `τ2` instead"* | `0052` §1 | **The continuity argument is symmetric and refutes ALT-MATCHED from the other end just as forcefully. It proves NO instant in `[τ1, τ2]` is warranted — not that `τ2` is.** Confirmed by a sweep neither arm was asked for: **smooth, monotone, no elbow, no plateau** |
+| *"Widening the floor would have been the FIFTH consecutive bound with a non-covering endpoint"* — the stated reason for preferring ALT-MATCHED | `0052` §4 | **Exactly backwards. Widening to 18,952 is what MAKES the endpoint covering** (`0054` §1). **The rejection reason named the defect the alternative repairs** |
+| *"`task-sheet.md`'s 'the silence test is anchored at `τ1` and only at `τ1`' is false"* | `0053` §3 defect 1 | **Withdrawn with `0053`. The clause is TRUE and is restored** — `0034`, `0051`, `0054` |
 
 ### Mode F's signature at Step 7 — nine instances, and the diagnosis
 
@@ -148,14 +184,31 @@ one clean win in the block.
 ### The pattern the Step 7 block adds to the taxonomy
 
 **Five consecutive entries each corrected their predecessor and each introduced a defect doing it**
-(`0042` → `0043` → `0045` → `0046` → `0047`). The amendment's lesson was *a correction is not
-discharged until the script and its JSON carry it*. **Step 7's is harder:**
+(`0042` → `0043` → `0045` → `0046` → `0047`) — **and it did not stop at five. `0051` → `0052` →
+`0053` continued it, three entries and three more defects.** The amendment's lesson was *a correction
+is not discharged until the script and its JSON carry it*. **Step 7's is harder:**
 
 > **A correcting entry is the highest-risk place in the log to introduce an error**, because it is
 > written at speed, under a blocking review, and by someone reaching for the number that fixes the
 > thing in front of them. **Every correction should be re-derived from its population, not lifted
 > from the artifact that reported it** — `0042` §4 and `0043` §2 are the same failure, one lifting a
 > sentence from instance A and changing its subject.
+
+**And `0054` §3 adds a second shape the first eleven entries did not show:**
+
+> **Correcting a predecessor by overshooting into the mirror-image defect.** `0052` answered *"ALT-BROAD
+> cut a continuous failure mode at one end"* by **cutting it at the other end** — on an argument that,
+> read symmetrically, proves **neither** end is warranted. The anchor sweep (`0054` §4) made it
+> visible: **smooth and monotone from `τ1` to `τ2`, no elbow, no plateau, no natural cut.**
+
+**The self-referential instances are worth naming individually, because there are now four:**
+
+| Entry | Named the defect | And then committed it |
+| :--- | :--- | :--- |
+| `0051` | Corrected two instances of *"figure quoted without checking its population"* | **§2 did exactly that**, on `second-brain`'s summary instead of the arms' JSON |
+| `0052` | §5 recorded propagation **#12** — a ruling reaching `task-sheet.md` and neither `data-scientist` file | **`0054` §5: #13 is the same failure in the same section, one entry later** |
+| `0053` | §3 item 7 **mandated a population label at every use** | **§2 and items 3–6 are unlabelled APPLY figures whose DERIV values differ** — four rows above the row requiring them |
+| `0054` | §6 named **0.4033** as a rounding artifact and withdrew a ratio computed from it | **§7 published the bound width as 0.4033** |
 
 ---
 

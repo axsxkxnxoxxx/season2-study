@@ -1,5 +1,30 @@
 # Step 7 — Liveness rule, rerun on ALT-BROAD (`decisions/0048`)
 
+> **PARTIALLY SUPERSEDED — stamped 2026-08-14 (`decisions/0055`). The rule is unchanged; two DERIV
+> endpoints and one APPLY endpoint are not.**
+>
+> **This file is the deliverable for the ADOPTED rule (ALT-BROAD), and its DERIV bound is the one figure
+> in it that the adopted rule no longer supports.** The corrected values were computed under the
+> **reverted** ALT-MATCHED rule and sit in `step7-liveness-mm-{a,b}.md`; both `data-scientist` arms have
+> since re-confirmed them from their own masks (`step7-deriv-floor-check-{a,b}.md`).
+>
+> | | Printed below | Adopted (`0054`, `0055`) |
+> | :--- | ---: | ---: |
+> | **APPLY** started-and-left bound | `[9.6830%, 10.0405%]`, width 0.3575 pp | **`[9.6372%, 10.0405%]`, width 0.4032 pp** |
+> | **APPLY** Continued ceiling | 73.6537% | **73.6995%** |
+> | **DERIV** started-and-left bound | `[11.3619%, 11.4291%]`, width 0.0672 pp | **`[11.3015%, 11.4291%]`, width 0.1276 pp** |
+> | **DERIV** Continued ceiling | 82.4327% | **82.4930%** |
+>
+> **Why:** the floor must admit that the channel pairs — **90 on APPLY, 89 on DERIV**, ¬Continued, live
+> only because they inserted after `τ1`, last insertion inside `(τ1, τ2]` — **may in truth be
+> Continued**, since they could produce no evidence dated after that instant. **The ceilings do not
+> move; the widening is one-sided.**
+>
+> **Everything else in this file stands**, including the exclusion counts (APPLY 703 = 604 + 99;
+> DERIV 99 = 0 + 99), the never-started bound `[16.6633%, 16.9704%]`, and every point estimate.
+
+
+
 **Instance:** `data-scientist-b`, namespace `bb_b` · **Date:** 2026-08-14 · **API calls: 0**
 
 > **THIS IS A GATE. NOTHING HERE IS ADOPTED.** The rule statement below is the one the Human Lead

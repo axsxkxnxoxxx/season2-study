@@ -1,0 +1,239 @@
+{
+  "step": 7,
+  "task": "verification of the proposed DERIV started-and-left floor and Continued ceiling",
+  "spec": "specs/step7-deriv-floor-verification.md",
+  "instance_namespace_letter": "a",
+  "date": "2026-08-14",
+  "api_calls": 0,
+  "is_a_gate": false,
+  "is_a_rerun": false,
+  "is_a_rule_change": false,
+  "rule": "ALT-BROAD (0048, restored by 0054): NOT LIVE iff (no insertion instant after tau1) AND (NOT Continued). Silence anchored at tau1 and only at tau1.",
+  "W": 108,
+  "H": 91,
+  "source": {
+    "figures_computed_from": "processed/step7/bb_a/masks_W108.npz -- instance a's own W = 108 ALT-BROAD run",
+    "scripts": [
+      "src/step7_df_a_floor_check.py",
+      "src/step7_df_a_instant_recheck.py"
+    ],
+    "other_instance_output_read": false,
+    "step7_floor_extremes_py_read_or_run_by_me": false,
+    "nothing_asserted_against_a_proposed_value": true
+  },
+  "integrity_checks_on_the_masks": {
+    "states_partition_the_rows": true,
+    "never_is_|A|=0": true,
+    "left_is_notContinued_and_|A|>=1": true,
+    "no_after_rebuilt_matches_stored": true,
+    "rule_rebuilt_matches_stored_ex": true,
+    "ex_components_partition_ex": true,
+    "no_Continued_pair_is_excluded": true,
+    "tau2_strictly_after_tau1": true
+  },
+  "independent_recomputation_of_last_insertion_instant": {
+    "recomputed_from": [
+      "processed/step5/full_scan.npz",
+      "processed/step5/calibration.npz (READ, never refitted, 0029)"
+    ],
+    "n_records": 27656813,
+    "n_accounts": 2549,
+    "max_abs_diff_seconds_vs_stored": 0.0,
+    "channel_and_exclusion_counts_unchanged": true
+  },
+  "populations": {
+    "APPLY": {
+      "population": "APPLY",
+      "population_definition": "Step 5 line 1 less D10 -- what Step 8 filters",
+      "n_pairs": 196654,
+      "exclusions": {
+        "total": 703,
+        "never_started_component": 604,
+        "started_and_left_component": 99,
+        "accounts": 216
+      },
+      "channel_pairs": 90,
+      "channel_definition": "not Continued AND |A| >= 1 AND last insertion in (tau1, tau2]",
+      "channel_open_vs_half_open_agree": true,
+      "channel_pairs_exactly_at_tau2": 0,
+      "started_and_left_floor_extreme_NONE": {
+        "count": 19042,
+        "pct": 9.682997
+      },
+      "started_and_left_floor_extreme_ALL_ADOPTED": {
+        "count": 18952,
+        "pct": 9.637231
+      },
+      "floor_movement_between_extremes_pp": 0.045766,
+      "started_and_left_ceiling": {
+        "count": 19745,
+        "pct": 10.040477,
+        "moves_between_extremes": false,
+        "movement_pp": 0.0
+      },
+      "started_and_left_bound_ADOPTED": {
+        "floor_pct": 9.637231,
+        "ceiling_pct": 10.040477,
+        "width_pp": 0.403246,
+        "width_pp_exact_integer_form": 0.403246
+      },
+      "continued_ceiling_extreme_NONE": {
+        "count": 144843,
+        "pct": 73.653727
+      },
+      "continued_ceiling_extreme_ALL_ADOPTED": {
+        "count": 144933,
+        "pct": 73.699493
+      },
+      "never_started_bound": {
+        "floor_count": 32769,
+        "floor_pct": 16.663277,
+        "ceiling_count": 33373,
+        "ceiling_pct": 16.970415,
+        "degenerate": false
+      },
+      "three_ceilings": {
+        "never_started_pct": 16.970415,
+        "started_and_left_pct": 10.040477,
+        "continued_pct": 73.699493,
+        "sum_pct": 100.710385,
+        "excess_pairs": 1397,
+        "excess_decomposition_2xNS_plus_SL_plus_channel": 1397,
+        "decomposition_matches": true
+      },
+      "unfiltered_counts": {
+        "never_started": 33373,
+        "continued": 144140,
+        "started_and_left": 19141
+      },
+      "retained_counts": {
+        "never_started": 32769,
+        "continued": 144140,
+        "started_and_left": 19042
+      }
+    },
+    "DERIV": {
+      "population": "DERIV",
+      "population_definition": "Step 5 line 4 less D10 -- requires S2 evidence",
+      "n_pairs": 147370,
+      "exclusions": {
+        "total": 99,
+        "never_started_component": 0,
+        "started_and_left_component": 99,
+        "accounts": 73
+      },
+      "channel_pairs": 89,
+      "channel_definition": "not Continued AND |A| >= 1 AND last insertion in (tau1, tau2]",
+      "channel_open_vs_half_open_agree": true,
+      "channel_pairs_exactly_at_tau2": 0,
+      "started_and_left_floor_extreme_NONE": {
+        "count": 16744,
+        "pct": 11.361878
+      },
+      "started_and_left_floor_extreme_ALL_ADOPTED": {
+        "count": 16655,
+        "pct": 11.301486
+      },
+      "floor_movement_between_extremes_pp": 0.060392,
+      "started_and_left_ceiling": {
+        "count": 16843,
+        "pct": 11.429056,
+        "moves_between_extremes": false,
+        "movement_pp": 0.0
+      },
+      "started_and_left_bound_ADOPTED": {
+        "floor_pct": 11.301486,
+        "ceiling_pct": 11.429056,
+        "width_pp": 0.12757,
+        "width_pp_exact_integer_form": 0.12757
+      },
+      "continued_ceiling_extreme_NONE": {
+        "count": 121481,
+        "pct": 82.432653
+      },
+      "continued_ceiling_extreme_ALL_ADOPTED": {
+        "count": 121570,
+        "pct": 82.493045
+      },
+      "never_started_bound": {
+        "floor_count": 9145,
+        "floor_pct": 6.205469,
+        "ceiling_count": 9145,
+        "ceiling_pct": 6.205469,
+        "degenerate": true
+      },
+      "three_ceilings": {
+        "never_started_pct": 6.205469,
+        "started_and_left_pct": 11.429056,
+        "continued_pct": 82.493045,
+        "sum_pct": 100.12757,
+        "excess_pairs": 188,
+        "excess_decomposition_2xNS_plus_SL_plus_channel": 188,
+        "decomposition_matches": true
+      },
+      "unfiltered_counts": {
+        "never_started": 9145,
+        "continued": 121382,
+        "started_and_left": 16843
+      },
+      "retained_counts": {
+        "never_started": 9145,
+        "continued": 121382,
+        "started_and_left": 16744
+      }
+    }
+  },
+  "verdicts_on_the_proposed_DERIV_correction": [
+    {
+      "row": "channel count",
+      "population": "DERIV",
+      "n": 147370,
+      "proposed_count": 89,
+      "my_count": 89,
+      "proposed_pct": null,
+      "my_pct": null,
+      "verdict": "CONFIRMED"
+    },
+    {
+      "row": "S&L floor, extreme ALL",
+      "population": "DERIV",
+      "n": 147370,
+      "proposed_count": 16655,
+      "my_count": 16655,
+      "proposed_pct": 11.3015,
+      "my_pct": 11.301486,
+      "verdict": "CONFIRMED"
+    },
+    {
+      "row": "S&L floor, extreme NONE",
+      "population": "DERIV",
+      "n": 147370,
+      "proposed_count": 16744,
+      "my_count": 16744,
+      "proposed_pct": 11.3619,
+      "my_pct": 11.361878,
+      "verdict": "CONFIRMED"
+    },
+    {
+      "row": "S&L ceiling",
+      "population": "DERIV",
+      "n": 147370,
+      "proposed_count": 16843,
+      "my_count": 16843,
+      "proposed_pct": 11.4291,
+      "my_pct": 11.429056,
+      "verdict": "CONFIRMED"
+    },
+    {
+      "row": "Continued ceiling, extreme ALL",
+      "population": "DERIV",
+      "n": 147370,
+      "proposed_count": 121570,
+      "my_count": 121570,
+      "proposed_pct": 82.493,
+      "my_pct": 82.493045,
+      "verdict": "CONFIRMED"
+    }
+  ],
+  "all_proposed_rows_confirmed": true
+}

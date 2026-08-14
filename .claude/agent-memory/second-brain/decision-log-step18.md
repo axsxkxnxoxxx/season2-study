@@ -1,6 +1,6 @@
 ---
 name: decision-log-step18
-description: Coverage map of the decision log of record in decisions/ (0001-0050), which judgments still have no file, and assembled five-field text pending handoff to the Human Lead
+description: Coverage map of the decision log of record in decisions/ (0001-0054), which judgments still have no file, and assembled five-field text pending handoff to the Human Lead
 metadata:
   type: project
 ---
@@ -22,7 +22,11 @@ log shows the judgment."*
 
 ---
 
-## Coverage as of 2026-08-14 — `0001`–`0050`
+> **This file is propagation surface 7** (`CLAUDE.md` §Propagation). **A stale entry here has already
+> been fed back into a ruling** — see `0051` §2 and [[withdrawn-claims-register]] mode G. Correct it
+> here **and** grep the other six surfaces; read-back alone is not verification.
+
+## Coverage as of 2026-08-14 — `0001`–`0054`
 
 | Files | Cover | Five-field completeness |
 | :--- | :--- | :--- |
@@ -47,6 +51,7 @@ log shows the judgment."*
 | **`0034`** | **Step 1 §7 amended. Continued at `τ2` = 199 days.** Gate 1 reopened as an amendment and re-approved | **Full, and it is now the strongest entry in the log on the "where a reviewer disagreed" field** — eleven rounds, the rule never broken, four failed anchor grounds tabled with how each failed, and Red Team's "should not be cut" recorded as **not followed**. See [[amendment-step1-continued-boundary]] |
 
 ### `0035`–`0050` — the Step 7 block. Sixteen entries, five Red Team HOLDs, gate still OPEN.
+### (The block now runs to `0054` — twenty entries, eight reviews, seven HOLDs. See below.)
 
 **Read [[gate-step7-liveness]] first. The individual entries are each correct about what they
 decided; only the sequence shows what happened, and the sequence is the Step 18 material.**
@@ -70,9 +75,36 @@ decided; only the sequence shows what happened, and the sequence is the Step 18 
 | `0049` | Joint S&L bound over all 703; six record defects; calibration residual discharged | **Full, and it records the one clean win of the block:** both arms independently refused a bound that would have been the fourth consecutive failure of the same test — *"the standing rule worked before it could be broken a fourth time, and it worked in the arms rather than in the ruling."* **Its header asserts a five-file pass that did not happen**, which `0050` opens by saying |
 | **`0050`** | Six file defects fixed **and verified on disk**; limits routed to Step 14; the channel measured at **297 pairs** | **Full, and its §0 is the most self-aware opening in the log:** it declines to claim a propagation pass and puts the verification in the transcript. Adopts Red Team's formulation — *"'recorded, not repaired' is a legitimate way to close a gate; recording it only in a `decisions/` entry is not."* **Not indexed in `decisions/README.md`** — see [[open-items-and-contradictions]] V2 |
 
+### `0051`–`0054` — the ALT-MATCHED adopt-and-revert. Four entries, two Red Team HOLDs, one day.
+
+| Files | Cover | Five-field completeness |
+| :--- | :--- | :--- |
+| `0051` | V1–V7 and housekeeping | **Full on process, wrong on substance in §2.** It corrected two instances of "figure quoted without checking its population" **and committed a third in the same entry**, by adopting `second-brain`'s stale summary over the arms' JSON. Withdrawn by `0052` §2 |
+| **`0052`** | **ALT-MATCHED ADOPTED**; `0051` §2 withdrawn; channel corrected to **52.4%**; propagation #12; the A-vs-B ratio; the population mismatch routed to Step 14 | **Full, and its §2 is the most valuable paragraph in the block for Step 18** — it records *how the error happened* rather than only that it did, and names the near-miss: *"a Step 9 instance reading the corrected line against its own deliverable would have deleted a correct number."* **Its §1 is reverted two entries later** |
+| `0053` | `0021` amended for two windows; `0048` §9 withdrawn; nine defects | **WITHDRAWN IN ITS ENTIRETY — the only such entry in the log.** Retained with its nine defect fixes standing where rule-independent. **Its "where a reviewer disagreed" field is empty and that is the defect**: it amended an approved gate while leaving `0034`, the ruling that forbids the change, uncited |
+| **`0054`** | **ALT-BROAD RESTORED**, S&L floor **widened**, `0053` withdrawn, `0021`'s amendment reverted, `0048` §9 restored; propagation #13; two divergences reported not reconciled | **Full, and it is the strongest "why not the alternative" field since `0030`** — it does not argue ALT-MATCHED is wrong in principle, it shows it is **numerically identical** to the cheaper repair on all three identified sets and therefore *"moved only point estimates while costing an amendment to an approved gate."* Its §4 sweep is evidence **neither arm was asked for**. **Its §7 restates the 0.4033 artifact its own §6 withdrew** |
+
+**What Step 18 should take from `0051`–`0054`, and it is not in any single entry:**
+
+1. **A rule was adopted, an approved gate was amended to fit it, and both were reverted within one
+   day — and the record is not dishonest, because `0053` is retained withdrawn rather than deleted.**
+   `0039` set that precedent for a suspended approval; `0053` extends it to a full withdrawal.
+2. **The decisive test was "what does the change buy," asked numerically.** `0054` §1 is one table.
+   **A gate that had turned for eleven entries on warrants and arguments closed the question with an
+   identity.** That belongs beside `0042`'s threshold deletion as the block's second clean judgment.
+3. **`0052` §2 is the case for the seven-surface propagation rule** and should be quoted where the
+   controls are described: **five surfaces were checked, `artifacts/` and `second-brain`'s memory were
+   not, and the unchecked one fed a wrong ruling.**
+4. **Two arm divergences are on the record unreconciled, per `CLAUDE.md`** — robustness survival 792
+   vs 791 (a `≤ τ_pull` restriction A states and B does not) and the bound width 0.4032 vs 0.4033.
+   **Neither arm flagged either, and the gate's own Check line is "dual implementation diff."** The
+   write-up should not claim the diff caught them; a human reading two artifacts did.
+
 **Gate checklist:** **Steps 1 (amended and re-approved), 5 and 6 closed. Steps 7 and 8 open.** Three
-of five. **Step 7 has been approved twice and reopened twice and is with Red Team after its fifth
-review. Step 8 has never launched.**
+of five. **Step 7 has been approved twice and reopened twice, has run nine times, and is with Red Team
+after its eighth review — seven of the eight returned HOLD. Step 8 has never launched.** **The Step 5
+gate (`0021`, gate 2 of 5) was amended by `0053` and the amendment reverted by `0054` the same day; it
+stands as approved.**
 
 **Four entries now credit `second-brain` by name** — `0022`, `0028`, `0029` and `0035`, all four
 propagation gaps found on a post-gate consistency pass. Recorded without comment: the role is
@@ -87,7 +119,9 @@ continuity, and the log is the Human Lead's.
    each corrected its predecessor and each introduced a defect doing it. Instance A's line from
    inside `0045` — *"the seventh instance, inside the entry correcting the sixth"* — is the honest
    summary, and `0046` §0 names the cause as motivated number-selection rather than inattention.
-3. **Three standing controls came out of nine propagation failures**, each written after the same
+3. **Four standing controls came out of thirteen propagation failures** (nine through `0050`, then
+   #12 at `0052` §5 and #13 at `0054` §5; the fourth control is `CLAUDE.md` §Propagation's seven
+   surfaces with read-back **plus grep**), each written after the same
    failure recurred somewhere new. A write-up that reports the controls without the failure count
    makes the process look more orderly than it was.
 4. **The dual-implementation regime's limits are now measured, not asserted.** `0040` §7 (agreement
