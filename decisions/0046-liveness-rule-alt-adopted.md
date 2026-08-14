@@ -72,7 +72,7 @@ On APPLY, PF-LIMIT deleted **1,355** pairs. They split cleanly:
 | No S2 record anywhere | **604** | rests entirely on the null | **`|A| = 0`** — stated, uncontested |
 | Positive in-window S2 evidence | **751** | **652 directly observed (Continued); 99 NULL-BASED (Started-and-left)** | 652: none stated. **99: the same warrant that covers the 604** |
 
-> **CORRECTED 2026-08-14 (`decisions/0048`).** This row first read *"directly observed — 652 continued,
+> **CORRECTED 2026-08-13 (`decisions/0048`).** This row first read *"directly observed — 652 continued,
 > 99 left."* **The 99 are not directly observed.** `|A| ≥ 1` is observed; **the failure to meet the
 > Continued condition is not.** Under `0034` **only Continued rests on positive evidence**, so
 > Started-and-left is a null on exit — and `τ2 > τ1` makes it structural: **a pair silent after `τ1`
@@ -130,7 +130,7 @@ never-started, paired clustered CI [+0.0413, +0.0947], excluding zero.**
 
 **The ceiling equals the unfiltered share as an identity.**
 
-> **PHRASING CORRECTED 2026-08-14 (`decisions/0049`).** This read *"the excluded set is a subset of
+> **PHRASING CORRECTED 2026-08-13 (`decisions/0049`).** This read *"the excluded set is a subset of
 > never-started, so **returning every excluded pair as a decliner** reproduces the unfiltered population
 > exactly."* **That is false under ALT-BROAD** — returning all 703 as decliners gives an **unattainable
 > 17.3279%**, because the 99 started-and-left exclusions have `|A| ≥ 1` observed and **cannot** be

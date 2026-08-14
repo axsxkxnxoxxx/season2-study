@@ -4,11 +4,14 @@
 | :--- | :--- |
 | **Decision** | **ALT-MATCHED is REVERTED. ALT-BROAD is restored** and the started-and-left floor is **widened to 18,952 / 196,654 = 9.6372%**. **`0053` is WITHDRAWN in its entirety** — its premise was false. **`0021`'s amendment is reverted; `0048` §9 is restored.** |
 | **Decided by** | Human Lead |
-| **Date** | 2026-08-14 |
+| **Date** | 2026-08-13 |
 | **Occasioned by** | Red Team's **seventh** Step 7 HOLD |
 | **Withdraws** | `decisions/0053` entirely; ALT-MATCHED (`0052` §1); `0052` §4's rejection of the widened floor |
 | **Propagated to — all five files** | `task-sheet.md` (Steps 7, 8, 9, 13, 14); `data-scientist.md`; `data-scientist-b.md`; `analytics-engineer.md`; `analytics-engineer-b.md` — **each edit verified by reading the file back.** **Not touched, checked not assumed:** `red-team.md`, `second-brain.md`, the five `reviewer-*.md` |
 | **Status** | Closed. **Step 7 goes to Red Team. The gate is OPEN.** |
+
+
+> **DATE CORRECTED 2026-08-13.** This entry was written and dated **2026-08-14**, which is tomorrow. Entries `0052` through `0057` all carried it, and the drift began when the session's clock advanced mid-work and the date was carried forward from an earlier entry rather than re-read. **Corrected in place across every surface, with this note, rather than silently rewritten** — the decision log is a public tracked artifact. Found by Red Team on its eleventh review; recorded at `0058` §6.
 
 ---
 
@@ -24,7 +27,7 @@ covering floor and ALT-MATCHED are **numerically identical:**
 | Continued ceiling | 144,933 → **73.6995%** | 144,933 → **73.6995%** |
 | Never-started | [16.6633%, 16.9704%] | identical, both arms |
 
-**AMENDED 2026-08-14 (`decisions/0055`): this table is APPLY only, and the entry that mandated a
+**AMENDED 2026-08-13 (`decisions/0055`): this table is APPLY only, and the entry that mandated a
 population label on every figure omitted one on its own decisive table.** The same identity holds on
 **DERIV, n = 147,370** — S&L **[11.3015%, 11.4291%]**, Continued ceiling **82.4930%** — but **the DERIV
 floor was widened nowhere.** Every file kept 16,744 → **11.3619%**, so §1's claim was implemented on one
@@ -72,7 +75,7 @@ evidence dated in `(s, τ2)`.
 
 ~~**The 90 have p5 margin 1.7 days and a minimum of 0.13 days.** Some were demonstrably alive for
 roughly 89 of the 91 days, had full opportunity to generate the evidence, did not, and would have been
-deleted anyway.~~ **WITHDRAWN 2026-08-14 (`decisions/0055`) — it cherry-picked the tail.** The record's
+deleted anyway.~~ **WITHDRAWN 2026-08-13 (`decisions/0055`) — it cherry-picked the tail.** The record's
 own median for the same 90 is **44.5 days** (`0053` §5, instance B), so for half of them roughly half
 the Continued window is unobserved. p5 supported the claim and the median contradicted it, and only p5
 was quoted.
@@ -146,7 +149,7 @@ apart from the `name:` field.
 - **Bound width: A gives 0.4032 pp exact (793/196,654); B gives 0.4033 pp, differenced from rounded
   endpoints, and computes its ratios from it.** **`0053` §6 promoted B's 52.7% ratio into the record —
   it is a rounding artifact and is withdrawn.**
-  **AMENDED 2026-08-14 (`0055`): §7 below and `task-sheet.md` then published 0.4033 — B's artifact —
+  **AMENDED 2026-08-13 (`0055`): §7 below and `task-sheet.md` then published 0.4033 — B's artifact —
   four paragraphs after naming it as one.** **The width is 0.4032 pp**, `793 / 196,654 = 0.40325`.
   Withdrawing one of B's rounding artifacts and adopting the other in the same entry is the error class
   §3 names, committed in the entry that names it.
@@ -165,7 +168,7 @@ apart from the `name:` field.
 ## 8. Scope
 
 - **Rule reverted. No rerun ordered** — every figure for both rules is already on record from four
-  arm-runs. **AMENDED 2026-08-14 (`0055`): false for the adopted bound.** 18,952 is on record **only as
+  arm-runs. **AMENDED 2026-08-13 (`0055`): false for the adopted bound.** 18,952 is on record **only as
   ALT-MATCHED's floor over 793 exclusions.** **No arm has ever asserted 18,952 as the floor over
   ALT-BROAD's retained set**, and both operative deliverables still print 9.6830% — so a
   dual-implementation step adopted a bound **neither instance had reproduced.** The arithmetic is the

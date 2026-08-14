@@ -56,11 +56,11 @@ A ruling lands in `decisions/` **and** in every file an agent reads. Recorded on
 6. `artifacts/` — deliverables carrying superseded figures are stamped, not left to be read as current
 7. `.claude/agent-memory/second-brain/` — it is fed back into rulings, and stale memory has already caused a wrong one
 
-**Read-back plus grep. Read-back alone is not verification.** Human Lead ruling, 2026-08-14. Reading an edit back proves the new text landed. Only grep proves the old text is gone, and a file can hold both at once — three consecutive propagation failures were exactly that, an adopted figure and its superseded predecessor live in the same file, sometimes ten lines apart, each declaring the other wrong.
+**Read-back plus grep. Read-back alone is not verification.** Human Lead ruling, 2026-08-13. Reading an edit back proves the new text landed. Only grep proves the old text is gone, and a file can hold both at once — three consecutive propagation failures were exactly that, an adopted figure and its superseded predecessor live in the same file, sometimes ten lines apart, each declaring the other wrong.
 
 So after any edit: grep all seven surfaces for the superseded strings and require **zero hits**, except where a string is explicitly named as superseded at the point of use. Report the hit counts.
 
-**And grep the corrected string too, requiring non-zero.** Added 2026-08-14 by the analytics-engineer, who found the negative half insufficient on the first run under it: **a figure that was never written returns zero hits on every superseded form of itself.** The DERIV bound was absent from all five spec files rather than present and stale, so the negative grep passed clean on a file set that contained the defect. A defect has two shapes — the wrong figure present, and the right figure missing — and the negative grep sees only the first.
+**And grep the corrected string too, requiring non-zero.** Added 2026-08-13 by the analytics-engineer, who found the negative half insufficient on the first run under it: **a figure that was never written returns zero hits on every superseded form of itself.** The DERIV bound was absent from all five spec files rather than present and stale, so the negative grep passed clean on a file set that contained the defect. A defect has two shapes — the wrong figure present, and the right figure missing — and the negative grep sees only the first.
 
 **A grep hit is not a defect until you read the line.** Several figures in this study are correct on one population or scope and superseded on another, and a check that treats every hit as a defect chases them while a check that dismisses them misses the real ones. The register of known false positives is maintained in `.claude/agent-memory/second-brain/glossary-terms-and-thresholds.md`; the decision entry that adds or withdraws a row cites it.
 
@@ -92,6 +92,16 @@ So after any edit: grep all seven surfaces for the superseded strings and requir
 **Both populations, always.** APPLY and DERIV are separate lists with separate arithmetic, and a correction applied to one and not the other is the same defect as not applying it at all.
 
 **Add a row when a new figure is derived; never remove one.** A list that shrinks is how the next one gets missed.
+
+**Derived figures are REGENERATED, not patched.** Human Lead ruling, 2026-08-13. Four consecutive decisions corrected these artifacts by hand-patching individual values into published files, and every finding in Red Team reviews 9 through 11 was a value a patch reached in one file and missed in another, or reached in the `.md` and missed in the `.json`, or reached a ratio and missed its numerator. Eleven entries of one error class is a method that cannot converge.
+
+So: `src/step7_regenerate_derived.py` reads the stored counts and writes **every** derived figure into **both halves of both arms** from a single expression each, then verifies numerically that no superseded value survives at any path. Anything derived belongs in it. **If you find yourself editing a derived number by hand, that is the defect.**
+
+Two properties are structural rather than remembered. **A value that is still live somewhere cannot enter the superseded list**, because the list is generated from the same expressions that produce the live values — that is what kept `0.3575` and `0.0672` out of it. And **the two arms' sampling-width conventions are named inputs**, so one arm's denominator cannot silently become the other's; reconciling a divergence is a spec decision and must be visible as one.
+
+**Stamps are negative only.** A stamp naming the corrected value guarantees the positive grep passes whether or not the body was fixed. A stamp names what is superseded and points at the generated block; it restates no adopted figure.
+
+**Check with `src/check_surfaces.py`, not with `grep`.** Matching is numeric, at a tolerance, across all seven surfaces. Textual grep cannot see the JSONs: the register stores 4-dp strings and the JSON stores 6-dp literals, so `9.6830` is not a substring of `9.682997`. Every value that survived review 11 was one whose registered form rounds up and therefore could never match.
 
 **The dual diff cannot catch a propagation failure.** Both members of a pair are byte-identical by design, so an error written into both is invisible to it. Propagation is checked by grep, never by the diff.
 

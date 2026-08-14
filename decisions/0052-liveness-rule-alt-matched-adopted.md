@@ -4,11 +4,14 @@
 | :--- | :--- |
 | **Decision** | **ALT-MATCHED is ADOPTED** — silence tested at **`τ1`** for the never-started null and at **`τ2`** for the started-and-left null. **`0051`'s V7 correction is WITHDRAWN**: 73.6537% is the Continued ceiling and both arms publish it. **The channel figure is corrected to 52.4%.** Propagation **#12**, the mode line, the 1.5× coupling and the A-vs-B ratio divergence are fixed. **The population mismatch is recorded as a Step 14 limitation.** |
 | **Decided by** | Human Lead |
-| **Date** | 2026-08-14 |
+| **Date** | 2026-08-13 |
 | **Occasioned by** | Red Team's **sixth** Step 7 HOLD |
 | **Supersedes** | ALT-BROAD (`0048` §1); **`0051` §2 entirely** |
 | **Propagated to — all five files** | `task-sheet.md` (Steps 7, 9, 13, 14); `data-scientist.md`; `data-scientist-b.md`; `analytics-engineer.md`; `analytics-engineer-b.md`. **Not touched, checked not assumed:** `red-team.md`, `second-brain.md`, the five `reviewer-*.md` |
 | **Status** | Closed. **Step 7 reruns on ALT-MATCHED. The gate is OPEN.** |
+
+
+> **DATE CORRECTED 2026-08-13.** This entry was written and dated **2026-08-14**, which is tomorrow. Entries `0052` through `0057` all carried it, and the drift began when the session's clock advanced mid-work and the date was carried forward from an earlier entry rather than re-read. **Corrected in place across every surface, with this note, rather than silently rewritten** — the decision log is a public tracked artifact. Found by Red Team on its eleventh review; recorded at `0058` §6.
 
 ---
 

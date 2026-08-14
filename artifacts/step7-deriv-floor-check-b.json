@@ -3,7 +3,7 @@
   "namespace": "b",
   "working_dir": "processed/step7/df_b/",
   "task": "specs/step7-deriv-floor-verification.md",
-  "date": "2026-08-14",
+  "date": "2026-08-13",
   "api_calls": 0,
   "adopts": "nothing",
   "rule": "ALT-BROAD (decisions/0048). NOT LIVE iff (no account insertion instant after that pair's tau1) AND (NOT Continued). Silence anchored at tau1 and only at tau1.",

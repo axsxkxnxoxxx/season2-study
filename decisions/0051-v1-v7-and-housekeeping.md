@@ -4,7 +4,7 @@
 | :--- | :--- |
 | **Decision** | **V1:** both `data-scientist` files ordered ALT's superseded 485→716 series at Step 13 — corrected. **V7:** the two-ceilings sum is **100.3071%**, not 100.66%, and the excess is **exactly 604/196,654** — corrected with the mechanism stated. **Nine housekeeping items** cleared, including **14 superseded Step 7 artifacts stamped**. |
 | **Decided by** | Human Lead |
-| **Date** | 2026-08-14 |
+| **Date** | 2026-08-13 |
 | **Occasioned by** | `second-brain`'s catch-up through `0050`, findings V1–V11 |
 | **Status** | Closed. **Step 7's gate is OPEN and no Red Team review has run since its fifth HOLD.** |
 

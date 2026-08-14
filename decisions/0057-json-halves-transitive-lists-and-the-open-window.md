@@ -4,11 +4,14 @@
 | :--- | :--- |
 | **Decision** | **Both `.json` deliverables are corrected and re-stamped** — the machine-readable half certified the numbers the prose half withdrew. **Every superseded occurrence in `bb-{a,b}.md` is now actually marked inline**, which `0056` claimed and had not done. **The dependency lists close TRANSITIVELY** and gain four missing items. **`0.0503`, `0.3575` and `73.3466` are registered.** **The channel window is fixed to `(τ1, τ2)`, open at `τ2`** — settled by the adopted warrant, not ambiguous. **Surface 7 is the DIRECTORY.** **U2 is carried to Step 14 as measured and non-zero at three.** |
 | **Decided by** | Human Lead |
-| **Date** | 2026-08-14 |
+| **Date** | 2026-08-13 |
 | **Occasioned by** | Red Team's **tenth** Step 7 HOLD |
 | **Amends** | `0056` §4 (an asserted marking not taken), `0056`'s header (surface-7 scope), `0056` §5 (list depth and membership) |
 | **Propagated to — SEVEN surfaces, directory-scoped** | `task-sheet.md`; both `data-scientist` files; `artifacts/step7-liveness-bb-{a,b}.{md,json}`; **all of `.claude/agent-memory/second-brain/`, not one file in it**; `CLAUDE.md`; `specs/step7-deriv-floor-verification.md`; `src/step7_floor_extremes.py` |
 | **Status** | Closed. **Step 7 goes to Red Team. The gate is OPEN.** |
+
+
+> **DATE CORRECTED 2026-08-13.** This entry was written and dated **2026-08-14**, which is tomorrow. Entries `0052` through `0057` all carried it, and the drift began when the session's clock advanced mid-work and the date was carried forward from an earlier entry rather than re-read. **Corrected in place across every surface, with this note, rather than silently rewritten** — the decision log is a public tracked artifact. Found by Red Team on its eleventh review; recorded at `0058` §6.
 
 ---
 

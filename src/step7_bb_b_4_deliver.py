@@ -31,7 +31,7 @@ def main() -> None:
     out = {
         "step": 7, "instance": "data-scientist-b", "namespace": "bb_b",
         "gate": "GATE. This is a proposal. NOTHING IS ADOPTED HERE.",
-        "date": "2026-08-14", "api_calls": 0,
+        "date": "2026-08-13", "api_calls": 0,
         "rule": rule["rule"], "rule_source": rule["rule_source"],
         "W": 108, "H": 91, "W_arms": W_ARMS,
         "populations": rule["populations"],

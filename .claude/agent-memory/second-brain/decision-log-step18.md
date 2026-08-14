@@ -26,7 +26,7 @@ log shows the judgment."*
 > been fed back into a ruling** — see `0051` §2 and [[withdrawn-claims-register]] mode G. Correct it
 > here **and** grep the other six surfaces; read-back alone is not verification.
 
-## Coverage as of 2026-08-14 — `0001`–`0054`
+## Coverage as of 2026-08-13 — `0001`–`0054`
 
 | Files | Cover | Five-field completeness |
 | :--- | :--- | :--- |
@@ -96,7 +96,7 @@ decided; only the sequence shows what happened, and the sequence is the Step 18 
    controls are described: **five surfaces were checked, `artifacts/` and `second-brain`'s memory were
    not, and the unchecked one fed a wrong ruling.**
 4. **Two arm divergences are on the record unreconciled, per `CLAUDE.md`** — robustness survival 792
-   vs 791 (a `≤ τ_pull` restriction A states and B does not) and the bound width 0.4032 vs 0.4033.
+   vs 791 (a `≤ τ_pull` restriction A states and B does not) and the bound width 0.4032 vs 0.4033 *(**0.4032 is adopted**; `0.4033` is instance B's rounding artifact, differenced from rounded endpoints, and has **no legitimate reading** — `0058`)*.
    **Neither arm flagged either, and the gate's own Check line is "dual implementation diff."** The
    write-up should not claim the diff caught them; a human reading two artifacts did.
 

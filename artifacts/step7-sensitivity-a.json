@@ -1,4 +1,12 @@
 {
+  "_SUPERSEDED": {
+    "note": "This deliverable measures an earlier rule generation (ALT / ALT-BROAD pre-widening / a deleted threshold). The adopted rule is ALT-BROAD with the widened started-and-left floor. No figure here is current.",
+    "adopted_deliverables": [
+      "artifacts/step7-liveness-bb-a.json",
+      "artifacts/step7-liveness-bb-b.json"
+    ],
+    "stamped": "2026-08-13 (0058)"
+  },
   "STATUS": {
     "what_this_is": "A GATE-CLOSING DIAGNOSTIC FOR STEP 7, run under decisions/0041 SS4 to decide whether the liveness threshold is load-bearing.",
     "what_this_is_not": "NOT the Step 9 deliverable, and not a study result. The shares below must not be cited as the headline.",

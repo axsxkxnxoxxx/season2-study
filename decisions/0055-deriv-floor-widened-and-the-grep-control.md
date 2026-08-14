@@ -4,11 +4,14 @@
 | :--- | :--- |
 | **Decision** | **The DERIV started-and-left floor is widened to 16,655 / 147,370 = 11.3015%** and the **DERIV Continued ceiling to 121,570 / 147,370 = 82.4930%** — `0054` §1's identity was implemented on APPLY only. **The floor's margin argument is WITHDRAWN as cherry-picked**; the ground is admissibility, not plausibility. **A standing propagation control is added to `CLAUDE.md`: seven surfaces, read-back PLUS grep.** Propagation **#14–#17** fixed and three defects in `0054` corrected. |
 | **Decided by** | Human Lead |
-| **Date** | 2026-08-14 |
+| **Date** | 2026-08-13 |
 | **Occasioned by** | Red Team's **eighth** Step 7 HOLD |
 | **Amends** | `decisions/0054` §1, §3, §6, §7, §8 — in place |
 | **Propagated to — SEVEN surfaces** | `task-sheet.md`; `data-scientist.md`; `data-scientist-b.md`; `analytics-engineer.md`; `analytics-engineer-b.md`; `artifacts/`; `.claude/agent-memory/second-brain/`. **Plus `CLAUDE.md`**, which now carries the control. **Verified by grep with hit counts reported, not by reading the edits back** |
 | **Status** | Closed. **Step 7 goes to Red Team. The gate is OPEN.** |
+
+
+> **DATE CORRECTED 2026-08-13.** This entry was written and dated **2026-08-14**, which is tomorrow. Entries `0052` through `0057` all carried it, and the drift began when the session's clock advanced mid-work and the date was carried forward from an earlier entry rather than re-read. **Corrected in place across every surface, with this note, rather than silently rewritten** — the decision log is a public tracked artifact. Found by Red Team on its eleventh review; recorded at `0058` §6.
 
 ---
 

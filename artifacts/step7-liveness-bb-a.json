@@ -1,70 +1,4 @@
 {
-  "_SUPERSEDED_2026_08_14": {
-    "by": [
-      "decisions/0054",
-      "decisions/0055",
-      "decisions/0056"
-    ],
-    "rule_unchanged": "ALT-BROAD; silence anchored at tau1 and only at tau1",
-    "what_changed": "bound endpoints and every figure derived from them; no rule change, no rerun",
-    "channel_pairs": {
-      "APPLY": 90,
-      "DERIV": 89
-    },
-    "channel_window": "(tau1, tau2) OPEN at tau2 -- 0057. At s = tau2 the unobserved remainder is empty, so nothing admissible is missing and the pair is NOT conceded.",
-    "corrected": {
-      "APPLY": {
-        "sl_bound": [
-          9.6372,
-          10.0405
-        ],
-        "sl_width_pp": 0.4032,
-        "conditional_sub_interval": [
-          9.6372,
-          9.7333
-        ],
-        "sub_interval_width_pp": 0.0961,
-        "continued_ceiling_pct": 73.6995,
-        "corner_table_floor_row": {
-          "never_started_pct": 16.9704,
-          "continued_pct": 73.3924,
-          "started_and_left_pct": 9.6372
-        },
-        "sl_bound_over_sampling_width": 0.509
-      },
-      "DERIV": {
-        "sl_bound": [
-          11.3015,
-          11.4291
-        ],
-        "sl_width_pp": 0.1276,
-        "conditional_sub_interval": "COINCIDES with the bound -- the conditioning is vacuous at zero never-started exclusions",
-        "continued_ceiling_pct": 82.493
-      }
-    },
-    "superseded_strings_every_occurrence_is_a_defect": [
-      "9.6830",
-      "0.0503",
-      "0.3575",
-      "73.3466",
-      "73.6537",
-      "11.3619",
-      "0.0672",
-      "82.4327",
-      "0.4033",
-      "0.4703"
-    ],
-    "this_stamp_certifies_nothing_beyond_the_above": true,
-    "positively_unchanged_listed_not_implied": [
-      "exclusion counts: APPLY 703 = 604 + 99; DERIV 99 = 0 + 99",
-      "never-started bound [16.6633%, 16.9704%] on APPLY, degenerate [6.2055%, 6.2055%] on DERIV",
-      "the three outcome POINT ESTIMATES, including started_and_left = 19042 on APPLY -- that is the post-liveness count, NOT the bound floor, and it does NOT move"
-    ],
-    "reconfirmed_by": [
-      "artifacts/step7-deriv-floor-check-a.md",
-      "artifacts/step7-deriv-floor-check-b.md"
-    ]
-  },
   "step": 7,
   "title": "Liveness rule, rerun on ALT-BROAD (decisions/0048). GATE \u2014 proposal only.",
   "instance": "bb_a (namespace a)",
@@ -365,8 +299,8 @@
         "never_started_ceiling_with_started_and_left_floor": {
           "resolution": "all 0 never-started nulls are true declines; all 99 started-and-left exclusions in truth continued",
           "never_started_pct": 6.205469,
-          "started_and_left_pct": 11.361878,
-          "continued_pct": 82.432653,
+          "started_and_left_pct": 11.301486,
+          "continued_pct": 82.493045,
           "sums_to_100": true
         },
         "reading": "both corners are attainable resolutions of the same population, so the two intervals are simultaneously tight"
@@ -416,7 +350,7 @@
         "ceiling_pct": 10.040477,
         "floor_numerator": 18952,
         "ceiling_numerator": 19745,
-        "width_pp": 0.403245,
+        "width_pp": 0.403246,
         "floor_attained_when": "all 99 excluded started-and-left nulls in truth continued",
         "ceiling_attained_when": "all 604 excluded never-started nulls in truth started and left, and all 99 started-and-left exclusions are true exits",
         "both_endpoints_attainable": true
@@ -436,7 +370,7 @@
         "denominator_is_the_estimands_population": true,
         "floor_pct": 73.296246,
         "ceiling_pct": 73.699493,
-        "width_pp": 0.403245,
+        "width_pp": 0.403247,
         "note": "Continued is the only state that rests on positive evidence, so no exclusion can leave it; both other states can only flow INTO it"
       },
       "joint_corner_check": {
@@ -450,8 +384,8 @@
         "never_started_ceiling_with_started_and_left_floor": {
           "resolution": "all 604 never-started nulls are true declines; all 99 started-and-left exclusions in truth continued",
           "never_started_pct": 16.970415,
-          "started_and_left_pct": 9.682997,
-          "continued_pct": 73.346588,
+          "started_and_left_pct": 9.637231,
+          "continued_pct": 73.392354,
           "sums_to_100": true
         },
         "reading": "both corners are attainable resolutions of the same population, so the two intervals are simultaneously tight"
@@ -582,7 +516,7 @@
           "ci_width_pp": 0.7626
         },
         "started_and_left_floor": {
-          "point_pct": 11.361878,
+          "point_pct": 11.301486,
           "clustered_95_ci_pct": [
             10.8817,
             11.8561
@@ -599,7 +533,7 @@
         },
         "never_started_bound_width_pp": 0.0,
         "never_started_bound_width_over_sampling_width": 0.0,
-        "started_and_left_bound_width_pp": 0.067178,
+        "started_and_left_bound_width_pp": 0.12757,
         "started_and_left_bound_width_over_sampling_width": 0.069
       }
     },
@@ -704,7 +638,7 @@
           "ci_width_pp": 1.1033
         },
         "started_and_left_floor": {
-          "point_pct": 9.682997,
+          "point_pct": 9.637231,
           "clustered_95_ci_pct": [
             9.32,
             10.0802
@@ -721,7 +655,7 @@
         },
         "never_started_bound_width_pp": 0.307138,
         "never_started_bound_width_over_sampling_width": 0.2813,
-        "started_and_left_bound_width_pp": 0.357481,
+        "started_and_left_bound_width_pp": 0.403246,
         "started_and_left_bound_width_over_sampling_width": 0.509
       }
     }
@@ -1889,5 +1823,172 @@
       "step7_bb_a_7_boot.py",
       "step7_bb_a_8_deliver.py"
     ]
+  },
+  "_DERIVED_2026_08_13": {
+    "generated_by": "src/step7_regenerate_derived.py",
+    "regenerated_not_patched": true,
+    "channel_window": "(tau1, tau2) OPEN at tau2 (0057)",
+    "counts_are_the_only_inputs": {
+      "APPLY": {
+        "n": 196654,
+        "ns_unfiltered": 33373,
+        "cont_unfiltered": 144140,
+        "sl_unfiltered": 19141,
+        "ns_excl": 604,
+        "sl_excl": 99,
+        "channel": 90,
+        "channel_closed_form": 90
+      },
+      "DERIV": {
+        "n": 147370,
+        "ns_unfiltered": 9145,
+        "cont_unfiltered": 121382,
+        "sl_unfiltered": 16843,
+        "ns_excl": 0,
+        "sl_excl": 99,
+        "channel": 89,
+        "channel_closed_form": 89
+      }
+    },
+    "bounds": {
+      "APPLY": {
+        "ns": {
+          "floor_n": 32769,
+          "ceil_n": 33373,
+          "floor": 16.663277,
+          "ceil": 16.970415,
+          "width": 0.307138
+        },
+        "sl": {
+          "floor_n": 18952,
+          "ceil_n": 19745,
+          "floor": 9.637231,
+          "ceil": 10.040477,
+          "width": 0.403246
+        },
+        "sub": {
+          "floor_n": 18952,
+          "ceil_n": 19141,
+          "floor": 9.637231,
+          "ceil": 9.733339,
+          "width": 0.096108
+        },
+        "cont": {
+          "floor_n": 144140,
+          "ceil_n": 144933,
+          "floor": 73.296246,
+          "ceil": 73.699493,
+          "width": 0.403247
+        },
+        "corner_ns_floor": {
+          "ns": 16.663277,
+          "sl": 10.040477,
+          "cont": 73.296246
+        },
+        "corner_ns_ceil": {
+          "ns": 16.970415,
+          "sl": 9.637231,
+          "cont": 73.392354
+        },
+        "ceilings": {
+          "sum": 100.710385,
+          "excess_pairs": 1397,
+          "excess_pp": 0.710385,
+          "mechanism": "2 x 604 + 99 + 90 = 1397"
+        }
+      },
+      "DERIV": {
+        "ns": {
+          "floor_n": 9145,
+          "ceil_n": 9145,
+          "floor": 6.205469,
+          "ceil": 6.205469,
+          "width": 0.0
+        },
+        "sl": {
+          "floor_n": 16655,
+          "ceil_n": 16843,
+          "floor": 11.301486,
+          "ceil": 11.429056,
+          "width": 0.12757
+        },
+        "sub": {
+          "floor_n": 16655,
+          "ceil_n": 16843,
+          "floor": 11.301486,
+          "ceil": 11.429056,
+          "width": 0.12757
+        },
+        "cont": {
+          "floor_n": 121382,
+          "ceil_n": 121570,
+          "floor": 82.365475,
+          "ceil": 82.493045,
+          "width": 0.12757
+        },
+        "corner_ns_floor": {
+          "ns": 6.205469,
+          "sl": 11.429056,
+          "cont": 82.365475
+        },
+        "corner_ns_ceil": {
+          "ns": 6.205469,
+          "sl": 11.301486,
+          "cont": 82.493045
+        },
+        "ceilings": {
+          "sum": 100.12757,
+          "excess_pairs": 188,
+          "excess_pp": 0.12757,
+          "mechanism": "2 x 0 + 99 + 89 = 188"
+        }
+      }
+    },
+    "exclusion_share_of_population_pct": {
+      "APPLY": 0.357481,
+      "DERIV": 0.067178
+    },
+    "LEGITIMATE_not_superseded": "exclusion_share_of_population_pct is where 0.3575 (APPLY) and 0.0672 (DERIV) are CORRECT. They are excluded from the superseded list by construction (finding 5).",
+    "superseded_strings_every_occurrence_is_a_defect": {
+      "9.683": "S&L floor and sub-interval floor, APPLY, before the channel concession",
+      "0.0503": "sub-interval width, APPLY, before the channel concession",
+      "73.3466": "Continued value in the attainable-corner floor row, APPLY",
+      "73.6537": "Continued ceiling, APPLY, before the channel concession",
+      "11.3619": "S&L floor and sub-interval floor, DERIV",
+      "82.4327": "Continued ceiling, DERIV",
+      "0.4033": "APPLY bound width differenced from rounded endpoints -- a rounding artifact"
+    },
+    "why_corrected_values_and_the_superseded_list_may_sit_together_here": "finding 7 was that writing corrected values into a STAMP guarantees the positive grep passes whether or not the body was fixed. That does not apply to this block: it is not a stamp but generated output, written in the same pass as every target path from the same expressions, and verify() then walks the WHOLE document numerically at both precisions and exits non-zero if any superseded value survives anywhere. The guarantee is structural, not textual. The .md STAMP is negative-only and restates no corrected figure.",
+    "point_estimates_that_do_NOT_move": "the post-liveness started_and_left COUNT is 19042 on APPLY -- that is a point estimate, not the bound floor, and it appears in outcome_shares, waterfall and ordering_commutation_check. Targets are declared by PATH so it cannot be caught by a value-wide substitution.",
+    "bound_over_sampling_width_TWO_CONVENTIONS_NOT_RECONCILED": {
+      "why": "CLAUDE.md: any divergence is a bug or a spec ambiguity -- report it, do not reconcile it. 0057 wrote arm b's denominator into arm a's file; 0058 reverts that. The never-started ratio was correctly left divergent (a 0.2813, b 0.27211) in the same files, which is the proof this one was wrong.",
+      "this_arm": "a",
+      "this_arm_recomputed": {
+        "APPLY": {
+          "denominator": 0.7602,
+          "convention": "CI width of the FLOOR ENDPOINT's own bootstrap distribution",
+          "bound_width_pp": 0.403246,
+          "ratio": 0.5304,
+          "sub_interval_width_pp": 0.096108,
+          "sub_interval_ratio": 0.1264
+        },
+        "DERIV": {
+          "denominator": 0.9744,
+          "convention": "CI width of the FLOOR ENDPOINT's own bootstrap distribution",
+          "bound_width_pp": 0.12757,
+          "ratio": 0.1309,
+          "sub_interval_width_pp": 0.12757,
+          "sub_interval_ratio": 0.1309
+        }
+      },
+      "other_convention_denominator": {
+        "convention": "CI width of the UNDER-THE-RULE point estimate",
+        "source": "bootstrap.by_population.<pop>.ci95_width_pp.started_and_left",
+        "APPLY": 0.7922131651416677,
+        "DERIV": 0.9737261938594308
+      },
+      "arms_own_published_ratio_is_retained_in_place_and_marked_superseded": true,
+      "the_spec_fixes_neither_convention": true
+    }
   }
 }

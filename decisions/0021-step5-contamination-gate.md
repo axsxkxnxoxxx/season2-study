@@ -102,7 +102,7 @@ because nothing about the data changed.
    window closed proves the account was alive, whatever date it claims — backfilling an old show is
    still activity.
 
-   > **AN AMENDMENT WAS MADE HERE ON 2026-08-14 (`decisions/0053`) AND IS WITHDRAWN THE SAME DAY
+   > **AN AMENDMENT WAS MADE HERE ON 2026-08-13 (`decisions/0053`) AND IS WITHDRAWN THE SAME DAY
    > (`decisions/0054`). THIS RULING STANDS AS ORIGINALLY APPROVED.**
    >
    > `0053` read "after the window closed" as **per question** — `τ1` for the never-started null, `τ2`

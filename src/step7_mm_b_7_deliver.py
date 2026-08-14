@@ -31,7 +31,7 @@ def main() -> None:
 
     out: dict = {
         "step": 7, "instance": "data-scientist-b", "namespace": "mm_b",
-        "date": "2026-08-14", "api_calls": 0, "adopts": "nothing",
+        "date": "2026-08-13", "api_calls": 0, "adopts": "nothing",
         "gate": ("Step 7 is a GATE. Everything here is a PROPOSAL for the Human Lead to approve "
                  "and to diff against the other arm. This instance adopted nothing and did not "
                  "read the other arm's work."),

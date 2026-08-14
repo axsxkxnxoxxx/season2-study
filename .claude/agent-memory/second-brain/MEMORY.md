@@ -2,7 +2,7 @@
 
 Season 2 abandonment study. Continuity role: glossary, consistency checks, coverage of the
 decision log. `decisions/` is the artifact of record; this memory never duplicates or edits it.
-Current through `decisions/0054`, 2026-08-14. **Gates 1 (amended, re-approved), 5 and 6 closed,
+Current through `decisions/0054`, 2026-08-13. **Gates 1 (amended, re-approved), 5 and 6 closed,
 three of five. `W = 108`, `τ1` = 108 d, `τ2` = 199 d. Step 7 has run nine times, been approved twice
 and reopened twice, and is STILL OPEN; Step 8 has never launched.** Liveness rule is **ALT-BROAD**,
 no threshold, **silence anchored at `τ1` and only at `τ1`** — ALT-MATCHED was adopted at `0052` and

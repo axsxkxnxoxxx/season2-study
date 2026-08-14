@@ -4,7 +4,7 @@
 | :--- | :--- |
 | **Decision** | **ALT-BROAD is ADOPTED.** A pair is **not live iff BOTH** the account shows no insertion instant after `τ1` **and** the pair is **not Continued**. The `\|A\| = 0` form is superseded: **the warrant reaches Started-and-left too.** `0046` §2's table is corrected; `0047` §5's figures get their arms; five stale `task-sheet.md` lines are fixed. |
 | **Decided by** | Human Lead |
-| **Date** | 2026-08-14 |
+| **Date** | 2026-08-13 |
 | **Occasioned by** | Red Team's fourth Step 7 review, verdict HOLD |
 | **Supersedes** | ALT (`0046` §1); `0046` §2's outcome-basis table |
 | **Status** | Closed. **Step 7 reruns on ALT-BROAD. The gate is OPEN.** |

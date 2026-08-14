@@ -1,51 +1,96 @@
 # Step 7 — Liveness rule, rerun on ALT-BROAD (`decisions/0048`)
 
-> **PARTIALLY SUPERSEDED — stamped 2026-08-14 (`decisions/0055`). The rule is unchanged; two DERIV
-> endpoints and one APPLY endpoint are not.**
+> **PARTIALLY SUPERSEDED — `decisions/0054`, `0055`, `0056`, `0057`, `0058`. The rule is unchanged.**
 >
-> **This file is the deliverable for the ADOPTED rule (ALT-BROAD), and its DERIV bound is the one figure
-> in it that the adopted rule no longer supports.** The corrected values were computed under the
-> **reverted** ALT-MATCHED rule and sit in `step7-liveness-mm-{a,b}.md`; both `data-scientist` arms have
-> since re-confirmed them from their own masks (`step7-deriv-floor-check-{a,b}.md`).
+> **This stamp is NEGATIVE ONLY. It restates no corrected figure** — `0058`, from Red Team finding 7:
+> a stamp containing the corrected string guarantees the positive grep passes whether or not the body
+> was fixed. **The corrected figures are in the GENERATED block below**, written from the stored
+> counts by `src/step7_regenerate_derived.py`, which then verifies numerically, at both precisions,
+> that no superseded value survives anywhere in this deliverable.
 >
-> | | Printed below | Adopted (`0054`, `0055`) |
-> | :--- | ---: | ---: |
-> | **APPLY** started-and-left bound | `[9.6830%, 10.0405%]`, width 0.3575 pp | **`[9.6372%, 10.0405%]`, width 0.4032 pp** |
-> | **APPLY** Continued ceiling | 73.6537% | **73.6995%** |
-> | **DERIV** started-and-left bound | `[11.3619%, 11.4291%]`, width 0.0672 pp | **`[11.3015%, 11.4291%]`, width 0.1276 pp** |
-> | **DERIV** Continued ceiling | 82.4327% | **82.4930%** |
+> **Every occurrence of these strings in the prose below is superseded**, and each is marked inline:
+> `9.6830` · `0.0503` · `0.3575` *(as a bound WIDTH)* · `73.3466` · `73.6537` · `11.3619` ·
+> `0.0672` *(as a bound WIDTH)* · `82.4327` · `0.4033`.
 >
-> **Why:** the floor must admit that the channel pairs — **90 on APPLY, 89 on DERIV**, ¬Continued, live
-> only because they inserted after `τ1`, last insertion inside `(τ1, τ2)` — **may in truth be
-> Continued**, since they could produce no evidence dated after that instant. **The started-and-left
-> CEILINGS do not move; the widening is one-sided. The Continued ceilings move with the floor.**
+> **Two of those strings have a LEGITIMATE reading in this file and are deliberately NOT marked
+> there:** `0.3575%` and `0.0672%` as **shares of population** — `703 / 196,654` and `99 / 147,370`.
+> Same string, two meanings, one live. **The register is in `second-brain`'s glossary.**
 >
-> **Everything derived from the started-and-left floor moves with it, and this stamp names all of it**
-> (`decisions/0056`, dependency list in `CLAUDE.md` under `## Derived figures`):
->
-> | Derived figure | Printed below | Adopted |
-> | :--- | ---: | ---: |
-> | conditional sub-interval, APPLY | `[9.6830%, 9.7333%]`, width 0.0503 pp | **`[9.6372%, 9.7333%]`, width 0.0961 pp** |
-> | attainable-corner table, floor corner *(this file, `a` only)* | 9.6830% / Continued 73.3466% | **9.6372% / Continued 73.3924%** |
-> | S&L bound ÷ account-clustered sampling width | `a`: 0.47× · `b`: 6% | **50.9%** on 0.4032 / 0.7922 |
->
-> **`9.6830%` has NO legitimate reading under the adopted rule** — its earlier registration as a
-> false-positive trap is withdrawn, and **every occurrence of it below is superseded and marked inline.**
-> **Two strings below ARE legitimate and are NOT marked, deliberately:** `0.0672%` and `0.3575%` as
-> **shares of population** (`99 / 147,370` and `703 / 196,654`) — registered false positives. As a bound
-> **width** both are superseded. **The register is in `second-brain`'s glossary.**
->
-> **This stamp certifies nothing beyond the table above.** The earlier version of it closed with
-> *"Everything else in this file stands, including every point estimate"* — **that sentence was false for
-> at least three figures it did not name, and a stamp that affirmatively certifies superseded numbers is
-> worse than no stamp.** What is positively unchanged is narrow and is listed rather than implied: **the
-> exclusion counts (APPLY 703 = 604 + 99; DERIV 99 = 0 + 99), the never-started bound
-> `[16.6633%, 16.9704%]`, and the three outcome point estimates.** Anything not in that sentence or the
-> table above is **unverified by this stamp**, not certified by it.
-
-
+> **What is positively unchanged is listed, not implied:** the exclusion counts (APPLY 703 = 604 + 99;
+> DERIV 99 = 0 + 99), the never-started bound, and the three outcome **point estimates** — including
+> `started_and_left = 19,042` on APPLY, which is a **point estimate, not the bound floor**, and does
+> not move. **This stamp certifies nothing else.**
 
 **Instance:** `bb_a` (namespace `a`), dual implementation.
+
+<!-- BEGIN GENERATED: derived figures -- src/step7_regenerate_derived.py -->
+
+## Derived figures — GENERATED, do not hand-edit
+
+**Every number in this section is a function of the counts below and is written by
+`src/step7_regenerate_derived.py`.** It exists because four consecutive decisions
+corrected these artifacts by patching individual values, and every finding in Red Team
+reviews 9–11 was a value a patch reached in one place and missed in another.
+
+**The channel window is `(τ1, τ2)`, OPEN at `τ2`** (`0057`).
+
+### APPLY — n = 196,654
+
+**Counts, the only inputs:** never-started 33,373 · Continued 144,140 · started-and-left 19,141 · exclusions 604 + 99 = 703 · **channel 90**.
+
+| Bound | Floor | Ceiling | Width |
+| :--- | ---: | ---: | ---: |
+| Never started | 32,769 → 16.6633% | 33,373 → 16.9704% | 0.3071 pp |
+| **Started and left** | **18,952 → 9.6372%** | 19,745 → 10.0405% | **0.4032 pp** |
+| *conditional sub-interval — NOT a bound* | *18,952 → 9.6372%* | *19,141 → 9.7333%* | *0.0961 pp* |
+| Continued | 144,140 → 73.2962% | 144,933 → 73.6995% | 0.4032 pp |
+
+| Attainable corner | Never started | Continued | Started and left |
+| :--- | ---: | ---: | ---: |
+| NS floor / S&L ceiling | 16.6633% | 73.2962% | 10.0405% |
+| NS ceiling / S&L floor | 16.9704% | 73.3924% | 9.6372% |
+
+**Three ceilings sum to 100.7104%**, excess 0.7104 pp = 2 x 604 + 99 + 90 = 1397 pairs.
+**Exclusion share of population: 0.3575%** — this is where `0.3575` is CORRECT, and it is why that string is not in the superseded list.
+
+### DERIV — n = 147,370
+
+**Counts, the only inputs:** never-started 9,145 · Continued 121,382 · started-and-left 16,843 · exclusions 0 + 99 = 99 · **channel 89**.
+
+| Bound | Floor | Ceiling | Width |
+| :--- | ---: | ---: | ---: |
+| Never started | 9,145 → 6.2055% | 9,145 → 6.2055% | 0.0000 pp |
+| **Started and left** | **16,655 → 11.3015%** | 16,843 → 11.4291% | **0.1276 pp** |
+| *conditional sub-interval — NOT a bound* | *16,655 → 11.3015%* | *16,843 → 11.4291%* | *0.1276 pp* |
+| Continued | 121,382 → 82.3655% | 121,570 → 82.4930% | 0.1276 pp |
+
+| Attainable corner | Never started | Continued | Started and left |
+| :--- | ---: | ---: | ---: |
+| NS floor / S&L ceiling | 6.2055% | 82.3655% | 11.4291% |
+| NS ceiling / S&L floor | 6.2055% | 82.4930% | 11.3015% |
+
+**Three ceilings sum to 100.1276%**, excess 0.1276 pp = 2 x 0 + 99 + 89 = 188 pairs.
+**Exclusion share of population: 0.0672%** — this is where `0.0672` is CORRECT, and it is why that string is not in the superseded list.
+
+### Bound ÷ sampling width — TWO CONVENTIONS, NOT RECONCILED
+
+**This arm (`a`) divides by the CI width of the FLOOR ENDPOINT's own bootstrap distribution.** The other arm divides by the CI width of the UNDER-THE-RULE point estimate. **The spec fixes neither, so this is a spec ambiguity and is reported, not resolved** — `0057` wrote the other arm's denominator into this file and `0058` reverted it. The never-started ratio was correctly left divergent in the same files, which is the proof.
+
+| | Denominator | Bound ÷ it | Sub-interval ÷ it |
+| :--- | ---: | ---: | ---: |
+| APPLY | 0.7602 | **0.5304** | 0.1264 |
+| DERIV | 0.9744 | **0.1309** | 0.1309 |
+
+**The arm's own published ratio is retained in place above and marked superseded.** Its denominator was the CI of the PRE-widening floor point and was not re-bootstrapped; the recomputation here reuses it, and that limit is stated rather than hidden.
+
+### Per-`W` series — NOT regenerated, and that is a scope statement
+
+**The per-`W` sensitivity series in this deliverable was computed under the CLOSED channel window `(τ1, τ2]` and under the un-widened floor, at every arm.** It is not recomputed here because only `W = 108` masks are on disk. **Step 13 is the consumer and must recompute it**, and it must not be read as current at any arm.
+
+**The inertness of the window form is asserted at `W = 108` only** (open 90 vs closed 90 on APPLY; open 89 vs closed 89 on DERIV). **It is NOT expected to hold at `W = 213`**, where D10 forces `τ1 ≤ τ_pull − 91 d` so `τ2` sits at or adjacent to `τ_pull`, and a mass point in last-insertion instants sits there. (`src/step7_floor_extremes.py`, `0057` §5.)
+
+<!-- END GENERATED: derived figures -->
+
 **Status: GATE. This artifact proposes and measures. It adopts nothing and approves nothing.**
 **API calls: 0.** The stored Step 5 calibration was read, never refitted.
 

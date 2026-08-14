@@ -32,7 +32,7 @@ Also approved, in the Human Lead's terms:
 - **D3 is replaced by D3′**, run at **every Step 13 arm** with its own cleared count and share, with
   the exposure-weighted residual reported alongside **as a labelled count**.
 - **Liveness stays anchored at `τ1`.** Liveness licenses trusting a null, and the null is `|A| = 0`,
-  which is tested at `τ1`. ~~`τ2` plays no part in the liveness test.~~ **AMENDED 2026-08-14 (`0051`): under ALT-BROAD `τ2` DOES play a part** — the rule's second conjunct is the **Continued** test, read at `τ2`. **What this ruling actually fixed, and what stands, is that the SILENCE test is `τ1`-anchored**, which is what ALT-BROAD implements. The rule reads two instants: silence at `τ1`, Continued at `τ2`. **Written into the Step 7 spec so
+  which is tested at `τ1`. ~~`τ2` plays no part in the liveness test.~~ **AMENDED 2026-08-13 (`0051`): under ALT-BROAD `τ2` DOES play a part** — the rule's second conjunct is the **Continued** test, read at `τ2`. **What this ruling actually fixed, and what stands, is that the SILENCE test is `τ1`-anchored**, which is what ALT-BROAD implements. The rule reads two instants: silence at `τ1`, Continued at `τ2`. **Written into the Step 7 spec so
   no isolated instance re-anchors it.**
 - **Step 8 gains the `A ⊆ A_H` invariant**, asserted on every row — labelled **a code check, not a
   data check**, since it is true by construction.

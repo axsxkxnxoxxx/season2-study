@@ -4,11 +4,14 @@
 | :--- | :--- |
 | **Decision** | **The conditional sub-interval is [9.6372%, 9.7333%], width 0.0961 pp**, and the attainable-corner table and both sampling ratios are corrected with it. **`9.6830` is REMOVED from the false-positive register — it has no legitimate reading.** **The artifact stamp is rewritten**; certifying "everything else stands" was false. **A dependency list is added to `CLAUDE.md` under `## Derived figures`.** `0055`'s three counting defects fixed, the `0021` warrant added where the never-started bound is published, and **the bootstrap specification recorded as a Step 9 blocker.** |
 | **Decided by** | Human Lead |
-| **Date** | 2026-08-14 |
+| **Date** | 2026-08-13 |
 | **Occasioned by** | Red Team's **ninth** Step 7 HOLD |
 | **Amends** | `0055` §3 (register row and count), §5 (heading), §5c (an asserted action not taken); `0052` §6, struck in place |
 | **Propagated to — SEVEN surfaces** | `task-sheet.md`; both `data-scientist` files; `artifacts/step7-liveness-bb-{a,b}.md`; **`second-brain`'s glossary — WHICH IS NOT SURFACE 7. Surface 7 is the DIRECTORY** (`0057`), and `open-items-and-contradictions.md` was left carrying the superseded sub-interval with a ✓ one line from the corrected bound; **`CLAUDE.md`**, which carries the dependency list. **Not touched, checked not assumed:** both `analytics-engineer` files — they hold no Step 9 figures |
 | **Status** | Closed. **Step 7 goes to Red Team. The gate is OPEN.** |
+
+
+> **DATE CORRECTED 2026-08-13.** This entry was written and dated **2026-08-14**, which is tomorrow. Entries `0052` through `0057` all carried it, and the drift began when the session's clock advanced mid-work and the date was carried forward from an earlier entry rather than re-read. **Corrected in place across every surface, with this note, rather than silently rewritten** — the decision log is a public tracked artifact. Found by Red Team on its eleventh review; recorded at `0058` §6.
 
 ---
 

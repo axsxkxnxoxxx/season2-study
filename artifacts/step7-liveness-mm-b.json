@@ -1,8 +1,16 @@
 {
+  "_SUPERSEDED": {
+    "note": "This deliverable measures ALT-MATCHED, REVERTED at 0054. The adopted rule is ALT-BROAD with the widened started-and-left floor. No figure here is current.",
+    "adopted_deliverables": [
+      "artifacts/step7-liveness-bb-a.json",
+      "artifacts/step7-liveness-bb-b.json"
+    ],
+    "stamped": "2026-08-13 (0058)"
+  },
   "step": 7,
   "instance": "data-scientist-b",
   "namespace": "mm_b",
-  "date": "2026-08-14",
+  "date": "2026-08-13",
   "api_calls": 0,
   "adopts": "nothing",
   "gate": "Step 7 is a GATE. Everything here is a PROPOSAL for the Human Lead to approve and to diff against the other arm. This instance adopted nothing and did not read the other arm's work.",

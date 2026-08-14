@@ -4,7 +4,7 @@
 | :--- | :--- |
 | **Decision** | **The started-and-left bound is [9.6830%, 10.0405%], width 0.3575 pp, over ALL 703 exclusions.** The 99-only reading is a **labelled conditional sub-interval, never the bound.** **Six record defects corrected.** The **calibration residual is discharged with its limit stated.** The `>=` invariant is **kept with its reason corrected.** The **agent-launch snapshot hazard** is closed. |
 | **Decided by** | Human Lead |
-| **Date** | 2026-08-14 |
+| **Date** | 2026-08-13 |
 | **Occasioned by** | The Step 7 ALT-BROAD rerun. **Both arms confirmed every figure and both independently refused a bound that would have failed the standing rule** |
 | **Propagated to — all five files** | `task-sheet.md` (Steps 7, 8, 9); `data-scientist.md`; `data-scientist-b.md`; `analytics-engineer.md`; `analytics-engineer-b.md`. **Not touched, checked not assumed:** `red-team.md`, `second-brain.md`, the five `reviewer-*.md` — none carries liveness spec |
 | **Status** | Closed. **Step 7 goes to Red Team. The gate is OPEN.** |

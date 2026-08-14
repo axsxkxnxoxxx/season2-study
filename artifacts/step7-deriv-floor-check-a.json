@@ -3,7 +3,7 @@
   "task": "verification of the proposed DERIV started-and-left floor and Continued ceiling",
   "spec": "specs/step7-deriv-floor-verification.md",
   "instance_namespace_letter": "a",
-  "date": "2026-08-14",
+  "date": "2026-08-13",
   "api_calls": 0,
   "is_a_gate": false,
   "is_a_rerun": false,

@@ -5,7 +5,7 @@
 > Superseded here: any numeric threshold (4 / 504 / 632 / 914 / 1,293 days), **PF-LIMIT**,
 > **ALT**, the bounds `[16.7789%, 17.0355%]` and `[16.7146%, 16.9704%]`, exclusion counts
 > 751 / 1,355 / 604-as-total / 0-on-DERIV, and the claim *"the exclusion set is empty on
-> DERIV"* (`decisions/0049` #4 — false; it is 99). Stamped 2026-08-14 by `decisions/0051`.
+> DERIV"* (`decisions/0049` #4 — false; it is 99). Stamped 2026-08-13 by `decisions/0051`.
 
 # Step 7 — liveness threshold, instance `b2` (rerun on the corrected reference distribution)
 

@@ -1,6 +1,6 @@
 """The started-and-left floor under both extremes, on both populations.
 
-Human Lead ruling, 2026-08-14: 0054 §3 grounded the widened floor on a margin
+Human Lead ruling, 2026-08-13: 0054 §3 grounded the widened floor on a margin
 statistic -- p5 = 1.7 days, min 0.13 -- which is the tail. The record's median
 for the same 90 pairs is 44.5 days (0053 §5, instance B). The tail was cherry
 -picked, so the ground is recomputed here from the endpoints themselves:

@@ -75,7 +75,7 @@ out = {
     "task": "verification of the proposed DERIV started-and-left floor and Continued ceiling",
     "spec": "specs/step7-deriv-floor-verification.md",
     "instance_namespace_letter": "a",
-    "date": "2026-08-14",
+    "date": "2026-08-13",
     "api_calls": 0,
     "is_a_gate": False, "is_a_rerun": False, "is_a_rule_change": False,
     "rule": "ALT-BROAD (0048, restored by 0054): NOT LIVE iff (no insertion instant after tau1) "

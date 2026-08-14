@@ -4,11 +4,14 @@
 | :--- | :--- |
 | **Decision** | **`0021` is AMENDED — an amendment to an approved gate, not a clarification.** *"After the window closed"* was written when there was **one** window; there are now two. **The amended reading is per question: an insertion after the window FOR THE QUESTION BEING ASKED proves the account was alive for that question.** **`0048` §9's "insertion after `τ1` ⟹ live" is WITHDRAWN.** Nine defects fixed, two of my stale figures corrected, one limitation added. |
 | **Decided by** | Human Lead |
-| **Date** | 2026-08-14 |
+| **Date** | 2026-08-13 |
 | **Amends** | **`decisions/0021` ruling 2 — gate 2 of 5**; `0048` §9; `0052` §2, §4, §7 |
 | **Occasioned by** | The Step 7 ALT-MATCHED rerun. **Both arms confirmed all three of `0052`'s expectations**, and instance A measured a conflict with `0021`'s gloss |
 | **Propagated to — all five files** | `task-sheet.md` (Steps 7, 8, 9, 13, 14); `data-scientist.md`; `data-scientist-b.md`; `analytics-engineer.md`; `analytics-engineer-b.md`. **Not touched, checked not assumed:** `red-team.md`, `second-brain.md`, the five `reviewer-*.md` |
-| **Status** | **WITHDRAWN IN ITS ENTIRETY, 2026-08-14, by `decisions/0054`.** Its premise is false: **`0034` — the entry that CREATED the second window, same date — ruled *"Liveness stays anchored at `τ1`"***, and **`0051` re-affirmed it with both windows in view.** The `τ1` anchoring was **not an accident of when `0021` was written**. This entry amended `0021` and withdrew `0048` §9 **while leaving `0034` — the one ruling that forbids the re-anchoring — standing, uncited and unmentioned.** **`0021`'s amendment is reverted, `0048` §9 is restored, and ALT-MATCHED is reverted to ALT-BROAD.** The nine defect fixes in §3 are **retained** where they are rule-independent; the ALT-MATCHED figures in them are superseded. |
+| **Status** | **WITHDRAWN IN ITS ENTIRETY, 2026-08-13, by `decisions/0054`.** Its premise is false: **`0034` — the entry that CREATED the second window, same date — ruled *"Liveness stays anchored at `τ1`"***, and **`0051` re-affirmed it with both windows in view.** The `τ1` anchoring was **not an accident of when `0021` was written**. This entry amended `0021` and withdrew `0048` §9 **while leaving `0034` — the one ruling that forbids the re-anchoring — standing, uncited and unmentioned.** **`0021`'s amendment is reverted, `0048` §9 is restored, and ALT-MATCHED is reverted to ALT-BROAD.** The nine defect fixes in §3 are **retained** where they are rule-independent; the ALT-MATCHED figures in them are superseded. |
+
+
+> **DATE CORRECTED 2026-08-13.** This entry was written and dated **2026-08-14**, which is tomorrow. Entries `0052` through `0057` all carried it, and the drift began when the session's clock advanced mid-work and the date was carried forward from an earlier entry rather than re-read. **Corrected in place across every surface, with this note, rather than silently rewritten** — the decision log is a public tracked artifact. Found by Red Team on its eleventh review; recorded at `0058` §6.
 
 ---
 

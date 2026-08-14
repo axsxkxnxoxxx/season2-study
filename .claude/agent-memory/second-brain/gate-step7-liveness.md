@@ -7,7 +7,7 @@ metadata:
 
 # Step 7, the liveness gate — the longest and messiest stretch of the study
 
-**Status as of `decisions/0054`, 2026-08-14: the gate is OPEN.** Twenty decision entries
+**Status as of `decisions/0054`, 2026-08-13: the gate is OPEN.** Twenty decision entries
 (`0035`–`0054`), **eight Red Team reviews and seven HOLDs**, nine dual runs, zero API calls
 throughout. Gate 4 of 5 has been approved twice and reopened twice. **Step 8 has never launched.**
 
@@ -222,10 +222,10 @@ previous one.** That is the propagation analogue of the self-correction cascade 
    `decisions/` or the on-disk `task-sheet.md`, the on-disk file wins.* **The launch prompt, not the
    definition file, is the authority at launch.**
 
-4. **`CLAUDE.md` §Propagation, 2026-08-14 — SEVEN surfaces, and read-back PLUS grep.** The five-file
+4. **`CLAUDE.md` §Propagation, 2026-08-13 — SEVEN surfaces, and read-back PLUS grep.** The five-file
    surface is now seven: **`artifacts/`** (surface 6, deliverables carrying superseded figures are
    stamped) and **`.claude/agent-memory/second-brain/`** (surface 7). **Neither was ever checked before
-   2026-08-14.** And: *"Read-back alone is not verification. Reading an edit back proves the new text
+   2026-08-13.** And: *"Read-back alone is not verification. Reading an edit back proves the new text
    landed. Only grep proves the old text is gone, and a file can hold both at once — three consecutive
    propagation failures were exactly that."* Require **zero grep hits** on every superseded string
    except where explicitly named as superseded at the point of use, and **report the hit counts.**

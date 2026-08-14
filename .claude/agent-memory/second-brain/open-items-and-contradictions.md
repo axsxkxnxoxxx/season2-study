@@ -1,11 +1,11 @@
 ---
 name: open-items-and-contradictions
-description: Live register of open items and cross-step contradictions in the Season 2 study, each with its two conflicting sources named — re-verified 2026-08-14 after decisions/0051-0054, the ALT-MATCHED revert and the widened floor, with V7 closed as an error of mine that reached a ruling
+description: Live register of open items and cross-step contradictions in the Season 2 study, each with its two conflicting sources named — re-verified 2026-08-13 after decisions/0051-0054, the ALT-MATCHED revert and the widened floor, with V7 closed as an error of mine that reached a ruling
 metadata:
   type: project
 ---
 
-# Open items and contradictions — re-verified 2026-08-14 (second pass, through `0054`)
+# Open items and contradictions — re-verified 2026-08-13 (second pass, through `0054`)
 
 **Why this file exists:** Second Brain surfaces contradictions and names the two things that
 conflict. It does not decide, arbitrate, or fix. Every entry names its two sources so the Human
@@ -19,13 +19,13 @@ file and this memory differ, `decisions/` governs on who decided what and when; 
 approves governs on substance. I never edit `decisions/` — I report.
 
 **And where an ARM'S OWN OUTPUT differs from my reconstruction, the arm's output governs.** Added
-2026-08-14 after V7. **A figure I cannot reproduce is first a claim about my reconstruction.** Check
+2026-08-13 after V7. **A figure I cannot reproduce is first a claim about my reconstruction.** Check
 the arms' JSON by key before recording a figure as unreconstructible — that is the same check mode B
 has demanded four times, and it is why `0052` §2 exists.
 
 ---
 
-## NEW — surfaced 2026-08-14 by the pass over `0051`–`0054`
+## NEW — surfaced 2026-08-13 by the pass over `0051`–`0054`
 
 ### U1. `0054` publishes the rounding artifact its own §6 names as one
 
@@ -44,7 +44,7 @@ stands; only the entry's own choice of endpoint is at issue.
 
 ### U2. Surfaces 6 and 7 were added to `CLAUDE.md` after eleven propagation failures, not before
 
-- **`CLAUDE.md` §Propagation, added 2026-08-14:** seven surfaces, of which **6 is `artifacts/`** and
+- **`CLAUDE.md` §Propagation, added 2026-08-13:** seven surfaces, of which **6 is `artifacts/`** and
   **7 is `.claude/agent-memory/second-brain/`**, with the note on 7: *"it is fed back into rulings, and
   stale memory has already caused a wrong one."*
 - **Every propagation-failure count in the record — `0044` §3.1, README item 46, `0050`, `0052` §5,
@@ -59,13 +59,13 @@ be restated against seven surfaces is the Human Lead's call, not mine.**
 
 ---
 
-## The `0035`–`0050` pass — V1–V11. Most were actioned by `0051`. Re-checked 2026-08-14.
+## The `0035`–`0050` pass — V1–V11. Most were actioned by `0051`. Re-checked 2026-08-13.
 
 **Context for all of these: the propagation surface has now failed THIRTEEN times** (#12 at `0052` §5,
 #13 at `0054` §5), and **both halves of every dual pair have carried each defect identically**, so the
 dual-implementation diff cannot catch this class at all. Full arc in [[gate-step7-liveness]].
 
-> **Status re-check, 2026-08-14, by grep only, during a window in which the spec files are being
+> **Status re-check, 2026-08-13, by grep only, during a window in which the spec files are being
 > edited by others — so these readings may be mid-flight and none is a disposition.**
 >
 > - **V1 (ALT's 485 → 716 series ordered at Step 13):** both `data-scientist` files now read *"ALT's
@@ -124,7 +124,7 @@ two-ceilings sentence — a reader working from the index alone reaches neither.
 - **`decisions/README.md` line 78:** *"**Step 7** liveness rule — **RULE CHANGED to ALT 2026-08-13
   ([0046]); reruns pending, gate OPEN.** Previously approved **with NO free parameter** ([0042]).
   **A pair is not live iff the account shows no insertion instant after `τ1`.**"*
-- **`decisions/0048`:** ALT-BROAD adopted 2026-08-14 — *not live iff no insertion after `τ1` **AND
+- **`decisions/0048`:** ALT-BROAD adopted 2026-08-13 — *not live iff no insertion after `τ1` **AND
   NOT Continued**.* **`0044`** withdrew *"no free parameter."*
 
 **The sentence quoted as the rule is PF-LIMIT**, superseded twice — by ALT at `0046` and by
@@ -181,15 +181,18 @@ instruction ("the never-started exclusions only") is the pre-`0049` disposition.
 corrected "751 directly observed" to 652 observed / 99 null-based**, and line 461's "seven in seven /
 six in seven" framing is the merged form `0045` §4.3 was written to split.
 
-### V7. WRONG, AND IT CAUSED A WRONG RULING. Corrected 2026-08-14 by `0052` §2 and `0054`.
+### V7. WRONG, AND IT CAUSED A WRONG RULING. Corrected 2026-08-13 by `0052` §2 and `0054`.
 
 **This entry is retained in full because it is the study's clearest case of stale memory being fed
 back into a ruling. It is not an open item. It is a closed error of mine.**
 
-**What was true.** **73.6537% is the Continued CEILING on APPLY: `(144,140 + 703) / 196,654`.** It
-states a population, it reconstructs exactly, **both current deliverables publish it** — `bb-a.md` §5
-and `bb-b.md` §4.3 — and **both JSONs carry `ceiling_pct: 73.6537…`**. So the original sentence was
-right and **the sum was THREE ceilings, not two**: 16.9704 + 10.0405 + 73.6537 = 100.6646%.
+**What was true AS OF `0052`, and is now SUPERSEDED — all figures in this paragraph are the
+pre-widening ones** (`0058`; the adopted Continued ceiling is **73.6995%** = `(144,140 + 703 + 90) /
+196,654`, and the three ceilings sum to **100.7104%**). **73.6537% was the Continued CEILING on APPLY:
+`(144,140 + 703) / 196,654`.** It states a population, it reconstructs exactly, both deliverables
+published it, and both JSONs carried `ceiling_pct: 73.6537…`. So the original sentence was right and
+**the sum was THREE ceilings, not two**: 16.9704 + 10.0405 + 73.6537 = 100.6646%. **The postmortem's
+point is the mislabelling, not the value, and the value has since moved.**
 
 **What I got wrong, in three steps.**
 
@@ -893,7 +896,7 @@ namespace is not part of the task description and separating it does not weaken 
 to Steps 7 and 9 (`data-scientist` / `-b`) and Step 8 (`analytics-engineer` / `-b`). No output was
 lost, and the identical inputs are themselves evidence the collision never reached the computation.
 
-### Critical path, updated 2026-08-14 after `0054`
+### Critical path, updated 2026-08-13 after `0054`
 
 Steps 1 (amended and re-approved), 3, 4 (stopped), 2, 5 and 6 are done. **Three gates closed of
 five.** **Step 7 has run nine times and is STILL OPEN** — approved at `0039` and suspended, approved
@@ -917,7 +920,7 @@ was; both ARE divergences.** It also still inherits item 27's four-pair conflict
 five and not three. **Four standing controls exist and each was written after the same failure
 recurred somewhere new:** item 46's file-surface rule, `0046` §0's population rule, `0049` §6's
 launch-snapshot practice, and **`CLAUDE.md` §Propagation's seven surfaces with read-back PLUS grep.**
-**Surfaces 6 (`artifacts/`) and 7 (this memory) were never checked before 2026-08-14**, and surface 7
+**Surfaces 6 (`artifacts/`) and 7 (this memory) were never checked before 2026-08-13**, and surface 7
 is where a two-generations-stale entry was fed back into a ruling. Full arc in
 [[gate-step7-liveness]].
 
@@ -962,7 +965,7 @@ split signature depends on — README item 5). N6 (the Step 0 file index is stal
 
 ## Checks that PASS — recorded so they are not re-litigated
 
-### Verified 2026-08-14, on the checks the Human Lead named for the `0035`–`0050` pass
+### Verified 2026-08-13, on the checks the Human Lead named for the `0035`–`0050` pass
 
 - **Both dual pairs are byte-identical apart from the `name:` field. PASS.**
   `data-scientist.md` / `data-scientist-b.md` differ only at line 2; `analytics-engineer.md` /
@@ -993,11 +996,13 @@ split signature depends on — README item 5). N6 (the Step 0 file index is stal
 **The arithmetic reconciles exactly, checked independently rather than accepted:**
 
 - **APPLY**: never-started 33,373 / Continued **144,140** / S&L **19,141** = **196,654** ✓
-  **CORRECTED 2026-08-14.** This list previously read *"144,141 / 19,140"* — **two off-by-ones that
+  **CORRECTED 2026-08-13.** This list previously read *"144,141 / 19,140"* — **two off-by-ones that
   cancelled in the sum, so the total checked out and the split did not.** That is what defeated my
   reconstruction of the Continued ceiling and produced V7. **The correct split is forced by three
   independent figures that reconcile only on 144,140 / 19,141:** the Continued ceiling
-  `(144,140 + 703)/196,654 = 73.6537%`, the S&L ceiling `19,141 + 604 = 19,745 → 10.0405%`, and
+  `(144,140 + 703)/196,654 = 73.6537%` *(SUPERSEDED — the adopted ceiling is 73.6995%; the
+  reconciliation argument is unaffected because it turns on the split, not the widening)*, the S&L
+  ceiling `19,141 + 604 = 19,745 → 10.0405%`, and
   `0053` §3 item 8's branch (ii) count of **19,141**. **A sum that reconciles is not a split that
   reconciles — check every component against a second route, not the total.**
 - **Shares under the rule** on 195,951: 16.7231 + 73.5592 + 9.7177 = **100.0000** ✓, and each share
@@ -1013,7 +1018,7 @@ split signature depends on — README item 5). N6 (the Step 0 file index is stal
   and its withdrawn sub-interval sat one line apart, each blessed. **Superseded: width 0.3575 pp = 703/196,654, floor 9.6830%** — a **non-covering**
   endpoint, which is exactly what the widening repairs.
 - **S&L bound on DERIV**: **[11.3015%, 11.4291%]**, width **0.1276 pp = 188/147,370** ✓ (99 exclusions
-  + 89 channel pairs). **This bound was missing from every surface until 2026-08-14.**
+  + 89 channel pairs). **This bound was missing from every surface until 2026-08-13.**
 - **Three ceilings on APPLY**: 16.9704 + 10.0405 + **73.6995** = **100.7104%** ✓; excess
   **0.7104 pp = 1,397 = 2 × 604 + 189** ✓
 - **DERIV/APPLY consistency**: 152,126 − 147,370 = 4,756 removed by D10; 201,900 − 196,654 = 5,246.

@@ -171,7 +171,7 @@ Both are Human Lead rulings made **during** Step 5, and both bind steps that are
    premise was that import noise is not liveness evidence. It makes the play-`id` calibration a
    **required input to Step 7**, not a Step 5 diagnostic.
 
-   > **Ruling 2 was AMENDED and the amendment REVERTED, both on 2026-08-14.** `0053` amended it to
+   > **Ruling 2 was AMENDED and the amendment REVERTED, both on 2026-08-13.** `0053` amended it to
    > *"an insertion after the window FOR THE QUESTION BEING ASKED proves the account was alive for
    > that question"* — one window per null, `τ1` for never-started and `τ2` for started-and-left —
    > on the premise that *"after the window closed"* was written when there was one window and had

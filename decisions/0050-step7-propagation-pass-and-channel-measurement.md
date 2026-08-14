@@ -4,7 +4,7 @@
 | :--- | :--- |
 | **Decision** | **Six file defects corrected and each verified on disk**, not recorded as done. **The residual limits, the biconditional gap and the un-guarded channel are routed into `task-sheet.md` Step 14** — recording a limit only in `decisions/` is not recording it. **Step 9 gains the two-ceilings sentence and the DERIV degeneracy note.** **The channel Red Team asked about is measured: 297 pairs.** |
 | **Decided by** | Human Lead |
-| **Date** | 2026-08-14 |
+| **Date** | 2026-08-13 |
 | **Occasioned by** | Red Team's fifth Step 7 review, verdict HOLD — **propagation failure #9, live in all five files, produced by `0048` and `0049`** |
 | **Status** | Closed. **Step 7 goes to Red Team. The gate is OPEN.** |
 
@@ -51,7 +51,7 @@ agent reads.
 
 **The two ceilings cannot both hold.**
 
-> **FIGURE CORRECTED 2026-08-14 (`decisions/0051`).** This section first read *"16.9704 + 10.0405 +
+> **FIGURE CORRECTED 2026-08-13 (`decisions/0051`).** This section first read *"16.9704 + 10.0405 +
 > **73.6537** = **100.66%**."* **73.6537% matches no population.** It was taken from Red Team's review
 > and propagated without checking — **the exact failure `0046` §0's standing rule exists to prevent,
 > committed in the entry that routed that rule into Step 14.**

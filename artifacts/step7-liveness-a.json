@@ -1,4 +1,12 @@
 {
+  "_SUPERSEDED": {
+    "note": "This deliverable measures an earlier rule generation (ALT / ALT-BROAD pre-widening / a deleted threshold). The adopted rule is ALT-BROAD with the widened started-and-left floor. No figure here is current.",
+    "adopted_deliverables": [
+      "artifacts/step7-liveness-bb-a.json",
+      "artifacts/step7-liveness-bb-b.json"
+    ],
+    "stamped": "2026-08-13 (0058)"
+  },
   "step": 7,
   "instance": "a",
   "status": "PROPOSED - GATE, awaiting Human Lead approval. Not adopted.",

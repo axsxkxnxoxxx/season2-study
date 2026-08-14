@@ -1,5 +1,21 @@
 # Step 7 — Liveness rule, rerun on ALT-MATCHED (`decisions/0052`)
 
+> **SUPERSEDED IN WHOLE — this deliverable measures the REVERTED rule.**
+>
+> **ALT-MATCHED was adopted at `decisions/0052` and REVERTED at `0054`.** The adopted rule is
+> **ALT-BROAD**: not live iff no insertion after `τ1` **and** not Continued, silence anchored at `τ1`
+> and only at `τ1`. **Nothing in this file is a current figure for the adopted rule.**
+>
+> **It is retained, not deleted, for two reasons.** It is the record of what the reverted rule
+> produced — that is how `0054` established the two rules give **numerically identical** bounds on all
+> three identified sets. And its DERIV figures (`[11.3015%, 11.4291%]`, `82.4930%`) were **computed
+> here first** and were the ones `0055` carried across when `0054` widened APPLY alone.
+>
+> **Current deliverables: `step7-liveness-bb-{a,b}.{md,json}`**, which carry their own partial
+> supersession stamp and a generated derived-figures block.
+
+
+
 **Instance:** `mm_a` (namespace `a`), dual implementation.
 **Status: GATE. This artifact proposes and measures. It adopts nothing and approves nothing.**
 **API calls: 0.** The stored Step 5 calibration was read, never refitted (`0029`).

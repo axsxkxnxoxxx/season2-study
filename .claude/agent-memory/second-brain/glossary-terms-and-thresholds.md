@@ -1,19 +1,19 @@
 ---
 name: glossary-terms-and-thresholds
-description: Live glossary of every term, threshold and constant in the Season 2 abandonment study, each tagged with the step, decision and gate that fixed it and which population its figures are on — current through decisions/0054, the ALT-MATCHED revert and the widened started-and-left floor (2026-08-14)
+description: Live glossary of every term, threshold and constant in the Season 2 abandonment study, each tagged with the step, decision and gate that fixed it and which population its figures are on — current through decisions/0054, the ALT-MATCHED revert and the widened started-and-left floor (2026-08-13)
 metadata:
   type: reference
 ---
 
 # Glossary — terms, thresholds, and where each was set
 
-**Current through `decisions/0054`, 2026-08-14** — Steps 3, 4, 2, 5, 6, the Step 1 §7 amendment, and
+**Current through `decisions/0054`, 2026-08-13** — Steps 3, 4, 2, 5, 6, the Step 1 §7 amendment, and
 the Step 7 liveness gate (still OPEN). This is an index, not a substitute for the artifacts. Verify
 against the file before acting on any row.
 
-> **This file is PROPAGATION SURFACE 7** (`CLAUDE.md` §Propagation, added 2026-08-14). A ruling lands
+> **This file is PROPAGATION SURFACE 7** (`CLAUDE.md` §Propagation, added 2026-08-13). A ruling lands
 > here as well as in `decisions/` and the five spec files, and **surfaces 6 (`artifacts/`) and 7 (this
-> memory) were never checked before 2026-08-14.** The control is **read-back PLUS grep**: read-back
+> memory) were never checked before 2026-08-13.** The control is **read-back PLUS grep**: read-back
 > proves the new text landed, only grep proves the old text is gone, and a file can hold both at once.
 > **Stale memory here has already caused a wrong ruling** — see the ALT-MATCHED row and `0052` §2.
 
@@ -42,7 +42,7 @@ Status vocabulary: **FIXED** (set and gate closed) · **DEFERRED** (form fixed, 
 
 | Name | Rule | Status |
 | :--- | :--- | :--- |
-| **ALT-BROAD** | not live iff **no insertion after `τ1`** AND **NOT Continued** | **ADOPTED `0048` → superseded by ALT-MATCHED `0052` → RESTORED `0054`, 2026-08-14.** Current, **with the started-and-left floor widened to cover the 90**. Gate still open pending Red Team |
+| **ALT-BROAD** | not live iff **no insertion after `τ1`** AND **NOT Continued** | **ADOPTED `0048` → superseded by ALT-MATCHED `0052` → RESTORED `0054`, 2026-08-13.** Current, **with the started-and-left floor widened to cover the 90**. Gate still open pending Red Team |
 | **ALT** | not live iff no insertion after `τ1` AND **`\|A\| = 0`** | **SUPERSEDED** by `0048`. Guarded one null of two |
 | **PF-LIMIT** | not live iff **no insertion after `τ1`** (alone) | **SUPERSEDED** by `0046`. Deleted 751 pairs with no stated warrant |
 | **ALT-MATCHED** | one silence test per null, at the instant that null is read — silence at `τ1` for never-started, at **`τ2`** for started-and-left | **PROPOSED and recorded (`0050` §4) → ADOPTED (`0052` §1) → REVERTED (`0054`).** See the full history below. **Never cite it as the rule; never drop it from the record** |
@@ -51,7 +51,7 @@ Status vocabulary: **FIXED** (set and gate closed) · **DEFERRED** (form fixed, 
 ### ALT-MATCHED — the full history, because the status line moved three times in one day
 
 **Superseded status, never to be restated as current: "RECORDED, NOT ADOPTED (`0050` §4)".** That was
-this file's entry until 2026-08-14 and it was already two rulings stale when Red Team's eighth Step 7
+this file's entry until 2026-08-13 and it was already two rulings stale when Red Team's eighth Step 7
 review found it.
 
 | Stage | Where | What happened |
@@ -156,7 +156,7 @@ survives only as the never-started **component** of 703.)*
   a rounding artifact differenced from rounded endpoints** (instance B), reported as an unreconciled
   divergence at `0054` §6 — **and then published by `0054` §7 itself, in the entry that named it as an
   artifact.** Recorded in [[open-items-and-contradictions]].
-- **The DERIV started-and-left bound was missing everywhere until 2026-08-14** and is being propagated
+- **The DERIV started-and-left bound was missing everywhere until 2026-08-13** and is being propagated
   into the spec files now. Its width `188 / 147,370 = 0.12757%` covers 99 excluded + 89 channel pairs.
 
 **The never-started ceiling equals the unfiltered share as an identity** — but **by the route
@@ -189,7 +189,7 @@ denominators, floor was not a floor) and `0046`'s **[16.7146%, 16.9704%]** (mixe
 **This is the entry that caused a wrong ruling, and the correction is the point.**
 
 - **Superseded, never to be restated: *"the Continued FLOOR 73.6537%"*, and *"the TWO ceilings cannot
-  both hold: 16.9704 + 10.0405 + 73.6537 = 100.66%"*.** That was this file's text until 2026-08-14.
+  both hold: 16.9704 + 10.0405 + 73.6537 = 100.66%"*.** That was this file's text until 2026-08-13.
 - **73.6537% is the Continued CEILING on APPLY: `(144,140 + 703) / 196,654`.** It states a population
   and it reconstructs exactly. **Both arms publish it** — `bb-a.md` §5, `bb-b.md` §4.3 — and both JSONs
   carry `ceiling_pct: 73.6537…`. **This memory mislabelled it a floor and concluded it could not be
@@ -255,6 +255,8 @@ comparable to it.
 
 | String | Legitimate use | Illegitimate use |
 | :--- | :--- | :--- |
+**MATCH NUMERICALLY, NOT TEXTUALLY (`0058`).** These rows are written at 4 dp and the JSON deliverables store 6-dp literals, so `9.6830` is **not** a substring of `9.682997`. **`src/check_surfaces.py` parses every number-shaped token on all seven surfaces and compares at a tolerance**, which is the only form of this check that can see the `.json` halves — six superseded values survived Red Team review 11 there precisely because their registered form rounds **up**.
+
 **REGISTER — canonical location, per `CLAUDE.md` `## Propagation`. A row is added only when the legitimate reading is verified live UNDER THE ADOPTED RULE, and withdrawn the moment it is not; registering a string exempts it from the grep control (`0056` §3).**
 
 | **`632`** | Frozen-D10 never-started **component** at `W = 125` (`0050` d5, `0051` §3 item 9) | A **deleted threshold** in days |
@@ -269,7 +271,7 @@ comparable to it.
 | **`0.4033`** | Nowhere. It is B's rounding artifact | Anywhere as the bound width — it is **0.4032** |
 | **`73.6537%`** | The **Continued ceiling** as of `0052`, superseded by `0054` | As a **floor**, ever. It was never one |
 
-### The seven propagation surfaces — `CLAUDE.md` §Propagation, 2026-08-14
+### The seven propagation surfaces — `CLAUDE.md` §Propagation, 2026-08-13
 
 **A ruling lands in `decisions/` AND in every file an agent reads. Recorded only in `decisions/` is not
 recorded.** All seven are checked on every edit:
@@ -279,8 +281,8 @@ recorded.** All seven are checked on every edit:
 | 1 | `task-sheet.md` | |
 | 2–3 | `.claude/agents/data-scientist.md`, `data-scientist-b.md` | Byte-identical by design |
 | 4–5 | `.claude/agents/analytics-engineer.md`, `analytics-engineer-b.md` | The files Step 8 launches from |
-| **6** | **`artifacts/`** | Deliverables carrying superseded figures are **stamped**, not left to read as current. **Never checked before 2026-08-14** |
-| **7** | **`.claude/agent-memory/second-brain/`** | **This memory. It is fed back into rulings, and stale memory here has already caused a wrong one** (`0052` §2). **Never checked before 2026-08-14**, and it is what Red Team's **eighth** Step 7 review found |
+| **6** | **`artifacts/`** | Deliverables carrying superseded figures are **stamped**, not left to read as current. **Never checked before 2026-08-13** |
+| **7** | **`.claude/agent-memory/second-brain/`** | **This memory. It is fed back into rulings, and stale memory here has already caused a wrong one** (`0052` §2). **Never checked before 2026-08-13**, and it is what Red Team's **eighth** Step 7 review found |
 
 **Read-back PLUS grep. Read-back alone is not verification.** Reading an edit back proves the new text
 landed; **only grep proves the old text is gone**, and a file can hold both at once — three consecutive
@@ -313,7 +315,7 @@ record inserted at `s` can carry any `watched_at ≤ s` and `0021` Adoption 3 ke
 work**, which is why the count moves with `W` at all.
 
 **APPLY at position 5, the decomposition every bound is computed on:** never-started **33,373** +
-Continued **144,140** + started-and-left **19,141** = **196,654** ✓. **Corrected 2026-08-14** — this
+Continued **144,140** + started-and-left **19,141** = **196,654** ✓. **Corrected 2026-08-13** — this
 file previously carried **144,141 / 19,140**, two off-by-ones that cancelled in the sum and so passed
 the arithmetic check. The correct split is forced by three independent figures that all reconcile only
 on 144,140 / 19,141: the Continued ceiling `(144,140 + 703)/196,654 = 73.6537%` (`0052` §2), the S&L
@@ -359,7 +361,7 @@ was Open on the Step 7 percentile (**now moot: the percentile was ruled at `0036
 threshold deleted at `0042`**, so `0029`'s open clause has been overtaken rather than closed);
 `0041` is Open by its own status line.
 
-**Two index defects in `decisions/README.md` as of 2026-08-14:** it carries **no row for `0050`**,
+**Two index defects in `decisions/README.md` as of 2026-08-13:** it carries **no row for `0050`**,
 and its authority note still reads **"0001–0004 and 0013–0033."** See
 [[open-items-and-contradictions]].
 

@@ -101,7 +101,7 @@ warrant is an argument, not a measurement."**
 ## 5. D10 is re-derived at each arm, and the spec names it
 
 Instance A produced **both** tables. The per-arm counts reproduce `0046` §3 **only if D10 is re-derived
-at each arm**; **freezing D10 at `W = 108` gives 632 / 684 / 753 / 881 — at `W` = 125 / 150 / 180 / 213** *(arms attached 2026-08-14 by `0048`; stated without them, a Step 13 instance would pair 632/684 with arms 150/213 and report a false divergence).* **Note 125 and 180 are NOT in the mandated grid** — `0027`'s arms are 38/46/77/91/107/108/150/213 — so only the 150 and 213 entries, **684 and 881**, are comparable to it.
+at each arm**; **freezing D10 at `W = 108` gives 632 / 684 / 753 / 881 — at `W` = 125 / 150 / 180 / 213** *(arms attached 2026-08-13 by `0048`; stated without them, a Step 13 instance would pair 632/684 with arms 150/213 and report a false divergence).* **Note 125 and 180 are NOT in the mandated grid** — `0027`'s arms are 38/46/77/91/107/108/150/213 — so only the 150 and 213 entries, **684 and 881**, are comparable to it.
 
 **Right-censoring is `⟦T0⟧ + (max(W, 91) + H) × 24h ≤ τ_pull`, which contains `W`**, so the censored
 population differs per arm and the frozen reading is not the same experiment.

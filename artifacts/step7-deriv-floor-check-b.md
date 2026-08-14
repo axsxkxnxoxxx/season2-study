@@ -1,6 +1,6 @@
 # Step 7 — verification of the DERIV started-and-left floor and Continued ceiling
 
-**Instance:** `data-scientist-b`, namespace `b` · **Date:** 2026-08-14 · **API calls: 0** · **Adopts nothing.**
+**Instance:** `data-scientist-b`, namespace `b` · **Date:** 2026-08-13 · **API calls: 0** · **Adopts nothing.**
 
 > **This is a verification, not an adoption.** The proposed correction was reproduced from this
 > instance's own stored pair-level arrays and asserted against them. It was not taken on the strength of
