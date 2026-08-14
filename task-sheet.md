@@ -295,6 +295,20 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
 - [ ] **Apply the filters in EXACTLY this order.** Human Lead decision, 2026-08-12 (`decisions/0029-step7-threshold-rule-and-w-propagation.md`). The final row set commutes, but **the required per-filter sample size does not** — two faithful instances applying the same filters in different orders would report different waterfalls on an identical table, and the diff could not tell that from a bug.
       **1.** Step 2 frame → **2.** `L2 = 1` exclusion → **3.** S1 completion rule → **4.** contamination exclusion (Step 5) → **5.** right-censoring → **6.** liveness rule → **7.** outcome assignment, **at two instants** — `|A| = 0` tested at `τ1`, the Continued condition tested at `τ2` (`decisions/0034`).
       Rationale for the two that could defensibly swap: **contamination before right-censoring** is already required below. **Right-censoring before liveness** because censoring is a property of the clock and `pull_date` — objective, and independent of behaviour — while liveness is a behavioural inference; running the objective filter first means liveness's marginal cost is measured on a fully observable population, which is the number Step 9's bound needs.
+- [ ] **WATERFALL LINE 1 IS THE S1-COMPLETER POPULATION: 220,107 PAIRS.** Human Lead ruling,
+      2026-08-13 (`decisions/0068`), because the spec named no base and **four defensible readings sit
+      on disk** — 2,900,762 (the frame cross-product), 278,452 (any S1-or-S2 record on a frame show),
+      274,741 (any S1 record), and 220,107 (`pool_completers`). **Lines 1, 2 and 3 all moved with the
+      choice, and two faithful instances would have reported different waterfalls on an identical
+      table** — the exact failure the fixed filter order above exists to prevent, one position upstream
+      of where that fix reached. **Take 220,107. It is the population this study is defined over:
+      user-show pairs whose user completed season 1.** **Lines 2 and 3 follow from it** — line 2 is line
+      1 less the `L2 = 1` shows, line 3 is line 2 less the pairs failing the S1 completion rule — and
+      **no instance chooses a base.** *(Open and NOT resolved by this ruling: instance A measured that
+      applying D11 at position 3 as Step 1 requires gives **220,103**, because 167 in-frame records
+      carry `watched_at ≥ τ_pull` and `src/step2_build_frame.py` never touches the timestamp column.
+      **The base is 220,107 as published; whether D11 moves it is a separate open question** and is
+      listed as such.)*
 - [ ] **`W = 108 days`**, approved 2026-08-12 (`decisions/0026-step6-window-w-gate.md`). Never-started uses `τ1 = ⟦T0⟧ + 108 × 24h`; **Continued uses `τ2 = ⟦T0⟧ + (108 + 91) × 24h = ⟦T0⟧ + 199 days` (`decisions/0034`)**, with `A_H` the set `A` recomputed at that bound. **`|A| ≥ 1` at `τ1` remains a conjunct of Continued** — dropping it puts a day-150 starter completing by day 190 in two states at once. **The Step 6 deliverables state 107 (`-a`) and 107.7135 (`-b`); neither is the adopted value** — both predate the ceiling ruling in `decisions/0025`. Take the number from the decision entry, not from the artifacts.
 - [ ] **Contamination exclusion runs BEFORE right-censoring**, so an import-stamped S1 completion date is counted as contamination rather than laundered into a censoring drop
 - [ ] **Exclude `L2 = 1` shows from the headline population** and count them in the waterfall. At `L2 = 1`, Continued is equivalent to Started, Started-and-left is empty by construction, and `p` is never defined
