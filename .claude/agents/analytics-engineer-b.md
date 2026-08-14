@@ -146,10 +146,47 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
     - **Required counts to `artifacts/`, aggregates only:** the two drop counts, D2, **D3′** (per Step
       13 arm, with its cleared count and share), D8, D9, right-censoring removal as **two lines**, and
       **retained-pair counts PER AIR PERIOD after right-censoring for every `W` arm**
-      (`decisions/0033`) — **the aggregate 97.6% of pairs surviving right-censoring at `W = 108`,
-      source `0030` and `0033`, hides a cohort-asymmetric loss.** *(`0068`: the figure is restated with
-      its source because `task-sheet.md` argued against "the aggregate line above" when no line above
-      stated it.)*
+      (`decisions/0033`) — **the aggregate 97.40% of pairs surviving right-censoring at `W = 108`
+      hides a cohort-asymmetric loss.** *(`0068`: restated with its source because `task-sheet.md`
+      argued against "the aggregate line above" when no line above stated it. **`0070`: corrected from
+      97.6%, which was measured on the position-3 output rather than the position-4 output the mandated
+      order requires.**)*
+    - **EIGHT RULINGS, 2026-08-13 (`decisions/0070`), all at the point of use.**
+        - **1. Step 8 produces BOTH populations.** **APPLY 196,654 and DERIV 147,370** — DERIV requires
+          S2 evidence. **Step 9 bounds both and Step 8b reserves fields for both, so emitting APPLY
+          alone forces something downstream to rebuild DERIV — a second definition of one population,
+          the defect this study has hit most often.** Instance B already rebuilt it to the row from
+          Step 8's own inputs.
+        - **2. The silence test's evidence is restricted to records dated BEFORE `τ_pull`.** **Applying
+          an existing ruling consistently, not a new one:** **D11 makes `τ_pull` a global frozen cutoff
+          and discards records at or after it from EVERY computation**, and the silence test is a
+          computation. **The unstated version produced the 792/791 split at Step 7.** **Measured: it
+          does not disturb the approved gate — 703 and 99 either way.**
+        - **3. Discovery channel is TWO BOOLEAN COLUMNS, not one categorical.** **324 users are in
+          both**, and Step 11 tests whether discovery method biased the pool, so a single value either
+          **drops the overlap or assigns it arbitrarily**. Two flags let Step 11 cut on either channel
+          or on the overlap.
+        - **4. `action` is NOT a row-level column — emit per-pair COUNTS BY ACTION TYPE.** It is
+          record-level and the row is a pair. **Step 1 already ruled check-ins count as watching
+          alongside `scrobble` and `watch`, because `action` is a property of the LOGGING CLIENT rather
+          than of the viewing** — so it is not an outcome variable. Counts support Step 13's arm without
+          asserting one action per pair.
+        - **5. D2's `max()` split is THREE categories, not two:** finale binds, S1 completion binds,
+          **both bind**. **168 pairs have both terms binding and the binary split has nowhere to put
+          them.** A tie is its own category, not a tiebreak.
+        - **6. Drop-count denominator is position 5 = 33,373**, with the **post-liveness 32,769 reported
+          alongside**. The drop count is a property of the filter, so it measures against **what entered
+          it**; the difference is exactly the 604 never-started liveness exclusions and is itself
+          informative.
+        - **7. Emit the D4 count (S3 without S2).** Step 9 must bound it and Step 8b reserves a slot, so
+          leaving it out forces Step 9 to compute it — **a second definition again.** Step 8 holds the
+          episode-level evidence; Step 9 does not.
+        - **8. KEEP the mandated filter order; the published percentage moves.** `0033`'s 97.6 / 98.0 /
+          97.5 / 96.0 and 89.7% at `W = 213` were computed on the **position-3** output. The mandated
+          order censors the **position-4** output, giving **97.40 / 97.8 / 97.4 / 95.9 and 89.5%**, and
+          **the documented 10.3% cohort loss becomes 10.5%.** **The order was set at `0029` on the
+          ground that censoring is objective and independent of behaviour; the 10.3% predates it.
+          Changing a filter order to preserve a published percentage is backwards.**
     - The table goes to `processed/`; the filter waterfall and invariant report, counts only, to
       `artifacts/`.
 - **Step 8b, output schema. Chained. NOT LAUNCHED.** Define the JSON schema the Step 16 visualization
