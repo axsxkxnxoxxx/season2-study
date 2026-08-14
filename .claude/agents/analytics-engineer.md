@@ -74,8 +74,10 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
   closes.**
     - **A pair is NOT LIVE iff EITHER (`|A| = 0` AND no insertion instant after `τ1`) OR
       (`|A| ≥ 1` AND NOT Continued AND no insertion instant after `τ2`)** (`0052`). **Each null is
-      tested at the instant its own outcome is read.** **Exclusion counts change from ALT-BROAD's
-      703/99 — Step 7's rerun measures the new ones; do not carry 703 forward.** **Both Never started and Started-and-left are nulls** —
+      tested at the instant its own outcome is read.** **EXPECT 793 at position 6, `W = 108` — 604 never-started + 189 started-and-left, 256 accounts**
+      (`0053`). **703 is ALT-BROAD's superseded answer; producing it means the withdrawn single-`τ1`
+      rule was implemented, and that IS a divergence.** For any other number, treat it as a
+      **POPULATION** defect before an implementation one. **Both Never started and Started-and-left are nulls** —
       only Continued rests on positive evidence. **Note this makes liveness outcome-conditional on the
       Continued test as well as on `|A|`**, which is permitted for the same reason: row-local predicates
       on the position-5 output commute, and position 7 removes no rows.

@@ -100,32 +100,31 @@ because nothing about the data changed.
    `W` is estimated on C1 shows only and applied to every show.
 2. **Liveness runs on record insertion time, not claimed watch date.** Any record inserted after the
    window closed proves the account was alive, whatever date it claims — backfilling an old show is
-   still activity. This withdrew a proposed account-level exclusion layer whose sole premise was
-   that import noise is not liveness evidence, and it makes **the play-`id` insert-time calibration
-   a required input to Step 7**, not merely a Step 5 diagnostic.
+   still activity.
 
----
+   > **AMENDED 2026-08-14 (`decisions/0053`) — an amendment to an approved gate, not a clarification.**
+   >
+   > **This ruling was written when there was ONE window.** "After the window closed" was unambiguous
+   > then. **The Step 1 §7 amendment (`0034`) created two** — never-started is read at `τ1`, Continued
+   > at `τ2` — and the ruling has since been read as "after `τ1`" **only by accident of when it was
+   > written.**
+   >
+   > **The amended reading: an insertion after the window FOR THE QUESTION BEING ASKED proves the
+   > account was alive for that question.**
+   >
+   > - **Never-started is read at `τ1`**, so activity after `τ1` licenses its null.
+   > - **Started-and-left is read at `τ2`**, so activity after `τ1` but silence from before `τ2` does
+   >   **not** license it — **the pair could not have produced the evidence the Continued test reads.**
+   >
+   > **That is what this ruling meant with one window, and it is what ALT-MATCHED implements**
+   > (`0052`). **`0048` §9's gloss — "insertion after `τ1` ⟹ live" — is WITHDRAWN**: it was a
+   > one-window reading carried into a two-window rule.
+   >
+   > **Measured consequence:** under ALT-MATCHED **90 APPLY and 89 DERIV exclusions show an insertion
+   > after `τ1`** — 47.3% of DERIV's whole exclusion set. Under the withdrawn gloss every one of them
+   > would have been forced live; under the amended reading they are correctly not live, because their
+   > silence begins before `τ2`.
 
-## Four limitations travelling to Step 14
-
-Stated limitations, **not pending decisions**.
-
-1. **4,988 partly-air-date pairs (2.27%).** A *single* air-date-stamped S2 record carries the same
-   deterministic guarantee that excluded the 16,665, so these pairs cannot score Never started
-   either. Whether their clean S2 evidence also falls inside the window is unanswerable until `W`
-   exists. A `W`-dependent test was rejected because it would make the analysis population a
-   function of `W` and **corrupt the dual-implementation control** — if the two Step 6 instances
-   return different `W`, the two Step 8 instances would classify different populations and the diff
-   would confound an implementation difference with a population difference. A related residual:
-   adoption 1's "entirely" boundary has no basis in the mechanism; a separate finding closed 2,352
-   of the original 7,340 by proof, reducing the inconsistency without removing it.
-2. **The floor claim is guaranteed for 8,372 pairs and assumed for 42,019.** Contaminated
-   timestamps written *earlier* than truth pull records into the window and hide never-starters as
-   started, making the reported share a floor. That is structural for air-date-stamped (4,988) and
-   corrupt pre-1990 (3,384) records. It is **assumed** for backfilled records (42,019, 90.1%),
-   because the `backfilled` tag means claimed ≪ **insert**, not claimed < **true** — a 2015 watch
-   imported in 2026 and written as 2018 runs *against* the floor. Step 14 publishes the direction
-   and must publish the qualifier with it.
 3. **The flip bound is weak: 0 to 44,458 at `W = 60`**, 22.0% of the retained population. The
    insert-time test rules out only ~5% of candidates, because a backfilled record is by definition
    written long after the date it claims. **No point estimate exists and none should be inferred.**

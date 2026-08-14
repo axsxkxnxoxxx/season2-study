@@ -54,7 +54,10 @@ is true and does not license it: Continued has a ceiling precisely because any E
 truth be Continued.** A Step 9 instance reading the corrected line against its own deliverable would
 have hit a direct contradiction and **deleted a correct number.**
 
-**Restored, with the mechanism stated: the excluded set is counted once in every ceiling, so the three
+**Restored, with the mechanism stated.** *(Mechanism refined by `0053`: "counted once in every ceiling"
+was too coarse. **Each never-started exclusion appears in ALL THREE ceiling numerators — excess 2 each —
+and each started-and-left exclusion in TWO — excess 1 each.** Under ALT-MATCHED that is
+`2 × 604 + 189 = 1,397` pairs = **0.7104 pp**, and the three ceilings sum to **100.7104%**.)* **The three
 are alternative worst cases over one set, not simultaneous ones.**
 
 ## 3. The channel figure is corrected: 52.4%, not 70.3%
@@ -76,7 +79,7 @@ implicates only the started-and-left pairs.**
 
 `0050` §4 recorded that the 90 *"are treated as observed by the new S&L bound"* and did not carry the
 consequence. **Taken seriously: if the 90 in truth continued — the case the warrant says cannot be
-ruled out — the started-and-left numerator is 18,952 and the floor is 9.6373%, which is 0.0457 pp
+ruled out — the started-and-left numerator is 18,952 and the floor is **9.6372%** *(corrected from 9.6373% by `0053`; numerator 18,952 confirmed by both arms)*, which is 0.0458 pp
 below the published 9.6830%, on a bound 0.3575 pp wide.**
 
 **By `0047` §3's own test that would have been the FIFTH consecutive bound with a non-covering
@@ -122,7 +125,7 @@ spec fixes neither and Step 9 must attach confidence intervals.
 post-liveness** (195,951 / 147,271).
 
 **On APPLY containment holds by arithmetic accident. On DERIV it fails outright: the published
-never-started share is 6.2096% and the published bound is [6.2055%, 6.2055%] — the point estimate lies
+never-started share is **6.2134%** under ALT-MATCHED *(this entry said 6.2096%, which is ALT-BROAD's — corrected by `0053`)* and the published bound is [6.2055%, 6.2055%] — the point estimate lies
 outside its own identified set.** Both arms printed these within two pages of each other and neither
 said they were on different populations.
 

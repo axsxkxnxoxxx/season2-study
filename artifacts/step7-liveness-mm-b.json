@@ -1,0 +1,1863 @@
+{
+  "step": 7,
+  "instance": "data-scientist-b",
+  "namespace": "mm_b",
+  "date": "2026-08-14",
+  "api_calls": 0,
+  "adopts": "nothing",
+  "gate": "Step 7 is a GATE. Everything here is a PROPOSAL for the Human Lead to approve and to diff against the other arm. This instance adopted nothing and did not read the other arm's work.",
+  "rule_name": "ALT-MATCHED",
+  "rule": "NOT LIVE iff EITHER (|A| = 0 AND no insertion after tau1) OR (|A| >= 1 AND NOT Continued AND no insertion after tau2)",
+  "rule_source": "decisions/0052 Sec 1; task-sheet.md Step 7",
+  "supersedes": "ALT-BROAD (decisions/0048 Sec 1)",
+  "populations": {
+    "DERIV": "Step 5 line 4 less D10 = 147,370 at W = 108. Requires S2 evidence.",
+    "APPLY": "Step 5 line 1 less D10 = 196,654 at W = 108. Step 8 filters this at position 6."
+  },
+  "W_adopted": 108,
+  "H": 91,
+  "W_arms": [
+    38,
+    46,
+    77,
+    91,
+    107,
+    108,
+    150,
+    213
+  ],
+  "provenance": {
+    "step5_waterfall_recomputed": [
+      201900,
+      178165,
+      155131,
+      152126,
+      128099
+    ],
+    "step5_waterfall_expected": [
+      201900,
+      178165,
+      155131,
+      152126,
+      128099
+    ],
+    "populations_asserted_at_W108": {
+      "APPLY": 196654,
+      "DERIV": 147370
+    },
+    "calibration": {
+      "source": "processed/step5/calibration.npz",
+      "status": "READ, NEVER REFITTED",
+      "n_knots": 10918,
+      "application": "np.interp(rid, knot_rid, knot_time), verbatim step5_calibrate.insert_time",
+      "records_clamped_below_first_knot": 1862,
+      "records_clamped_above_last_knot": 5094
+    },
+    "records_in_sweep": 27656813,
+    "accounts_in_line1": 2481,
+    "crosschecks": {
+      "per_account_max_insertion_instant": "EXACT match on all 2549 accounts",
+      "pair_identity_T0_line4_k_F2_L2": "EXACT match on row identity, T0, line-4 flag, k, F2 and L2 for all 201,900 line-1 pairs",
+      "silence_at_tau1_and_D10": "recomputed silence-at-tau1 and D10 reproduce alt2_b/pairs.npz EXACTLY at all 8 arms",
+      "outcome_assignment": "EXACT match with processed/step7/alt2_b/outcomes.npz on started/cont/sal at all 8 arms and on has_any_s2_record_anywhere"
+    },
+    "L2_eq_1_pairs_in_this_frame": 0,
+    "D10": "RE-DERIVED at each arm (0047 Sec 5); the frozen reading is reported separately"
+  },
+  "headline_at_W108": {
+    "DERIV": {
+      "population_n": 147370,
+      "excluded_pairs": 188,
+      "excluded_never_started": 0,
+      "excluded_started_and_left": 188,
+      "excluded_continued": 0,
+      "accounts_supplying_exclusions": 126,
+      "ALT_BROAD_superseded": {
+        "note": "computed only to report the delta the rule change produces",
+        "excluded_pairs": 99,
+        "excluded_never_started": 0,
+        "excluded_started_and_left": 99,
+        "delta_total": 89,
+        "delta_never_started": 0,
+        "delta_started_and_left": 89
+      },
+      "selection_path": {
+        "branch_i_never_started_pool": 9145,
+        "branch_i_after_silence_at_tau1": 0,
+        "branch_ii_started_and_left_pool": 16843,
+        "branch_ii_after_silence_at_tau2": 188,
+        "silence_at_tau1_alone_would_exclude": 751,
+        "silence_at_tau2_alone_would_exclude": 1210,
+        "not_continued_alone_would_exclude": 25988
+      },
+      "shares_no_filter": {
+        "n": 147370,
+        "never_started": 9145,
+        "continued": 121382,
+        "started_and_left": 16843,
+        "never_started_pct": 6.205469227115424,
+        "continued_pct": 82.36547465562869,
+        "started_and_left_pct": 11.429056117255886
+      },
+      "shares_under_rule": {
+        "n": 147182,
+        "never_started": 9145,
+        "continued": 121382,
+        "started_and_left": 16655,
+        "never_started_pct": 6.2133956597953555,
+        "continued_pct": 82.47068255629085,
+        "started_and_left_pct": 11.315921783913794
+      },
+      "movement_pp": {
+        "never_started": 0.007926432679931317,
+        "continued": 0.10520790066216534,
+        "started_and_left": -0.11313433334209222
+      },
+      "bounds": {
+        "computed_on": "the POSITION-5 population, n = 147370",
+        "estimand_population": "the same position-5 population -- no mixed denominators",
+        "published_shares_are_on": "the POST-LIVENESS population, n = 147182",
+        "never_started": {
+          "floor_pct": 6.205469227115424,
+          "ceiling_pct": 6.205469227115424,
+          "width_pp": 0.0,
+          "floor_numerator": 9145,
+          "ceiling_numerator": 9145,
+          "denominator": 147370,
+          "ceiling_is_identity_with_unfiltered_share": true,
+          "spanned_by": "branch-(i) exclusions only"
+        },
+        "started_and_left": {
+          "floor_pct": 11.301486055506548,
+          "ceiling_pct": 11.429056117255886,
+          "width_pp": 0.1275700617493385,
+          "floor_numerator": 16655,
+          "ceiling_numerator": 16843,
+          "denominator": 147370,
+          "spanned_by": "ALL exclusions -- branch (i) can in truth be S&L",
+          "conditional_sub_interval_over_branch_ii_only": {
+            "floor_pct": 11.301486055506548,
+            "ceiling_pct": 11.429056117255886,
+            "width_pp": 0.1275700617493385,
+            "label": "LABELLED CONDITIONAL. Not the bound: it assumes none of the branch-(i) exclusions is in truth started-and-left."
+          }
+        },
+        "continued": {
+          "floor_pct": 82.36547465562869,
+          "ceiling_pct": 82.49304471737803,
+          "width_pp": 0.1275700617493385,
+          "floor_numerator": 121382,
+          "ceiling_numerator": 121570,
+          "denominator": 147370,
+          "floor_is_identity_with_unfiltered_share": true,
+          "why_a_ceiling_exists": "no Continued pair is ever EXCLUDED, but any EXCLUDED pair may in truth be Continued"
+        },
+        "three_ceilings": {
+          "never_started_pct": 6.205469227115424,
+          "started_and_left_pct": 11.429056117255886,
+          "continued_pct": 82.49304471737803,
+          "sum_pct": 100.12757006174934,
+          "excess_over_100_pp": 0.1275700617493385,
+          "excess_as_count": 188,
+          "excess_check_pct": 0.1275700617493384,
+          "mechanism": "the same excluded pairs are counted in more than one ceiling. Each branch-(i) pair is compatible with all three states and so appears in all three ceilings; each branch-(ii) pair is compatible with S&L and Continued and appears in two. The three are ALTERNATIVE worst cases over ONE set, never simultaneous ones."
+        },
+        "containment_of_the_published_point_estimate": {
+          "never_started_point_post_liveness_pct": 6.2133956597953555,
+          "never_started_inside_its_own_bound": false,
+          "started_and_left_point_post_liveness_pct": 11.315921783913794,
+          "started_and_left_inside_its_own_bound": true,
+          "continued_point_post_liveness_pct": 82.47068255629085,
+          "continued_inside_its_own_bound": true,
+          "note": "the bounds are on the position-5 population and the published shares are post-liveness -- different populations (0052 Sec 7). Containment is not guaranteed."
+        }
+      }
+    },
+    "APPLY": {
+      "population_n": 196654,
+      "excluded_pairs": 793,
+      "excluded_never_started": 604,
+      "excluded_started_and_left": 189,
+      "excluded_continued": 0,
+      "accounts_supplying_exclusions": 256,
+      "ALT_BROAD_superseded": {
+        "note": "computed only to report the delta the rule change produces",
+        "excluded_pairs": 703,
+        "excluded_never_started": 604,
+        "excluded_started_and_left": 99,
+        "delta_total": 90,
+        "delta_never_started": 0,
+        "delta_started_and_left": 90
+      },
+      "selection_path": {
+        "branch_i_never_started_pool": 33373,
+        "branch_i_after_silence_at_tau1": 604,
+        "branch_ii_started_and_left_pool": 19141,
+        "branch_ii_after_silence_at_tau2": 189,
+        "silence_at_tau1_alone_would_exclude": 1355,
+        "silence_at_tau2_alone_would_exclude": 2025,
+        "not_continued_alone_would_exclude": 52514
+      },
+      "shares_no_filter": {
+        "n": 196654,
+        "never_started": 33373,
+        "continued": 144140,
+        "started_and_left": 19141,
+        "never_started_pct": 16.97041504368078,
+        "continued_pct": 73.29624619890772,
+        "started_and_left_pct": 9.733338757411495
+      },
+      "shares_under_rule": {
+        "n": 195861,
+        "never_started": 32769,
+        "continued": 144140,
+        "started_and_left": 18952,
+        "never_started_pct": 16.730742720602876,
+        "continued_pct": 73.5930072857792,
+        "started_and_left_pct": 9.676249993617922
+      },
+      "movement_pp": {
+        "never_started": -0.23967232307790454,
+        "continued": 0.29676108687147007,
+        "started_and_left": -0.05708876379357264
+      },
+      "bounds": {
+        "computed_on": "the POSITION-5 population, n = 196654",
+        "estimand_population": "the same position-5 population -- no mixed denominators",
+        "published_shares_are_on": "the POST-LIVENESS population, n = 195861",
+        "never_started": {
+          "floor_pct": 16.663276617816063,
+          "ceiling_pct": 16.97041504368078,
+          "width_pp": 0.30713842586471785,
+          "floor_numerator": 32769,
+          "ceiling_numerator": 33373,
+          "denominator": 196654,
+          "ceiling_is_identity_with_unfiltered_share": true,
+          "spanned_by": "branch-(i) exclusions only"
+        },
+        "started_and_left": {
+          "floor_pct": 9.637230872496872,
+          "ceiling_pct": 10.040477183276211,
+          "width_pp": 0.40324631077933937,
+          "floor_numerator": 18952,
+          "ceiling_numerator": 19745,
+          "denominator": 196654,
+          "spanned_by": "ALL exclusions -- branch (i) can in truth be S&L",
+          "conditional_sub_interval_over_branch_ii_only": {
+            "floor_pct": 9.637230872496872,
+            "ceiling_pct": 9.733338757411495,
+            "width_pp": 0.0961078849146233,
+            "label": "LABELLED CONDITIONAL. Not the bound: it assumes none of the branch-(i) exclusions is in truth started-and-left."
+          }
+        },
+        "continued": {
+          "floor_pct": 73.29624619890772,
+          "ceiling_pct": 73.69949250968706,
+          "width_pp": 0.4032463107793376,
+          "floor_numerator": 144140,
+          "ceiling_numerator": 144933,
+          "denominator": 196654,
+          "floor_is_identity_with_unfiltered_share": true,
+          "why_a_ceiling_exists": "no Continued pair is ever EXCLUDED, but any EXCLUDED pair may in truth be Continued"
+        },
+        "three_ceilings": {
+          "never_started_pct": 16.97041504368078,
+          "started_and_left_pct": 10.040477183276211,
+          "continued_pct": 73.69949250968706,
+          "sum_pct": 100.71038473664404,
+          "excess_over_100_pp": 0.7103847366440448,
+          "excess_as_count": 1397,
+          "excess_check_pct": 0.710384736644055,
+          "mechanism": "the same excluded pairs are counted in more than one ceiling. Each branch-(i) pair is compatible with all three states and so appears in all three ceilings; each branch-(ii) pair is compatible with S&L and Continued and appears in two. The three are ALTERNATIVE worst cases over ONE set, never simultaneous ones."
+        },
+        "containment_of_the_published_point_estimate": {
+          "never_started_point_post_liveness_pct": 16.730742720602876,
+          "never_started_inside_its_own_bound": true,
+          "started_and_left_point_post_liveness_pct": 9.676249993617922,
+          "started_and_left_inside_its_own_bound": true,
+          "continued_point_post_liveness_pct": 73.5930072857792,
+          "continued_inside_its_own_bound": true,
+          "note": "the bounds are on the position-5 population and the published shares are post-liveness -- different populations (0052 Sec 7). Containment is not guaranteed."
+        }
+      }
+    }
+  },
+  "claims_tested": {
+    "0052_expects_APPLY_703_to_793": {
+      "expected": 793,
+      "measured": 793,
+      "verdict": "CONFIRMED"
+    },
+    "0052_expects_APPLY_SL_component_99_to_189": {
+      "expected": 189,
+      "measured": 189,
+      "verdict": "CONFIRMED"
+    },
+    "0052_says_DERIV_is_unmeasured": {
+      "measured_DERIV_total": 188,
+      "measured_DERIV_never_started": 0,
+      "measured_DERIV_started_and_left": 188,
+      "measured_DERIV_accounts": 126,
+      "ALT_BROAD_DERIV_total": 99
+    },
+    "0052_expects_never_started_bound_unchanged": {
+      "expected": [
+        16.6633,
+        16.9704
+      ],
+      "measured_APPLY": [
+        16.663276617816063,
+        16.97041504368078
+      ],
+      "measured_denominator": 196654
+    },
+    "per_arm_APPLY_excluded": [
+      604,
+      621,
+      713,
+      754,
+      793,
+      793,
+      878,
+      952
+    ],
+    "per_arm_APPLY_SL_component": [
+      119,
+      127,
+      159,
+      179,
+      190,
+      189,
+      214,
+      236
+    ],
+    "per_arm_APPLY_NS_component": [
+      485,
+      494,
+      554,
+      575,
+      603,
+      604,
+      664,
+      716
+    ],
+    "per_arm_DERIV_excluded": [
+      119,
+      127,
+      159,
+      179,
+      188,
+      188,
+      213,
+      235
+    ],
+    "per_arm_DERIV_SL_component": [
+      119,
+      127,
+      159,
+      179,
+      188,
+      188,
+      213,
+      235
+    ],
+    "per_arm_DERIV_NS_component": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "APPLY_W_coupling_38_to_213": {
+      "total": 1.576158940397351,
+      "NS_component": 1.4762886597938145,
+      "SL_component": 1.9831932773109244
+    }
+  },
+  "per_arm": {
+    "DERIV": {
+      "D10_reading": "re-derived at each arm",
+      "W": [
+        38,
+        46,
+        77,
+        91,
+        107,
+        108,
+        150,
+        213
+      ],
+      "n": [
+        147685,
+        147685,
+        147685,
+        147685,
+        147384,
+        147370,
+        146602,
+        144852
+      ],
+      "excluded": [
+        119,
+        127,
+        159,
+        179,
+        188,
+        188,
+        213,
+        235
+      ],
+      "never_started_component": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "started_and_left_component": [
+        119,
+        127,
+        159,
+        179,
+        188,
+        188,
+        213,
+        235
+      ],
+      "accounts": [
+        88,
+        93,
+        108,
+        120,
+        127,
+        126,
+        136,
+        153
+      ],
+      "ALT_BROAD_superseded_excluded": [
+        52,
+        56,
+        79,
+        89,
+        98,
+        99,
+        125,
+        147
+      ],
+      "ALT_BROAD_superseded_started_and_left_component": [
+        52,
+        56,
+        79,
+        89,
+        98,
+        99,
+        125,
+        147
+      ],
+      "never_started_bound_floor_pct": [
+        9.39364187290517,
+        8.791685005247656,
+        7.178792700680503,
+        6.6784033584995095,
+        6.239483254627368,
+        6.205469227115424,
+        5.2898323351659595,
+        4.394830585701268
+      ],
+      "never_started_bound_ceiling_pct": [
+        9.39364187290517,
+        8.791685005247656,
+        7.178792700680503,
+        6.6784033584995095,
+        6.239483254627368,
+        6.205469227115424,
+        5.2898323351659595,
+        4.394830585701268
+      ],
+      "started_and_left_bound_floor_pct": [
+        11.502183701797746,
+        11.517080272200968,
+        11.462910925280157,
+        11.386396722754512,
+        11.306519025131628,
+        11.301486055506548,
+        11.14923398043683,
+        10.893877889155828
+      ],
+      "started_and_left_bound_ceiling_pct": [
+        11.582760605342452,
+        11.603074110437756,
+        11.57057250228527,
+        11.507600636489826,
+        11.434076969006133,
+        11.429056117255886,
+        11.29452531343365,
+        11.056112445806754
+      ],
+      "continued_bound_ceiling_pct": [
+        79.10417442529709,
+        79.69123472255137,
+        81.35829637403934,
+        81.93519991874598,
+        82.453997720241,
+        82.49304471737803,
+        83.56093368439721,
+        84.71129152514291
+      ]
+    },
+    "APPLY": {
+      "D10_reading": "re-derived at each arm",
+      "W": [
+        38,
+        46,
+        77,
+        91,
+        107,
+        108,
+        150,
+        213
+      ],
+      "n": [
+        197007,
+        197007,
+        197007,
+        197007,
+        196674,
+        196654,
+        195689,
+        193270
+      ],
+      "excluded": [
+        604,
+        621,
+        713,
+        754,
+        793,
+        793,
+        878,
+        952
+      ],
+      "never_started_component": [
+        485,
+        494,
+        554,
+        575,
+        603,
+        604,
+        664,
+        716
+      ],
+      "started_and_left_component": [
+        119,
+        127,
+        159,
+        179,
+        190,
+        189,
+        214,
+        236
+      ],
+      "accounts": [
+        204,
+        211,
+        227,
+        245,
+        257,
+        256,
+        276,
+        296
+      ],
+      "ALT_BROAD_superseded_excluded": [
+        537,
+        550,
+        633,
+        664,
+        701,
+        703,
+        789,
+        864
+      ],
+      "ALT_BROAD_superseded_started_and_left_component": [
+        52,
+        56,
+        79,
+        89,
+        98,
+        99,
+        125,
+        148
+      ],
+      "never_started_bound_floor_pct": [
+        19.298299045211593,
+        18.798824407254564,
+        17.475521174374514,
+        17.059799905587113,
+        16.68903871381067,
+        16.663276617816063,
+        15.888476102386951,
+        15.004397992445801
+      ],
+      "never_started_bound_ceiling_pct": [
+        19.544483190952604,
+        19.04957691858665,
+        17.756729456313735,
+        17.35166770723883,
+        16.995637450806917,
+        16.97041504368078,
+        16.2277900137463,
+        15.374864179645057
+      ],
+      "started_and_left_bound_floor_pct": [
+        9.83010755962986,
+        9.834168329044145,
+        9.782393519012015,
+        9.717421208383458,
+        9.642352319066068,
+        9.637230872496872,
+        9.498234443428093,
+        9.29580379779583
+      ],
+      "started_and_left_bound_ceiling_pct": [
+        10.136695650408361,
+        10.149385554828001,
+        10.144309593060145,
+        10.100148725679798,
+        10.045557623275064,
+        10.040477183276211,
+        9.94690554911109,
+        9.788378951725566
+      ],
+      "continued_bound_ceiling_pct": [
+        70.87159339515854,
+        71.3670072637013,
+        72.74208530661348,
+        73.22277888602943,
+        73.66860896712326,
+        73.69949250968706,
+        74.61328945418495,
+        75.69979820975837
+      ]
+    }
+  },
+  "W_coupling": {
+    "total": 1.576158940397351,
+    "NS_component": 1.4762886597938145,
+    "SL_component": 1.9831932773109244
+  },
+  "waterfall": {
+    "instance": "data-scientist-b",
+    "namespace": "mm_b",
+    "stage": "4A",
+    "api_calls": 0,
+    "adopts": "nothing",
+    "rule_name": "ALT-MATCHED",
+    "positions_1_2": "belong to Step 8 and are not rebuilt here",
+    "L2_eq_1_pairs_in_this_frame": 0,
+    "line6_is_OUTCOME_CONDITIONAL": "Both nulls are read before liveness is applied. Permitted on 0046 Sec 5's reasoning: the outcome predicate and the liveness predicate are row-local on the position-5 output and commute exactly, and 0029's ordering rationale concerns per-filter sample size, which cannot reach position 7 because outcome assignment removes no rows. Under ALT-MATCHED line 6 is conditional at BOTH instants: branch (i) reads |A| = 0 at tau1, branch (ii) reads NOT Continued at tau2.",
+    "by_population": {
+      "DERIV": {
+        "38": {
+          "W": 38,
+          "position5_in": 147685,
+          "position6_out": 147566,
+          "removed": 119,
+          "removed_never_started_branch_i": 0,
+          "removed_started_and_left_branch_ii": 119,
+          "removed_continued": 0,
+          "position7_out": 147566,
+          "position7_removes": 0,
+          "monotone_decrease_at_line6": "STRICT",
+          "commutation_checked": true
+        },
+        "46": {
+          "W": 46,
+          "position5_in": 147685,
+          "position6_out": 147558,
+          "removed": 127,
+          "removed_never_started_branch_i": 0,
+          "removed_started_and_left_branch_ii": 127,
+          "removed_continued": 0,
+          "position7_out": 147558,
+          "position7_removes": 0,
+          "monotone_decrease_at_line6": "STRICT",
+          "commutation_checked": true
+        },
+        "77": {
+          "W": 77,
+          "position5_in": 147685,
+          "position6_out": 147526,
+          "removed": 159,
+          "removed_never_started_branch_i": 0,
+          "removed_started_and_left_branch_ii": 159,
+          "removed_continued": 0,
+          "position7_out": 147526,
+          "position7_removes": 0,
+          "monotone_decrease_at_line6": "STRICT",
+          "commutation_checked": true
+        },
+        "91": {
+          "W": 91,
+          "position5_in": 147685,
+          "position6_out": 147506,
+          "removed": 179,
+          "removed_never_started_branch_i": 0,
+          "removed_started_and_left_branch_ii": 179,
+          "removed_continued": 0,
+          "position7_out": 147506,
+          "position7_removes": 0,
+          "monotone_decrease_at_line6": "STRICT",
+          "commutation_checked": true
+        },
+        "107": {
+          "W": 107,
+          "position5_in": 147384,
+          "position6_out": 147196,
+          "removed": 188,
+          "removed_never_started_branch_i": 0,
+          "removed_started_and_left_branch_ii": 188,
+          "removed_continued": 0,
+          "position7_out": 147196,
+          "position7_removes": 0,
+          "monotone_decrease_at_line6": "STRICT",
+          "commutation_checked": true
+        },
+        "108": {
+          "W": 108,
+          "position5_in": 147370,
+          "position6_out": 147182,
+          "removed": 188,
+          "removed_never_started_branch_i": 0,
+          "removed_started_and_left_branch_ii": 188,
+          "removed_continued": 0,
+          "position7_out": 147182,
+          "position7_removes": 0,
+          "monotone_decrease_at_line6": "STRICT",
+          "commutation_checked": true
+        },
+        "150": {
+          "W": 150,
+          "position5_in": 146602,
+          "position6_out": 146389,
+          "removed": 213,
+          "removed_never_started_branch_i": 0,
+          "removed_started_and_left_branch_ii": 213,
+          "removed_continued": 0,
+          "position7_out": 146389,
+          "position7_removes": 0,
+          "monotone_decrease_at_line6": "STRICT",
+          "commutation_checked": true
+        },
+        "213": {
+          "W": 213,
+          "position5_in": 144852,
+          "position6_out": 144617,
+          "removed": 235,
+          "removed_never_started_branch_i": 0,
+          "removed_started_and_left_branch_ii": 235,
+          "removed_continued": 0,
+          "position7_out": 144617,
+          "position7_removes": 0,
+          "monotone_decrease_at_line6": "STRICT",
+          "commutation_checked": true
+        }
+      },
+      "APPLY": {
+        "38": {
+          "W": 38,
+          "position5_in": 197007,
+          "position6_out": 196403,
+          "removed": 604,
+          "removed_never_started_branch_i": 485,
+          "removed_started_and_left_branch_ii": 119,
+          "removed_continued": 0,
+          "position7_out": 196403,
+          "position7_removes": 0,
+          "monotone_decrease_at_line6": "STRICT",
+          "commutation_checked": true
+        },
+        "46": {
+          "W": 46,
+          "position5_in": 197007,
+          "position6_out": 196386,
+          "removed": 621,
+          "removed_never_started_branch_i": 494,
+          "removed_started_and_left_branch_ii": 127,
+          "removed_continued": 0,
+          "position7_out": 196386,
+          "position7_removes": 0,
+          "monotone_decrease_at_line6": "STRICT",
+          "commutation_checked": true
+        },
+        "77": {
+          "W": 77,
+          "position5_in": 197007,
+          "position6_out": 196294,
+          "removed": 713,
+          "removed_never_started_branch_i": 554,
+          "removed_started_and_left_branch_ii": 159,
+          "removed_continued": 0,
+          "position7_out": 196294,
+          "position7_removes": 0,
+          "monotone_decrease_at_line6": "STRICT",
+          "commutation_checked": true
+        },
+        "91": {
+          "W": 91,
+          "position5_in": 197007,
+          "position6_out": 196253,
+          "removed": 754,
+          "removed_never_started_branch_i": 575,
+          "removed_started_and_left_branch_ii": 179,
+          "removed_continued": 0,
+          "position7_out": 196253,
+          "position7_removes": 0,
+          "monotone_decrease_at_line6": "STRICT",
+          "commutation_checked": true
+        },
+        "107": {
+          "W": 107,
+          "position5_in": 196674,
+          "position6_out": 195881,
+          "removed": 793,
+          "removed_never_started_branch_i": 603,
+          "removed_started_and_left_branch_ii": 190,
+          "removed_continued": 0,
+          "position7_out": 195881,
+          "position7_removes": 0,
+          "monotone_decrease_at_line6": "STRICT",
+          "commutation_checked": true
+        },
+        "108": {
+          "W": 108,
+          "position5_in": 196654,
+          "position6_out": 195861,
+          "removed": 793,
+          "removed_never_started_branch_i": 604,
+          "removed_started_and_left_branch_ii": 189,
+          "removed_continued": 0,
+          "position7_out": 195861,
+          "position7_removes": 0,
+          "monotone_decrease_at_line6": "STRICT",
+          "commutation_checked": true
+        },
+        "150": {
+          "W": 150,
+          "position5_in": 195689,
+          "position6_out": 194811,
+          "removed": 878,
+          "removed_never_started_branch_i": 664,
+          "removed_started_and_left_branch_ii": 214,
+          "removed_continued": 0,
+          "position7_out": 194811,
+          "position7_removes": 0,
+          "monotone_decrease_at_line6": "STRICT",
+          "commutation_checked": true
+        },
+        "213": {
+          "W": 213,
+          "position5_in": 193270,
+          "position6_out": 192318,
+          "removed": 952,
+          "removed_never_started_branch_i": 716,
+          "removed_started_and_left_branch_ii": 236,
+          "removed_continued": 0,
+          "position7_out": 192318,
+          "position7_removes": 0,
+          "monotone_decrease_at_line6": "STRICT",
+          "commutation_checked": true
+        }
+      }
+    },
+    "monotone_summary": {
+      "DERIV": {
+        "strict_at_every_arm": true,
+        "removed_per_arm": [
+          119,
+          127,
+          159,
+          179,
+          188,
+          188,
+          213,
+          235
+        ]
+      },
+      "APPLY": {
+        "strict_at_every_arm": true,
+        "removed_per_arm": [
+          604,
+          621,
+          713,
+          754,
+          793,
+          793,
+          878,
+          952
+        ]
+      }
+    },
+    "ge_coding_note": "Decrease is STRICT on both populations at every tested arm, so `>=` is not needed for THIS rule. It is kept at Step 8 because the invariant must not encode a property of one rule -- a filter position that legitimately removes nothing must not fail an assertion."
+  },
+  "channel": {
+    "instance": "data-scientist-b",
+    "namespace": "mm_b",
+    "stage": "4B",
+    "api_calls": 0,
+    "adopts": "nothing",
+    "W": 108,
+    "H": 91,
+    "channel_definition": "LIVE only by the silence conjunct, AND last insertion strictly before the instant at which that pair's own outcome is read. Such a pair can produce no evidence in the remainder of the read window, so it is scored by construction.",
+    "by_population": {
+      "DERIV": {
+        "n": 147370,
+        "ALT_BROAD_channel_reproduced": {
+          "not_continued": 25988,
+          "live_only_by_the_silence_conjunct": 25889,
+          "channel_last_insertion_inside_tau1_tau2": 92,
+          "channel_never_started": 3,
+          "channel_started_and_left": 89,
+          "ALT_BROAD_exclusions": 99,
+          "0050_claimed_on_APPLY": {
+            "not_continued": 52514,
+            "live_only": 51811,
+            "channel": 297,
+            "ns": 207,
+            "sl": 90,
+            "excl": 703
+          },
+          "last_insertion_days_past_tau1": {
+            "p0": 1.072073419764638,
+            "p1": 1.9277587962200242,
+            "p5": 6.09109757100156,
+            "p10": 11.3239897638024,
+            "p25": 28.50447378110899,
+            "p50": 46.47278293652391,
+            "p75": 73.03471189201085,
+            "p90": 86.0440560602314,
+            "p95": 89.33816011507892,
+            "p99": 90.35864301573815,
+            "p100": 90.86666666666666
+          }
+        },
+        "ALT_MATCHED_closure": {
+          "ALT_BROAD_channel_started_and_left": 89,
+          "of_those_now_EXCLUDED_by_ALT_MATCHED": 89,
+          "closure_rate_pct": 100.0,
+          "ALT_BROAD_channel_never_started": 3,
+          "of_those_now_excluded": 0,
+          "never_started_channel_reading": "the never-started pairs in ALT-BROAD's channel are NOT in the gap and are not expected to close: never-started is the null |A| = 0 READ AT tau1, and every one of them has an insertion after tau1 -- exactly the evidence 0021 licenses. (0052 Sec 3, which is why the closure denominator is the S&L set alone.)",
+          "started_and_left_pairs_ALT_MATCHED_newly_excludes": 89,
+          "are_they_exactly_the_channel_S_and_L_set": true
+        },
+        "ALT_MATCHED_residual_channel": {
+          "branch_i_never_started_live_only_by_silence": 9145,
+          "branch_i_residual_channel": 0,
+          "branch_ii_started_and_left_live_only_by_silence": 16655,
+          "branch_ii_residual_channel": 0,
+          "mechanism": "ZERO by construction, and that is the point of the rule change. The channel is the interval between the silence instant and the read instant; ALT-MATCHED makes them the same instant for each null, so the interval is empty. There is no epsilon left to slide along.",
+          "near_boundary_branch_i_days_past_tau1": {
+            "p0": 23.94543983840004,
+            "p1": 189.30666666666667,
+            "p5": 433.1865143892506,
+            "p10": 648.3422698095525,
+            "p25": 1225.8941077507095,
+            "p50": 2183.866666666667,
+            "p75": 2920.92653617754,
+            "p90": 3658.835097632546,
+            "p95": 4045.666666666666,
+            "p99": 5455.286995946996,
+            "p100": 15371.03038299461
+          },
+          "near_boundary_branch_ii_days_past_tau2": {
+            "p0": 0.19388262389434707,
+            "p1": 58.75106829573009,
+            "p5": 194.4197572447153,
+            "p10": 341.8666666666667,
+            "p25": 861.6854383057507,
+            "p50": 1825.8245102849078,
+            "p75": 2821.866666666667,
+            "p90": 3556.807290803472,
+            "p95": 3940.039823770599,
+            "p99": 4757.744488188052,
+            "p100": 19297.866666666665
+          },
+          "branch_i_within_1_day_of_flipping": 0,
+          "branch_i_within_7_days": 0,
+          "branch_i_within_30_days": 1,
+          "branch_ii_within_1_day_of_flipping": 2,
+          "branch_ii_within_7_days": 27,
+          "branch_ii_within_30_days": 84,
+          "what_this_does_NOT_close": "the biconditional gap. 0021 licenses 'insertion after the instant => live' as a SUFFICIENT condition; the rule also asserts the converse. ALT-MATCHED narrows nothing about that and it stays a Step 14 limitation."
+        }
+      },
+      "APPLY": {
+        "n": 196654,
+        "ALT_BROAD_channel_reproduced": {
+          "not_continued": 52514,
+          "live_only_by_the_silence_conjunct": 51811,
+          "channel_last_insertion_inside_tau1_tau2": 297,
+          "channel_never_started": 207,
+          "channel_started_and_left": 90,
+          "ALT_BROAD_exclusions": 703,
+          "0050_claimed_on_APPLY": {
+            "not_continued": 52514,
+            "live_only": 51811,
+            "channel": 297,
+            "ns": 207,
+            "sl": 90,
+            "excl": 703
+          },
+          "last_insertion_days_past_tau1": {
+            "p0": 0.7526105134465076,
+            "p1": 1.072073419764638,
+            "p5": 7.214120446553936,
+            "p10": 12.08165186426485,
+            "p25": 28.73881212850136,
+            "p50": 51.3992701815593,
+            "p75": 73.4089919908262,
+            "p90": 85.13247308995714,
+            "p95": 87.97410309963094,
+            "p99": 90.31172413004703,
+            "p100": 90.86666666666666
+          }
+        },
+        "ALT_MATCHED_closure": {
+          "ALT_BROAD_channel_started_and_left": 90,
+          "of_those_now_EXCLUDED_by_ALT_MATCHED": 90,
+          "closure_rate_pct": 100.0,
+          "ALT_BROAD_channel_never_started": 207,
+          "of_those_now_excluded": 0,
+          "never_started_channel_reading": "the never-started pairs in ALT-BROAD's channel are NOT in the gap and are not expected to close: never-started is the null |A| = 0 READ AT tau1, and every one of them has an insertion after tau1 -- exactly the evidence 0021 licenses. (0052 Sec 3, which is why the closure denominator is the S&L set alone.)",
+          "started_and_left_pairs_ALT_MATCHED_newly_excludes": 90,
+          "are_they_exactly_the_channel_S_and_L_set": true
+        },
+        "ALT_MATCHED_residual_channel": {
+          "branch_i_never_started_live_only_by_silence": 32769,
+          "branch_i_residual_channel": 0,
+          "branch_ii_started_and_left_live_only_by_silence": 18952,
+          "branch_ii_residual_channel": 0,
+          "mechanism": "ZERO by construction, and that is the point of the rule change. The channel is the interval between the silence instant and the read instant; ALT-MATCHED makes them the same instant for each null, so the interval is empty. There is no epsilon left to slide along.",
+          "near_boundary_branch_i_days_past_tau1": {
+            "p0": 0.7526105134465076,
+            "p1": 113.05587257761646,
+            "p5": 258.26747715415786,
+            "p10": 421.2885428788127,
+            "p25": 916.0278635178479,
+            "p50": 1795.8666666666666,
+            "p75": 2807.3300985176998,
+            "p90": 3640.7443573196088,
+            "p95": 4144.694498010501,
+            "p99": 5817.074214854208,
+            "p100": 20264.866666666665
+          },
+          "near_boundary_branch_ii_days_past_tau2": {
+            "p0": 0.19388262389434707,
+            "p1": 62.145322139773846,
+            "p5": 200.1949492888354,
+            "p10": 362.8666666666667,
+            "p25": 908.9685781167861,
+            "p50": 1930.316561354582,
+            "p75": 2968.9113334685267,
+            "p90": 3776.2662942697634,
+            "p95": 4190.725213134218,
+            "p99": 5073.395482867469,
+            "p100": 19297.866666666665
+          },
+          "branch_i_within_1_day_of_flipping": 2,
+          "branch_i_within_7_days": 9,
+          "branch_i_within_30_days": 55,
+          "branch_ii_within_1_day_of_flipping": 2,
+          "branch_ii_within_7_days": 28,
+          "branch_ii_within_30_days": 90,
+          "what_this_does_NOT_close": "the biconditional gap. 0021 licenses 'insertion after the instant => live' as a SUFFICIENT condition; the rule also asserts the converse. ALT-MATCHED narrows nothing about that and it stays a Step 14 limitation."
+        }
+      }
+    },
+    "elapsed_s": 0.04895591735839844
+  },
+  "frozen_D10_reading": {
+    "instance": "data-scientist-b",
+    "namespace": "mm_b",
+    "stage": "4C",
+    "api_calls": 0,
+    "adopts": "nothing",
+    "rule_name": "ALT-MATCHED",
+    "operative_reading": "D10 RE-DERIVED at each arm (0047 Sec 5)",
+    "frozen_reading": "D10 held at its W = 108 value, n = 196,654 on APPLY at every arm",
+    "why_reported": "task-sheet.md Step 7 and 0050 carry ALT-BROAD's frozen series 746 / 823 / 918 / 1,117 with never-started component 632 / 684 / 753 / 881. Under ALT-MATCHED those go stale.",
+    "arms": [
+      125,
+      150,
+      180,
+      213
+    ],
+    "by_reading": {
+      "frozen": {
+        "DERIV": {
+          "125": {
+            "W": 125,
+            "n": 147370,
+            "excluded_total": 240,
+            "excluded_never_started": 0,
+            "excluded_started_and_left": 240
+          },
+          "150": {
+            "W": 150,
+            "n": 147370,
+            "excluded_total": 298,
+            "excluded_never_started": 0,
+            "excluded_started_and_left": 298
+          },
+          "180": {
+            "W": 180,
+            "n": 147370,
+            "excluded_total": 420,
+            "excluded_never_started": 0,
+            "excluded_started_and_left": 420
+          },
+          "213": {
+            "W": 213,
+            "n": 147370,
+            "excluded_total": 560,
+            "excluded_never_started": 0,
+            "excluded_started_and_left": 560
+          }
+        },
+        "APPLY": {
+          "125": {
+            "W": 125,
+            "n": 196654,
+            "excluded_total": 874,
+            "excluded_never_started": 632,
+            "excluded_started_and_left": 242
+          },
+          "150": {
+            "W": 150,
+            "n": 196654,
+            "excluded_total": 990,
+            "excluded_never_started": 684,
+            "excluded_started_and_left": 306
+          },
+          "180": {
+            "W": 180,
+            "n": 196654,
+            "excluded_total": 1192,
+            "excluded_never_started": 753,
+            "excluded_started_and_left": 439
+          },
+          "213": {
+            "W": 213,
+            "n": 196654,
+            "excluded_total": 1466,
+            "excluded_never_started": 881,
+            "excluded_started_and_left": 585
+          }
+        }
+      },
+      "re_derived": {
+        "DERIV": {
+          "125": {
+            "W": 125,
+            "n": 147049,
+            "excluded_total": 209,
+            "excluded_never_started": 0,
+            "excluded_started_and_left": 209
+          },
+          "150": {
+            "W": 150,
+            "n": 146602,
+            "excluded_total": 213,
+            "excluded_never_started": 0,
+            "excluded_started_and_left": 213
+          },
+          "180": {
+            "W": 180,
+            "n": 145845,
+            "excluded_total": 232,
+            "excluded_never_started": 0,
+            "excluded_started_and_left": 232
+          },
+          "213": {
+            "W": 213,
+            "n": 144852,
+            "excluded_total": 235,
+            "excluded_never_started": 0,
+            "excluded_started_and_left": 235
+          }
+        },
+        "APPLY": {
+          "125": {
+            "W": 125,
+            "n": 196276,
+            "excluded_total": 835,
+            "excluded_never_started": 625,
+            "excluded_started_and_left": 210
+          },
+          "150": {
+            "W": 150,
+            "n": 195689,
+            "excluded_total": 878,
+            "excluded_never_started": 664,
+            "excluded_started_and_left": 214
+          },
+          "180": {
+            "W": 180,
+            "n": 194617,
+            "excluded_total": 917,
+            "excluded_never_started": 683,
+            "excluded_started_and_left": 234
+          },
+          "213": {
+            "W": 213,
+            "n": 193270,
+            "excluded_total": 952,
+            "excluded_never_started": 716,
+            "excluded_started_and_left": 236
+          }
+        }
+      }
+    },
+    "comparison_APPLY": {
+      "frozen_totals": [
+        874,
+        990,
+        1192,
+        1466
+      ],
+      "frozen_never_started_component": [
+        632,
+        684,
+        753,
+        881
+      ],
+      "frozen_started_and_left_component": [
+        242,
+        306,
+        439,
+        585
+      ],
+      "re_derived_totals": [
+        835,
+        878,
+        917,
+        952
+      ],
+      "ALT_BROAD_frozen_totals_now_STALE": [
+        746,
+        823,
+        918,
+        1117
+      ],
+      "ALT_BROAD_frozen_NS_component_now_STALE": [
+        632,
+        684,
+        753,
+        881
+      ]
+    },
+    "elapsed_s": 1.4615669250488281
+  },
+  "bootstrap": {
+    "instance": "data-scientist-b",
+    "namespace": "mm_b",
+    "stage": 5,
+    "api_calls": 0,
+    "adopts": "nothing",
+    "rule_name": "ALT-MATCHED",
+    "design": {
+      "cluster_unit": "account (user)",
+      "why": "liveness evidence is account-wide; a pair is not an independent unit",
+      "resampling": "accounts drawn WITH REPLACEMENT (multinomial over the account index)",
+      "replicates_B": 4000,
+      "seed": 20260815,
+      "rng": "numpy default_rng",
+      "interval": "percentile, 2.5 / 97.5",
+      "rule_re_applied_inside_each_replicate": true,
+      "reported": "BOTH levels and movements; movements paired within replicate",
+      "equivalence_note": "every reported quantity is a count of rows in a category and the rule is row-local, so a replicate is exactly a weighted sum of per-account category counts"
+    },
+    "by_population": {
+      "DERIV": {
+        "n_position5": 147370,
+        "accounts": 2402,
+        "levels_filtered_pct": {
+          "never_started": [
+            5.852203082323074,
+            6.630729933173512
+          ],
+          "continued": [
+            81.84773916587002,
+            83.100998536332
+          ],
+          "started_and_left": [
+            10.834721298996902,
+            11.821174825938748
+          ]
+        },
+        "levels_unfiltered_pct": {
+          "never_started": [
+            5.844521771564178,
+            6.623375467875691
+          ],
+          "continued": [
+            81.73918330378194,
+            82.99192934923558
+          ],
+          "started_and_left": [
+            10.949855802054044,
+            11.934620603294812
+          ]
+        },
+        "movements_pp_filtered_minus_unfiltered": {
+          "never_started": [
+            0.0062241275790966945,
+            0.009782720474183671
+          ],
+          "continued": [
+            0.08334319138099175,
+            0.12880688760958064
+          ],
+          "started_and_left": [
+            -0.1384817478014464,
+            -0.08961213131820749
+          ],
+          "never_started_sign_stable": true,
+          "started_and_left_sign_stable": true,
+          "continued_sign_stable": true
+        },
+        "exclusion_count": {
+          "ci": [
+            150.0,
+            229.0
+          ],
+          "never_started_component_ci": [
+            0.0,
+            0.0
+          ],
+          "started_and_left_component_ci": [
+            150.0,
+            229.0
+          ]
+        },
+        "sampling_widths_pp": {
+          "never_started": 0.7785268508504384,
+          "continued": 1.2532593704619757,
+          "started_and_left": 0.9864535269418457
+        }
+      },
+      "APPLY": {
+        "n_position5": 196654,
+        "accounts": 2422,
+        "levels_filtered_pct": {
+          "never_started": [
+            16.182537173542222,
+            17.302445098227004
+          ],
+          "continued": [
+            72.87706691903483,
+            74.32176337922941
+          ],
+          "started_and_left": [
+            9.29439795874619,
+            10.059575637717272
+          ]
+        },
+        "levels_unfiltered_pct": {
+          "never_started": [
+            16.42137786378564,
+            17.54158413845148
+          ],
+          "continued": [
+            72.57793818890372,
+            74.02020976784907
+          ],
+          "started_and_left": [
+            9.358094575788282,
+            10.1206432099331
+          ]
+        },
+        "movements_pp_filtered_minus_unfiltered": {
+          "never_started": [
+            -0.29139863822845824,
+            -0.1920204013522351
+          ],
+          "continued": [
+            0.2455671275181274,
+            0.35182298144070256
+          ],
+          "started_and_left": [
+            -0.07462392052923747,
+            -0.04082864291715862
+          ],
+          "never_started_sign_stable": true,
+          "started_and_left_sign_stable": true,
+          "continued_sign_stable": true
+        },
+        "exclusion_count": {
+          "ci": [
+            660.0,
+            936.0
+          ],
+          "never_started_component_ci": [
+            489.975,
+            724.0
+          ],
+          "started_and_left_component_ci": [
+            151.0,
+            230.0
+          ]
+        },
+        "sampling_widths_pp": {
+          "never_started": 1.1199079246847816,
+          "continued": 1.444696460194578,
+          "started_and_left": 0.7651776789710816
+        }
+      }
+    },
+    "bound_width_over_sampling_width": {
+      "DERIV": {
+        "never_started": {
+          "bound_width_pp": 0.0,
+          "sampling_width_pp": 0.7785268508504384,
+          "ratio": 0.0
+        },
+        "started_and_left": {
+          "bound_width_pp": 0.1275700617493385,
+          "sampling_width_pp": 0.9864535269418457,
+          "ratio": 0.12932191762223696
+        },
+        "continued": {
+          "bound_width_pp": 0.1275700617493385,
+          "sampling_width_pp": 1.2532593704619757,
+          "ratio": 0.10179063069946463
+        }
+      },
+      "APPLY": {
+        "never_started": {
+          "bound_width_pp": 0.30713842586471785,
+          "sampling_width_pp": 1.1199079246847816,
+          "ratio": 0.2742532837698845
+        },
+        "started_and_left": {
+          "bound_width_pp": 0.40324631077933937,
+          "sampling_width_pp": 0.7651776789710816,
+          "ratio": 0.526996960132941
+        },
+        "continued": {
+          "bound_width_pp": 0.4032463107793376,
+          "sampling_width_pp": 1.444696460194578,
+          "ratio": 0.2791218237809115
+        }
+      }
+    },
+    "ratio_note": "computed on the ADOPTED bounds, never on the labelled conditional sub-interval. 0052 Sec 6 records that arm B previously published this ratio on the sub-interval, understating the systematic range against sampling error by 7.5x.",
+    "elapsed_s": 0.6492700576782227
+  },
+  "margins_and_residual_stability": {
+    "instance": "data-scientist-b",
+    "namespace": "mm_b",
+    "stage": 6,
+    "api_calls": 0,
+    "adopts": "nothing",
+    "rule_name": "ALT-MATCHED",
+    "W": 108,
+    "H": 91,
+    "calibration": "READ, NEVER REFITTED. The ladder is a sensitivity shift, not a refit.",
+    "margin_definition": "distance below each pair's OWN silence instant: tau1 for the never-started branch, tau2 for the started-and-left branch",
+    "residual_ladder_days": [
+      0.02,
+      0.107,
+      1.0,
+      7.0,
+      30.0,
+      124.6,
+      287.5
+    ],
+    "ladder_provenance": "the fit-family |residual| percentiles measured at bb_b stage 3a (p50 0.0195 d, p90 0.107 d, p95 124.6 d, p97.5 287.5 d) plus three round anchors; no ladder is specified by the spec",
+    "by_population": {
+      "DERIV": {
+        "excluded_total": 188,
+        "margin_days_all": {
+          "p0": 0.13333333333333333,
+          "p1": 1.0681365711780886,
+          "p5": 5.032464920325135,
+          "p10": 15.71391538491762,
+          "p25": 46.580072706364504,
+          "p50": 98.78565988447656,
+          "p75": 174.8670402510595,
+          "p90": 200.67078665919271,
+          "p95": 258.08263501723167,
+          "p99": 410.9576517202069,
+          "p100": 480.6840410298992
+        },
+        "margin_days_never_started_branch": null,
+        "margin_days_started_and_left_branch": {
+          "p0": 0.13333333333333333,
+          "p1": 1.0681365711780886,
+          "p5": 5.032464920325135,
+          "p10": 15.71391538491762,
+          "p25": 46.580072706364504,
+          "p50": 98.78565988447656,
+          "p75": 174.8670402510595,
+          "p90": 200.67078665919271,
+          "p95": 258.08263501723167,
+          "p99": 410.9576517202069,
+          "p100": 480.6840410298992
+        },
+        "margin_days_the_pairs_ALT_MATCHED_ADDS": {
+          "p0": 0.13333333333333333,
+          "p1": 0.6246089518136448,
+          "p5": 1.6519194860259692,
+          "p10": 4.69605521287576,
+          "p25": 18.69414800977817,
+          "p50": 45.11160046026111,
+          "p75": 62.11241191646843,
+          "p90": 80.19149753545335,
+          "p95": 85.41891100496106,
+          "p99": 89.10045061179498,
+          "p100": 89.92792658023536
+        },
+        "margin_days_the_pairs_ALT_BROAD_already_had": {
+          "p0": 91.06989138250826,
+          "p1": 92.17278433514602,
+          "p5": 99.7063024857436,
+          "p10": 106.83709167561983,
+          "p25": 126.85902966419994,
+          "p50": 172.30926619255985,
+          "p75": 198.06899884496437,
+          "p90": 256.56735277603127,
+          "p95": 339.6506631185903,
+          "p99": 456.3824114008564,
+          "p100": 480.6840410298992
+        },
+        "n_added": 89,
+        "n_already_had": 99,
+        "added_margin_is_bounded_by_H_by_construction": true,
+        "near_miss_live": {
+          "never_started_branch_n": 9145,
+          "never_started_branch_days_past_tau1": {
+            "p0": 23.94543983840004,
+            "p1": 189.30666666666667,
+            "p5": 433.1865143892506,
+            "p10": 648.3422698095525,
+            "p25": 1225.8941077507095,
+            "p50": 2183.866666666667,
+            "p75": 2920.92653617754,
+            "p90": 3658.835097632546,
+            "p95": 4045.666666666666,
+            "p99": 5455.286995946996,
+            "p100": 15371.03038299461
+          },
+          "started_and_left_branch_n": 16655,
+          "started_and_left_branch_days_past_tau2": {
+            "p0": 0.19388262389434707,
+            "p1": 58.75106829573009,
+            "p5": 194.4197572447153,
+            "p10": 341.8666666666667,
+            "p25": 861.6854383057507,
+            "p50": 1825.8245102849078,
+            "p75": 2821.866666666667,
+            "p90": 3556.807290803472,
+            "p95": 3940.039823770599,
+            "p99": 4757.744488188052,
+            "p100": 19297.866666666665
+          }
+        },
+        "claimed_watched_at_cross_check": {
+          "excluded_pairs_whose_account_claims_a_record_after_its_own_silence_instant": 1,
+          "of_which_never_started_branch": 0,
+          "of_which_started_and_left_branch": 1,
+          "reading": "an UPPER BOUND on the exclusions the residual could overturn, not an estimate: a claim after the instant is either a backdated-forward claim, which 0021 requires be ignored, or calibration error, and this cannot separate them. It does NOT reintroduce a claimed-watched_at test."
+        },
+        "stability_ladder": {
+          "0.02": {
+            "later_more_live": {
+              "total": 188,
+              "never_started": 0,
+              "started_and_left": 188
+            },
+            "earlier_more_excluded": {
+              "total": 188,
+              "never_started": 0,
+              "started_and_left": 188
+            }
+          },
+          "0.107": {
+            "later_more_live": {
+              "total": 188,
+              "never_started": 0,
+              "started_and_left": 188
+            },
+            "earlier_more_excluded": {
+              "total": 188,
+              "never_started": 0,
+              "started_and_left": 188
+            }
+          },
+          "1.0": {
+            "later_more_live": {
+              "total": 186,
+              "never_started": 0,
+              "started_and_left": 186
+            },
+            "earlier_more_excluded": {
+              "total": 190,
+              "never_started": 0,
+              "started_and_left": 190
+            }
+          },
+          "7.0": {
+            "later_more_live": {
+              "total": 176,
+              "never_started": 0,
+              "started_and_left": 176
+            },
+            "earlier_more_excluded": {
+              "total": 215,
+              "never_started": 0,
+              "started_and_left": 215
+            }
+          },
+          "30.0": {
+            "later_more_live": {
+              "total": 153,
+              "never_started": 0,
+              "started_and_left": 153
+            },
+            "earlier_more_excluded": {
+              "total": 273,
+              "never_started": 1,
+              "started_and_left": 272
+            }
+          },
+          "124.6": {
+            "later_more_live": {
+              "total": 78,
+              "never_started": 0,
+              "started_and_left": 78
+            },
+            "earlier_more_excluded": {
+              "total": 654,
+              "never_started": 18,
+              "started_and_left": 636
+            }
+          },
+          "287.5": {
+            "later_more_live": {
+              "total": 9,
+              "never_started": 0,
+              "started_and_left": 9
+            },
+            "earlier_more_excluded": {
+              "total": 1750,
+              "never_started": 192,
+              "started_and_left": 1558
+            }
+          }
+        },
+        "ladder_direction_note": "+delta = the true insertion was LATER than the curve says, which is the direction src/step5_calibrate.py states the curve errs in; it makes accounts more live and the exclusion set smaller."
+      },
+      "APPLY": {
+        "excluded_total": 793,
+        "margin_days_all": {
+          "p0": 0.013711570236417982,
+          "p1": 2.6716698478230723,
+          "p5": 11.923578357205347,
+          "p10": 27.254150113094184,
+          "p25": 72.1881797032279,
+          "p50": 168.11382378537897,
+          "p75": 320.49441871267504,
+          "p90": 518.0850141230356,
+          "p95": 656.3464099781044,
+          "p99": 884.1237719958845,
+          "p100": 1167.5905516111106
+        },
+        "margin_days_never_started_branch": {
+          "p0": 0.013711570236417982,
+          "p1": 4.957855731699202,
+          "p5": 17.68276047400993,
+          "p10": 39.332486601734054,
+          "p25": 87.15010765569353,
+          "p50": 202.53363406231284,
+          "p75": 384.9557380003137,
+          "p90": 585.7833902960074,
+          "p95": 711.3864162083612,
+          "p99": 915.3296853900927,
+          "p100": 1167.5905516111106
+        },
+        "margin_days_started_and_left_branch": {
+          "p0": 0.13333333333333333,
+          "p1": 1.0724645653110965,
+          "p5": 5.0477691164364415,
+          "p10": 12.650374761567074,
+          "p25": 45.93646313606037,
+          "p50": 97.63485663289273,
+          "p75": 174.65698826701276,
+          "p90": 200.6255257562581,
+          "p95": 257.9142703237649,
+          "p99": 410.44122863910894,
+          "p100": 480.6840410298992
+        },
+        "margin_days_the_pairs_ALT_MATCHED_ADDS": {
+          "p0": 0.13333333333333333,
+          "p1": 0.6301916292963756,
+          "p5": 1.655226285657673,
+          "p10": 4.810695380210877,
+          "p25": 18.362506214163645,
+          "p50": 44.52721706347609,
+          "p75": 62.06708737411433,
+          "p90": 79.97425538579293,
+          "p95": 85.24890814630686,
+          "p99": 89.09104747578998,
+          "p100": 89.92792658023536
+        },
+        "margin_days_the_pairs_ALT_BROAD_already_had": {
+          "p0": 91.06989138250826,
+          "p1": 92.17278433514602,
+          "p5": 99.7063024857436,
+          "p10": 106.83709167561983,
+          "p25": 126.85902966419994,
+          "p50": 172.30926619255985,
+          "p75": 198.06899884496437,
+          "p90": 256.56735277603127,
+          "p95": 339.6506631185903,
+          "p99": 456.3824114008564,
+          "p100": 480.6840410298992
+        },
+        "n_added": 90,
+        "n_already_had": 99,
+        "added_margin_is_bounded_by_H_by_construction": true,
+        "near_miss_live": {
+          "never_started_branch_n": 32769,
+          "never_started_branch_days_past_tau1": {
+            "p0": 0.7526105134465076,
+            "p1": 113.05587257761646,
+            "p5": 258.26747715415786,
+            "p10": 421.2885428788127,
+            "p25": 916.0278635178479,
+            "p50": 1795.8666666666666,
+            "p75": 2807.3300985176998,
+            "p90": 3640.7443573196088,
+            "p95": 4144.694498010501,
+            "p99": 5817.074214854208,
+            "p100": 20264.866666666665
+          },
+          "started_and_left_branch_n": 18952,
+          "started_and_left_branch_days_past_tau2": {
+            "p0": 0.19388262389434707,
+            "p1": 62.145322139773846,
+            "p5": 200.1949492888354,
+            "p10": 362.8666666666667,
+            "p25": 908.9685781167861,
+            "p50": 1930.316561354582,
+            "p75": 2968.9113334685267,
+            "p90": 3776.2662942697634,
+            "p95": 4190.725213134218,
+            "p99": 5073.395482867469,
+            "p100": 19297.866666666665
+          }
+        },
+        "claimed_watched_at_cross_check": {
+          "excluded_pairs_whose_account_claims_a_record_after_its_own_silence_instant": 2,
+          "of_which_never_started_branch": 1,
+          "of_which_started_and_left_branch": 1,
+          "reading": "an UPPER BOUND on the exclusions the residual could overturn, not an estimate: a claim after the instant is either a backdated-forward claim, which 0021 requires be ignored, or calibration error, and this cannot separate them. It does NOT reintroduce a claimed-watched_at test."
+        },
+        "stability_ladder": {
+          "0.02": {
+            "later_more_live": {
+              "total": 792,
+              "never_started": 603,
+              "started_and_left": 189
+            },
+            "earlier_more_excluded": {
+              "total": 793,
+              "never_started": 604,
+              "started_and_left": 189
+            }
+          },
+          "0.107": {
+            "later_more_live": {
+              "total": 792,
+              "never_started": 603,
+              "started_and_left": 189
+            },
+            "earlier_more_excluded": {
+              "total": 793,
+              "never_started": 604,
+              "started_and_left": 189
+            }
+          },
+          "1.0": {
+            "later_more_live": {
+              "total": 790,
+              "never_started": 603,
+              "started_and_left": 187
+            },
+            "earlier_more_excluded": {
+              "total": 797,
+              "never_started": 606,
+              "started_and_left": 191
+            }
+          },
+          "7.0": {
+            "later_more_live": {
+              "total": 769,
+              "never_started": 592,
+              "started_and_left": 177
+            },
+            "earlier_more_excluded": {
+              "total": 830,
+              "never_started": 613,
+              "started_and_left": 217
+            }
+          },
+          "30.0": {
+            "later_more_live": {
+              "total": 708,
+              "never_started": 555,
+              "started_and_left": 153
+            },
+            "earlier_more_excluded": {
+              "total": 938,
+              "never_started": 659,
+              "started_and_left": 279
+            }
+          },
+          "124.6": {
+            "later_more_live": {
+              "total": 477,
+              "never_started": 399,
+              "started_and_left": 78
+            },
+            "earlier_more_excluded": {
+              "total": 1669,
+              "never_started": 999,
+              "started_and_left": 670
+            }
+          },
+          "287.5": {
+            "later_more_live": {
+              "total": 223,
+              "never_started": 214,
+              "started_and_left": 9
+            },
+            "earlier_more_excluded": {
+              "total": 4248,
+              "never_started": 2595,
+              "started_and_left": 1653
+            }
+          }
+        },
+        "ladder_direction_note": "+delta = the true insertion was LATER than the curve says, which is the direction src/step5_calibrate.py states the curve errs in; it makes accounts more live and the exclusion set smaller."
+      }
+    },
+    "elapsed_s": 0.25586700439453125
+  }
+}
