@@ -7,7 +7,7 @@
 | **Date** | 2026-08-14 |
 | **Occasioned by** | Red Team's **ninth** Step 7 HOLD |
 | **Amends** | `0055` §3 (register row and count), §5 (heading), §5c (an asserted action not taken); `0052` §6, struck in place |
-| **Propagated to — SEVEN surfaces** | `task-sheet.md`; both `data-scientist` files; `artifacts/step7-liveness-bb-{a,b}.md`; `second-brain`'s glossary; **`CLAUDE.md`**, which carries the dependency list. **Not touched, checked not assumed:** both `analytics-engineer` files — they hold no Step 9 figures |
+| **Propagated to — SEVEN surfaces** | `task-sheet.md`; both `data-scientist` files; `artifacts/step7-liveness-bb-{a,b}.md`; **`second-brain`'s glossary — WHICH IS NOT SURFACE 7. Surface 7 is the DIRECTORY** (`0057`), and `open-items-and-contradictions.md` was left carrying the superseded sub-interval with a ✓ one line from the corrected bound; **`CLAUDE.md`**, which carries the dependency list. **Not touched, checked not assumed:** both `analytics-engineer` files — they hold no Step 9 figures |
 | **Status** | Closed. **Step 7 goes to Red Team. The gate is OPEN.** |
 
 ---
@@ -87,7 +87,8 @@ table, and the sampling ratio — **all three of them derived from the floor the
 announcing had moved.** **A stamp that affirmatively certifies superseded numbers is worse than no
 stamp**, because it converts a stale figure into a checked one.
 
-**Rewritten:** it now names every derived figure in a table, marks each occurrence inline, and states
+**Rewritten:** it now names every derived figure in a table, ~~marks each occurrence inline~~
+***— that clause was FALSE when written and is the fourth asserted-but-not-taken action in three entries; the marking was actually done by `0057`, which also bounded the claim: `0.0672%` and `0.3575%` as shares of population are legitimate and deliberately unmarked*** — and states
 that **it certifies nothing beyond that table.** What is positively unchanged is **listed, not
 implied** — the exclusion counts, the never-started bound, the three point estimates — and everything
 else is **unverified by the stamp rather than certified by it.**

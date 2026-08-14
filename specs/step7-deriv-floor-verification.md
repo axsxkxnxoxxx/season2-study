@@ -28,7 +28,9 @@ admit it.
 On **DERIV — Step 5 line 4 less D10, n = 147,370** — at **`W = 108`**, from your own `W = 108` outputs:
 
 1. **The channel count** — pairs that are `¬Continued`, `|A| ≥ 1` (i.e. not never-started), and whose
-   **last insertion instant lies in `(τ1, τ2]`**, where `τ1 = ⟦T0⟧ + W × 24h` and
+   **last insertion instant lies in `(τ1, τ2)` — OPEN at `τ2`** (`0057`; it read `(τ1, τ2]`
+   here and the closed form is wrong, not merely ambiguous: at `s = τ2` the unobserved remainder is
+   empty, so nothing admissible is missing and the pair must not be conceded), where `τ1 = ⟦T0⟧ + W × 24h` and
    `τ2 = ⟦T0⟧ + (W + H) × 24h`, `H = 91`.
 2. **The started-and-left floor under both extremes**, as a count and as a share of 147,370:
    - **extreme NONE** — no channel pair is in truth Continued

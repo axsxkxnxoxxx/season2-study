@@ -1,43 +1,65 @@
 {
-  "_superseded_2026_08_14": {
+  "_SUPERSEDED_2026_08_14": {
     "by": [
+      "decisions/0054",
       "decisions/0055",
-      "decisions/0054"
+      "decisions/0056"
     ],
-    "rule_unchanged": "ALT-BROAD; silence anchored at tau1 only",
-    "what_changed": "three bound endpoints, from widening the floor to admit the channel pairs",
+    "rule_unchanged": "ALT-BROAD; silence anchored at tau1 and only at tau1",
+    "what_changed": "bound endpoints and every figure derived from them; no rule change, no rerun",
     "channel_pairs": {
       "APPLY": 90,
       "DERIV": 89
     },
-    "APPLY": {
-      "sl_bound_printed": [
-        9.683,
-        10.0405
-      ],
-      "sl_bound_adopted": [
-        9.6372,
-        10.0405
-      ],
-      "sl_width_adopted_pp": 0.4032,
-      "continued_ceiling_printed": 73.6537,
-      "continued_ceiling_adopted": 73.6995
+    "channel_window": "(tau1, tau2) OPEN at tau2 -- 0057. At s = tau2 the unobserved remainder is empty, so nothing admissible is missing and the pair is NOT conceded.",
+    "corrected": {
+      "APPLY": {
+        "sl_bound": [
+          9.6372,
+          10.0405
+        ],
+        "sl_width_pp": 0.4032,
+        "conditional_sub_interval": [
+          9.6372,
+          9.7333
+        ],
+        "sub_interval_width_pp": 0.0961,
+        "continued_ceiling_pct": 73.6995,
+        "corner_table_floor_row": {
+          "never_started_pct": 16.9704,
+          "continued_pct": 73.3924,
+          "started_and_left_pct": 9.6372
+        },
+        "sl_bound_over_sampling_width": 0.509
+      },
+      "DERIV": {
+        "sl_bound": [
+          11.3015,
+          11.4291
+        ],
+        "sl_width_pp": 0.1276,
+        "conditional_sub_interval": "COINCIDES with the bound -- the conditioning is vacuous at zero never-started exclusions",
+        "continued_ceiling_pct": 82.493
+      }
     },
-    "DERIV": {
-      "sl_bound_printed": [
-        11.3619,
-        11.4291
-      ],
-      "sl_bound_adopted": [
-        11.3015,
-        11.4291
-      ],
-      "sl_width_adopted_pp": 0.1276,
-      "continued_ceiling_printed": 82.4327,
-      "continued_ceiling_adopted": 82.493
-    },
-    "ceilings_do_not_move": true,
-    "everything_else_stands": "exclusion counts, never-started bound, all point estimates",
+    "superseded_strings_every_occurrence_is_a_defect": [
+      "9.6830",
+      "0.0503",
+      "0.3575",
+      "73.3466",
+      "73.6537",
+      "11.3619",
+      "0.0672",
+      "82.4327",
+      "0.4033",
+      "0.4703"
+    ],
+    "this_stamp_certifies_nothing_beyond_the_above": true,
+    "positively_unchanged_listed_not_implied": [
+      "exclusion counts: APPLY 703 = 604 + 99; DERIV 99 = 0 + 99",
+      "never-started bound [16.6633%, 16.9704%] on APPLY, degenerate [6.2055%, 6.2055%] on DERIV",
+      "the three outcome POINT ESTIMATES, including started_and_left = 19042 on APPLY -- that is the post-liveness count, NOT the bound floor, and it does NOT move"
+    ],
     "reconfirmed_by": [
       "artifacts/step7-deriv-floor-check-a.md",
       "artifacts/step7-deriv-floor-check-b.md"
@@ -182,12 +204,12 @@
       "started_and_left": {
         "estimand": "started-and-left share of the position-5 population",
         "denominator": 147370,
-        "floor_pct": 11.361878265590011,
+        "floor_pct": 11.301486,
         "ceiling_over_SL_exclusions_pct": 11.429056117255886,
-        "width_over_SL_exclusions_pp": 0.06717785166587475,
+        "width_over_SL_exclusions_pp": 0.12757,
         "ceiling_joint_pct": 11.429056117255886,
-        "width_joint_pp": 0.06717785166587475,
-        "floor_numerator": 16744,
+        "width_joint_pp": 0.12757,
+        "floor_numerator": 16655,
         "ceiling_over_SL_exclusions_numerator": 16843,
         "ceiling_joint_numerator": 16843,
         "ceiling_over_SL_exclusions_equals_unfiltered_share_identity": true
@@ -196,8 +218,8 @@
         "estimand": "continued share of the position-5 population",
         "denominator": 147370,
         "floor_pct": 82.36547465562869,
-        "ceiling_pct": 82.43265250729456,
-        "width_pp": 0.06717785166587475,
+        "ceiling_pct": 82.493045,
+        "width_pp": 0.12757,
         "floor_equals_unfiltered_share_identity": true
       }
     },
@@ -217,12 +239,12 @@
       "started_and_left": {
         "estimand": "started-and-left share of the position-5 population",
         "denominator": 196654,
-        "floor_pct": 9.682996531980026,
+        "floor_pct": 9.637231,
         "ceiling_over_SL_exclusions_pct": 9.733338757411495,
-        "width_over_SL_exclusions_pp": 0.0503422254314696,
+        "width_over_SL_exclusions_pp": 0.096108,
         "ceiling_joint_pct": 10.040477183276211,
-        "width_joint_pp": 0.35748065129618567,
-        "floor_numerator": 19042,
+        "width_joint_pp": 0.403245,
+        "floor_numerator": 18952,
         "ceiling_over_SL_exclusions_numerator": 19141,
         "ceiling_joint_numerator": 19745,
         "ceiling_over_SL_exclusions_equals_unfiltered_share_identity": true
@@ -231,8 +253,8 @@
         "estimand": "continued share of the position-5 population",
         "denominator": 196654,
         "floor_pct": 73.29624619890772,
-        "ceiling_pct": 73.65372685020391,
-        "width_pp": 0.35748065129618567,
+        "ceiling_pct": 73.699493,
+        "width_pp": 0.403245,
         "floor_equals_unfiltered_share_identity": true
       }
     }
@@ -684,9 +706,15 @@
             "ratio": 0.0
           },
           "started_and_left_over_SL_exclusions": {
-            "bound_width": 0.06717785166587475,
+            "bound_width": 0.12757,
             "ci95_width": 0.9737261938594308,
-            "ratio": 0.06899049454509457
+            "ratio": 0.131
+          },
+          "started_and_left_JOINT_BOUND_this_is_the_bound": {
+            "bound_width": 0.12757,
+            "ci95_width": 0.9737261938594308,
+            "ratio": 0.131,
+            "note": "0056: the OTHER entry is the conditional sub-interval, which this arm itself argued is not the bound. Report THIS one."
           }
         }
       },
@@ -728,9 +756,15 @@
             "ratio": 0.27211222002886926
           },
           "started_and_left_over_SL_exclusions": {
-            "bound_width": 0.0503422254314696,
+            "bound_width": 0.096108,
             "ci95_width": 0.7922131651416677,
-            "ratio": 0.06354631259184786
+            "ratio": 0.1213
+          },
+          "started_and_left_JOINT_BOUND_this_is_the_bound": {
+            "bound_width": 0.403245,
+            "ci95_width": 0.7922131651416677,
+            "ratio": 0.509,
+            "note": "0056: the OTHER entry is the conditional sub-interval, which this arm itself argued is not the bound. Report THIS one."
           }
         }
       }

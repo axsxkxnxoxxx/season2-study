@@ -30,7 +30,10 @@
 > | S&L bound ÷ account-clustered sampling width | `a`: 0.47× · `b`: 6% | **50.9%** on 0.4032 / 0.7922 |
 >
 > **`9.6830%` has NO legitimate reading under the adopted rule** — its earlier registration as a
-> false-positive trap is withdrawn. **Every occurrence below is superseded**, and each is marked inline.
+> false-positive trap is withdrawn, and **every occurrence of it below is superseded and marked inline.**
+> **Two strings below ARE legitimate and are NOT marked, deliberately:** `0.0672%` and `0.3575%` as
+> **shares of population** (`99 / 147,370` and `703 / 196,654`) — registered false positives. As a bound
+> **width** both are superseded. **The register is in `second-brain`'s glossary.**
 >
 > **This stamp certifies nothing beyond the table above.** The earlier version of it closed with
 > *"Everything else in this file stands, including every point estimate"* — **that sentence was false for
@@ -104,7 +107,7 @@ confirmed exactly, on pairs and on accounts.**
 | — never-started component | **0** (0 accounts) | **604** (191 accounts) |
 | — started-and-left component | **99** (73 accounts) | **99** (73 accounts) |
 | — continued component | 0, by construction | 0, by construction |
-| Share of population | 0.0672% | 0.3575% |
+| Share of population *(these two are the LEGITIMATE readings of `0.0672` and `0.3575` — registered false positives; do not "correct" them)* | 0.0672% | 0.3575% |
 
 48 accounts on APPLY contribute to **both** components. On both populations, exactly **one** account
 has every one of its pairs excluded; the other 72 / 215 are excluded on one show and live on another.
@@ -220,11 +223,11 @@ So the started-and-left numerator on APPLY ranges over **19,141 − 99 = 19,042*
 
 | | Numerator | Share |
 | :--- | ---: | ---: |
-| **Floor** — all 99 in truth continued | 19,042 | **9.6830%** |
+| ~~**Floor** — all 99 in truth continued~~ ***SUPERSEDED `0056`*** | ~~19,042~~ **18,952** | ~~**9.6830%**~~ **9.6372%** |
 | **Ceiling** — all 99 are true exits **and** all 604 in truth started and left | 19,745 | **10.0405%** |
-| **Width** | 703 | **0.3575 pp** |
+| ~~**Width**~~ ***SUPERSEDED `0056`*** | ~~703~~ **793** | ~~**0.3575 pp**~~ **0.4032 pp** |
 
-On **DERIV**, denominator 147,370: **[11.3619%, 11.4291%]**, width **0.0672 pp** — narrow because the
+On **DERIV**, denominator 147,370: ~~**[11.3619%, 11.4291%]**, width **0.0672 pp**~~ ***SUPERSEDED (`0055`): [11.3015%, 11.4291%], width 0.1276 pp*** — narrow because the
 never-started component is empty there, so only the 99 float.
 
 ***SUPERSEDED (`decisions/0056`): the conditional sub-interval is [9.6372%, 9.7333%], width 0.0961 pp,
@@ -486,8 +489,8 @@ the evidence.
 - **D-4. `task-sheet.md` line 466 quotes ALT's share movements under an ALT-BROAD heading.** It gives
   `−0.2558 / +0.2258 / +0.0300 pp`; **measured under ALT-BROAD on APPLY the three shares move
   `−0.2474 / +0.2630 / −0.0156 pp`.** It also says "the 99 move the started-and-left share by roughly
-  0.05 pp" — 0.0503 pp is the *width of the conditional component interval*, a different quantity from
-  the share movement, which is **−0.0156 pp**.
+  0.05 pp" — ~~0.0503 pp~~ ***the conditional sub-interval is 0.0961 pp wide (`0056`)***, a different quantity from
+  the share movement, which is **−0.0156 pp**. **The point stands; the number was superseded when the floor widened.**
 - **D-5. `task-sheet.md` lines 253 and 262 still describe conjunct 2 as `|A| = 0`,** and give ALT's
   decomposition `196,654 → 33,373 → 604`. Under ALT-BROAD conjunct 2 is "NOT Continued" and the
   decomposition is `196,654 → 52,514 → 703`. An instance following those lines computes ALT.

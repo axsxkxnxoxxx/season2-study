@@ -263,6 +263,9 @@ comparable to it.
 | **`9.6830%`** | **NOWHERE — registration WITHDRAWN (`0056`).** The sub-interval floor moved with the bound floor to **9.6372%**; the conditioning constrains the 604, not the 90 | **Every hit is a defect.** Both the bound floor and the sub-interval floor are **9.6372%** |
 | **`16,744`** | **Three** legitimate readings: post-liveness S&L **count** on **147,271** → 11.3695% (`bb-a.md:109`); the same count at `step7-sensitivity-b.md:76`; and the DERIV floor under **extreme NONE** in the two-extremes table | the **adopted** DERIV S&L floor — that is **16,655 → 11.3015%** |
 | **`0.0672`** | DERIV exclusion **share of population**, `99 / 147,370` = 0.0672% (`bb-a.md:65`) | the DERIV bound **width** — that is **0.1276 pp** |
+| **`0.0503`** | **Nowhere (`0057`).** It was the conditional sub-interval width `99 / 196,654` | **Every hit is a defect** — the sub-interval is `189 / 196,654` = **0.0961 pp**, because the conditioning constrains the 604, not the 90 |
+| **`0.3575`** | **Only as `703 / 196,654` = 0.3575% — the APPLY exclusion SHARE OF POPULATION** (`bb-a.md:107`, `bb-b.md:93`) | as the S&L bound **width** in pp — that is **0.4032**. Same string, two meanings, one live |
+| **`73.3466`** | **Nowhere (`0057`).** It was the Continued value in the attainable-corner floor row | **Every hit is a defect** — with the 90 conceded the row reads **73.3924%** (`144,329 / 196,654`) |
 | **`0.4033`** | Nowhere. It is B's rounding artifact | Anywhere as the bound width — it is **0.4032** |
 | **`73.6537%`** | The **Continued ceiling** as of `0052`, superseded by `0054` | As a **floor**, ever. It was never one |
 

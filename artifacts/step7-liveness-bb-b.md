@@ -30,7 +30,10 @@
 > | S&L bound ÷ account-clustered sampling width | `a`: 0.47× · `b`: 6% | **50.9%** on 0.4032 / 0.7922 |
 >
 > **`9.6830%` has NO legitimate reading under the adopted rule** — its earlier registration as a
-> false-positive trap is withdrawn. **Every occurrence below is superseded**, and each is marked inline.
+> false-positive trap is withdrawn, and **every occurrence of it below is superseded and marked inline.**
+> **Two strings below ARE legitimate and are NOT marked, deliberately:** `0.0672%` and `0.3575%` as
+> **shares of population** (`99 / 147,370` and `703 / 196,654`) — registered false positives. As a bound
+> **width** both are superseded. **The register is in `second-brain`'s glossary.**
 >
 > **This stamp certifies nothing beyond the table above.** The earlier version of it closed with
 > *"Everything else in this file stands, including every point estimate"* — **that sentence was false for
@@ -89,8 +92,8 @@ At `W = 108`:
 
 | Population | `n` | **Excluded** | Never-started component | Started-and-left component | Accounts | Share of population |
 | :--- | ---: | ---: | ---: | ---: | ---: | ---: |
-| **DERIV** | 147,370 | **99** | **0** | **99** | **73** | 0.0672% |
-| **APPLY** | 196,654 | **703** | **604** | **99** | **216** | 0.3575% |
+| **DERIV** | 147,370 | **99** | **0** | **99** | **73** | 0.0672% *(legitimate reading of `0.0672` — registered)* |
+| **APPLY** | 196,654 | **703** | **604** | **99** | **216** | 0.3575% *(legitimate reading of `0.3575` — registered)* |
 
 **Both prior figures confirmed exactly: 99 from 73 accounts on DERIV, 703 from 216 accounts on
 APPLY, split 604 + 99.** No Continued pair is excluded on either population — that is forced by
@@ -198,10 +201,12 @@ the spec does not choose between them. I report both and do not adopt either.**
 
 **APPLY, denominator 196,654 for every endpoint:**
 
+***SUPERSEDED TABLE (`decisions/0056`) — both floors are 9.6372%, reading (i)'s width is 0.0961 pp and reading (ii)'s is 0.4032 pp. The conditioning in (i) constrains the 604 and says nothing about the 90 channel pairs, so its floor moves with (ii)'s. `9.6830` has no legitimate reading under the adopted rule.***
+
 | | Floor | Ceiling | Width | What the ceiling assumes |
 | :--- | ---: | ---: | ---: | :--- |
-| **(i) over the 99 S&L exclusions** *(as commissioned)* | **9.6830%** | **9.7333%** | **0.0503 pp** | the 99 really left; **and that none of the 604 is S&L** |
-| **(ii) joint, over all 703 exclusions** | **9.6830%** | **10.0405%** | **0.3575 pp** | the 99 really left **and** every one of the 604 actually started and left |
+| ~~**(i) over the 99 S&L exclusions**~~ ***SUPERSEDED `0056` — it is over the 99 AND the 90*** | ~~**9.6830%**~~ **9.6372%** | **9.7333%** | ~~**0.0503 pp**~~ **0.0961 pp** | the 99 really left; **and that none of the 604 is S&L** |
+| ~~**(ii) joint, over all 703 exclusions**~~ ***SUPERSEDED `0056` — over all 703 AND the 90*** | ~~**9.6830%**~~ **9.6372%** | **10.0405%** | ~~**0.3575 pp**~~ **0.4032 pp** | the 99 really left **and** every one of the 604 actually started and left |
 
 `19,042 / 196,654` → `19,141 / 196,654` → `19,745 / 196,654`, on the integers.
 
@@ -213,21 +218,21 @@ the Continued condition **is** started-and-left. Reading (i)'s ceiling therefore
 `0047` §3 was written to impose: *does the endpoint cover the case the filter exists for?* On the
 never-started side it does. On the started-and-left side, only reading (ii) does.
 
-**Recommendation for the gate, not a decision:** publish **(ii) [9.6830%, 10.0405%] as the bound**
+**Recommendation for the gate, not a decision:** publish **(ii) ~~[9.6830%, 10.0405%]~~ *[9.6372%, 10.0405%], as adopted (`0054`, `0056`) — the floor was widened to admit the 90; the recommendation was right and its floor was not* as the bound**
 and **(i) as the sub-interval attributable to the 99**, labelled as conditional. Under (ii) the
 never-started and started-and-left ceilings are **not simultaneously attainable** — both consume
 the same 604 pairs — and the write-up must say so rather than printing two ceilings that add up to
 more than the population.
 
-**DERIV: [11.3619%, 11.4291%], width 0.0672 pp.** On DERIV the two readings **coincide**, because
+**DERIV: ~~[11.3619%, 11.4291%], width 0.0672 pp~~ → ADOPTED [11.3015%, 11.4291%], width 0.1276 pp (`0055`).** On DERIV the two readings **coincide**, because
 the never-started exclusion component is 0. The DERIV started-and-left bound is unambiguous and
 complete, and it is the only bound in this step that is both.
 
 ### 4.3 Continued, reported for completeness
 
 Continued is the only state resting on positive evidence, so **its floor is an identity with the
-unfiltered share** and all of the uncertainty is above it: **APPLY [73.2962%, 73.6537%], width
-0.3575 pp**; **DERIV [82.3655%, 82.4327%], width 0.0672 pp**. Not requested; included because the
+unfiltered share** and all of the uncertainty is above it: ***SUPERSEDED (`0054`, `0055`): **APPLY [73.2962%, 73.6995%], width 0.4032 pp**; **DERIV [82.3655%, 82.4930%], width 0.1276 pp** — both ceilings move with the floor.*** ~~APPLY [73.2962%, 73.6537%], width
+0.3575 pp; DERIV [82.3655%, 82.4327%], width 0.0672 pp.~~ Not requested; included because the
 three bounds must be read together and (ii)'s ceiling is exactly this floor's mirror.
 
 ---
@@ -308,7 +313,9 @@ started-and-left component 2.85×.** `0048` §5's "factor of 2.85 against ALT's 
 
 | `W` | 38 | 46 | 77 | 91 | 107 | **108** | 150 | 213 |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| floor % | 9.8641 | 9.8702 | 9.8230 | 9.7631 | 9.6891 | **9.6830** | 9.5437 | 9.3413 |
+***SUPERSEDED SERIES (`0056`): every entry in the floor row is the UN-WIDENED reading-(i) floor at its own arm — at `W = 108` it reads 9.6830 where the adopted floor is 9.6372. Step 13 is the consumer. The widened series is NOT computed here and must be recomputed per arm before Step 13 reads it; the ceiling row is unaffected.***
+
+| floor % ***SUPERSEDED `0056` — un-widened at every arm*** | 9.8641 | 9.8702 | 9.8230 | 9.7631 | 9.6891 | **9.6830** | 9.5437 | 9.3413 |
 | ceiling % | 9.8905 | 9.8986 | 9.8631 | 9.8083 | 9.7390 | **9.7333** | 9.6076 | 9.4179 |
 
 ---
@@ -449,8 +456,10 @@ defect to report. Five, and the first two would change an implementation.
    DERIV the series is identical except at the top arm: 147, not 148.** One pair at `W = 213` is
    excluded on APPLY and is not in line 4.
 5. **`task-sheet.md` Step 9 asks for the second bound "over the 99" without saying whether the 604
-   also feed its ceiling.** That is the unresolved judgement call in §4.2 and it changes the width
-   by a factor of 7 (0.0503 pp vs 0.3575 pp).
+   also feed its ceiling.** That is the unresolved judgement call in §4.2 — **resolved by `0049`
+   and `0054` in favour of the joint reading** — and it changes the width by ~~a factor of 7
+   (0.0503 pp vs 0.3575 pp)~~ ***a factor of 4.2 under the adopted figures: 0.0961 pp vs 0.4032 pp
+   (`0056`)***.
 
 ---
 

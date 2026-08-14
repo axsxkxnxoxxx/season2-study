@@ -1,43 +1,65 @@
 {
-  "_superseded_2026_08_14": {
+  "_SUPERSEDED_2026_08_14": {
     "by": [
+      "decisions/0054",
       "decisions/0055",
-      "decisions/0054"
+      "decisions/0056"
     ],
-    "rule_unchanged": "ALT-BROAD; silence anchored at tau1 only",
-    "what_changed": "three bound endpoints, from widening the floor to admit the channel pairs",
+    "rule_unchanged": "ALT-BROAD; silence anchored at tau1 and only at tau1",
+    "what_changed": "bound endpoints and every figure derived from them; no rule change, no rerun",
     "channel_pairs": {
       "APPLY": 90,
       "DERIV": 89
     },
-    "APPLY": {
-      "sl_bound_printed": [
-        9.683,
-        10.0405
-      ],
-      "sl_bound_adopted": [
-        9.6372,
-        10.0405
-      ],
-      "sl_width_adopted_pp": 0.4032,
-      "continued_ceiling_printed": 73.6537,
-      "continued_ceiling_adopted": 73.6995
+    "channel_window": "(tau1, tau2) OPEN at tau2 -- 0057. At s = tau2 the unobserved remainder is empty, so nothing admissible is missing and the pair is NOT conceded.",
+    "corrected": {
+      "APPLY": {
+        "sl_bound": [
+          9.6372,
+          10.0405
+        ],
+        "sl_width_pp": 0.4032,
+        "conditional_sub_interval": [
+          9.6372,
+          9.7333
+        ],
+        "sub_interval_width_pp": 0.0961,
+        "continued_ceiling_pct": 73.6995,
+        "corner_table_floor_row": {
+          "never_started_pct": 16.9704,
+          "continued_pct": 73.3924,
+          "started_and_left_pct": 9.6372
+        },
+        "sl_bound_over_sampling_width": 0.509
+      },
+      "DERIV": {
+        "sl_bound": [
+          11.3015,
+          11.4291
+        ],
+        "sl_width_pp": 0.1276,
+        "conditional_sub_interval": "COINCIDES with the bound -- the conditioning is vacuous at zero never-started exclusions",
+        "continued_ceiling_pct": 82.493
+      }
     },
-    "DERIV": {
-      "sl_bound_printed": [
-        11.3619,
-        11.4291
-      ],
-      "sl_bound_adopted": [
-        11.3015,
-        11.4291
-      ],
-      "sl_width_adopted_pp": 0.1276,
-      "continued_ceiling_printed": 82.4327,
-      "continued_ceiling_adopted": 82.493
-    },
-    "ceilings_do_not_move": true,
-    "everything_else_stands": "exclusion counts, never-started bound, all point estimates",
+    "superseded_strings_every_occurrence_is_a_defect": [
+      "9.6830",
+      "0.0503",
+      "0.3575",
+      "73.3466",
+      "73.6537",
+      "11.3619",
+      "0.0672",
+      "82.4327",
+      "0.4033",
+      "0.4703"
+    ],
+    "this_stamp_certifies_nothing_beyond_the_above": true,
+    "positively_unchanged_listed_not_implied": [
+      "exclusion counts: APPLY 703 = 604 + 99; DERIV 99 = 0 + 99",
+      "never-started bound [16.6633%, 16.9704%] on APPLY, degenerate [6.2055%, 6.2055%] on DERIV",
+      "the three outcome POINT ESTIMATES, including started_and_left = 19042 on APPLY -- that is the post-liveness count, NOT the bound floor, and it does NOT move"
+    ],
     "reconfirmed_by": [
       "artifacts/step7-deriv-floor-check-a.md",
       "artifacts/step7-deriv-floor-check-b.md"
@@ -305,11 +327,11 @@
         "estimand": "share of the position-5 population whose true state is Started and left",
         "denominator": 147370,
         "denominator_is_the_estimands_population": true,
-        "floor_pct": 11.361878,
+        "floor_pct": 11.301486,
         "ceiling_pct": 11.429056,
-        "floor_numerator": 16744,
+        "floor_numerator": 16655,
         "ceiling_numerator": 16843,
-        "width_pp": 0.067178,
+        "width_pp": 0.12757,
         "floor_attained_when": "all 99 excluded started-and-left nulls in truth continued",
         "ceiling_attained_when": "all 0 excluded never-started nulls in truth started and left, and all 99 started-and-left exclusions are true exits",
         "both_endpoints_attainable": true
@@ -318,9 +340,9 @@
         "estimand": "share of the position-5 population whose true state is Started and left, CONDITIONAL on every excluded never-started null being a true decline",
         "denominator": 147370,
         "denominator_is_the_estimands_population": true,
-        "floor_pct": 11.361878,
+        "floor_pct": 11.301486,
         "ceiling_pct": 11.429056,
-        "width_pp": 0.067178,
+        "width_pp": 0.12757,
         "WARNING": "this is NOT a bound on the unconditional started-and-left share. Its ceiling does not cover the case in which an excluded never-started null in truth started and left -- the same defect 0047 SS3 records three times. Published only as the DECOMPOSITION of the lower half of bound_started_and_left, which is the operative interval."
       },
       "bound_continued": {
@@ -328,8 +350,8 @@
         "denominator": 147370,
         "denominator_is_the_estimands_population": true,
         "floor_pct": 82.365475,
-        "ceiling_pct": 82.432653,
-        "width_pp": 0.067178,
+        "ceiling_pct": 82.493045,
+        "width_pp": 0.12757,
         "note": "Continued is the only state that rests on positive evidence, so no exclusion can leave it; both other states can only flow INTO it"
       },
       "joint_corner_check": {
@@ -390,11 +412,11 @@
         "estimand": "share of the position-5 population whose true state is Started and left",
         "denominator": 196654,
         "denominator_is_the_estimands_population": true,
-        "floor_pct": 9.682997,
+        "floor_pct": 9.637231,
         "ceiling_pct": 10.040477,
-        "floor_numerator": 19042,
+        "floor_numerator": 18952,
         "ceiling_numerator": 19745,
-        "width_pp": 0.357481,
+        "width_pp": 0.403245,
         "floor_attained_when": "all 99 excluded started-and-left nulls in truth continued",
         "ceiling_attained_when": "all 604 excluded never-started nulls in truth started and left, and all 99 started-and-left exclusions are true exits",
         "both_endpoints_attainable": true
@@ -403,9 +425,9 @@
         "estimand": "share of the position-5 population whose true state is Started and left, CONDITIONAL on every excluded never-started null being a true decline",
         "denominator": 196654,
         "denominator_is_the_estimands_population": true,
-        "floor_pct": 9.682997,
+        "floor_pct": 9.637231,
         "ceiling_pct": 9.733339,
-        "width_pp": 0.050342,
+        "width_pp": 0.096108,
         "WARNING": "this is NOT a bound on the unconditional started-and-left share. Its ceiling does not cover the case in which an excluded never-started null in truth started and left -- the same defect 0047 SS3 records three times. Published only as the DECOMPOSITION of the lower half of bound_started_and_left, which is the operative interval."
       },
       "bound_continued": {
@@ -413,8 +435,8 @@
         "denominator": 196654,
         "denominator_is_the_estimands_population": true,
         "floor_pct": 73.296246,
-        "ceiling_pct": 73.653727,
-        "width_pp": 0.357481,
+        "ceiling_pct": 73.699493,
+        "width_pp": 0.403245,
         "note": "Continued is the only state that rests on positive evidence, so no exclusion can leave it; both other states can only flow INTO it"
       },
       "joint_corner_check": {
@@ -700,7 +722,7 @@
         "never_started_bound_width_pp": 0.307138,
         "never_started_bound_width_over_sampling_width": 0.2813,
         "started_and_left_bound_width_pp": 0.357481,
-        "started_and_left_bound_width_over_sampling_width": 0.4703
+        "started_and_left_bound_width_over_sampling_width": 0.509
       }
     }
   },

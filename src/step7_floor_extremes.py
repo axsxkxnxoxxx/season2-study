@@ -13,7 +13,8 @@ irrelevant to it and the ground is simply that a floor must cover the case the
 filter exists to guard against.
 
 The channel is the set ALT-MATCHED would have excluded and ALT-BROAD does not:
-live, NOT Continued, |A| >= 1, last insertion inside (tau1, tau2]. 90 on APPLY,
+live, NOT Continued, |A| >= 1, last insertion inside (tau1, tau2) -- OPEN at tau2 per 0057.
+90 on APPLY,
 89 on DERIV -- reproduced here, not taken from the record.
 
 Zero API calls. Reads instance A's stored masks. Adopts nothing.
@@ -36,10 +37,17 @@ not_live = (~cont) & (last <= tau1)
 excl_ns = not_live & never
 excl_sl = not_live & ~never
 
-# The channel: silent from an instant strictly inside (tau1, tau2], hence live
+# The channel: silent from an instant strictly inside (tau1, tau2), OPEN at tau2, hence live
 # under ALT-BROAD, scored started-and-left, and unable to produce Continued
 # evidence dated after that instant.
-channel = (~cont) & (~never) & (last > tau1) & (last <= tau2)
+# 0057: OPEN at tau2. At s = tau2 the unobserved remainder (s, tau2) is empty, so nothing admissible
+# is missing and the pair is NOT conceded. Both arms measured the two forms inert at W = 108; this
+# asserts it rather than assuming it, and it is NOT expected to hold at W = 213, where D10 puts tau2
+# at or adjacent to tau_pull and a mass point in last-insertion instants sits.
+channel = (~cont) & (~never) & (last > tau1) & (last < tau2)
+closed  = (~cont) & (~never) & (last > tau1) & (last <= tau2)
+at_tau2 = int((closed & ~channel & (ap | dv)).sum())
+assert at_tau2 == 0, f'W=108 no longer inert in the boundary form: {at_tau2} pairs sit exactly at tau2'
 
 POPS = {"APPLY": (ap, 196654), "DERIV": (dv, 147370)}
 out = {"what": "S&L floor under both extremes; ceiling and Continued ceiling alongside",

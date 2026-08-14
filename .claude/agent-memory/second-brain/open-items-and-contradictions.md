@@ -1006,8 +1006,11 @@ split signature depends on — README item 5). N6 (the Step 0 file index is stal
 - **Never-started bound**: ceiling 16.9704% × 196,654 = **33,373**; floor = (33,373 − 604)/196,654 =
   **16.6633%**; width **0.3071 pp = 604/196,654** ✓ — **both endpoints on one denominator**
 - **S&L bound, WIDENED by `0054`**: **[9.6372%, 10.0405%]**, width **0.4032 pp = 793/196,654** ✓
-  (floor numerator 18,952, ceiling numerator 19,745). Conditional sub-interval width **0.0503 pp =
-  99/196,654** ✓. **Superseded: width 0.3575 pp = 703/196,654, floor 9.6830%** — a **non-covering**
+  (floor numerator 18,952, ceiling numerator 19,745). Conditional sub-interval width
+  ~~**0.0503 pp = 99/196,654** ✓~~ **CORRECTED (`0057`): 0.0961 pp = 189/196,654**, floor **18,952 →
+  9.6372%**. **The conditioning constrains the 604 and says nothing about the 90**, so the sub-interval
+  floor moves with the bound floor. **The ✓ on the superseded value is the defect**: the corrected bound
+  and its withdrawn sub-interval sat one line apart, each blessed. **Superseded: width 0.3575 pp = 703/196,654, floor 9.6830%** — a **non-covering**
   endpoint, which is exactly what the widening repairs.
 - **S&L bound on DERIV**: **[11.3015%, 11.4291%]**, width **0.1276 pp = 188/147,370** ✓ (99 exclusions
   + 89 channel pairs). **This bound was missing from every surface until 2026-08-14.**

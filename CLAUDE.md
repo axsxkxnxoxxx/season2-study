@@ -70,16 +70,24 @@ So after any edit: grep all seven surfaces for the superseded strings and requir
 
 **When a bound endpoint moves, every figure computed from it moves.** Correcting an endpoint and leaving its derived quantities behind has now happened twice in consecutive entries. So each endpoint carries a written list, and **the list is checked as a set whenever that endpoint moves** — not the figure that prompted the correction, the whole set.
 
-**Started-and-left floor** — four derived figures:
+**The lists close transitively.** When an endpoint moves, check its list, **and the list of every figure on that list, to fixpoint.** A one-hop check is not enough and the gap has already bitten: the started-and-left floor moves the Continued ceiling, which moves the three-ceiling sum and the excess count — and `1,307 / 100.6646%` left live in both `data-scientist` files was **propagation failure #16, "the severe one."** It is two hops from the floor. A list that stops at the first hop does not reach the failure it was written to prevent.
 
-1. the **conditional sub-interval** floor (the conditioning constrains the never-started exclusions only, so this floor moves with the bound floor and is never narrower by the channel count)
-2. the **attainable-corner table** — the floor corner and the Continued value in that row
-3. the **bound ÷ account-clustered sampling width** ratio, per arm
-4. the **Continued ceiling**, which moves in lockstep because the conceded pairs land in Continued
+**Started-and-left floor** — eight derived figures:
 
-**Never-started floor** — three: the attainable-corner table's floor corner and its Continued value; the bound ÷ sampling width ratio; and the Continued ceiling. *(It has no conditional sub-interval — the sub-interval conditions on this bound's own exclusion set.)*
+1. the **bound width** itself — the floor is its lower endpoint, and this figure has the longest defect history in the study (the 0.4033/0.4032 artifact, corrected twice)
+2. the **conditional sub-interval** floor and width (the conditioning constrains the never-started exclusions only, so this floor moves with the bound floor and its width is never the exclusion count alone)
+3. the **attainable-corner table** — the floor corner and the Continued value in that row
+4. the **bound ÷ account-clustered sampling width** ratio, per arm
+5. the **sub-interval ÷ sampling width** ratio, per arm — second-order, off item 2
+6. the **per-`W` sensitivity series**, every arm, both bounds, both populations — **Step 13 is the consumer**, so a series carrying the un-widened floor at each arm is a live defect eight figures wide
+7. any **ratio between two widths** — e.g. "the sub-interval is a factor of N narrower than the bound", which moves when either width does
+8. the **Continued ceiling**, whose own list then runs
+
+**Never-started floor** — four: the attainable-corner table's floor corner and its Continued value; the bound width; the bound ÷ sampling width ratio; and the Continued ceiling, whose own list then runs. *(It has no conditional sub-interval — the sub-interval conditions on this bound's own exclusion set.)*
 
 **Any ceiling** — three: the **three-ceiling sum and its excess**, on each population separately; the **excess mechanism** count (`2 × never-started exclusions + started-and-left exclusions`); and the corner table row that attains it.
+
+**Register every superseded value the move creates, not just the one that prompted the correction.** Each figure on a list that moves leaves a superseded string behind, and an unregistered string is one the grep control will not flag. Correcting four figures and registering one is how three of them stay live.
 
 **Both populations, always.** APPLY and DERIV are separate lists with separate arithmetic, and a correction applied to one and not the other is the same defect as not applying it at all.
 
