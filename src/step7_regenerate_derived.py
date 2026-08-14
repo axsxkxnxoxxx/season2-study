@@ -117,17 +117,23 @@ def derive(c):
     corner_hi_cont = n - ns_ceil - sl_floor     # ns ceiling / sl floor corner
     excess = 2 * ns_x + sl_x + ch
 
+    # 2.5 (Red Team 15), fixed 2026-08-14 (0063). Every width was a DIFFERENCE OF TWO 6-dp
+    # ROUNDED PERCENTAGES -- which is precisely the construction SUPERSEDED[0.4033] names as
+    # "a rounding artifact". It showed: the SAME 793 pairs on the SAME 196,654 gave
+    # sl.width = 0.403246 and cont.width = 0.403247 in one generated block, one quantity with
+    # two values an ulp apart. bb-b.json's corrected 0.403246 landed on the exact form by
+    # coincidence. A width is a COUNT over a denominator, so it is computed as one.
+    def band(floor_n, ceil_n):
+        return dict(floor_n=floor_n, ceil_n=ceil_n,
+                    floor=pct(floor_n, n), ceil=pct(ceil_n, n),
+                    width=pct(ceil_n - floor_n, n))
+
     d = dict(
         counts=c,
-        ns=dict(floor_n=ns_floor, ceil_n=ns_ceil, floor=pct(ns_floor, n), ceil=pct(ns_ceil, n),
-                width=round(pct(ns_ceil, n) - pct(ns_floor, n), 6)),
-        sl=dict(floor_n=sl_floor, ceil_n=sl_ceil, floor=pct(sl_floor, n), ceil=pct(sl_ceil, n),
-                width=round(pct(sl_ceil, n) - pct(sl_floor, n), 6)),
-        sub=dict(floor_n=sub_floor, ceil_n=sub_ceil, floor=pct(sub_floor, n), ceil=pct(sub_ceil, n),
-                 width=round(pct(sub_ceil, n) - pct(sub_floor, n), 6)),
-        cont=dict(floor_n=cont_floor, ceil_n=cont_ceil, floor=pct(cont_floor, n),
-                  ceil=pct(cont_ceil, n),
-                  width=round(pct(cont_ceil, n) - pct(cont_floor, n), 6)),
+        ns=band(ns_floor, ns_ceil),
+        sl=band(sl_floor, sl_ceil),
+        sub=band(sub_floor, sub_ceil),
+        cont=band(cont_floor, cont_ceil),
         corner_ns_floor=dict(ns=pct(ns_floor, n), sl=pct(sl_ceil, n), cont=pct(corner_lo_cont, n)),
         corner_ns_ceil=dict(ns=pct(ns_ceil, n), sl=pct(sl_floor, n), cont=pct(corner_hi_cont, n)),
         ceilings=dict(sum=round(pct(ns_ceil, n) + pct(sl_ceil, n) + pct(cont_ceil, n), 6),
@@ -137,6 +143,11 @@ def derive(c):
     )
     for k in ("ns", "sl", "sub", "cont"):
         assert d[k]["floor_n"] <= d[k]["ceil_n"], k
+        # a width is the count over the denominator, never a difference of rounded shares
+        assert d[k]["width"] == pct(d[k]["ceil_n"] - d[k]["floor_n"], n), k
+    # the S&L bound and the Continued bound span the SAME excluded pairs, so their widths are
+    # the same number. Under the old construction they differed by an ulp.
+    assert d["sl"]["width"] == d["cont"]["width"], (d["sl"]["width"], d["cont"]["width"])
     assert abs(sum(d["corner_ns_floor"].values()) - 100.0) < 1e-6
     assert abs(sum(d["corner_ns_ceil"].values()) - 100.0) < 1e-6
     return d

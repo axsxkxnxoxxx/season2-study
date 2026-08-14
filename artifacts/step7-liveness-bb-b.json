@@ -188,7 +188,7 @@
         "denominator": 196654,
         "floor_pct": 73.29624619890772,
         "ceiling_pct": 73.699493,
-        "width_pp": 0.403247,
+        "width_pp": 0.403246,
         "floor_equals_unfiltered_share_identity": true
       }
     }
@@ -2344,7 +2344,7 @@
       "APPLY.sub.ceil_n": 19141,
       "APPLY.cont.floor": 73.296246,
       "APPLY.cont.ceil": 73.699493,
-      "APPLY.cont.width": 0.403247,
+      "APPLY.cont.width": 0.403246,
       "APPLY.cont.floor_n": 144140,
       "APPLY.cont.ceil_n": 144933,
       "APPLY.corner_ns_floor.ns": 16.663277,
@@ -2426,7 +2426,7 @@
           "ceil_n": 144933,
           "floor": 73.296246,
           "ceil": 73.699493,
-          "width": 0.403247
+          "width": 0.403246
         },
         "corner_ns_floor": {
           "ns": 16.663277,
