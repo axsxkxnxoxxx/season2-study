@@ -27,12 +27,12 @@
 
 ## Derived figures — GENERATED, do not hand-edit
 
-**Every number in this section is a function of the counts below and is written by
-`src/step7_regenerate_derived.py`.** It exists because four consecutive decisions
-corrected these artifacts by patching individual values, and every finding in Red Team
-reviews 9–11 was a value a patch reached in one place and missed in another.
+**Every number and every sentence in this section comes from one definition in**
+`src/step7_regenerate_derived.py` — `figure_table()` and `STATEMENTS` — **and the `.json`
+half of this deliverable renders the same two objects.** `compare_halves()` reads both
+back off disk and compares them, so the two halves agreeing is demonstrated, not asserted.
 
-**The channel window is `(τ1, τ2)`, OPEN at `τ2`** (`0057`).
+**The channel window is (tau1, tau2), OPEN at tau2 (0057). At s = tau2 the unobserved remainder is empty, so nothing admissible is missing and the pair is not conceded.**
 
 ### APPLY — n = 196,654
 
@@ -51,7 +51,7 @@ reviews 9–11 was a value a patch reached in one place and missed in another.
 | NS ceiling / S&L floor | 16.9704% | 73.3924% | 9.6372% |
 
 **Three ceilings sum to 100.7104%**, excess 0.7104 pp = 2 x 604 + 99 + 90 = 1397 pairs.
-**Exclusion share of population: 0.3575%** — this is where `0.3575` is CORRECT, and it is why that string is not in the superseded list.
+**Exclusion share of population: 0.3575%.**
 
 ### DERIV — n = 147,370
 
@@ -70,24 +70,33 @@ reviews 9–11 was a value a patch reached in one place and missed in another.
 | NS ceiling / S&L floor | 6.2055% | 82.4930% | 11.3015% |
 
 **Three ceilings sum to 100.1276%**, excess 0.1276 pp = 2 x 0 + 99 + 89 = 188 pairs.
-**Exclusion share of population: 0.0672%** — this is where `0.0672` is CORRECT, and it is why that string is not in the superseded list.
+**Exclusion share of population: 0.0672%.**
+
+### The bound's scope
+
+**The bound is covering with respect to insertion-dormancy, exhaustively; open only across channel classes (D4, D9). The widening rule is: concede every pair that was dormant before the instant at which its own state-defining null is read -- tau1 for the never-started null, tau2 for the Continued null. That is exhaustive, not open-ended: every pair either was inserting through its test instant or was not, and it yields 32,769 and 18,952 with no residue. So D4 and D9 publish ALONGSIDE this bound and are not folded into it.**
 
 ### Bound ÷ sampling width — TWO CONVENTIONS, NOT RECONCILED
 
-**This arm (`a`) divides by the CI width of the FLOOR ENDPOINT's own bootstrap distribution.** The other arm divides by the CI width of the UNDER-THE-RULE point estimate. **The spec fixes neither, so this is a spec ambiguity and is reported, not resolved** — `0057` wrote the other arm's denominator into this file and `0058` reverted it. *(A sentence here cited the never-started ratio as proof of correct divergence. **Withdrawn by `0061`: it was false** — that pair was one convention on two bootstraps, and it was itself an instance of the defect it was cited to certify.)*
+**Bound over sampling width: the two arms divide by DIFFERENT denominators. Arm a uses the floor endpoint's own bootstrap CI; arm b uses the CI of the under-the-rule point estimate. The spec fixes neither, so this is a spec ambiguity and is REPORTED, NOT RECONCILED (CLAUDE.md). 0057 wrote the other arm's denominator into arm a's file and 0058 reverted it.**
 
 | | Denominator | Bound ÷ it | Sub-interval ÷ it |
 | :--- | ---: | ---: | ---: |
 | APPLY | 0.7602 | **0.5304** | 0.1264 |
 | DERIV | 0.9744 | **0.1309** | 0.1309 |
 
-*(A sentence here claimed the arm's own published ratio was **retained in place above and marked superseded**. **Withdrawn by `0061`** — it was the same hard-coded literal `0059` removed from the JSON half after finding that nothing checked it and it was false, and it is false on its face for arm `b`, whose published ratio IS its current one. It survived in the `.md` writer because the numeric controls cannot see a claim.)* **The limit that IS real and is stated rather than hidden: the denominator above is the CI of the PRE-widening floor point and was not re-bootstrapped; the recomputation reuses it.**
+**Never started, same arm, same convention: 0.2818 on APPLY (denominator 1.0900); DERIV is 0.0 because that bound is degenerate.**
 
-### Per-`W` series — NOT regenerated, and that is a scope statement
+*The denominator is the CI of the PRE-widening floor point and was not re-bootstrapped; the recomputation reuses it. Stated rather than hidden.*
 
-**The per-`W` sensitivity series in this deliverable was computed under the CLOSED channel window `(τ1, τ2]` and under the un-widened floor, at every arm.** It is not recomputed here because only `W = 108` masks are on disk. **Step 13 is the consumer and must recompute it**, and it must not be read as current at any arm.
+### Scope and limits
 
-**The inertness of the window form is asserted at `W = 108` only** (open 90 vs closed 90 on APPLY; open 89 vs closed 89 on DERIV). **It is NOT expected to hold at `W = 213`**, where D10 forces `τ1 ≤ τ_pull − 91 d` so `τ2` sits at or adjacent to `τ_pull`, and a mass point in last-insertion instants sits there. (`src/step7_floor_extremes.py`, `0057` §5.)
+- **Per-`W` series.** The per-W sensitivity series was computed under the CLOSED channel window and the un-widened floor, at every arm. Only W = 108 masks are on disk, so it CANNOT be regenerated here. Step 13 is the consumer and must recompute it. The inertness of the window form is asserted at W = 108 only and is NOT expected to hold at W = 213, where D10 forces tau1 <= tau_pull - 91 d so tau2 sits at or adjacent to tau_pull, and a mass point in last-insertion instants sits there.
+- **Point estimates.** The post-liveness started-and-left COUNT is 19042 on APPLY. That is a point estimate, not the bound floor, and it appears in outcome_shares, waterfall and ordering_commutation_check. Targets are declared by PATH, so it cannot be caught by a value-wide substitution.
+- **Legitimate readings.** 0.3575 (APPLY) and 0.0672 (DERIV) are CORRECT as exclusion shares of population. They are superseded only as bound WIDTHS. Same string, two meanings, one live.
+- **Commutation.** ordering_commutation_check shows the two filter orders agree on OBSERVED COUNTS. It does not show that conditioning the filter on the outcome leaves the estimand unchanged. Conjunct 2 is NOT Continued, so liveness is outcome-conditional. Limitation, not a resolved question.
+
+<!-- CANON {"figures": {"APPLY.ceilings.excess_pairs": 1397, "APPLY.ceilings.excess_pp": 0.710385, "APPLY.ceilings.sum": 100.710385, "APPLY.channel": 90, "APPLY.cont.ceil": 73.699493, "APPLY.cont.ceil_n": 144933, "APPLY.cont.floor": 73.296246, "APPLY.cont.floor_n": 144140, "APPLY.cont.width": 0.403247, "APPLY.corner_ns_ceil.cont": 73.392354, "APPLY.corner_ns_ceil.ns": 16.970415, "APPLY.corner_ns_ceil.sl": 9.637231, "APPLY.corner_ns_floor.cont": 73.296246, "APPLY.corner_ns_floor.ns": 16.663277, "APPLY.corner_ns_floor.sl": 10.040477, "APPLY.exclusion_share_of_population": 0.357481, "APPLY.n": 196654, "APPLY.ns.ceil": 16.970415, "APPLY.ns.ceil_n": 33373, "APPLY.ns.floor": 16.663277, "APPLY.ns.floor_n": 32769, "APPLY.ns.ratio": 0.2818, "APPLY.ns.ratio_denominator": 1.09, "APPLY.ns.width": 0.307138, "APPLY.sl.ceil": 10.040477, "APPLY.sl.ceil_n": 19745, "APPLY.sl.floor": 9.637231, "APPLY.sl.floor_n": 18952, "APPLY.sl.ratio": 0.5304, "APPLY.sl.ratio_denominator": 0.7602, "APPLY.sl.width": 0.403246, "APPLY.sub.ceil": 9.733339, "APPLY.sub.ceil_n": 19141, "APPLY.sub.floor": 9.637231, "APPLY.sub.floor_n": 18952, "APPLY.sub.width": 0.096108, "DERIV.ceilings.excess_pairs": 188, "DERIV.ceilings.excess_pp": 0.12757, "DERIV.ceilings.sum": 100.12757, "DERIV.channel": 89, "DERIV.cont.ceil": 82.493045, "DERIV.cont.ceil_n": 121570, "DERIV.cont.floor": 82.365475, "DERIV.cont.floor_n": 121382, "DERIV.cont.width": 0.12757, "DERIV.corner_ns_ceil.cont": 82.493045, "DERIV.corner_ns_ceil.ns": 6.205469, "DERIV.corner_ns_ceil.sl": 11.301486, "DERIV.corner_ns_floor.cont": 82.365475, "DERIV.corner_ns_floor.ns": 6.205469, "DERIV.corner_ns_floor.sl": 11.429056, "DERIV.exclusion_share_of_population": 0.067178, "DERIV.n": 147370, "DERIV.ns.ceil": 6.205469, "DERIV.ns.ceil_n": 9145, "DERIV.ns.floor": 6.205469, "DERIV.ns.floor_n": 9145, "DERIV.ns.ratio": 0.0, "DERIV.ns.ratio_denominator": 0.7626, "DERIV.ns.width": 0.0, "DERIV.sl.ceil": 11.429056, "DERIV.sl.ceil_n": 16843, "DERIV.sl.floor": 11.301486, "DERIV.sl.floor_n": 16655, "DERIV.sl.ratio": 0.1309, "DERIV.sl.ratio_denominator": 0.9744, "DERIV.sl.width": 0.12757, "DERIV.sub.ceil": 11.429056, "DERIV.sub.ceil_n": 16843, "DERIV.sub.floor": 11.301486, "DERIV.sub.floor_n": 16655, "DERIV.sub.width": 0.12757}, "statements": ["channel_window", "commutation_caveat", "covering_qualifier", "legitimate_not_superseded", "per_w_scope", "point_estimates_do_not_move", "ratio_denominator_limit", "two_conventions"]} END CANON -->
 
 <!-- END GENERATED: derived figures -->
 

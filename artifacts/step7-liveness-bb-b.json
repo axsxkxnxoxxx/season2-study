@@ -421,9 +421,9 @@
         "exclusion_count_point": 703,
         "bound_width_vs_sampling_width_pp": {
           "never_started": {
-            "bound_width": 0.30713842586471785,
+            "bound_width": 0.307138,
             "ci95_width": 1.1287197092145753,
-            "ratio": 0.27211222002886926
+            "ratio": 0.2721
           },
           "started_and_left_over_SL_exclusions": {
             "bound_width": 0.096108,
@@ -431,7 +431,7 @@
             "ratio": 0.1213
           },
           "started_and_left_JOINT_BOUND_this_is_the_bound": {
-            "bound_width": 0.403245,
+            "bound_width": 0.403246,
             "ci95_width": 0.7922131651416677,
             "ratio": 0.509,
             "note": "0056: the OTHER entry is the conditional sub-interval, which this arm itself argued is not the bound. Report THIS one."
@@ -2291,7 +2291,17 @@
   "_DERIVED_2026_08_13": {
     "generated_by": "src/step7_regenerate_derived.py",
     "regenerated_not_patched": true,
-    "channel_window": "(tau1, tau2) OPEN at tau2 (0057)",
+    "one_definition_per_statement": "Every sentence below comes from STATEMENTS in the generator and every figure from figure_table(). The .md half renders the SAME two objects, and compare_halves() reads both back off disk and compares them. B8 and B10 were one literal living in two writers with one edited; there is now one definition and a comparison.",
+    "statements": {
+      "channel_window": "The channel window is (tau1, tau2), OPEN at tau2 (0057). At s = tau2 the unobserved remainder is empty, so nothing admissible is missing and the pair is not conceded.",
+      "two_conventions": "Bound over sampling width: the two arms divide by DIFFERENT denominators. Arm a uses the floor endpoint's own bootstrap CI; arm b uses the CI of the under-the-rule point estimate. The spec fixes neither, so this is a spec ambiguity and is REPORTED, NOT RECONCILED (CLAUDE.md). 0057 wrote the other arm's denominator into arm a's file and 0058 reverted it.",
+      "ratio_denominator_limit": "The denominator is the CI of the PRE-widening floor point and was not re-bootstrapped; the recomputation reuses it. Stated rather than hidden.",
+      "point_estimates_do_not_move": "The post-liveness started-and-left COUNT is 19042 on APPLY. That is a point estimate, not the bound floor, and it appears in outcome_shares, waterfall and ordering_commutation_check. Targets are declared by PATH, so it cannot be caught by a value-wide substitution.",
+      "legitimate_not_superseded": "0.3575 (APPLY) and 0.0672 (DERIV) are CORRECT as exclusion shares of population. They are superseded only as bound WIDTHS. Same string, two meanings, one live.",
+      "per_w_scope": "The per-W sensitivity series was computed under the CLOSED channel window and the un-widened floor, at every arm. Only W = 108 masks are on disk, so it CANNOT be regenerated here. Step 13 is the consumer and must recompute it. The inertness of the window form is asserted at W = 108 only and is NOT expected to hold at W = 213, where D10 forces tau1 <= tau_pull - 91 d so tau2 sits at or adjacent to tau_pull, and a mass point in last-insertion instants sits there.",
+      "covering_qualifier": "The bound is covering with respect to insertion-dormancy, exhaustively; open only across channel classes (D4, D9). The widening rule is: concede every pair that was dormant before the instant at which its own state-defining null is read -- tau1 for the never-started null, tau2 for the Continued null. That is exhaustive, not open-ended: every pair either was inserting through its test instant or was not, and it yields 32,769 and 18,952 with no residue. So D4 and D9 publish ALONGSIDE this bound and are not folded into it.",
+      "commutation_caveat": "ordering_commutation_check shows the two filter orders agree on OBSERVED COUNTS. It does not show that conditioning the filter on the outcome leaves the estimand unchanged. Conjunct 2 is NOT Continued, so liveness is outcome-conditional. Limitation, not a resolved question."
+    },
     "counts_are_the_only_inputs": {
       "APPLY": {
         "n": 196654,
@@ -2313,6 +2323,80 @@
         "channel": 89,
         "channel_closed_form": 89
       }
+    },
+    "figures": {
+      "APPLY.n": 196654,
+      "APPLY.channel": 90,
+      "APPLY.ns.floor": 16.663277,
+      "APPLY.ns.ceil": 16.970415,
+      "APPLY.ns.width": 0.307138,
+      "APPLY.ns.floor_n": 32769,
+      "APPLY.ns.ceil_n": 33373,
+      "APPLY.sl.floor": 9.637231,
+      "APPLY.sl.ceil": 10.040477,
+      "APPLY.sl.width": 0.403246,
+      "APPLY.sl.floor_n": 18952,
+      "APPLY.sl.ceil_n": 19745,
+      "APPLY.sub.floor": 9.637231,
+      "APPLY.sub.ceil": 9.733339,
+      "APPLY.sub.width": 0.096108,
+      "APPLY.sub.floor_n": 18952,
+      "APPLY.sub.ceil_n": 19141,
+      "APPLY.cont.floor": 73.296246,
+      "APPLY.cont.ceil": 73.699493,
+      "APPLY.cont.width": 0.403247,
+      "APPLY.cont.floor_n": 144140,
+      "APPLY.cont.ceil_n": 144933,
+      "APPLY.corner_ns_floor.ns": 16.663277,
+      "APPLY.corner_ns_floor.sl": 10.040477,
+      "APPLY.corner_ns_floor.cont": 73.296246,
+      "APPLY.corner_ns_ceil.ns": 16.970415,
+      "APPLY.corner_ns_ceil.sl": 9.637231,
+      "APPLY.corner_ns_ceil.cont": 73.392354,
+      "APPLY.ceilings.sum": 100.710385,
+      "APPLY.ceilings.excess_pp": 0.710385,
+      "APPLY.ceilings.excess_pairs": 1397,
+      "APPLY.exclusion_share_of_population": 0.357481,
+      "APPLY.sl.ratio_denominator": 0.7922131651416677,
+      "APPLY.sl.ratio": 0.509,
+      "APPLY.ns.ratio_denominator": 1.1287197092145753,
+      "APPLY.ns.ratio": 0.2721,
+      "DERIV.n": 147370,
+      "DERIV.channel": 89,
+      "DERIV.ns.floor": 6.205469,
+      "DERIV.ns.ceil": 6.205469,
+      "DERIV.ns.width": 0.0,
+      "DERIV.ns.floor_n": 9145,
+      "DERIV.ns.ceil_n": 9145,
+      "DERIV.sl.floor": 11.301486,
+      "DERIV.sl.ceil": 11.429056,
+      "DERIV.sl.width": 0.12757,
+      "DERIV.sl.floor_n": 16655,
+      "DERIV.sl.ceil_n": 16843,
+      "DERIV.sub.floor": 11.301486,
+      "DERIV.sub.ceil": 11.429056,
+      "DERIV.sub.width": 0.12757,
+      "DERIV.sub.floor_n": 16655,
+      "DERIV.sub.ceil_n": 16843,
+      "DERIV.cont.floor": 82.365475,
+      "DERIV.cont.ceil": 82.493045,
+      "DERIV.cont.width": 0.12757,
+      "DERIV.cont.floor_n": 121382,
+      "DERIV.cont.ceil_n": 121570,
+      "DERIV.corner_ns_floor.ns": 6.205469,
+      "DERIV.corner_ns_floor.sl": 11.429056,
+      "DERIV.corner_ns_floor.cont": 82.365475,
+      "DERIV.corner_ns_ceil.ns": 6.205469,
+      "DERIV.corner_ns_ceil.sl": 11.301486,
+      "DERIV.corner_ns_ceil.cont": 82.493045,
+      "DERIV.ceilings.sum": 100.12757,
+      "DERIV.ceilings.excess_pp": 0.12757,
+      "DERIV.ceilings.excess_pairs": 188,
+      "DERIV.exclusion_share_of_population": 0.067178,
+      "DERIV.sl.ratio_denominator": 0.9737261938594308,
+      "DERIV.sl.ratio": 0.131,
+      "DERIV.ns.ratio_denominator": 0.7420068751051554,
+      "DERIV.ns.ratio": 0.0
     },
     "bounds": {
       "APPLY": {
@@ -2408,11 +2492,6 @@
         }
       }
     },
-    "exclusion_share_of_population_pct": {
-      "APPLY": 0.357481,
-      "DERIV": 0.067178
-    },
-    "LEGITIMATE_not_superseded": "exclusion_share_of_population_pct is where 0.3575 (APPLY) and 0.0672 (DERIV) are CORRECT. They are excluded from the superseded list by construction (finding 5).",
     "superseded_strings_every_occurrence_is_a_defect": {
       "9.683": "S&L floor / conditional sub-interval floor, APPLY -- now 9.6372",
       "0.0503": "conditional sub-interval width, APPLY -- now 0.0961",
@@ -2423,10 +2502,9 @@
       "0.4033": "APPLY bound width differenced from rounded endpoints -- a rounding artifact; 0.4032",
       "0.4703": "arm a's S&L bound over sampling width, pre-widening -- now 0.5304"
     },
-    "why_corrected_values_and_the_superseded_list_may_sit_together_here": "finding 7 was that writing corrected values into a STAMP guarantees the positive grep passes whether or not the body was fixed. That does not apply to this block: it is not a stamp but generated output, written in the same pass as every target path from the same expressions, and verify() then walks the WHOLE document numerically at both precisions and exits non-zero if any superseded value survives anywhere. The guarantee is structural, not textual. The .md STAMP is negative-only and restates no corrected figure.",
-    "point_estimates_that_do_NOT_move": "the post-liveness started_and_left COUNT is 19042 on APPLY -- that is a point estimate, not the bound floor, and it appears in outcome_shares, waterfall and ordering_commutation_check. Targets are declared by PATH so it cannot be caught by a value-wide substitution.",
     "bound_over_sampling_width_TWO_CONVENTIONS_NOT_RECONCILED": {
-      "why": "CLAUDE.md: any divergence is a bug or a spec ambiguity -- report it, do not reconcile it. 0057 wrote arm b's denominator into arm a's file and 0058 reverted it. WITHDRAWN from this field by 0061: the sentence that followed here cited the never-started ratio (a 0.2813, b 0.27211) as proof of correct divergence. It was false -- 0.2813 was computed on arm b's convention, so the pair was one convention on two bootstraps. The reconciliation was still wrong; that was not the evidence for it.",
+      "why": "Bound over sampling width: the two arms divide by DIFFERENT denominators. Arm a uses the floor endpoint's own bootstrap CI; arm b uses the CI of the under-the-rule point estimate. The spec fixes neither, so this is a spec ambiguity and is REPORTED, NOT RECONCILED (CLAUDE.md). 0057 wrote the other arm's denominator into arm a's file and 0058 reverted it.",
+      "limit": "The denominator is the CI of the PRE-widening floor point and was not re-bootstrapped; the recomputation reuses it. Stated rather than hidden.",
       "this_arm": "b",
       "this_arm_recomputed": {
         "APPLY": {
@@ -2452,11 +2530,6 @@
         "APPLY": 0.7602,
         "DERIV": 0.9744
       },
-      "this_arms_ratio_is_computed_from_this_arms_denominator": {
-        "APPLY": "0.403246 / 0.7922131651416677 = 0.509",
-        "DERIV": "0.12757 / 0.9737261938594308 = 0.131"
-      },
-      "asserted_not_asserted_as_a_literal": "the previous version stated 'the arm's own published ratio is retained in place and marked superseded' as a hard-coded true. Nothing checked it and it was false. It is now an assertion in check_ratios_written() and the run fails if the written quotient is not this arm's numerator over this arm's denominator.",
       "the_spec_fixes_neither_convention": true
     }
   },

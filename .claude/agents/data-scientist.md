@@ -87,6 +87,12 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
   stop** rather than choosing.
   **Compute the bound on PAIRS, not users.** **NOT every liveness exclusion is never-started** — 703 on APPLY is **604 never-started + 99
   started-and-left** (`0050`). Taken over the 604 only, the **never-started** bound on a **single denominator** is
+  **THE BOUND'S SCOPE, PUBLISHED WITH THE BOUND** (`0062`). **Covering with respect to
+  INSERTION-DORMANCY, exhaustively; open only across CHANNEL CLASSES (D4, D9).** The rule: **concede
+  every pair dormant before the instant at which its own state-defining null is read** — `τ1` for
+  never-started, `τ2` for Continued. **Exhaustive, not open-ended**: every pair either was inserting
+  through its test instant or was not, giving `32,769` and `18,952` **with no residue**. **D4 and D9
+  publish ALONGSIDE, never folded in.**
   **The never-started floor is NOT widened, although 207 channel pairs are never-started** (`0056`).
   They are retained, ¬Continued, scored never-started, last insertion inside `(τ1, τ2)` — the same
   dormancy channel whose started-and-left arm forced that floor to 18,952. **The reason is the

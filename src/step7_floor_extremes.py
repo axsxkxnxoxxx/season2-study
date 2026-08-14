@@ -49,7 +49,10 @@ excl_sl = not_live & ~never
 channel = (~cont) & (~never) & (last > tau1) & (last < tau2)
 closed  = (~cont) & (~never) & (last > tau1) & (last <= tau2)
 at_tau2 = int((closed & ~channel & (ap | dv)).sum())
-assert at_tau2 == 0, f'W=108 no longer inert in the boundary form: {at_tau2} pairs sit exactly at tau2'
+# 0062: this was `assert at_tau2 == 0`, which is the surviving instance of instance A's D-2 --
+# a substantive conclusion asserted rather than compared, in the file 0059 rewrote precisely to
+# stop doing that. A wrong recomputation raised AssertionError and read as "the code is broken".
+# It is now a compared row like every other, reported with a verdict and a non-zero exit.
 
 POPS = {"APPLY": (ap, 196654), "DERIV": (dv, 147370)}
 C_CLOSED = {name: int((msk & closed).sum()) for name, (msk, _) in
@@ -86,7 +89,9 @@ for name, (msk, n) in POPS.items():
 # never as "the expected value is wrong". A itself flagged that, and 0055 SS5c recorded it
 # without acting. The expectations are now DATA, compared and reported per row, and the
 # refutation path is the one that prints.
+EXPECTED_AT_TAU2 = 0
 EXPECTED = {
+    "boundary_form_inert_at_W108": EXPECTED_AT_TAU2,
     "source": "the arms' own deliverables and decisions 0054 / 0055, loaded as data, not asserted",
     "APPLY": {"exclusions_total": 703, "exclusions_never_started": 604, "channel_pairs": 90,
               "floor_extreme_ALL": 18952, "continued_ceiling": 144933},
@@ -94,6 +99,12 @@ EXPECTED = {
               "floor_extreme_ALL": 16655, "continued_ceiling": 121570},
 }
 verdicts, refuted = [], 0
+_ok = at_tau2 == EXPECTED_AT_TAU2
+verdicts.append({"population": "BOTH", "row": "pairs sitting exactly at tau2 (open vs closed form)",
+                 "expected": EXPECTED_AT_TAU2, "measured": at_tau2,
+                 "verdict": "CONFIRMED" if _ok else "REFUTED",
+                 "note": "inertness of the window form, W = 108 only; NOT expected to hold at W = 213"})
+refuted += 0 if _ok else 1
 for pop in ("APPLY", "DERIV"):
     r, e = out["populations"][pop], EXPECTED[pop]
     got = {"exclusions_total": r["exclusions"]["total"],

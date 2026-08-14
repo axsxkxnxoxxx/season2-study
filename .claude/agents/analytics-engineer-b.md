@@ -144,4 +144,8 @@ This section is binding. Read it before writing any file.
 - Step 8 is dual implementation. Two instances in isolated context run the same written spec with no sight of each other. You do not know what the other instance produced and you do not try to find out. Any divergence is either a bug or an ambiguity in the spec, and the Human Lead diffs the numbers.
 - Steps 3 and 4 are the long pole and run unattended. Start them first.
 - Crawls do not run through Sabbath, Friday sunset through Saturday sunset.
+- **Step 9's bound carries a SCOPE QUALIFIER and Step 8 must not strip it** (`0062`): the bound is
+  **covering with respect to insertion-dormancy, exhaustively; open only across channel classes (D4,
+  D9).** Step 8 does not compute the bound, but it produces the position-6 population the bound is
+  stated on, so **any table or note that carries the bound carries the qualifier.**
 - Steps 2, 14, 15, 17, and 18 belong to the Human Lead. When a step says Human Lead, no agent may act on it.

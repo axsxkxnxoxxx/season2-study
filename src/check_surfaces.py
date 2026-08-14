@@ -21,6 +21,10 @@ import re
 import sys
 from pathlib import Path
 
+# B9 audit (0062): a read or parse failure previously returned [] -- the file contributed no
+# numbers and the scan passed. A file that cannot be read is not a file with nothing wrong in it.
+READ_FAILURES = []
+
 SURFACES = {
     "1 task-sheet": ["task-sheet.md"],
     "2 ds": [".claude/agents/data-scientist.md"],
@@ -29,7 +33,9 @@ SURFACES = {
     "5 ae-b": [".claude/agents/analytics-engineer-b.md"],
     "6 artifacts": sorted(str(p) for p in Path("artifacts").rglob("*")
                           if p.is_file() and p.suffix in (".md", ".json", ".csv", ".txt")),
-    "7 second-brain": sorted(str(p) for p in Path(".claude/agent-memory/second-brain").rglob("*.md")),
+    # every file, not just *.md -- a .json in this directory was unseen by the whole control
+    "7 second-brain": sorted(str(p) for p in Path(".claude/agent-memory/second-brain").rglob("*")
+                             if p.is_file()),
 }
 sys.path.insert(0, str(Path(__file__).parent))
 from step7_register import (SUPERSEDED, SUPERSEDED_IN, ADOPTED, ADOPTED_IN, LEGITIMATE,
@@ -78,8 +84,8 @@ def json_strings(path):
             out.append((o, p))
     try:
         walk(json.load(open(path)), "")
-    except Exception:
-        return []
+    except Exception as e:                                          # noqa: BLE001
+        READ_FAILURES.append((path, f"json_strings: {e}"))
     return out
 
 
@@ -98,8 +104,8 @@ def json_numbers(path):
             out.append((float(o), p))
     try:
         walk(json.load(open(path)), "")
-    except Exception:
-        return []
+    except Exception as e:                                          # noqa: BLE001
+        READ_FAILURES.append((path, f"json_numbers: {e}"))
     return out
 
 
@@ -113,7 +119,10 @@ def text_numbers(path):
     out = []
     try:
         lines = Path(path).read_text().split("\n")
-    except Exception:
+    except UnicodeDecodeError:
+        return []                                   # binary: genuinely holds no prose figures
+    except Exception as e:                                          # noqa: BLE001
+        READ_FAILURES.append((path, f"text_numbers: {e}"))
         return []
     for i, line in enumerate(lines, 1):
         blk = "\n".join(lines[max(0, i - 1 - CONTEXT): i + CONTEXT])
@@ -140,7 +149,10 @@ def scan_phrases():
             else:
                 try:
                     lines = Path(f).read_text().split("\n")
-                except (UnicodeDecodeError, OSError):
+                except UnicodeDecodeError:
+                    continue                        # binary: no prose to carry a claim
+                except OSError as e:
+                    READ_FAILURES.append((f, f"scan_phrases: {e}"))
                     continue
                 items = [(l, f"line {i}", "\n".join(lines[max(0, i - 2):i + 1]))
                          for i, l in enumerate(lines, 1)]
@@ -153,7 +165,7 @@ def scan_phrases():
 
 
 def scan():
-    neg, pos, pos_in, allowed = [], {v: set() for v in ADOPTED}, set(), set()
+    neg, pos, pos_in, allowed, legit_seen = [], {v: set() for v in ADOPTED}, set(), set(), set()
     for surface, files in SURFACES.items():
         for f in files:
             is_json = f.endswith(".json")
@@ -198,17 +210,22 @@ def scan():
                         if not labelled and not declared:
                             neg.append((surface, f, where, val, what,
                                         (line or "").strip()[:110]))
+                for lv in LEGITIMATE:
+                    if isinstance(lv, (int, float)) and near(val, float(lv)):
+                        legit_seen.add(lv)
                 for a in ADOPTED:
                     if near(val, a):
                         pos[a].add(surface)
                 for (frag, v), why in ADOPTED_IN.items():
                     if frag in f and near(val, v):
-                        pos_in.add((frag, v))
-    return neg, pos, pos_in, allowed
+                        # 0062: `frag in f` matched bb-b.md and bb-b.json alike, so "all six
+                        # ratios OK" did not establish that any was in the JSON. Record which.
+                        pos_in.add((frag, v, "json" if is_json else "md"))
+    return neg, pos, pos_in, allowed, legit_seen
 
 
 if __name__ == "__main__":
-    neg, pos, pos_in, allowed = scan()
+    neg, pos, pos_in, allowed, legit_seen = scan()
     phrase_hits = scan_phrases()
     n_files = sum(len(v) for v in SURFACES.values())
     print(f"seven surfaces, {n_files} files, numeric matching at tol {TOL} "
@@ -222,6 +239,12 @@ if __name__ == "__main__":
         if line:
             print(f"        {line}")
     print()
+
+    if READ_FAILURES:
+        print("READ/PARSE FAILURES -- a file the control could not look at is NOT a clean file:")
+        for f, why in READ_FAILURES:
+            print(f"  {f}: {why}")
+        print()
 
     print("PHRASE HALF -- withdrawn CLAIMS, which the numeric halves cannot see (0061):")
     if not phrase_hits:
@@ -244,20 +267,41 @@ if __name__ == "__main__":
             missing.append((a, gap))
     print()
     print("PER-ARM adopted ratios (0058's own corrections -- the positive half never reached these):")
-    miss_in = [(f, v, w) for (f, v), w in ADOPTED_IN.items() if (f, v) not in pos_in]
+    miss_in = []
     for (f, v), w in ADOPTED_IN.items():
-        print(f"  {'OK ' if (f, v) in pos_in else 'MISS'} {f} {v}: {w}")
+        got = {ext for (ff, vv, ext) in pos_in if (ff, vv) == (f, v)}
+        need = {"md", "json"}
+        gap = need - got
+        if gap:
+            miss_in.append((f, v, sorted(gap)))
+        print(f"  {'OK  ' if not gap else 'MISS'} {f} {v}: in {sorted(got) or 'NOTHING'}"
+              + (f"  MISSING FROM: {sorted(gap)}" if gap else "") + f"  -- {w}")
     print()
     print(f"WHOLLY SUPERSEDED FILES exempted by explicit allowlist ({len(allowed)}), reason each:")
     for f, why in sorted(allowed):
         print(f"  {f}\n      {why}")
     print("  (the OPERATIVE bb-{a,b} deliverables are NOT exemptible -- that is B2)")
     print()
-    print("LEGITIMATE readings, deliberately not in the negative set:")
+    # 0062: LEGITIMATE was imported and printed and never consulted -- a fourth docstring
+    # asserting a code property the code lacked. It is now enforced two ways: a value cannot be
+    # both legitimate and superseded, and each row must actually be FOUND somewhere, since a row
+    # that matches nothing is an exemption granted against no occurrence.
+    legit_conflicts = [v for v in LEGITIMATE
+                       if isinstance(v, (int, float))
+                       and any(near(float(v), s_) for s_ in SUPERSEDED)]
+    legit_unused = [v for v in LEGITIMATE
+                    if isinstance(v, (int, float)) and v not in legit_seen]
+    print("LEGITIMATE readings -- consulted, not merely listed:")
     for v, why in LEGITIMATE.items():
-        print(f"  {v}: {why}")
+        mark = ""
+        if isinstance(v, (int, float)):
+            if any(near(float(v), s_) for s_ in SUPERSEDED):
+                mark = "  CONFLICT: also in SUPERSEDED"
+            elif v not in legit_seen:
+                mark = "  UNUSED: exempts nothing that occurs"
+        print(f"  {v}: {why}{mark}")
 
-    if neg or missing or miss_in or phrase_hits:
+    if neg or missing or miss_in or phrase_hits or READ_FAILURES or legit_conflicts:
         print("\nFAIL")
         sys.exit(1)
     print("\nPASS -- both halves, all seven surfaces.")

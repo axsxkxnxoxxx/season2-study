@@ -81,11 +81,19 @@ C = counts_from_masks()
 for pop, c in C.items():
     assert c["ns_unfiltered"] + c["cont_unfiltered"] + c["sl_unfiltered"] == c["n"], pop
     # cross-check against what BOTH arms independently stored
+    # The counts are the ONLY inputs, so the cross-check against what both arms independently
+    # stored is the one that matters. It used to be `if u:` -- an arm without the key was
+    # skipped and the check passed on one arm while claiming two. (0062 audit.)
+    _crosschecked = 0
     for a, path in ARMS.items():
         u = json.load(open(path + ".json"))["bounds"][pop].get("unfiltered_counts")
         if u:
             assert (u["never_started"], u["continued"], u["started_and_left"]) == (
                 c["ns_unfiltered"], c["cont_unfiltered"], c["sl_unfiltered"]), (pop, a)
+            _crosschecked += 1
+    assert _crosschecked >= 1, (
+        f"{pop}: no arm stores unfiltered_counts, so the inputs were cross-checked against "
+        f"NOTHING. That is a failure, not a pass.")
 
 # ------------------------------------------------------- 2. DERIVED FIGURES
 # One expression each. Nothing below is typed in from a previous artifact.
@@ -192,6 +200,134 @@ from step7_register import SUPERSEDED, SUPERSEDED_IN, ADOPTED_IN   # noqa: E402
 # Declared paths. Never key-guessing, never value-wide substitution: 19042 is ALSO the
 # post-liveness point estimate in three places and must not move.
 
+# ------------------------------ 3z. ONE DEFINITION PER STATEMENT AND PER FIGURE
+# Human Lead ruling, 2026-08-14 (0062). B8 and B10 were the SAME LITERAL living in two
+# writers -- the .md one and the .json one -- where one was edited and the other was not.
+# Two copies of a sentence is two places to withdraw it from, and the withdrawal reached one.
+#
+# So every statement has ONE definition here, and both writers render it. Neither writer
+# contains prose of its own about the figures. compare_halves() then reads the two rendered
+# halves back off disk and compares them, so agreement is DEMONSTRATED, not asserted.
+
+STATEMENTS = {
+    "channel_window":
+        "The channel window is (tau1, tau2), OPEN at tau2 (0057). At s = tau2 the unobserved "
+        "remainder is empty, so nothing admissible is missing and the pair is not conceded.",
+    "two_conventions":
+        "Bound over sampling width: the two arms divide by DIFFERENT denominators. Arm a uses "
+        "the floor endpoint's own bootstrap CI; arm b uses the CI of the under-the-rule point "
+        "estimate. The spec fixes neither, so this is a spec ambiguity and is REPORTED, NOT "
+        "RECONCILED (CLAUDE.md). 0057 wrote the other arm's denominator into arm a's file and "
+        "0058 reverted it.",
+    "ratio_denominator_limit":
+        "The denominator is the CI of the PRE-widening floor point and was not re-bootstrapped; "
+        "the recomputation reuses it. Stated rather than hidden.",
+    "point_estimates_do_not_move":
+        "The post-liveness started-and-left COUNT is 19042 on APPLY. That is a point estimate, "
+        "not the bound floor, and it appears in outcome_shares, waterfall and "
+        "ordering_commutation_check. Targets are declared by PATH, so it cannot be caught by a "
+        "value-wide substitution.",
+    "legitimate_not_superseded":
+        "0.3575 (APPLY) and 0.0672 (DERIV) are CORRECT as exclusion shares of population. They "
+        "are superseded only as bound WIDTHS. Same string, two meanings, one live.",
+    "per_w_scope":
+        "The per-W sensitivity series was computed under the CLOSED channel window and the "
+        "un-widened floor, at every arm. Only W = 108 masks are on disk, so it CANNOT be "
+        "regenerated here. Step 13 is the consumer and must recompute it. The inertness of the "
+        "window form is asserted at W = 108 only and is NOT expected to hold at W = 213, where "
+        "D10 forces tau1 <= tau_pull - 91 d so tau2 sits at or adjacent to tau_pull, and a mass "
+        "point in last-insertion instants sits there.",
+    "covering_qualifier":
+        "The bound is covering with respect to insertion-dormancy, exhaustively; open only "
+        "across channel classes (D4, D9). The widening rule is: concede every pair that was "
+        "dormant before the instant at which its own state-defining null is read -- tau1 for the "
+        "never-started null, tau2 for the Continued null. That is exhaustive, not open-ended: "
+        "every pair either was inserting through its test instant or was not, and it yields "
+        "32,769 and 18,952 with no residue. So D4 and D9 publish ALONGSIDE this bound and are "
+        "not folded into it.",
+    "commutation_caveat":
+        "ordering_commutation_check shows the two filter orders agree on OBSERVED COUNTS. It "
+        "does not show that conditioning the filter on the outcome leaves the estimand "
+        "unchanged. Conjunct 2 is NOT Continued, so liveness is outcome-conditional. Limitation, "
+        "not a resolved question.",
+}
+
+
+def figure_table(arm):
+    """Every derived figure, flat, one canonical name each. Both writers render THIS."""
+    F = {}
+    for pop in POPS:
+        d, c = D[pop], C[pop]
+        F[f"{pop}.n"] = c["n"]
+        F[f"{pop}.channel"] = c["channel"]
+        for band in ("ns", "sl", "sub", "cont"):
+            F[f"{pop}.{band}.floor"] = d[band]["floor"]
+            F[f"{pop}.{band}.ceil"] = d[band]["ceil"]
+            F[f"{pop}.{band}.width"] = d[band]["width"]
+            F[f"{pop}.{band}.floor_n"] = d[band]["floor_n"]
+            F[f"{pop}.{band}.ceil_n"] = d[band]["ceil_n"]
+        for corner in ("corner_ns_floor", "corner_ns_ceil"):
+            for k, v in d[corner].items():
+                F[f"{pop}.{corner}.{k}"] = v
+        F[f"{pop}.ceilings.sum"] = d["ceilings"]["sum"]
+        F[f"{pop}.ceilings.excess_pp"] = d["ceilings"]["excess_pp"]
+        F[f"{pop}.ceilings.excess_pairs"] = d["ceilings"]["excess_pairs"]
+        F[f"{pop}.exclusion_share_of_population"] = d["exclusion_share_of_population"]
+        for band in ("sl", "ns"):
+            den = DENOMS[band][arm][pop]
+            F[f"{pop}.{band}.ratio_denominator"] = den
+            F[f"{pop}.{band}.ratio"] = round(d[band]["width"] / den, 4)
+    return F
+
+
+CANON_BEGIN = "<!-- CANON "
+CANON_END = " END CANON -->"
+
+
+# ------------------------------------ 3a. WHERE EACH ARM STORES ITS RATIOS
+# B9 (Red Team 14): check_ratios_written() looked for `sampling_error`, which arm b does not
+# have -- its bootstrap is under `bootstrap` -- so the loop `continue`d on both populations,
+# checked nothing, and reported OK. A check that finds nothing because it looked nowhere must
+# fail. So the layout is DECLARED per arm and a missing path is a failure, never a skip.
+
+def _ratio_layout(arm, pop):
+    if arm == "a":
+        se = ["sampling_error", pop, "bound_endpoints"]
+        return {
+            "sl": {"width": se + ["started_and_left_bound_width_pp"],
+                   "ci": se + ["started_and_left_floor", "ci_width_pp"],
+                   "ratio": se + ["started_and_left_bound_width_over_sampling_width"]},
+            "ns": {"width": se + ["never_started_bound_width_pp"],
+                   "ci": se + ["never_started_floor", "ci_width_pp"],
+                   "ratio": se + ["never_started_bound_width_over_sampling_width"]},
+        }
+    bp = ["bootstrap", "by_population", pop, "bound_width_vs_sampling_width_pp"]
+    return {
+        "sl": {"width": bp + ["started_and_left_JOINT_BOUND_this_is_the_bound", "bound_width"],
+               "ci": bp + ["started_and_left_JOINT_BOUND_this_is_the_bound", "ci95_width"],
+               "ratio": bp + ["started_and_left_JOINT_BOUND_this_is_the_bound", "ratio"]},
+        "ns": {"width": bp + ["never_started", "bound_width"],
+               "ci": bp + ["never_started", "ci95_width"],
+               "ratio": bp + ["never_started", "ratio"]},
+        "sub": {"width": bp + ["started_and_left_over_SL_exclusions", "bound_width"],
+                "ci": bp + ["started_and_left_over_SL_exclusions", "ci95_width"],
+                "ratio": bp + ["started_and_left_over_SL_exclusions", "ratio"]},
+    }
+
+
+RATIO_LAYOUT = {arm: {pop: _ratio_layout(arm, pop) for pop in POPS} for arm in ARMS}
+DENOMS = {"sl": RATIO_DENOMINATORS, "ns": NS_RATIO_DENOMINATORS}
+
+
+def get(doc, path):
+    node = doc
+    for k in path:
+        if not isinstance(node, dict) or k not in node:
+            return None
+        node = node[k]
+    return node
+
+
 def put(doc, path, value):
     node = doc
     for k in path[:-1]:
@@ -256,6 +392,19 @@ def json_targets(arm, doc):
     return T
 
 
+def ratio_targets(arm):
+    """Declared (path, value) pairs for every ratio this arm stores, both bands, both pops."""
+    T = []
+    for pop in POPS:
+        lay = RATIO_LAYOUT[arm][pop]
+        for band, node in lay.items():
+            width = D[pop]["sub"]["width"] if band == "sub" else D[pop][band]["width"]
+            den = DENOMS.get(band, DENOMS["sl"])[arm][pop]
+            T += [(node["width"], width),
+                  (node["ratio"], round(width / den, 4))]
+    return T
+
+
 def apply_json(arm):
     p = Path(ARMS[arm] + ".json")
     doc = json.load(open(p))
@@ -263,7 +412,7 @@ def apply_json(arm):
         if k.startswith("_SUPERSEDED") or k.startswith("_superseded"):
             doc.pop(k)
     hits, absent = 0, []
-    for path, val in json_targets(arm, doc):
+    for path, val in json_targets(arm, doc) + ratio_targets(arm):
         if put(doc, path, val):
             hits += 1
         else:
@@ -286,48 +435,23 @@ def apply_json(arm):
     doc["_DERIVED_2026_08_13"] = {
         "generated_by": "src/step7_regenerate_derived.py",
         "regenerated_not_patched": True,
-        "channel_window": "(tau1, tau2) OPEN at tau2 (0057)",
-        "counts_are_the_only_inputs": {p: C[p] for p in POPS},
-        "bounds": {p: {k: D[p][k] for k in ("ns", "sl", "sub", "cont", "corner_ns_floor",
-                                            "corner_ns_ceil", "ceilings")} for p in POPS},
-        "exclusion_share_of_population_pct": {p: D[p]["exclusion_share_of_population"] for p in POPS},
-        "LEGITIMATE_not_superseded": (
-            "exclusion_share_of_population_pct is where 0.3575 (APPLY) and 0.0672 (DERIV) are "
-            "CORRECT. They are excluded from the superseded list by construction (finding 5)."),
+        "one_definition_per_statement": (
+            "Every sentence below comes from STATEMENTS in the generator and every figure from "
+            "figure_table(). The .md half renders the SAME two objects, and compare_halves() "
+            "reads both back off disk and compares them. B8 and B10 were one literal living in "
+            "two writers with one edited; there is now one definition and a comparison."),
+        "statements": STATEMENTS,
+        "counts_are_the_only_inputs": {p_: C[p_] for p_ in POPS},
+        "figures": figure_table(arm),
+        "bounds": {p_: {k: D[p_][k] for k in ("ns", "sl", "sub", "cont", "corner_ns_floor",
+                                              "corner_ns_ceil", "ceilings")} for p_ in POPS},
         "superseded_strings_every_occurrence_is_a_defect": SUPERSEDED,
-        "why_corrected_values_and_the_superseded_list_may_sit_together_here": (
-            "finding 7 was that writing corrected values into a STAMP guarantees the positive grep "
-            "passes whether or not the body was fixed. That does not apply to this block: it is not "
-            "a stamp but generated output, written in the same pass as every target path from the "
-            "same expressions, and verify() then walks the WHOLE document numerically at both "
-            "precisions and exits non-zero if any superseded value survives anywhere. The guarantee "
-            "is structural, not textual. The .md STAMP is negative-only and restates no corrected "
-            "figure."),
-        "point_estimates_that_do_NOT_move": (
-            "the post-liveness started_and_left COUNT is 19042 on APPLY -- that is a point "
-            "estimate, not the bound floor, and it appears in outcome_shares, waterfall and "
-            "ordering_commutation_check. Targets are declared by PATH so it cannot be caught "
-            "by a value-wide substitution."),
         "bound_over_sampling_width_TWO_CONVENTIONS_NOT_RECONCILED": {
-            "why": ("CLAUDE.md: any divergence is a bug or a spec ambiguity -- report it, do not "
-                    "reconcile it. 0057 wrote arm b's denominator into arm a's file and 0058 "
-                    "reverted it. WITHDRAWN from this field by 0061: the sentence that followed "
-                    "here cited the never-started ratio (a 0.2813, b 0.27211) as proof of correct "
-                    "divergence. It was false -- 0.2813 was computed on arm b's convention, so the "
-                    "pair was one convention on two bootstraps. The reconciliation was still wrong; "
-                    "that was not the evidence for it."),
-            "this_arm": arm, "this_arm_recomputed": r,
+            "why": STATEMENTS["two_conventions"],
+            "limit": STATEMENTS["ratio_denominator_limit"],
+            "this_arm": arm,
+            "this_arm_recomputed": r,
             "other_convention_denominator": RATIO_DENOMINATORS["b" if arm == "a" else "a"],
-            "this_arms_ratio_is_computed_from_this_arms_denominator": {
-                "APPLY": f"{D['APPLY']['sl']['width']} / {RATIO_DENOMINATORS[arm]['APPLY']} "
-                         f"= {r['APPLY']['ratio']}",
-                "DERIV": f"{D['DERIV']['sl']['width']} / {RATIO_DENOMINATORS[arm]['DERIV']} "
-                         f"= {r['DERIV']['ratio']}"},
-            "asserted_not_asserted_as_a_literal": (
-                "the previous version stated 'the arm's own published ratio is retained in place "
-                "and marked superseded' as a hard-coded true. Nothing checked it and it was false. "
-                "It is now an assertion in check_ratios_written() and the run fails if the written "
-                "quotient is not this arm's numerator over this arm's denominator."),
             "the_spec_fixes_neither_convention": True},
     }
     p.write_text(json.dumps(doc, indent=2))
@@ -348,54 +472,84 @@ ABSENT_OK = {
 }
 
 
+ABSENT_USED = {arm: set() for arm in ABSENT_OK}
+
+
 def absent_is_allowed(arm, path):
-    return next((why for frag, why in ABSENT_OK[arm].items() if frag in path), None)
+    for frag, why in ABSENT_OK[arm].items():
+        if frag in path:
+            ABSENT_USED[arm].add(frag)
+            return why
+    return None
+
+
+def unused_allowlist_entries():
+    """An allowlist entry that never fires means the schema moved under it. (0062 audit.)"""
+    return [(arm, frag) for arm in ABSENT_OK
+            for frag in ABSENT_OK[arm] if frag not in ABSENT_USED[arm]]
 
 
 def check_ratios_written(arm):
-    """Assert every written quotient IS this arm's numerator over this arm's denominator.
+    """Every declared ratio path must EXIST and hold this arm's numerator over its own denominator.
 
-    B1 covered the started-and-left quotient only. B4 (Red Team 13): the never-started
-    quotient was written by the script and checked by nothing -- the identical structure to
-    the hard-coded literal B1 replaced -- and arm a's published 0.2813 turned out to be on
-    the OTHER arm's convention, so one arm ran two conventions in one six-line block.
+    B9 (Red Team 14). The previous version did `se = doc.get(...); if not se: continue`, so arm b
+    -- whose bootstrap is under `bootstrap`, not `sampling_error` -- was skipped in full and the
+    run reported OK. A missing path is now a FAILURE. Nothing here can pass by finding nothing.
     """
     doc = json.load(open(ARMS[arm] + ".json"))
     bad = []
+    checked = 0
     for pop in POPS:
-        se = doc.get("sampling_error", {}).get(pop, {}).get("bound_endpoints")
-        if not se:
-            continue
-        for key, band, dens in (
-                ("started_and_left_bound_width_over_sampling_width", "sl", RATIO_DENOMINATORS),
-                ("never_started_bound_width_over_sampling_width", "ns", NS_RATIO_DENOMINATORS)):
-            want = round(D[pop][band]["width"] / dens[arm][pop], 4)
-            got = se.get(key)
-            if got is None or abs(got - want) > 5e-5:
-                bad.append((pop, key, got, want))
+        for band, node in RATIO_LAYOUT[arm][pop].items():
+            width = D[pop]["sub"]["width"] if band == "sub" else D[pop][band]["width"]
+            dens = DENOMS.get(band, DENOMS["sl"])
+            den = dens[arm][pop]
+            want = round(width / den, 4)
+            for label, path, expect in (("width", node["width"], width),
+                                        ("ratio", node["ratio"], want)):
+                got = get(doc, path)
+                if got is None:
+                    bad.append((pop, band, label, "PATH ABSENT -- not a skip, a failure",
+                                ".".join(path)))
+                elif abs(float(got) - expect) > 5e-5:
+                    bad.append((pop, band, label, got, expect))
+                else:
+                    checked += 1
+            stored_ci = get(doc, node["ci"])
+            if stored_ci is None:
+                bad.append((pop, band, "ci", "PATH ABSENT", ".".join(node["ci"])))
+            elif abs(float(stored_ci) - den) > 5e-4:
+                bad.append((pop, band, "ci", stored_ci,
+                            f"{den} -- the denominator the register names for arm {arm}"))
+            else:
+                checked += 1
             other = dens["b" if arm == "a" else "a"][pop]
-            assert abs(dens[arm][pop] - other) > 1e-9, \
-                f"{band}: the two arms' denominators must stay distinct"
-    # Arm a must use ONE convention. Both its denominators are floor-endpoint CIs, so both
-    # ratios are computed the same way -- which 0.2813 was not.
-    return bad
+            if abs(den - other) <= 1e-9 and band != "sub":
+                bad.append((pop, band, "convention", den,
+                            "the two arms' denominators must stay distinct"))
+    if checked == 0:
+        bad.append(("-", "-", "coverage", 0,
+                    "zero rows checked -- a check that looks nowhere must not report OK"))
+    return bad, checked
 
 
-# --------------------------------------------------------- 6. TARGETS -- MD
 BEGIN = "<!-- BEGIN GENERATED: derived figures -- src/step7_regenerate_derived.py -->"
 END = "<!-- END GENERATED: derived figures -->"
 
 
 def md_block(arm):
+    """Renders STATEMENTS and figure_table(). It contains no prose of its own about figures."""
+    F = figure_table(arm)
+    r = ratios(arm)
     L = [BEGIN, "",
          "## Derived figures — GENERATED, do not hand-edit",
          "",
-         "**Every number in this section is a function of the counts below and is written by",
-         "`src/step7_regenerate_derived.py`.** It exists because four consecutive decisions",
-         "corrected these artifacts by patching individual values, and every finding in Red Team",
-         "reviews 9–11 was a value a patch reached in one place and missed in another.",
+         "**Every number and every sentence in this section comes from one definition in**",
+         "`src/step7_regenerate_derived.py` — `figure_table()` and `STATEMENTS` — **and the `.json`",
+         "half of this deliverable renders the same two objects.** `compare_halves()` reads both",
+         "back off disk and compares them, so the two halves agreeing is demonstrated, not asserted.",
          "",
-         "**The channel window is `(τ1, τ2)`, OPEN at `τ2`** (`0057`).", ""]
+         f"**{STATEMENTS['channel_window']}**", ""]
     for pop in POPS:
         c, d = C[pop], D[pop]
         L += [f"### {pop} — n = {c['n']:,}", "",
@@ -424,44 +578,56 @@ def md_block(arm):
               "",
               f"**Three ceilings sum to {d['ceilings']['sum']:.4f}%**, excess "
               f"{d['ceilings']['excess_pp']:.4f} pp = {d['ceilings']['mechanism']} pairs.",
-              f"**Exclusion share of population: {d['exclusion_share_of_population']:.4f}%** — "
-              f"this is where `{d['exclusion_share_of_population']:.4f}` is CORRECT, and it is why "
-              f"that string is not in the superseded list.", ""]
-    r = ratios(arm)
-    L += ["### Bound ÷ sampling width — TWO CONVENTIONS, NOT RECONCILED", "",
-          f"**This arm (`{arm}`) divides by the {RATIO_DENOMINATORS[arm]['convention']}.** The other "
-          f"arm divides by the {RATIO_DENOMINATORS['b' if arm == 'a' else 'a']['convention']}. "
-          "**The spec fixes neither, so this is a spec ambiguity and is reported, not resolved** — "
-          "`0057` wrote the other arm's denominator into this file and `0058` reverted it. "
-          "*(A sentence here cited the never-started ratio as proof of correct divergence. "
-          "**Withdrawn by `0061`: it was false** — that pair was one convention on two bootstraps, "
-          "and it was itself an instance of the defect it was cited to certify.)*", "",
+              f"**Exclusion share of population: {d['exclusion_share_of_population']:.4f}%.**", ""]
+    L += ["### The bound's scope", "", f"**{STATEMENTS['covering_qualifier']}**", "",
+          "### Bound ÷ sampling width — TWO CONVENTIONS, NOT RECONCILED", "",
+          f"**{STATEMENTS['two_conventions']}**", "",
           "| | Denominator | Bound ÷ it | Sub-interval ÷ it |",
           "| :--- | ---: | ---: | ---: |"]
     for pop in POPS:
         L.append(f"| {pop} | {r[pop]['denominator']:.4f} | **{r[pop]['ratio']:.4f}** | "
                  f"{r[pop]['sub_interval_ratio']:.4f} |")
-    L += ["",
-          "*(A sentence here claimed the arm's own published ratio was **retained in place above and "
-          "marked superseded**. **Withdrawn by `0061`** — it was the same hard-coded literal `0059` "
-          "removed from the JSON half after finding that nothing checked it and it was false, and it "
-          "is false on its face for arm `b`, whose published ratio IS its current one. It survived in "
-          "the `.md` writer because the numeric controls cannot see a claim.)* **The limit that IS "
-          "real and is stated rather than hidden: the denominator above is the CI of the "
-          "PRE-widening floor point and was not re-bootstrapped; the recomputation reuses it.**", "",
-          "### Per-`W` series — NOT regenerated, and that is a scope statement", "",
-          "**The per-`W` sensitivity series in this deliverable was computed under the CLOSED "
-          "channel window `(τ1, τ2]` and under the un-widened floor, at every arm.** It is not "
-          "recomputed here because only `W = 108` masks are on disk. **Step 13 is the consumer and "
-          "must recompute it**, and it must not be read as current at any arm.",
-          "",
-          "**The inertness of the window form is asserted at `W = 108` only** "
-          f"(open {C['APPLY']['channel']} vs closed {C['APPLY']['channel_closed_form']} on APPLY; "
-          f"open {C['DERIV']['channel']} vs closed {C['DERIV']['channel_closed_form']} on DERIV). "
-          "**It is NOT expected to hold at `W = 213`**, where D10 forces `τ1 ≤ τ_pull − 91 d` so "
-          "`τ2` sits at or adjacent to `τ_pull`, and a mass point in last-insertion instants sits "
-          "there. (`src/step7_floor_extremes.py`, `0057` §5.)", "", END, ""]
+    L += ["", f"**Never started, same arm, same convention: {F['APPLY.ns.ratio']:.4f} on APPLY "
+          f"(denominator {F['APPLY.ns.ratio_denominator']:.4f}); DERIV is 0.0 because that bound "
+          f"is degenerate.**", "",
+          f"*{STATEMENTS['ratio_denominator_limit']}*", "",
+          "### Scope and limits", "",
+          f"- **Per-`W` series.** {STATEMENTS['per_w_scope']}",
+          f"- **Point estimates.** {STATEMENTS['point_estimates_do_not_move']}",
+          f"- **Legitimate readings.** {STATEMENTS['legitimate_not_superseded']}",
+          f"- **Commutation.** {STATEMENTS['commutation_caveat']}", "",
+          CANON_BEGIN + json.dumps({"statements": sorted(STATEMENTS), "figures": F},
+                                   sort_keys=True) + CANON_END, "",
+          END, ""]
     return "\n".join(L)
+
+
+def compare_halves(arm):
+    """Read both rendered halves back off disk and compare. Not an assertion -- a comparison."""
+    md = Path(ARMS[arm] + ".md").read_text()
+    m = re.search(re.escape(CANON_BEGIN) + r"(.*?)" + re.escape(CANON_END), md, re.S)
+    if not m:
+        return [f"arm {arm}: no CANON block in the .md half -- nothing to compare against"]
+    md_canon = json.loads(m.group(1))
+    doc = json.load(open(ARMS[arm] + ".json"))
+    blk = doc.get("_DERIVED_2026_08_13")
+    if not blk:
+        return [f"arm {arm}: no _DERIVED block in the .json half"]
+    out = []
+    if md_canon["statements"] != sorted(blk.get("statements", {})):
+        out.append(f"arm {arm}: the two halves render different STATEMENT keys")
+    jf = blk.get("figures", {})
+    for k, v in md_canon["figures"].items():
+        if k not in jf:
+            out.append(f"arm {arm}: figure {k} in the .md half and absent from the .json half")
+        elif abs(float(jf[k]) - float(v)) > 5e-7:
+            out.append(f"arm {arm}: figure {k} differs -- md {v}, json {jf[k]}")
+    for k in jf:
+        if k not in md_canon["figures"]:
+            out.append(f"arm {arm}: figure {k} in the .json half and absent from the .md half")
+    if not out and not jf:
+        out.append(f"arm {arm}: compared zero figures -- a comparison that compares nothing fails")
+    return out
 
 
 def apply_md(arm):
@@ -533,19 +699,32 @@ if __name__ == "__main__":
                 print(f"      {'ok  ' if why else 'FAIL'} {x}" + (f"  ({why})" if why else ""))
                 if not why:
                     failures.append(f"absent and not allowlisted: arm {arm} {x}")
-        for pop, key, got, want in check_ratios_written(arm):
-            failures.append(f"arm {arm} {pop} {key}: written {got}, this arm's own gives {want}")
+        rbad, rchecked = check_ratios_written(arm)
+        print(f"    ratios: {rchecked} rows checked across both bands and both populations")
+        for pop, band, label, got, want in rbad:
+            failures.append(f"arm {arm} {pop} {band}.{label}: {got!r}, expected {want!r}")
     # The .md bodies were checked by nothing (Red Team 12, non-blocking 3). They are now
     # checked by the same register, through the same checker, before this script exits.
     try:
         import check_surfaces
-        neg, _pos, _pi, _al = check_surfaces.scan()
+        neg, _pos, _pi, _al, _ls = check_surfaces.scan()
         md_bad = [x for x in neg if "step7-liveness-bb" in x[1]]
         if md_bad:
             for x in md_bad:
                 failures.append(f"operative deliverable body: {x[1]} {x[2]} = {x[3]}")
     except Exception as e:                                   # noqa: BLE001
         failures.append(f"could not verify the .md bodies: {e}")
+
+    for arm, frag in unused_allowlist_entries():
+        failures.append(f"ABSENT_OK[{arm!r}][{frag!r}] never fired -- the schema moved under it")
+
+    for arm in ARMS:
+        diffs = compare_halves(arm)
+        failures.extend(diffs)
+        if not diffs:
+            n = len(figure_table(arm))
+            print(f"  arm {arm}: .md and .json halves COMPARED and agree on "
+                  f"{n} figures and {len(STATEMENTS)} statements")
 
     bad, declared = verify()
     if declared:

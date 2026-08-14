@@ -255,6 +255,8 @@ comparable to it.
 
 | String | Legitimate use | Illegitimate use |
 | :--- | :--- | :--- |
+**THE BOUND'S SCOPE QUALIFIER (`0062`), which for six entries existed only in `decisions/`:** the started-and-left bound is **covering with respect to INSERTION-DORMANCY, exhaustively; open only across CHANNEL CLASSES (D4, D9).** Rule: *concede every pair dormant before the instant at which its own state-defining null is read* — `τ1` for never-started, `τ2` for Continued. **Exhaustive, not open-ended**; yields 32,769 and 18,952 with no residue. **D4 and D9 publish alongside.** Flag any publication of the bound that omits it.
+
 **MATCH NUMERICALLY, NOT TEXTUALLY (`0058`).** These rows are written at 4 dp and the JSON deliverables store 6-dp literals, so `9.6830` is **not** a substring of `9.682997`. **`src/check_surfaces.py` parses every number-shaped token on all seven surfaces and compares at a tolerance**, which is the only form of this check that can see the `.json` halves — six superseded values survived Red Team review 11 there precisely because their registered form rounds **up**.
 
 **REGISTER — canonical location, per `CLAUDE.md` `## Propagation`. A row is added only when the legitimate reading is verified live UNDER THE ADOPTED RULE, and withdrawn the moment it is not; registering a string exempts it from the grep control (`0056` §3).**
