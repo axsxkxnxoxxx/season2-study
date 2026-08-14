@@ -1,13 +1,15 @@
-# Step 7 — liveness rule — GATE APPROVAL, **DRAFT, UNSIGNED**
+# Step 7 — liveness rule — GATE APPROVAL
 
-> **THIS IS A DRAFT PREPARED AT THE HUMAN LEAD'S REQUEST. IT IS NOT AN APPROVAL.**
+> **APPROVED BY THE HUMAN LEAD, 2026-08-13.** Gate 4 of 5 is closed.
 >
-> `CLAUDE.md`: *"Only the Human Lead approves, in writing, in this session"* and *"an agent never
-> records its own approval."* Nothing downstream of this gate runs until the Human Lead states the
-> approval themselves. **Step 8 has not launched and does not launch on this document.**
+> The Human Lead stated the approval in writing in this session, on the draft of this document, and
+> directed that §6 be completed and the gate checklist ticked. **Step 8 may launch.**
 >
-> The gate checklist in `decisions/README.md` is **unchanged** and still reads OPEN. It is not updated
-> by anyone but the Human Lead.
+> *Date note, recorded rather than silently adjusted: the approval is dated **2026-08-13** as the Human
+> Lead gave it, while `0060`–`0063` — including `0063`, which carries the 652 measurement §3 rests on —
+> are dated **2026-08-14**. Flagged to the Human Lead for confirmation or correction. The decision log
+> is a public tracked artifact and `0058` §6 corrected a date drift in the other direction; neither is
+> fixed here without a ruling.*
 
 ---
 
@@ -68,7 +70,9 @@ on both populations, now measured** (`0063` §1).
 
 ## 4. The residual — logged, not resolved
 
-**Approval, if given, is given with these open and published, not around them.**
+**Approval is UNCONDITIONAL, and it is given with these open and published — not around them.**
+**Confirmed by the Human Lead**, 2026-08-13, in those terms: the residual below publishes with the
+result and none of it is a condition on this gate.
 
 **Limitations of the rule** *(Step 14)*
 1. **The biconditional gap.** `0021` licenses *insertion after `τ1` ⟹ live* — sufficiency only. The rule
@@ -85,6 +89,9 @@ on both populations, now measured** (`0063` §1).
 **Blocking Step 9, not Step 8**
 6. **The bootstrap is unspecified.** The two arms diverged on `B`, seed **and** statistic. `0052` §6's
    *"now specified"* is struck. **Step 9's CIs are not diffable until all three are fixed.**
+   ***Placement note:*** *"blocking Step 9, not Step 8" is **Red Team's recommendation**, from its
+   twelfth review — **it is not a Human Lead ruling** and is recorded here as the recommendation it is.
+   The Human Lead has not ruled on where it blocks.*
 
 **Control defects, carried** *(`0063` §3)*
 7. `compare_halves()` cannot fail; four sub-interval ratios are outside every control; the `_DERIVED`
@@ -112,16 +119,19 @@ on both populations, now measured** (`0063` §1).
 
 ## 6. For the Human Lead to complete
 
-> **Step 7 gate — liveness rule. Approved / Not approved: ______**
+> **Step 7 gate — liveness rule. APPROVED.**
 >
-> **Approved by:** ______________  **Date:** ______________
+> **Approved by:** the Human Lead  **Date:** 2026-08-13
 >
 > **The rule approved is ALT-BROAD as stated in §1**, with the bounds in §2 and **the residual in §4
 > published rather than resolved.**
 >
-> **Conditions, if any:** ______________
+> **Conditions: NONE. The approval is unconditional.** The §4 residual is open and publishes with the
+> result; it is not a condition on this gate and does not gate Step 8.
 >
-> *(Item 6 is a Step 9 precondition and is not waived by approving Step 8.)*
+> *Item 6, the unspecified bootstrap, is carried as **Red Team's recommended placement** — blocking Step
+> 9, not Step 8. **The Human Lead has not ruled on that placement**, and approving this gate does not
+> rule on it.*
 
-**On approval the Human Lead — not an agent — updates `decisions/README.md`'s gate checklist and records
-the approval as a decision entry.** Step 8 launches only after that.
+**Recorded as a decision at `decisions/0064-step7-gate-approved.md`**, and the gate checklist in
+`decisions/README.md` is ticked. **Step 8 may launch.**
