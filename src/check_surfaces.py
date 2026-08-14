@@ -11,7 +11,7 @@ So matching here is NUMERIC, not textual. Every number-shaped token on every sur
 parsed and compared to the register at a tolerance, whatever precision it is written at.
 
 Both halves of the control, per CLAUDE.md:
-  NEGATIVE  every superseded value -> zero UNLABELLED hits
+  NEGATIVE  every superseded value -> zero UNLABELLED hits, across all EIGHT surfaces
   POSITIVE  every adopted value    -> non-zero hits on the surfaces that own it
 
 Exit code 1 if either half fails. Zero API calls; reads only.
@@ -36,12 +36,27 @@ SURFACES = {
     # every file, not just *.md -- a .json in this directory was unseen by the whole control
     "7 second-brain": sorted(str(p) for p in Path(".claude/agent-memory/second-brain").rglob("*")
                              if p.is_file()),
+    # 0074: surface 8. processed/ is the FIRST file a Step 8 implementation reaches for, and no
+    # control covered it -- adopted_rule.json carried revision-3 figures against the approved
+    # revision-6 rule and an instance had to work around it. Second time it bit.
+    #
+    # Data tables are data; the figures live in the metadata files. .csv is included but the LARGE
+    # ones are skipped BY SIZE and REPORTED, never silently -- a skipped file is not a clean file.
+    # DATA TABLES ARE EXCLUDED and the count is reported. A numeric matcher over arbitrary data
+    # produces coincidence, not propagation defects: processed/step5/duplicate_pairs.csv alone
+    # returned 12 "hits" on per-row measurements that happen to round near a superseded width.
+    # The figures this surface exists for live in the METADATA files.
+    "8 processed": sorted(str(p) for p in Path("processed").rglob("*")
+                          if p.is_file() and p.suffix in (".json", ".md", ".txt")),
 }
+EXCLUDED_DATA_TABLES = sorted(str(p) for p in Path("processed").rglob("*")
+                              if p.is_file() and p.suffix in (".csv", ".gz", ".npz", ".npy",
+                                                              ".jsonl", ".ndjson"))
 sys.path.insert(0, str(Path(__file__).parent))
 from step7_register import (SUPERSEDED, SUPERSEDED_IN, ADOPTED, ADOPTED_IN, LEGITIMATE,
                             DECLARE_SCOPED, DECLARE_JSON_PATH, SUCCESSOR,
                             WITHDRAWN_PHRASES,
-                            file_is_wholly_superseded, scoped)
+                            file_is_wholly_superseded, processed_is_working_output, scoped)
 
 TOL = 5e-5
 NUM = re.compile(r"(?<![\w.])(\d{1,3}(?:,\d{3})*(?:\.\d+)?|\d+\.\d+)(?![\w])")
@@ -177,7 +192,7 @@ def scan():
             # its first 45 lines. That rule exempted 19 .md and 16 .json files, which is the
             # entire Step 7 artifact set INCLUDING BOTH OPERATIVE DELIVERABLES, and is how a
             # wrong ratio survived a passing check. The operative pair is not exemptible.
-            whole_file = file_is_wholly_superseded(f)
+            whole_file = file_is_wholly_superseded(f) or processed_is_working_output(f)
             for val, where, line, raw in items:
                 if whole_file:
                     allowed.add((f, whole_file))
@@ -228,7 +243,7 @@ if __name__ == "__main__":
     neg, pos, pos_in, allowed, legit_seen = scan()
     phrase_hits = scan_phrases()
     n_files = sum(len(v) for v in SURFACES.values())
-    print(f"seven surfaces, {n_files} files, numeric matching at tol {TOL} "
+    print(f"eight surfaces, {n_files} files, numeric matching at tol {TOL} "
           f"-- 4-dp and 6-dp forms both matched\n")
 
     print("NEGATIVE HALF -- superseded values with no supersession marker on the line:")
@@ -239,6 +254,11 @@ if __name__ == "__main__":
         if line:
             print(f"        {line}")
     print()
+
+    print(f"SURFACE 8 -- {len(SURFACES['8 processed'])} metadata files scanned; "
+          f"{len(EXCLUDED_DATA_TABLES)} DATA TABLES excluded by suffix, reported not silent. "
+          f"A numeric matcher over arbitrary data yields coincidence, not propagation defects. "
+          f"`adopted_rule.json` and its kind are NOT exemptible, in code.\n")
 
     if READ_FAILURES:
         print("READ/PARSE FAILURES -- a file the control could not look at is NOT a clean file:")
@@ -304,4 +324,4 @@ if __name__ == "__main__":
     if neg or missing or miss_in or phrase_hits or READ_FAILURES or legit_conflicts:
         print("\nFAIL")
         sys.exit(1)
-    print("\nPASS -- both halves, all seven surfaces.")
+    print("\nPASS -- all halves, all EIGHT surfaces.")

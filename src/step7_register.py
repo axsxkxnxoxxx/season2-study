@@ -186,6 +186,37 @@ BY_PURPOSE = {
     "withdrawn-claims-register": "its entire content is claims that were withdrawn",
 }
 
+# Surface 8 (0074). processed/ holds two different kinds of thing and they need different treatment.
+#
+#   - PER-ARM WORKING OUTPUT. processed/step7/<ns>/ is what one instance computed under the rule
+#     generation it ran. Those figures are the RECORD of that run and are superseded by definition,
+#     exactly like the stamped artifacts. Allowlisted by name, with the arm and reason.
+#   - SPEC-BEARING METADATA. adopted_rule.json and its kind state what the APPROVED rule is, and an
+#     implementation reads them. Those are NOT exemptible -- that is the whole reason surface 8 exists.
+PROCESSED_WORKING_DIRS = {
+    "processed/step7/bb_a/": "arm a's ALT-BROAD working output -- the record of that run",
+    "processed/step7/bb_b/": "arm b's ALT-BROAD working output -- the record of that run",
+    "processed/step7/mm_a/": "arm a's REVERTED ALT-MATCHED working output",
+    "processed/step7/mm_b/": "arm b's REVERTED ALT-MATCHED working output",
+    "processed/step7/alt_a/": "the superseded ALT rule's working output",
+    "processed/step7/alt_b/": "the superseded ALT rule's working output",
+    "processed/step7/df_a/": "arm a's DERIV-floor verification -- the two-extremes table by design",
+    "processed/step7/df_b/": "arm b's DERIV-floor verification -- the two-extremes table by design",
+    "processed/step7/query/": "one-off measurement outputs, including the two-extremes table",
+}
+# NOT exemptible on surface 8, in code rather than by remembering: the files that state the rule.
+PROCESSED_NEVER_EXEMPT = ("adopted_rule.json",)
+
+
+def processed_is_working_output(path):
+    p = str(path)
+    if any(n in p for n in PROCESSED_NEVER_EXEMPT):
+        return None
+    for frag, why in PROCESSED_WORKING_DIRS.items():
+        if frag in p:
+            return why
+    return None
+
 # NOT exempt, deliberately: step7-liveness-bb-{a,b}.{md,json} are the OPERATIVE deliverables
 # and are only PARTIALLY superseded. Exempting them in whole is what let a wrong ratio pass.
 OPERATIVE = ("step7-liveness-bb-a", "step7-liveness-bb-b")

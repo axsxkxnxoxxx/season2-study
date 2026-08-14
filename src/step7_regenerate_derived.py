@@ -719,12 +719,14 @@ if __name__ == "__main__":
     try:
         import check_surfaces
         neg, _pos, _pi, _al, _ls = check_surfaces.scan()
-        md_bad = [x for x in neg if "step7-liveness-bb" in x[1]]
+        # 0074: the operative deliverables AND surface 8. processed/ is the first file a Step 8
+        # implementation reaches for, and it was outside every control until now.
+        md_bad = [x for x in neg if "step7-liveness-bb" in x[1] or x[1].startswith("processed/")]
         if md_bad:
             for x in md_bad:
                 failures.append(f"operative deliverable body: {x[1]} {x[2]} = {x[3]}")
     except Exception as e:                                   # noqa: BLE001
-        failures.append(f"could not verify the .md bodies: {e}")
+        failures.append(f"could not verify the .md bodies or surface 8: {e}")
 
     for arm, frag in unused_allowlist_entries():
         failures.append(f"ABSENT_OK[{arm!r}][{frag!r}] never fired -- the schema moved under it")

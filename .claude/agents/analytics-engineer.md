@@ -190,6 +190,33 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
           **the documented 10.3% cohort loss becomes 10.5%.** **The order was set at `0029` on the
           ground that censoring is objective and independent of behaviour; the 10.3% predates it.
           Changing a filter order to preserve a published percentage is backwards.**
+    - **SIX MORE RULINGS, 2026-08-13 (`decisions/0074`), from the dual run's divergences.**
+        - **1. The table is the POSITION-5 row set — 196,654 on APPLY, with `live` and `outcome` as
+          COLUMNS.** Both readings gave identical counts (195,951 × 86 at position 7; 196,654 × 87 at
+          position 5), **so this is a ruling, not a correction.** **Rulings 1 and 7 said downstream
+          CONSUMES rather than REBUILDS, and carrying the liveness result as a column is that principle
+          applied to the row set.** **A reconstruction that agrees today is still a second definition
+          tomorrow, and the dual diff cannot see it.**
+        - **2. The `p` invariant is SPECIFIED, not dropped. DATA CHECK** — `p ∈ (0, 1]` on every
+          Started-and-left row, null elsewhere. **Both instances ran it unprompted**, it is a data check
+          on a set where **four of six are code checks**, and **Step 10 publishes `p`.**
+        - **3. The set-membership drop rule is a COVERAGE COUNT, NOT AN INVARIANT** — resolving the
+          7-against-6 divergence. The spec already calls it *"an implementation check, not a data
+          check."* **Report records examined and records dropped; do not assert it.**
+        - **4. The 94-record denominator difference is REPORTED UNRECONCILED** — 6,065,704 against
+          6,065,610, **both reporting 0 drops.** Neither is wrong on its face and nothing downstream
+          depends on it. **Publish both.** Routed to Step 14.
+        - **5. D9 uses the STRICT key, with the loose count of 75 reported alongside.** Strict finds
+          **0** complementary pairs; loose finds 75 but **strips the year and merges genuinely different
+          shows** — The Twilight Zone, The Traitors, Manhunt. **The loose count bounds how wrong strict
+          could be, and the error runs OPPOSITE to D9's own lower-bound caveat.**
+        - **6. `processed/` IS THE EIGHTH PROPAGATION SURFACE.** **It is the first file an
+          implementation reaches for and no control covered it** — `adopted_rule.json` carried
+          revision-3 figures (215,258 / 4,849) against the approved revision-6 rule (201,900 / 18,207),
+          and an instance had to work around it. **Second time it bit.** Corrected; added to `CLAUDE.md`
+          and both control scripts. **Data tables are excluded and the count reported; the per-arm
+          working dirs are allowlisted by name; `adopted_rule.json` and its kind are NOT exemptible, in
+          code.**
     - The table goes to `processed/`; the filter waterfall and invariant report, counts only, to
       `artifacts/`.
 - **Step 8b, output schema. Chained. NOT LAUNCHED.** Define the JSON schema the Step 16 visualization

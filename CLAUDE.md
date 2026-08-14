@@ -46,7 +46,7 @@ Any divergence is either a bug or an ambiguity in the spec. Report it. Do not re
 
 A ruling lands in `decisions/` **and** in every file an agent reads. Recorded only in `decisions/` is not recorded.
 
-**There are seven surfaces**, and all seven are checked on every edit:
+**There are eight surfaces**, and all eight are checked on every edit:
 
 1. `task-sheet.md`
 2. `.claude/agents/data-scientist.md`
@@ -55,6 +55,7 @@ A ruling lands in `decisions/` **and** in every file an agent reads. Recorded on
 5. `.claude/agents/analytics-engineer-b.md`
 6. `artifacts/` — deliverables carrying superseded figures are stamped, not left to be read as current
 7. `.claude/agent-memory/second-brain/` — it is fed back into rulings, and stale memory has already caused a wrong one
+8. `processed/` — **the first file an implementation reaches for.** `adopted_rule.json` carried revision-3 figures against the approved revision-6 rule while no control covered it, and a Step 8 instance had to work around it. Data tables are data; **the figures live in the metadata files**, and large tables are skipped by size and **listed, never silently**
 
 **Read-back plus grep. Read-back alone is not verification.** Human Lead ruling, 2026-08-13. Reading an edit back proves the new text landed. Only grep proves the old text is gone, and a file can hold both at once — three consecutive propagation failures were exactly that, an adopted figure and its superseded predecessor live in the same file, sometimes ten lines apart, each declaring the other wrong.
 
