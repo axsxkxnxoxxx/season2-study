@@ -286,6 +286,28 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
       to half (b) exactly as to half (a)**, so **four numbers, not three**: half (a) strict and loose,
       half (b) strict and loose. Reporting half (b) under strict alone **publishes the bound for one
       half and withholds it for the other**, and the error runs opposite to D9's own lower-bound caveat.
+    - **THE POSITION-3 DROP SET IS A DELIVERABLE, PRODUCED BY THE PIPELINE** (`0079`) — **named in the
+      deliverable list, written by the same run that writes the table, not a helper script's side
+      file.** D9 half (b) cannot be computed without it and **its absence returns 0 SILENTLY, which
+      reads as a data finding rather than an error** — the failure `0075` ruling 2 exists to prevent, so
+      leaving the input as a working file defeats the ruling requiring it.
+    - **PROVENANCE APPLIES TO EVERY COUNT AND EVERY INVARIANT, NOT TWO** (`0079`, extending `0078`).
+      **Partial application is worse than none: two labelled figures imply the rest did not need it.**
+      Every required count, every invariant result and every waterfall figure **carries the build it was
+      measured on.**
+    - **PUBLISH THE CHANNEL OVERLAP IN BOTH UNITS, EACH WITH ITS CONSUMER** (`0079`). **324 of 5,694
+      discovery-pool USERNAMES** — Step 3's seeding-bias statement, Step 14 item 1. **178 of 2,549
+      ACCOUNTS PULLED** — Step 4 coverage. **174 of 2,422 accounts / 17,783 of 196,654 pairs in the
+      position-5 population** — **Step 11**, which recomputes the headline and so cuts the analysis
+      population, not the pool. **Picking one leaves another consumer holding a wrong-unit figure.**
+    - **POSITIONS 1, 2, 3 AND 7 REMOVE ZERO BY CONSTRUCTION — KEEP THEM, LABEL THEM INERT, GIVE THE
+      REASON** (`0079`). **Removing a position removes the check that would catch a future upstream
+      change**; **an unlabelled always-zero filter reads as evidence the rule FOUND NOTHING when it is
+      evidence the rule CANNOT FIRE** — the same defect as an unlabelled code check. Position 1: line 1
+      is already the frame. **Positions 2 and 3: line 1 is already the `L2 > 1` S1-completer
+      population** — **and position 3's RULE is not inert, it removes 58,345 pairs upstream of line 1,
+      which is why its drop set is a deliverable.** Position 7: outcome assignment annotates and removes
+      nothing.
     - The table goes to `processed/`; the filter waterfall and invariant report, counts only, to
       `artifacts/`.
 - **Step 8b, output schema. Chained. NOT LAUNCHED.** Define the JSON schema the Step 16 visualization

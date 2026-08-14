@@ -363,7 +363,18 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
       actually pulled the overlap is 178 — both measured on the position-5 build of 2026-08-13 and
       reproduced by both arms** (`0078`). *(A third reading is stated in no ruling: **174 of the 2,422
       accounts in the APPLY position-5 population**, instance B. **Publish the first two; the third is
-      recorded so it is not later read as a divergence.**)* ***`0070` ruling 3 stated "324 users" with NO POPULATION;
+      recorded so it is not later read as a divergence.**)*
+      **PUBLISH THE OVERLAP IN BOTH UNITS, EACH WITH ITS CONSUMER NAMED.** Human Lead ruling,
+      2026-08-13 (`0079`). **Picking one leaves the other consumer holding a wrong-unit figure.**
+      **324 of 5,694 DISCOVERY-POOL USERNAMES** — consumer: the **Step 3 seeding-bias statement** and
+      **Step 14 ledger item 1**, which are about the pool's composition. **178 of 2,549 ACCOUNTS
+      PULLED** — consumer: **Step 4 coverage reporting**. **174 of 2,422 ACCOUNTS and 17,783 of 196,654
+      PAIRS in the position-5 population** — consumer: **Step 11**, which recomputes the headline within
+      each channel and therefore cuts **the analysis population, not the pool**. ***Correction to the
+      ruling as dictated: it assigned Step 11 to users and the pool statistic to accounts. The files
+      show the reverse*** — Step 11 recomputes the headline, which is over pairs on the position-5 row
+      set, while the pool statistic is the 5,694 usernames. **All three are published with their
+      consumers; none is dropped.** ***`0070` ruling 3 stated "324 users" with NO POPULATION;
       both figures and their populations are given here by `0077`*** — **a count without its population
       is the shape that has recurred through this entire chain**, and it recurred in the ruling written
       to fix a different unlabelled figure. **Step 11 tests whether discovery method biased the pool**,
@@ -378,6 +389,17 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
       viewing** — so it is **not an outcome variable** and must not be modelled as one. **Counts by
       action type support Step 13's arm without asserting anything about the pair.**
 - [ ] Record sample size after each filter
+- [ ] **FOUR FILTER POSITIONS REMOVE ZERO BY CONSTRUCTION. KEEP THEM AND LABEL THEM INERT, WITH THE
+      REASON.** Human Lead ruling, 2026-08-13 (`0079`). **Positions 1, 2, 3 and 7** — the frame, the
+      `L2 = 1` exclusion, the S1 completion rule and outcome assignment — **each remove 0 rows.**
+      **Keep them: removing a position removes the check that would catch a future upstream change**, and
+      the whole point of a fixed order is that the waterfall is comparable across runs and arms.
+      **But an unlabelled always-zero filter reads as evidence THE RULE FOUND NOTHING when it is
+      evidence THE RULE CANNOT FIRE — the same defect as an unlabelled code check** (`0069`). **State
+      the reason at each:** position 1 because line 1 is already the frame; **positions 2 and 3 because
+      line 1 is already the `L2 > 1` S1-completer population** (`0068`) — **and position 3's rule is not
+      inert, it removes 58,345 pairs upstream of line 1, which is why its drop set is a deliverable**;
+      position 7 because **outcome assignment annotates and removes nothing** (`0046`).
 - [ ] **STEP 8 PRODUCES BOTH POPULATIONS, NOT APPLY ALONE.** Human Lead ruling, 2026-08-13 (`0070`).
       **APPLY** = line 1 less D10 = **196,654**; **DERIV** = Step 5 line 4 less D10 = **147,370**, which
       requires S2 evidence. **Step 9 publishes bounds on both and Step 8b reserves fields for both, so
@@ -391,7 +413,12 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
 
 **Required counts, all to `artifacts/`, counts and aggregates only**
 
-- [ ] **EVERY COUNT NAMES THE PIPELINE IT WAS MEASURED ON, NOT ONLY ITS POPULATION.** Human Lead ruling, 2026-08-13 (`0078`) — **`0047`'s standing rule one layer down.** A count without its provenance **can be correct when written and wrong when read**, because the build moved underneath it and nothing in the text says which build it belongs to. **Write the pipeline at the point of use.**
+- [ ] **EVERY COUNT AND EVERY INVARIANT IN STEP 8's OUTPUTS NAMES THE PIPELINE IT WAS MEASURED ON —
+      ALL OF THEM, NOT TWO.** Human Lead ruling, 2026-08-13 (`0079`), extending `0078`. **Partial
+      application is worse than none: two labelled figures imply the other counts and the eight
+      invariants did not need it.** **Every bullet in this section, every invariant result, and every
+      figure in the waterfall carries its build.** **EVERY COUNT NAMES THE PIPELINE IT WAS MEASURED ON,
+      NOT ONLY ITS POPULATION.** Human Lead ruling, 2026-08-13 (`0078`) — **`0047`'s standing rule one layer down.** A count without its provenance **can be correct when written and wrong when read**, because the build moved underneath it and nothing in the text says which build it belongs to. **Write the pipeline at the point of use.**
 
 - [ ] **Both drop counts**: per show, and **per outcome** — the second being pairs whose entire S2
       evidence was dropped, **reported as a share of Never started AT POSITION 5 = 33,373, with the
@@ -484,7 +511,17 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
 - [ ] Report all invariant results
 - [ ] Write the table to `processed/`. The filter waterfall and invariant report, which are counts only, go to `artifacts/`.
 
-**Deliver:** analysis table in `processed/`, filter waterfall and invariant report in `artifacts/`
+**Deliver:** analysis table in `processed/`; **the position-3 drop set — the 58,345 pairs failing the S1
+completion rule — as a PIPELINE OUTPUT of the same run, not a helper script's side file**; filter waterfall
+and invariant report in `artifacts/`
+
+- [ ] **THE POSITION-3 DROP SET IS A DELIVERABLE, PRODUCED BY THE PIPELINE.** Human Lead ruling,
+      2026-08-13 (`0079`). **D9 half (b) cannot be computed without it, and its absence returns 0
+      SILENTLY** — a plausible-looking data finding rather than an error. **That is exactly what `0075`
+      ruling 2 was written to prevent, so leaving the input as a working file defeats the ruling that
+      requires it.** It must be **named in the deliverable list**, **written by the same pipeline run
+      that writes the table**, and **carry each pair's distinct-episode counts and the show's
+      threshold**, which is what half (b) reads.
 **Check:** dual implementation diff
 **Review:** Red Team on the filter order and the invariant set
 **Approval:** required before any result is computed
