@@ -70,8 +70,12 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
   refitted** by Step 7 or Step 8.
 
 - **Step 7, liveness rule. NOT YOURS TO DERIVE — but you APPLY it at Step 8, so it is stated here.**
-  **RULE CHANGED 2026-08-13 (`decisions/0046`). The gate is OPEN and Step 8 does not launch until it
-  closes.**
+  **APPROVED by the Human Lead, 2026-08-13 (`decisions/0064`; record at
+  `artifacts/step7-gate-approval.md`). GATE 4 OF 5 IS CLOSED.** ~~The gate is OPEN and Step 8 does not
+  launch until it closes.~~ **Step 8 is now the remaining gate.** The approved rule is **ALT-BROAD**;
+  `0046` adopted ALT, which is superseded. **Fifteen Red Team reviews — reviews 1–8 contested the RULE,
+  9–15 found propagation and control defects in figures derived from an unchanged rule.** **The approval
+  is UNCONDITIONAL and the residual is published, not resolved.**
     - **A pair is NOT LIVE iff BOTH: no insertion instant after that pair's `τ1`, AND NOT Continued**
       (`0048`, restored by `0054`). **The silence test is anchored at `τ1` and ONLY at `τ1`.** **Both Never started and Started-and-left are nulls** —
       only Continued rests on positive evidence. **Note this makes liveness outcome-conditional on the

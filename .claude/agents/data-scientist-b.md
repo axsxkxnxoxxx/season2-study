@@ -39,8 +39,15 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
   artifacts state 107 and 107.7135 and neither is the adopted value** — both predate the ceiling ruling.
   Take `W` from the decision entry, never from the artifacts.
 
-- **Step 7, liveness rule. GATE — RULE CHANGED 2026-08-13 (`decisions/0046`). Reruns pending; NOT
-  approved. The gate is OPEN.**
+- **Step 7, liveness rule. GATE — APPROVED by the Human Lead, 2026-08-13 (`decisions/0064`; record at
+  `artifacts/step7-gate-approval.md`). GATE 4 OF 5 IS CLOSED.** ~~RULE CHANGED 2026-08-13 (`0046`).
+  Reruns pending; NOT approved. The gate is OPEN.~~ The approved rule is **ALT-BROAD**; `0046` adopted
+  ALT, which is superseded, and the reruns are complete. **Fifteen Red Team reviews — 1–8 contested the
+  RULE, 9–15 found propagation and control defects in figures derived from an unchanged rule.** **The
+  approval is UNCONDITIONAL and the residual publishes with the result** — nine items,
+  `artifacts/step7-gate-approval.md` §4, including that **Step 9's CIs are not diffable until the
+  bootstrap `B`, seed and levels-vs-movements are fixed identically for both arms.** **Step 8 is the
+  remaining gate.**
     - **A pair is NOT LIVE iff BOTH: no insertion instant after that pair's `τ1`, AND NOT Continued.**
       **The silence test is anchored at `τ1` and ONLY at `τ1`** — ruled by `0034`, re-affirmed by
       `0051`, restored by `0054`. **ALT-MATCHED (silence at `τ2` for the S&L branch) is WITHDRAWN**: it

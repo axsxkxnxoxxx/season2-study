@@ -93,7 +93,7 @@ The rate limit and the authentication answer are settled and recorded in `CLAUDE
 - [ ] Retry with backoff on transient failures: timeouts, connection errors, and 5xx responses
 - [ ] On a 429, read `Retry-After`, pause that many seconds, then resume. Never retry the same request in a loop. If 429s persist across several consecutive pauses, stop and report.
 - [ ] Log the status, the `X-Ratelimit` object, `Retry-After`, the endpoint, and the method on every rate-limit event
-- [ ] On a 403, hard stop and report. That is a block, not a throttle.
+- [ ] **On a 403, CLASSIFY IT BEFORE ACTING.** ~~On a 403, hard stop and report. That is a block, not a throttle.~~ ***SUPERSEDED*** — amended by the Human Lead 2026-08-10 and carried in `CLAUDE.md`, which is authoritative on API discipline; the unconditional form would halt an unattended Step 4 pull on a single private profile. **On a USER RESOURCE: skip that user, log it with full headers, continue** — bounded by two circuit breakers, **5** consecutive unconfirmed user-403s with no intervening 2xx, and **200** in a run. **Only a 2xx resets the streak.** **NOT on a user resource** — or on one where `X-Private-User` is present and false-like or unrecognised — **hard stop and report. That is a block, not a throttle.** **Ambiguity resolves strict.** **A skipped user is `access_denied`, NOT a user with no history**, and must stay distinguishable downstream.
 - [ ] Persist raw responses to `raw/` before parsing
 - [ ] Never re-request what is already on disk
 
@@ -226,7 +226,7 @@ W is a number of days. It is derived here and used everywhere downstream.
 ## Step 7: Liveness rule
 
 **Owner:** Data Scientist, dual implementation
-**Mode:** GATE. **ALT-BROAD restored 2026-08-13 (`decisions/0054`) after ALT-MATCHED was reverted. NOT approved; seven Red Team HOLDs.** Both arms have run on ALT-BROAD and on ALT-MATCHED; all figures for both are on record.
+**Mode:** GATE. **APPROVED by the Human Lead, 2026-08-13 (`decisions/0064`; record at `artifacts/step7-gate-approval.md`). GATE 4 OF 5 IS CLOSED.** The approved rule is **ALT-BROAD**, restored at `0054` after ALT-MATCHED was reverted. **Fifteen Red Team reviews and fifteen HOLDs — but reviews 1–8 contested the RULE and 9–15 found propagation and control defects in figures derived from an unchanged rule**, none of which altered the rule, the population, the exclusion counts or any bound endpoint. **The approval is UNCONDITIONAL and the residual is published, not resolved** — nine items, `artifacts/step7-gate-approval.md` §4. Both arms have run on ALT-BROAD and on ALT-MATCHED; all figures for both are on record.
 
 > ## THE RULE
 >
@@ -255,7 +255,7 @@ W is a number of days. It is derived here and used everywhere downstream.
 - **DERIV** — Step 5 line 4 less D10, **147,370**. **Requires S2 evidence.**
 - **APPLY** — line 1 less D10, **196,654**. **This is what Step 8 filters at position 6.**
 
-- [ ] **Exclusions at `W = 108`: APPLY 703 from 216 accounts (604 never-started + 99 started-and-left); DERIV 99 from 73 accounts (0 + 99).** Superseded: ALT-MATCHED 793/189 APPLY and 188 DERIV, ALT 604/0. A Step 7 instance reporting 0 on DERIV and 604 on APPLY is correct and the two are **not** a divergence.
+- [ ] **Exclusions at `W = 108`: APPLY 703 from 216 accounts (604 never-started + 99 started-and-left); DERIV 99 from 73 accounts (0 + 99).** Superseded: ALT-MATCHED 793/189 APPLY and 188 DERIV, **ALT 604/0**. ***The sentence that stood here — "a Step 7 instance reporting 0 on DERIV and 604 on APPLY is correct and the two are not a divergence" — was written for ALT and is WITHDRAWN (`0067`, found by instance B). It is FALSE under the approved rule*** — it blessed the superseded rule's answer inside the bullet withdrawing that rule, in the file the isolated instances read. **Under ALT-BROAD the answer is 703 on APPLY and 99 on DERIV. An instance reporting 604/0 has implemented ALT, and that IS a divergence.**
             **How the rule selects:** conjunct 2 (NOT Continued) narrows APPLY **196,654 → 52,514**; conjunct 1 (no insertion after `τ1`) narrows **52,514 → 703**. **Conjunct 1 does most of the work**, which is why the count moves with `W`.
       **The DERIV zero is NOT forced by construction.** `has_s2` does **not** imply `|A| ≥ 1` — `|A|` needs an **in-`E2`** record — and **9,145 DERIV pairs are never-started**. Four line-4 pairs hold S2 records with no `E2` episode number, satisfy **both** conjuncts at every arm, and are removed one position earlier by **D10**. **The zero comes from the filter order and this pull date.**
 - [ ] **Liveness runs on record INSERTION time, not claimed `watched_at`** (`decisions/0021`, gate 2 of 5). **Any record inserted after the window closed proves the account was alive, whatever date it claims.**
@@ -667,10 +667,10 @@ Each entry records:
 Five gates. Nothing proceeds without written approval from the Human Lead at each.
 
 - [x] Step 1: outcome definition — **APPROVED by the Human Lead, 2026-08-10.** `H = 91 days` and the D12 cadence thresholds adopted by name; `pull_date` adopted in form with its value deliberately deferred to Step 4's schedule; Red Team's B2 overruled and recorded as accepted risk. See `artifacts/step1-outcome-definition.md`.
-- [ ] Step 5: contamination exclusion rule
-- [ ] Step 6: window W
-- [ ] Step 7: liveness rule
-- [ ] Step 8: analysis table
+- [x] Step 5: contamination exclusion rule — **APPROVED by the Human Lead, 2026-08-12** (`decisions/0021`). *(An amendment at `0053` was withdrawn the same day by `0054`; the ruling stands as approved.)*
+- [x] Step 6: window W — **APPROVED by the Human Lead, 2026-08-12 at `W = 108 days`** (`decisions/0026`)
+- [x] Step 7: liveness rule — **APPROVED by the Human Lead, 2026-08-13** (`decisions/0064`; record at `artifacts/step7-gate-approval.md`). **ALT-BROAD, unconditional, residual published.**
+- [ ] Step 8: analysis table — **the remaining gate**
 
 Each is a question that will be asked out loud. If an agent decided it and the Human Lead did not, it cannot be answered.
 
