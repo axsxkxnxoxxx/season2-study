@@ -1,15 +1,21 @@
 ---
 name: glossary-terms-and-thresholds
-description: Live glossary of every term, threshold and constant in the Season 2 abandonment study, each tagged with the step, decision and gate that fixed it and which population its figures are on — current through decisions/0064, the Step 7 gate APPROVAL (ALT-BROAD, unconditional), 2026-08-13
+description: Live glossary of every term, threshold and constant in the Season 2 abandonment study, each tagged with the step, decision and gate that fixed it and which population its figures are on — current through decisions/0082, the Step 8 block (gate NOT approved, two open Red Team blockers), 2026-08-14
 metadata:
   type: reference
 ---
 
 # Glossary — terms, thresholds, and where each was set
 
-**Current through `decisions/0064`, 2026-08-13** — Steps 3, 4, 2, 5, 6, the Step 1 §7 amendment, and
-the **Step 7 liveness gate, APPROVED**. This is an index, not a substitute for the artifacts. Verify
-against the file before acting on any row.
+**Current through `decisions/0082`, 2026-08-14** — Steps 3, 4, 2, 5, 6, the Step 1 §7 amendment, the
+**Step 7 liveness gate, APPROVED (`0064`)**, and the **Step 8 block (`0066`–`0082`), gate NOT
+approved.** This is an index, not a substitute for the artifacts. Verify against the file before
+acting on any row.
+
+> **THE STEP 8 SPEC OF RECORD IS `task-sheet.md` Step 8 AND THE `analytics-engineer` PAIR, NOT THIS
+> FILE.** The 89 column names, the eight invariants and their coverage populations are enumerated
+> there. Where this glossary and those files differ, **they govern** — the same relation this file has
+> to `src/step7_register.py`.
 
 > **THIS FILE IS NOT THE REGISTER. `src/step7_register.py` is** — one register, imported by both
 > `src/check_surfaces.py` and `src/step7_regenerate_derived.py` (`0059` B3: *"Two registers is one
@@ -37,10 +43,151 @@ Status vocabulary: **FIXED** (set and gate closed) · **DEFERRED** (form fixed, 
 | Term | Value / status | Where set | Gate |
 | :--- | :--- | :--- | :--- |
 | **`W`** — the window, in days | **FIXED: `W = 108 days`.** The **ceiling** of the **90th percentile** (107.7135) of the **continuous** lag from clock start to first S2 episode, on the **C1 subset (25,120 pairs, 206 shows, 2,050 users)** of the 128,099 clean-record sample. **Applies to all pairs.** Precision: **±18 days, show-clustered** — not the decimals. **Since `0034`, `W` no longer assigns every outcome state on its own**: `τ1` assigns never-started, `τ2 = τ1 + H` assigns Continued. **Precision history: 107 (`-a`, floored) → 107.7135 (`-b`, raw) → 108 (adopted ceiling).** Neither artifact figure is the adopted value; both predate `0025`. | Rule: `0024` (percentile) + `0025` (unit and ceiling). Value: `0026`. Propagated into Steps 7, 8, 13 and both Step 6 artifacts by `0029` | **Step 6 gate, APPROVED 2026-08-12, `0026`. Gate 3 of 5** |
-| **Liveness rule** | **APPROVED. THERE IS NO THRESHOLD. The rule is ALT-BROAD:** *a pair is **not live iff BOTH** the account shows **no insertion instant after that pair's `τ1`** AND the pair is **NOT Continued**.* **Silence anchored at `τ1` and ONLY at `τ1`; the channel window is `(τ1, τ2)`, OPEN at `τ2`** (`0057` §5 — `(τ1, τ2]` was **wrong, not ambiguous**: at `s = τ2` the unobserved remainder is empty, so the pair must not be conceded). **Restored by `0054` after being superseded by ALT-MATCHED at `0052` for one day.** A numeric threshold was derived three times (632 d, 1,293 d) and **DELETED at `0042`** — the headline could not distinguish 787 from 2,200 days. **No parameter of its own; FULLY DETERMINED BY `W`** (`0044` — "no free parameter" is withdrawn). Basis unchanged: **insertion time**, not claimed `watched_at` (`0021` ruling 2); stored play-`id` calibration a required input that **neither instance refits** (`0022`, `0029`); **pair-level, never a wholesale user drop** (`0034`). **The SILENCE test is anchored at `τ1` and ONLY at `τ1`** — ruled at `0034` (*"Liveness stays anchored at `τ1`. Liveness licenses trusting a null, and the null is `\|A\| = 0`, which is tested at `τ1`"*), re-affirmed at `0051` with both windows in view, and re-affirmed again at `0054`. **The Continued conjunct is read at `τ2`** (`0049` — *"`τ2` plays no part"* is withdrawn), and that is the ONLY role `τ2` has in the rule. **Do not reintroduce a pre-`τ1` requirement in any form — withdrawn twice** (`0040` §1, `0042` §3), both for contradicting gate `0021`. **Do not re-anchor the silence test at `τ2` in any form — tried once as ALT-MATCHED and reverted** (`0052` → `0054`) | Rule `0048`, restored `0054`; deletion `0042`; coupling `0044`; anchor `0034`, `0051`, `0054`; window `0057`; corrections `0043`, `0045`–`0063` | **Step 7 gate, APPROVED 2026-08-13, `0064`. Gate 4 of 5.** Record `artifacts/step7-gate-approval.md`. **UNCONDITIONAL — the §4 residual publishes with the result and is not a condition.** Approved twice before (`0039`, `0042`) and reopened twice; **fifteen Red Team reviews, fifteen HOLDs.** **Step 8 may launch and is the remaining gate** |
+| **Liveness rule** | **APPROVED. THERE IS NO THRESHOLD. The rule is ALT-BROAD:** *a pair is **not live iff BOTH** the account shows **no insertion instant after that pair's `τ1`** AND the pair is **NOT Continued**.* **Silence anchored at `τ1` and ONLY at `τ1`; the channel window is `(τ1, τ2)`, OPEN at `τ2`** (`0057` §5 — `(τ1, τ2]` was **wrong, not ambiguous**: at `s = τ2` the unobserved remainder is empty, so the pair must not be conceded). **Restored by `0054` after being superseded by ALT-MATCHED at `0052` for one day.** A numeric threshold was derived three times (632 d, 1,293 d) and **DELETED at `0042`** — the headline could not distinguish 787 from 2,200 days. **No parameter of its own; FULLY DETERMINED BY `W`** (`0044` — "no free parameter" is withdrawn). Basis unchanged: **insertion time**, not claimed `watched_at` (`0021` ruling 2); stored play-`id` calibration a required input that **neither instance refits** (`0022`, `0029`); **pair-level, never a wholesale user drop** (`0034`). **The SILENCE test is anchored at `τ1` and ONLY at `τ1`** — ruled at `0034` (*"Liveness stays anchored at `τ1`. Liveness licenses trusting a null, and the null is `\|A\| = 0`, which is tested at `τ1`"*), re-affirmed at `0051` with both windows in view, and re-affirmed again at `0054`. **The Continued conjunct is read at `τ2`** (`0049` — *"`τ2` plays no part"* is withdrawn), and that is the ONLY role `τ2` has in the rule. **Do not reintroduce a pre-`τ1` requirement in any form — withdrawn twice** (`0040` §1, `0042` §3), both for contradicting gate `0021`. **Do not re-anchor the silence test at `τ2` in any form — tried once as ALT-MATCHED and reverted** (`0052` → `0054`) | Rule `0048`, restored `0054`; deletion `0042`; coupling `0044`; anchor `0034`, `0051`, `0054`; window `0057`; corrections `0043`, `0045`–`0063` | **Step 7 gate, APPROVED 2026-08-13, `0064`. Gate 4 of 5.** Record `artifacts/step7-gate-approval.md`. **UNCONDITIONAL — the §4 residual publishes with the result and is not a condition.** Approved twice before (`0039`, `0042`) and reopened twice; **fifteen Red Team reviews, fifteen HOLDs.** **Step 8 launched at `0072` and is the remaining gate; it is NOT approved** |
 | **S1 completion rule** | **FIXED.** `F1 ∈ D1` **and** `\|D1\| ≥ ceil(0.90 × L1)`, distinct episodes, membership by the listed set `E1`. Now applied against **real** `E1` from the Step 2 frame, not a proxy (`0019`). | Step 1 §4 | **Step 1 gate, APPROVED 2026-08-10** |
 | **Contamination exclusion rule** | **FIXED.** Exclude **16,665** pairs whose S2 evidence is *entirely* air-date-stamped, plus **1,542** with no S2 evidence and a fabricated binding clock start. Total **18,207**; retains **201,900 of 220,107 (91.73%)**. Disjoint by construction. | Step 5 §9, revision 6 | **Step 5 gate, APPROVED 2026-08-12, `0021`. Gate 2 of 5** |
-| **Filter order** | **FIXED by `0029`, ahead of the gate.** **1.** Step 2 frame → **2.** `L2 = 1` exclusion → **3.** S1 completion rule → **4.** contamination exclusion → **5.** right-censoring → **6.** liveness rule → **7.** outcome assignment **at two instants** (`\|A\| = 0` at `τ1`, Continued at `τ2`, per `0034`). **Why it had to be fixed:** the final row set commutes — every filter is row-wise — but the **required per-filter sample size does not**, so two faithful instances could report different waterfalls on an identical table and the diff could not tell that from a bug. **Contamination before right-censoring** was already required. **Right-censoring before liveness** is the one genuine choice: censoring is a property of the clock and `pull_date`, objective and behaviour-independent, so running it first measures liveness's marginal cost on a fully observable population — the number Step 9's bound needs. **Since ALT-BROAD, waterfall line 6 is OUTCOME-CONDITIONAL and must be reported as such** — the Continued test is evaluated before liveness applies. **That is permitted, and both arms proved it independently:** the two are **row-local predicates on the position-5 output and commute exactly**, and `0029`'s rationale concerns per-filter **sample size**, which cannot reach position 7 because **outcome assignment removes no rows** — positions 1–6 are filters, **position 7 is an annotation** contributing no waterfall line. **The monotone invariant is coded `>=`, not `>`** (`0047`, reason corrected by `0049`): decrease is **strict on both populations under ALT-BROAD**, and `>=` is kept anyway **so the invariant does not encode a property of one rule**. **Expect 703 at position 6; treat a mismatch as a POPULATION defect before an implementation one** — Step 7 built APPLY from the Step 5 pair table, not through positions 1–5. **Producing 604 means the withdrawn ALT was implemented, and that IS a divergence. Producing 793 means ALT-MATCHED was implemented, and that IS a divergence too** — `0053` §3 defect 2 briefly made 793 the expected count and `0054` §5 reverted it, after **both `analytics-engineer` files carried "EXPECT 793" at line 77 and "EXPECT 703" at line 88, ten lines apart, each declaring the other a divergence, identical in both copies so the dual diff could not see them, in the file Step 8 launches from** (propagation failure #13). **Branch decomposition, ALT-BROAD:** branch (i) `\|A\| = 0` → 33,373 → **604**; branch (ii) `\|A\| ≥ 1 ∧ ¬Continued` → 19,141 → **99**; total **703** | `0029`; liveness spec `0046`–`0052`, `0054`, written into `task-sheet.md` Step 8 | Step 8 gate, **NOT approved — it is the ONE REMAINING GATE.** The order is fixed, the gate is not. **Step 8 MAY NOW LAUNCH** (`0064`) and has never yet done so |
+| **Filter order** | **FIXED by `0029`, ahead of the gate.** **1.** Step 2 frame → **2.** `L2 = 1` exclusion → **3.** S1 completion rule → **4.** contamination exclusion → **5.** right-censoring → **6.** liveness rule → **7.** outcome assignment **at two instants** (`\|A\| = 0` at `τ1`, Continued at `τ2`, per `0034`). **Why it had to be fixed:** the final row set commutes — every filter is row-wise — but the **required per-filter sample size does not**, so two faithful instances could report different waterfalls on an identical table and the diff could not tell that from a bug. **Contamination before right-censoring** was already required. **Right-censoring before liveness** is the one genuine choice: censoring is a property of the clock and `pull_date`, objective and behaviour-independent, so running it first measures liveness's marginal cost on a fully observable population — the number Step 9's bound needs. **Since ALT-BROAD, waterfall line 6 is OUTCOME-CONDITIONAL and must be reported as such** — the Continued test is evaluated before liveness applies. **That is permitted, and both arms proved it independently:** the two are **row-local predicates on the position-5 output and commute exactly**, and `0029`'s rationale concerns per-filter **sample size**, which cannot reach position 7 because **outcome assignment removes no rows** — positions 1–6 are filters, **position 7 is an annotation** contributing no waterfall line. **The monotone invariant is coded `>=`, not `>`** (`0047`, reason corrected by `0049`): decrease is **strict on both populations under ALT-BROAD**, and `>=` is kept anyway **so the invariant does not encode a property of one rule**. **Expect 703 at position 6; treat a mismatch as a POPULATION defect before an implementation one** — Step 7 built APPLY from the Step 5 pair table, not through positions 1–5. **Producing 604 means the withdrawn ALT was implemented, and that IS a divergence. Producing 793 means ALT-MATCHED was implemented, and that IS a divergence too** — `0053` §3 defect 2 briefly made 793 the expected count and `0054` §5 reverted it, after **both `analytics-engineer` files carried "EXPECT 793" at line 77 and "EXPECT 703" at line 88, ten lines apart, each declaring the other a divergence, identical in both copies so the dual diff could not see them, in the file Step 8 launches from** (propagation failure #13). **Branch decomposition, ALT-BROAD:** branch (i) `\|A\| = 0` → 33,373 → **604**; branch (ii) `\|A\| ≥ 1 ∧ ¬Continued` → 19,141 → **99**; total **703** | `0029`; liveness spec `0046`–`0052`, `0054`, written into `task-sheet.md` Step 8 | Step 8 gate, **NOT approved — it is the ONE REMAINING GATE.** The order is fixed, the gate is not. **Step 8 LAUNCHED at `0072`, 2026-08-13**, and has run as a dual pair plus reruns since. **`0074` then ruled the emitted table is the POSITION-5 row set, not position 7** — so the waterfall runs seven positions while the deliverable is line 5 with `live` and `outcome` as columns. **Positions 1, 2, 3 and 7 are INERT and labelled with the reason** (`0079`) |
+
+## Step 8 — the analysis table. **GATE NOT APPROVED.** Full arc in [[gate-step8-analysis-table]]
+
+**Launched `0072`, 2026-08-13, as the dual pair `analytics-engineer` / `-b`. Ruled on across
+`0066`–`0082`. Red Team has passed twice.** *Per the Human Lead's briefing of 2026-08-14:* **four
+blockers on the first pass, all closed; two on the second, both still open.** **No Step 8 proposal is
+adopted; every entry from `0073` on says so in terms.**
+
+### What the table IS
+
+| Item | Ruling | Where |
+| :--- | :--- | :--- |
+| **Grain** | **The POSITION-5 row set: 196,654 rows on APPLY, with `live` and `outcome` as COLUMNS.** Not position 7. Both readings gave **identical counts** (A: 195,951 × 86 at position 7; B: 196,654 × 87 at position 5) — nothing was wrong, a choice was unstated. Ruled on `0071`'s principle: **downstream CONSUMES, it does not REBUILD**, and *"a reconstruction that agrees today is still a second definition tomorrow"*, invisible to the dual diff because both arms would rebuild the same way | `0074` §1 |
+| **Waterfall line 1** | **220,107 — the S1-completer population.** Four defensible bases sat on disk (2,900,762 · 278,452 · 274,741 · 220,107) and **lines 1, 2 and 3 all moved with the choice**. Line 2 = line 1 less `L2 = 1`; line 3 = line 2 less the S1-completion failures. **No instance chooses a base.** *Open and NOT closed by it: D11 at position 3 gives **220,103**, 167 in-frame records at `watched_at ≥ τ_pull`* | `0068` §1 |
+| **Both populations** | **Step 8 emits APPLY 196,654 AND DERIV 147,370**, plus **the D4 count**. Omitting either forces Step 9 to rebuild — the second-definition defect | `0070` r1, r7; `0071` |
+| **Columns** | **89 ENUMERATED NAMES, not a count.** See below | `0080` → `0081` → `0082` |
+| **Invariants** | **Eight: 5 code checks, 1 code-by-construction, 2 data checks.** See below | `0069`, `0074`, `0076`, `0080` |
+
+### The COLUMN SET — 89 ENUMERATED NAMES. **THE COUNT HAS BEEN 87, 88, 89 AND 90.**
+
+**Enumerated precisely because the count drifted.** `0077` §3 fixed **89** as a count; `0080` replaced
+the count with **87 enumerated names**; `0081` restored `silent_at_tau1` → **88**; `0082` added
+`p_at_bound` → **89**. **90 is the UNION** of the two arms' 87-name sets (`0080` §1) and was never
+adopted. **The enumeration lives in `task-sheet.md` Step 8 and both `analytics-engineer` files and
+governs; this is a pointer, not a copy.**
+
+- **`silent_at_tau1` is IN** (`0081`). **It is the ONLY way to recompute the Continued-and-silent count,
+  652, from Step 8's table** — the liveness rule's second conjunct is `NOT Continued`, so **`live` is
+  true for every Continued pair regardless of silence**, and the column is not recoverable from `live`
+  and `outcome`. **652 is the outcome-conditioning size that closed Red Team's rule objection at
+  `0063` §1** and publishes as a Step 14 limitation. Decisive argument: its input living in Step 7's
+  working files is **the same shape as `0079`'s drop set** — a required input must not live in a
+  working file.
+- **`p_at_bound` is NEW** (`0082`). A boolean separating the two meanings of **`p = 1.0`**: the pair
+  **left at the final episode**, versus **the rank numerator saturating at `L2`**. **Step 10 publishes
+  the abandonment distribution off `abandonment_point_p`**, and a spike at 1.0 means two different
+  things about viewers. **Totals the two classes must sum to: 1,246 at position 5, 1,230
+  post-liveness, on APPLY.**
+- **Two columns stay DROPPED, both free:** **`f2_in_A_H`** (derivable as `max_episode_in_A_H == s2_F`)
+  and **`max_episode_in_A`** (read by nothing downstream).
+- **Naming rule** (`0077` §3): **use the spec's own vocabulary at the point the spec defines the thing;
+  where the spec does not name it, prefer the more explicit form.** Hence `in_apply` / `in_deriv`,
+  `tau1` / `tau2` (**no `_utc` — every instant in this study is UTC by Step 1 §2.4, and suffixing some
+  columns implies the others are not**), `n_A` / `n_A_H` / `max_episode_in_A_H` (**`AH` is not the
+  spec's spelling**), `action_count_s{1,2}_{watch,scrobble,checkin,other}`, `discovered_channel_a/_b`.
+
+### THE EIGHT INVARIANTS — labels and coverage populations
+
+**`0069` labelled every invariant CODE CHECK or DATA CHECK, and that is what resolved the dual run's
+4-of-6 against 6-of-6 split.** **`p` IS A CODE CHECK** — `0074` §2 mislabelled it DATA CHECK and
+`0076` §1 corrected it **on both instances' own proof** (S&L requires `|A| ≥ 1` so `m_H` exists, and
+set membership bounds the rank numerator in `[1, L2]`; no data configuration puts `p` outside
+`(0, 1]`). **The correction INVERTED the finding: five of six unfalsifiable with ZERO pure data
+checks** — *"four of six" is SUPERSEDED and was corrected in eight places.* **The two data checks were
+added because the set had none.**
+
+| # | Invariant | Label | Coverage population (`0080` §3) |
+| :-- | :--- | :--- | :--- |
+| 1 | outcome partition, summing to the post-position-7 row set | **CODE** | **196,654 AND 195,951, both stated**; plus DERIV 147,370 / 147,271 |
+| 2 | filter counts decrease monotonically, coded `>=` | **CODE** | **both chains**, APPLY's seven positions and DERIV's |
+| 3 | `\|D\| ≤ L`, distinct episodes ≤ season length | **CODE** | **both seasons, every pair the set-membership rule examines** — pair AND record count stated. Arms report `278,452 + 0 = 278,452` |
+| 4 | `A ⊆ A_H` on every row | **CODE** | the 196,654 position-5 row set, every row |
+| 5 | clock start vs S2 finale and first-pass S1 completion | **CODE BY CONSTRUCTION, DATA CHECK AS SPECIFIED** — force comes ONLY from recomputing the S1 completion date INDEPENDENTLY | 196,654, every row |
+| 6 | `p ∈ (0, 1]` on S&L, null elsewhere | **CODE** (`0076`, correcting `0074`) | **19,141 S&L + 177,513 null = 196,654 exactly** |
+| 7 | **no account dropped wholesale by the pair-level liveness filter** | **DATA** | **both populations**, 2,422 APPLY accounts and DERIV's |
+| 8 | **no `access_denied` or skipped account read as empty** | **DATA** | **the full account ledger, in ACCOUNTS**, skipped classes counted separately |
+
+**The set-membership drop rule is a COVERAGE COUNT, NOT AN INVARIANT** (`0074` §3) — Step 8's own
+bullet already calls it *"an implementation check, not a data check."* **The 703 expectation is NOT an
+invariant either** — it is a **population reconciliation** (`0069` §2).
+
+> **EVERY INVARIANT NAMES ITS POPULATION AND REPORTS `rows_asserted + rows_not_asserted =
+> rows_in_the_stated_population`** (`0080` §3). **One arm had a 99-row hole: 19,042 + 177,513 =
+> 196,555 on a 196,654-row table** — numerator post-liveness, denominator pre-liveness, and **the 99
+> uncovered rows are exactly the started-and-left liveness exclusions.** *"Neither report disclosed the
+> gap, no control could see it, and it survived two reruns."* **Correct: 19,141 + 177,513 = 196,654.**
+> **An invariant that passes on one population and was never run on another READS AS A PASS ON BOTH.**
+
+### The four INERT positions — kept and labelled (`0079` §4)
+
+**Positions 1 (frame), 2 (`L2 = 1`), 3 (S1 completion) and 7 (outcome assignment) each remove 0 rows.**
+**Kept**, because removing a position removes the check that would catch a future upstream change.
+**Labelled with the reason**, because *"an unlabelled always-zero filter reads as evidence THE RULE
+FOUND NOTHING when it is evidence THE RULE CANNOT FIRE — the same defect as an unlabelled code check."*
+
+> **Row 3 is the one that matters. Position 3's POSITION is inert while its RULE removes 58,345 pairs
+> UPSTREAM of line 1 — the study's largest single exclusion, appearing in the waterfall as a `0`.**
+> That is why **its drop set is a pipeline DELIVERABLE** (`0079` §1), written by the same run that
+> writes the table, not a helper script's side file: **D9 half (b) is measured on those rows, and
+> without them it returns 0 SILENTLY — a plausible data finding rather than an error.**
+
+### The other Step 8 rulings, in one table
+
+| Item | Ruling | Where |
+| :--- | :--- | :--- |
+| **Silence-test evidence scope** | **restricted to records dated before `τ_pull`** — applying D11 consistently, not a new rule. **Measured inert on the exclusion set (703 / 99 either way); it bites on the robustness tail**, where the 792 (A) / 791 (B) divergence lived. Now stated in **all three** places the rule is written | `0070` r2, `0071`, `0072` |
+| **Silence-test strictness** | **STRICT** — no insertion instant `> τ1`; an instant exactly at `τ1` does not make the account live | `0069` item 7 |
+| **Discovery channel** | **TWO BOOLEANS**, not one value. Overlap: **324 of the 5,694 discovery pool** (Step 3 seeding / Step 14 ledger item 1) · **178 of 2,549 accounts pulled** (Step 4 coverage) · **174 of 2,422 accounts and 17,783 of 196,654 pairs** on position 5 (**Step 11**). **All three publish, each with its consumer named** | `0070` r3, `0077` §1, `0079` §3 |
+| **`action`** | **NOT a column — per-pair COUNTS BY TYPE.** `action` is a property of the LOGGING CLIENT, not of the viewing, so it is not an outcome variable. Step 13's arm reads the counts | `0070` r4, completed `0073` §2 |
+| **D2's `max()` split** | **THREE categories** — finale binds, S1 completion binds, **both bind**. **168 pairs have both binding; a tie is its own category, not a tiebreak** | `0070` r5 |
+| **Drop denominator** | **position 5 = 33,373**, with post-liveness **32,769** alongside. The difference is exactly the 604 never-started liveness exclusions and is itself informative | `0070` r6 |
+| **Filter order vs the published %** | **ORDER KEPT; the percentage moves. 10.3% → 10.5%** cohort loss, and the **pre-2020 comparator 2.7% → 3.0%**. *"Changing a filter order to preserve a published percentage is backwards."* Per-air-period: **97.40 / 97.8 / 97.4 / 95.9**, and **89.5%** for 2023–2025 at `W = 213` | `0070` r8, comparator `0073` §1 |
+| **D9 keys** | **STRICT ruled, LOOSE published alongside — FOUR numbers, not three** (both halves under both keys). **strict 0 · loose 75 · a THIRD key 76.** Strict = `re.sub(r"[^a-z0-9]", "", slug.lower())`; loose = strip a **trailing four-digit year** first. **Neither strips a trailing digit group of arbitrary length** — that reduces `the-100` to `the` and is the third key, which one arm used unlabelled. **Both keys are DEFINED in the spec** because they had existed only in one arm's code, *"undefined on every surface an isolated instance reads"* | `0074` §5, `0076` §3, `0078` §3 |
+| **Set-membership denominator** | **REPORTED, NOT RECONCILED: 6,065,704 (A) against 6,065,610 (B), both dropping 0.** A coverage figure for a rule that dropped nothing; nothing downstream depends on it. Routed to Step 14 | `0074` §4 |
+
+### TWO STANDING RULES THIS BLOCK ADDED
+
+> **1. PROVENANCE — EVERY COUNT AND EVERY INVARIANT NAMES THE BUILD IT WAS MEASURED ON, not only its
+> population** (`0078` §2, widened by `0079` §2). **`0047`'s rule one layer down: which BUILD produced
+> it.** *"A count without its provenance can be correct when written and wrong when read, because the
+> pipeline moved underneath it and nothing in the text says which pipeline it belongs to."*
+>
+> **PARTIAL APPLICATION IS WORSE THAN NONE.** `0078` labelled two figures; **two labelled figures imply
+> the other counts and the eight invariants did not need it** — the reader takes the labels as marking
+> the exceptional cases rather than the rule. Step 8's required-counts section alone runs to 24 bullets.
+>
+> **Scope limit, stated three entries running (`0078` §4, `0079` §5, `0080` §4): promoting provenance —
+> or the invariant-coverage rule — to a project-wide `CLAUDE.md` control is a SEPARATE RULING AND IS
+> STILL NOT TAKEN.** It is a Step 8 requirement only.
+
+> **2. GENERATED FILES AS CHECKS — a check nobody can see is not a check** (`0082` §3, **in
+> `CLAUDE.md`**). **A generated file that functions as a check is COMMITTED** — a verification living
+> only in a working tree verifies nothing anyone else can rely on, and **it is invisible to all eight
+> propagation surfaces, which is where the defects this project keeps finding actually hide.**
+>
+> **Condition, not optional: it states WHAT GENERATED IT and WHEN. A generated file without its
+> provenance is worse than no file, because it is trusted.** Governs the generated artifacts that
+> already exist, including `src/step7_regenerate_derived.py`'s output blocks and stamps.
+
+### Step 8b — output schema. **Propagated at `0066`; NOT written, NOT launched.**
+
+**Owner Analytics Engineer, Mode Chained, sits behind the Step 8 gate.** It **had been defined in a
+prior session and existed in NO FILE** — neither `task-sheet.md` nor either agent file. Two amendments
+at propagation: **the key is `W` ALONE** (there is no liveness threshold), and **Step 9 publishes TWO
+bounds on TWO populations**, never one field with a population flag. **Never-started has NO conditional
+sub-interval, structurally, and the schema must SAY SO rather than omit the field — an absent field and
+an inapplicable one must not look alike.** On DERIV the never-started bound is **degenerate,
+`[6.2055%, 6.2055%]`**, and **a zero-width bound must not read as missing data**. **No conversion
+layer** — a conversion layer is a second definition of every figure. **The placeholder must be
+unmistakable as a placeholder; a placeholder that reads as data is the failure mode**, and it reaches
+Step 16. **This is why the 89 names are fixed BEFORE the schema exists.**
 
 ## Step 7 — the liveness vocabulary. **Gate APPROVED, `0064`.** Full arc in [[gate-step7-liveness]]
 
