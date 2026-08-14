@@ -1,0 +1,182 @@
+{
+  "instance": "analytics-engineer-b",
+  "namespace": "b",
+  "mode": "GATE -- proposal only, nothing adopted",
+  "how_to_read_this_report": "FOUR of the six assertions are pure CODE CHECKS and CANNOT FAIL ON ANY DATA. A fifth is a code check by construction and a genuine cross-check only because the S1 completion date is recomputed independently. 'All invariants passed' therefore says the code computed what it was told to; it is NOT evidence for the rule (decisions/0068, 0070 Sec 4).",
+  "counts": {
+    "pure_code_checks": 4,
+    "code_check_by_construction_and_data_check_as_specified": 1,
+    "additional_range_check_emitted": 1,
+    "items_that_are_not_invariants": 1
+  },
+  "invariants": [
+    {
+      "invariant": "outcome states are mutually exclusive and sum to the POST-POSITION-7 row set",
+      "label": "CODE CHECK",
+      "why_it_cannot_fail_on_data": "Step 1 Sec 7's partition A = empty / (A non-empty and C_H) / (A non-empty and not C_H) is proved exhaustive and disjoint, so this can only catch an assignment coded wrongly -- e.g. dropping the |A| >= 1 conjunct from Continued, which would put a day-150 starter completing by day 190 in two states at once",
+      "population": "the rows remaining after outcome assignment, both populations",
+      "result": {
+        "APPLY": {
+          "post_position_7_rows": 195951,
+          "never_started": 32769,
+          "continued": 144140,
+          "started_and_left": 19042,
+          "sum": 195951,
+          "rows_in_two_states": 0,
+          "rows_in_no_state": 0,
+          "passes": true
+        },
+        "DERIV": {
+          "post_position_7_rows": 147271,
+          "never_started": 9145,
+          "continued": 121382,
+          "started_and_left": 16744,
+          "sum": 147271,
+          "rows_in_two_states": 0,
+          "rows_in_no_state": 0,
+          "passes": true
+        }
+      },
+      "passes": true
+    },
+    {
+      "invariant": "filter counts decrease monotonically -- CODED AS `>=`, NOT `>`",
+      "label": "CODE CHECK",
+      "why_it_cannot_fail_on_data": "filters only remove rows, so this fails only on an implementation that ADDS them -- a duplicating join, most likely",
+      "why_ge_not_gt": "the invariant must not encode a property of one rule: a filter position that legitimately removes nothing must not fail an assertion. It is load-bearing IN FACT here -- position 2 removes exactly 0 pairs on this frame, and so does position 3",
+      "sequence_APPLY": [
+        220107,
+        220107,
+        220107,
+        201900,
+        196654,
+        195951,
+        195951
+      ],
+      "sequence_DERIV": [
+        220107,
+        220107,
+        220107,
+        152126,
+        147370,
+        147271,
+        147271
+      ],
+      "positions_removing_zero_APPLY": [
+        2,
+        3,
+        7
+      ],
+      "passes": true
+    },
+    {
+      "invariant": "distinct episodes never exceed season length (|D| <= L)",
+      "label": "CODE CHECK",
+      "why_it_cannot_fail_on_data": "Step 8's own set-membership drop rule already establishes |D| <= L by construction -- an episode whose number is not in the season's listed set E is dropped, so D is a subset of E. It fails only if an implementation filtered by the numeric RANGE 1..F instead of by membership in E",
+      "checked": {
+        "max_|A_H|_minus_L2": 0,
+        "rows_violating": 0,
+        "rows_examined": 196654,
+        "records_failing_membership_at_stage_1": 0,
+        "records_examined_at_stage_1": 6065610
+      },
+      "passes": true
+    },
+    {
+      "invariant": "A is a subset of A_H on every row",
+      "label": "CODE CHECK",
+      "why_it_cannot_fail_on_data": "true by construction since tau1 < tau2 and both sets are prefixes of the same instant-ordered episode list; it can only catch the two sets being computed from different evidence, or tau2 computed below tau1",
+      "checked": {
+        "rows_examined": 196654,
+        "rows_with_|A|_>_|A_H|": 0,
+        "rows_with_tau2_<=_tau1": 0
+      },
+      "passes": true
+    },
+    {
+      "invariant": "clock start is on or after the S2 finale date, on or after the first-pass S1 completion date, and equals one of those two",
+      "label": "CODE CHECK BY CONSTRUCTION, DATA CHECK AS SPECIFIED",
+      "what_gives_it_force": "the first-pass S1 completion date is RECOMPUTED here by a second, independent implementation -- a literal per-pair walk over the records, not the vectorised rank computation the pipeline uses, and not read back from any stored value. Read back rather than recomputed it degrades to a code check and proves nothing, because T0 = max() makes all three clauses true of any correct max()",
+      "independent_recomputation": {
+        "pairs_the_independent_walk_completes": 220107,
+        "line_1_pairs": 220107,
+        "line_1_pairs_the_walk_also_completes": 220107,
+        "line_1_pairs_the_walk_does_NOT_complete": 0,
+        "agreement_on_the_completion_DATE": 220107,
+        "disagreements": 0,
+        "set_identity": "the two implementations return the SAME 220,107 (user, show) keys -- checked as a set, not only as a count"
+      },
+      "second_external_cross_check": {
+        "against": "processed/step5/pair_revision5.csv s1_completion_date, built by a different pipeline at Step 5",
+        "pairs_compared": 220103,
+        "mismatches": 0
+      },
+      "clauses_on_the_position_5_population": {
+        "rows_examined": 196654,
+        "T0_on_or_after_the_S2_finale_date": 196654,
+        "T0_on_or_after_the_first_pass_S1_completion_date": 196654,
+        "T0_equals_one_of_the_two": 196654,
+        "violations": 0
+      },
+      "the_equality_clause_cannot_discriminate_on": {
+        "rows_where_the_two_terms_are_the_same_date": 168,
+        "why": "for those rows the invariant cannot tell a first-pass implementation from a last-observed one"
+      },
+      "passes": true
+    },
+    {
+      "invariant": "abandonment point p is in (0, 1] on every Started-and-left row",
+      "label": "CODE CHECK",
+      "why_it_cannot_fail_on_data": "set membership makes A a subset of E2, so max(A_H) is in E2 and the rank numerator is at least 1 and at most L2. It fails only on the withdrawn raw-ratio form p = m_H / L2, which can exceed 1 where S2 numbering has a gap",
+      "form": "p = |{e in E2 : e <= m_H}| / L2, rank form, read on A_H (0034)",
+      "checked": {
+        "rows_examined": 19042,
+        "min": 0.038461538461538464,
+        "max": 1.0,
+        "rows_out_of_range": 0,
+        "rows_with_p_not_computed": 0
+      },
+      "passes": true
+    }
+  ],
+  "population_reconciliation_703_and_99": {
+    "this_is_NOT_an_invariant": "it is a POPULATION RECONCILIATION, and the spec's own instruction to suspect the population before the implementation is what makes it one",
+    "APPLY": {
+      "denominator": 196654,
+      "expected": 703,
+      "measured": 703,
+      "expected_split": [
+        604,
+        99
+      ],
+      "measured_split": [
+        604,
+        99
+      ],
+      "expected_accounts": 216,
+      "measured_accounts": 216
+    },
+    "DERIV": {
+      "denominator": 147370,
+      "expected": 99,
+      "measured": 99,
+      "expected_split": [
+        0,
+        99
+      ],
+      "measured_split": [
+        0,
+        99
+      ],
+      "expected_accounts": 73,
+      "measured_accounts": 73
+    },
+    "superseded_answers_not_produced": {
+      "604_on_APPLY_is_ALT": true,
+      "793_on_APPLY_is_ALT_MATCHED_withdrawn": true
+    },
+    "reconciles": true
+  },
+  "all_pass": true,
+  "elapsed_s": 3.9503121376037598
+}

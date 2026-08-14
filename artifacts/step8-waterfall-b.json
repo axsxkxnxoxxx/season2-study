@@ -1,0 +1,980 @@
+{
+  "artifact": "step8-waterfall-b",
+  "instance": "analytics-engineer-b",
+  "namespace": "b",
+  "step": 8,
+  "mode": "GATE -- proposal only, nothing adopted",
+  "api_calls": 0,
+  "constants": {
+    "W": 108,
+    "H": 91,
+    "tau_pull": "2026-08-11T00:00:00Z",
+    "W_arms": [
+      38,
+      46,
+      77,
+      91,
+      107,
+      108,
+      150,
+      213
+    ]
+  },
+  "populations": {
+    "APPLY": {
+      "n": 196654,
+      "definition": "waterfall line 1 less D10; the position-5 output; what position 6 filters"
+    },
+    "DERIV": {
+      "n": 147370,
+      "definition": "Step 5 line 4 less D10; requires S2 evidence"
+    }
+  },
+  "filter_order": [
+    "1 Step 2 frame",
+    "2 L2 = 1 exclusion",
+    "3 S1 completion rule",
+    "4 contamination exclusion (Step 5)",
+    "5 right-censoring",
+    "6 liveness",
+    "7 outcome assignment (two instants)"
+  ],
+  "waterfall_APPLY": [
+    {
+      "position": 1,
+      "filter": "Step 2 frame",
+      "retained_pairs": 220107,
+      "removed_pairs": 0,
+      "retained_users": 2487,
+      "retained_shows": 1138,
+      "note": "line 1 is the S1-completer population, ruled at 220,107 by decisions/0068; no instance chooses a base"
+    },
+    {
+      "position": 2,
+      "filter": "L2 = 1 exclusion",
+      "retained_pairs": 220107,
+      "removed_pairs": 0,
+      "removed_shows": 0,
+      "shows_examined": 1138,
+      "retained_users": 2487,
+      "retained_shows": 1138,
+      "coverage_note": "0 of 1,138 frame shows have L2 = 1: this line is a measured zero on a examined population, not an empty check"
+    },
+    {
+      "position": 3,
+      "filter": "S1 completion rule",
+      "retained_pairs": 220107,
+      "removed_pairs": 0,
+      "retained_users": 2487,
+      "retained_shows": 1138,
+      "note": "removes 0 by construction: decisions/0068 defines line 1 as the S1-completer population, so the rule has already bound at line 1. The rule was nevertheless computed independently at stage 1 (F1 in D1 and |D1| >= ceil(0.90 x L1), first-pass) and it is that computation which produced line 1"
+    },
+    {
+      "position": 4,
+      "filter": "contamination exclusion (Step 5, decisions/0021)",
+      "retained_pairs": 201900,
+      "removed_pairs": 18207,
+      "removed_all_S2_evidence_air_date_stamped": 16665,
+      "removed_contaminated_T0_with_no_S2_evidence": 1542,
+      "retained_users": 2481,
+      "retained_shows": 1138,
+      "note": "the ADOPTED rule is two disjoint exclusions; it is not the Step 5 estimation-sample waterfall down to 128,099"
+    },
+    {
+      "position": 5,
+      "filter": "right-censoring",
+      "retained_pairs": 196654,
+      "removed_pairs": 5246,
+      "removed_by_max_W_91_term": 3684,
+      "removed_incrementally_by_the_plus_H_term": 1562,
+      "direction_on_the_headline": "BOTH removals move the never-started share UP: they remove recent S1 completers, who are disproportionately likely to roll straight on",
+      "retained_users": 2422,
+      "retained_shows": 1138
+    },
+    {
+      "position": 6,
+      "filter": "liveness (ALT-BROAD, approved 0064)",
+      "retained_pairs": 195951,
+      "removed_pairs": 703,
+      "outcome_conditional": true,
+      "outcome_conditional_note": "conjunct 2 IS the Continued test, read at tau2, so this line is outcome-conditional and is reported as such (0046). Permitted: |A| and liveness are row-local predicates on the position-5 output and commute exactly, and position 7 removes no rows",
+      "retained_users": 2421,
+      "retained_shows": 1138
+    },
+    {
+      "position": 7,
+      "filter": "outcome assignment (two instants)",
+      "retained_pairs": 195951,
+      "removed_pairs": 0,
+      "note": "an annotation, not a filter: it removes no rows",
+      "retained_users": 2421,
+      "retained_shows": 1138
+    }
+  ],
+  "waterfall_DERIV": [
+    {
+      "position": 1,
+      "filter": "Step 2 frame",
+      "retained_pairs": 220107,
+      "removed_pairs": 0,
+      "retained_users": 2487,
+      "retained_shows": 1138,
+      "note": "line 1 is the S1-completer population, ruled at 220,107 by decisions/0068; no instance chooses a base"
+    },
+    {
+      "position": 2,
+      "filter": "L2 = 1 exclusion",
+      "retained_pairs": 220107,
+      "removed_pairs": 0,
+      "removed_shows": 0,
+      "shows_examined": 1138,
+      "retained_users": 2487,
+      "retained_shows": 1138,
+      "coverage_note": "0 of 1,138 frame shows have L2 = 1: this line is a measured zero on a examined population, not an empty check"
+    },
+    {
+      "position": 3,
+      "filter": "S1 completion rule",
+      "retained_pairs": 220107,
+      "removed_pairs": 0,
+      "retained_users": 2487,
+      "retained_shows": 1138,
+      "note": "removes 0 by construction: decisions/0068 defines line 1 as the S1-completer population, so the rule has already bound at line 1. The rule was nevertheless computed independently at stage 1 (F1 in D1 and |D1| >= ceil(0.90 x L1), first-pass) and it is that computation which produced line 1"
+    },
+    {
+      "position": 4,
+      "filter": "contamination exclusion, taken to Step 5 LINE 4 -- the adopted exclusion plus the three line-4 restrictions (has_s2, T0 not contaminated, completing record not post-dated) that define the DERIV base",
+      "retained_pairs": 152126,
+      "removed_pairs": 67981,
+      "step5_line_by_line": [
+        201900,
+        178165,
+        155131,
+        152126
+      ]
+    },
+    {
+      "position": 5,
+      "filter": "right-censoring",
+      "retained_pairs": 147370,
+      "removed_pairs": 4756
+    },
+    {
+      "position": 6,
+      "filter": "liveness",
+      "retained_pairs": 147271,
+      "removed_pairs": 99,
+      "outcome_conditional": true
+    },
+    {
+      "position": 7,
+      "filter": "outcome assignment",
+      "retained_pairs": 147271,
+      "removed_pairs": 0
+    }
+  ],
+  "step5_waterfall_reasserted": {
+    "measured": [
+      201900,
+      178165,
+      155131,
+      152126,
+      128099
+    ],
+    "expected": [
+      201900,
+      178165,
+      155131,
+      152126,
+      128099
+    ]
+  },
+  "liveness": {
+    "rule": "NOT LIVE iff BOTH (no insertion instant > tau1) AND (NOT Continued). ALT-BROAD, decisions/0048, restored 0054, APPROVED 0064",
+    "silence_test_is_strict": "silent iff no insertion instant > tau1 (0068)",
+    "evidence_scope": "account-wide -- the whole sweep, other shows and movies included -- RESTRICTED to records with watched_at < tau_pull (decisions/0070 ruling 2, D11 applied consistently)",
+    "calibration": {
+      "source": "processed/step5/calibration.npz",
+      "status": "READ, NEVER REFITTED (decisions/0029)",
+      "n_knots": 10918,
+      "application": "np.interp(rid, knot_rid, knot_time)",
+      "records_clamped_below_first_knot": 1862,
+      "records_clamped_above_last_knot": 5094
+    },
+    "max_insertion_instant_utc": "2026-08-10T20:48:00",
+    "tau_pull_restriction_is_inert_on_the_exclusion_set": {
+      "38": {
+        "restricted": 537,
+        "unrestricted": 537
+      },
+      "46": {
+        "restricted": 550,
+        "unrestricted": 550
+      },
+      "77": {
+        "restricted": 633,
+        "unrestricted": 633
+      },
+      "91": {
+        "restricted": 664,
+        "unrestricted": 664
+      },
+      "107": {
+        "restricted": 701,
+        "unrestricted": 701
+      },
+      "108": {
+        "restricted": 703,
+        "unrestricted": 703
+      },
+      "150": {
+        "restricted": 789,
+        "unrestricted": 789
+      },
+      "213": {
+        "restricted": 864,
+        "unrestricted": 864
+      }
+    },
+    "per_arm_APPLY": {
+      "38": 537,
+      "46": 550,
+      "77": 633,
+      "91": 664,
+      "107": 701,
+      "108": 703,
+      "150": 789,
+      "213": 864
+    },
+    "per_arm_APPLY_started_and_left_component": {
+      "38": 52,
+      "46": 56,
+      "77": 79,
+      "91": 89,
+      "107": 98,
+      "108": 99,
+      "150": 125,
+      "213": 148
+    },
+    "per_arm_DERIV": {
+      "38": 52,
+      "46": 56,
+      "77": 79,
+      "91": 89,
+      "107": 98,
+      "108": 99,
+      "150": 125,
+      "213": 147
+    }
+  },
+  "outcome_states": {
+    "APPLY": {
+      "position5": {
+        "never_started": 33373,
+        "continued": 144140,
+        "started_and_left": 19141
+      },
+      "position7": {
+        "never_started": 32769,
+        "continued": 144140,
+        "started_and_left": 19042
+      }
+    },
+    "DERIV": {
+      "position5": {
+        "never_started": 9145,
+        "continued": 121382,
+        "started_and_left": 16843
+      },
+      "position7": {
+        "never_started": 9145,
+        "continued": 121382,
+        "started_and_left": 16744
+      }
+    }
+  },
+  "required_counts": {
+    "drop_counts": {
+      "per_show_file": "processed/step8/b/drop_counts_per_show.csv",
+      "records_examined": 6065610,
+      "records_dropped_total": 0,
+      "distinct_season_number_pairs_dropped": 0,
+      "shows_with_any_drop": 0,
+      "per_outcome_pairs_whose_entire_S2_evidence_was_dropped": 0,
+      "denominator_never_started_at_position5": 33373,
+      "denominator_never_started_post_liveness": 32769,
+      "share_of_never_started_at_position5_pct": 0.0,
+      "share_of_never_started_post_liveness_pct": 0.0,
+      "denominator_note": "the drop count is a property of the filter, so it measures against what ENTERED it -- position 5. The post-liveness figure is reported alongside; the difference between the two denominators is exactly the never-started liveness exclusions (decisions/0070 ruling 6)",
+      "coverage": "ZERO is a measured zero: every one of the 6,065,610 in-frame S1/S2 episode records surviving D11 was tested for membership in its season's listed set E, and none failed. This check did not look nowhere",
+      "direction": "would INFLATE Never started, the same direction as D4 and D9"
+    },
+    "D2_negative_lag": {
+      "split": "THREE categories -- finale binds, S1 completion binds, BOTH bind (decisions/0070 ruling 5). A tie is its own category, not a tiebreak",
+      "tie_pairs_in_line1": 168,
+      "by_population": {
+        "position3_220107": {
+          "population": "position3_220107",
+          "n": 220107,
+          "negative_lag_pairs": 64321,
+          "share_pct": 29.222605369206796,
+          "S2_finale_term_binds": 58584,
+          "S1_completion_term_binds": 5730,
+          "BOTH_terms_bind_tie": 7
+        },
+        "position4_201900": {
+          "population": "position4_201900",
+          "n": 201900,
+          "negative_lag_pairs": 49708,
+          "share_pct": 24.620108964834078,
+          "S2_finale_term_binds": 44177,
+          "S1_completion_term_binds": 5524,
+          "BOTH_terms_bind_tie": 7
+        },
+        "APPLY_position5_196654": {
+          "population": "APPLY_position5_196654",
+          "n": 196654,
+          "negative_lag_pairs": 49403,
+          "share_pct": 25.121787504957947,
+          "S2_finale_term_binds": 44177,
+          "S1_completion_term_binds": 5219,
+          "BOTH_terms_bind_tie": 7
+        },
+        "DERIV_position5_147370": {
+          "population": "DERIV_position5_147370",
+          "n": 147370,
+          "negative_lag_pairs": 47500,
+          "share_pct": 32.23179751645518,
+          "S2_finale_term_binds": 43249,
+          "S1_completion_term_binds": 4244,
+          "BOTH_terms_bind_tie": 7
+        }
+      },
+      "reading": "S1-term negative lags are the test of the first-pass choice and should be small; S2-finale-term negative lags are the normal case for anyone who watched a weekly season while it aired"
+    },
+    "D3prime": {
+      "per_arm": {
+        "APPLY": {
+          "38": {
+            "definition": "of pairs Started-and-left at tau2 whose [T0] + (W + 2H) x 24h <= tau_pull, the share completing within [tau2, tau2 + H)",
+            "started_and_left_at_this_arm_on_this_population": 19433,
+            "cleared_count": 19355,
+            "cleared_share_of_started_and_left_pct": 99.59862090258838,
+            "completing_within_the_horizon": 1753,
+            "share_completing_pct": 9.057091190906743,
+            "denominator_note": "both denominators are this arm's and this population's own (decisions/0069 item 5)"
+          },
+          "46": {
+            "definition": "of pairs Started-and-left at tau2 whose [T0] + (W + 2H) x 24h <= tau_pull, the share completing within [tau2, tau2 + H)",
+            "started_and_left_at_this_arm_on_this_population": 19445,
+            "cleared_count": 19354,
+            "cleared_share_of_started_and_left_pct": 99.53201337104655,
+            "completing_within_the_horizon": 1664,
+            "share_completing_pct": 8.597705900589025,
+            "denominator_note": "both denominators are this arm's and this population's own (decisions/0069 item 5)"
+          },
+          "77": {
+            "definition": "of pairs Started-and-left at tau2 whose [T0] + (W + 2H) x 24h <= tau_pull, the share completing within [tau2, tau2 + H)",
+            "started_and_left_at_this_arm_on_this_population": 19352,
+            "cleared_count": 19173,
+            "cleared_share_of_started_and_left_pct": 99.07503100454733,
+            "completing_within_the_horizon": 1411,
+            "share_completing_pct": 7.359307359307359,
+            "denominator_note": "both denominators are this arm's and this population's own (decisions/0069 item 5)"
+          },
+          "91": {
+            "definition": "of pairs Started-and-left at tau2 whose [T0] + (W + 2H) x 24h <= tau_pull, the share completing within [tau2, tau2 + H)",
+            "started_and_left_at_this_arm_on_this_population": 19234,
+            "cleared_count": 19005,
+            "cleared_share_of_started_and_left_pct": 98.8094000207965,
+            "completing_within_the_horizon": 1255,
+            "share_completing_pct": 6.6035253880557745,
+            "denominator_note": "both denominators are this arm's and this population's own (decisions/0069 item 5)"
+          },
+          "107": {
+            "definition": "of pairs Started-and-left at tau2 whose [T0] + (W + 2H) x 24h <= tau_pull, the share completing within [tau2, tau2 + H)",
+            "started_and_left_at_this_arm_on_this_population": 19056,
+            "cleared_count": 18835,
+            "cleared_share_of_started_and_left_pct": 98.84026028547439,
+            "completing_within_the_horizon": 1157,
+            "share_completing_pct": 6.142819219538094,
+            "denominator_note": "both denominators are this arm's and this population's own (decisions/0069 item 5)"
+          },
+          "108": {
+            "definition": "of pairs Started-and-left at tau2 whose [T0] + (W + 2H) x 24h <= tau_pull, the share completing within [tau2, tau2 + H)",
+            "started_and_left_at_this_arm_on_this_population": 19042,
+            "cleared_count": 18819,
+            "cleared_share_of_started_and_left_pct": 98.82890452683542,
+            "completing_within_the_horizon": 1146,
+            "share_completing_pct": 6.089590307667782,
+            "denominator_note": "both denominators are this arm's and this population's own (decisions/0069 item 5)"
+          },
+          "150": {
+            "definition": "of pairs Started-and-left at tau2 whose [T0] + (W + 2H) x 24h <= tau_pull, the share completing within [tau2, tau2 + H)",
+            "started_and_left_at_this_arm_on_this_population": 18676,
+            "cleared_count": 18376,
+            "cleared_share_of_started_and_left_pct": 98.39366031270079,
+            "completing_within_the_horizon": 984,
+            "share_completing_pct": 5.354810622551153,
+            "denominator_note": "both denominators are this arm's and this population's own (decisions/0069 item 5)"
+          },
+          "213": {
+            "definition": "of pairs Started-and-left at tau2 whose [T0] + (W + 2H) x 24h <= tau_pull, the share completing within [tau2, tau2 + H)",
+            "started_and_left_at_this_arm_on_this_population": 18054,
+            "cleared_count": 17644,
+            "cleared_share_of_started_and_left_pct": 97.72903511687161,
+            "completing_within_the_horizon": 816,
+            "share_completing_pct": 4.624801632282929,
+            "denominator_note": "both denominators are this arm's and this population's own (decisions/0069 item 5)"
+          }
+        },
+        "DERIV": {
+          "38": {
+            "definition": "of pairs Started-and-left at tau2 whose [T0] + (W + 2H) x 24h <= tau_pull, the share completing within [tau2, tau2 + H)",
+            "started_and_left_at_this_arm_on_this_population": 17054,
+            "cleared_count": 16979,
+            "cleared_share_of_started_and_left_pct": 99.56022047613463,
+            "completing_within_the_horizon": 1534,
+            "share_completing_pct": 9.034689911066613,
+            "denominator_note": "both denominators are this arm's and this population's own (decisions/0069 item 5)"
+          },
+          "46": {
+            "definition": "of pairs Started-and-left at tau2 whose [T0] + (W + 2H) x 24h <= tau_pull, the share completing within [tau2, tau2 + H)",
+            "started_and_left_at_this_arm_on_this_population": 17080,
+            "cleared_count": 16994,
+            "cleared_share_of_started_and_left_pct": 99.49648711943794,
+            "completing_within_the_horizon": 1459,
+            "share_completing_pct": 8.585383076379898,
+            "denominator_note": "both denominators are this arm's and this population's own (decisions/0069 item 5)"
+          },
+          "77": {
+            "definition": "of pairs Started-and-left at tau2 whose [T0] + (W + 2H) x 24h <= tau_pull, the share completing within [tau2, tau2 + H)",
+            "started_and_left_at_this_arm_on_this_population": 17009,
+            "cleared_count": 16846,
+            "cleared_share_of_started_and_left_pct": 99.04168381445118,
+            "completing_within_the_horizon": 1234,
+            "share_completing_pct": 7.325181051881752,
+            "denominator_note": "both denominators are this arm's and this population's own (decisions/0069 item 5)"
+          },
+          "91": {
+            "definition": "of pairs Started-and-left at tau2 whose [T0] + (W + 2H) x 24h <= tau_pull, the share completing within [tau2, tau2 + H)",
+            "started_and_left_at_this_arm_on_this_population": 16906,
+            "cleared_count": 16698,
+            "cleared_share_of_started_and_left_pct": 98.7696675736425,
+            "completing_within_the_horizon": 1095,
+            "share_completing_pct": 6.557671577434423,
+            "denominator_note": "both denominators are this arm's and this population's own (decisions/0069 item 5)"
+          },
+          "107": {
+            "definition": "of pairs Started-and-left at tau2 whose [T0] + (W + 2H) x 24h <= tau_pull, the share completing within [tau2, tau2 + H)",
+            "started_and_left_at_this_arm_on_this_population": 16754,
+            "cleared_count": 16562,
+            "cleared_share_of_started_and_left_pct": 98.85400501372807,
+            "completing_within_the_horizon": 1015,
+            "share_completing_pct": 6.128486897717667,
+            "denominator_note": "both denominators are this arm's and this population's own (decisions/0069 item 5)"
+          },
+          "108": {
+            "definition": "of pairs Started-and-left at tau2 whose [T0] + (W + 2H) x 24h <= tau_pull, the share completing within [tau2, tau2 + H)",
+            "started_and_left_at_this_arm_on_this_population": 16744,
+            "cleared_count": 16550,
+            "cleared_share_of_started_and_left_pct": 98.84137601528906,
+            "completing_within_the_horizon": 1006,
+            "share_completing_pct": 6.078549848942598,
+            "denominator_note": "both denominators are this arm's and this population's own (decisions/0069 item 5)"
+          },
+          "150": {
+            "definition": "of pairs Started-and-left at tau2 whose [T0] + (W + 2H) x 24h <= tau_pull, the share completing within [tau2, tau2 + H)",
+            "started_and_left_at_this_arm_on_this_population": 16433,
+            "cleared_count": 16154,
+            "cleared_share_of_started_and_left_pct": 98.30219679912372,
+            "completing_within_the_horizon": 866,
+            "share_completing_pct": 5.360901324749288,
+            "denominator_note": "both denominators are this arm's and this population's own (decisions/0069 item 5)"
+          },
+          "213": {
+            "definition": "of pairs Started-and-left at tau2 whose [T0] + (W + 2H) x 24h <= tau_pull, the share completing within [tau2, tau2 + H)",
+            "started_and_left_at_this_arm_on_this_population": 15868,
+            "cleared_count": 15483,
+            "cleared_share_of_started_and_left_pct": 97.57373329972272,
+            "completing_within_the_horizon": 718,
+            "share_completing_pct": 4.63734418394368,
+            "denominator_note": "both denominators are this arm's and this population's own (decisions/0069 item 5)"
+          }
+        }
+      },
+      "the_3440": {
+        "count": 3440,
+        "label": "A COUNT, NOT A RATE",
+        "population": "the Step 5 UNCENSORED CLEAN-RECORD ESTIMATION SAMPLE of 128,099 -- NOT APPLY and NOT DERIV. Measured at decisions/0034 Sec 3, where the Started-and-left group is 17,420 before the amendment and 15,174 after",
+        "why_a_floor": "that sample excludes what the Step 5 waterfall drops and is not right-censored, which is why Step 14 calls it a floor",
+        "exposure_weighting": "weighted by SHOW RECENCY: 'at any point before tau_pull' gives a 2016 title about ten years of observation and a 2025 title about eight months, so it is an exposure-weighted count and not a rate",
+        "restated_not_recomputed": "decisions/0069 item 1 and task-sheet.md forbid reporting it against APPLY or DERIV"
+      }
+    },
+    "D8_never_started_post_window": {
+      "measured_over": "[tau1, tau1 + H) = [tau1, tau2), H = 91 days -- NOT to the pull date",
+      "by_population_and_position": {
+        "APPLY_position5": {
+          "never_started_n": 33373,
+          "i_any_S2_episode_in_tau1_to_tau2": 2733,
+          "i_share_pct": 8.189254786803703,
+          "ii_satisfies_the_Continued_condition_over_the_horizon": 1820,
+          "ii_share_pct": 5.453510322715968
+        },
+        "APPLY_position6_post_liveness": {
+          "never_started_n": 32769,
+          "i_any_S2_episode_in_tau1_to_tau2": 2733,
+          "i_share_pct": 8.340199578870275,
+          "ii_satisfies_the_Continued_condition_over_the_horizon": 1820,
+          "ii_share_pct": 5.554029723214013
+        },
+        "DERIV_position5": {
+          "never_started_n": 9145,
+          "i_any_S2_episode_in_tau1_to_tau2": 2508,
+          "i_share_pct": 27.424822307271732,
+          "ii_satisfies_the_Continued_condition_over_the_horizon": 1689,
+          "ii_share_pct": 18.469108802624383
+        },
+        "DERIV_position6_post_liveness": {
+          "never_started_n": 9145,
+          "i_any_S2_episode_in_tau1_to_tau2": 2508,
+          "i_share_pct": 27.424822307271732,
+          "ii_satisfies_the_Continued_condition_over_the_horizon": 1689,
+          "ii_share_pct": 18.469108802624383
+        }
+      },
+      "direction": "DOWN on the headline",
+      "note": "the spec does not say whether D8 sits pre- or post-liveness, so both are reported and labelled. D8(ii) is the only bound on the never-started boundary and its size is Step 14 ledger item 10"
+    },
+    "D4_S3_without_S2": {
+      "definition": "pairs scored Never started that carry S3-or-later episode records on that show and NO S2 episode record at all",
+      "by_population_and_position": {
+        "APPLY_position5": {
+          "never_started_n": 33373,
+          "S3_without_S2_pairs": 428,
+          "share_of_never_started_pct": 1.2824738561112277
+        },
+        "APPLY_position6_post_liveness": {
+          "never_started_n": 32769,
+          "S3_without_S2_pairs": 426,
+          "share_of_never_started_pct": 1.3000091549940493
+        },
+        "DERIV_position5": {
+          "never_started_n": 9145,
+          "S3_without_S2_pairs": 0,
+          "share_of_never_started_pct": 0.0
+        },
+        "DERIV_position6_post_liveness": {
+          "never_started_n": 9145,
+          "S3_without_S2_pairs": 0,
+          "share_of_never_started_pct": 0.0
+        }
+      },
+      "direction": "INFLATES Never started; Step 9 bounds it and publishes it ALONGSIDE",
+      "emitted_here_because": "Step 8 holds the episode-level evidence and Step 9 does not; leaving it out forces a second definition (decisions/0070 ruling 7)"
+    },
+    "right_censoring_two_lines": {
+      "population_censored": "the POSITION-4 output, 201,900 (the mandated order)",
+      "line_a_max_W_91_term": 3684,
+      "line_b_incremental_plus_H_term": 1562,
+      "total": 5246,
+      "direction_line_a": "UP on the never-started share",
+      "direction_line_b": "UP on the never-started share",
+      "why_two_lines": "a single combined figure would hide the price of H inside a removal that predates it (D10)"
+    },
+    "D12_cadence_buckets": {
+      "buckets": {
+        "C0": {
+          "shows": 0,
+          "pairs_position4": 0,
+          "pairs_APPLY_position5": 0,
+          "pairs_DERIV_position5": 0
+        },
+        "C1": {
+          "shows": 206,
+          "pairs_position4": 41246,
+          "pairs_APPLY_position5": 40365,
+          "pairs_DERIV_position5": 29493
+        },
+        "C2": {
+          "shows": 340,
+          "pairs_position4": 60532,
+          "pairs_APPLY_position5": 58811,
+          "pairs_DERIV_position5": 44500
+        },
+        "C3": {
+          "shows": 167,
+          "pairs_position4": 28398,
+          "pairs_APPLY_position5": 27573,
+          "pairs_DERIV_position5": 20783
+        },
+        "C4": {
+          "shows": 425,
+          "pairs_position4": 71724,
+          "pairs_APPLY_position5": 69905,
+          "pairs_DERIV_position5": 52594
+        }
+      },
+      "shows_within_1_day_of_a_bucket_boundary": 7,
+      "shows_examined": 1138,
+      "coverage_note": "C0 = 0 of 1,138 shows examined, a measured zero"
+    },
+    "metadata_disagreement": {
+      "shows_examined": 1138,
+      "flags": {
+        "s1_count_disagreement": {
+          "shows": 0,
+          "pairs_position4": 0
+        },
+        "s2_count_disagreement": {
+          "shows": 0,
+          "pairs_position4": 0
+        },
+        "s1_aired_lt_listed": {
+          "shows": 0,
+          "pairs_position4": 0
+        },
+        "s2_aired_lt_listed": {
+          "shows": 0,
+          "pairs_position4": 0
+        }
+      },
+      "s2_aired_lt_listed_direction": "a listed-but-unaired S2 episode raises L2, which tightens ceil(0.90 x L2) and pushes real completers out of Continued into Started-and-left -- it OVERSTATES abandonment; where F2 never aired, Continued is unreachable on that show",
+      "coverage_note": "every flag is 0 of 1,138 shows EXAMINED, not 0 because nothing was looked at"
+    },
+    "pull_date_and_fetch_window": {
+      "pull_date": "2026-08-11",
+      "tau_pull": "2026-08-11T00:00:00Z",
+      "earliest_per_user_fetch": "2026-08-11T05:01:26.447766+00:00",
+      "latest_per_user_fetch": "2026-08-11T23:10:31.236946+00:00",
+      "users_with_a_fetch_recorded": 2839,
+      "records_discarded_for_watched_at_ge_tau_pull": 1734,
+      "of_which_in_frame_S1_or_S2_episode_records": 167,
+      "constraint": "tau_pull <= the earliest per-user fetch instant",
+      "note": "the discarded tail is about one day of activity for early-fetched users and about two for late-fetched ones; it is not evenly distributed"
+    },
+    "D11_open_question": {
+      "line_1_as_ruled": 220107,
+      "line_1_if_D11_is_applied_to_the_S1_completion_walk_too": 220103,
+      "pairs_affected": 4,
+      "all_four_are_removed_at_position_5_under_either_reading": true,
+      "lines_4_to_7_are_identical_under_both_readings": true,
+      "why": "their first-pass completion instant is at or after tau_pull, so T0 is at or after 2026-08-10 and D10 removes them at position 5. Under the other reading they never reach position 4 at all",
+      "status": "decisions/0068 rules the base at 220,107 AND records this as OPEN"
+    }
+  },
+  "D9_split_artifact": {
+    "signature": "one show ID carrying S1 and not S2 for that user, another carrying S2 and not S1, and the two slugs normalise to the same title key",
+    "detection": "IMPERFECT -- Step 1 D9 states the count is a LOWER BOUND",
+    "candidate_user_show_pairs_examined": 726103,
+    "complementary_signature_pairs_LOOSE_key": 75,
+    "complementary_signature_pairs_STRICT_key": 0,
+    "normalisation_finding": {
+      "loose_key": "trailing four-digit year stripped, then non-alphanumerics stripped",
+      "strict_key": "non-alphanumerics stripped only -- no year stripping",
+      "what_it_shows": "The STRICT key finds ZERO complementary pairs: no two distinct show IDs in this sweep carry the same slug modulo punctuation. The entire D9 signal therefore comes from year-stripping, which CANNOT distinguish a Trakt metadata split from a REMAKE or a national version sharing a title",
+      "largest_loose_clusters": {
+        "thetwilightzone": 10,
+        "thetraitors": 7,
+        "manhunt": 5,
+        "thedevilyouknow": 2,
+        "unsolvedmysteries": 2,
+        "coldcasefiles": 2,
+        "thetomandjerryshow": 2,
+        "thesewoodsarehaunted": 2
+      },
+      "consequence": "The loose counts are an UPPER bound on detected candidates, not evidence that splits occurred. D9's own lower-bound caveat concerns splits this signature misses; this finding concerns non-splits it catches. Both directions are live and the numbers must not be read as a measured split rate"
+    },
+    "half_a_fabricated_never_started_rows": {
+      "APPLY_position5": {
+        "never_started_n": 33373,
+        "carrying_a_split_signature_LOOSE": 6,
+        "carrying_a_split_signature_STRICT": 0,
+        "share_of_never_started_pct_LOOSE": 0.01797860545950319
+      },
+      "APPLY_position6_post_liveness": {
+        "never_started_n": 32769,
+        "carrying_a_split_signature_LOOSE": 6,
+        "carrying_a_split_signature_STRICT": 0,
+        "share_of_never_started_pct_LOOSE": 0.018309988098507736
+      },
+      "DERIV_position5": {
+        "never_started_n": 9145,
+        "carrying_a_split_signature_LOOSE": 0,
+        "carrying_a_split_signature_STRICT": 0,
+        "share_of_never_started_pct_LOOSE": 0.0
+      },
+      "DERIV_position6_post_liveness": {
+        "never_started_n": 9145,
+        "carrying_a_split_signature_LOOSE": 0,
+        "carrying_a_split_signature_STRICT": 0,
+        "share_of_never_started_pct_LOOSE": 0.0
+      }
+    },
+    "half_b_silently_deleted_S1_failing_counterparts": {
+      "in_frame_B_side_pairs_LOOSE": 27,
+      "in_frame_B_side_pairs_STRICT": 0,
+      "note": "these carry S2 evidence and no S1 evidence, so they fail the S1 completion rule and never enter the population at all -- they are unreported unless counted here"
+    },
+    "same_title_multi_ID_groups": {
+      "count": 5997,
+      "note": "NOT a merge count. These are (user, show) rows where the user's sweep carries another show ID with the same LOOSE title key, and the largest clusters are Doctor Who, The Office and Avatar -- remakes and national versions, not merges. Reported so the figure is not mistaken for one. Merges proper can only ADD evidence to a pair, never remove it"
+    },
+    "direction": "DOWN on the never-started share; Step 9 bounds it and publishes it alongside"
+  },
+  "censoring_per_air_period_per_W_arm": {
+    "38": {
+      "pre-2020": {
+        "position4_pairs": 136368,
+        "retained_after_censoring": 133507,
+        "retained_pct": 97.90200046931831
+      },
+      "2020-2022": {
+        "position4_pairs": 35184,
+        "retained_after_censoring": 34311,
+        "retained_pct": 97.51875852660301
+      },
+      "2023-2025": {
+        "position4_pairs": 30348,
+        "retained_after_censoring": 29189,
+        "retained_pct": 96.18096744431264
+      },
+      "ALL": {
+        "position4_pairs": 201900,
+        "retained_after_censoring": 197007,
+        "retained_pct": 97.57652303120356
+      }
+    },
+    "46": {
+      "pre-2020": {
+        "position4_pairs": 136368,
+        "retained_after_censoring": 133507,
+        "retained_pct": 97.90200046931831
+      },
+      "2020-2022": {
+        "position4_pairs": 35184,
+        "retained_after_censoring": 34311,
+        "retained_pct": 97.51875852660301
+      },
+      "2023-2025": {
+        "position4_pairs": 30348,
+        "retained_after_censoring": 29189,
+        "retained_pct": 96.18096744431264
+      },
+      "ALL": {
+        "position4_pairs": 201900,
+        "retained_after_censoring": 197007,
+        "retained_pct": 97.57652303120356
+      }
+    },
+    "77": {
+      "pre-2020": {
+        "position4_pairs": 136368,
+        "retained_after_censoring": 133507,
+        "retained_pct": 97.90200046931831
+      },
+      "2020-2022": {
+        "position4_pairs": 35184,
+        "retained_after_censoring": 34311,
+        "retained_pct": 97.51875852660301
+      },
+      "2023-2025": {
+        "position4_pairs": 30348,
+        "retained_after_censoring": 29189,
+        "retained_pct": 96.18096744431264
+      },
+      "ALL": {
+        "position4_pairs": 201900,
+        "retained_after_censoring": 197007,
+        "retained_pct": 97.57652303120356
+      }
+    },
+    "91": {
+      "pre-2020": {
+        "position4_pairs": 136368,
+        "retained_after_censoring": 133507,
+        "retained_pct": 97.90200046931831
+      },
+      "2020-2022": {
+        "position4_pairs": 35184,
+        "retained_after_censoring": 34311,
+        "retained_pct": 97.51875852660301
+      },
+      "2023-2025": {
+        "position4_pairs": 30348,
+        "retained_after_censoring": 29189,
+        "retained_pct": 96.18096744431264
+      },
+      "ALL": {
+        "position4_pairs": 201900,
+        "retained_after_censoring": 197007,
+        "retained_pct": 97.57652303120356
+      }
+    },
+    "107": {
+      "pre-2020": {
+        "position4_pairs": 136368,
+        "retained_after_censoring": 133319,
+        "retained_pct": 97.76413821424381
+      },
+      "2020-2022": {
+        "position4_pairs": 35184,
+        "retained_after_censoring": 34256,
+        "retained_pct": 97.36243747157799
+      },
+      "2023-2025": {
+        "position4_pairs": 30348,
+        "retained_after_censoring": 29099,
+        "retained_pct": 95.88440753921181
+      },
+      "ALL": {
+        "position4_pairs": 201900,
+        "retained_after_censoring": 196674,
+        "retained_pct": 97.41158989598812
+      }
+    },
+    "108": {
+      "pre-2020": {
+        "position4_pairs": 136368,
+        "retained_after_censoring": 133307,
+        "retained_pct": 97.7553384958348
+      },
+      "2020-2022": {
+        "position4_pairs": 35184,
+        "retained_after_censoring": 34253,
+        "retained_pct": 97.35391086857662
+      },
+      "2023-2025": {
+        "position4_pairs": 30348,
+        "retained_after_censoring": 29094,
+        "retained_pct": 95.86793198892843
+      },
+      "ALL": {
+        "position4_pairs": 201900,
+        "retained_after_censoring": 196654,
+        "retained_pct": 97.40168400198118
+      }
+    },
+    "150": {
+      "pre-2020": {
+        "position4_pairs": 136368,
+        "retained_after_censoring": 132822,
+        "retained_pct": 97.39968321013727
+      },
+      "2020-2022": {
+        "position4_pairs": 35184,
+        "retained_after_censoring": 34079,
+        "retained_pct": 96.8593678944975
+      },
+      "2023-2025": {
+        "position4_pairs": 30348,
+        "retained_after_censoring": 28788,
+        "retained_pct": 94.85962831158561
+      },
+      "ALL": {
+        "position4_pairs": 201900,
+        "retained_after_censoring": 195689,
+        "retained_pct": 96.9237246161466
+      }
+    },
+    "213": {
+      "pre-2020": {
+        "position4_pairs": 136368,
+        "retained_after_censoring": 132221,
+        "retained_pct": 96.95896397981932
+      },
+      "2020-2022": {
+        "position4_pairs": 35184,
+        "retained_after_censoring": 33877,
+        "retained_pct": 96.28524329240564
+      },
+      "2023-2025": {
+        "position4_pairs": 30348,
+        "retained_after_censoring": 27172,
+        "retained_pct": 89.53473045999736
+      },
+      "ALL": {
+        "position4_pairs": 201900,
+        "retained_after_censoring": 193270,
+        "retained_pct": 95.72560673600792
+      }
+    }
+  },
+  "emitted_beyond_the_required_list": {
+    "_why": "not required by Step 8. Emitted because Step 9's bound endpoints and Step 10's residual are built from them, and rebuilding them downstream would be a second definition",
+    "APPLY": {
+      "position5_n": 196654,
+      "position7_n": 195951,
+      "states_position5": {
+        "never_started": 33373,
+        "continued": 144140,
+        "started_and_left": 19141
+      },
+      "liveness_exclusions": {
+        "never_started": 604,
+        "started_and_left": 99,
+        "accounts": 216
+      },
+      "insertion_dormancy_channel_pairs": {
+        "definition": "RETAINED pairs, NOT Continued, live only by an insertion after tau1, whose LAST insertion falls inside the open window (tau1, tau2)",
+        "started_and_left": 90,
+        "never_started": 207,
+        "why_the_never_started_component_does_not_widen_that_bound": "the never-started null |A| = 0 is read at tau1 and every one of these pairs has an insertion AFTER tau1, so its null is OBSERVED, not conceded. The started-and-left pairs differ because the Continued condition they negate is read at tau2 and they are dormant before it"
+      },
+      "p_equals_1_residual_post_position_7": 1230
+    },
+    "DERIV": {
+      "position5_n": 147370,
+      "position7_n": 147271,
+      "states_position5": {
+        "never_started": 9145,
+        "continued": 121382,
+        "started_and_left": 16843
+      },
+      "liveness_exclusions": {
+        "never_started": 0,
+        "started_and_left": 99,
+        "accounts": 73
+      },
+      "insertion_dormancy_channel_pairs": {
+        "definition": "RETAINED pairs, NOT Continued, live only by an insertion after tau1, whose LAST insertion falls inside the open window (tau1, tau2)",
+        "started_and_left": 89,
+        "never_started": 3,
+        "why_the_never_started_component_does_not_widen_that_bound": "the never-started null |A| = 0 is read at tau1 and every one of these pairs has an insertion AFTER tau1, so its null is OBSERVED, not conceded. The started-and-left pairs differ because the Continued condition they negate is read at tau2 and they are dormant before it"
+      },
+      "p_equals_1_residual_post_position_7": 1056
+    },
+    "scope_qualifier_of_the_Step_9_bound": "covering with respect to INSERTION-DORMANCY, exhaustively; open only across CHANNEL CLASSES (D4, D9). D4 and D9 publish alongside and are never folded in. Step 8 does not compute the bound, but it produces the position-6 population the bound is stated on, so any table or note carrying the bound carries this qualifier (decisions/0062)",
+    "account_base": {
+      "accounts_in_the_sweep": 2549,
+      "accounts_reaching_the_position_5_population": 2422,
+      "pull_ledger_outcomes": {
+        "skipped_length_forecast": 38,
+        "complete": 2552,
+        "error_short_read": 7,
+        "discarded_over_tolerance": 287
+      },
+      "note": "accounts that were skipped, discarded over tolerance or never attempted are ABSENT, not empty. CLAUDE.md requires an access_denied user to stay distinguishable downstream, because a skipped user silently read as empty becomes a false 'never started' in the headline. No such account contributes a row to this table"
+    }
+  },
+  "discovery_channel": {
+    "form": "TWO BOOLEAN COLUMNS, not one categorical (decisions/0070 ruling 3)",
+    "pool_users": 5694,
+    "accounts_in_the_analysis_population": 2422,
+    "accounts_channel_A_only": 1349,
+    "accounts_channel_B_only": 899,
+    "accounts_in_BOTH": 174,
+    "accounts_in_NEITHER": 0,
+    "note": "324 of the 5,694 pooled users are in both channels; one categorical column would drop the overlap or assign it arbitrarily"
+  },
+  "analysis_table": {
+    "path": "processed/step8/b/analysis_table.csv.gz",
+    "rows": 196654,
+    "row_set": "the POSITION-5 population, APPLY = 196,654, carrying the position-6 flag `live` and the position-7 `outcome`. The post-position-7 row set is `live == True` (195,951); DERIV is `in_deriv` (147,370) and its post-position-7 row set is `in_deriv & live`. The 703 excluded rows are retained IN THE FILE with live = False, because Step 9's bounds are built from their outcome states and rebuilding them downstream would be a second definition of the filter",
+    "columns": 87,
+    "action_is_counts_not_a_column": true,
+    "discovery_channel_is_two_booleans": true
+  },
+  "scope_qualifier": "covering with respect to INSERTION-DORMANCY, exhaustively; open only across CHANNEL CLASSES (D4, D9). D4 and D9 publish alongside and are never folded in. Step 8 does not compute the bound, but it produces the position-6 population the bound is stated on, so any table or note carrying the bound carries this qualifier (decisions/0062)"
+}

@@ -1130,7 +1130,7 @@ Recorded here so nothing is reconstructed later from memory.
   counts for all five D12 cadence buckets** plus the count of shows within 1 day of a bucket
   boundary (Section 10.0); the **metadata-disagreement counts** of Section 3.4, including the
   subset where `aired_episodes < |E|` for S2; and
-  retention of `action` as a column. The three-part clock-start invariant in `task-sheet.md`
+  ~~retention of `action` as a column~~ *(**SUPERSEDED by `0070` ruling 4:** Step 8 emits **per-pair counts by action type**. `action` is record-level and the Step 8 row is a pair, so a single value per row would assert one action per pair. **This section's own §2.3 is the ground for it** — `action` is a property of the **logging client**, not of the viewing, so it is not an outcome variable. Step 13's arm reads the counts)*. The three-part clock-start invariant in `task-sheet.md`
   should compute the first-pass S1 completion date **independently**, not read back the
   pipeline's value, or its equality clause proves nothing (Section 5). Every boundary test is
   the half-open instant form of Section 2.4; `date(watched_at) ≤ T1` must not appear anywhere
@@ -1626,6 +1626,6 @@ rows" above is where a reader would look for it.
 
 **§842's observation is unchanged and now matters more.** `S1_completion_date` is uncapped, so the
 loss falls entirely on that term — and it is **cohort-asymmetric**: at `W = 213` the 2023–2025
-cohort loses **10.3%** of its pairs against **2.7%** pre-2020, and the survivors from recent titles
+cohort loses **10.3%** of its pairs against **2.7%** pre-2020 *(**both SUPERSEDED by `0070`/`0073`: on the filter order Step 8 mandates the figures are **10.5%** and **3.0%**.** These were measured on the position-3 output; Step 8 censors the position-4 output)*, and the survivors from recent titles
 are those who completed S1 early, who are the users likeliest to continue. Carried to Step 14.
 

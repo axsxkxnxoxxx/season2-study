@@ -1,0 +1,1341 @@
+{
+  "step": 8,
+  "instance": "a",
+  "mode": "GATE \u2014 proposes, adopts nothing",
+  "api_calls": 0,
+  "W_days": 108,
+  "H_days": 91,
+  "tau_pull_utc": "2026-08-11T00:00:00Z",
+  "filter_order": [
+    "1 Step 2 frame",
+    "2 L2 = 1 exclusion",
+    "3 S1 completion rule",
+    "4 contamination exclusion (Step 5)",
+    "5 right-censoring",
+    "6 liveness (stage 3)",
+    "7 outcome assignment (stage 3)"
+  ],
+  "waterfall": {
+    "APPLY": {
+      "position_1_step2_frame": 220107,
+      "position_2_L2_eq_1_excluded": 220107,
+      "position_3_S1_completion_rule": 220107,
+      "position_4_contamination": 201900,
+      "position_5_right_censoring": 196654,
+      "position_6_liveness": 195951,
+      "position_7_outcome_assignment": 195951
+    },
+    "DERIV": {
+      "position_1_step2_frame": 220107,
+      "position_2_L2_eq_1_excluded": 220107,
+      "position_3_S1_completion_rule": 220107,
+      "position_4_contamination_DERIV_depth": 152126,
+      "position_5_right_censoring": 147370,
+      "position_6_liveness": 147271,
+      "position_7_outcome_assignment": 147271
+    }
+  },
+  "right_censoring_two_lines": {
+    "APPLY": {
+      "removed_by_max_W_91_term": 3684,
+      "removed_incrementally_by_the_plus_H_term": 1562,
+      "total": 5246,
+      "direction_on_the_headline": "UP -- both lines remove recent S1 completers, who are disproportionately likely to roll straight into S2 (Step 1 SS6)"
+    },
+    "DERIV": {
+      "removed_by_max_W_91_term": 3352,
+      "removed_incrementally_by_the_plus_H_term": 1404,
+      "total": 4756,
+      "direction_on_the_headline": "UP -- same mechanism"
+    }
+  },
+  "position_6_liveness": {
+    "APPLY": {
+      "population_entering": 196654,
+      "excluded": {
+        "total": 703,
+        "never_started": 604,
+        "started_and_left": 99,
+        "continued": 0,
+        "accounts": 216
+      },
+      "retained": 195951,
+      "expected_excluded": 703
+    },
+    "DERIV": {
+      "population_entering": 147370,
+      "excluded": {
+        "total": 99,
+        "never_started": 0,
+        "started_and_left": 99,
+        "continued": 0,
+        "accounts": 73
+      },
+      "retained": 147271,
+      "expected_excluded": 99
+    },
+    "conjunct_selection_APPLY": {
+      "start": 196654,
+      "after_conjunct_2_NOT_continued": 52514,
+      "after_conjunct_1_silent_at_tau1": 703
+    },
+    "evidence_scope_check": {
+      "excluded_with_D11_restriction_APPLY": 703,
+      "excluded_without_the_restriction_APPLY": 703,
+      "note": "0070 ruling 2 requires the restriction; measured inert here as it was when the ruling was made"
+    }
+  },
+  "position_7_outcome_assignment": {
+    "rows_removed": 0,
+    "APPLY_post_liveness": {
+      "never_started": 32769,
+      "started_and_left": 19042,
+      "continued": 144140,
+      "total": 195951
+    },
+    "DERIV_post_liveness": {
+      "never_started": 9145,
+      "started_and_left": 16744,
+      "continued": 121382,
+      "total": 147271
+    },
+    "APPLY_at_position_5_outcome_conditional_view": {
+      "never_started": 33373,
+      "started_and_left": 19141,
+      "continued": 144140,
+      "total": 196654
+    },
+    "DERIV_at_position_5_outcome_conditional_view": {
+      "never_started": 9145,
+      "started_and_left": 16843,
+      "continued": 121382,
+      "total": 147370
+    }
+  },
+  "per_arm": {
+    "step": 8,
+    "instance": "a",
+    "stage": 4,
+    "api_calls": 0,
+    "H_days": 91,
+    "arm_grid": [
+      38,
+      46,
+      77,
+      91,
+      107,
+      108,
+      150,
+      213
+    ],
+    "arm_grid_source": "the operative series quoted at task-sheet Step 7 (the ALT-BROAD per-arm exclusion series) and Step 13 (decisions/0044). Step 8 names no grid of its own.",
+    "censoring_denominator": {
+      "APPLY_position_4_output": 201900,
+      "DERIV_position_4_output": 152126,
+      "note": "the mandated filter order censors the POSITION-4 output; 0033's 97.6/98.0/97.5/96.0 were computed on the position-3 output and are superseded by 0070 ruling 8",
+      "APPLY_position_4_by_air_period": {
+        "pre-2020": 136368,
+        "2020-2022": 35184,
+        "2023-2025": 30348
+      },
+      "DERIV_position_4_by_air_period": {
+        "pre-2020": 102369,
+        "2020-2022": 27210,
+        "2023-2025": 22547
+      }
+    },
+    "arms": [
+      {
+        "W_days": 38,
+        "position_5_APPLY": 197007,
+        "position_5_DERIV": 147685,
+        "right_censoring_two_lines_APPLY": {
+          "removed_by_max_W_91_term": 3384,
+          "removed_incrementally_by_the_plus_H_term": 1509
+        },
+        "retained_share_of_position_4_APPLY": 0.975765,
+        "retained_per_air_period_APPLY": {
+          "pre-2020": {
+            "retained": 133507,
+            "entering": 136368,
+            "retained_share": 0.97902,
+            "lost_share": 0.02098
+          },
+          "2020-2022": {
+            "retained": 34311,
+            "entering": 35184,
+            "retained_share": 0.975188,
+            "lost_share": 0.024812
+          },
+          "2023-2025": {
+            "retained": 29189,
+            "entering": 30348,
+            "retained_share": 0.96181,
+            "lost_share": 0.03819
+          }
+        },
+        "retained_per_air_period_DERIV": {
+          "pre-2020": {
+            "retained": 99750,
+            "entering": 102369,
+            "retained_share": 0.974416
+          },
+          "2020-2022": {
+            "retained": 26428,
+            "entering": 27210,
+            "retained_share": 0.971261
+          },
+          "2023-2025": {
+            "retained": 21507,
+            "entering": 22547,
+            "retained_share": 0.953874
+          }
+        },
+        "liveness_exclusions_APPLY": {
+          "total": 537,
+          "never_started_component": 485,
+          "started_and_left_component": 52,
+          "accounts": 177
+        },
+        "liveness_exclusions_DERIV": {
+          "total": 52,
+          "never_started_component": 0,
+          "started_and_left_component": 52,
+          "accounts": 44
+        },
+        "position_7_APPLY": {
+          "never_started": 38019,
+          "started_and_left": 19433,
+          "continued": 139018,
+          "total": 196470
+        },
+        "position_7_DERIV": {
+          "never_started": 13873,
+          "started_and_left": 17054,
+          "continued": 116706,
+          "total": 147633
+        },
+        "D3_prime": {
+          "APPLY": {
+            "population": "APPLY, position-7 output at this arm (post-liveness)",
+            "all_started_and_left": 19433,
+            "cleared_count": 19355,
+            "cleared_share_of_all_started_and_left": 0.995986,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.090571,
+            "count_completing_in_tau2_to_tau2_plus_H": 1753
+          },
+          "DERIV": {
+            "population": "DERIV, position-7 output at this arm (post-liveness)",
+            "all_started_and_left": 17054,
+            "cleared_count": 16979,
+            "cleared_share_of_all_started_and_left": 0.995602,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.090347,
+            "count_completing_in_tau2_to_tau2_plus_H": 1534
+          }
+        }
+      },
+      {
+        "W_days": 46,
+        "position_5_APPLY": 197007,
+        "position_5_DERIV": 147685,
+        "right_censoring_two_lines_APPLY": {
+          "removed_by_max_W_91_term": 3384,
+          "removed_incrementally_by_the_plus_H_term": 1509
+        },
+        "retained_share_of_position_4_APPLY": 0.975765,
+        "retained_per_air_period_APPLY": {
+          "pre-2020": {
+            "retained": 133507,
+            "entering": 136368,
+            "retained_share": 0.97902,
+            "lost_share": 0.02098
+          },
+          "2020-2022": {
+            "retained": 34311,
+            "entering": 35184,
+            "retained_share": 0.975188,
+            "lost_share": 0.024812
+          },
+          "2023-2025": {
+            "retained": 29189,
+            "entering": 30348,
+            "retained_share": 0.96181,
+            "lost_share": 0.03819
+          }
+        },
+        "retained_per_air_period_DERIV": {
+          "pre-2020": {
+            "retained": 99750,
+            "entering": 102369,
+            "retained_share": 0.974416
+          },
+          "2020-2022": {
+            "retained": 26428,
+            "entering": 27210,
+            "retained_share": 0.971261
+          },
+          "2023-2025": {
+            "retained": 21507,
+            "entering": 22547,
+            "retained_share": 0.953874
+          }
+        },
+        "liveness_exclusions_APPLY": {
+          "total": 550,
+          "never_started_component": 494,
+          "started_and_left_component": 56,
+          "accounts": 182
+        },
+        "liveness_exclusions_DERIV": {
+          "total": 56,
+          "never_started_component": 0,
+          "started_and_left_component": 56,
+          "accounts": 48
+        },
+        "position_7_APPLY": {
+          "never_started": 37035,
+          "started_and_left": 19445,
+          "continued": 139977,
+          "total": 196457
+        },
+        "position_7_DERIV": {
+          "never_started": 12984,
+          "started_and_left": 17080,
+          "continued": 117565,
+          "total": 147629
+        },
+        "D3_prime": {
+          "APPLY": {
+            "population": "APPLY, position-7 output at this arm (post-liveness)",
+            "all_started_and_left": 19445,
+            "cleared_count": 19354,
+            "cleared_share_of_all_started_and_left": 0.99532,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.085977,
+            "count_completing_in_tau2_to_tau2_plus_H": 1664
+          },
+          "DERIV": {
+            "population": "DERIV, position-7 output at this arm (post-liveness)",
+            "all_started_and_left": 17080,
+            "cleared_count": 16994,
+            "cleared_share_of_all_started_and_left": 0.994965,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.085854,
+            "count_completing_in_tau2_to_tau2_plus_H": 1459
+          }
+        }
+      },
+      {
+        "W_days": 77,
+        "position_5_APPLY": 197007,
+        "position_5_DERIV": 147685,
+        "right_censoring_two_lines_APPLY": {
+          "removed_by_max_W_91_term": 3384,
+          "removed_incrementally_by_the_plus_H_term": 1509
+        },
+        "retained_share_of_position_4_APPLY": 0.975765,
+        "retained_per_air_period_APPLY": {
+          "pre-2020": {
+            "retained": 133507,
+            "entering": 136368,
+            "retained_share": 0.97902,
+            "lost_share": 0.02098
+          },
+          "2020-2022": {
+            "retained": 34311,
+            "entering": 35184,
+            "retained_share": 0.975188,
+            "lost_share": 0.024812
+          },
+          "2023-2025": {
+            "retained": 29189,
+            "entering": 30348,
+            "retained_share": 0.96181,
+            "lost_share": 0.03819
+          }
+        },
+        "retained_per_air_period_DERIV": {
+          "pre-2020": {
+            "retained": 99750,
+            "entering": 102369,
+            "retained_share": 0.974416
+          },
+          "2020-2022": {
+            "retained": 26428,
+            "entering": 27210,
+            "retained_share": 0.971261
+          },
+          "2023-2025": {
+            "retained": 21507,
+            "entering": 22547,
+            "retained_share": 0.953874
+          }
+        },
+        "liveness_exclusions_APPLY": {
+          "total": 633,
+          "never_started_component": 554,
+          "started_and_left_component": 79,
+          "accounts": 197
+        },
+        "liveness_exclusions_DERIV": {
+          "total": 79,
+          "never_started_component": 0,
+          "started_and_left_component": 79,
+          "accounts": 61
+        },
+        "position_7_APPLY": {
+          "never_started": 34428,
+          "started_and_left": 19352,
+          "continued": 142594,
+          "total": 196374
+        },
+        "position_7_DERIV": {
+          "never_started": 10602,
+          "started_and_left": 17009,
+          "continued": 119995,
+          "total": 147606
+        },
+        "D3_prime": {
+          "APPLY": {
+            "population": "APPLY, position-7 output at this arm (post-liveness)",
+            "all_started_and_left": 19352,
+            "cleared_count": 19173,
+            "cleared_share_of_all_started_and_left": 0.99075,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.073593,
+            "count_completing_in_tau2_to_tau2_plus_H": 1411
+          },
+          "DERIV": {
+            "population": "DERIV, position-7 output at this arm (post-liveness)",
+            "all_started_and_left": 17009,
+            "cleared_count": 16846,
+            "cleared_share_of_all_started_and_left": 0.990417,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.073252,
+            "count_completing_in_tau2_to_tau2_plus_H": 1234
+          }
+        }
+      },
+      {
+        "W_days": 91,
+        "position_5_APPLY": 197007,
+        "position_5_DERIV": 147685,
+        "right_censoring_two_lines_APPLY": {
+          "removed_by_max_W_91_term": 3384,
+          "removed_incrementally_by_the_plus_H_term": 1509
+        },
+        "retained_share_of_position_4_APPLY": 0.975765,
+        "retained_per_air_period_APPLY": {
+          "pre-2020": {
+            "retained": 133507,
+            "entering": 136368,
+            "retained_share": 0.97902,
+            "lost_share": 0.02098
+          },
+          "2020-2022": {
+            "retained": 34311,
+            "entering": 35184,
+            "retained_share": 0.975188,
+            "lost_share": 0.024812
+          },
+          "2023-2025": {
+            "retained": 29189,
+            "entering": 30348,
+            "retained_share": 0.96181,
+            "lost_share": 0.03819
+          }
+        },
+        "retained_per_air_period_DERIV": {
+          "pre-2020": {
+            "retained": 99750,
+            "entering": 102369,
+            "retained_share": 0.974416
+          },
+          "2020-2022": {
+            "retained": 26428,
+            "entering": 27210,
+            "retained_share": 0.971261
+          },
+          "2023-2025": {
+            "retained": 21507,
+            "entering": 22547,
+            "retained_share": 0.953874
+          }
+        },
+        "liveness_exclusions_APPLY": {
+          "total": 664,
+          "never_started_component": 575,
+          "started_and_left_component": 89,
+          "accounts": 207
+        },
+        "liveness_exclusions_DERIV": {
+          "total": 89,
+          "never_started_component": 0,
+          "started_and_left_component": 89,
+          "accounts": 68
+        },
+        "position_7_APPLY": {
+          "never_started": 33609,
+          "started_and_left": 19234,
+          "continued": 143500,
+          "total": 196343
+        },
+        "position_7_DERIV": {
+          "never_started": 9863,
+          "started_and_left": 16906,
+          "continued": 120827,
+          "total": 147596
+        },
+        "D3_prime": {
+          "APPLY": {
+            "population": "APPLY, position-7 output at this arm (post-liveness)",
+            "all_started_and_left": 19234,
+            "cleared_count": 19005,
+            "cleared_share_of_all_started_and_left": 0.988094,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.066035,
+            "count_completing_in_tau2_to_tau2_plus_H": 1255
+          },
+          "DERIV": {
+            "population": "DERIV, position-7 output at this arm (post-liveness)",
+            "all_started_and_left": 16906,
+            "cleared_count": 16698,
+            "cleared_share_of_all_started_and_left": 0.987697,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.065577,
+            "count_completing_in_tau2_to_tau2_plus_H": 1095
+          }
+        }
+      },
+      {
+        "W_days": 107,
+        "position_5_APPLY": 196674,
+        "position_5_DERIV": 147384,
+        "right_censoring_two_lines_APPLY": {
+          "removed_by_max_W_91_term": 3672,
+          "removed_incrementally_by_the_plus_H_term": 1554
+        },
+        "retained_share_of_position_4_APPLY": 0.974116,
+        "retained_per_air_period_APPLY": {
+          "pre-2020": {
+            "retained": 133319,
+            "entering": 136368,
+            "retained_share": 0.977641,
+            "lost_share": 0.022359
+          },
+          "2020-2022": {
+            "retained": 34256,
+            "entering": 35184,
+            "retained_share": 0.973624,
+            "lost_share": 0.026376
+          },
+          "2023-2025": {
+            "retained": 29099,
+            "entering": 30348,
+            "retained_share": 0.958844,
+            "lost_share": 0.041156
+          }
+        },
+        "retained_per_air_period_DERIV": {
+          "pre-2020": {
+            "retained": 99581,
+            "entering": 102369,
+            "retained_share": 0.972765
+          },
+          "2020-2022": {
+            "retained": 26374,
+            "entering": 27210,
+            "retained_share": 0.969276
+          },
+          "2023-2025": {
+            "retained": 21429,
+            "entering": 22547,
+            "retained_share": 0.950415
+          }
+        },
+        "liveness_exclusions_APPLY": {
+          "total": 701,
+          "never_started_component": 603,
+          "started_and_left_component": 98,
+          "accounts": 215
+        },
+        "liveness_exclusions_DERIV": {
+          "total": 98,
+          "never_started_component": 0,
+          "started_and_left_component": 98,
+          "accounts": 72
+        },
+        "position_7_APPLY": {
+          "never_started": 32823,
+          "started_and_left": 19056,
+          "continued": 144094,
+          "total": 195973
+        },
+        "position_7_DERIV": {
+          "never_started": 9196,
+          "started_and_left": 16754,
+          "continued": 121336,
+          "total": 147286
+        },
+        "D3_prime": {
+          "APPLY": {
+            "population": "APPLY, position-7 output at this arm (post-liveness)",
+            "all_started_and_left": 19056,
+            "cleared_count": 18835,
+            "cleared_share_of_all_started_and_left": 0.988403,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.061428,
+            "count_completing_in_tau2_to_tau2_plus_H": 1157
+          },
+          "DERIV": {
+            "population": "DERIV, position-7 output at this arm (post-liveness)",
+            "all_started_and_left": 16754,
+            "cleared_count": 16562,
+            "cleared_share_of_all_started_and_left": 0.98854,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.061285,
+            "count_completing_in_tau2_to_tau2_plus_H": 1015
+          }
+        }
+      },
+      {
+        "W_days": 108,
+        "position_5_APPLY": 196654,
+        "position_5_DERIV": 147370,
+        "right_censoring_two_lines_APPLY": {
+          "removed_by_max_W_91_term": 3684,
+          "removed_incrementally_by_the_plus_H_term": 1562
+        },
+        "retained_share_of_position_4_APPLY": 0.974017,
+        "retained_per_air_period_APPLY": {
+          "pre-2020": {
+            "retained": 133307,
+            "entering": 136368,
+            "retained_share": 0.977553,
+            "lost_share": 0.022447
+          },
+          "2020-2022": {
+            "retained": 34253,
+            "entering": 35184,
+            "retained_share": 0.973539,
+            "lost_share": 0.026461
+          },
+          "2023-2025": {
+            "retained": 29094,
+            "entering": 30348,
+            "retained_share": 0.958679,
+            "lost_share": 0.041321
+          }
+        },
+        "retained_per_air_period_DERIV": {
+          "pre-2020": {
+            "retained": 99572,
+            "entering": 102369,
+            "retained_share": 0.972677
+          },
+          "2020-2022": {
+            "retained": 26371,
+            "entering": 27210,
+            "retained_share": 0.969166
+          },
+          "2023-2025": {
+            "retained": 21427,
+            "entering": 22547,
+            "retained_share": 0.950326
+          }
+        },
+        "liveness_exclusions_APPLY": {
+          "total": 703,
+          "never_started_component": 604,
+          "started_and_left_component": 99,
+          "accounts": 216
+        },
+        "liveness_exclusions_DERIV": {
+          "total": 99,
+          "never_started_component": 0,
+          "started_and_left_component": 99,
+          "accounts": 73
+        },
+        "position_7_APPLY": {
+          "never_started": 32769,
+          "started_and_left": 19042,
+          "continued": 144140,
+          "total": 195951
+        },
+        "position_7_DERIV": {
+          "never_started": 9145,
+          "started_and_left": 16744,
+          "continued": 121382,
+          "total": 147271
+        },
+        "D3_prime": {
+          "APPLY": {
+            "population": "APPLY, position-7 output at this arm (post-liveness)",
+            "all_started_and_left": 19042,
+            "cleared_count": 18819,
+            "cleared_share_of_all_started_and_left": 0.988289,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.060896,
+            "count_completing_in_tau2_to_tau2_plus_H": 1146
+          },
+          "DERIV": {
+            "population": "DERIV, position-7 output at this arm (post-liveness)",
+            "all_started_and_left": 16744,
+            "cleared_count": 16550,
+            "cleared_share_of_all_started_and_left": 0.988414,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.060785,
+            "count_completing_in_tau2_to_tau2_plus_H": 1006
+          }
+        }
+      },
+      {
+        "W_days": 150,
+        "position_5_APPLY": 195689,
+        "position_5_DERIV": 146602,
+        "right_censoring_two_lines_APPLY": {
+          "removed_by_max_W_91_term": 4261,
+          "removed_incrementally_by_the_plus_H_term": 1950
+        },
+        "retained_share_of_position_4_APPLY": 0.969237,
+        "retained_per_air_period_APPLY": {
+          "pre-2020": {
+            "retained": 132822,
+            "entering": 136368,
+            "retained_share": 0.973997,
+            "lost_share": 0.026003
+          },
+          "2020-2022": {
+            "retained": 34079,
+            "entering": 35184,
+            "retained_share": 0.968594,
+            "lost_share": 0.031406
+          },
+          "2023-2025": {
+            "retained": 28788,
+            "entering": 30348,
+            "retained_share": 0.948596,
+            "lost_share": 0.051404
+          }
+        },
+        "retained_per_air_period_DERIV": {
+          "pre-2020": {
+            "retained": 99168,
+            "entering": 102369,
+            "retained_share": 0.968731
+          },
+          "2020-2022": {
+            "retained": 26238,
+            "entering": 27210,
+            "retained_share": 0.964278
+          },
+          "2023-2025": {
+            "retained": 21196,
+            "entering": 22547,
+            "retained_share": 0.940081
+          }
+        },
+        "liveness_exclusions_APPLY": {
+          "total": 789,
+          "never_started_component": 664,
+          "started_and_left_component": 125,
+          "accounts": 243
+        },
+        "liveness_exclusions_DERIV": {
+          "total": 125,
+          "never_started_component": 0,
+          "started_and_left_component": 125,
+          "accounts": 90
+        },
+        "position_7_APPLY": {
+          "never_started": 31092,
+          "started_and_left": 18676,
+          "continued": 145132,
+          "total": 194900
+        },
+        "position_7_DERIV": {
+          "never_started": 7755,
+          "started_and_left": 16433,
+          "continued": 122289,
+          "total": 146477
+        },
+        "D3_prime": {
+          "APPLY": {
+            "population": "APPLY, position-7 output at this arm (post-liveness)",
+            "all_started_and_left": 18676,
+            "cleared_count": 18376,
+            "cleared_share_of_all_started_and_left": 0.983937,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.053548,
+            "count_completing_in_tau2_to_tau2_plus_H": 984
+          },
+          "DERIV": {
+            "population": "DERIV, position-7 output at this arm (post-liveness)",
+            "all_started_and_left": 16433,
+            "cleared_count": 16154,
+            "cleared_share_of_all_started_and_left": 0.983022,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.053609,
+            "count_completing_in_tau2_to_tau2_plus_H": 866
+          }
+        }
+      },
+      {
+        "W_days": 213,
+        "position_5_APPLY": 193270,
+        "position_5_DERIV": 144852,
+        "right_censoring_two_lines_APPLY": {
+          "removed_by_max_W_91_term": 5554,
+          "removed_incrementally_by_the_plus_H_term": 3076
+        },
+        "retained_share_of_position_4_APPLY": 0.957256,
+        "retained_per_air_period_APPLY": {
+          "pre-2020": {
+            "retained": 132221,
+            "entering": 136368,
+            "retained_share": 0.96959,
+            "lost_share": 0.03041
+          },
+          "2020-2022": {
+            "retained": 33877,
+            "entering": 35184,
+            "retained_share": 0.962852,
+            "lost_share": 0.037148
+          },
+          "2023-2025": {
+            "retained": 27172,
+            "entering": 30348,
+            "retained_share": 0.895347,
+            "lost_share": 0.104653
+          }
+        },
+        "retained_per_air_period_DERIV": {
+          "pre-2020": {
+            "retained": 98679,
+            "entering": 102369,
+            "retained_share": 0.963954
+          },
+          "2020-2022": {
+            "retained": 26082,
+            "entering": 27210,
+            "retained_share": 0.958545
+          },
+          "2023-2025": {
+            "retained": 20091,
+            "entering": 22547,
+            "retained_share": 0.891072
+          }
+        },
+        "liveness_exclusions_APPLY": {
+          "total": 864,
+          "never_started_component": 716,
+          "started_and_left_component": 148,
+          "accounts": 253
+        },
+        "liveness_exclusions_DERIV": {
+          "total": 147,
+          "never_started_component": 0,
+          "started_and_left_component": 147,
+          "accounts": 96
+        },
+        "position_7_APPLY": {
+          "never_started": 28999,
+          "started_and_left": 18054,
+          "continued": 145353,
+          "total": 192406
+        },
+        "position_7_DERIV": {
+          "never_started": 6366,
+          "started_and_left": 15868,
+          "continued": 122471,
+          "total": 144705
+        },
+        "D3_prime": {
+          "APPLY": {
+            "population": "APPLY, position-7 output at this arm (post-liveness)",
+            "all_started_and_left": 18054,
+            "cleared_count": 17644,
+            "cleared_share_of_all_started_and_left": 0.97729,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.046248,
+            "count_completing_in_tau2_to_tau2_plus_H": 816
+          },
+          "DERIV": {
+            "population": "DERIV, position-7 output at this arm (post-liveness)",
+            "all_started_and_left": 15868,
+            "cleared_count": 15483,
+            "cleared_share_of_all_started_and_left": 0.975737,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.046373,
+            "count_completing_in_tau2_to_tau2_plus_H": 718
+          }
+        }
+      }
+    ]
+  },
+  "required_counts": {
+    "step": 8,
+    "instance": "a",
+    "stage": 5,
+    "api_calls": 0,
+    "W_days": 108,
+    "H_days": 91,
+    "drop_counts": {
+      "rule": "set membership (Step 1 SS3.2): a record is dropped when its number is not in that season's listed set E. Never the numeric range 1..F.",
+      "coverage_records_examined": 6065704,
+      "per_show": {
+        "shows_examined": 1138,
+        "shows_with_any_dropped_record": 0,
+        "dropped_episode_records_total": 0,
+        "distinct_dropped_season_number_total": 0,
+        "file": "processed/step8/a/drops_per_show.csv"
+      },
+      "per_outcome": {
+        "definition": "pairs with at least one dropped S2 record and |A| = 0 after the drop rule",
+        "count": 0,
+        "denominator_position_5_never_started_APPLY": 33373,
+        "share_of_never_started_at_position_5": 0.0,
+        "denominator_post_liveness_never_started_APPLY": 32769,
+        "share_of_never_started_post_liveness": 0.0,
+        "direction_on_the_headline": "would INFLATE never started (Step 1 SS3.4); the measured count is 0, on 6,065,704 records examined",
+        "denominator_note": "position 5 is what entered the liveness filter (0070 ruling 6); the difference between the two denominators is exactly the 604 never-started liveness exclusions"
+      }
+    },
+    "D2_negative_lag": {
+      "APPLY_position_5": {
+        "population": 196654,
+        "pairs_with_first_S2_watch_strictly_before_clock_start": 49403,
+        "share": 0.251218,
+        "S2_finale_term_binds": 44177,
+        "S1_completion_term_binds": 5219,
+        "both_terms_bind": 7
+      },
+      "DERIV_position_5": {
+        "population": 147370,
+        "pairs_with_first_S2_watch_strictly_before_clock_start": 47500,
+        "share": 0.322318,
+        "S2_finale_term_binds": 43249,
+        "S1_completion_term_binds": 4244,
+        "both_terms_bind": 7
+      },
+      "APPLY_position_7": {
+        "population": 195951,
+        "pairs_with_first_S2_watch_strictly_before_clock_start": 49356,
+        "share": 0.251879,
+        "S2_finale_term_binds": 44135,
+        "S1_completion_term_binds": 5214,
+        "both_terms_bind": 7
+      },
+      "DERIV_position_7": {
+        "population": 147271,
+        "pairs_with_first_S2_watch_strictly_before_clock_start": 47453,
+        "share": 0.322216,
+        "S2_finale_term_binds": 43207,
+        "S1_completion_term_binds": 4239,
+        "both_terms_bind": 7
+      },
+      "binding_term_split_of_the_whole_population_APPLY_position_5": {
+        "S2_finale_binds": 87441,
+        "S1_completion_binds": 109045,
+        "both_bind": 168
+      },
+      "reading": "S2-finale-term negative lags are the normal case for anyone who watched a weekly season while it aired and are information about the frame's cadence mix. S1-term negative lags are the test of the first-pass completion choice and should be small. A tie is its own category, not a tiebreak (0070 ruling 5)."
+    },
+    "D4_S3_without_S2": {
+      "definition": "a pair with S3-or-later episodes logged and NO S2 episodes at all is scored Never started (Step 1 D4). Known misclassification, known direction: it INFLATES never started.",
+      "APPLY_position_7": {
+        "never_started": 32769,
+        "D4_signature": 426,
+        "share_of_never_started": 0.013
+      },
+      "DERIV_position_7": {
+        "never_started": 9145,
+        "D4_signature": 0,
+        "share_of_never_started": 0.0
+      },
+      "APPLY_position_5": {
+        "never_started": 33373,
+        "D4_signature": 428
+      },
+      "wider_variant_reported_so_nothing_is_hidden": {
+        "never_started_with_S3_evidence_but_some_S2_evidence_after_tau1_APPLY_position_7": 5004
+      }
+    },
+    "D8_never_started_post_window": {
+      "horizon": "[tau1, tau1 + H*24h) = [tau1, tau2), H = 91 (D10). NOT to the pull date.",
+      "direction_on_the_headline": "DOWN",
+      "APPLY_position_7": {
+        "never_started": 32769,
+        "i_count_with_any_S2_episode_in_the_horizon": 2733,
+        "i_share": 0.083402,
+        "ii_count_satisfying_the_continued_condition_over_the_horizon": 1820,
+        "ii_share": 0.05554
+      },
+      "DERIV_position_7": {
+        "never_started": 9145,
+        "i_count_with_any_S2_episode_in_the_horizon": 2508,
+        "i_share": 0.274248,
+        "ii_count_satisfying_the_continued_condition_over_the_horizon": 1689,
+        "ii_share": 0.184691
+      },
+      "APPLY_position_5": {
+        "never_started": 33373,
+        "i_count_with_any_S2_episode_in_the_horizon": 2733,
+        "i_share": 0.081893,
+        "ii_count_satisfying_the_continued_condition_over_the_horizon": 1820,
+        "ii_share": 0.054535
+      }
+    },
+    "D3_prime": {
+      "per_arm": {
+        "38": {
+          "APPLY": {
+            "population": "APPLY, position-7 output at this arm (post-liveness)",
+            "all_started_and_left": 19433,
+            "cleared_count": 19355,
+            "cleared_share_of_all_started_and_left": 0.995986,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.090571,
+            "count_completing_in_tau2_to_tau2_plus_H": 1753
+          },
+          "DERIV": {
+            "population": "DERIV, position-7 output at this arm (post-liveness)",
+            "all_started_and_left": 17054,
+            "cleared_count": 16979,
+            "cleared_share_of_all_started_and_left": 0.995602,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.090347,
+            "count_completing_in_tau2_to_tau2_plus_H": 1534
+          }
+        },
+        "46": {
+          "APPLY": {
+            "population": "APPLY, position-7 output at this arm (post-liveness)",
+            "all_started_and_left": 19445,
+            "cleared_count": 19354,
+            "cleared_share_of_all_started_and_left": 0.99532,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.085977,
+            "count_completing_in_tau2_to_tau2_plus_H": 1664
+          },
+          "DERIV": {
+            "population": "DERIV, position-7 output at this arm (post-liveness)",
+            "all_started_and_left": 17080,
+            "cleared_count": 16994,
+            "cleared_share_of_all_started_and_left": 0.994965,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.085854,
+            "count_completing_in_tau2_to_tau2_plus_H": 1459
+          }
+        },
+        "77": {
+          "APPLY": {
+            "population": "APPLY, position-7 output at this arm (post-liveness)",
+            "all_started_and_left": 19352,
+            "cleared_count": 19173,
+            "cleared_share_of_all_started_and_left": 0.99075,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.073593,
+            "count_completing_in_tau2_to_tau2_plus_H": 1411
+          },
+          "DERIV": {
+            "population": "DERIV, position-7 output at this arm (post-liveness)",
+            "all_started_and_left": 17009,
+            "cleared_count": 16846,
+            "cleared_share_of_all_started_and_left": 0.990417,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.073252,
+            "count_completing_in_tau2_to_tau2_plus_H": 1234
+          }
+        },
+        "91": {
+          "APPLY": {
+            "population": "APPLY, position-7 output at this arm (post-liveness)",
+            "all_started_and_left": 19234,
+            "cleared_count": 19005,
+            "cleared_share_of_all_started_and_left": 0.988094,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.066035,
+            "count_completing_in_tau2_to_tau2_plus_H": 1255
+          },
+          "DERIV": {
+            "population": "DERIV, position-7 output at this arm (post-liveness)",
+            "all_started_and_left": 16906,
+            "cleared_count": 16698,
+            "cleared_share_of_all_started_and_left": 0.987697,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.065577,
+            "count_completing_in_tau2_to_tau2_plus_H": 1095
+          }
+        },
+        "107": {
+          "APPLY": {
+            "population": "APPLY, position-7 output at this arm (post-liveness)",
+            "all_started_and_left": 19056,
+            "cleared_count": 18835,
+            "cleared_share_of_all_started_and_left": 0.988403,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.061428,
+            "count_completing_in_tau2_to_tau2_plus_H": 1157
+          },
+          "DERIV": {
+            "population": "DERIV, position-7 output at this arm (post-liveness)",
+            "all_started_and_left": 16754,
+            "cleared_count": 16562,
+            "cleared_share_of_all_started_and_left": 0.98854,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.061285,
+            "count_completing_in_tau2_to_tau2_plus_H": 1015
+          }
+        },
+        "108": {
+          "APPLY": {
+            "population": "APPLY, position-7 output at this arm (post-liveness)",
+            "all_started_and_left": 19042,
+            "cleared_count": 18819,
+            "cleared_share_of_all_started_and_left": 0.988289,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.060896,
+            "count_completing_in_tau2_to_tau2_plus_H": 1146
+          },
+          "DERIV": {
+            "population": "DERIV, position-7 output at this arm (post-liveness)",
+            "all_started_and_left": 16744,
+            "cleared_count": 16550,
+            "cleared_share_of_all_started_and_left": 0.988414,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.060785,
+            "count_completing_in_tau2_to_tau2_plus_H": 1006
+          }
+        },
+        "150": {
+          "APPLY": {
+            "population": "APPLY, position-7 output at this arm (post-liveness)",
+            "all_started_and_left": 18676,
+            "cleared_count": 18376,
+            "cleared_share_of_all_started_and_left": 0.983937,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.053548,
+            "count_completing_in_tau2_to_tau2_plus_H": 984
+          },
+          "DERIV": {
+            "population": "DERIV, position-7 output at this arm (post-liveness)",
+            "all_started_and_left": 16433,
+            "cleared_count": 16154,
+            "cleared_share_of_all_started_and_left": 0.983022,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.053609,
+            "count_completing_in_tau2_to_tau2_plus_H": 866
+          }
+        },
+        "213": {
+          "APPLY": {
+            "population": "APPLY, position-7 output at this arm (post-liveness)",
+            "all_started_and_left": 18054,
+            "cleared_count": 17644,
+            "cleared_share_of_all_started_and_left": 0.97729,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.046248,
+            "count_completing_in_tau2_to_tau2_plus_H": 816
+          },
+          "DERIV": {
+            "population": "DERIV, position-7 output at this arm (post-liveness)",
+            "all_started_and_left": 15868,
+            "cleared_count": 15483,
+            "cleared_share_of_all_started_and_left": 0.975737,
+            "share_completing_in_tau2_to_tau2_plus_H": 0.046373,
+            "count_completing_in_tau2_to_tau2_plus_H": 718
+          }
+        }
+      },
+      "note": "each arm's denominator is its own (0068). The 95.98%-at-W=46 to 91.34%-at-W=213 cleared series in decisions/0034 was measured on a different population and is not comparable to these."
+    },
+    "the_3440": {
+      "value": 3440,
+      "what": "Started-and-left pairs completing S2 at any point before tau_pull",
+      "population": "THE UNCENSORED STEP 5 ESTIMATION SAMPLE OF 128,099 PAIRS -- not APPLY, not DERIV (0068; measured at 0034 SS3)",
+      "labelled": "a COUNT, not a rate",
+      "exposure_weighting": "exposure-weighted by show recency: a 2016 title offers ten years in which a completion can be observed and a 2025 title about eighteen months, so the count mixes exposure with behaviour",
+      "why_it_is_a_floor": "the estimation sample excludes the pairs the Step 5 waterfall drops and is not right-censored (Step 14 item 9)",
+      "restated_not_recomputed": true
+    },
+    "D9_split_artifacts": {
+      "signature": "two show IDs in one user's sweep with complementary season coverage (one carrying S1 and not S2, the other S2 and not S1) whose normalised slugs agree. Detection is imperfect and every count here is a LOWER BOUND (Step 1 SS10.0b).",
+      "coverage": {
+        "show_ids_with_a_slug": 46428,
+        "user_show_coverage_rows_examined": 747478,
+        "candidate_complementary_id_pairs": 76
+      },
+      "half_a_fabricated_never_started_row": {
+        "population": "APPLY position 7, scored Never started",
+        "never_started": 32769,
+        "carrying_the_signature": 6,
+        "share_of_never_started": 0.000183,
+        "direction": "DOWN -- the row is fabricated directly into the headline category"
+      },
+      "half_b_silently_deleted_S1_failing_counterpart": {
+        "population": "pairs on frame shows in the pair universe that FAIL the S1 completion rule, i.e. rows position 3 removes -- retained as a side output because they are not in the analysis table and cannot be recovered from it",
+        "pairs_failing_S1_completion": 58345,
+        "carrying_the_signature": 28
+      },
+      "merges_counted_with_the_same_query_and_reported_separately": {
+        "user_show_rows_where_one_ID_carries_both_seasons_and_a_same_title_ID_also_appears": 5871,
+        "note": "merges can only add evidence to a pair, never remove it (Step 1 SS10.0b)"
+      }
+    },
+    "pull_date_and_D11": {
+      "pull_date_tau_pull_utc": "2026-08-11T00:00:00Z",
+      "source": "decisions/0011; D11 makes it a single global frozen cutoff",
+      "earliest_per_user_first_page_fetch_utc": "2026-08-11 05:01:26.447766+00:00",
+      "latest_per_user_first_page_fetch_utc": "2026-08-11 23:10:08.519916+00:00",
+      "earliest_per_user_last_page_fetch_utc": "2026-08-11 05:01:26.447766+00:00",
+      "latest_per_user_last_page_fetch_utc": "2026-08-11 23:10:31.236946+00:00",
+      "constraint_pull_date_le_earliest_fetch_holds": true,
+      "records_discarded_for_watched_at_ge_tau_pull_whole_sweep": 1734,
+      "records_discarded_for_watched_at_ge_tau_pull_in_frame_S1S2": 167,
+      "records_with_no_watched_at_whole_sweep": 379,
+      "open_question_carried_not_resolved": {
+        "note": "decisions/0068 fixes line 1 at the PUBLISHED 220,107 and lists this as an OPEN question; it is measured, not applied",
+        "completers_with_D11_applied_to_the_S1_walk": 220103,
+        "pairs_that_stop_being_completers_under_D11": 4,
+        "completers_whose_completion_date_moves_under_D11": 0
+      }
+    },
+    "D12_cadence_buckets": {
+      "buckets": {
+        "C0": {
+          "shows": 0,
+          "pairs_position_5_APPLY": 0,
+          "pairs_position_7_APPLY": 0,
+          "pairs_position_5_DERIV": 0
+        },
+        "C1": {
+          "shows": 206,
+          "pairs_position_5_APPLY": 40365,
+          "pairs_position_7_APPLY": 40231,
+          "pairs_position_5_DERIV": 29493
+        },
+        "C2": {
+          "shows": 340,
+          "pairs_position_5_APPLY": 58811,
+          "pairs_position_7_APPLY": 58583,
+          "pairs_position_5_DERIV": 44500
+        },
+        "C3": {
+          "shows": 167,
+          "pairs_position_5_APPLY": 27573,
+          "pairs_position_7_APPLY": 27306,
+          "pairs_position_5_DERIV": 20783
+        },
+        "C4": {
+          "shows": 425,
+          "pairs_position_5_APPLY": 69905,
+          "pairs_position_7_APPLY": 69831,
+          "pairs_position_5_DERIV": 52594
+        }
+      },
+      "shows_within_1_day_of_a_bucket_boundary": 7,
+      "coverage_shows": 1138,
+      "note": "C0 absorbs missing or impossible data; it is reported as its own line even at zero (Step 1 SS10.0)"
+    },
+    "metadata_disagreement": {
+      "coverage_shows": 1138,
+      "recomputed_from_the_reported_counts_not_read_off_the_stored_flags": true,
+      "recomputation_agrees_with_the_stored_frame_flags": true,
+      "shows_where_episode_count_aired_episodes_and_E_disagree_S1": 0,
+      "shows_where_they_disagree_S2": 0,
+      "shows_where_they_disagree_S1_or_S2": 0,
+      "pairs_on_those_shows_position_5_APPLY": 0,
+      "pairs_on_those_shows_position_7_APPLY": 0,
+      "shows_where_aired_episodes_lt_listed_E_for_S2": 0,
+      "continued_reachability_on_those_shows": {
+        "continued_pairs_position_7_APPLY": 0
+      },
+      "direction": "listed exceeding aired raises L2, which tightens ceil(0.90*L2) and pushes pairs that would have been Continued into Started-and-left -- it OVERSTATES abandonment; the same effect on S1 raises L1 and shrinks the population, non-randomly, on shows with messy metadata (Step 1 SS3.4)"
+    },
+    "outcome_counts": {
+      "APPLY_position_7": {
+        "never_started": 32769,
+        "started_and_left": 19042,
+        "continued": 144140,
+        "total": 195951
+      },
+      "DERIV_position_7": {
+        "never_started": 9145,
+        "started_and_left": 16744,
+        "continued": 121382,
+        "total": 147271
+      },
+      "horizons": "Never started is a 108-day statement read at tau1; Continued is a 199-day statement read at tau2 on A_H. The two must never be described as measured alike (0034).",
+      "abandonment_point_p": {
+        "defined_only_for_started_and_left": true,
+        "form": "rank: |{e in E2 : e <= max(A_H)}| / L2; the raw ratio max(A_H)/L2 is withdrawn and must not be reinstated",
+        "p_equals_1_residual_APPLY_position_7": 1230,
+        "p_min": 0.038461538461538464,
+        "p_max": 1.0,
+        "rows_with_p_null_outside_started_and_left": 0
+      }
+    },
+    "action_counts": {
+      "ruling": "action is record-level and the row is a pair, so it is emitted as per-pair COUNTS BY ACTION TYPE, never as a row-level column (0070 ruling 4). It is not an outcome variable: Step 1 SS2.3 ruled check-ins count as watching alongside scrobble and watch, because action is a property of the LOGGING CLIENT.",
+      "records_on_position_7_APPLY_rows": {
+        "S1": {
+          "watch": 2253911,
+          "checkin": 135295,
+          "scrobble": 319554,
+          "other": 0
+        },
+        "S2": {
+          "watch": 2032204,
+          "checkin": 117560,
+          "scrobble": 294457,
+          "other": 0
+        }
+      },
+      "pairs_by_S2_evidence_composition_position_7_APPLY": {
+        "no_S2_records": 22656,
+        "watch_only": 130431,
+        "checkin_only": 4557,
+        "scrobble_only": 12484,
+        "mixed": 25823
+      },
+      "note_for_Step_13": "the action arm excludes checkin-only and manual-watch-only evidence; those two categories are the counts above, and the per-pair column set in the analysis table carries the same counts row by row",
+      "unknown_action_values_encountered": 0
+    }
+  },
+  "channel_counts": {
+    "pairs_channel_a": 125922,
+    "pairs_channel_b": 87754,
+    "pairs_in_both": 17725,
+    "accounts_channel_a": 1614,
+    "accounts_channel_b": 1113,
+    "accounts_in_both": 178
+  },
+  "analysis_table": {
+    "path": "processed/step8/a/analysis_table.csv.gz",
+    "rows": 195951,
+    "columns": 86,
+    "unit": "one row per user-show pair, position-7 output on APPLY",
+    "DERIV_rows_flagged_within_it": 147271,
+    "discovery_channel": "two boolean columns (0070 ruling 3)",
+    "action": "per-pair counts by action type, S1 and S2 separately (0070 ruling 4)",
+    "step2_show_fields_carried": 60
+  },
+  "scope_qualifier_travelling_with_the_position_6_population": "covering with respect to insertion-dormancy, exhaustively; open only across channel classes (D4, D9)",
+  "scan_summary": {
+    "step": 8,
+    "instance": "a",
+    "stage": 1,
+    "api_calls": 0,
+    "what": "episode-level scan to pair-level primitives. GATE: adopts nothing.",
+    "tau_pull_utc": "2026-08-11T00:00:00Z",
+    "records_total": 27656813,
+    "records_missing_watched_at": 379,
+    "records_discarded_watched_at_ge_tau_pull": 1734,
+    "in_frame_S1S2_episode_records": 6065704,
+    "in_frame_S1S2_records_undated": 0,
+    "in_frame_S1S2_records_discarded_by_D11": 167,
+    "in_frame_S1S2_records_after_D11": 6065537,
+    "dropped_by_set_membership_records": 0,
+    "dropped_by_set_membership_distinct_season_number": 0,
+    "shows_with_any_drop": 0,
+    "pairs_with_at_least_one_dropped_S2_record": 0,
+    "pair_universe_any_inE_S1S2_record": 278452,
+    "pair_universe_any_inE_S1S2_record_after_D11": 278445,
+    "distinct_episodes": 5350276,
+    "distinct_S1_episodes": 2860465,
+    "distinct_S2_episodes": 2489811,
+    "distinct_episodes_whose_canonical_ts_ge_tau_pull": 142,
+    "action_record_counts_in_frame_S1S2_kept_after_D11": {
+      "watch": 5081893,
+      "checkin": 274234,
+      "scrobble": 709410,
+      "other": 0
+    },
+    "calibration": {
+      "source": "processed/step5/calibration.npz (STORED, never refitted)",
+      "knots": 10918,
+      "time_range_utc": [
+        "2012-12-02T05:25:39",
+        "2026-08-10T20:48:00"
+      ],
+      "accounts_max_rid_above_curve_D11": 384,
+      "accounts_whose_max_rid_moves_under_D11": 469,
+      "last_instant_max_utc_D11": "2026-08-10T20:48:00",
+      "last_instant_max_utc_unrestricted": "2026-08-10T20:48:00"
+    },
+    "accounts": 2549,
+    "pairs_with_S3_or_later_evidence": 142682
+  }
+}

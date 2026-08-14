@@ -105,8 +105,11 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
     - **Do not reintroduce a pre-`τ1` requirement in any form** — withdrawn twice.
 
 - **Step 8, analysis table. GATE, dual implementation. NOT LAUNCHED.** Build one row per user-show pair
-  carrying outcome state, abandonment point, discovery channel and all Step 2 show fields; **retain
-  `action` as a column**, Step 13 has an arm that needs it. Record sample size after each filter.
+  carrying outcome state, abandonment point, discovery channel and all Step 2 show fields; ~~**retain
+  `action` as a column**, Step 13 has an arm that needs it.~~ ***SUPERSEDED by `0070` ruling 4,
+  propagated here by `0073` — this head bullet contradicted ruling 4 further down its own section.***
+  **Emit PER-PAIR COUNTS BY ACTION TYPE instead**; Step 13's arm reads the counts. Record sample size
+  after each filter.
     - **Apply the filters in EXACTLY this order** (`decisions/0029`) — the final row set commutes but
       the per-filter sample sizes do not, and two instances applying the same filters in different
       orders would report different waterfalls on an identical table:

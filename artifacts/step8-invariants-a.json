@@ -1,0 +1,140 @@
+{
+  "step": 8,
+  "instance": "a",
+  "api_calls": 0,
+  "W_days": 108,
+  "H_days": 91,
+  "invariants": [
+    {
+      "name": "outcome states are mutually exclusive and sum to the post-position-7 row set",
+      "label": "CODE CHECK",
+      "why": "Step 1 SS7's partition is proved exhaustive and disjoint, so this can only catch an assignment coded wrongly. It is not evidence for the rule.",
+      "coverage_rows": 195951,
+      "exactly_one_state_per_row": true,
+      "sum_equals_row_set": true,
+      "passed": true
+    },
+    {
+      "name": "filter counts decrease monotonically, coded >= and not >",
+      "label": "CODE CHECK",
+      "why": "filters only remove rows, so it fails only on an implementation that ADDS them -- a duplicating join. >= is kept so the invariant does not encode a property of one rule: a position that legitimately removes nothing must not fail (0047, 0049). Load-bearing in fact: position 2 removes exactly 0 pairs on this frame.",
+      "chain_APPLY": [
+        220107,
+        220107,
+        220107,
+        201900,
+        196654,
+        195951,
+        195951
+      ],
+      "coverage_positions": 7,
+      "chain_note": "chain_APPLY[i] is the count after filter position i+1; the transition from entry i to entry i+1 is the effect of filter position i+2",
+      "filter_positions_removing_exactly_zero": [
+        2,
+        3,
+        7
+      ],
+      "passed": true
+    },
+    {
+      "name": "distinct episodes never exceed season length",
+      "label": "CODE CHECK",
+      "why": "the set-membership drop rule already establishes |D| <= L by construction; this fails only if an implementation filtered by the numeric range 1..F instead of by the listed set E (Step 1 SS3.2). Not evidence for the rule.",
+      "coverage_pairs": 278452,
+      "max_D1_minus_L1": 0,
+      "max_AH_minus_L2": 0,
+      "passed": true
+    },
+    {
+      "name": "A is a subset of A_H on every row",
+      "label": "CODE CHECK",
+      "why": "true by construction since tau1 < tau2 and both sets are prefixes of the same timestamp-ordered episode list; it can only catch the two sets being computed wrongly or the bounds transposed. Not evidence for the rule.",
+      "coverage_rows": 195951,
+      "rows_where_A_exceeds_A_H": 0,
+      "rows_where_max_A_exceeds_max_A_H": 0,
+      "passed": true
+    },
+    {
+      "name": "clock start is on or after the S2 finale date, on or after the first-pass S1 completion date, and equal to one of the two",
+      "label": "CODE CHECK BY CONSTRUCTION, DATA CHECK AS SPECIFIED",
+      "why": "T0 is a max(), so the two inequalities and the equality hold for any correct implementation. The force comes from recomputing the first-pass S1 completion date INDEPENDENTLY from the episode records rather than reading back the pipeline's value: a disagreement there is a real finding. Read back rather than recomputed, this degrades to a code check and proves nothing.",
+      "replaces": "the withdrawn 'no clock start precedes an S2 premiere', vacuous under a finale-anchored clock",
+      "coverage_rows": 195951,
+      "on_or_after_S2_finale": true,
+      "on_or_after_first_pass_S1_completion": true,
+      "equals_one_of_the_two": true,
+      "independent_recomputation": {
+        "what": "the S1 completion test and first-pass date recomputed from the episode records, never read back from processed/step5/pair_revision5.csv",
+        "pair_universe": 278452,
+        "completers_recomputed": 220107,
+        "completers_in_the_published_pair_table": 220107,
+        "agreement_on_membership_over_the_universe": 278452,
+        "completers_only_in_my_recomputation": 0,
+        "completers_only_in_the_published_table": 0,
+        "s1_completion_date_mismatches": 0,
+        "T0_mismatches": 0,
+        "stored_dates_unparseable_s1_then_t0": [
+          0,
+          0
+        ],
+        "pairs_whose_S1_completion_date_is_a_corrupt_year_1_timestamp": 3
+      },
+      "tie_break_note": "Step 1 SS2.2 breaks exactly-equal timestamps by episode number then smallest event id. The recomputation applies that tiebreak; the agreement counts above are reported rather than a choice being made about whether a tiebreak difference would count as a failure.",
+      "passed": true
+    },
+    {
+      "name": "the set-membership drop rule is enforced",
+      "label": "CODE CHECK",
+      "why": "an implementation check, not a data check (Step 1 SS3.2). The data check is the drop count, reported in diagnostics.json.",
+      "coverage_records_examined": 6065704,
+      "records_surviving_with_number_outside_E": 0,
+      "dropped_records": 0,
+      "passed": true
+    },
+    {
+      "name": "EXTRA, not required by the spec: p lies in (0, 1] on every Started-and-left row and is null everywhere else",
+      "label": "CODE CHECK",
+      "why": "secured by the set rule (A subset E2, so max(A_H) is in E2); it catches the withdrawn raw-ratio form max(A_H)/L2, which can exceed 1 where S2 numbering has a gap.",
+      "coverage_rows": 19042,
+      "min": 0.038461538461538464,
+      "max": 1.0,
+      "nulls_among_started_and_left": 0,
+      "non_null_outside_started_and_left": 0,
+      "passed": true
+    }
+  ],
+  "population_reconciliation": {
+    "name": "703 liveness exclusions at position 6 on APPLY = 196,654",
+    "label": "NOT AN INVARIANT -- a POPULATION RECONCILIATION (0068)",
+    "why": "Step 7 measured its counts on APPLY built from the Step 5 pair table rather than through positions 1-5, so this is the first place the two chains have been compared. A mismatch is a POPULATION defect before an implementation one.",
+    "APPLY": {
+      "denominator": 196654,
+      "expected": 703,
+      "measured": 703,
+      "expected_split": "604 never-started + 99 started-and-left, 216 accounts",
+      "measured_never_started": 604,
+      "measured_started_and_left": 99,
+      "measured_accounts": 216
+    },
+    "DERIV": {
+      "denominator": 147370,
+      "expected": 99,
+      "measured": 99,
+      "expected_split": "0 never-started + 99 started-and-left, 73 accounts",
+      "measured_never_started": 0,
+      "measured_started_and_left": 99,
+      "measured_accounts": 73
+    },
+    "superseded_answers_not_produced": {
+      "ALT_604_on_APPLY": false,
+      "ALT_MATCHED_793_on_APPLY": false
+    },
+    "reconciles": true
+  },
+  "label_counts": {
+    "CODE CHECK": 6,
+    "CODE CHECK BY CONSTRUCTION, DATA CHECK AS SPECIFIED": 1,
+    "NOT AN INVARIANT": 1
+  },
+  "all_passed": true
+}
