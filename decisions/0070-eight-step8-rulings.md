@@ -43,8 +43,8 @@ independently of Step 8 and would otherwise have contradicted it.
 
 ## 4. The invariant finding, routed to Step 14
 
-**Four of Step 8's six assertions cannot fail on any data**, so **a report stating that all invariants
-passed overstates what was verified unless it names which ones could have failed.** The outcome
+~~**Four of Step 8's six assertions cannot fail on any data**~~ ***AMENDED (`0076`): FIVE of six, and ZERO pure data checks*** — `0074` specified the `p` invariant and **mislabelled it DATA CHECK**, and both Step 8 instances proved it a code check. **A report stating that all invariants
+passed overstates what was verified unless it names which ones could have failed** — and until `0076` added two, **none of them could.** The outcome
 partition, the monotone filter counts, distinct-episodes-vs-season-length and `A ⊆ A_H` are **code
 checks**. The clock-start check is a code check by construction and a real cross-check **only because
 the S1 completion date must be recomputed independently.** The 703 expectation is **not an invariant**

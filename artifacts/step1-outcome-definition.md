@@ -303,8 +303,14 @@ is logged so an unexpected value is visible rather than silently absorbed.
 backfill and bulk import, where `watched_at` is a date the user or the importer supplied
 rather than an observed one. That is a *timestamp* problem, not an *action* problem, and it
 is exactly what the Step 5 contamination rule is for. Step 1 does not filter on `action`;
-it requires that `action` be **retained as a column** in the Step 8 table so Step 5 can use
-it and Step 13 can run a sensitivity arm on it (Section 9).
+it requires ~~that `action` be **retained as a column** in the Step 8 table~~ *(**SUPERSEDED by
+`0070` ruling 4; marked here by `0076`.** Step 8 emits **per-pair COUNTS BY ACTION TYPE**: `action` is
+record-level and the Step 8 row is a pair, so one value per row would assert one action per pair, which
+is false. **The ground is this section's own argument above** — `action` is a property of the logging
+client, not of the viewing. **`0073` §2 marked §9's hand-off list and cited THIS section as the ground
+for doing so, while leaving this line live and unmarked** — its own named error class, in the file it
+was editing)* so Step 5 can use it and Step 13 can run a sensitivity arm on it (Section 9), **both of
+which read the counts.**
 
 ### 2.4 Instant boundaries: how a date bound becomes a timestamp test
 

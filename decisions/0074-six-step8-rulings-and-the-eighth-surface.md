@@ -24,11 +24,12 @@ would rebuild the same way.
 
 ## 2. The `p` invariant — specified, not dropped
 
-`p ∈ (0, 1]` on every Started-and-left row, null elsewhere. **DATA CHECK.**
+`p ∈ (0, 1]` on every Started-and-left row, null elsewhere. ~~**DATA CHECK.**~~ ***CORRECTED TO CODE CHECK by `0076`***: Started-and-left requires `|A| ≥ 1` so `m_H` exists, and set membership bounds the rank numerator in `[1, L2]`, so **no data configuration puts `p` outside `(0, 1]`.** **Both Step 8 instances proved this independently and labelled it CODE CHECK; this ruling did not check what they had labelled it.**
 
-**Neither the spec nor `0069` listed it; both instances ran it unprompted.** **It is a data check on a
-set where four of six are code checks** — it can fail on real data, which almost nothing else in that
-set can — and **Step 10 publishes `p`.** Specifying it is the cheaper direction: dropping it would
+**Neither the spec nor `0069` listed it; both instances ran it unprompted.** ~~It is a data check on a
+set where four of six are code checks~~ ***AMENDED (`0076`): it is a CODE CHECK, and on
+this set of six that makes FIVE of six unfalsifiable with ZERO pure data checks*** — and **Step 10
+publishes `p`**, which is why it is kept. Specifying it is the cheaper direction: dropping it would
 remove the only assertion in Step 8 that could catch a data defect in the abandonment point.
 
 ## 3. The set-membership rule — a coverage count, not an invariant

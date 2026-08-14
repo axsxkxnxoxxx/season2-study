@@ -199,7 +199,7 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
           tomorrow, and the dual diff cannot see it.**
         - **2. The `p` invariant is SPECIFIED, not dropped. DATA CHECK** — `p ∈ (0, 1]` on every
           Started-and-left row, null elsewhere. **Both instances ran it unprompted**, it is a data check
-          on a set where **four of six are code checks**, and **Step 10 publishes `p`.**
+          ***label corrected to CODE CHECK by `0076`***, and **Step 10 publishes `p`.**
         - **3. The set-membership drop rule is a COVERAGE COUNT, NOT AN INVARIANT** — resolving the
           7-against-6 divergence. The spec already calls it *"an implementation check, not a data
           check."* **Report records examined and records dropped; do not assert it.**
@@ -231,6 +231,28 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
       amendment's **uncensored estimation sample** and carrying no population at the point of use.
       **Both Step 8 instances measured the adopted figures independently and identically. State the
       population wherever the series appears.**
+    - **THE `p` INVARIANT IS A CODE CHECK** (`0074`, ***label corrected by `0076`***). Started-and-left
+      requires `|A| ≥ 1` so `m_H` exists, and **set membership bounds the rank numerator in `[1, L2]`**
+      — **no data configuration puts `p` outside `(0, 1]`.** Both instances proved this independently.
+      **Keep it; it proves the code, not the rule.**
+    - **TWO NEW INVARIANTS, BOTH DATA CHECKS** (`0076`), **because the set had none.**
+        - **No account is dropped wholesale by the pair-level liveness filter** — assert that the count
+          of accounts holding **both a live and a not-live pair** is greater than zero, and report it.
+          **703 pairs from 216 accounts is consistent with a pair-level AND an account-level
+          implementation**, and nothing in the set distinguished them.
+        - **No `access_denied` or skipped account is read as empty** — assert that no account recorded
+          `access_denied`, over-tolerance or otherwise skipped contributes a pair scored never-started.
+          **A skipped user read as empty becomes a false "never started" in the headline**, so this one
+          **fails in the direction of the result.**
+    - **THE ASSERTION SET NOW HAS EIGHT MEMBERS: five pure code checks, one code-by-construction with
+      force only as specified, and TWO that can fail on real data.** ***SUPERSEDED: "four of six cannot
+      fail" — on the post-`0074` six it was FIVE of six, with ZERO pure data checks.***
+    - **D9's TWO KEYS, DEFINED** (`0076`). **STRICT: lowercase, drop every non-alphanumeric character,
+      strip nothing else** — `re.sub(r"[^a-z0-9]", "", slug.lower())`. **LOOSE: remove a TRAILING
+      FOUR-DIGIT YEAR first, then apply strict.** **Neither strips a trailing digit group of arbitrary
+      length** — that reduces `the-100` to `the` and is a third key. **They were defined only inside one
+      instance's code, which the other is forbidden to read.** **The 76-against-75 divergence is
+      REPORTED, NOT RECONCILED.**
     - The table goes to `processed/`; the filter waterfall and invariant report, counts only, to
       `artifacts/`.
 - **Step 8b, output schema. Chained. NOT LAUNCHED.** Define the JSON schema the Step 16 visualization

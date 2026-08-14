@@ -24,7 +24,7 @@
 
 ## 2. Every invariant is labelled, and that is what resolves the split
 
-**The read-back arms diverged: A called four of six true by construction, B called all six.** Both were
+**The read-back arms diverged: A called four of six true by construction, B called all six.** ***AMENDED 2026-08-13 (`0076`): the count in this entry is superseded.*** `0074` then specified the `p` invariant and **mislabelled it a DATA CHECK**; both Step 8 instances proved it a **CODE CHECK**, so **on the post-`0074` set of six the figure is FIVE of six, with ZERO pure data checks.** `0076` adds two genuine data checks for that reason. Both were
 defensible because the spec labelled exactly one. **Now all are labelled, and the count falls out:**
 
 | Invariant | Label |

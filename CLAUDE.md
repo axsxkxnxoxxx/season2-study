@@ -59,7 +59,7 @@ A ruling lands in `decisions/` **and** in every file an agent reads. Recorded on
 
 **Read-back plus grep. Read-back alone is not verification.** Human Lead ruling, 2026-08-13. Reading an edit back proves the new text landed. Only grep proves the old text is gone, and a file can hold both at once — three consecutive propagation failures were exactly that, an adopted figure and its superseded predecessor live in the same file, sometimes ten lines apart, each declaring the other wrong.
 
-So after any edit: grep all seven surfaces for the superseded strings and require **zero hits**, except where a string is explicitly named as superseded at the point of use. Report the hit counts.
+So after any edit: grep all EIGHT surfaces for the superseded strings and require **zero hits**, except where a string is explicitly named as superseded at the point of use. Report the hit counts.
 
 **And grep the corrected string too, requiring non-zero.** Added 2026-08-13 by the analytics-engineer, who found the negative half insufficient on the first run under it: **a figure that was never written returns zero hits on every superseded form of itself.** The DERIV bound was absent from all five spec files rather than present and stale, so the negative grep passed clean on a file set that contained the defect. A defect has two shapes — the wrong figure present, and the right figure missing — and the negative grep sees only the first.
 
@@ -124,7 +124,7 @@ The instance that named the class: `0054` §3 argued the widened floor from *"th
 
 **Known limit, still open:** both numeric halves walk **numeric leaves only**, so a superseded *figure* inside a JSON **string** remains invisible to them. **Do not record a gap as harmless without checking whether it is currently occupied** — this one was written down as *"not a defect today"* while a defect was sitting in it, in four files.
 
-**Check with `src/check_surfaces.py`, not with `grep`.** Matching is numeric, at a tolerance, across all seven surfaces. Textual grep cannot see the JSONs: the register stores 4-dp strings and the JSON stores 6-dp literals, so `9.6830` is not a substring of `9.682997`. Every value that survived review 11 was one whose registered form rounds up and therefore could never match.
+**Check with `src/check_surfaces.py`, not with `grep`.** Matching is numeric, at a tolerance, across all EIGHT surfaces. Textual grep cannot see the JSONs: the register stores 4-dp strings and the JSON stores 6-dp literals, so `9.6830` is not a substring of `9.682997`. Every value that survived review 11 was one whose registered form rounds up and therefore could never match.
 
 **The dual diff cannot catch a propagation failure.** Both members of a pair are byte-identical by design, so an error written into both is invisible to it. Propagation is checked by grep, never by the diff.
 

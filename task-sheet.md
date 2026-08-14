@@ -384,8 +384,17 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
       cannot be computed without them**, and **no line of this step said to keep them.** Instance A
       found this by needing it. **An instance that does not discover it emits ZERO or fails — and a zero
       here reads as a data finding rather than a missing input**, which is the worse of the two
-      failures. **USE THE STRICT KEY — no year stripping — AND REPORT THE LOOSE
-      COUNT ALONGSIDE.** Human Lead ruling, 2026-08-13 (`0074`). **The normalisation rule decides the
+      failures. **USE THE STRICT KEY AND REPORT THE LOOSE
+      COUNT ALONGSIDE.** Human Lead ruling, 2026-08-13 (`0074`); **BOTH KEYS ARE DEFINED HERE by
+      `0076`, because "strict" and "loose" existed only inside one instance's code, which the other is
+      forbidden to read — so the ruled key was undefined on every surface an isolated instance reads,
+      and a re-run against the ruling would have reproduced the divergence.**
+      **STRICT: lowercase the slug and drop every non-alphanumeric character. Strip NOTHING else** —
+      `re.sub(r"[^a-z0-9]", "", slug.lower())`. Two show IDs match only on the same slug modulo
+      punctuation. **LOOSE: first remove a TRAILING FOUR-DIGIT YEAR, then apply the strict transform.**
+      **Neither key strips a trailing digit group of arbitrary length** — that reduces `the-100` to
+      `the`, and it is a THIRD key, not either of these. **One instance used it and published 76
+      complementary pairs against the other's 75; that divergence is REPORTED, NOT RECONCILED** (`0076`). **The normalisation rule decides the
       entire number and none was specified:** strict finds **0** complementary signature pairs and loose
       finds **75**, so half (a) is **6 or 0** on an unstated choice. **Loose strips the year and merges
       genuinely different shows** — its largest clusters are **The Twilight Zone, The Traitors and
@@ -398,16 +407,29 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
 - [ ] **Per-bucket show and pair counts for all five D12 cadence buckets**, plus the count of shows within 1 day of a bucket boundary
 - [ ] **Metadata-disagreement counts**, including the subset where `aired_episodes < |E|` for S2. Listed exceeding aired tightens the 90 percent threshold and pushes real completers out — name that direction
 - [ ] **Assert invariant: the abandonment point `p` lies in `(0, 1]` on every Started-and-left row and
-      is null elsewhere. DATA CHECK.** Human Lead ruling, 2026-08-13 (`0074`), **specifying it rather
-      than dropping it.** **Both instances ran it unprompted**, and **it is a DATA CHECK on a set where
-      four of six are code checks** — it can fail on real data, which almost nothing else here can.
-      **Step 10 publishes `p`.**
+      is null elsewhere. CODE CHECK.** Specified by `0074`; ***label corrected from DATA CHECK by
+      `0076`***, on **both instances' own proof**: Started-and-left requires `|A| ≥ 1` so `m_H` exists,
+      and **set membership bounds the rank numerator in `[1, L2]`** — **no data configuration puts `p`
+      outside `(0, 1]`**, and it fails only on the withdrawn raw-ratio form. **Keep it** — Step 10
+      publishes `p` and both instances ran it unprompted — **but it proves the code, not the rule.**
 - [ ] **The set-membership drop rule is a COVERAGE COUNT, NOT AN INVARIANT.** Human Lead ruling,
       2026-08-13 (`0074`), resolving a 7-against-6 divergence in the dual run. **Step 8's own bullet
       already calls it "an implementation check, not a data check."** **Report the records examined and
       the records dropped**; do not assert it. **`0069` established that an unlabelled code check reads
       as evidence FOR THE RULE when it is only evidence that the code ran**, and asserting this one adds
-      a seventh pass to a report where four of six already cannot fail.
+      another pass to a report where **five of six already cannot fail** (`0076`).
+- [ ] **Assert invariant: NO ACCOUNT IS DROPPED WHOLESALE BY THE PAIR-LEVEL LIVENESS FILTER. DATA
+      CHECK.** Human Lead ruling, 2026-08-13 (`0076`). **Assert that the count of accounts holding both
+      a live and a not-live pair is greater than zero**, and report it. **703 pairs from 216 accounts is
+      consistent with BOTH a pair-level and an account-level implementation** and nothing in the set
+      distinguished them. `CLAUDE.md` and Step 7: *"One account can be live for one show and not
+      another. Never drop a user wholesale."* **This can fail on real data.**
+- [ ] **Assert invariant: NO `access_denied` OR SKIPPED ACCOUNT IS READ AS EMPTY. DATA CHECK.** Human
+      Lead ruling, 2026-08-13 (`0076`). **Assert that no account recorded `access_denied`,
+      over-tolerance or otherwise skipped contributes a pair scored never-started**, and report the
+      counts. `CLAUDE.md`: *"a skipped user silently read as empty becomes a false 'never started' in
+      the headline"*; rule and evidence at `artifacts/step0-access-and-setup.md` §7. **This can fail on
+      real data, and it fails in the direction of the result.**
 - [ ] **EVERY INVARIANT BELOW CARRIES A LABEL — CODE CHECK or DATA CHECK.** Human Lead ruling, 2026-08-13 (`0068`), resolving a live divergence: **the two read-back instances split 4-of-6 against 6-of-6** on how many cannot fail on data alone. **A code check catches an implementation that computed something wrongly; it cannot fail on any data, and it is not evidence for the rule.** A data check can fail on data. **The count is four pure code checks, one that is a code check by construction and a genuine cross-check as specified, and one item that is not an invariant at all** — which is why both readings were defensible and neither was stated.
 - [ ] **Assert invariant: outcome states are mutually exclusive and sum to THE POST-POSITION-7 ROW SET** — the rows remaining after outcome assignment, which is the only population the phrase can mean and was not stated (`0068`). **CODE CHECK.** Step 1 §7's partition is proved exhaustive and disjoint, so this can only catch an assignment coded wrongly.
 - [ ] Assert invariant, every row: **`A ⊆ A_H`** (`decisions/0034`). **CODE CHECK, not a data check** — true by construction since `τ1 < τ2`, so it can only catch an implementation that computed the two sets wrongly and is not evidence for the rule
@@ -664,7 +686,7 @@ none may be netted against another.** Item 8 is a **definitional change**, not a
       (`0074`): **reported unreconciled**, per `CLAUDE.md`. **Neither figure is wrong on its face, both
       report the same result, and nothing downstream depends on the denominator.** It is a coverage
       figure for a rule that dropped nothing. **Publish both numbers, not one.**
-- [ ] **FOUR OF STEP 8'S SIX ASSERTIONS CANNOT FAIL ON ANY DATA, AND THE INVARIANT REPORT MUST SAY SO.** Human Lead ruling, 2026-08-13 (`0070`), from the Step 8 read-back. **A report stating that all invariants passed overstates what was verified unless it names which ones COULD have failed.** The outcome partition, the monotone filter counts, distinct-episodes-vs-season-length and `A ⊆ A_H` are **code checks**: each is true by construction and can only catch an implementation that computed something wrongly. The clock-start check is a **code check by construction and a real cross-check only because the first-pass S1 completion date must be recomputed INDEPENDENTLY** — read back rather than recomputed it proves nothing. And the 703 expectation is **not an invariant at all** but a population reconciliation. **An unlabelled code check reads as evidence FOR THE RULE when it is only evidence that the code computed what it was told to** — and this study's invariant set is four-sixths of that. **Publish the labels with the results, not the count alone.** *(The two read-back instances split 4-of-6 against 6-of-6 on this, and both readings were defensible because the spec had labelled exactly one — `0069`.)*
+- [ ] **THE ASSERTION SET PROVES THE CODE, NOT THE RULE, AND THE INVARIANT REPORT MUST SAY SO.** Human Lead ruling, 2026-08-13 (`0070`), **restated by `0076` after the `p` label was corrected.** ***SUPERSEDED: "four of six cannot fail on any data."*** **On the post-`0074` set of six the true figure was FIVE OF SIX, WITH ZERO PURE DATA CHECKS** — the only assertion with force was the clock-start equality, and only via the independent recomputation. **That is why `0076` adds two genuine data checks.** **The set is now EIGHT: five pure code checks, one code-by-construction with force only as specified, and TWO that can fail on real data — added because the set had none.** **A report stating that all invariants passed overstates what was verified unless it names which ones COULD have failed.** The outcome partition, the monotone filter counts, distinct-episodes-vs-season-length and `A ⊆ A_H` are **code checks**: each is true by construction and can only catch an implementation that computed something wrongly. The clock-start check is a **code check by construction and a real cross-check only because the first-pass S1 completion date must be recomputed INDEPENDENTLY** — read back rather than recomputed it proves nothing. And the 703 expectation is **not an invariant at all** but a population reconciliation. **An unlabelled code check reads as evidence FOR THE RULE when it is only evidence that the code computed what it was told to** — and this study's invariant set is four-sixths of that. **Publish the labels with the results, not the count alone.** *(The two read-back instances split 4-of-6 against 6-of-6 on this, and both readings were defensible because the spec had labelled exactly one — `0069`.)*
 - [ ] **The propagation failure count is a FIVE-SURFACE count, and the two surfaces it omits are now measured and non-zero.** Human Lead ruling, 2026-08-13 (`0057`), from `second-brain`'s U2. **All eighteen failures numbered #1–#18 were found on surfaces 1–5** — `task-sheet.md` and the four pipeline agent files — because those were the only surfaces checked. **`artifacts/` and `.claude/agent-memory/second-brain/` were added as surfaces 6 and 7 AFTER the count was fixed**, and the failure rate on them was recorded as *"unmeasured, not zero."* **It is now measured and non-zero at three:** **#19**, the `bb-{a,b}` stamp that certified superseded figures, found **inside the fix added for surface 6**; **#20**, both `.json` halves left carrying the first stamp and the withdrawn bound floor while the `.md` halves were corrected; and **#21**, `open-items-and-contradictions.md` blessing the superseded sub-interval with a ✓ one line from the corrected bound, because a propagation was scoped to one file and reported as a surface. **The count is NOT renumbered — 18 is a true count of surfaces 1–5 — but it must never be published as a total**, which is exactly how it reads without this bullet.
 - [ ] **The liveness rule is a biconditional and `0021` licenses only one direction.** `0021` establishes *insertion after `τ1` ⟹ live* — a **sufficient** condition. The rule also asserts the converse: *no insertion after `τ1` ∧ ¬Continued ⟹ not live*. **ALT-BROAD narrows where that assertion is made, from PF-LIMIT's 1,355 pairs to 703. It does not justify it.** Both arms and Red Team left this open across five reviews; it is recorded as a limitation rather than closed. (`decisions/0048` §9, `0050`)
 - [ ] **ALT-BROAD leaves 297 pairs in the channel its own warrant describes.** The warrant is that a pair silent after `τ1` can produce no evidence in `[τ1, τ2)` and is scored "left" by construction — **but that holds identically for a pair silent after `τ1 + ε` for any ε < 91 days.** Measured: **297 pairs on APPLY are ¬Continued, live only because they inserted after `τ1`, and had their last insertion inside `(τ1, τ2)`** — **207 never-started and 90 started-and-left**. **The channel figure is 52.4%, not 70.3%** (`0052` §3, routed here by `0055`): 70.3% pooled two categories with different coverage. **The 207 never-started pairs are NOT in the gap** — never-started is the null `|A| = 0` read at **`τ1`**, and every one of the 207 has an insertion after `τ1`, which is exactly what `0021` licenses. **On the implicated set alone ALT-BROAD closes 99 of 189 — 52.4%, leaving 47.6% open.** **The remaining 90 are NO LONGER treated as observed:** the started-and-left floor is widened to admit they may in truth be Continued (`0054`), which is a **stated bound, not a closure** — the pairs stay in the sample and the uncertainty is carried in the endpoint. (`decisions/0050`)
