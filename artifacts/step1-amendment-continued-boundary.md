@@ -604,7 +604,7 @@ adopted arm — so the draft owed the figure it rejected the alternative over. I
 downstream cut. D3′'s 9 are absent from **one diagnostic's subset** while the analysis population is
 untouched. **A diagnostic may run on a cleared subset; a headline may not be censored to feed one.**
 
-**The magnitude is mild — 95.98% to 91.34% across the full arm span — and the selection is not.** At
+**The magnitude is mild — 95.98% to 91.34% across the full arm span** *(**SUPERSEDED by `0075`: 99.53% → 97.73% on Step 8's right-censored populations; this table's figures are on the amendment's uncensored estimation sample. The direction and the shrinkage stand; the level does not**)* **— and the selection is not.** At
 `W = 213` the cleared set admits no pair whose `T0` falls after **12 July 2025**, which excludes
 **all but the first twelve days of H2 2025**. That is precisely the cohort `0027` added the 213 arm to probe: the arm exists to
 test whether the censoring bias against modern titles changes the answer, and D3′ at that arm is

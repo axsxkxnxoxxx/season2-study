@@ -93,6 +93,18 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
       `W` = 125 / 150 / 180 / 213, of which 632 / 684 / 753 / 881 is the never-started COMPONENT**
       (`0050`). An arm table that does not name the reading is not reproducible.
 
+- **THE `W` ARM GRID IS 38 / 46 / 77 / 91 / 107 / 108 / 150 / 213 DAYS.** Human Lead ruling,
+  2026-08-13 (`0075`). **It had never been stated in any file.** Step 6's deliverables say `[37, 107]`
+  and `[37.70, 107.71]` and **neither says 38**; the grid has travelled only as the **index of a
+  reported series**, which is a reading, not a specification. **Every Step 13 figure is indexed by the
+  arm set, so two instances on different grids produce tables that CANNOT BE DIFFED AT ALL** — a failure
+  of the dual implementation itself, not a wrong number inside it. **Take the eight values.**
+- **D3′'s cleared-share series is 99.53% at `W = 46` down to 97.73% at `W = 213`, on Step 8's
+  right-censored populations** (`0075`). ***SUPERSEDED: `0034`'s 95.98% → 91.34%***, measured on the
+  amendment's **uncensored estimation sample** and carrying no population at the point of use. **Both
+  Step 8 instances measured the adopted figures independently and identically.** **State the population
+  wherever the series appears.**
+
 - **Step 9, headline result. Chained, dual implementation.** Of users who completed S1, compute the
   share who never started S2, who started and left, and who continued, with confidence intervals.
   **CONSUME STEP 8's OUTPUT. DO NOT REBUILD DERIV AND DO NOT COMPUTE D4.** Human Lead rulings 1 and 7,

@@ -1256,7 +1256,9 @@ hides, D3 measures what the window's *close* hides.
 >
 > **D3′ runs at every Step 13 `W` arm, and each arm reports its own cleared count and share.** The
 > clearance contains `W`, so the cleared subpopulation shrinks as `W` rises — 95.98% of
-> Started-and-left at `W = 46` down to 91.34% at `W = 213`, where the cleared set admits no `T0`
+> Started-and-left at `W = 46` down to 91.34% at `W = 213` *(**both SUPERSEDED by `0075`: on Step 8's
+> right-censored populations the series is 99.53% → 97.73%.** These were measured on the amendment's
+> uncensored estimation sample and carried no population at the point of use)*, where the cleared set admits no `T0`
 > after 2025-07-12 and so excludes all but the first twelve days of H2 2025. A single figure
 > carried from the adopted arm would misdescribe every other one.
 >

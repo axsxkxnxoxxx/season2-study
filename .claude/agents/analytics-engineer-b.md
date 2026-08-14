@@ -217,6 +217,20 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
           and both control scripts. **Data tables are excluded and the count reported; the per-arm
           working dirs are allowlisted by name; `adopted_rule.json` and its kind are NOT exemptible, in
           code.**
+    - **THE `W` ARM GRID IS 38 / 46 / 77 / 91 / 107 / 108 / 150 / 213 DAYS** (`0075`). **It had never
+      been stated in any file** — Step 6's deliverables say `[37, 107]` and `[37.70, 107.71]`, neither
+      says 38, and the grid travelled only as the INDEX of a reported series, which is a reading and not
+      a specification. **Every Step 13 figure is indexed by the arm set, so two instances on different
+      grids produce tables that cannot be diffed at all.**
+    - **D9 half (b): POSITION 3's DROP SET IS RETAINED AS A SIDE OUTPUT** (`0075`). Half (b) is
+      measured on the rows position 3 REMOVES, so **it cannot be computed without them**, and no line of
+      Step 8 said to keep them. **An instance that does not discover this emits ZERO or fails — and a
+      zero here reads as a data finding rather than a missing input.**
+    - **D3′'s cleared shares are 99.53% at `W = 46` down to 97.73% at `W = 213`, on Step 8's
+      right-censored populations** (`0075`). ***SUPERSEDED: `0034`'s 95.98% → 91.34%***, measured on the
+      amendment's **uncensored estimation sample** and carrying no population at the point of use.
+      **Both Step 8 instances measured the adopted figures independently and identically. State the
+      population wherever the series appears.**
     - The table goes to `processed/`; the filter waterfall and invariant report, counts only, to
       `artifacts/`.
 - **Step 8b, output schema. Chained. NOT LAUNCHED.** Define the JSON schema the Step 16 visualization

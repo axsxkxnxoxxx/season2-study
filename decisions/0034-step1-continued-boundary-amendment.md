@@ -10,6 +10,9 @@
 | **Does NOT reopen** | Step 6 / `W = 108` / `0026`; D14; Step 5; the `L2 = 1` exclusion; **D8**, which survives unchanged |
 | **Status** | Closed |
 
+
+> **AMENDED 2026-08-13 (`decisions/0075`) — D3′'s cleared-share series.** This entry's **95.98% at `W = 46` → 91.34% at `W = 213`** was measured on **the amendment's uncensored estimation sample** and **carried no population at the point of use.** **On Step 8's right-censored populations the series is 99.53% → 97.73% (APPLY)**, measured **independently and identically by both Step 8 instances**. **The direction and the shrinkage stand; the level does not.** `0068` §2a could fix the denominator and not the level, which is why this needed a ruling rather than a restatement. **The population is now stated wherever the series appears.**
+
 ---
 
 ## 1. The approved rule
