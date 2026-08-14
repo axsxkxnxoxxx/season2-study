@@ -135,7 +135,8 @@ survives only as the never-started **component** of 703.)*
 | :--- | :--- | ---: | :--- |
 | **Never-started** | **[16.6633%, 16.9704%]** | **0.3071 pp** | the **604** never-started exclusions only |
 | **Started-and-left** | **[9.6372%, 10.0405%]** | **0.4032 pp** | **all 703 exclusions PLUS the 90 channel pairs** = 793 |
-| *conditional sub-interval* | *[9.6830%, 9.7333%]* | *0.0503 pp* | *the 99 only — **NOT A BOUND*** |
+| *conditional sub-interval* | ***[9.6372%, 9.7333%]*** | ***0.0961 pp*** | *the **99 and the 90** — **NOT A BOUND**; the conditioning constrains the **604** only* |
+| *~~superseded sub-interval~~* | *~~[9.6830%, 9.7333%]~~* | *~~0.0503 pp~~* | *withdrawn `0056` — correct only under the un-widened floor* |
 
 **On DERIV, n = 147,370:**
 
@@ -164,12 +165,15 @@ pair. *"Returning every excluded pair as a decliner"* gives an **unattainable 17
 99 have `|A| ≥ 1` observed. **ALT-BROAD's exclusion set is no longer a subset of never-started, which
 is why the route matters.** Both endpoints attainable, verified in **integer** arithmetic.
 
-**FALSE-POSITIVE TRAP on `9.6830%`.** It is **both** the superseded non-covering bound floor **and**
-the legitimate floor of the conditional sub-interval `[9.6830%, 9.7333%]` — `19,042 / 196,654`, over
-the 99 only. **A blind grep for the superseded bound will hit the legitimate sub-interval.** Same
-shape as the `632` trap below.
+**`9.6830%` IS NOT A FALSE-POSITIVE TRAP — that registration is WITHDRAWN (`0056`).** It was recorded
+here and in `0055` §3 as *"both the superseded bound floor and the legitimate floor of the conditional
+sub-interval."* **The second half is false.** The sub-interval's conditioning constrains the **604** and
+says nothing about the **90**, so **its floor moved with the bound floor to 18,952 → 9.6372%.** Under
+the adopted rule **`9.6830` has no legitimate reading anywhere** — the same status as `0.4033`.
+**Registering it as exempt disarmed the grep control against the one string it most needed to catch, on
+four surfaces, in the section that created the control.** Treat every hit on `9.6830` as a defect.
 
-**The 99-only interval is a LABELLED CONDITIONAL SUB-INTERVAL and must never be recorded as a bound.**
+**The conditional sub-interval is [9.6372%, 9.7333%], width 0.0961 pp, over the 99 AND the 90, and must never be recorded as a bound.** *(It was described here as "the 99-only interval"; that description is what produced the stale floor.)*
 It is conditional on every never-started exclusion being truly never-started; **the 604 rest on an
 untrusted `|A| = 0` and some may in truth have left.** The two differ by a **factor of seven**. Both
 arms reached this independently and **both refused to adopt it themselves** — it would have been the
@@ -251,10 +255,14 @@ comparable to it.
 
 | String | Legitimate use | Illegitimate use |
 | :--- | :--- | :--- |
+**REGISTER — canonical location, per `CLAUDE.md` `## Propagation`. A row is added only when the legitimate reading is verified live UNDER THE ADOPTED RULE, and withdrawn the moment it is not; registering a string exempts it from the grep control (`0056` §3).**
+
 | **`632`** | Frozen-D10 never-started **component** at `W = 125` (`0050` d5, `0051` §3 item 9) | A **deleted threshold** in days |
 | **`703`** | **Correct and current** — ALT-BROAD's APPLY exclusion count | — |
 | **`793`** | **ALT-MATCHED's** APPLY exclusion count — history only | Anywhere as the current expected count. `0054` §5 fixed *"EXPECT 793"* in both `analytics-engineer` files |
-| **`9.6830%`** | Floor of the **conditional sub-interval** over the 99 | Floor of the **started-and-left bound** — superseded, is now 9.6372% |
+| **`9.6830%`** | **NOWHERE — registration WITHDRAWN (`0056`).** The sub-interval floor moved with the bound floor to **9.6372%**; the conditioning constrains the 604, not the 90 | **Every hit is a defect.** Both the bound floor and the sub-interval floor are **9.6372%** |
+| **`16,744`** | **Three** legitimate readings: post-liveness S&L **count** on **147,271** → 11.3695% (`bb-a.md:109`); the same count at `step7-sensitivity-b.md:76`; and the DERIV floor under **extreme NONE** in the two-extremes table | the **adopted** DERIV S&L floor — that is **16,655 → 11.3015%** |
+| **`0.0672`** | DERIV exclusion **share of population**, `99 / 147,370` = 0.0672% (`bb-a.md:65`) | the DERIV bound **width** — that is **0.1276 pp** |
 | **`0.4033`** | Nowhere. It is B's rounding artifact | Anywhere as the bound width — it is **0.4032** |
 | **`73.6537%`** | The **Continued ceiling** as of `0052`, superseded by `0054` | As a **floor**, ever. It was never one |
 

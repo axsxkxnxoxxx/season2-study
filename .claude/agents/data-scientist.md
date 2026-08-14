@@ -78,8 +78,22 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
 
 - **Step 9, headline result. Chained, dual implementation.** Of users who completed S1, compute the
   share who never started S2, who started and left, and who continued, with confidence intervals.
+  **THE BOOTSTRAP IS UNSPECIFIED AND THIS BLOCKS STEP 9** (`0056`). The two Step 7 arms diverged on all
+  three of `B`, seed and statistic — **A: 4,000 / 20260813 / movements; B: 2,000 / 20260814 / levels** —
+  so CIs built three ways **prove nothing when diffed.** **`0052` §6's "unreconciled and now specified"
+  is struck: "bootstrap" appears ZERO times in any file an agent reads.** The resampling unit **is the
+  account** (clustered, `0044`); `B`, the seed and levels-vs-movements must be **fixed identically for
+  both arms in the spec before Step 9 runs.** If they are still unfixed when you read this, **say so and
+  stop** rather than choosing.
   **Compute the bound on PAIRS, not users.** **NOT every liveness exclusion is never-started** — 703 on APPLY is **604 never-started + 99
   started-and-left** (`0050`). Taken over the 604 only, the **never-started** bound on a **single denominator** is
+  **The never-started floor is NOT widened, although 207 channel pairs are never-started** (`0056`).
+  They are retained, ¬Continued, scored never-started, last insertion inside `(τ1, τ2)` — the same
+  dormancy channel whose started-and-left arm forced that floor to 18,952. **The reason is the
+  anchoring, not the count:** never-started is the null `|A| = 0` **read at `τ1`**, and **all 207 have an
+  insertion after `τ1`**, which is exactly what gate `0021` licenses. **Their null is observed, not
+  conceded.** The 90 differ because the **Continued** condition they negate is read at **`τ2`**.
+  **State this where the bound is published.** (DERIV's component is **3**; same warrant.)
   **[16.6633%, 16.9704%] on APPLY, width 0.3071 pp**, ceiling equal to the unfiltered share **as an
   identity** — **identical under ALT and ALT-BROAD**, since the 99 started-and-left exclusions enter
   neither endpoint. **Compute a SECOND bound on the started-and-left share over ALL exclusions AND
@@ -108,8 +122,11 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
   one 0.0604 pp ABOVE the case the filter exists to guard against.**
   **Not over the 99
   alone**: the 604 rest on an untrusted `|A| = 0` and some may in truth have left, so a 99-only ceiling
-  is not a ceiling on the unconditional estimand. Report [9.6830%, 9.7333%] only as a **labelled
-  conditional sub-interval** — an **APPLY** figure. **On DERIV the bound and its conditional
+  is not a ceiling on the unconditional estimand. Report **[9.6372%, 9.7333%], width 0.0961 pp**, only as a **labelled
+  conditional sub-interval** — an **APPLY** figure. **The conditioning constrains the 604 and says
+  nothing about the 90**, so **the sub-interval floor moves with the bound floor**; its width is
+  `189 / 196,654`, not `99 / 196,654`. ***SUPERSEDED (`0056`): [9.6830%, 9.7333%], width 0.0503 pp,
+  correct only under the un-widened floor. `9.6830` has NO legitimate reading under the adopted rule.*** **On DERIV the bound and its conditional
   sub-interval COINCIDE**, because the never-started exclusion component is 0 there; say so where it is
   published. **[16.7146%, 16.9704%] is superseded — it mixed
   denominators and its floor sat 0.0513 pp above the case liveness guards against.** `0045`'s [16.7789%,

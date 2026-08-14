@@ -103,7 +103,8 @@ shapes — the wrong figure present and the right figure missing — and the neg
 first. **Added to `CLAUDE.md` by the agent that found it**, on its first run under the control.
 
 **A grep hit is not a defect until the line is read**, and the register of known false positives now has
-four entries:
+**six rows** *(the entry first said "four"; corrected by `0056`, which also **withdraws the `9.6830` row
+as wrong** — see there)*:
 
 | String | Legitimate reading | Superseded reading |
 | :--- | :--- | :--- |
@@ -111,8 +112,13 @@ four entries:
 | **703 / 793** | **703** is the adopted APPLY exclusion count | **793** is ALT-MATCHED's |
 | **16,744** | post-liveness started-and-left **count** on **147,271** → 11.3695% (`bb-a.md:109`) | the un-widened DERIV floor on **147,370** → 11.3619% |
 | **0.0672** | DERIV exclusion **share of population**, `99 / 147,370` = 0.0672% (`bb-a.md:65`) | the un-widened DERIV bound **width** in pp |
-| **9.6830** | the floor of the **conditional sub-interval** `[9.6830%, 9.7333%]` over the 99, which is retained as a labelled sub-interval | the **non-covering** S&L bound floor over all 703 |
+| ~~**9.6830**~~ | ***ROW WITHDRAWN (`0056`) — there is no legitimate reading.*** The sub-interval's conditioning constrains the **604**, not the 90, so **its floor moved with the bound floor to 9.6372%** | **every** occurrence is superseded |
 | **0.4033** | **none — it has no legitimate use anywhere** | B's rounding artifact for the APPLY bound width |
+
+**The `9.6830` row was wrong and is withdrawn by `0056`.** It was called "the sharpest of the six"; it
+was the most damaging. **Registering it as exempt disarmed the grep control against the one string it
+most needed to catch, on four surfaces, in the section that created the control.** The claim that the
+sub-interval is "over the 99" is what produced it: **the conditioning constrains the 604.**
 
 **`16,744` and `0.0672` were found by the analytics-engineer** in the artifacts sweep and **both turn on
 population** — which is why the standing rule that every figure states its population at the point of
@@ -143,7 +149,9 @@ recorded as **not** inert at `τ2`, **is** inert at `τ1`: the clamp value postd
 **And `0049` §6's launch-snapshot control did not cover this.** It governs **the rule**. **The bound is
 not the rule** — the third control added to the propagation problem does not reach the thing that broke.
 
-## 5. Three defects in `0054`, corrected in place
+## 5. Four defects in `0054`, corrected in place
+
+*(This heading said "Three" above four bullets; corrected by `0056`.)*
 
 - **§1's identity table carried no population label** — in the entry whose own standing rule is that
   every figure states which population produced it at the point of use. It was APPLY.
@@ -232,8 +240,11 @@ than picking one.** It is a load-bearing predicate and **is not resolved here.**
 **Named so they cannot later be mistaken for endpoints (instance B):** a joint-state reading of the
 ceiling question yields **16,754 / 19,655.** They are not bound endpoints.
 
-**Added to the false-positive register (instance B): a third legitimate reading of `16,744`** at
-`artifacts/step7-sensitivity-b.md:76`.
+~~**Added to the false-positive register (instance B): a third legitimate reading of `16,744`** at
+`artifacts/step7-sensitivity-b.md:76`.~~ **CORRECTED (`0056`): it was NOT added.** Row 3 of the register
+named one reading. **This entry asserted a completed action that was not taken — the §5a failure, in the
+same entry, for the third time.** The third reading is now in the register, which lives in
+`second-brain`'s glossary.
 
 **Two DERIV figures the record stated nowhere (instance A), now in the spec:** the three-ceiling sum is
 **100.1276% on 147,370**, excess **0.1276 pp = 188 = 99 + 89**. **The excess equals the bound width on

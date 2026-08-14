@@ -16,12 +16,29 @@
 > | **DERIV** Continued ceiling | 82.4327% | **82.4930%** |
 >
 > **Why:** the floor must admit that the channel pairs — **90 on APPLY, 89 on DERIV**, ¬Continued, live
-> only because they inserted after `τ1`, last insertion inside `(τ1, τ2]` — **may in truth be
-> Continued**, since they could produce no evidence dated after that instant. **The ceilings do not
-> move; the widening is one-sided.**
+> only because they inserted after `τ1`, last insertion inside `(τ1, τ2)` — **may in truth be
+> Continued**, since they could produce no evidence dated after that instant. **The started-and-left
+> CEILINGS do not move; the widening is one-sided. The Continued ceilings move with the floor.**
 >
-> **Everything else in this file stands**, including the exclusion counts (APPLY 703 = 604 + 99;
-> DERIV 99 = 0 + 99), the never-started bound `[16.6633%, 16.9704%]`, and every point estimate.
+> **Everything derived from the started-and-left floor moves with it, and this stamp names all of it**
+> (`decisions/0056`, dependency list in `CLAUDE.md` under `## Derived figures`):
+>
+> | Derived figure | Printed below | Adopted |
+> | :--- | ---: | ---: |
+> | conditional sub-interval, APPLY | `[9.6830%, 9.7333%]`, width 0.0503 pp | **`[9.6372%, 9.7333%]`, width 0.0961 pp** |
+> | attainable-corner table, floor corner *(this file, `a` only)* | 9.6830% / Continued 73.3466% | **9.6372% / Continued 73.3924%** |
+> | S&L bound ÷ account-clustered sampling width | `a`: 0.47× · `b`: 6% | **50.9%** on 0.4032 / 0.7922 |
+>
+> **`9.6830%` has NO legitimate reading under the adopted rule** — its earlier registration as a
+> false-positive trap is withdrawn. **Every occurrence below is superseded**, and each is marked inline.
+>
+> **This stamp certifies nothing beyond the table above.** The earlier version of it closed with
+> *"Everything else in this file stands, including every point estimate"* — **that sentence was false for
+> at least three figures it did not name, and a stamp that affirmatively certifies superseded numbers is
+> worse than no stamp.** What is positively unchanged is narrow and is listed rather than implied: **the
+> exclusion counts (APPLY 703 = 604 + 99; DERIV 99 = 0 + 99), the never-started bound
+> `[16.6633%, 16.9704%]`, and the three outcome point estimates.** Anything not in that sentence or the
+> table above is **unverified by this stamp**, not certified by it.
 
 
 
@@ -134,7 +151,11 @@ re-applied inside each replicate so the exclusion count is itself random, seed 2
 | DERIV (2,402 accounts) | [5.852, 6.594] | [81.804, 83.035] | [10.896, 11.870] | [75, 128] |
 
 **Every bound in §4 is narrower than the sampling width it sits inside** — the never-started bound
-is 27% of the APPLY sampling width, the started-and-left bound 6% of it. That does not make the
+is 27% of the APPLY sampling width, the started-and-left bound ~~6%~~ ***SUPERSEDED (`0056`): 50.9%***
+of it. **The 6% was computed on the conditional sub-interval, which this arm had itself argued is not
+the bound** (`0052` §6), and on its pre-widening width; **the bound is 0.4032 pp over a 0.7922 pp
+account-clustered width.** On the sub-interval, now 0.0961 pp, the ratio is **12.1%**, still not the
+bound's. **The original understated the systematic range against sampling error by roughly 8×.** That does not make the
 bounds unimportant, because they are a *systematic* range and the CI is a *sampling* range, but it
 must be stated wherever both are printed.
 

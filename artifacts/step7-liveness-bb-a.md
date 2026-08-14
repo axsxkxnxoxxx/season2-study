@@ -16,12 +16,29 @@
 > | **DERIV** Continued ceiling | 82.4327% | **82.4930%** |
 >
 > **Why:** the floor must admit that the channel pairs — **90 on APPLY, 89 on DERIV**, ¬Continued, live
-> only because they inserted after `τ1`, last insertion inside `(τ1, τ2]` — **may in truth be
-> Continued**, since they could produce no evidence dated after that instant. **The ceilings do not
-> move; the widening is one-sided.**
+> only because they inserted after `τ1`, last insertion inside `(τ1, τ2)` — **may in truth be
+> Continued**, since they could produce no evidence dated after that instant. **The started-and-left
+> CEILINGS do not move; the widening is one-sided. The Continued ceilings move with the floor.**
 >
-> **Everything else in this file stands**, including the exclusion counts (APPLY 703 = 604 + 99;
-> DERIV 99 = 0 + 99), the never-started bound `[16.6633%, 16.9704%]`, and every point estimate.
+> **Everything derived from the started-and-left floor moves with it, and this stamp names all of it**
+> (`decisions/0056`, dependency list in `CLAUDE.md` under `## Derived figures`):
+>
+> | Derived figure | Printed below | Adopted |
+> | :--- | ---: | ---: |
+> | conditional sub-interval, APPLY | `[9.6830%, 9.7333%]`, width 0.0503 pp | **`[9.6372%, 9.7333%]`, width 0.0961 pp** |
+> | attainable-corner table, floor corner *(this file, `a` only)* | 9.6830% / Continued 73.3466% | **9.6372% / Continued 73.3924%** |
+> | S&L bound ÷ account-clustered sampling width | `a`: 0.47× · `b`: 6% | **50.9%** on 0.4032 / 0.7922 |
+>
+> **`9.6830%` has NO legitimate reading under the adopted rule** — its earlier registration as a
+> false-positive trap is withdrawn. **Every occurrence below is superseded**, and each is marked inline.
+>
+> **This stamp certifies nothing beyond the table above.** The earlier version of it closed with
+> *"Everything else in this file stands, including every point estimate"* — **that sentence was false for
+> at least three figures it did not name, and a stamp that affirmatively certifies superseded numbers is
+> worse than no stamp.** What is positively unchanged is narrow and is listed rather than implied: **the
+> exclusion counts (APPLY 703 = 604 + 99; DERIV 99 = 0 + 99), the never-started bound
+> `[16.6633%, 16.9704%]`, and the three outcome point estimates.** Anything not in that sentence or the
+> table above is **unverified by this stamp**, not certified by it.
 
 
 
@@ -210,8 +227,13 @@ So the started-and-left numerator on APPLY ranges over **19,141 − 99 = 19,042*
 On **DERIV**, denominator 147,370: **[11.3619%, 11.4291%]**, width **0.0672 pp** — narrow because the
 never-started component is empty there, so only the 99 float.
 
-**The "over the 99 only" interval is [9.6830%, 9.7333%], width 0.0503 pp — and it is NOT a bound on the
-unconditional estimand.** Its ceiling does not cover the case in which an excluded never-started null
+***SUPERSEDED (`decisions/0056`): the conditional sub-interval is [9.6372%, 9.7333%], width 0.0961 pp,
+over the 99 AND the 90.*** The conditioning constrains the **604** and says nothing about the 90, so the
+sub-interval floor moves with the bound floor. **`9.6830%` has no legitimate reading under the adopted
+rule.** The paragraph below is the original text and its reasoning about the CEILING stands unchanged.
+
+~~**The "over the 99 only" interval is [9.6830%, 9.7333%], width 0.0503 pp** — and it is NOT a bound on the
+unconditional estimand.~~ Its ceiling does not cover the case in which an excluded never-started null
 in truth started and left, which is a case the filter exists precisely to allow for. Publishing it as
 *the* second bound would be **the fourth consecutive bound in this chain whose endpoint fails to cover
 the case the filter guards against** — `0043`'s ceiling, `0045`'s floor, `0046`'s floor, and then this.
@@ -222,18 +244,25 @@ decline.
 **Both bounds are simultaneously tight, and the corners are attainable resolutions of the same
 population** (each verified to sum to 196,654 exactly, in integer arithmetic):
 
-| Resolution | Never started | Continued | Started and left |
-| :--- | ---: | ---: | ---: |
-| All 604 started and left; all 99 are true exits | **16.6633%** (floor) | 73.2962% | **10.0405%** (ceiling) |
-| All 604 are true declines; all 99 in truth continued | **16.9704%** (ceiling) | 73.3466% | **9.6830%** (floor) |
+| Resolution | Never started | Continued | Started and left | |
+| :--- | ---: | ---: | ---: | :--- |
+| All 604 started and left; all 99 are true exits | **16.6633%** (floor) | 73.2962% | **10.0405%** (ceiling) | unchanged — the 90 are already started-and-left here |
+| All 604 are true declines; all 99 **and all 90 channel pairs** in truth continued | **16.9704%** (ceiling) | **73.3924%** | **9.6372%** (floor) | *corrected `0056`* |
+| ~~All 604 are true declines; all 99 in truth continued~~ | ~~16.9704%~~ | ~~73.3466%~~ | ~~9.6830%~~ | ***SUPERSEDED*** — omits the 90 |
 
-**Bound 3, Continued, for completeness:** APPLY **[73.2962%, 73.6537%]**, DERIV
-**[82.3655%, 82.4327%]**. Continued is the only state no exclusion can leave; both other states can
+**Bound 3, Continued, for completeness:** ***SUPERSEDED (`0054`, `0055`): APPLY [73.2962%, 73.6995%],
+DERIV [82.3655%, 82.4930%]*** — both ceilings move with the floor, since the same 90 / 89 may be
+Continued. ~~APPLY [73.2962%, 73.6537%], DERIV [82.3655%, 82.4327%].~~ Continued is the only state no exclusion can leave; both other states can
 only flow into it.
 
 **The bounds are identified sets, not confidence intervals.** For scale, on APPLY the never-started
 bound is **0.28×** the account-clustered sampling width of the share it bounds, and the
-started-and-left bound is **0.47×**. Sampling error dominates both.
+started-and-left bound is ~~**0.47×**~~ ***SUPERSEDED (`0056`)*** — that ratio was computed on the
+withdrawn 0.3575 pp width. **On the adopted 0.4032 pp bound over the 0.7922 pp account-clustered width
+the ratio is 0.5090, i.e. 50.9%** (`0055` §6). **Sampling error still dominates, but by half as much as
+stated.** *(Reported not reconciled: this arm published 0.47× where 0.3575 / 0.7922 = 0.4513 — the arm's
+own figure and the reconstruction from the stated width differ, and `0052` §6 read the reconstruction as
+"A's figure" when it is not exactly.)*
 
 ---
 
