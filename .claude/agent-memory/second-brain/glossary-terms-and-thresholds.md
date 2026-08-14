@@ -180,6 +180,23 @@ generator committed the disease.** Two asserts now enforce it, including that th
 widths are equal. **`bb-b.json`'s `0.403245 → 0.403246` at `0062` landed on the exact form by
 coincidence, not by construction.**
 
+### The `W` ARM GRID — 38 / 46 / 77 / 91 / 107 / 108 / 150 / 213 (`0075`)
+
+**`0075` and `task-sheet.md` Step 13 are the FIRST statement of it in any file.** Step 6's deliverables
+say `[37, 107]` and `[37.70, 107.71]`; **neither says 38.** Step 13's bullets constrain the arms without
+enumerating them, and the grid travelled only as the **index of a reported series** — which is a
+reading, not a specification. **Every Step 13 figure is indexed by the arm set, so two instances on
+different grids produce tables that CANNOT BE DIFFED AT ALL**: a failure of the dual implementation
+itself, not a wrong number inside it.
+
+### D3′'s CLEARED SHARES — 99.53% at `W = 46` → 97.73% at `W = 213` (`0075`)
+
+**On Step 8's right-censored populations**, measured **independently and identically by both Step 8
+instances**. ***SUPERSEDED: `0034`'s 95.98% → 91.34%***, measured on the amendment's **uncensored
+estimation sample** and carrying **no population at the point of use**. **Direction and shrinkage stand;
+the level does not.** `0068` §2a could fix the denominator and not the level — which is why it needed a
+ruling rather than a restatement.
+
 ### The bound's SCOPE QUALIFIER — it publishes WITH the bound, every time (`0062` §4)
 
 > **The bound is covering with respect to INSERTION-DORMANCY, exhaustively; open only across CHANNEL
