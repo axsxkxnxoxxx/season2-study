@@ -329,6 +329,25 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
 - [ ] **Enforce the set-membership drop rule**: an episode whose `number` is not in the season's listed set `E` is dropped. This is an implementation check, not a data check — under set membership `|D| ≤ L` holds by construction
 - [ ] **Every boundary test is the half-open UTC-instant form** of Step 1 §2.4. `date(watched_at) <= T1` must not appear anywhere in the implementation
 - [ ] **THE LIVENESS SILENCE TEST IS STRICT.** The rule is *"no insertion instant **after** `τ1`"*, so a pair is silent iff it has **no insertion instant `> τ1`** — an instant falling exactly **at** `τ1` is **not** after it and does **not** make the account live. **Stated here, in the step that applies the rule** (`0068`); it was determinable from the rule text and said nowhere in Step 8. **AND THE EVIDENCE IS RESTRICTED TO RECORDS DATED BEFORE `τ_pull`.** Human Lead ruling, 2026-08-13 (`0070`). **This is applying an existing ruling consistently, not a new one:** **D11, approved at the Step 1 gate, makes `τ_pull` a global frozen cutoff and discards records at or after it from EVERY computation** — and the silence test is a computation. **The unstated version produced the reported-not-reconciled 792 (A) against 791 (B) at Step 7**, where one arm applied the restriction and the other did not. **Measured before ruling, and it does not disturb the approved gate: exclusions are 703 on APPLY and 99 on DERIV either way**, because no insertion instant exceeds the clamp at 2026-08-10T20:48Z and D10 already forces `τ1 ≤ τ_pull − 91 d`.
+- [ ] **COLUMN NAMES ARE FIXED, NOT LEFT TO THE INSTANCE.** Human Lead ruling, 2026-08-13 (`0077`).
+      The rerun produced **88 columns against 87 for the SAME CONTENTS** — `in_population_APPLY` against
+      `in_apply`, `n_rec_s1_watch` against `action_count_s1_watch`, `tau1_utc` against `tau1`,
+      `max_episode_in_AH` against `max_episode_in_A_H`. **Step 8b defines the schema Steps 9–13 write
+      into, so it would inherit the divergence.** **THE RULE: use the spec's own vocabulary at the point
+      the spec defines the thing; where the spec does not name it, prefer the more explicit form.**
+      Adopted:
+      **`in_apply` / `in_deriv`** — the spec names the populations APPLY and DERIV and these are the
+      shortest unambiguous forms. **`tau1` / `tau2`** — the spec writes `τ1` and `τ2` with no suffix.
+      **`n_A` / `n_A_H` / `max_episode_in_A_H` / `f2_in_A_H`** — the spec writes `A`, `A_H`, `|A|` and
+      `F2 ∈ A_H`; **`AH` is not the spec's spelling.** **`action_count_s{1,2}_{watch,scrobble,checkin,other}`**
+      — `0070` ruling 4 says *"per-pair COUNTS BY ACTION TYPE"*, and these are those words.
+      **`discovered_channel_a` / `discovered_channel_b`** — `0070` ruling 3 says two booleans;
+      `in_channel_*` is ambiguous with the population flags. **`t0_binding_term` / `t0_date` /
+      `s1_completion_date`** — lower-case `t0`, no `_utc` suffix, since **every instant in this study is
+      UTC by Step 1 §2.4 and a suffix on some columns implies the others are not.**
+      **Keep both instances' extra columns**: **`has_s3_or_later_evidence`** (D4 reads it) and
+      **`s1_completion_used_a_post_cutoff_record`** (the D11 question at position 3 reads it). **The
+      table is 89 columns.**
 - [ ] **THE TABLE IS THE POSITION-5 ROW SET: 196,654 rows on APPLY, with `live` and `outcome` AS
       COLUMNS.** Human Lead ruling, 2026-08-13 (`0074`). **Both readings of "one row per pair" give
       identical counts** — the dual run produced 195,951 × 86 at position 7 and 196,654 × 87 at position
@@ -340,8 +359,12 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
 - [ ] Build one row per user-show pair
 - [ ] Include per row: outcome state, abandonment point, discovery channel, and all Step 2 show fields.
 - [ ] **DISCOVERY CHANNEL IS TWO BOOLEAN COLUMNS, NOT ONE CATEGORICAL.** Human Lead ruling, 2026-08-13
-      (`0070`). **324 users are in BOTH channels**, and **Step 11 tests whether discovery method biased
-      the pool**, so forcing a single value either **drops the overlap or assigns it arbitrarily** —
+      (`0070`). **324 of the 5,694-username Step 3 DISCOVERY POOL are in BOTH channels; on the 2,549 accounts
+      actually pulled the overlap is 178.** ***`0070` ruling 3 stated "324 users" with NO POPULATION;
+      both figures and their populations are given here by `0077`*** — **a count without its population
+      is the shape that has recurred through this entire chain**, and it recurred in the ruling written
+      to fix a different unlabelled figure. **Step 11 tests whether discovery method biased the pool**,
+      so forcing a single value either **drops the overlap or assigns it arbitrarily** —
       and the arbitrary assignment would be invisible in the diff, since both instances would make it
       the same way only by luck. **Two flags let Step 11 cut on either channel or on the overlap.**
 - [ ] **`action` IS NOT A ROW-LEVEL COLUMN. EMIT PER-PAIR COUNTS BY ACTION TYPE INSTEAD.** Human Lead
@@ -379,9 +402,16 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
 - [ ] **Resumption-rate report — D3′, which replaces D3** (`decisions/0034`). Of pairs scored **Started and left at `τ2`** whose `⟦T0⟧ + (W + 2H) × 24h ≤ τ_pull`, report the **share** completing within `[τ2, τ2 + H)`, the **count** of that cleared subpopulation, and its **share of all Started-and-left** — **where "all Started-and-left" means the Started-and-left set ON THE POPULATION AND AT THE ARM NAMED AT THE POINT OF USE** (`0068`), never a figure carried from another arm or another population. **Each arm's denominator is its own.** **Run at every Step 13 `W` arm, each reporting its own cleared count and share** — the clearance contains `W`, so the subpopulation shrinks. **ON STEP 8's RIGHT-CENSORED POPULATIONS THE SERIES IS 99.53% OF STARTED-AND-LEFT AT `W = 46` DOWN TO 97.73% AT `W = 213` (APPLY).** Human Lead ruling, 2026-08-13 (`0075`). ***SUPERSEDED: 95.98% → 91.34%***, which `0034` measured on the **amendment's uncensored estimation sample**, not on Step 8's populations — **and it carried no population at the point of use, which is why `0068` §2a could fix the denominator and not the level.** **The population is stated here so the same gap cannot reopen.** **Both Step 8 instances measured 99.53% → 97.73% independently and identically.** Report alongside, **labelled a count and not a rate**, the 3,440 Started-and-left pairs completing at any point before `τ_pull`, **with its exposure-weighting by show recency stated at the point of use**. **THE 3,440 IS ON THE UNCENSORED ESTIMATION SAMPLE OF 128,099 — NOT ON STEP 8's POPULATION** (`0068`; measured at `0034` §3, where the Started-and-left group is 17,420 before the amendment and 15,174 after). **That is why Step 14 calls it a FLOOR**: the estimation sample excludes the pairs the Step 5 waterfall drops and is not right-censored. **Do not report it against APPLY or DERIV, and state its population wherever it appears.** The two do **not** bracket the quantity — both truncate observation and neither is a lower bound
 - [ ] **Never-started post-window diagnostic (D8)**, measured over `H`, not to the pull date. **Unchanged by `decisions/0034` but no longer D3's symmetric counterpart** — D8 measures over `[τ1, τ2)` and D3′ over `[τ2, τ2 + H)`. **D8(ii) is the only bound on the never-started boundary**, and its size is Step 14's ledger item 10
 - [ ] **Split-artifact counts (D9)**, both halves: the fabricated never-started row and the silently
-      deleted S1-failing counterpart. **POSITION 3's DROP SET IS RETAINED AS A SIDE OUTPUT** — Human
-      Lead ruling, 2026-08-13 (`0075`). **Half (b) is measured on the rows position 3 REMOVES, so it
-      cannot be computed without them**, and **no line of this step said to keep them.** Instance A
+      deleted S1-failing counterpart. **RETAIN THE 58,345 PAIRS THAT FAIL THE S1
+      COMPLETION RULE — POSITION 3's RULE — AS A SIDE OUTPUT.** Human Lead ruling, 2026-08-13 (`0075`),
+      ***restated by `0077` because it was UNMEASURABLE as written.*** **Position 3 removes ZERO rows
+      from the waterfall** — line 1 is already the S1-completer population (`0068`) — **so "position 3's
+      drop set" named an empty set**, and both arms had to choose an interpretation to compute anything.
+      **They chose the same one and a ruling exists to stop them having to choose.** **The set is the
+      pair universe less the completers: 58,345 pairs**, carrying each pair's distinct-episode counts
+      and the show's threshold, which is what half (b) reads. **NOT the set-membership drop rule, which
+      is a different rule and deletes 0 records** — naming it would put the wrong rule in the spec.
+      **Half (b) is measured on these rows and cannot be computed without them.** Instance A
       found this by needing it. **An instance that does not discover it emits ZERO or fails — and a zero
       here reads as a data finding rather than a missing input**, which is the worse of the two
       failures. **USE THE STRICT KEY AND REPORT THE LOOSE

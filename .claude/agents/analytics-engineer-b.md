@@ -255,6 +255,25 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
       length** — that reduces `the-100` to `the` and is a third key. **They were defined only inside one
       instance's code, which the other is forbidden to read.** **The 76-against-75 divergence is
       REPORTED, NOT RECONCILED.**
+    - **COLUMN NAMES ARE FIXED** (`0077`). The rerun gave **88 against 87 columns for the SAME
+      contents**, and **Step 8b's schema would inherit it.** **Rule: use the spec's own vocabulary where
+      the spec defines the thing; otherwise the more explicit form.** Adopted: **`in_apply` /
+      `in_deriv`**; **`tau1` / `tau2`** (no `_utc` — **every instant here is UTC by Step 1 §2.4, and a
+      suffix on some columns implies the others are not**); **`n_A` / `n_A_H` / `max_episode_in_A_H` /
+      `f2_in_A_H`** (the spec writes `A_H`, not `AH`); **`action_count_s{1,2}_{watch,scrobble,checkin,other}`**
+      (`0070` ruling 4's own words); **`discovered_channel_a` / `discovered_channel_b`** (`in_channel_*`
+      collides with the population flags); **`t0_binding_term` / `t0_date` / `s1_completion_date`**.
+      **Keep `has_s3_or_later_evidence` and `s1_completion_used_a_post_cutoff_record`** — D4 reads the
+      first, the open D11-at-position-3 question reads the second. **89 columns.**
+    - **POSITION 3's DROP SET IS THE 58,345 PAIRS THAT FAIL THE S1 COMPLETION RULE** (`0075`, restated
+      by `0077`). **Position 3 removes ZERO rows from the waterfall** — line 1 is already the
+      S1-completer population — **so the ruling as written named an empty set and both arms had to
+      choose an interpretation.** It is the **pair universe less the completers**, carrying each pair's
+      distinct-episode counts and the show's threshold. **NOT the set-membership drop rule, which is a
+      different rule and deletes 0 records.**
+    - **THE DISCOVERY-CHANNEL OVERLAP IS 324 OF THE 5,694 STEP 3 POOL AND 178 OF THE 2,549 ACCOUNTS
+      PULLED** (`0077`). **`0070` ruling 3 gave "324 users" with no population** — the shape that has
+      recurred through this whole chain, in the ruling written to fix a different unlabelled figure.
     - The table goes to `processed/`; the filter waterfall and invariant report, counts only, to
       `artifacts/`.
 - **Step 8b, output schema. Chained. NOT LAUNCHED.** Define the JSON schema the Step 16 visualization
