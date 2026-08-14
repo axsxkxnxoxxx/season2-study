@@ -41,8 +41,9 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
 
 - **Step 7, liveness rule. GATE — RULE CHANGED 2026-08-13 (`decisions/0046`). Reruns pending; NOT
   approved. The gate is OPEN.**
-    - **A pair is NOT LIVE iff BOTH: the account shows no insertion instant after that pair's `τ1`,
-      AND the pair is NOT Continued** (`0048`, superseding the `|A| = 0` form). **The second conjunct
+    - **A pair is NOT LIVE iff EITHER (`|A| = 0` AND no insertion instant after `τ1`) OR
+      (`|A| ≥ 1` AND NOT Continued AND no insertion instant after `τ2`)** (`0052`, superseding
+      ALT-BROAD's single `τ1` test). **Each null is tested at the instant its own outcome is read.** **The second conjunct
       reaches BOTH nulls.** Under `0034` only **Continued** rests on positive evidence; **Never started
       is a null and Started-and-left is ALSO a null** — `|A| ≥ 1` is observed, the failure to meet the
       Continued condition is not. **Structural, not incidental:** `τ2 > τ1`, so a pair silent after
@@ -67,8 +68,8 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
       §3, both for contradicting gate `0021`.
     - **Report the exclusion count per `W` arm on APPLY** — **537 / 550 / 633 / 664 / 701 / 703 / 789 /
       864** at `W` = 38 / 46 / 77 / 91 / 107 / 108 / 150 / 213 (`0048`). **Report the started-and-left
-      component separately — 52 / 56 / 79 / 89 / 98 / 99 / 125 / 148, a factor of 2.85**, growing
-      faster than the rule's own 1.5× `W`-coupling.
+      component separately — 52 / 56 / 79 / 89 / 98 / 99 / 125 / 148, a factor of 2.85**, against the
+      rule's own **1.61×** (`0052`; 1.5× was ALT's).
     - **D10 is RE-DERIVED at each arm — name the reading** (`0047`). Censoring contains `W`, so the
       censored population differs per arm; **freezing D10 at 108 gives TOTALS 746 / 823 / 918 / 1,117 at
       `W` = 125 / 150 / 180 / 213, of which 632 / 684 / 753 / 881 is the never-started COMPONENT**
@@ -94,6 +95,16 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
   (D5)** which must be stated and not smoothed over. Both arms run on the same right-censored
   population, `max(W, 91) + H` (D10).
 
+    - **THERE ARE THREE CEILINGS AND THEY CANNOT ALL HOLD** (`0050`, `0052`). Never-started 16.9704%,
+      started-and-left 10.0405%, **Continued 73.6537%** — the excluded set is counted once in each, so
+      they are **alternative worst cases over one set, not simultaneous ones.** **Continued has a
+      ceiling because any EXCLUDED pair may in truth be Continued**; do not print it as a point.
+    - **The never-started bound is DEGENERATE on DERIV — [6.2055%, 6.2055%] — so the dual control is
+      `x = x` there** (`0050`). The informative comparison is on APPLY.
+    - **THE BOUNDS AND THE SHARES ARE ON DIFFERENT POPULATIONS** (`0052`). Bounds are on the
+      **position-5** population; the published shares are **post-liveness**. **On DERIV the point
+      estimate 6.2096% lies OUTSIDE its own bound.** **State which population the bound bounds**, or
+      Step 9 publishes an interval that excludes its own point estimate.
 - **Step 10, where they leave. Chained.** Plot the distribution of abandonment points across the season
   for the started-and-left group; separate first-episode, mid-season and near-finale drops. Do not claim
   a specific episode — progress is self-reported and approximate. **Amended by `decisions/0034`:**

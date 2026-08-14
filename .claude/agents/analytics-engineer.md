@@ -72,8 +72,10 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
 - **Step 7, liveness rule. NOT YOURS TO DERIVE — but you APPLY it at Step 8, so it is stated here.**
   **RULE CHANGED 2026-08-13 (`decisions/0046`). The gate is OPEN and Step 8 does not launch until it
   closes.**
-    - **A pair is NOT LIVE iff BOTH: the account shows no insertion instant after that pair's `τ1`,
-      AND the pair is NOT Continued** (`0048`). **Both Never started and Started-and-left are nulls** —
+    - **A pair is NOT LIVE iff EITHER (`|A| = 0` AND no insertion instant after `τ1`) OR
+      (`|A| ≥ 1` AND NOT Continued AND no insertion instant after `τ2`)** (`0052`). **Each null is
+      tested at the instant its own outcome is read.** **Exclusion counts change from ALT-BROAD's
+      703/99 — Step 7's rerun measures the new ones; do not carry 703 forward.** **Both Never started and Started-and-left are nulls** —
       only Continued rests on positive evidence. **Note this makes liveness outcome-conditional on the
       Continued test as well as on `|A|`**, which is permitted for the same reason: row-local predicates
       on the position-5 output commute, and position 7 removes no rows.
