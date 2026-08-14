@@ -89,6 +89,8 @@ So after any edit: grep all seven surfaces for the superseded strings and requir
 
 **Register every superseded value the move creates, not just the one that prompted the correction.** Each figure on a list that moves leaves a superseded string behind, and an unregistered string is one the grep control will not flag. Correcting four figures and registering one is how three of them stay live.
 
+**One register, in `src/step7_register.py`, imported by every script that checks.** Two hand-maintained copies diverged by an entry after a single use, and neither held the values that were wrong. **A value can be superseded in one file and correct in another** — the two arms' ratios are — so the register is scoped by file where it needs to be, and **the positive half must cover the entry's own corrections**, which is what it did not do.
+
 **Both populations, always.** APPLY and DERIV are separate lists with separate arithmetic, and a correction applied to one and not the other is the same defect as not applying it at all.
 
 **Add a row when a new figure is derived; never remove one.** A list that shrinks is how the next one gets missed.
@@ -97,9 +99,13 @@ So after any edit: grep all seven surfaces for the superseded strings and requir
 
 So: `src/step7_regenerate_derived.py` reads the stored counts and writes **every** derived figure into **both halves of both arms** from a single expression each, then verifies numerically that no superseded value survives at any path. Anything derived belongs in it. **If you find yourself editing a derived number by hand, that is the defect.**
 
-Two properties are structural rather than remembered. **A value that is still live somewhere cannot enter the superseded list**, because the list is generated from the same expressions that produce the live values — that is what kept `0.3575` and `0.0672` out of it. And **the two arms' sampling-width conventions are named inputs**, so one arm's denominator cannot silently become the other's; reconciling a divergence is a spec decision and must be visible as one.
+**The two arms' sampling-width conventions are named inputs**, so one arm's denominator cannot silently become the other's; reconciling a divergence is a spec decision and must be visible as one.
+
+*(A second property was claimed here — that a value still live somewhere cannot enter the superseded list, because the list is generated. **Withdrawn 2026-08-13: the mechanism never fired.** The filter compared against a list that never contained the values in question, so it was a no-op. `0.3575` and `0.0672` are out because they were never put in. A control asserted to exist is not a control, and this one was found by reading the code rather than the claim.)*
 
 **Stamps are negative only.** A stamp naming the corrected value guarantees the positive grep passes whether or not the body was fixed. A stamp names what is superseded and points at the generated block; it restates no adopted figure.
+
+**A file-level stamp declares a file's STATUS, never its individual values.** Exempting a whole file because a stamp appears in its head exempted 19 `.md` and 16 `.json` files — the entire Step 7 artifact set, including both **operative** deliverables — and a wrong ratio survived a passing check inside one of them. A wholly superseded file is exempted by **name, in the source, with a reason**; a partially superseded one is checked value by value.
 
 **Check with `src/check_surfaces.py`, not with `grep`.** Matching is numeric, at a tolerance, across all seven surfaces. Textual grep cannot see the JSONs: the register stores 4-dp strings and the JSON stores 6-dp literals, so `9.6830` is not a substring of `9.682997`. Every value that survived review 11 was one whose registered form rounds up and therefore could never match.
 

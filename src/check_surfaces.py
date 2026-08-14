@@ -31,44 +31,10 @@ SURFACES = {
                           if p.is_file() and p.suffix in (".md", ".json", ".csv", ".txt")),
     "7 second-brain": sorted(str(p) for p in Path(".claude/agent-memory/second-brain").rglob("*.md")),
 }
-SPEC = ["1 task-sheet", "2 ds", "3 ds-b", "4 ae", "5 ae-b"]
-
-# value -> what it was. A value with a live legitimate reading is NOT here; those live in
-# LEGITIMATE below, which is what keeps the control armed without chasing ghosts.
-SUPERSEDED = {
-    9.6830: "S&L floor / sub-interval floor, APPLY",
-    0.0503: "sub-interval width, APPLY",
-    73.3466: "Continued value, attainable-corner floor row, APPLY",
-    73.6537: "Continued ceiling, APPLY",
-    11.3619: "S&L floor / sub-interval floor, DERIV",
-    82.4327: "Continued ceiling, DERIV",
-    0.4033: "APPLY bound width differenced from rounded endpoints",
-    0.4703: "S&L bound over sampling width, arm a, pre-widening",
-}
-LEGITIMATE = {
-    # The two-extremes table: 0055 SS2 asked both arms for the floor under extreme NONE as well
-    # as extreme ALL. The NONE column IS 9.6830 / 11.3619, and the Continued ceiling under NONE
-    # IS 73.6537 / 82.4327. Those are correct where they are labelled as the NONE extreme, and
-    # superseded everywhere they stand as the adopted figure. Context decides, not the value.
-    "extreme-NONE column": "9.6830 / 11.3619 / 73.6537 / 82.4327 are the correct extreme-NONE "
-                           "readings in the two-extremes table, and superseded as adopted figures",
-    0.3575: "APPLY exclusion share of population, 703 / 196,654 -- superseded only as a bound WIDTH",
-    0.0672: "DERIV exclusion share of population, 99 / 147,370 -- superseded only as a bound WIDTH",
-    19042: "post-liveness started-and-left POINT ESTIMATE on APPLY -- not the bound floor",
-    16744: "post-liveness S&L count on 147,271, and the DERIV floor under extreme NONE",
-    632: "frozen-D10 never-started component at W = 125",
-    703: "adopted APPLY exclusion count",
-}
-ADOPTED = {
-    # ae / ae-b deliberately hold NO Step 9 bound figures (0055 SS5a) -- they are not owners.
-    9.6372: SPEC[:3] + ["6 artifacts", "7 second-brain"],
-    0.0961: SPEC[:3] + ["6 artifacts", "7 second-brain"],
-    0.4032: SPEC[:3] + ["6 artifacts", "7 second-brain"],
-    73.6995: SPEC[:3] + ["6 artifacts", "7 second-brain"],
-    73.3924: ["6 artifacts"],
-    11.3015: SPEC[:3] + ["6 artifacts", "7 second-brain"],
-    82.4930: SPEC[:3] + ["6 artifacts"],
-}
+sys.path.insert(0, str(Path(__file__).parent))
+from step7_register import (SUPERSEDED, SUPERSEDED_IN, ADOPTED, ADOPTED_IN, LEGITIMATE,
+                            EXTREME_NONE_READINGS, SUCCESSOR,
+                            file_is_wholly_superseded, scoped)
 
 TOL = 5e-5
 NUM = re.compile(r"(?<![\w.])(\d{1,3}(?:,\d{3})*(?:\.\d+)?|\d+\.\d+)(?![\w])")
@@ -77,9 +43,13 @@ MARK = re.compile(r"SUPERSEDED|superseding|WITHDRAWN|withdraw|~~|no legitimate|"
                   r"legitimate|register|corrected|ADOPTED|un-?widened|rounding artifact|not 0\\.4033|vs 0\\.4033", re.I)
 # A hit is DECLARED, not a defect, when its own context says which reading it is. The
 # extreme-NONE column of the two-extremes table is the main one: both arms were asked for it.
-DECLARE = re.compile(r"extreme[_ ]NONE|unwidened|un-widened|proposed|superseded|SUPERSEDED|"
-                     r"_DERIVED|share_of_population|_scope", re.I)
-CONTEXT = 6   # markers wrap onto neighbouring lines; review 11 read three as unmarked for this
+# DECLARE says WHICH READING this occurrence is, so the value is not the adopted one.
+# Narrowed with B2: bare "superseded" is gone -- MARK already covers it, and having it here
+# too re-created the adjacent-contradiction pattern as a pass.
+DECLARE = re.compile(r"extreme[_ ]NONE|extreme NONE|un-?widened|proposed_pct|"
+                     r"_DERIVED|share_of_population|_scope|SUPERSEDED_computed_under|"
+                     r"superseded_strings", re.I)
+CONTEXT = 2   # a marker may wrap one line; 6 was too wide (Red Team 12)
 
 
 def near(x, target):
@@ -129,48 +99,56 @@ def text_numbers(path):
 
 
 def scan():
-    neg, pos = [], {v: set() for v in ADOPTED}
+    neg, pos, pos_in, allowed = [], {v: set() for v in ADOPTED}, set(), set()
     for surface, files in SURFACES.items():
         for f in files:
             is_json = f.endswith(".json")
             items = ([(v, p, p) for v, p in json_numbers(f)] if is_json
                      else text_numbers(f))
             # A file whose head carries a supersession stamp declares its whole body.
-            head = ""
-            if not is_json:
-                try:
-                    head = "\n".join(Path(f).read_text().split("\n")[:45])
-                except (UnicodeDecodeError, OSError):
-                    continue          # binary; nothing to read, nothing to check
-            file_stamped = bool(re.search(r"SUPERSEDED", head))
-            # The withdrawn-claims register exists to hold withdrawn values; every number in
-            # it is there BECAUSE it was withdrawn. Declaring it by name is honest; widening
-            # the marker regex to cover it would have exempted live files too.
-            if is_json:
-                try:
-                    file_stamped = "_SUPERSEDED" in json.load(open(f))
-                except Exception:
-                    file_stamped = False
-            if f.endswith("withdrawn-claims-register.md"):
-                file_stamped = True
+            # B2 (Red Team 12). The whole-file exemption is GONE. A file is exempt only if
+            # it is NAMED in the allowlist with a reason -- never because a stamp appears in
+            # its first 45 lines. That rule exempted 19 .md and 16 .json files, which is the
+            # entire Step 7 artifact set INCLUDING BOTH OPERATIVE DELIVERABLES, and is how a
+            # wrong ratio survived a passing check. The operative pair is not exemptible.
+            whole_file = file_is_wholly_superseded(f)
             for val, where, line in items:
-                for s, what in SUPERSEDED.items():
+                if whole_file:
+                    allowed.add((f, whole_file))
+                for s, what in list(SUPERSEDED.items()) + [
+                        (v, why) for (frag, v), why in SUPERSEDED_IN.items() if frag in f]:
                     if near(val, s):
+                        if whole_file:
+                            continue
                         # a JSON leaf can never be "labelled" -- there is no prose to carry
                         # a marker, which is exactly why review 11 found six of them there.
                         labelled = bool(line and MARK.search(line))
-                        declared = bool(line and DECLARE.search(line)) or file_stamped
+                        declared = bool(line and DECLARE.search(line))
+                        if s in EXTREME_NONE_READINGS and line and \
+                                re.search(r"extreme[_ ]NONE", line, re.I):
+                            declared = True
+                        # self-declaring: the successor value is on the same line/context,
+                        # so the text is narrating the transition rather than asserting the
+                        # superseded value as current.
+                        succ = SUCCESSOR.get(s)
+                        if succ is not None and line and any(
+                                near(float(m.group(1).replace(",", "")), succ)
+                                for m in NUM.finditer(line)):
+                            declared = True
                         if not labelled and not declared:
                             neg.append((surface, f, where, val, what,
                                         (line or "").strip()[:110]))
                 for a in ADOPTED:
                     if near(val, a):
                         pos[a].add(surface)
-    return neg, pos
+                for (frag, v), why in ADOPTED_IN.items():
+                    if frag in f and near(val, v):
+                        pos_in.add((frag, v))
+    return neg, pos, pos_in, allowed
 
 
 if __name__ == "__main__":
-    neg, pos = scan()
+    neg, pos, pos_in, allowed = scan()
     n_files = sum(len(v) for v in SURFACES.values())
     print(f"seven surfaces, {n_files} files, numeric matching at tol {TOL} "
           f"-- 4-dp and 6-dp forms both matched\n")
@@ -195,11 +173,21 @@ if __name__ == "__main__":
         if gap:
             missing.append((a, gap))
     print()
+    print("PER-ARM adopted ratios (0058's own corrections -- the positive half never reached these):")
+    miss_in = [(f, v, w) for (f, v), w in ADOPTED_IN.items() if (f, v) not in pos_in]
+    for (f, v), w in ADOPTED_IN.items():
+        print(f"  {'OK ' if (f, v) in pos_in else 'MISS'} {f} {v}: {w}")
+    print()
+    print(f"WHOLLY SUPERSEDED FILES exempted by explicit allowlist ({len(allowed)}), reason each:")
+    for f, why in sorted(allowed):
+        print(f"  {f}\n      {why}")
+    print("  (the OPERATIVE bb-{a,b} deliverables are NOT exemptible -- that is B2)")
+    print()
     print("LEGITIMATE readings, deliberately not in the negative set:")
     for v, why in LEGITIMATE.items():
         print(f"  {v}: {why}")
 
-    if neg or missing:
+    if neg or missing or miss_in:
         print("\nFAIL")
         sys.exit(1)
     print("\nPASS -- both halves, all seven surfaces.")

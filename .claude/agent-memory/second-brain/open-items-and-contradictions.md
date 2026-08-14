@@ -190,7 +190,8 @@ back into a ruling. It is not an open item. It is a closed error of mine.**
 pre-widening ones** (`0058`; the adopted Continued ceiling is **73.6995%** = `(144,140 + 703 + 90) /
 196,654`, and the three ceilings sum to **100.7104%**). **73.6537% was the Continued CEILING on APPLY:
 `(144,140 + 703) / 196,654`.** It states a population, it reconstructs exactly, both deliverables
-published it, and both JSONs carried `ceiling_pct: 73.6537…`. So the original sentence was right and
+published it, and both JSONs carried `ceiling_pct: 73.6537…` *(SUPERSEDED — both now carry 73.6995,
+regenerated from the counts by `0059`)*. So the original sentence was right and
 **the sum was THREE ceilings, not two**: 16.9704 + 10.0405 + 73.6537 = 100.6646%. **The postmortem's
 point is the mislabelling, not the value, and the value has since moved.**
 

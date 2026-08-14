@@ -35,9 +35,11 @@ that did move was the ratio — **the patch reached the ratio and missed both it
 | 1 corner table | a declared target **path**, not a guessed key |
 | 2 `sampling_error` block | declared target paths; **paths absent in an arm's schema are LISTED, never silently skipped** — 6 in arm a, 28 in arm b, printed every run |
 | 4 per-`W` series | **cannot** be regenerated: only `W = 108` masks are on disk. So it is **declared scope-limited by renaming its key** — `per_arm_SUPERSEDED_computed_under_closed_window_and_unwidened_floor` — which survives a reader who never opens the note |
-| 5 legitimate strings in the superseded list | **a value still live anywhere cannot enter the list**, because the list is generated from the same expressions that produce the live values. That is what keeps `0.3575` and `0.0672` out of it |
+| 5 legitimate strings in the superseded list | ~~a value still live anywhere cannot enter the list, because the list is generated from the same expressions that produce the live values~~ **WITHDRAWN (`0059`): the mechanism NEVER FIRED.** `LIVE_ELSEWHERE` was compared against a `SUPERSEDED_VALUES` dict that **never contained `0.3575` or `0.0672`**, so the filter was a no-op and `_dropped` was always empty. **They are out because they were never put in — the property was asserted, not structural.** They are now in the shared register's `LEGITIMATE` table with their reading stated, which is a declaration and not a mechanism |
 | 6 4-dp register vs 6-dp literals | matching is **numeric at a tolerance**, never textual |
 | 7 corrected values in stamps | **the `.md` stamp is negative only.** It names superseded strings and points at the generated block; it restates **no** adopted figure. Verified: `9.6372`, `0.0961`, `0.4032`, `73.3924`, `11.3015`, `82.4930` all occur **zero** times in either stamp |
+
+**One claim in this table is withdrawn and the withdrawal belongs here, not in a footnote.** Row 5 described a structural property that **never operated**. It is the same shape as the entries this chain has been correcting: a control asserted to exist rather than verified to fire. **Red Team found it by reading the code rather than the claim** (`0059`).
 
 **And the trap the fix had to avoid, which the script encodes rather than remembers.** `19042` is *also*
 the post-liveness started-and-left **point estimate**, in `outcome_shares`, `waterfall` and

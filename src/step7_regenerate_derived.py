@@ -152,6 +152,14 @@ assert RATIO_DENOMINATORS["a"]["APPLY"] != RATIO_DENOMINATORS["b"]["APPLY"], \
     "the conventions must stay distinct -- reconciling them is what 0058 reverted"
 
 
+# The never-started ratio has its own denominators, and 0058 SS3 records that the arms were
+# CORRECTLY left divergent on it (a 0.2813, b 0.27211). Naming them keeps that divergence
+# intact instead of quietly making the two ratios share one convention.
+NS_RATIO_DENOMINATORS = {"a": {"APPLY": 1.09, "DERIV": 0.7626},
+                         "b": {"APPLY": 1.1287197092145753, "DERIV": 0.7420068751051554}}
+assert NS_RATIO_DENOMINATORS["a"]["APPLY"] != NS_RATIO_DENOMINATORS["b"]["APPLY"]
+
+
 def ratios(arm):
     r = {}
     for pop in POPS:
@@ -165,27 +173,13 @@ def ratios(arm):
     return r
 
 
-# ------------------------------------------------- 4. THE SUPERSEDED STRINGS
-# Generated, not typed. A value that is STILL LIVE anywhere in the artifact cannot enter
-# the list -- that is finding 5, closed by construction rather than by remembering.
+# ----------------------------------------------- 4. THE REGISTER -- SHARED, NOT LOCAL
+# B3 (Red Team 12): there were two hand-maintained registers, already divergent, and
+# neither held the values that were wrong. There is now one, in step7_register.py, and
+# both scripts import it.
 
-LIVE_ELSEWHERE = set()
-for pop in POPS:
-    LIVE_ELSEWHERE.add(round(D[pop]["exclusion_share_of_population"], 4))   # 0.3575 / 0.0672
-
-SUPERSEDED_VALUES = {
-    # value : what it used to be. Regenerated each run from the pre-widening expressions.
-    9.6830: "S&L floor and sub-interval floor, APPLY, before the channel concession",
-    0.0503: "sub-interval width, APPLY, before the channel concession",
-    73.3466: "Continued value in the attainable-corner floor row, APPLY",
-    73.6537: "Continued ceiling, APPLY, before the channel concession",
-    11.3619: "S&L floor and sub-interval floor, DERIV",
-    82.4327: "Continued ceiling, DERIV",
-    0.4033: "APPLY bound width differenced from rounded endpoints -- a rounding artifact",
-}
-SUPERSEDED = {f"{v:.4f}".rstrip("0"): why for v, why in SUPERSEDED_VALUES.items()
-              if round(v, 4) not in LIVE_ELSEWHERE}
-_dropped = [v for v in SUPERSEDED_VALUES if round(v, 4) in LIVE_ELSEWHERE]
+sys.path.insert(0, str(Path(__file__).parent))
+from step7_register import SUPERSEDED, SUPERSEDED_IN, ADOPTED_IN   # noqa: E402
 
 # ------------------------------------------------------- 5. TARGETS -- JSON
 # Declared paths. Never key-guessing, never value-wide substitution: 19042 is ALSO the
@@ -243,7 +237,15 @@ def json_targets(arm, doc):
               (se + ["never_started_floor", "point_pct"], d["ns"]["floor"]),
               (se + ["never_started_ceiling", "point_pct"], d["ns"]["ceil"]),
               (se + ["started_and_left_bound_width_pp"], d["sl"]["width"]),
-              (se + ["never_started_bound_width_pp"], d["ns"]["width"])]
+              (se + ["never_started_bound_width_pp"], d["ns"]["width"]),
+              # B1 (Red Team 12): CLAUDE.md puts the bound-over-sampling-width ratio on BOTH
+              # dependency lists, and the previous version wrote both OPERANDS and left the
+              # QUOTIENT -- the exact inverse of 0057's failure, in the same six-line block.
+              # The denominator is this arm's own, from RATIO_DENOMINATORS.
+              (se + ["started_and_left_bound_width_over_sampling_width"],
+               round(d["sl"]["width"] / RATIO_DENOMINATORS[arm][pop], 4)),
+              (se + ["never_started_bound_width_over_sampling_width"],
+               round(d["ns"]["width"] / NS_RATIO_DENOMINATORS[arm][pop], 4))]
     return T
 
 
@@ -306,11 +308,56 @@ def apply_json(arm):
                     "b 0.27211) in the same files, which is the proof this one was wrong."),
             "this_arm": arm, "this_arm_recomputed": r,
             "other_convention_denominator": RATIO_DENOMINATORS["b" if arm == "a" else "a"],
-            "arms_own_published_ratio_is_retained_in_place_and_marked_superseded": True,
+            "this_arms_ratio_is_computed_from_this_arms_denominator": {
+                "APPLY": f"{D['APPLY']['sl']['width']} / {RATIO_DENOMINATORS[arm]['APPLY']} "
+                         f"= {r['APPLY']['ratio']}",
+                "DERIV": f"{D['DERIV']['sl']['width']} / {RATIO_DENOMINATORS[arm]['DERIV']} "
+                         f"= {r['DERIV']['ratio']}"},
+            "asserted_not_asserted_as_a_literal": (
+                "the previous version stated 'the arm's own published ratio is retained in place "
+                "and marked superseded' as a hard-coded true. Nothing checked it and it was false. "
+                "It is now an assertion in check_ratios_written() and the run fails if the written "
+                "quotient is not this arm's numerator over this arm's denominator."),
             "the_spec_fixes_neither_convention": True},
     }
     p.write_text(json.dumps(doc, indent=2))
     return hits, absent
+
+
+# Paths genuinely absent from an arm's schema, allowlisted per arm with a reason. Anything
+# absent and NOT here fails the run -- previously 28 declared derived figures in arm b were
+# never written and the script still exited 0.
+ABSENT_OK = {
+    "a": {"width_joint_pp": "arm a states one width per bound, not a joint/component pair",
+          "width_over_SL_exclusions_pp": "arm a carries the sub-interval as its own object",
+          "ceiling_numerator": "arm a stores Continued as percentages only"},
+    "b": {"width_pp": "arm b names the two widths joint/over_SL rather than one width_pp",
+          "ceiling_numerator": "arm b stores Continued as percentages only",
+          "joint_corner_check": "the attainable-corner table is arm a's object (bb-b.md:29)",
+          "sampling_error": "arm b's bootstrap lives under `bootstrap`, not `sampling_error`"},
+}
+
+
+def absent_is_allowed(arm, path):
+    return next((why for frag, why in ABSENT_OK[arm].items() if frag in path), None)
+
+
+def check_ratios_written(arm):
+    """B1: assert the written quotient IS this arm's numerator over this arm's denominator."""
+    doc = json.load(open(ARMS[arm] + ".json"))
+    bad = []
+    for pop in POPS:
+        se = doc.get("sampling_error", {}).get(pop, {}).get("bound_endpoints")
+        if not se:
+            continue
+        want = round(D[pop]["sl"]["width"] / RATIO_DENOMINATORS[arm][pop], 4)
+        got = se.get("started_and_left_bound_width_over_sampling_width")
+        if got is None or abs(got - want) > 5e-5:
+            bad.append((pop, got, want))
+        assert abs(RATIO_DENOMINATORS[arm][pop]
+                   - RATIO_DENOMINATORS["b" if arm == "a" else "a"][pop]) > 1e-9, \
+            "the two arms' denominators must stay distinct"
+    return bad
 
 
 # --------------------------------------------------------- 6. TARGETS -- MD
@@ -409,7 +456,8 @@ def apply_md(arm):
 
 def verify():
     bad, declared = [], []
-    sup = [float(v) for v in SUPERSEDED_VALUES if round(v, 4) not in LIVE_ELSEWHERE]
+    # From the SHARED register, plus the per-file scoped entries for this arm.
+    sup = [float(v) for v in SUPERSEDED]
 
     def walk(o, p, arm):
         if isinstance(o, dict):
@@ -427,7 +475,10 @@ def verify():
                     bad.append((arm, p, o, s))
 
     for arm, path in ARMS.items():
+        base = list(sup) + [v for (frag, v) in SUPERSEDED_IN if frag in path]
+        sup[:] = base
         walk(json.load(open(path + ".json")), "", arm)
+        sup[:] = [float(v) for v in SUPERSEDED]
     return bad, declared
 
 
@@ -441,6 +492,7 @@ if __name__ == "__main__":
               f"sub [{d['sub']['floor']:.4f}, {d['sub']['ceil']:.4f}] w={d['sub']['width']:.4f} | "
               f"cont ceil {d['cont']['ceil']:.4f} | corner {d['corner_ns_ceil']['cont']:.4f} | "
               f"sum {d['ceilings']['sum']:.4f}")
+    failures = []
     for arm in ARMS:
         h, absent = apply_json(arm)
         apply_md(arm)
@@ -448,20 +500,38 @@ if __name__ == "__main__":
         print(f"  arm {arm}: {h} json paths written; "
               f"ratio APPLY {r['APPLY']['ratio']} on denominator {r['APPLY']['denominator']}")
         if absent:
-            print(f"    absent in this arm's structure (listed, never silent): {len(absent)}")
+            print(f"    absent in this arm's structure: {len(absent)} -- each must be allowlisted")
             for x in absent:
-                print(f"      - {x}")
-    if _dropped:
-        print(f"  superseded list: dropped {_dropped} -- still live as an exclusion share (finding 5)")
+                why = absent_is_allowed(arm, x)
+                print(f"      {'ok  ' if why else 'FAIL'} {x}" + (f"  ({why})" if why else ""))
+                if not why:
+                    failures.append(f"absent and not allowlisted: arm {arm} {x}")
+        for pop, got, want in check_ratios_written(arm):
+            failures.append(f"arm {arm} {pop}: ratio written {got}, this arm's own gives {want}")
+    # The .md bodies were checked by nothing (Red Team 12, non-blocking 3). They are now
+    # checked by the same register, through the same checker, before this script exits.
+    try:
+        import check_surfaces
+        neg, _pos, _pi, _al = check_surfaces.scan()
+        md_bad = [x for x in neg if "step7-liveness-bb" in x[1]]
+        if md_bad:
+            for x in md_bad:
+                failures.append(f"operative deliverable body: {x[1]} {x[2]} = {x[3]}")
+    except Exception as e:                                   # noqa: BLE001
+        failures.append(f"could not verify the .md bodies: {e}")
+
     bad, declared = verify()
     if declared:
         print("\n  DECLARED scope-limited, not regenerated, not silent:")
         for x in declared:
             print(f"      - {x}")
-    if bad:
-        print("\nSUPERSEDED VALUES SURVIVE:")
-        for arm, p, o, s in bad:
-            print(f"  arm {arm} {p} = {o} (superseded {s})")
+    for arm, p, o, s in bad:
+        failures.append(f"superseded value survives: arm {arm} {p} = {o} (was {s})")
+    if failures:
+        print("\nFAIL:")
+        for f in failures:
+            print(f"  {f}")
         sys.exit(1)
-    print("\nVERIFIED: no superseded value survives at any path in either JSON, matched "
-          "numerically at both precisions.")
+    print("\nVERIFIED: no superseded value survives at any path in either JSON or either .md "
+          "body; every declared target path is written or allowlisted with a reason; each arm's "
+          "ratio is its own numerator over its own denominator.")

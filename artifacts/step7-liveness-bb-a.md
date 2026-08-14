@@ -306,11 +306,14 @@ only flow into it.
 **The bounds are identified sets, not confidence intervals.** For scale, on APPLY the never-started
 bound is **0.28×** the account-clustered sampling width of the share it bounds, and the
 started-and-left bound is ~~**0.47×**~~ ***SUPERSEDED (`0056`)*** — that ratio was computed on the
-withdrawn 0.3575 pp width. **On the adopted 0.4032 pp bound over the 0.7922 pp account-clustered width
-the ratio is 0.5090, i.e. 50.9%** (`0055` §6). **Sampling error still dominates, but by half as much as
-stated.** *(Reported not reconciled: this arm published 0.47× where 0.3575 / 0.7922 = 0.4513 — the arm's
-own figure and the reconstruction from the stated width differ, and `0052` §6 read the reconstruction as
-"A's figure" when it is not exactly.)*
+withdrawn 0.3575 pp width. ~~**On the adopted 0.4032 pp bound over the 0.7922 pp account-clustered
+width the ratio is 0.5090, i.e. 50.9%.**~~ ***STRUCK (`0059`): `0.7922` IS THE OTHER ARM'S
+DENOMINATOR.*** **This arm divides by the floor endpoint's own bootstrap CI, `0.7602`, giving
+`0.4032 / 0.7602 = 0.5304`** — see the generated block above, which is written from this arm's own
+inputs. **The two arms use different conventions, the spec fixes neither, and the divergence is
+REPORTED not reconciled** (`CLAUDE.md`); the never-started ratio was correctly left divergent at
+`0.2813` against `0.27211` in these same files, which is the proof this one should have been.
+**Sampling error still dominates, but by roughly half as much as originally stated.**
 
 ---
 

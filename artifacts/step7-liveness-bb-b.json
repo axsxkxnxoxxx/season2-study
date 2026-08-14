@@ -2414,13 +2414,14 @@
     },
     "LEGITIMATE_not_superseded": "exclusion_share_of_population_pct is where 0.3575 (APPLY) and 0.0672 (DERIV) are CORRECT. They are excluded from the superseded list by construction (finding 5).",
     "superseded_strings_every_occurrence_is_a_defect": {
-      "9.683": "S&L floor and sub-interval floor, APPLY, before the channel concession",
-      "0.0503": "sub-interval width, APPLY, before the channel concession",
-      "73.3466": "Continued value in the attainable-corner floor row, APPLY",
-      "73.6537": "Continued ceiling, APPLY, before the channel concession",
-      "11.3619": "S&L floor and sub-interval floor, DERIV",
-      "82.4327": "Continued ceiling, DERIV",
-      "0.4033": "APPLY bound width differenced from rounded endpoints -- a rounding artifact"
+      "9.683": "S&L floor / conditional sub-interval floor, APPLY -- now 9.6372",
+      "0.0503": "conditional sub-interval width, APPLY -- now 0.0961",
+      "73.3466": "Continued value, attainable-corner floor row, APPLY -- now 73.3924",
+      "73.6537": "Continued ceiling, APPLY -- now 73.6995",
+      "11.3619": "S&L floor / sub-interval floor, DERIV -- now 11.3015",
+      "82.4327": "Continued ceiling, DERIV -- now 82.4930",
+      "0.4033": "APPLY bound width differenced from rounded endpoints -- a rounding artifact; 0.4032",
+      "0.4703": "arm a's S&L bound over sampling width, pre-widening -- now 0.5304"
     },
     "why_corrected_values_and_the_superseded_list_may_sit_together_here": "finding 7 was that writing corrected values into a STAMP guarantees the positive grep passes whether or not the body was fixed. That does not apply to this block: it is not a stamp but generated output, written in the same pass as every target path from the same expressions, and verify() then walks the WHOLE document numerically at both precisions and exits non-zero if any superseded value survives anywhere. The guarantee is structural, not textual. The .md STAMP is negative-only and restates no corrected figure.",
     "point_estimates_that_do_NOT_move": "the post-liveness started_and_left COUNT is 19042 on APPLY -- that is a point estimate, not the bound floor, and it appears in outcome_shares, waterfall and ordering_commutation_check. Targets are declared by PATH so it cannot be caught by a value-wide substitution.",
@@ -2451,7 +2452,11 @@
         "APPLY": 0.7602,
         "DERIV": 0.9744
       },
-      "arms_own_published_ratio_is_retained_in_place_and_marked_superseded": true,
+      "this_arms_ratio_is_computed_from_this_arms_denominator": {
+        "APPLY": "0.403246 / 0.7922131651416677 = 0.509",
+        "DERIV": "0.12757 / 0.9737261938594308 = 0.131"
+      },
+      "asserted_not_asserted_as_a_literal": "the previous version stated 'the arm's own published ratio is retained in place and marked superseded' as a hard-coded true. Nothing checked it and it was false. It is now an assertion in check_ratios_written() and the run fails if the written quotient is not this arm's numerator over this arm's denominator.",
       "the_spec_fixes_neither_convention": true
     }
   },

@@ -184,7 +184,7 @@ denominators, floor was not a floor) and `0046`'s **[16.7146%, 16.9704%]** (mixe
 0.0513 pp above the case liveness guards against). The internally consistent PF-LIMIT interval was
 [16.727%, 17.0355%].
 
-### THREE ceilings, not two — and 73.6537% was never a floor
+### THREE ceilings, not two — and 73.6537% was never a floor *(and is now SUPERSEDED by 73.6995%)*
 
 **This is the entry that caused a wrong ruling, and the correction is the point.**
 
@@ -318,7 +318,8 @@ work**, which is why the count moves with `W` at all.
 Continued **144,140** + started-and-left **19,141** = **196,654** ✓. **Corrected 2026-08-13** — this
 file previously carried **144,141 / 19,140**, two off-by-ones that cancelled in the sum and so passed
 the arithmetic check. The correct split is forced by three independent figures that all reconcile only
-on 144,140 / 19,141: the Continued ceiling `(144,140 + 703)/196,654 = 73.6537%` (`0052` §2), the S&L
+on 144,140 / 19,141: the Continued ceiling `(144,140 + 703)/196,654 = 73.6537%` *(SUPERSEDED — the
+  adopted ceiling is 73.6995%; the reconciliation turns on the split, not the widening)* (`0052` §2), the S&L
 ceiling `19,141 + 604 = 19,745 → 10.0405%`, and `0053` §3 item 8's branch (ii) count of **19,141**.
 
 ## Decision numbering on the public record — `decisions/`

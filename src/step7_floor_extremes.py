@@ -20,6 +20,8 @@ live, NOT Continued, |A| >= 1, last insertion inside (tau1, tau2) -- OPEN at tau
 Zero API calls. Reads instance A's stored masks. Adopts nothing.
 """
 import json
+import sys
+
 import numpy as np
 
 M = "processed/step7/bb_a/masks_W108.npz"
@@ -50,6 +52,8 @@ at_tau2 = int((closed & ~channel & (ap | dv)).sum())
 assert at_tau2 == 0, f'W=108 no longer inert in the boundary form: {at_tau2} pairs sit exactly at tau2'
 
 POPS = {"APPLY": (ap, 196654), "DERIV": (dv, 147370)}
+C_CLOSED = {name: int((msk & closed).sum()) for name, (msk, _) in
+            {"APPLY": (ap, 0), "DERIV": (dv, 0)}.items()}
 out = {"what": "S&L floor under both extremes; ceiling and Continued ceiling alongside",
        "api_calls": 0, "W": W, "H": H, "populations": {}}
 
@@ -76,14 +80,47 @@ for name, (msk, n) in POPS.items():
         "continued_ceiling": {"count": cont_ceiling, "pct": round(100 * cont_ceiling / n, 4)},
     }
 
-a, d = out["populations"]["APPLY"], out["populations"]["DERIV"]
-assert (a["exclusions"]["total"], a["exclusions"]["never_started"]) == (703, 604)
-assert (d["exclusions"]["total"], d["exclusions"]["never_started"]) == (99, 0)
-assert (a["channel_pairs"], d["channel_pairs"]) == (90, 89)
-assert a["floor_extreme_ALL_continued"]["count"] == 18952
-assert d["floor_extreme_ALL_continued"]["count"] == 16655
-assert a["continued_ceiling"]["count"] == 144933
-assert d["continued_ceiling"]["count"] == 121570
+# Instance A's D-2, actioned 2026-08-13 (0059). This block previously hardcoded its own
+# conclusions as bare asserts, so the script could CONFIRM and could not REFUTE: a wrong
+# recomputation would have raised AssertionError and been read as "the code is broken",
+# never as "the expected value is wrong". A itself flagged that, and 0055 SS5c recorded it
+# without acting. The expectations are now DATA, compared and reported per row, and the
+# refutation path is the one that prints.
+EXPECTED = {
+    "source": "the arms' own deliverables and decisions 0054 / 0055, loaded as data, not asserted",
+    "APPLY": {"exclusions_total": 703, "exclusions_never_started": 604, "channel_pairs": 90,
+              "floor_extreme_ALL": 18952, "continued_ceiling": 144933},
+    "DERIV": {"exclusions_total": 99, "exclusions_never_started": 0, "channel_pairs": 89,
+              "floor_extreme_ALL": 16655, "continued_ceiling": 121570},
+}
+verdicts, refuted = [], 0
+for pop in ("APPLY", "DERIV"):
+    r, e = out["populations"][pop], EXPECTED[pop]
+    got = {"exclusions_total": r["exclusions"]["total"],
+           "exclusions_never_started": r["exclusions"]["never_started"],
+           "channel_pairs": r["channel_pairs"],
+           "floor_extreme_ALL": r["floor_extreme_ALL_continued"]["count"],
+           "continued_ceiling": r["continued_ceiling"]["count"]}
+    for k, want in e.items():
+        ok = got[k] == want
+        refuted += 0 if ok else 1
+        verdicts.append({"population": pop, "row": k, "expected": want, "measured": got[k],
+                         "verdict": "CONFIRMED" if ok else "REFUTED"})
+out["verdicts"] = verdicts
+out["refuted_rows"] = refuted
+out["W213_boundary_claim"] = {
+    "claim": ("at W = 213 the open and closed channel windows are NOT expected to agree, because "
+              "D10 forces tau1 <= tau_pull - 91 d, so tau2 sits at or adjacent to tau_pull, where a "
+              "mass point in last-insertion instants lies"),
+    "status": "ARGUED, NOT MEASURED",
+    "why_not_measured": "only W = 108 masks are on disk; measuring it needs a Step 13 arm rerun",
+    "measured_here": {"W": 108,
+                      "open_channel": {p: out["populations"][p]["channel_pairs"] for p in ("APPLY", "DERIV")},
+                      "closed_channel": {p: C_CLOSED[p] for p in ("APPLY", "DERIV")},
+                      "inert_at_this_arm": all(out["populations"][p]["channel_pairs"] == C_CLOSED[p]
+                                               for p in ("APPLY", "DERIV"))},
+    "do_not_cite_this_script_as_evidence_for_W213": True,
+}
 
 hdr = f"{'':8} {'n':>9} {'chan':>5} {'floor NONE':>18} {'floor ALL':>18} {'moves':>8} {'ceiling':>18} {'Cont ceiling':>18}"
 print(hdr)
@@ -95,4 +132,12 @@ for name, r in out["populations"].items():
           f"{r['ceiling']['count']:>8,} {r['ceiling']['pct']:>8.4f}% "
           f"{r['continued_ceiling']['count']:>8,} {r['continued_ceiling']['pct']:>8.4f}%")
 
+for v in verdicts:
+    if v["verdict"] == "REFUTED":
+        print(f"  REFUTED  {v['population']} {v['row']}: expected {v['expected']}, "
+              f"measured {v['measured']}")
+print(f"\n{len(verdicts) - refuted}/{len(verdicts)} rows CONFIRMED, {refuted} REFUTED "
+      f"-- reported, not asserted (D-2, 0059)")
+print("W = 213 boundary behaviour is ARGUED, NOT MEASURED here; do not cite this script for it.")
 json.dump(out, open("processed/step7/query/floor_extremes.json", "w"), indent=2)
+sys.exit(1 if refuted else 0)

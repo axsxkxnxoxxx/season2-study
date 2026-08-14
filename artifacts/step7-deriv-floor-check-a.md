@@ -189,7 +189,11 @@ the superseded non-covering endpoints on BOTH populations, and carries no stamp.
 It prints, unqualified: the APPLY floor **19,042 → 9.6830%** and width **0.3575 pp** (lines 181,
 183), the **DERIV** bound **[11.3619%, 11.4291%]** at width **0.0672 pp** (line 185), the APPLY
 floor again at line 203, and the Continued ceilings **APPLY [73.2962%, 73.6537%], DERIV
-[82.3655%, 82.4327%]** (line 206). **The string `0055` does not appear anywhere in the file.**
+[82.3655%, 82.4327%]** (line 206) — ***all SUPERSEDED; the adopted ceilings are 73.6995% and
+82.4930% (`0054`, `0055`)***. **The string `0055` does not appear anywhere in the file.**
+***Actioned `0059`: `bb-{a,b}` are stamped, their derived figures are regenerated from the counts
+by `src/step7_regenerate_derived.py`, and `src/check_surfaces.py` now checks the operative pair
+value by value rather than exempting it on a stamp.***
 `0055`'s own header lists `artifacts/` as one of seven propagated surfaces and §5a states the
 artifacts would be *"stamped, not rewritten."* **The stamp did not land on this file.** `bb` is the
 pair named for the adopted rule, which is exactly the file a reader would trust. Two of the
