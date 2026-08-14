@@ -235,6 +235,20 @@ W is a number of days. It is derived here and used everywhere downstream.
 >
 > **The silence test is anchored at `τ1` and only at `τ1`** — ruled by `0034` in the entry that created
 > the second window, re-affirmed by `0051`, and **restored by `0054` after ALT-MATCHED was reverted.**
+>
+> **AND ITS EVIDENCE IS RESTRICTED TO RECORDS DATED BEFORE `τ_pull`.** Human Lead ruling 2, 2026-08-13
+> (`0070`, propagated here by `0072`). **This applies an existing ruling consistently; it is not a new
+> one.** **D11, approved at the Step 1 gate, makes `τ_pull` a GLOBAL FROZEN CUTOFF and discards records
+> at or after it from EVERY computation** — and the silence test is a computation. **The unstated
+> version produced the reported-not-reconciled 792 (A) against 791 (B) at Step 7**, where one arm
+> applied the restriction and the other did not. **Measured before the ruling, because this is an
+> approved gate: exclusions are 703 on APPLY and 99 on DERIV either way**, since no insertion instant
+> exceeds the clamp at 2026-08-10T20:48Z and D10 already forces `τ1 ≤ τ_pull − 91 d`. **The restriction
+> is inert on the exclusion set and bites on the robustness tail.** **STEP 13 READS THIS BLOCK and
+> re-runs the rule across eight `W` arms; the scope holds at every one.**
+>
+> **And "after `τ1`" is STRICT** (`0068`): a pair is silent iff it has **no insertion instant `> τ1`**,
+> so an instant falling exactly **at** `τ1` does **not** make the account live.
 > **ALT-MATCHED — silence at `τ2` for the started-and-left branch — is WITHDRAWN**: it produced
 > **numerically identical bounds** on all three identified sets and cost an amendment to an approved
 > gate. (`decisions/0054`)
