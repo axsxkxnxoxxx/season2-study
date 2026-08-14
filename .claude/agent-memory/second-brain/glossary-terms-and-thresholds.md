@@ -372,7 +372,7 @@ above.
 `EXTREME_NONE_READINGS` guarded four values on a line matching `extreme[_ ]NONE` — but **the general
 `DECLARE` branch three lines above already contained `extreme[_ ]NONE`, so the value-scoped branch could
 never change an outcome.** *"The register documented it as a CONTEXT exemption, not a value exemption;
-the code did neither."* The phrase was disarming the control against `0.0503`, `0.4033`, `0.4703` and the
+the code did neither."* The phrase was disarming the control against the SUPERSEDED values `0.0503`, `0.4033`, `0.4703` and the
 scoped `0.5090` / `0.0690` — **values the two-extremes table has nothing to do with** — and the same held
 for `un-?widened`, `_scope`, `share_of_population`, `proposed_pct`. **The general branch is deleted;
 `DECLARE_SCOPED` is keyed by FILE and by VALUE.** JSON **path** markers are separated into
@@ -387,7 +387,7 @@ precisely because their registered form rounds UP.**
 **A LINE CARRYING BOTH A SUPERSEDED VALUE AND ITS SUCCESSOR IS SELF-DECLARING** — it is narrating the
 transition, which is what a record is for (`SUCCESSOR`). **The rule runs on the EMITTING LINE, not a
 ±2-line window** (`0060` B7): the adopted 6-dp width `0.403246` is within tolerance of `0.4032` and
-appears in every bound table, so a window let `0.4033` self-declare from two lines away. *"A successor two
+appears in every bound table, so a window let the superseded `0.4033` self-declare from two lines away. *"A successor two
 lines away is a coincidence; on the same line it is a sentence."*
 
 **KNOWN LIMIT, recorded not closed (`0060` §6, amended `0061`):** both controls walk **numeric leaves

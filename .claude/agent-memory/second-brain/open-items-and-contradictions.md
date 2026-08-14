@@ -93,7 +93,7 @@ things that conflict are `WHOLLY_SUPERSEDED_FILES`'s coverage and the files' own
 
 ## STATUS of U1 and U2, re-checked 2026-08-14
 
-- **U1 (`0054` §7 published the `0.4033` artifact its own §6 named): APPEARS ACTIONED.** `0055` §5
+- **U1 (`0054` §7 published the superseded `0.4033` rounding artifact its own §6 named): APPEARS ACTIONED.** `0055` §5
   corrected `0054` §7 in place to **0.4032 pp**, and separately found **the same artifact had survived in
   `task-sheet.md`** after being fixed in the decision entry — *"the correction landed in the decision
   entry and not in the file an agent reads, which is the failure this entry exists to control, committed
