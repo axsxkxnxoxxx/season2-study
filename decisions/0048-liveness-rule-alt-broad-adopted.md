@@ -133,10 +133,9 @@ entries other than those named above are historical record and are amended only 
 overstated what was bought** — instance B said so directly: *"It narrows where that assertion is made…
 It does not justify it."*
 
-> **§9's gloss "insertion after `τ1` ⟹ live" is WITHDRAWN 2026-08-14 (`decisions/0053`).** `0021` says
-> *"after the window closed"*, and it was written when there was **one** window. Under two windows the
-> reading is **per question**: activity after `τ1` licenses the never-started null; it does **not**
-> license the started-and-left null, which is read at `τ2`. `0021` is amended accordingly.
+> **§9's gloss was withdrawn by `0053` and is RESTORED by `0054`.** `0053`'s premise — that `0021`
+> predated the second window — is false; `0034` created that window and ruled liveness anchored at
+> `τ1` in the same entry. **"Insertion after `τ1` ⟹ live" stands.**
 
 **Un-actioned and required before this gate closes:** **22.68% of dated records claim a `watched_at`
 later than their own calibrated insertion instant**, and the rule's first conjunct **is** a comparison

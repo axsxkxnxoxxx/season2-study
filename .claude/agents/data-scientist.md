@@ -41,9 +41,10 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
 
 - **Step 7, liveness rule. GATE — RULE CHANGED 2026-08-13 (`decisions/0046`). Reruns pending; NOT
   approved. The gate is OPEN.**
-    - **A pair is NOT LIVE iff EITHER (`|A| = 0` AND no insertion instant after `τ1`) OR
-      (`|A| ≥ 1` AND NOT Continued AND no insertion instant after `τ2`)** (`0052`, superseding
-      ALT-BROAD's single `τ1` test). **Each null is tested at the instant its own outcome is read.** **The second conjunct
+    - **A pair is NOT LIVE iff BOTH: no insertion instant after that pair's `τ1`, AND NOT Continued.**
+      **The silence test is anchored at `τ1` and ONLY at `τ1`** — ruled by `0034`, re-affirmed by
+      `0051`, restored by `0054`. **ALT-MATCHED (silence at `τ2` for the S&L branch) is WITHDRAWN**: it
+      gave **numerically identical bounds** and cost an amendment to an approved gate. **The second conjunct
       reaches BOTH nulls.** Under `0034` only **Continued** rests on positive evidence; **Never started
       is a null and Started-and-left is ALSO a null** — `|A| ≥ 1` is observed, the failure to meet the
       Continued condition is not. **Structural, not incidental:** `τ2 > τ1`, so a pair silent after
@@ -51,14 +52,11 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
       test reads** — it is scored "left" **by construction**.
     - **EVERY FIGURE STATES ITS POPULATION.** **DERIV** = Step 5 line 4 less D10, **147,370**, requires
       S2 evidence. **APPLY** = line 1 less D10, **196,654**, what Step 8 filters.
-    - **Exclusions at `W = 108`: APPLY 793 from 256 accounts (604 never-started + 189 started-and-left);
-      DERIV 188 from 126 accounts (0 + 188)** (`0052`, `0053`). **LABEL THE POPULATION on the
-      started-and-left component — 189 APPLY, 188 DERIV.** Under ALT-BROAD both were 99, so an
-      unlabelled figure was safe; **under ALT-MATCHED it is wrong at the adopted arm.** The DERIV diff
-      is 188 against 188, so this step's dual control is informative on both populations. **Reporting
-      both is correct, not a divergence.** *(Superseded: ALT-BROAD 703/99, ALT 604/0.)* **TWO BRANCHES; a single funnel does not describe the rule** (`0053`). **Branch (i):** `|A| = 0`
-      selects 33,373 on APPLY; no insertion after `τ1` gives **604**. **Branch (ii):**
-      `|A| ≥ 1 ∧ ¬Continued` selects 19,141; no insertion after `τ2` gives **189**. **Total 793.**
+    - **Exclusions at `W = 108`: APPLY 703 from 216 accounts (604 never-started + 99 started-and-left);
+      DERIV 99 from 73 accounts (0 + 99)** (`0048`, `0054`). The DERIV diff is 99 against 99, so this
+      step's dual control is informative on both populations. **Reporting both is correct, not a
+      divergence.** *(Withdrawn: ALT-MATCHED 793 / 189 APPLY and 188 DERIV. Superseded: ALT 604/0.)* **Conjunct 2 (NOT Continued) narrows APPLY 196,654 → 52,514; conjunct 1 narrows 52,514 → 703.**
+      **Conjunct 1 does most of the work**, which is why the count moves with `W`.
     - **Waterfall line 6 is OUTCOME-CONDITIONAL and must be reported as such.** `|A| = 0` is evaluated
       before liveness applies; that is permitted because both are **row-local predicates on the
       position-5 output and commute exactly**, and `0029`'s ordering rationale concerns per-filter
@@ -69,11 +67,10 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
       **pair-level**, anchored at `τ1` (`0034`); **never drop a user wholesale**.
     - **Do not reintroduce a pre-`τ1` requirement in any form** — withdrawn twice, `0040` §1 and `0042`
       §3, both for contradicting gate `0021`.
-    - **Report the exclusion count per `W` arm on APPLY** — **604 / 621 / 713 / 754 / 793 / 793 /
-      878 / 952** at `W` = 38 / 46 / 77 / 91 / 107 / 108 / 150 / 213 (`0048`). **Report the started-and-left
-      component separately — 119 / 127 / 159 / 179 / 190 / 189 / 214 / 236, a factor of **1.98×**, against the rule's own
-      **1.58×** (`0053`) — **both FALL under ALT-MATCHED**, and **neither series is monotone since D10
-      is re-derived at each arm**.
+    - **Report the exclusion count per `W` arm on APPLY** — **537 / 550 / 633 / 664 / 701 / 703 /
+      789 / 864** at `W` = 38 / 46 / 77 / 91 / 107 / 108 / 150 / 213 (`0048`). **Report the started-and-left
+      component separately — 52 / 56 / 79 / 89 / 98 / 99 / 125 / 148, a factor of **2.85×**, against the rule's own
+      **1.61×** — **neither series is monotone, since D10 is re-derived at each arm**.
     - **D10 is RE-DERIVED at each arm — name the reading** (`0047`). Censoring contains `W`, so the
       censored population differs per arm; **freezing D10 at 108 gives TOTALS 746 / 823 / 918 / 1,117 at
       `W` = 125 / 150 / 180 / 213, of which 632 / 684 / 753 / 881 is the never-started COMPONENT**
@@ -100,14 +97,14 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
   population, `max(W, 91) + H` (D10).
 
     - **THERE ARE THREE CEILINGS AND THEY CANNOT ALL HOLD** (`0050`, `0052`). Never-started 16.9704%,
-      started-and-left 10.0405%, **Continued 73.6995%** (73.6537% was ALT-BROAD's) — **each NS exclusion appears in ALL THREE ceiling numerators and each S&L in TWO — excess
-      2 × 604 + 189 = 1,397 pairs = 0.7104 pp, sum 100.7104%** (`0053`), so they are **alternative worst cases over one set, not simultaneous ones.** **Continued has a
+      started-and-left 10.0405%, **Continued 73.6537%** (73.6995% was ALT-MATCHED's, withdrawn) — **each NS exclusion appears in ALL THREE ceiling numerators and each S&L in TWO — excess
+      2 × 604 + 99 = 1,307 pairs = 0.6646 pp, sum 100.6646%** (`0053`), so they are **alternative worst cases over one set, not simultaneous ones.** **Continued has a
       ceiling because any EXCLUDED pair may in truth be Continued**; do not print it as a point.
     - **The never-started bound is DEGENERATE on DERIV — [6.2055%, 6.2055%] — so the dual control is
       `x = x` there** (`0050`). The informative comparison is on APPLY.
     - **THE BOUNDS AND THE SHARES ARE ON DIFFERENT POPULATIONS** (`0052`). Bounds are on the
       **position-5** population; the published shares are **post-liveness**. **On DERIV the point
-      estimate 6.2134% lies OUTSIDE its own bound [6.2055%, 6.2055%], by 0.0079 pp** (`0053`). **State which population the bound bounds**, or
+      estimate 6.2096% lies OUTSIDE its own bound [6.2055%, 6.2055%], by 0.0042 pp** (`0054`). **State which population the bound bounds**, or
       Step 9 publishes an interval that excludes its own point estimate.
 - **Step 10, where they leave. Chained.** Plot the distribution of abandonment points across the season
   for the started-and-left group; separate first-episode, mid-season and near-finale drops. Do not claim
@@ -136,7 +133,7 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
   threshold to vary — it was deleted at `0042` and the instruction withdrawn at `0044` §2.** Instead
   **report the liveness exclusion count per `W` arm on APPLY** — **537 / 550 / 633 / 664 / 701 / 703 /
   789 / 864** at `W` = 38 / 46 / 77 / 91 / 107 / 108 / 150 / 213 (`0048`, `0051`), **with the
-  started-and-left component reported separately: 119 / 127 / 159 / 179 / 190 / 189 / 214 / 236.**
+  started-and-left component reported separately: 52 / 56 / 79 / 89 / 98 / 99 / 125 / 148.**
   **ALT's 485 → 716 series is SUPERSEDED and must not be ordered** — it was still here at line 122 while
   line 68 of this same file carried the correct one. Report which conclusions survive and which do not, and record the tested ranges —
   Step 16 needs them. **`W` arms are set by `decisions/0027`: the span 46 to 107, PLUS arms at 150 and

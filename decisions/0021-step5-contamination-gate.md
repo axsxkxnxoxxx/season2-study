@@ -102,28 +102,16 @@ because nothing about the data changed.
    window closed proves the account was alive, whatever date it claims — backfilling an old show is
    still activity.
 
-   > **AMENDED 2026-08-14 (`decisions/0053`) — an amendment to an approved gate, not a clarification.**
+   > **AN AMENDMENT WAS MADE HERE ON 2026-08-14 (`decisions/0053`) AND IS WITHDRAWN THE SAME DAY
+   > (`decisions/0054`). THIS RULING STANDS AS ORIGINALLY APPROVED.**
    >
-   > **This ruling was written when there was ONE window.** "After the window closed" was unambiguous
-   > then. **The Step 1 §7 amendment (`0034`) created two** — never-started is read at `τ1`, Continued
-   > at `τ2` — and the ruling has since been read as "after `τ1`" **only by accident of when it was
-   > written.**
+   > `0053` read "after the window closed" as **per question** — `τ1` for the never-started null, `τ2`
+   > for the started-and-left null — on the premise that this ruling predated the second window and had
+   > been read as "after `τ1`" only by accident. **That premise is false.** `0034`, the entry that
+   > *created* the second window, ruled **"Liveness stays anchored at `τ1`"** in terms, and `0051`
+   > re-affirmed it with both windows in view. **The reading was ruled, not inherited.**
    >
-   > **The amended reading: an insertion after the window FOR THE QUESTION BEING ASKED proves the
-   > account was alive for that question.**
-   >
-   > - **Never-started is read at `τ1`**, so activity after `τ1` licenses its null.
-   > - **Started-and-left is read at `τ2`**, so activity after `τ1` but silence from before `τ2` does
-   >   **not** license it — **the pair could not have produced the evidence the Continued test reads.**
-   >
-   > **That is what this ruling meant with one window, and it is what ALT-MATCHED implements**
-   > (`0052`). **`0048` §9's gloss — "insertion after `τ1` ⟹ live" — is WITHDRAWN**: it was a
-   > one-window reading carried into a two-window rule.
-   >
-   > **Measured consequence:** under ALT-MATCHED **90 APPLY and 89 DERIV exclusions show an insertion
-   > after `τ1`** — 47.3% of DERIV's whole exclusion set. Under the withdrawn gloss every one of them
-   > would have been forced live; under the amended reading they are correctly not live, because their
-   > silence begins before `τ2`.
+   > **"After the window closed" means after `τ1`.** The window is the one `W` defines.
 
 3. **The flip bound is weak: 0 to 44,458 at `W = 60`**, 22.0% of the retained population. The
    insert-time test rules out only ~5% of candidates, because a backfilled record is by definition

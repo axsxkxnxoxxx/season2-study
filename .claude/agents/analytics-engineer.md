@@ -72,24 +72,19 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
 - **Step 7, liveness rule. NOT YOURS TO DERIVE — but you APPLY it at Step 8, so it is stated here.**
   **RULE CHANGED 2026-08-13 (`decisions/0046`). The gate is OPEN and Step 8 does not launch until it
   closes.**
-    - **A pair is NOT LIVE iff EITHER (`|A| = 0` AND no insertion instant after `τ1`) OR
-      (`|A| ≥ 1` AND NOT Continued AND no insertion instant after `τ2`)** (`0052`). **Each null is
-      tested at the instant its own outcome is read.** **EXPECT 793 at position 6, `W = 108` — 604 never-started + 189 started-and-left, 256 accounts**
-      (`0053`). **703 is ALT-BROAD's superseded answer; producing it means the withdrawn single-`τ1`
-      rule was implemented, and that IS a divergence.** For any other number, treat it as a
-      **POPULATION** defect before an implementation one. **Both Never started and Started-and-left are nulls** —
+    - **A pair is NOT LIVE iff BOTH: no insertion instant after that pair's `τ1`, AND NOT Continued**
+      (`0048`, restored by `0054`). **The silence test is anchored at `τ1` and ONLY at `τ1`.** **Both Never started and Started-and-left are nulls** —
       only Continued rests on positive evidence. **Note this makes liveness outcome-conditional on the
       Continued test as well as on `|A|`**, which is permitted for the same reason: row-local predicates
       on the position-5 output commute, and position 7 removes no rows.
     - **EVERY FIGURE STATES ITS POPULATION.** **The population YOU filter at position 6 is line 1 less
       D10 — 196,654, "APPLY".** Step 7 derives on line 4 less D10 — **147,370, "DERIV"** — which
       **requires S2 evidence**.
-    - **Exclusions: 703 on APPLY (216 accounts) = 604 never-started + 99 started-and-left; 99 on
-      DERIV (73 accounts) = 0 + 99** (`0048`, `0050`). **EXPECT 703 at position 6, `W = 108`.**
-      **604 is the SUPERSEDED ALT answer. If you produce 604 you have implemented the withdrawn rule,
-      and that IS a divergence.** For any other number, **treat it as a POPULATION defect before an
-      implementation one**: Step 7 built APPLY from the Step 5 pair table, not through your positions
-      1–5, so a mismatch most likely means your frame join, `L2 = 1` exclusion or censoring differs.
+    - **Exclusions: APPLY 703 from 216 accounts = 604 never-started + 99 started-and-left; DERIV 99
+      from 73 accounts = 0 + 99** (`0048`, `0054`). **EXPECT 703 at position 6, `W = 108`.**
+      **604 is the superseded ALT answer and 793 is the withdrawn ALT-MATCHED answer; producing either
+      means a superseded rule was implemented, and that IS a divergence.** For any other number, treat
+      it as a **POPULATION** defect before an implementation one.
     - **The monotone-decrease invariant is coded `>=`, NOT `>`** (`0047`). Decrease is **strict at line
       6 on BOTH populations under ALT-BROAD** — 703 on APPLY and 99 on DERIV, every arm (`0049`). **`>=` is kept anyway, so the invariant does not encode a property of one rule**: a filter position that legitimately removes nothing must not fail an assertion.
     - **Waterfall line 6 is OUTCOME-CONDITIONAL under this rule and must be reported as such** — `|A|`
