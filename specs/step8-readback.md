@@ -1,5 +1,15 @@
 # Step 8 — read-back. State the spec as you read it. **Do not execute.**
 
+> **STATUS STAMP, 2026-08-16 (`0089`).** **This is a WRITTEN SPEC handed to isolated instances on
+> 2026-08-14, not a live instruction.** Its statement that Step 8 *"has not launched"* was true when
+> written and is **SUPERSEDED**: Step 8 has launched **five times**, and both arms have executed
+> against the spec through `0088`. **Step 8 remains an UNAPPROVED gate** — that half still holds.
+> **FOURTH occurrence of this string**, and the first three were stamped while this SOURCE was missed
+> (`0086` §3 stamped the two artifacts generated FROM this file). **`specs/` is NOT one of the eight
+> propagation surfaces, so no control checks it** — whether it becomes a ninth is carried for the
+> Human Lead at `0089` §4. **Negative only: this stamp restates no adopted figure.**
+
+
 **This is not Step 8.** Step 8 is a gate, it is unapproved, and it has not launched. **Nothing in this
 task builds a table, filters a row, or writes to `processed/`.**
 

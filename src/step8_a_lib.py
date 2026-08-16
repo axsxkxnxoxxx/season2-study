@@ -45,15 +45,29 @@ SRC = os.path.join(ROOT, "src")
 #
 # The tag below is what appears at each point of use; this record is the one full definition.
 # ---------------------------------------------------------------------------------------------
-# TWO BUILDS EXIST ON 2026-08-16 -- the run that Red Team's third pass reviewed, and this rerun
-# against decisions/0085. A shared tag would make every figure in this file ambiguous between
-# them, which is the exact failure the provenance rule exists to prevent, so the tag carries the
-# `-0085` suffix and the name says which run it is.
-BUILD_TAG = "a/2026-08-16-0085"
-BUILD_NAME = ("position-5 build of 2026-08-16, instance `a`, RERUN against decisions/0085 "
-              "(Red Team third pass: B1, B2, P4 and the line-6 decomposition). The earlier "
-              "2026-08-16 build of this instance is the one 0085 reviewed; no figure moves "
-              "between them, but they are different builds and are tagged apart.")
+# THREE BUILDS NOW EXIST ON 2026-08-16 -- the run Red Team's third pass reviewed, the rerun
+# against decisions/0085 that its fourth pass reviewed, and THIS rerun against decisions/0088.
+# A shared tag would make every figure ambiguous between them, which is the exact failure the
+# provenance rule exists to prevent, so the tag carries the entry it was run against.
+#
+# THE BUILD-TAG FORMAT IS STATED, because Red Team's fourth pass (0087 F5-F9, item F7) recorded
+# that the convention is unstated free text and the Human Lead's diff cannot key on it. This
+# instance's format is `<instance>/<UTC run date>-<decision entry the run was launched against>`.
+# It is NOT the git commit: the worktree is dirty at launch by construction, since the stage
+# files are edited for the entry the run implements, so the commit does not identify the code.
+# The stage-file SHA-256 prefixes in build_record() are what identify the code, and they are
+# emitted with every build record. F7 is a carried limitation, not a ruling; this states the
+# convention rather than proposing one.
+BUILD_TAG = "a/2026-08-16-0088"
+BUILD_NAME = ("position-5 build of 2026-08-16, instance `a`, RERUN against decisions/0088 "
+              "(B3 measured: the boundary window and the per-site D11 table; F2: the D9 coverage "
+              "quantities named as separate objects and the mislabel corrected; the D9 clustering "
+              "universe ruled to U1, ranked by distinct strict keys merged). The earlier "
+              "2026-08-16 builds of this instance -- `a/2026-08-16-0085` and the pre-0085 run -- "
+              "are what Red Team's third and fourth passes reviewed. NO POPULATION AND NO RULE "
+              "MOVES between them; what moves is the D9 CLUSTER LIST, because the universe it is "
+              "computed on was ruled and this instance's previous universe was the D9 coverage "
+              "pivot rather than the sweep. They are different builds and are tagged apart.")
 STAGE_FILES = ["step8_a_lib.py", "step8_a_1_scan.py", "step8_a_2_positions.py",
                "step8_a_3_table.py", "step8_a_4_arms.py", "step8_a_4b_slugs.py",
                "step8_a_5_diagnostics.py", "step8_a_6_emit.py", "step8_a_run.py"]

@@ -97,8 +97,9 @@ def main():
         "status": "A COVERAGE COUNT, NOT AN INVARIANT (Human Lead ruling, decisions/0074 ruling "
                   "3). Step 8's own bullet already calls it 'an implementation check, not a data "
                   "check'. Records examined and records dropped are REPORTED; nothing is "
-                  "asserted. Asserting it would add another pass to a report where five of eight "
-                  "checks cannot fail.",
+                  "asserted. Asserting it would add another pass to a report where SIX OF NINE "
+                  "checks cannot fail on any data (decisions/0088 SS1(c) promoted a ninth, "
+                  "which is a sixth code check).",
         "coverage_records_examined": scan_sum["in_frame_S1S2_episode_records"],
         "coverage_records_dropped": scan_sum["dropped_by_set_membership_records"],
         "records_examined_denominator_CLOSED_by_0083": scan_sum[
@@ -235,6 +236,26 @@ def main():
     # ---- 6. D9, split artifacts, both halves ---------------------------------------------
     z = np.load(os.path.join(P5, "full_scan.npz"))
     ep = (z["kind"] == 1) & (z["ts"] != NULL_TS) & (z["ts"] < lib.TAU_PULL) & (z["season"] >= 1)
+    # B3(b), the D9 coverage-rows site: D11 IS applied here, so the records it excludes are
+    # counted at the site rather than asserted about from elsewhere (decisions/0088 SS1(b)).
+    ep_no_d11 = (z["kind"] == 1) & (z["ts"] != NULL_TS) & (z["season"] >= 1)
+    d9_site_d11 = {
+        "unit": "dated season >= 1 episode records feeding the D9 coverage pivot",
+        "records_examined_before_D11": int(ep_no_d11.sum()),
+        "records_excluded_by_D11": int((ep_no_d11 & ~ep).sum()),
+        "records_used_after_D11": int(ep.sum()),
+        "D11_applied": True,
+    }
+    us_no, sh_no, se_no = (z["user"][ep_no_d11].astype(np.int64), z["show"][ep_no_d11],
+                           z["season"][ep_no_d11])
+    _cov_no = pd.DataFrame({"u": us_no, "s": sh_no,
+                            "season": np.where(se_no == 1, 1, np.where(se_no == 2, 2, 3))
+                            }).drop_duplicates()
+    d9_site_d11["season_coverage_rows_before_D11"] = int(_cov_no.shape[0])
+    d9_site_d11["distinct_user_show_pairs_before_D11"] = int(
+        _cov_no[["u", "s"]].drop_duplicates().shape[0])
+    d9_site_d11["distinct_show_ids_reaching_the_pivot_before_D11"] = int(_cov_no.s.nunique())
+    del us_no, sh_no, se_no, _cov_no, ep_no_d11
     us_, sh_, se_ = z["user"][ep].astype(np.int64), z["show"][ep], z["season"][ep]
     del z
     cov = pd.DataFrame({"u": us_, "s": sh_, "season": np.where(se_ == 1, 1,
@@ -310,7 +331,9 @@ def main():
             sB[pk.merge(cand[["u", "id_s2"]].drop_duplicates(), left_on=["u", "s"],
                         right_on=["u", "id_s2"]).row.to_numpy()] = True
         return {
-            "coverage_rows_examined": int(p.shape[0]),
+            "user_show_pairs_examined_carrying_a_slugged_show": int(p.shape[0]),
+            "of_which_are_D9_CANDIDATES_carrying_S1_or_S2_evidence": int(
+                (p.s1 | p.s2).sum()),
             "complementary_signature_id_pairs": int(cand.shape[0]),
             "half_a_never_started_carrying_the_signature_APPLY_position_7": int(
                 (pos6 & r["never"] & sA).sum()),
@@ -324,31 +347,71 @@ def main():
     by_key = {k: d9_for(v) for k, v in keys.items()}
     st, lo = by_key["strict"], by_key["loose"]
 
-    # ---- what loose merges that strict does not, WITH THE UNIVERSE NAMED --------------------
-    # NAME THE UNIVERSE THE CLUSTERING RUNS OVER, AT THE POINT OF USE. Red Team blocker B1, third
-    # pass (decisions/0085 SS2). The two arms published DISJOINT cluster lists on IDENTICAL counts
-    # -- no shared member, maxima 8 against 10 -- while every count around them reconciled. That is
-    # not a counting difference; it is a difference in WHICH SET OF SHOWS IS BEING CLUSTERED, and
-    # the spec never said which. The cluster examples are the EVIDENCE for the loose key's only
-    # warrant -- that it bounds how wrong strict could be -- so two arms giving different evidence
-    # for one warrant makes the warrant irreproducible while the deliverables read otherwise.
+    # ---- what loose merges that strict does not, ON U1 --------------------------------------
+    # THE D9 CLUSTERING UNIVERSE IS U1 -- ALL SLUGGED SWEEP SHOW IDs -- RANKED BY DISTINCT STRICT
+    # KEYS MERGED. Human Lead ruling, decisions/0088 SS3, closing the gap 0085 SS2 opened (the two
+    # arms published DISJOINT cluster lists on IDENTICAL counts) and 0087 SS2 located (the two
+    # arms' "U1" were two sets 62 apart under one label).
     #
-    # THIS ARM'S UNIVERSE, stated so it can be compared rather than guessed: the DISTINCT SHOW IDs
-    # APPEARING IN THE PULLED SWEEP THAT CARRY A SLUG -- one row per show ID, deduplicated, NOT one
-    # row per user-show coverage row and NOT the 1,138 frame shows. The other two candidate
-    # universes named in the spec are sized alongside so a reader can see which this is not.
-    # THE DIVERGENCE IS REPORTED, NOT RECONCILED: no universe is ruled, and if the two arms name
-    # the same universe and still differ, one has a bug and that is the finding.
-    show_keys = pd.DataFrame({
-        "s": piv.s.to_numpy(),
-        "slug": raw.to_numpy(),
-        "strict": keys["strict"].to_numpy(),
-        "loose": keys["loose"].to_numpy(),
-    }).drop_duplicates("s")
-    uni = show_keys[show_keys.slug != ""]
+    # U1 = every distinct show ID appearing anywhere in the pulled sweep that carries a slug,
+    # deduplicated to ONE ROW PER SHOW ID. NOT U2 (the 1,138 frame shows) and NOT U3 (the D9
+    # candidate pairs). Ground, as ruled: the artifact D9 hunts is a viewer's history splitting
+    # across two metadata entries for one show, and that split can occur ANYWHERE in a history,
+    # not only among shows that survived the frame filters -- a frame-restricted universe finds
+    # only splits where BOTH sides made the cut, and a bound computed on a narrow slice bounds
+    # very little.
+    #
+    # THIS IS A CHANGE OF OBJECT FOR THIS ARM. The previous build clustered the show IDs appearing
+    # in a D9 COVERAGE ROW, which is a SUBSET of U1: the coverage pivot keeps only dated,
+    # pre-tau_pull, season >= 1 episode records, so a show reaching the sweep only through a
+    # record D11 discards, an undated record, a specials-only record or a non-episode record is
+    # in U1 and not in the pivot. That subset is what 0087 SS2 caught as the mislabelled 46,366,
+    # and both counts are published below as TWO OBJECTS with what each counts.
+    #
+    # U1 IS BUILT FROM THE SLUG MAP, NOT FROM THE PIVOT -- the map is collected in stage 4b over
+    # every parsed history file, which is what "anywhere in the pulled sweep" means.
+    smap = pd.read_csv(os.path.join(OUT, "show_slugs.csv"))
+    smap["show_slug"] = smap.show_slug.fillna("")
+    # one row per show ID: two IDs carry two slugs each, so the choice is stated rather than
+    # implicit -- LEXICOGRAPHICALLY FIRST slug per show ID -- and its sensitivity is measured
+    # below rather than asserted away.
+    n_ids_with_multiple_slugs = int((smap.groupby("show_trakt_id").show_slug.nunique() > 1).sum())
+    smap_sorted = smap.sort_values(["show_trakt_id", "show_slug"], kind="mergesort")
+    u1_first = smap_sorted.drop_duplicates("show_trakt_id", keep="first")
+    u1_last = smap_sorted.drop_duplicates("show_trakt_id", keep="last")
+
+    def u1_frame(df):
+        d = pd.DataFrame({"s": df.show_trakt_id.to_numpy(),
+                          "slug": df.show_slug.to_numpy()})
+        d["strict"] = (pd.Series(d.slug).str.lower()
+                       .str.replace(r"[^a-z0-9]", "", regex=True).to_numpy())
+        d["loose"] = (pd.Series(d.slug).str.replace(r"-\d{4}$", "", regex=True).str.lower()
+                      .str.replace(r"[^a-z0-9]", "", regex=True).to_numpy())
+        return d
+
+    u1_all = u1_frame(u1_first)
+    uni = u1_all[u1_all.slug != ""]
     g = uni.groupby("loose")
     merged_titles = g.strict.nunique().sort_values(ascending=False)
     merged_ids = g.s.nunique()
+    # sensitivity of the one-row-per-show-ID choice, measured not assumed
+    _alt = u1_frame(u1_last)
+    _alt = _alt[_alt.slug != ""]
+    alt_clusters = int((_alt.groupby("loose").strict.nunique() > 1).sum())
+
+    # THE RANKING BASIS IS DISTINCT STRICT KEYS MERGED (0088 SS3): how many separate metadata
+    # entries the loose key collapsed. It was unstated and it reorders the list on its own.
+    # RANK 3 IS A TIE on this data, so the ranks are emitted with EVERY key at each rank rather
+    # than a head(3) whose order is decided by the sort's stability. A "third largest cluster" is
+    # not reproducible from the ruled basis alone where the basis ties, and that is reported.
+    def ranked(series, other, n_ranks=3):
+        out_ = []
+        for v in sorted({int(x) for x in series.values if int(x) > 1}, reverse=True)[:n_ranks]:
+            ks = sorted(k for k in series.index if int(series[k]) == v)
+            out_.append({"value": int(v), "keys_at_this_rank": ks, "n_keys_tied": len(ks),
+                         "other_basis_for_each": {k: int(other[k]) for k in ks}})
+        return out_
+
     top_merged = [{"loose_key": k,
                    "distinct_strict_keys_merged": int(v),
                    "distinct_show_ids_merged": int(merged_ids[k])}
@@ -358,30 +421,62 @@ def main():
                           "distinct_show_ids_merged": int(v),
                           "distinct_strict_keys_merged": int(merged_titles[k])}
                          for k, v in by_ids.head(5).items() if merged_titles[k] > 1]
+    pivot_show_ids = int(pd.unique(piv.s.to_numpy()).size)
     clustering_universe = {
-        "ruling": "Red Team blocker B1, decisions/0085 SS2: NAME THE UNIVERSE THE CLUSTERING RUNS "
-                  "OVER, AT THE POINT OF USE. The two arms published disjoint cluster lists on "
-                  "identical counts, which is a difference in which set of shows is clustered and "
-                  "not a counting difference. REPORTED, NOT RECONCILED -- no universe is ruled.",
-        "THIS_ARM_CLUSTERS": "the DISTINCT SHOW IDs appearing anywhere in the pulled sweep that "
-                             "carry a slug, deduplicated to one row per show ID",
-        "distinct_show_ids_in_the_sweep": int(show_keys.shape[0]),
-        "distinct_show_ids_carrying_a_slug_CLUSTERED": int(uni.shape[0]),
-        "distinct_show_ids_without_a_slug_excluded": int((show_keys.slug == "").sum()),
-        "user_show_coverage_rows_behind_them": int(piv.shape[0]),
-        "candidate_universes_NOT_used_here_sized_for_comparison": {
-            "the_1138_frame_shows": int(frame.shape[0]),
-            "the_D9_candidate_pairs_under_the_loose_key": lo["complementary_signature_id_pairs"],
-            "user_show_coverage_rows_undeduplicated": int(piv.shape[0]),
-            "why_they_are_listed": "a cluster list computed on any of these can differ from the "
-                                   "one below while every D9 COUNT still reconciles, which is "
-                                   "exactly what happened between the arms",
+        "ruling": "Human Lead ruling, decisions/0088 SS3: THE D9 CLUSTERING UNIVERSE IS U1 -- ALL "
+                  "SLUGGED SWEEP SHOW IDs -- RANKED BY DISTINCT STRICT KEYS MERGED. Closes Red "
+                  "Team blocker B1 (0085 SS2), where the two arms published DISJOINT cluster lists "
+                  "on IDENTICAL counts, and 0087 SS2, where the two arms' 'U1' proved to be two "
+                  "sets 62 apart under one label. BOTH ARMS NOW CLUSTER THE SAME OBJECT.",
+        "THIS_ARM_CLUSTERS": "U1 -- every distinct show ID appearing anywhere in the pulled sweep "
+                             "that carries a slug, deduplicated to ONE ROW PER SHOW ID",
+        "U1_distinct_slugged_show_ids_anywhere_in_the_sweep_CLUSTERED": int(uni.shape[0]),
+        "U1_source": "processed/step8/a/show_slugs.csv, collected in stage 4b over all 2,549 "
+                     "parsed history files -- which is what 'anywhere in the pulled sweep' means. "
+                     "NOT the D9 coverage pivot.",
+        "show_ids_in_the_map_without_a_slug_excluded": int((u1_all.slug == "").sum()),
+        "show_ids_carrying_MORE_THAN_ONE_slug": n_ids_with_multiple_slugs,
+        "one_row_per_show_id_tie_break": "lexicographically first slug per show ID. Stated rather "
+                                         "than implicit; the sensitivity is measured, not assumed.",
+        "clusters_with_more_than_one_strict_key_under_the_LAST_slug_instead": alt_clusters,
+        "THE_UNIVERSE_THIS_ARM_USED_ON_ITS_PREVIOUS_BUILD_AND_NO_LONGER_USES": {
+            "what_it_was": "the distinct show IDs appearing in a D9 COVERAGE ROW -- i.e. reaching "
+                           "the pivot through a dated, pre-tau_pull, season >= 1 episode record",
+            "size": pivot_show_ids,
+            "relation_to_U1": "a SUBSET of U1. A show reaching the sweep only through a record "
+                              "D11 discards, an undated record, a specials-only record or a "
+                              "non-episode record is in U1 and not in the pivot.",
+            "U1_minus_this": int(uni.shape[0] - pivot_show_ids),
+            "why_it_is_published": "decisions/0087 SS2 caught this count published under the label "
+                                   "`distinct_show_ids_in_the_sweep`, which is NOT what it counts, "
+                                   "and 0088 SS2(a) requires the label corrected to what it counts. "
+                                   "Both are real objects; one label over two was the defect.",
+            "build_it_was_published_on": "a/2026-08-16-0085",
         },
-        "what_LARGEST_ranks_by_here": "distinct STRICT keys merged into one loose key -- i.e. how "
-                                      "many genuinely different shows the loose key collapses. "
-                                      "The same clusters ranked by distinct SHOW IDs merged are "
-                                      "emitted alongside, because 'largest cluster' does not fix a "
-                                      "ranking basis either and the two orders differ.",
+        "candidate_universes_NOT_used_here_sized_for_comparison": {
+            "U2_the_1138_frame_shows": int(frame.shape[0]),
+            "U3_the_D9_candidate_pairs_under_the_loose_key": lo[
+                "complementary_signature_id_pairs"],
+            "why_they_are_listed": "0088 SS3 rules U1 and names U2 and U3 as what it is not. "
+                                   "task-sheet.md's former illustration -- The Twilight Zone, The "
+                                   "Traitors, Manhunt -- was U3 and is SUPERSEDED as the example: "
+                                   "those three names are not wrong, they are another universe's "
+                                   "answer.",
+        },
+        "what_LARGEST_ranks_by_here": "DISTINCT STRICT KEYS MERGED into one loose key -- how many "
+                                      "separate metadata entries the loose key collapsed. Ruled by "
+                                      "decisions/0088 ruling 3 because it was unstated and "
+                                      "REORDERS THE LIST ON ITS OWN: ranked by distinct SHOW IDs "
+                                      "instead, `blackout` displaces `maigret`. Both orders are "
+                                      "emitted.",
+        "ranks_with_every_tied_key_stated": ranked(merged_titles, merged_ids),
+        "ranks_by_distinct_show_ids_with_every_tied_key_stated": ranked(
+            merged_ids[merged_titles.reindex(merged_ids.index).fillna(0) > 1], merged_titles),
+        "TIE_AT_RANK_3_REPORTED": "the ruled basis TIES at rank 3 on this data, so a bare "
+                                  "'third-largest cluster' is not reproducible from the basis "
+                                  "alone -- the tie order is decided by the sort's stability, not "
+                                  "by the ruling. Every key at every published rank is listed "
+                                  "above so the list can be compared without depending on it.",
         "coverage_shows_examined": int(uni.shape[0]),
         "clusters_with_more_than_one_strict_key": int((merged_titles > 1).sum()),
         "build": lib.BUILD_TAG,
@@ -389,6 +484,9 @@ def main():
     assert clustering_universe["coverage_shows_examined"] > 0, (
         "the D9 clustering looked at zero shows; a zero cluster list here would read as a data "
         "finding rather than a missing input")
+    assert int(uni.shape[0]) >= pivot_show_ids, (
+        "U1 must contain the coverage pivot's show IDs; if it does not, the slug map is not being "
+        "collected over the whole sweep and the clustering universe is not U1")
 
     D["D9_split_artifacts"] = {
         "signature": "two show IDs in one user's sweep with complementary season coverage (one "
@@ -401,8 +499,35 @@ def main():
                       "first, then strict. The loose count publishes alongside because it BOUNDS "
                       "HOW WRONG STRICT COULD BE, and the error runs OPPOSITE to D9's own "
                       "lower-bound caveat.",
-        "coverage": {"show_ids_with_a_slug": int(slugs.shape[0]),
-                     "user_show_coverage_rows_examined": int(piv.shape[0])},
+        # F2(b): NAME WHAT EACH COVERAGE FIGURE COUNTS, AT THE POINT OF USE. Human Lead ruling,
+        # decisions/0088 SS2. One name over two quantities is the defect; reconciling would
+        # collapse two real objects into one, which the standing rule forbids. Every figure below
+        # says what its unit is, and the bridge between them is arithmetic and stated.
+        "coverage": {
+            "ruling": "decisions/0088 SS2(b): 747,478 and 726,103 are different objects and both "
+                      "correct; each arm states which it publishes and what it counts.",
+            "unit_note": "THIS ARM PUBLISHES ALL THREE UNITS BELOW so no reader has to infer "
+                         "which one a bare number is.",
+            "A_undeduplicated_user_show_SEASON_COVERAGE_ROWS": int(cov.shape[0]),
+            "A_definition": "distinct (user, show, season-class) triples, season-class in "
+                            "{S1, S2, S3+}, over dated pre-tau_pull episode records. A user-show "
+                            "carrying two seasons contributes TWO rows here and ONE pair below.",
+            "B_distinct_user_show_PAIRS_in_the_coverage_pivot": int(piv.shape[0]),
+            "B_definition": "distinct (user, show) pairs with ANY dated pre-tau_pull episode "
+                            "record in season >= 1, INCLUDING pairs whose only evidence is S3 or "
+                            "later. This is the figure this arm published as 747,478.",
+            "C_D9_CANDIDATE_user_show_pairs_carrying_S1_or_S2_evidence": int(
+                (piv.s1 | piv.s2).sum()),
+            "C_definition": "B less the pairs whose only evidence is S3 or later. These are the "
+                            "pairs D9's complementary-coverage search can actually match on.",
+            "C_split": {"S1_evidence_and_no_S2": int((piv.s1 & ~piv.s2).sum()),
+                        "S2_evidence_and_no_S1": int((piv.s2 & ~piv.s1).sum()),
+                        "both_S1_and_S2": int((piv.s1 & piv.s2).sum())},
+            "bridge_B_minus_C_pairs_with_only_S3_or_later_evidence": int(
+                (~piv.s1 & ~piv.s2).sum()),
+            "show_ids_with_a_slug_in_the_map": int(slugs.shape[0]),
+            "build": lib.BUILD_TAG,
+        },
         "FOUR_NUMBERS_both_halves_under_both_keys": {
             "ruling": "Human Lead ruling, decisions/0078 SS3: BOTH HALVES UNDER BOTH KEYS -- four "
                       "numbers, not three. It follows from 0074 ruling 5's own reason rather than "
@@ -498,6 +623,212 @@ def main():
         "records_with_no_watched_at_whole_sweep": scan_sum["records_missing_watched_at"],
         "open_question_carried_not_resolved": pos_sum["D11_counterfactual_on_position_3"],
     }
+
+    # ---- 7a. B3(a): THE BOUNDARY WINDOW ----------------------------------------------------
+    # THE TWO UNASSERTED MANDATES ARE MEASURED, NOT SELF-REPORTED. Human Lead ruling,
+    # decisions/0088 SS1, on Red Team's B3/F1, which blocked the gate on the third and fourth
+    # passes. The mandates are THE HALF-OPEN UTC-INSTANT FORM and D11-AS-GLOBAL-CUTOFF. This
+    # arm's compliance is TRUE and was independently confirmed -- no .date(), dt.date, normalize()
+    # or day-flooring anywhere in step8_*.py, instants int64 seconds throughout. THAT IS NOT WHAT
+    # WAS MISSING: nothing measured whether either mandate is LOAD-BEARING ON THIS DATA, and an
+    # unmeasured pass is indistinguishable from a check that looked nowhere.
+    #
+    # IF THE COUNT IS 0 THE INVARIANT IS LABELLED VACUOUS -- it does not pass silently. A zero
+    # stated as a zero is evidence; a zero arriving as a pass is not.
+    #
+    # ONE THING THE RULING DOES NOT SAY, MEASURED HERE BECAUSE IT DECIDES THE ANSWER: T0 is
+    # day-floored and W and H are whole days, so tau1 and tau2 land EXACTLY ON MIDNIGHT UTC. The
+    # date-level form `date(ts) < date(tau1)` is therefore IDENTICAL to the half-open `ts < tau1`
+    # and can never differ. The form that CAN differ is `date(ts) <= date(tau1)`, which admits the
+    # whole of [tau1, tau1 + 24h). So the window the ruling names -- [tau1 - 24h, tau1) -- is the
+    # window on which the two forms AGREE by construction, and the interval on the OTHER side is
+    # where the mandate is load-bearing. Both are emitted; reporting only the named one would
+    # answer the question with the interval that cannot separate them.
+    tau1, tau2 = r["tau1"], r["tau2"]
+    assert int((a.t0 % DAY).sum()) == 0, "T0 is not day-floored; the boundary analysis below assumes it"
+    assert int((tau1 % DAY).sum()) == 0 and int((tau2 % DAY).sum()) == 0, \
+        "tau1/tau2 are not midnight-aligned"
+
+    def win(lo_bound, hi_bound):
+        """Per pair, distinct S2 episodes whose canonical timestamp is in [lo, hi)."""
+        return a.count_before(hi_bound) - a.count_before(lo_bound)
+
+    boundary = {"ruling": "Human Lead, decisions/0088 SS1(a). Position-5 row set, BOTH "
+                          "POPULATIONS. Unit: DISTINCT S2 EPISODES BY CANONICAL TIMESTAMP -- the "
+                          "objects the bound is actually tested against, since A and A_H are sets "
+                          "of distinct episodes and the canonical timestamp is the minimum "
+                          "watched_at over the records behind one episode (Step 1 SS2.1/2.2).",
+                "half_open_form_verified": "no .date(), dt.date, normalize() or day-flooring "
+                                           "appears in any step8_a_*.py; every bound is an int64 "
+                                           "second comparison. `date(watched_at) <= T1` appears "
+                                           "nowhere.",
+                "tau1_and_tau2_are_midnight_aligned_UTC": True,
+                "build": lib.BUILD_TAG}
+    for _pname, _m in (("APPLY_position_5", pos5), ("DERIV_position_5", pos5d)):
+        cells = {}
+        for _bn, _b in (("tau1", tau1), ("tau2", tau2)):
+            before = win(_b - DAY, _b)
+            at = win(_b, _b + 1)
+            after = win(_b + 1, _b + DAY)
+            cells[_bn] = {
+                "episodes_in_the_24h_BEFORE_the_bound_named_by_the_ruling": int(before[_m].sum()),
+                "rows_carrying_one": int((before[_m] > 0).sum()),
+                "episodes_EXACTLY_AT_the_bound": int(at[_m].sum()),
+                "rows_carrying_one_exactly_at_the_bound": int((at[_m] > 0).sum()),
+                "episodes_in_the_24h_AFTER_the_bound_where_the_two_forms_ACTUALLY_DIFFER": int(
+                    (at[_m] + after[_m]).sum()),
+                "rows_where_the_two_forms_would_differ": int(((at + after)[_m] > 0).sum()),
+            }
+            cells[_bn]["VACUOUS"] = cells[_bn][
+                "episodes_in_the_24h_AFTER_the_bound_where_the_two_forms_ACTUALLY_DIFFER"] == 0
+        cells["coverage_rows_examined"] = int(_m.sum())
+        cells["coverage_distinct_S2_episodes_on_those_rows"] = int(
+            np.diff(a.s2_ptr)[_m].sum())
+        assert cells["coverage_rows_examined"] > 0 and \
+            cells["coverage_distinct_S2_episodes_on_those_rows"] > 0, (
+            "the boundary window looked at zero episodes on " + _pname + ": an empty result and a "
+            "clean result are the same value and only the control knows which it produced")
+        boundary[_pname] = cells
+    boundary["reading"] = (
+        "The bound-crossing counts are what decides whether the half-open mandate is LOAD-BEARING "
+        "on this data. Where the 'ACTUALLY DIFFER' cell is 0 the invariant is VACUOUS on this "
+        "build -- stated, not passed silently -- and where it is non-zero the mandate changes the "
+        "answer for that many episodes. The 'exactly at the bound' cells are the ruling's own "
+        "second quantity and are a subset of the differing interval, since tau1 and tau2 are "
+        "midnight-aligned.")
+    D["B3a_boundary_window_half_open_form"] = boundary
+
+    # ---- 7b. B3(b): THE PER-SITE D11 TABLE, ASSERTED AT EACH SITE ---------------------------
+    # decisions/0088 SS1(b). D11 is specified to apply "to EVERY computation" and this arm named
+    # FIVE SITES IN PROSE WITH A COUNT AT NONE. Every site now carries its own count and its own
+    # assertion. The ground for ruling rather than publishing a residual: the unstated version of
+    # exactly this scope produced Step 7's 792-against-791.
+    # S2 episodes at or after tau_pull, and the sub-slice of them that would have entered each
+    # set. Expressed as differences of prefix counts rather than with a sentinel upper bound,
+    # because the searchsorted key packs (pair, timestamp) into one int64 and a sentinel large
+    # enough to dominate every timestamp would break the packing.
+    _n_s2 = np.diff(a.s2_ptr)
+    _before_pull = a.count_before(np.full(a.n, lib.TAU_PULL, dtype=np.int64))
+    ge_pull_s2 = _n_s2 - _before_pull
+    enter_A_post_cutoff = np.maximum(0, r["kA"] - _before_pull)
+    enter_AH_post_cutoff = np.maximum(0, r["kAH"] - _before_pull)
+    sites = dict(scan_sum["D11_per_site_records"]["the_eight_action_count_sites"])
+    sites["A_the_set_tested_at_tau1"] = {
+        "unit": "distinct S2 episodes on position-5 rows",
+        "episodes_examined_before_D11": int(np.diff(a.s2_ptr)[pos5].sum()),
+        "episodes_at_or_after_tau_pull_that_D11_would_exclude": int(ge_pull_s2[pos5].sum()),
+        "of_those_that_would_have_ENTERED_A": int(enter_A_post_cutoff[pos5].sum()),
+        "D11_applied": True,
+        "inert_and_why": "D10 forces tau1 <= tau2 <= tau_pull on every retained pair, so no "
+                         "episode at or after tau_pull can satisfy ts < tau1. INERT BY "
+                         "CONSTRUCTION, and the count is stated rather than the construction "
+                         "being asserted about.",
+    }
+    sites["A_H_the_set_tested_at_tau2"] = {
+        "unit": "distinct S2 episodes on position-5 rows",
+        "episodes_examined_before_D11": int(np.diff(a.s2_ptr)[pos5].sum()),
+        "episodes_at_or_after_tau_pull_that_D11_would_exclude": int(ge_pull_s2[pos5].sum()),
+        "of_those_that_would_have_ENTERED_A_H": int(enter_AH_post_cutoff[pos5].sum()),
+        "D11_applied": True,
+        "inert_and_why": "same construction, at tau2.",
+    }
+    sites["liveness_evidence"] = scan_sum["D11_per_site_records"]["liveness_evidence"]
+    sites["D9_coverage_rows"] = d9_site_d11
+    sites["S1_completion_walk"] = dict(scan_sum["D11_per_site_records"]["S1_completion_walk"])
+    sites["S1_completion_walk"]["counterfactual_measured_in_stage_2"] = pos_sum[
+        "D11_counterfactual_on_position_3"]
+
+    site_assertions = []
+    for _sn, _sv in sites.items():
+        if _sn.startswith("action_count_"):
+            ok = (_sv["records_examined_before_D11"]
+                  == _sv["records_excluded_by_D11"] + _sv["records_counted_after_D11"])
+            site_assertions.append({
+                "site": _sn, "D11_applied": True,
+                "assertion": "records_examined = records_excluded_by_D11 + records_counted",
+                "coverage_unit_count": _sv["records_examined_before_D11"],
+                "excluded_by_D11": _sv["records_excluded_by_D11"], "holds": bool(ok)})
+        elif _sn in ("A_the_set_tested_at_tau1", "A_H_the_set_tested_at_tau2"):
+            k = ("of_those_that_would_have_ENTERED_A" if _sn.startswith("A_the")
+                 else "of_those_that_would_have_ENTERED_A_H")
+            site_assertions.append({
+                "site": _sn, "D11_applied": True,
+                "assertion": "no episode at or after tau_pull enters the set",
+                "coverage_unit_count": _sv["episodes_examined_before_D11"],
+                "excluded_by_D11": _sv[k], "holds": bool(_sv[k] == 0),
+                "VACUOUS_ON_THIS_BUILD": bool(
+                    _sv["episodes_at_or_after_tau_pull_that_D11_would_exclude"] == 0)})
+        elif _sn == "liveness_evidence":
+            site_assertions.append({
+                "site": _sn, "D11_applied": True,
+                "assertion": "the per-account insertion clock is built only from records dated "
+                             "before tau_pull (decisions/0070 ruling 2)",
+                "coverage_unit_count": _sv["records_examined_before_D11"],
+                "excluded_by_D11": _sv["records_excluded_by_D11_watched_at_ge_tau_pull"],
+                "holds": bool(_sv["records_examined_before_D11"]
+                              == (_sv["records_excluded_by_D11_watched_at_ge_tau_pull"]
+                                  + _sv["records_excluded_as_undated"]
+                                  + _sv["records_used_after_D11"])),
+                "VACUOUS_ON_THIS_BUILD": bool(
+                    _sv["accounts_whose_last_insertion_instant_MOVES_under_D11"] == 0)})
+        elif _sn == "D9_coverage_rows":
+            site_assertions.append({
+                "site": _sn, "D11_applied": True,
+                "assertion": "records_examined = records_excluded_by_D11 + records_used",
+                "coverage_unit_count": _sv["records_examined_before_D11"],
+                "excluded_by_D11": _sv["records_excluded_by_D11"],
+                "holds": bool(_sv["records_examined_before_D11"]
+                              == _sv["records_excluded_by_D11"] + _sv["records_used_after_D11"]),
+                "VACUOUS_ON_THIS_BUILD": bool(_sv["records_excluded_by_D11"] == 0)})
+        elif _sn == "S1_completion_walk":
+            cf = _sv["counterfactual_measured_in_stage_2"]
+            site_assertions.append({
+                "site": _sn, "D11_applied": False,
+                "assertion": "THIS SITE IS DECLARED NOT-APPLIED, NOT SILENT. decisions/0068 fixes "
+                             "waterfall line 1 at the published 220,107 and lists whether D11 "
+                             "moves it as an OPEN question; the counterfactual is measured and "
+                             "published rather than the site being omitted from the table.",
+                "coverage_unit_count": _sv["records_at_or_after_tau_pull_on_the_S1_side"],
+                "excluded_by_D11": 0,
+                "pairs_that_would_stop_being_completers": cf[
+                    "pairs_that_stop_being_completers_under_D11"],
+                "completion_dates_that_would_move": cf[
+                    "completers_whose_completion_date_moves_under_D11"],
+                "holds": True})
+    # A CHECK THAT FINDS NOTHING BECAUSE IT LOOKED NOWHERE MUST NOT READ AS A PASS (CLAUDE.md).
+    # Two of the thirteen sites -- action_count_s1_other and action_count_s2_other -- examine
+    # ZERO units, because no record in the sweep carries an action outside
+    # {watch, checkin, scrobble}. Their assertions hold trivially and are flagged as such, not
+    # counted as evidence. The distinction is between a zero found and a zero looked at.
+    for _x in site_assertions:
+        _x["LOOKED_AT_ZERO_UNITS"] = bool(_x["coverage_unit_count"] == 0)
+    n_applied = sum(1 for x in site_assertions if x["D11_applied"])
+    D["B3b_D11_per_site"] = {
+        "ruling": "Human Lead, decisions/0088 SS1(b): emit records excluded by D11 at EACH site "
+                  "separately and ASSERT AT EACH SITE, not once and about the rest. This replaces "
+                  "prose naming five sites with a count at none.",
+        "sites_total": len(site_assertions),
+        "sites_where_D11_IS_applied": n_applied,
+        "sites_where_D11_is_NOT_applied_and_say_so": len(site_assertions) - n_applied,
+        "sites": sites,
+        "assertions": site_assertions,
+        "all_site_assertions_hold": all(x["holds"] for x in site_assertions),
+        "sites_vacuous_on_this_build": [x["site"] for x in site_assertions
+                                        if x.get("VACUOUS_ON_THIS_BUILD")],
+        "sites_that_LOOKED_AT_ZERO_UNITS_and_therefore_hold_trivially": [
+            x["site"] for x in site_assertions if x["LOOKED_AT_ZERO_UNITS"]],
+        "sites_asserted_on_a_non_empty_unit_set": sum(
+            1 for x in site_assertions if not x["LOOKED_AT_ZERO_UNITS"]),
+        "total_units_excluded_by_D11_across_the_sites_where_it_is_applied": sum(
+            int(x["excluded_by_D11"]) for x in site_assertions if x["D11_applied"]),
+        "units_are_NOT_commensurable_across_sites": "records, distinct episodes and coverage "
+                                                    "rows are different units and the row above "
+                                                    "is a bookkeeping total, not a quantity with "
+                                                    "a meaning. Read the sites individually.",
+        "build": lib.BUILD_TAG,
+    }
+    assert len(site_assertions) >= 13, "the per-site D11 table lost a site"
+    assert D["B3b_D11_per_site"]["all_site_assertions_hold"], "a D11 site assertion failed"
 
     # ---- 8. D12 cadence buckets ------------------------------------------------------------
     bucket = f.cadence_bucket.reindex(a.pair_show).to_numpy()
@@ -699,11 +1030,16 @@ def main():
     # =====================================================================================
     # INVARIANTS. Every one carries a label: CODE CHECK or DATA CHECK (0068).
     #
-    # The set is EIGHT (decisions/0076): five pure code checks, one code-by-construction with
-    # force only as specified, and TWO that can fail on real data. Before 0076 it was six, of
-    # which FIVE could not fail and ZERO were pure data checks -- 0074 had labelled `p` a data
-    # check and 0076 corrected it to CODE CHECK on both instances' own proof. The
-    # set-membership rule is NOT in this list: 0074 ruling 3 makes it a coverage count.
+    # The set is NINE. It was EIGHT at decisions/0076 -- five pure code checks, one
+    # code-by-construction with force only as specified, and TWO that can fail on real data --
+    # and decisions/0088 SS1(c) PROMOTES a ninth, the tau2 <= tau_pull assertion that already ran
+    # in this arm's stage 3 but sat outside the published set. THE NINTH IS A SIXTH PURE CODE
+    # CHECK, so the ratio of falsifiable checks gets WORSE, not better: 6 + 1 + 2 rather than
+    # 5 + 1 + 2. That is stated because an added check reads as an added guarantee, and this one
+    # adds visibility rather than power. Before 0076 the set was six, of which FIVE could not
+    # fail and ZERO were pure data checks -- 0074 had labelled `p` a data check and 0076
+    # corrected it to CODE CHECK on both instances' own proof. The set-membership rule is NOT in
+    # this list: 0074 ruling 3 makes it a coverage count.
     #
     # EVERY INVARIANT NAMES THE POPULATION IT RUNS ON AND ACCOUNTS FOR EVERY ROW IN IT -- Human
     # Lead ruling, decisions/0080 SS3. This is the provenance rule applied to invariants: an
@@ -727,12 +1063,27 @@ def main():
         not_asserted = int(n_not) if n_not is not None else int(n_pop) - asserted
         lhs = (" + ".join(str(int(x)) for x in parts) if parts is not None else str(asserted)
                ) + f" + {not_asserted} not asserted"
+        # WHAT THIS IDENTITY CAN DETECT, stated rather than left to read as a check. Red Team's
+        # fourth pass (0087 SS4) found that most of them have the population size and the
+        # asserted count as THE SAME EXPRESSION, so `not_asserted = N - N = 0` holds however the
+        # population was chosen and the identity cannot detect an invariant run on a population
+        # other than the one named. Only the multi-clause forms are real arithmetic. Labelled at
+        # the point of use, because an unlabelled check that cannot fail reads as one that can.
+        real = parts is not None and len(parts) > 1
         d = {"population": population, "unit": unit,
              f"{unit}_in_the_stated_population": int(n_pop),
              f"{unit}_asserted": asserted,
              f"{unit}_not_asserted": not_asserted,
              "coverage_identity": f"{lhs} = {int(n_pop)}",
              "coverage_identity_holds": bool(asserted + not_asserted == int(n_pop)),
+             "identity_is_REAL_ARITHMETIC": bool(real),
+             "what_it_can_detect": (
+                 "a unit covered by NO clause -- the 99-row hole decisions/0080 SS3 was written "
+                 "for. The clauses are counted independently and must sum to the population."
+                 if real else
+                 "NOTHING. The asserted count and the population size are the same expression, so "
+                 "N - N = 0 holds however the population was chosen. This is bookkeeping, not a "
+                 "check (Red Team fourth pass, decisions/0087 SS4)."),
              "build": lib.BUILD_TAG}
         if parts is not None:
             d["asserted_clause_counts"] = [int(x) for x in parts]
@@ -771,7 +1122,12 @@ def main():
                       "NEITHER SUBSTITUTES FOR THE OTHER.",
         "coverage_rows": int(pos6.sum()),
         "by_population": parts,
-        "coverage_identity_holds_on_every_stated_population": True,
+        # COMPUTED, NOT A LITERAL. Red Team's fourth pass (0087 SS4) found this published as a
+        # hardcoded `True` -- a result asserted rather than measured, which is the same shape as
+        # a control asserted to exist. It now reads the identity off each stated population.
+        "coverage_identity_holds_on_every_stated_population": bool(
+            all(v["coverage_identity_holds"] for v in parts.values())),
+        "populations_whose_identity_was_checked": len(parts),
         "passed": all(v["holds"] for v in parts.values()),
     })
 
@@ -946,10 +1302,18 @@ def main():
         whole = np.setdiff1d(un, ul)
         allu = np.unique(a.pair_user[mask])
         cnt_ = pd.Series(a.pair_user[mask]).value_counts()
-        return {**cover("accounts", label, allu.size, allu.size,
+        # the classification is MEASURED against the population, not asserted: `True` was a
+        # hardcoded literal here until Red Team's fourth pass (0087 SS4). The three classes --
+        # untouched, mixed, wholesale -- are counted independently and must sum to the accounts
+        # in the population, which is real arithmetic rather than N - N = 0.
+        return {**cover("accounts", label, allu.size, None,
                         {"accounts_untouched_by_the_exclusion": int(allu.size - un.size),
                          "accounts_touched_by_the_exclusion": int(un.size),
-                         "classification_covers_every_account": True}),
+                         "classification_covers_every_account": bool(
+                             int(allu.size - un.size) + int(mixed.size) + int(whole.size)
+                             == int(allu.size))},
+                        parts=[int(allu.size - un.size), int(mixed.size), int(whole.size)],
+                        n_not=0),
                 "accounts_holding_BOTH_a_live_and_a_not_live_pair": int(mixed.size),
                 "accounts_all_of_whose_pairs_are_excluded": int(whole.size),
                 "of_those_holding_more_than_one_pair_in_this_population": int(
@@ -1078,6 +1442,49 @@ def main():
         "passed": bool(fs_never == 0 and es_never == 0 and len(unknown_outcomes) == 0),
     })
 
+    # ---- 9: THE PROMOTED ASSERTION, B3(c) --------------------------------------------------
+    # decisions/0088 SS1(c): `assert (tau2[pos5] > tau_pull).sum() == 0` already runs in this
+    # arm's pipeline -- src/step8_a_3_table.py, immediately after position 5 -- but it sat
+    # OUTSIDE the published invariant set, so no reader of the deliverable could see it. It is
+    # published here, labelled CODE CHECK, and it is the same expression rather than a second
+    # definition of it.
+    def outcome_window_site(mask, label):
+        le2 = int((r["tau2"][mask] <= lib.TAU_PULL).sum())
+        gt2 = int((r["tau2"][mask] > lib.TAU_PULL).sum())
+        le1 = int((r["tau1"][mask] <= lib.TAU_PULL).sum())
+        return {**cover("rows", label, int(mask.sum()), None,
+                        {"rows_with_tau2_at_or_before_tau_pull": le2,
+                         "rows_with_tau2_after_tau_pull": gt2,
+                         "rows_with_tau1_at_or_before_tau_pull": le1},
+                        parts=[le2, gt2], n_not=0),
+                "holds": bool(gt2 == 0)}
+
+    ow = {"APPLY_position_5": outcome_window_site(pos5, "APPLY, position-5 row set"),
+          "DERIV_position_5": outcome_window_site(pos5d, "DERIV, position-5 row set")}
+    inv.append({
+        "name": "no retained row's outcome window extends past tau_pull: tau2 <= tau_pull on "
+                "every position-5 row",
+        "label": "CODE CHECK",
+        "why": "D10 right-censors on t0 + (max(W, 91) + H) * 24h <= tau_pull, so tau2 <= tau_pull "
+               "holds for any correct censoring step and no data configuration can break it. It "
+               "is what makes D11 INERT on A and A_H, which is why the per-site D11 table can "
+               "report those two sites as inert by construction rather than by inspection. It "
+               "fails only on a censoring term coded wrongly -- and it is NOT evidence for the "
+               "liveness rule or for any outcome.",
+        "promoted_from": "src/step8_a_3_table.py, where it has run as a bare assert since the "
+                         "first build. PROMOTED INTO THE PUBLISHED SET by decisions/0088 SS1(c) "
+                         "because an assertion a reader of the deliverable cannot see is not a "
+                         "published check.",
+        "population": "BOTH POPULATIONS, EVERY ROW: the 196,654 APPLY position-5 row set and the "
+                      "147,370 DERIV position-5 row set. The two clauses -- rows at or before "
+                      "tau_pull and rows after it -- are counted independently and must sum to "
+                      "the population, so the coverage identity is real arithmetic and not "
+                      "N - N = 0.",
+        "by_population": ow,
+        "coverage_rows": int(pos5.sum()),
+        "passed": bool(all(v["holds"] for v in ow.values())),
+    })
+
     recon = {
         "name": "703 liveness exclusions at position 6 on APPLY = 196,654",
         "label": "NOT AN INVARIANT -- a POPULATION RECONCILIATION (0068)",
@@ -1158,7 +1565,19 @@ def main():
                   "history": "before decisions/0076 the set was six, of which FIVE could not fail "
                              "and ZERO were pure data checks. 0074 had labelled p a DATA CHECK; "
                              "0076 corrected it to CODE CHECK on both instances' proof and added "
-                             "the two data checks that now carry the set."},
+                             "the two data checks that now carry the set, making it EIGHT. "
+                             "decisions/0088 SS1(c) promotes a NINTH -- the tau2 <= tau_pull "
+                             "assertion -- into the published set.",
+                  "the_ninth_makes_the_ratio_WORSE_not_better": "the promoted check is a SIXTH "
+                                                                "pure code check, so the set goes "
+                                                                "from 5 + 1 + 2 to 6 + 1 + 2 and "
+                                                                "the number that can fail on real "
+                                                                "data is unchanged at TWO. An "
+                                                                "added check reads as an added "
+                                                                "guarantee; this one adds "
+                                                                "VISIBILITY, not power.",
+                  "SUPERSEDED_the_assertion_set_has_EIGHT_members": "superseded by decisions/0088 "
+                                                                    "SS1(c); the set is NINE"},
               "all_passed": all(i["passed"] for i in inv)}
 
     # the coverage identity is itself checked, on every stated population of every invariant
@@ -1176,7 +1595,34 @@ def main():
     ids = walk_identities(inv, [])
     report["coverage_identity_checks_run"] = len(ids)
     report["all_coverage_identities_hold"] = all(ids)
-    assert all(ids) and len(ids) >= 8, "an invariant does not account for every row it names"
+
+    def walk_kind(node, acc):
+        if isinstance(node, dict):
+            if "identity_is_REAL_ARITHMETIC" in node:
+                acc.append(bool(node["identity_is_REAL_ARITHMETIC"]))
+            for v in node.values():
+                walk_kind(v, acc)
+        elif isinstance(node, list):
+            for v in node:
+                walk_kind(v, acc)
+        return acc
+
+    kinds = walk_kind(inv, [])
+    report["coverage_identity_strength"] = {
+        "ruling": "Red Team's fourth pass, decisions/0087 SS4, carried as a limitation; the one "
+                  "sentence it required struck either way is struck by decisions/0088 SS2(d).",
+        "identities_total": len(kinds),
+        "identities_that_are_REAL_ARITHMETIC": int(sum(kinds)),
+        "identities_that_CANNOT_FAIL_population_size_and_asserted_count_are_one_expression": int(
+            len(kinds) - sum(kinds)),
+        "note": "the second group is bookkeeping and is labelled as such at each identity. An "
+                "unlabelled check that cannot fail reads as one that can -- decisions/0069's "
+                "rule, applied to the coverage apparatus rather than to the invariants.",
+        "build": lib.BUILD_TAG,
+    }
+    assert len(kinds) == len(ids), "an identity was emitted without its strength label"
+    assert all(ids) and len(ids) >= 9, "an invariant does not account for every row it names"
+    assert len(inv) == 9, f"the assertion set is {len(inv)}, expected 9 (decisions/0088 SS1(c))"
 
     with open(os.path.join(OUT, "invariants.json"), "w") as fh:
         json.dump(report, fh, indent=2)

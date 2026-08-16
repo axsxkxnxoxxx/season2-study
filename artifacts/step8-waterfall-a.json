@@ -7,24 +7,24 @@
   "H_days": 91,
   "tau_pull_utc": "2026-08-11T00:00:00Z",
   "build": {
-    "build_tag": "a/2026-08-16-0085",
-    "build_name": "position-5 build of 2026-08-16, instance `a`, RERUN against decisions/0085 (Red Team third pass: B1, B2, P4 and the line-6 decomposition). The earlier 2026-08-16 build of this instance is the one 0085 reviewed; no figure moves between them, but they are different builds and are tagged apart.",
+    "build_tag": "a/2026-08-16-0088",
+    "build_name": "position-5 build of 2026-08-16, instance `a`, RERUN against decisions/0088 (B3 measured: the boundary window and the per-site D11 table; F2: the D9 coverage quantities named as separate objects and the mislabel corrected; the D9 clustering universe ruled to U1, ranked by distinct strict keys merged). The earlier 2026-08-16 builds of this instance -- `a/2026-08-16-0085` and the pre-0085 run -- are what Red Team's third and fourth passes reviewed. NO POPULATION AND NO RULE MOVES between them; what moves is the D9 CLUSTER LIST, because the universe it is computed on was ruled and this instance's previous universe was the D9 coverage pivot rather than the sweep. They are different builds and are tagged apart.",
     "instance": "a",
     "run_date_utc": "2026-08-16",
     "why_this_exists": "decisions/0079 (B6), extending decisions/0078: every count, every invariant result and every waterfall figure names the pipeline it was measured on, not only its population. Partial application is worse than none.",
     "pipeline": "src/step8_a_run.py, one run, stages 1 -> 6 in order",
     "stage_files_sha256_12": {
-      "step8_a_lib.py": "627e27ad1613",
-      "step8_a_1_scan.py": "a01904dba997",
+      "step8_a_lib.py": "11d33fbf7b89",
+      "step8_a_1_scan.py": "baba4ebc7c95",
       "step8_a_2_positions.py": "9f08ac985c8c",
-      "step8_a_3_table.py": "dc4bd39519ff",
+      "step8_a_3_table.py": "c7ecfd8cf3f2",
       "step8_a_4_arms.py": "3d533b88a113",
       "step8_a_4b_slugs.py": "4495f8069adb",
-      "step8_a_5_diagnostics.py": "2e5659a8c793",
-      "step8_a_6_emit.py": "4242c0ddc407",
+      "step8_a_5_diagnostics.py": "5864b3dd030b",
+      "step8_a_6_emit.py": "925903d50dee",
       "step8_a_run.py": "1e858e7bfa89"
     },
-    "git_head_short": "b860956",
+    "git_head_short": "267cfb5",
     "git_worktree_dirty_at_launch": true,
     "parameters": {
       "W_days": 108,
@@ -53,7 +53,7 @@
     "spec_read": "task-sheet.md Step 8 as it stands, plus decisions/0066-0085",
     "relation_to_the_2026_08_13_build": "this build reproduces the figures decisions/0078 and 0079 restate on the position-5 build of 2026-08-13 (58,345 pairs; 324 of 5,694; 178 of 2,549; 703/99). Where a figure agrees, that is measured here and stated, not carried."
   },
-  "provenance_note": "EVERY COUNT AND EVERY INVARIANT RESULT IN THIS FILE WAS MEASURED ON BUILD a/2026-08-16-0085 unless it carries a different build at the point of use. Human Lead ruling, decisions/0079 (B6), extending 0078. Partial application is worse than none.",
+  "provenance_note": "EVERY COUNT AND EVERY INVARIANT RESULT IN THIS FILE WAS MEASURED ON BUILD a/2026-08-16-0088 unless it carries a different build at the point of use. Human Lead ruling, decisions/0079 (B6), extending 0078. Partial application is worse than none.",
   "filter_order": [
     "1 Step 2 frame",
     "2 L2 = 1 exclusion",
@@ -195,24 +195,24 @@
     "api_calls": 0,
     "H_days": 91,
     "build": {
-      "build_tag": "a/2026-08-16-0085",
-      "build_name": "position-5 build of 2026-08-16, instance `a`, RERUN against decisions/0085 (Red Team third pass: B1, B2, P4 and the line-6 decomposition). The earlier 2026-08-16 build of this instance is the one 0085 reviewed; no figure moves between them, but they are different builds and are tagged apart.",
+      "build_tag": "a/2026-08-16-0088",
+      "build_name": "position-5 build of 2026-08-16, instance `a`, RERUN against decisions/0088 (B3 measured: the boundary window and the per-site D11 table; F2: the D9 coverage quantities named as separate objects and the mislabel corrected; the D9 clustering universe ruled to U1, ranked by distinct strict keys merged). The earlier 2026-08-16 builds of this instance -- `a/2026-08-16-0085` and the pre-0085 run -- are what Red Team's third and fourth passes reviewed. NO POPULATION AND NO RULE MOVES between them; what moves is the D9 CLUSTER LIST, because the universe it is computed on was ruled and this instance's previous universe was the D9 coverage pivot rather than the sweep. They are different builds and are tagged apart.",
       "instance": "a",
       "run_date_utc": "2026-08-16",
       "why_this_exists": "decisions/0079 (B6), extending decisions/0078: every count, every invariant result and every waterfall figure names the pipeline it was measured on, not only its population. Partial application is worse than none.",
       "pipeline": "src/step8_a_run.py, one run, stages 1 -> 6 in order",
       "stage_files_sha256_12": {
-        "step8_a_lib.py": "627e27ad1613",
-        "step8_a_1_scan.py": "a01904dba997",
+        "step8_a_lib.py": "11d33fbf7b89",
+        "step8_a_1_scan.py": "baba4ebc7c95",
         "step8_a_2_positions.py": "9f08ac985c8c",
-        "step8_a_3_table.py": "dc4bd39519ff",
+        "step8_a_3_table.py": "c7ecfd8cf3f2",
         "step8_a_4_arms.py": "3d533b88a113",
         "step8_a_4b_slugs.py": "4495f8069adb",
-        "step8_a_5_diagnostics.py": "2e5659a8c793",
-        "step8_a_6_emit.py": "4242c0ddc407",
+        "step8_a_5_diagnostics.py": "5864b3dd030b",
+        "step8_a_6_emit.py": "925903d50dee",
         "step8_a_run.py": "1e858e7bfa89"
       },
-      "git_head_short": "b860956",
+      "git_head_short": "267cfb5",
       "git_worktree_dirty_at_launch": true,
       "parameters": {
         "W_days": 108,
@@ -241,7 +241,7 @@
       "spec_read": "task-sheet.md Step 8 as it stands, plus decisions/0066-0085",
       "relation_to_the_2026_08_13_build": "this build reproduces the figures decisions/0078 and 0079 restate on the position-5 build of 2026-08-13 (58,345 pairs; 324 of 5,694; 178 of 2,549; 703/99). Where a figure agrees, that is measured here and stated, not carried."
     },
-    "provenance_note": "EVERY COUNT IN THIS FILE, AT EVERY ARM, WAS MEASURED ON BUILD a/2026-08-16-0085 (decisions/0079 B6, extending 0078).",
+    "provenance_note": "EVERY COUNT IN THIS FILE, AT EVERY ARM, WAS MEASURED ON BUILD a/2026-08-16-0088 (decisions/0079 B6, extending 0078).",
     "arm_grid": [
       38,
       46,
@@ -271,7 +271,7 @@
     "arms": [
       {
         "W_days": 38,
-        "build": "a/2026-08-16-0085",
+        "build": "a/2026-08-16-0088",
         "position_5_APPLY": 197007,
         "position_5_DERIV": 147685,
         "right_censoring_two_lines_APPLY": {
@@ -378,7 +378,7 @@
       },
       {
         "W_days": 46,
-        "build": "a/2026-08-16-0085",
+        "build": "a/2026-08-16-0088",
         "position_5_APPLY": 197007,
         "position_5_DERIV": 147685,
         "right_censoring_two_lines_APPLY": {
@@ -485,7 +485,7 @@
       },
       {
         "W_days": 77,
-        "build": "a/2026-08-16-0085",
+        "build": "a/2026-08-16-0088",
         "position_5_APPLY": 197007,
         "position_5_DERIV": 147685,
         "right_censoring_two_lines_APPLY": {
@@ -592,7 +592,7 @@
       },
       {
         "W_days": 91,
-        "build": "a/2026-08-16-0085",
+        "build": "a/2026-08-16-0088",
         "position_5_APPLY": 197007,
         "position_5_DERIV": 147685,
         "right_censoring_two_lines_APPLY": {
@@ -699,7 +699,7 @@
       },
       {
         "W_days": 107,
-        "build": "a/2026-08-16-0085",
+        "build": "a/2026-08-16-0088",
         "position_5_APPLY": 196674,
         "position_5_DERIV": 147384,
         "right_censoring_two_lines_APPLY": {
@@ -806,7 +806,7 @@
       },
       {
         "W_days": 108,
-        "build": "a/2026-08-16-0085",
+        "build": "a/2026-08-16-0088",
         "position_5_APPLY": 196654,
         "position_5_DERIV": 147370,
         "right_censoring_two_lines_APPLY": {
@@ -913,7 +913,7 @@
       },
       {
         "W_days": 150,
-        "build": "a/2026-08-16-0085",
+        "build": "a/2026-08-16-0088",
         "position_5_APPLY": 195689,
         "position_5_DERIV": 146602,
         "right_censoring_two_lines_APPLY": {
@@ -1020,7 +1020,7 @@
       },
       {
         "W_days": 213,
-        "build": "a/2026-08-16-0085",
+        "build": "a/2026-08-16-0088",
         "position_5_APPLY": 193270,
         "position_5_DERIV": 144852,
         "right_censoring_two_lines_APPLY": {
@@ -1135,24 +1135,24 @@
     "W_days": 108,
     "H_days": 91,
     "build": {
-      "build_tag": "a/2026-08-16-0085",
-      "build_name": "position-5 build of 2026-08-16, instance `a`, RERUN against decisions/0085 (Red Team third pass: B1, B2, P4 and the line-6 decomposition). The earlier 2026-08-16 build of this instance is the one 0085 reviewed; no figure moves between them, but they are different builds and are tagged apart.",
+      "build_tag": "a/2026-08-16-0088",
+      "build_name": "position-5 build of 2026-08-16, instance `a`, RERUN against decisions/0088 (B3 measured: the boundary window and the per-site D11 table; F2: the D9 coverage quantities named as separate objects and the mislabel corrected; the D9 clustering universe ruled to U1, ranked by distinct strict keys merged). The earlier 2026-08-16 builds of this instance -- `a/2026-08-16-0085` and the pre-0085 run -- are what Red Team's third and fourth passes reviewed. NO POPULATION AND NO RULE MOVES between them; what moves is the D9 CLUSTER LIST, because the universe it is computed on was ruled and this instance's previous universe was the D9 coverage pivot rather than the sweep. They are different builds and are tagged apart.",
       "instance": "a",
       "run_date_utc": "2026-08-16",
       "why_this_exists": "decisions/0079 (B6), extending decisions/0078: every count, every invariant result and every waterfall figure names the pipeline it was measured on, not only its population. Partial application is worse than none.",
       "pipeline": "src/step8_a_run.py, one run, stages 1 -> 6 in order",
       "stage_files_sha256_12": {
-        "step8_a_lib.py": "627e27ad1613",
-        "step8_a_1_scan.py": "a01904dba997",
+        "step8_a_lib.py": "11d33fbf7b89",
+        "step8_a_1_scan.py": "baba4ebc7c95",
         "step8_a_2_positions.py": "9f08ac985c8c",
-        "step8_a_3_table.py": "dc4bd39519ff",
+        "step8_a_3_table.py": "c7ecfd8cf3f2",
         "step8_a_4_arms.py": "3d533b88a113",
         "step8_a_4b_slugs.py": "4495f8069adb",
-        "step8_a_5_diagnostics.py": "2e5659a8c793",
-        "step8_a_6_emit.py": "4242c0ddc407",
+        "step8_a_5_diagnostics.py": "5864b3dd030b",
+        "step8_a_6_emit.py": "925903d50dee",
         "step8_a_run.py": "1e858e7bfa89"
       },
-      "git_head_short": "b860956",
+      "git_head_short": "267cfb5",
       "git_worktree_dirty_at_launch": true,
       "parameters": {
         "W_days": 108,
@@ -1170,7 +1170,7 @@
           150,
           213
         ],
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
       "inputs": {
         "processed/step5/full_scan.npz": "size 1050960842 bytes, mtime 1786498855 (not hashed: 1.05 GB)",
@@ -1181,12 +1181,12 @@
       },
       "spec_read": "task-sheet.md Step 8 as it stands, plus decisions/0066-0085",
       "relation_to_the_2026_08_13_build": "this build reproduces the figures decisions/0078 and 0079 restate on the position-5 build of 2026-08-13 (58,345 pairs; 324 of 5,694; 178 of 2,549; 703/99). Where a figure agrees, that is measured here and stated, not carried.",
-      "build": "a/2026-08-16-0085"
+      "build": "a/2026-08-16-0088"
     },
-    "provenance_note": "EVERY REQUIRED COUNT IN THIS FILE WAS MEASURED ON BUILD a/2026-08-16-0085. Human Lead ruling, decisions/0079 (B6), extending 0078: every count, every invariant result and every waterfall figure names the pipeline it was measured on, not only its population. Partial application is worse than none -- two labelled figures imply the rest did not need it -- so the tag is injected on every block below rather than written on the ones that seemed to need it. Figures RESTATED from another build carry that other build instead; they are marked where they appear.",
+    "provenance_note": "EVERY REQUIRED COUNT IN THIS FILE WAS MEASURED ON BUILD a/2026-08-16-0088. Human Lead ruling, decisions/0079 (B6), extending 0078: every count, every invariant result and every waterfall figure names the pipeline it was measured on, not only its population. Partial application is worse than none -- two labelled figures imply the rest did not need it -- so the tag is injected on every block below rather than written on the ones that seemed to need it. Figures RESTATED from another build carry that other build instead; they are marked where they appear.",
     "drop_counts": {
       "rule": "set membership (Step 1 SS3.2): a record is dropped when its number is not in that season's listed set E. Never the numeric range 1..F.",
-      "status": "A COVERAGE COUNT, NOT AN INVARIANT (Human Lead ruling, decisions/0074 ruling 3). Step 8's own bullet already calls it 'an implementation check, not a data check'. Records examined and records dropped are REPORTED; nothing is asserted. Asserting it would add another pass to a report where five of eight checks cannot fail.",
+      "status": "A COVERAGE COUNT, NOT AN INVARIANT (Human Lead ruling, decisions/0074 ruling 3). Step 8's own bullet already calls it 'an implementation check, not a data check'. Records examined and records dropped are REPORTED; nothing is asserted. Asserting it would add another pass to a report where SIX OF NINE checks cannot fail on any data (decisions/0088 SS1(c) promoted a ninth, which is a sixth code check).",
       "coverage_records_examined": 6065704,
       "coverage_records_dropped": 0,
       "records_examined_denominator_CLOSED_by_0083": {
@@ -1213,7 +1213,7 @@
           }
         },
         "note": "CLOSED by decisions/0083 SS1, and it was never a divergence. The readings are one family indexed by WHERE D11 IS APPLIED: D11 discards 167 in-frame S1/S2 records, 94 on the S2 side and 73 on the S1 side, and that split is the whole of the difference. 6,065,704 is the no-D11 reading, 6,065,610 is D11 on the S2 side only, 6,065,537 is D11 on both. EVERY READING DROPS ZERO RECORDS, so the numerator is 0 three times over and nothing downstream reads the denominator. The other candidate axes are all zero and were measured, not assumed: undated records, exact duplicate (user, play id) records, and records with a non-positive number. This publishes as a COVERAGE FIGURE with its pipeline named, not as an open question.",
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
       "per_show": {
         "shows_examined": 1138,
@@ -1221,7 +1221,7 @@
         "dropped_episode_records_total": 0,
         "distinct_dropped_season_number_total": 0,
         "file": "processed/step8/a/drops_per_show.csv",
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
       "per_outcome": {
         "definition": "pairs with at least one dropped S2 record and |A| = 0 after the drop rule",
@@ -1232,9 +1232,9 @@
         "share_of_never_started_post_liveness": 0.0,
         "direction_on_the_headline": "would INFLATE never started (Step 1 SS3.4); the measured count is 0, and it is 0 under all three readings of the records-examined denominator (decisions/0083 SS1)",
         "denominator_note": "position 5 is what entered the liveness filter (0070 ruling 6); the difference between the two denominators is exactly the 604 never-started liveness exclusions",
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
-      "build": "a/2026-08-16-0085"
+      "build": "a/2026-08-16-0088"
     },
     "D2_negative_lag": {
       "APPLY_position_5": {
@@ -1244,7 +1244,7 @@
         "S2_finale_term_binds": 44177,
         "S1_completion_term_binds": 5219,
         "both_terms_bind": 7,
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
       "DERIV_position_5": {
         "population": 147370,
@@ -1253,7 +1253,7 @@
         "S2_finale_term_binds": 43249,
         "S1_completion_term_binds": 4244,
         "both_terms_bind": 7,
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
       "APPLY_position_7": {
         "population": 195951,
@@ -1262,7 +1262,7 @@
         "S2_finale_term_binds": 44135,
         "S1_completion_term_binds": 5214,
         "both_terms_bind": 7,
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
       "DERIV_position_7": {
         "population": 147271,
@@ -1271,16 +1271,16 @@
         "S2_finale_term_binds": 43207,
         "S1_completion_term_binds": 4239,
         "both_terms_bind": 7,
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
       "binding_term_split_of_the_whole_population_APPLY_position_5": {
         "S2_finale_binds": 87441,
         "S1_completion_binds": 109045,
         "both_bind": 168,
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
       "reading": "S2-finale-term negative lags are the normal case for anyone who watched a weekly season while it aired and are information about the frame's cadence mix. S1-term negative lags are the test of the first-pass completion choice and should be small. A tie is its own category, not a tiebreak (0070 ruling 5).",
-      "build": "a/2026-08-16-0085"
+      "build": "a/2026-08-16-0088"
     },
     "D4_S3_without_S2": {
       "definition": "a pair with S3-or-later episodes logged and NO S2 episodes at all is scored Never started (Step 1 D4). Known misclassification, known direction: it INFLATES never started.",
@@ -1288,24 +1288,24 @@
         "never_started": 32769,
         "D4_signature": 426,
         "share_of_never_started": 0.013,
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
       "DERIV_position_7": {
         "never_started": 9145,
         "D4_signature": 0,
         "share_of_never_started": 0.0,
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
       "APPLY_position_5": {
         "never_started": 33373,
         "D4_signature": 428,
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
       "wider_variant_reported_so_nothing_is_hidden": {
         "never_started_with_S3_evidence_but_some_S2_evidence_after_tau1_APPLY_position_7": 5004,
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
-      "build": "a/2026-08-16-0085"
+      "build": "a/2026-08-16-0088"
     },
     "D8_never_started_post_window": {
       "horizon": "[tau1, tau1 + H*24h) = [tau1, tau2), H = 91 (D10). NOT to the pull date.",
@@ -1316,7 +1316,7 @@
         "i_share": 0.083402,
         "ii_count_satisfying_the_continued_condition_over_the_horizon": 1820,
         "ii_share": 0.05554,
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
       "DERIV_position_7": {
         "never_started": 9145,
@@ -1324,7 +1324,7 @@
         "i_share": 0.274248,
         "ii_count_satisfying_the_continued_condition_over_the_horizon": 1689,
         "ii_share": 0.184691,
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
       "APPLY_position_5": {
         "never_started": 33373,
@@ -1332,9 +1332,9 @@
         "i_share": 0.081893,
         "ii_count_satisfying_the_continued_condition_over_the_horizon": 1820,
         "ii_share": 0.054535,
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
-      "build": "a/2026-08-16-0085"
+      "build": "a/2026-08-16-0088"
     },
     "D3_prime": {
       "per_arm": {
@@ -1630,10 +1630,10 @@
         "108": 0.988289,
         "150": 0.983937,
         "213": 0.97729,
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
       "non_monotone_step_reported_not_resolved": "the cleared share is not monotone in W: it rises between W = 91 and W = 107 before resuming its fall. Both the clearance bound and the Started-and-left denominator move with W and they do not move together. Listed open at decisions/0076 SS5; reported here, not resolved.",
-      "build": "a/2026-08-16-0085"
+      "build": "a/2026-08-16-0088"
     },
     "the_3440": {
       "value": 3440,
@@ -1643,15 +1643,28 @@
       "exposure_weighting": "exposure-weighted by show recency: a 2016 title offers ten years in which a completion can be observed and a 2025 title about eighteen months, so the count mixes exposure with behaviour",
       "why_it_is_a_floor": "the estimation sample excludes the pairs the Step 5 waterfall drops and is not right-censored (Step 14 item 9)",
       "restated_not_recomputed": true,
-      "build": "decisions/0034 SS3, the Step 5 revision-6 UNCENSORED estimation sample of 128,099 pairs -- NOT build a/2026-08-16-0085, and never to be reported against APPLY or DERIV"
+      "build": "decisions/0034 SS3, the Step 5 revision-6 UNCENSORED estimation sample of 128,099 pairs -- NOT build a/2026-08-16-0088, and never to be reported against APPLY or DERIV"
     },
     "D9_split_artifacts": {
       "signature": "two show IDs in one user's sweep with complementary season coverage (one carrying S1 and not S2, the other S2 and not S1) whose normalised slugs agree. Detection is imperfect and every count here is a LOWER BOUND (Step 1 SS10.0b).",
       "key_ruling": "decisions/0074 ruling 5 adopts the STRICT key; decisions/0076 defines both keys in the spec. STRICT = lowercase, drop every non-alphanumeric character, strip nothing else. LOOSE = remove a trailing four-digit year first, then strict. The loose count publishes alongside because it BOUNDS HOW WRONG STRICT COULD BE, and the error runs OPPOSITE to D9's own lower-bound caveat.",
       "coverage": {
-        "show_ids_with_a_slug": 46428,
-        "user_show_coverage_rows_examined": 747478,
-        "build": "a/2026-08-16-0085"
+        "ruling": "decisions/0088 SS2(b): 747,478 and 726,103 are different objects and both correct; each arm states which it publishes and what it counts.",
+        "unit_note": "THIS ARM PUBLISHES ALL THREE UNITS BELOW so no reader has to infer which one a bare number is.",
+        "A_undeduplicated_user_show_SEASON_COVERAGE_ROWS": 1217122,
+        "A_definition": "distinct (user, show, season-class) triples, season-class in {S1, S2, S3+}, over dated pre-tau_pull episode records. A user-show carrying two seasons contributes TWO rows here and ONE pair below.",
+        "B_distinct_user_show_PAIRS_in_the_coverage_pivot": 747478,
+        "B_definition": "distinct (user, show) pairs with ANY dated pre-tau_pull episode record in season >= 1, INCLUDING pairs whose only evidence is S3 or later. This is the figure this arm published as 747,478.",
+        "C_D9_CANDIDATE_user_show_pairs_carrying_S1_or_S2_evidence": 726102,
+        "C_definition": "B less the pairs whose only evidence is S3 or later. These are the pairs D9's complementary-coverage search can actually match on.",
+        "C_split": {
+          "S1_evidence_and_no_S2": 435642,
+          "S2_evidence_and_no_S1": 8834,
+          "both_S1_and_S2": 281626
+        },
+        "bridge_B_minus_C_pairs_with_only_S3_or_later_evidence": 21376,
+        "show_ids_with_a_slug_in_the_map": 46428,
+        "build": "a/2026-08-16-0088"
       },
       "FOUR_NUMBERS_both_halves_under_both_keys": {
         "ruling": "Human Lead ruling, decisions/0078 SS3: BOTH HALVES UNDER BOTH KEYS -- four numbers, not three. It follows from 0074 ruling 5's own reason rather than from a preference: the loose count publishes BECAUSE IT BOUNDS HOW WRONG STRICT COULD BE, and that reason applies to half (b) exactly as to half (a). Publishing the bound for one half and withholding it for the other leaves the reader unable to bound the total, and the error runs OPPOSITE to D9's own lower-bound caveat -- the direction they were not warned about.",
@@ -1661,7 +1674,7 @@
         "half_b_loose": 27,
         "half_a_population": "APPLY, position 7 (post-liveness), scored Never started",
         "half_b_population": "the position-3 drop set: pairs failing the S1 completion rule",
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
       "position_3_drop_set_input": {
         "read_from": "processed/step8/a/position3_drop_set.csv.gz",
@@ -1682,7 +1695,7 @@
         ],
         "short_of_the_0_90_threshold": 57518,
         "reached_the_threshold_but_never_watched_F1": 827,
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
       "ADOPTED_strict_key": {
         "complementary_signature_id_pairs": 0,
@@ -1703,7 +1716,7 @@
           "pairs_failing_S1_completion": 58345,
           "carrying_the_signature": 0
         },
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
       "REPORTED_ALONGSIDE_loose_key": {
         "complementary_signature_id_pairs": 75,
@@ -1711,22 +1724,116 @@
         "half_b": 27,
         "why_it_is_not_adopted": "it strips the year and merges genuinely different shows -- remakes and national versions, not split metadata, which is the artefact D9 exists to count",
         "clustering_universe_NAMED": {
-          "ruling": "Red Team blocker B1, decisions/0085 SS2: NAME THE UNIVERSE THE CLUSTERING RUNS OVER, AT THE POINT OF USE. The two arms published disjoint cluster lists on identical counts, which is a difference in which set of shows is clustered and not a counting difference. REPORTED, NOT RECONCILED -- no universe is ruled.",
-          "THIS_ARM_CLUSTERS": "the DISTINCT SHOW IDs appearing anywhere in the pulled sweep that carry a slug, deduplicated to one row per show ID",
-          "distinct_show_ids_in_the_sweep": 46366,
-          "distinct_show_ids_carrying_a_slug_CLUSTERED": 46366,
-          "distinct_show_ids_without_a_slug_excluded": 0,
-          "user_show_coverage_rows_behind_them": 747478,
-          "candidate_universes_NOT_used_here_sized_for_comparison": {
-            "the_1138_frame_shows": 1138,
-            "the_D9_candidate_pairs_under_the_loose_key": 75,
-            "user_show_coverage_rows_undeduplicated": 747478,
-            "why_they_are_listed": "a cluster list computed on any of these can differ from the one below while every D9 COUNT still reconciles, which is exactly what happened between the arms"
+          "ruling": "Human Lead ruling, decisions/0088 SS3: THE D9 CLUSTERING UNIVERSE IS U1 -- ALL SLUGGED SWEEP SHOW IDs -- RANKED BY DISTINCT STRICT KEYS MERGED. Closes Red Team blocker B1 (0085 SS2), where the two arms published DISJOINT cluster lists on IDENTICAL counts, and 0087 SS2, where the two arms' 'U1' proved to be two sets 62 apart under one label. BOTH ARMS NOW CLUSTER THE SAME OBJECT.",
+          "THIS_ARM_CLUSTERS": "U1 -- every distinct show ID appearing anywhere in the pulled sweep that carries a slug, deduplicated to ONE ROW PER SHOW ID",
+          "U1_distinct_slugged_show_ids_anywhere_in_the_sweep_CLUSTERED": 46428,
+          "U1_source": "processed/step8/a/show_slugs.csv, collected in stage 4b over all 2,549 parsed history files -- which is what 'anywhere in the pulled sweep' means. NOT the D9 coverage pivot.",
+          "show_ids_in_the_map_without_a_slug_excluded": 0,
+          "show_ids_carrying_MORE_THAN_ONE_slug": 2,
+          "one_row_per_show_id_tie_break": "lexicographically first slug per show ID. Stated rather than implicit; the sensitivity is measured, not assumed.",
+          "clusters_with_more_than_one_strict_key_under_the_LAST_slug_instead": 1829,
+          "THE_UNIVERSE_THIS_ARM_USED_ON_ITS_PREVIOUS_BUILD_AND_NO_LONGER_USES": {
+            "what_it_was": "the distinct show IDs appearing in a D9 COVERAGE ROW -- i.e. reaching the pivot through a dated, pre-tau_pull, season >= 1 episode record",
+            "size": 46366,
+            "relation_to_U1": "a SUBSET of U1. A show reaching the sweep only through a record D11 discards, an undated record, a specials-only record or a non-episode record is in U1 and not in the pivot.",
+            "U1_minus_this": 62,
+            "why_it_is_published": "decisions/0087 SS2 caught this count published under the label `distinct_show_ids_in_the_sweep`, which is NOT what it counts, and 0088 SS2(a) requires the label corrected to what it counts. Both are real objects; one label over two was the defect.",
+            "build_it_was_published_on": "a/2026-08-16-0085"
           },
-          "what_LARGEST_ranks_by_here": "distinct STRICT keys merged into one loose key -- i.e. how many genuinely different shows the loose key collapses. The same clusters ranked by distinct SHOW IDs merged are emitted alongside, because 'largest cluster' does not fix a ranking basis either and the two orders differ.",
-          "coverage_shows_examined": 46366,
-          "clusters_with_more_than_one_strict_key": 1826,
-          "build": "a/2026-08-16-0085"
+          "candidate_universes_NOT_used_here_sized_for_comparison": {
+            "U2_the_1138_frame_shows": 1138,
+            "U3_the_D9_candidate_pairs_under_the_loose_key": 75,
+            "why_they_are_listed": "0088 SS3 rules U1 and names U2 and U3 as what it is not. task-sheet.md's former illustration -- The Twilight Zone, The Traitors, Manhunt -- was U3 and is SUPERSEDED as the example: those three names are not wrong, they are another universe's answer."
+          },
+          "what_LARGEST_ranks_by_here": "DISTINCT STRICT KEYS MERGED into one loose key -- how many separate metadata entries the loose key collapsed. Ruled by decisions/0088 ruling 3 because it was unstated and REORDERS THE LIST ON ITS OWN: ranked by distinct SHOW IDs instead, `blackout` displaces `maigret`. Both orders are emitted.",
+          "ranks_with_every_tied_key_stated": [
+            {
+              "value": 8,
+              "keys_at_this_rank": [
+                "secondchance"
+              ],
+              "n_keys_tied": 1,
+              "other_basis_for_each": {
+                "secondchance": 8
+              }
+            },
+            {
+              "value": 7,
+              "keys_at_this_rank": [
+                "theisland"
+              ],
+              "n_keys_tied": 1,
+              "other_basis_for_each": {
+                "theisland": 7
+              }
+            },
+            {
+              "value": 6,
+              "keys_at_this_rank": [
+                "blackout",
+                "hunted",
+                "maigret",
+                "missing",
+                "thefamily",
+                "yourhonor"
+              ],
+              "n_keys_tied": 6,
+              "other_basis_for_each": {
+                "blackout": 7,
+                "hunted": 6,
+                "maigret": 6,
+                "missing": 6,
+                "thefamily": 6,
+                "yourhonor": 6
+              }
+            }
+          ],
+          "ranks_by_distinct_show_ids_with_every_tied_key_stated": [
+            {
+              "value": 8,
+              "keys_at_this_rank": [
+                "secondchance"
+              ],
+              "n_keys_tied": 1,
+              "other_basis_for_each": {
+                "secondchance": 8
+              }
+            },
+            {
+              "value": 7,
+              "keys_at_this_rank": [
+                "blackout",
+                "theisland"
+              ],
+              "n_keys_tied": 2,
+              "other_basis_for_each": {
+                "blackout": 6,
+                "theisland": 7
+              }
+            },
+            {
+              "value": 6,
+              "keys_at_this_rank": [
+                "hunted",
+                "maigret",
+                "missing",
+                "thefamily",
+                "yourhonor"
+              ],
+              "n_keys_tied": 5,
+              "other_basis_for_each": {
+                "hunted": 6,
+                "maigret": 6,
+                "missing": 6,
+                "thefamily": 6,
+                "yourhonor": 6
+              }
+            }
+          ],
+          "TIE_AT_RANK_3_REPORTED": "the ruled basis TIES at rank 3 on this data, so a bare 'third-largest cluster' is not reproducible from the basis alone -- the tie order is decided by the sort's stability, not by the ruling. Every key at every published rank is listed above so the list can be compared without depending on it.",
+          "coverage_shows_examined": 46428,
+          "clusters_with_more_than_one_strict_key": 1829,
+          "build": "a/2026-08-16-0088"
         },
         "largest_clusters_it_merges": [
           {
@@ -1740,7 +1847,7 @@
             "distinct_show_ids_merged": 7
           },
           {
-            "loose_key": "maigret",
+            "loose_key": "yourhonor",
             "distinct_strict_keys_merged": 6,
             "distinct_show_ids_merged": 6
           },
@@ -1750,7 +1857,7 @@
             "distinct_show_ids_merged": 6
           },
           {
-            "loose_key": "missing",
+            "loose_key": "thefamily",
             "distinct_strict_keys_merged": 6,
             "distinct_show_ids_merged": 6
           }
@@ -1772,17 +1879,17 @@
             "distinct_strict_keys_merged": 6
           },
           {
-            "loose_key": "thefamily",
+            "loose_key": "maigret",
             "distinct_show_ids_merged": 6,
             "distinct_strict_keys_merged": 6
           },
           {
-            "loose_key": "maigret",
+            "loose_key": "missing",
             "distinct_show_ids_merged": 6,
             "distinct_strict_keys_merged": 6
           }
         ],
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
       "third_key_measured_only_so_the_record_is_complete": {
         "definition": "strip a trailing digit group of ARBITRARY length, then strict. NOT either ruled key: it reduces `the-100` to `the`.",
@@ -1790,15 +1897,15 @@
         "half_a_APPLY_position_7": 6,
         "half_b": 28,
         "note": "this instance used this key on its previous run and published 76 complementary pairs against the other arm's 75. decisions/0076 records that divergence as REPORTED, NOT RECONCILED.",
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
       "merges_counted_with_the_same_query_and_reported_separately": {
         "strict_key": 20,
         "loose_key": 5551,
         "note": "merges can only add evidence to a pair, never remove it (Step 1 SS10.0b)",
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
-      "build": "a/2026-08-16-0085"
+      "build": "a/2026-08-16-0088"
     },
     "pull_date_and_D11": {
       "pull_date_tau_pull_utc": "2026-08-11T00:00:00Z",
@@ -1817,9 +1924,312 @@
         "pairs_that_stop_being_completers_under_D11": 4,
         "completers_whose_completion_date_moves_under_D11": 0,
         "completers_whose_first_pass_walk_used_a_post_cutoff_record": 4,
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
-      "build": "a/2026-08-16-0085"
+      "build": "a/2026-08-16-0088"
+    },
+    "B3a_boundary_window_half_open_form": {
+      "ruling": "Human Lead, decisions/0088 SS1(a). Position-5 row set, BOTH POPULATIONS. Unit: DISTINCT S2 EPISODES BY CANONICAL TIMESTAMP -- the objects the bound is actually tested against, since A and A_H are sets of distinct episodes and the canonical timestamp is the minimum watched_at over the records behind one episode (Step 1 SS2.1/2.2).",
+      "half_open_form_verified": "no .date(), dt.date, normalize() or day-flooring appears in any step8_a_*.py; every bound is an int64 second comparison. `date(watched_at) <= T1` appears nowhere.",
+      "tau1_and_tau2_are_midnight_aligned_UTC": true,
+      "build": "a/2026-08-16-0088",
+      "APPLY_position_5": {
+        "tau1": {
+          "episodes_in_the_24h_BEFORE_the_bound_named_by_the_ruling": 749,
+          "rows_carrying_one": 321,
+          "episodes_EXACTLY_AT_the_bound": 1,
+          "rows_carrying_one_exactly_at_the_bound": 1,
+          "episodes_in_the_24h_AFTER_the_bound_where_the_two_forms_ACTUALLY_DIFFER": 703,
+          "rows_where_the_two_forms_would_differ": 311,
+          "VACUOUS": false
+        },
+        "tau2": {
+          "episodes_in_the_24h_BEFORE_the_bound_named_by_the_ruling": 291,
+          "rows_carrying_one": 158,
+          "episodes_EXACTLY_AT_the_bound": 0,
+          "rows_carrying_one_exactly_at_the_bound": 0,
+          "episodes_in_the_24h_AFTER_the_bound_where_the_two_forms_ACTUALLY_DIFFER": 303,
+          "rows_where_the_two_forms_would_differ": 136,
+          "VACUOUS": false
+        },
+        "coverage_rows_examined": 196654,
+        "coverage_distinct_S2_episodes_on_those_rows": 2135938,
+        "build": "a/2026-08-16-0088"
+      },
+      "DERIV_position_5": {
+        "tau1": {
+          "episodes_in_the_24h_BEFORE_the_bound_named_by_the_ruling": 676,
+          "rows_carrying_one": 295,
+          "episodes_EXACTLY_AT_the_bound": 1,
+          "rows_carrying_one_exactly_at_the_bound": 1,
+          "episodes_in_the_24h_AFTER_the_bound_where_the_two_forms_ACTUALLY_DIFFER": 595,
+          "rows_where_the_two_forms_would_differ": 275,
+          "VACUOUS": false
+        },
+        "tau2": {
+          "episodes_in_the_24h_BEFORE_the_bound_named_by_the_ruling": 254,
+          "rows_carrying_one": 142,
+          "episodes_EXACTLY_AT_the_bound": 0,
+          "rows_carrying_one_exactly_at_the_bound": 0,
+          "episodes_in_the_24h_AFTER_the_bound_where_the_two_forms_ACTUALLY_DIFFER": 261,
+          "rows_where_the_two_forms_would_differ": 117,
+          "VACUOUS": false
+        },
+        "coverage_rows_examined": 147370,
+        "coverage_distinct_S2_episodes_on_those_rows": 1766159,
+        "build": "a/2026-08-16-0088"
+      },
+      "reading": "The bound-crossing counts are what decides whether the half-open mandate is LOAD-BEARING on this data. Where the 'ACTUALLY DIFFER' cell is 0 the invariant is VACUOUS on this build -- stated, not passed silently -- and where it is non-zero the mandate changes the answer for that many episodes. The 'exactly at the bound' cells are the ruling's own second quantity and are a subset of the differing interval, since tau1 and tau2 are midnight-aligned."
+    },
+    "B3b_D11_per_site": {
+      "ruling": "Human Lead, decisions/0088 SS1(b): emit records excluded by D11 at EACH site separately and ASSERT AT EACH SITE, not once and about the rest. This replaces prose naming five sites with a count at none.",
+      "sites_total": 13,
+      "sites_where_D11_IS_applied": 12,
+      "sites_where_D11_is_NOT_applied_and_say_so": 1,
+      "sites": {
+        "action_count_s1_watch": {
+          "unit": "in-frame in-E S1/S2 episode records",
+          "records_examined_before_D11": 2717040,
+          "records_excluded_by_D11": 49,
+          "records_counted_after_D11": 2716991,
+          "D11_applied": true
+        },
+        "action_count_s1_checkin": {
+          "unit": "in-frame in-E S1/S2 episode records",
+          "records_examined_before_D11": 153246,
+          "records_excluded_by_D11": 1,
+          "records_counted_after_D11": 153245,
+          "D11_applied": true
+        },
+        "action_count_s1_scrobble": {
+          "unit": "in-frame in-E S1/S2 episode records",
+          "records_examined_before_D11": 383834,
+          "records_excluded_by_D11": 23,
+          "records_counted_after_D11": 383811,
+          "D11_applied": true
+        },
+        "action_count_s1_other": {
+          "unit": "in-frame in-E S1/S2 episode records",
+          "records_examined_before_D11": 0,
+          "records_excluded_by_D11": 0,
+          "records_counted_after_D11": 0,
+          "D11_applied": true
+        },
+        "action_count_s2_watch": {
+          "unit": "in-frame in-E S1/S2 episode records",
+          "records_examined_before_D11": 2364954,
+          "records_excluded_by_D11": 52,
+          "records_counted_after_D11": 2364902,
+          "D11_applied": true
+        },
+        "action_count_s2_checkin": {
+          "unit": "in-frame in-E S1/S2 episode records",
+          "records_examined_before_D11": 120993,
+          "records_excluded_by_D11": 4,
+          "records_counted_after_D11": 120989,
+          "D11_applied": true
+        },
+        "action_count_s2_scrobble": {
+          "unit": "in-frame in-E S1/S2 episode records",
+          "records_examined_before_D11": 325637,
+          "records_excluded_by_D11": 38,
+          "records_counted_after_D11": 325599,
+          "D11_applied": true
+        },
+        "action_count_s2_other": {
+          "unit": "in-frame in-E S1/S2 episode records",
+          "records_examined_before_D11": 0,
+          "records_excluded_by_D11": 0,
+          "records_counted_after_D11": 0,
+          "D11_applied": true
+        },
+        "A_the_set_tested_at_tau1": {
+          "unit": "distinct S2 episodes on position-5 rows",
+          "episodes_examined_before_D11": 2135938,
+          "episodes_at_or_after_tau_pull_that_D11_would_exclude": 17,
+          "of_those_that_would_have_ENTERED_A": 0,
+          "D11_applied": true,
+          "inert_and_why": "D10 forces tau1 <= tau2 <= tau_pull on every retained pair, so no episode at or after tau_pull can satisfy ts < tau1. INERT BY CONSTRUCTION, and the count is stated rather than the construction being asserted about."
+        },
+        "A_H_the_set_tested_at_tau2": {
+          "unit": "distinct S2 episodes on position-5 rows",
+          "episodes_examined_before_D11": 2135938,
+          "episodes_at_or_after_tau_pull_that_D11_would_exclude": 17,
+          "of_those_that_would_have_ENTERED_A_H": 0,
+          "D11_applied": true,
+          "inert_and_why": "same construction, at tau2."
+        },
+        "liveness_evidence": {
+          "unit": "records, ALL kinds and ALL shows -- the insertion clock is account-wide",
+          "records_examined_before_D11": 27656813,
+          "records_excluded_by_D11_watched_at_ge_tau_pull": 1734,
+          "records_excluded_as_undated": 379,
+          "records_used_after_D11": 27654700,
+          "accounts_whose_max_play_id_MOVES_under_D11": 469,
+          "accounts_whose_last_insertion_instant_MOVES_under_D11": 299,
+          "D11_applied": true,
+          "note": "Human Lead ruling 2, decisions/0070: the silence test's evidence is restricted to records dated before tau_pull. This is the site that ruling names, and it is the only site where D11 moves an input on this data."
+        },
+        "D9_coverage_rows": {
+          "unit": "dated season >= 1 episode records feeding the D9 coverage pivot",
+          "records_examined_before_D11": 24645658,
+          "records_excluded_by_D11": 1543,
+          "records_used_after_D11": 24644115,
+          "D11_applied": true,
+          "season_coverage_rows_before_D11": 1217214,
+          "distinct_user_show_pairs_before_D11": 747537,
+          "distinct_show_ids_reaching_the_pivot_before_D11": 46367
+        },
+        "S1_completion_walk": {
+          "unit": "in-frame S1 episode records",
+          "records_at_or_after_tau_pull_on_the_S1_side": 73,
+          "D11_applied": false,
+          "why_not": "decisions/0068 fixes waterfall line 1 at the PUBLISHED S1-completer population of 220,107 and lists 'whether D11 moves it' as an OPEN question. This site is declared NOT-APPLIED rather than left unstated, and the counterfactual is measured in stage 2: 4 pairs stop being completers and 0 completion dates move.",
+          "counterfactual_measured_in_stage_2": {
+            "note": "decisions/0068 fixes line 1 at the PUBLISHED 220,107 and lists this as an OPEN question; it is measured, not applied",
+            "completers_with_D11_applied_to_the_S1_walk": 220103,
+            "pairs_that_stop_being_completers_under_D11": 4,
+            "completers_whose_completion_date_moves_under_D11": 0,
+            "completers_whose_first_pass_walk_used_a_post_cutoff_record": 4,
+            "build": "a/2026-08-16-0088"
+          }
+        }
+      },
+      "assertions": [
+        {
+          "site": "action_count_s1_watch",
+          "D11_applied": true,
+          "assertion": "records_examined = records_excluded_by_D11 + records_counted",
+          "coverage_unit_count": 2717040,
+          "excluded_by_D11": 49,
+          "holds": true,
+          "LOOKED_AT_ZERO_UNITS": false
+        },
+        {
+          "site": "action_count_s1_checkin",
+          "D11_applied": true,
+          "assertion": "records_examined = records_excluded_by_D11 + records_counted",
+          "coverage_unit_count": 153246,
+          "excluded_by_D11": 1,
+          "holds": true,
+          "LOOKED_AT_ZERO_UNITS": false
+        },
+        {
+          "site": "action_count_s1_scrobble",
+          "D11_applied": true,
+          "assertion": "records_examined = records_excluded_by_D11 + records_counted",
+          "coverage_unit_count": 383834,
+          "excluded_by_D11": 23,
+          "holds": true,
+          "LOOKED_AT_ZERO_UNITS": false
+        },
+        {
+          "site": "action_count_s1_other",
+          "D11_applied": true,
+          "assertion": "records_examined = records_excluded_by_D11 + records_counted",
+          "coverage_unit_count": 0,
+          "excluded_by_D11": 0,
+          "holds": true,
+          "LOOKED_AT_ZERO_UNITS": true
+        },
+        {
+          "site": "action_count_s2_watch",
+          "D11_applied": true,
+          "assertion": "records_examined = records_excluded_by_D11 + records_counted",
+          "coverage_unit_count": 2364954,
+          "excluded_by_D11": 52,
+          "holds": true,
+          "LOOKED_AT_ZERO_UNITS": false
+        },
+        {
+          "site": "action_count_s2_checkin",
+          "D11_applied": true,
+          "assertion": "records_examined = records_excluded_by_D11 + records_counted",
+          "coverage_unit_count": 120993,
+          "excluded_by_D11": 4,
+          "holds": true,
+          "LOOKED_AT_ZERO_UNITS": false
+        },
+        {
+          "site": "action_count_s2_scrobble",
+          "D11_applied": true,
+          "assertion": "records_examined = records_excluded_by_D11 + records_counted",
+          "coverage_unit_count": 325637,
+          "excluded_by_D11": 38,
+          "holds": true,
+          "LOOKED_AT_ZERO_UNITS": false
+        },
+        {
+          "site": "action_count_s2_other",
+          "D11_applied": true,
+          "assertion": "records_examined = records_excluded_by_D11 + records_counted",
+          "coverage_unit_count": 0,
+          "excluded_by_D11": 0,
+          "holds": true,
+          "LOOKED_AT_ZERO_UNITS": true
+        },
+        {
+          "site": "A_the_set_tested_at_tau1",
+          "D11_applied": true,
+          "assertion": "no episode at or after tau_pull enters the set",
+          "coverage_unit_count": 2135938,
+          "excluded_by_D11": 0,
+          "holds": true,
+          "VACUOUS_ON_THIS_BUILD": false,
+          "LOOKED_AT_ZERO_UNITS": false
+        },
+        {
+          "site": "A_H_the_set_tested_at_tau2",
+          "D11_applied": true,
+          "assertion": "no episode at or after tau_pull enters the set",
+          "coverage_unit_count": 2135938,
+          "excluded_by_D11": 0,
+          "holds": true,
+          "VACUOUS_ON_THIS_BUILD": false,
+          "LOOKED_AT_ZERO_UNITS": false
+        },
+        {
+          "site": "liveness_evidence",
+          "D11_applied": true,
+          "assertion": "the per-account insertion clock is built only from records dated before tau_pull (decisions/0070 ruling 2)",
+          "coverage_unit_count": 27656813,
+          "excluded_by_D11": 1734,
+          "holds": true,
+          "VACUOUS_ON_THIS_BUILD": false,
+          "LOOKED_AT_ZERO_UNITS": false
+        },
+        {
+          "site": "D9_coverage_rows",
+          "D11_applied": true,
+          "assertion": "records_examined = records_excluded_by_D11 + records_used",
+          "coverage_unit_count": 24645658,
+          "excluded_by_D11": 1543,
+          "holds": true,
+          "VACUOUS_ON_THIS_BUILD": false,
+          "LOOKED_AT_ZERO_UNITS": false
+        },
+        {
+          "site": "S1_completion_walk",
+          "D11_applied": false,
+          "assertion": "THIS SITE IS DECLARED NOT-APPLIED, NOT SILENT. decisions/0068 fixes waterfall line 1 at the published 220,107 and lists whether D11 moves it as an OPEN question; the counterfactual is measured and published rather than the site being omitted from the table.",
+          "coverage_unit_count": 73,
+          "excluded_by_D11": 0,
+          "pairs_that_would_stop_being_completers": 4,
+          "completion_dates_that_would_move": 0,
+          "holds": true,
+          "LOOKED_AT_ZERO_UNITS": false
+        }
+      ],
+      "all_site_assertions_hold": true,
+      "sites_vacuous_on_this_build": [],
+      "sites_that_LOOKED_AT_ZERO_UNITS_and_therefore_hold_trivially": [
+        "action_count_s1_other",
+        "action_count_s2_other"
+      ],
+      "sites_asserted_on_a_non_empty_unit_set": 11,
+      "total_units_excluded_by_D11_across_the_sites_where_it_is_applied": 3444,
+      "units_are_NOT_commensurable_across_sites": "records, distinct episodes and coverage rows are different units and the row above is a bookkeeping total, not a quantity with a meaning. Read the sites individually.",
+      "build": "a/2026-08-16-0088"
     },
     "D12_cadence_buckets": {
       "buckets": {
@@ -1857,7 +2267,7 @@
       "shows_within_1_day_of_a_bucket_boundary": 7,
       "coverage_shows": 1138,
       "note": "C0 absorbs missing or impossible data; it is reported as its own line even at zero (Step 1 SS10.0)",
-      "build": "a/2026-08-16-0085"
+      "build": "a/2026-08-16-0088"
     },
     "metadata_disagreement": {
       "coverage_shows": 1138,
@@ -1871,10 +2281,10 @@
       "shows_where_aired_episodes_lt_listed_E_for_S2": 0,
       "continued_reachability_on_those_shows": {
         "continued_pairs_position_7_APPLY": 0,
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
       "direction": "listed exceeding aired raises L2, which tightens ceil(0.90*L2) and pushes pairs that would have been Continued into Started-and-left -- it OVERSTATES abandonment; the same effect on S1 raises L1 and shrinks the population, non-randomly, on shows with messy metadata (Step 1 SS3.4)",
-      "build": "a/2026-08-16-0085"
+      "build": "a/2026-08-16-0088"
     },
     "outcome_counts": {
       "APPLY_position_5_THE_TABLE_ROW_SET": {
@@ -1883,7 +2293,7 @@
         "continued": 144140,
         "not_live": 703,
         "total": 196654,
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
       "DERIV_position_5": {
         "never_started": 9145,
@@ -1891,21 +2301,21 @@
         "continued": 121382,
         "not_live": 99,
         "total": 147370,
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
       "APPLY_position_7": {
         "never_started": 32769,
         "started_and_left": 19042,
         "continued": 144140,
         "total": 195951,
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
       "DERIV_position_7": {
         "never_started": 9145,
         "started_and_left": 16744,
         "continued": 121382,
         "total": 147271,
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
       "horizons": "Never started is a 108-day statement read at tau1; Continued is a 199-day statement read at tau2 on A_H. The two must never be described as measured alike (0034).",
       "abandonment_point_p": {
@@ -1927,7 +2337,7 @@
               "rows_with_p_defined_examined": 19141,
               "rows_with_p_equal_1_examined": 1246
             },
-            "build": "a/2026-08-16-0085",
+            "build": "a/2026-08-16-0088",
             "in_BOTH_classes": 1246,
             "saturated_not_final": 0,
             "final_not_saturated": 0,
@@ -1945,7 +2355,7 @@
               "rows_with_p_defined_examined": 19042,
               "rows_with_p_equal_1_examined": 1230
             },
-            "build": "a/2026-08-16-0085",
+            "build": "a/2026-08-16-0088",
             "in_BOTH_classes": 1230,
             "saturated_not_final": 0,
             "final_not_saturated": 0,
@@ -1963,7 +2373,7 @@
               "rows_with_p_defined_examined": 16843,
               "rows_with_p_equal_1_examined": 1072
             },
-            "build": "a/2026-08-16-0085",
+            "build": "a/2026-08-16-0088",
             "in_BOTH_classes": 1072,
             "saturated_not_final": 0,
             "final_not_saturated": 0,
@@ -1981,7 +2391,7 @@
               "rows_with_p_defined_examined": 16744,
               "rows_with_p_equal_1_examined": 1056
             },
-            "build": "a/2026-08-16-0085",
+            "build": "a/2026-08-16-0088",
             "in_BOTH_classes": 1056,
             "saturated_not_final": 0,
             "final_not_saturated": 0,
@@ -2008,9 +2418,9 @@
         "p_max": 1.0,
         "population_of_the_range": "APPLY, position 5 -- the table's row set",
         "rows_with_p_non_null_outside_started_and_left": 0,
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
-      "build": "a/2026-08-16-0085"
+      "build": "a/2026-08-16-0088"
     },
     "action_counts": {
       "ruling": "action is record-level and the row is a pair, so it is emitted as per-pair COUNTS BY ACTION TYPE, never as a row-level column (0070 ruling 4). It is not an outcome variable: Step 1 SS2.3 ruled check-ins count as watching alongside scrobble and watch, because action is a property of the LOGGING CLIENT.",
@@ -2034,16 +2444,16 @@
         "checkin_only": 4557,
         "scrobble_only": 12484,
         "mixed": 25823,
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
       "note_for_Step_13": "the action arm excludes checkin-only and manual-watch-only evidence; those two categories are the counts above, and the per-pair column set in the analysis table carries the same counts row by row",
       "unknown_action_values_encountered": 0,
-      "build": "a/2026-08-16-0085"
+      "build": "a/2026-08-16-0088"
     }
   },
   "channel_counts": {
     "ruling": "PUBLISH THE OVERLAP IN BOTH UNITS, EACH WITH ITS CONSUMER NAMED -- Human Lead ruling, decisions/0079 (B7); all three readings publish, none is dropped. 0070 ruling 3 gave '324 users in both' with NO POPULATION, which is the shape that has recurred through this whole chain -- inside the ruling written to fix a different unlabelled figure. Picking one unit leaves another consumer holding a wrong-unit figure. Counts only; no username leaves raw/.",
-    "build": "a/2026-08-16-0085",
+    "build": "a/2026-08-16-0088",
     "on_the_step3_discovery_pool": {
       "unit": "discovery-pool USERNAMES",
       "consumer": "Step 3's seeding-bias statement and Step 14 ledger item 1 -- the pool's composition",
@@ -2051,7 +2461,7 @@
       "channel_a": 3996,
       "channel_b": 2022,
       "in_both": 324,
-      "restated_by_0078_with_its_build": "324 of 5,694, position-5 build of 2026-08-13, both arms; measured again here on build a/2026-08-16-0085",
+      "restated_by_0078_with_its_build": "324 of 5,694, position-5 build of 2026-08-13, both arms; measured again here on build a/2026-08-16-0088",
       "expected_by_0077": {
         "population": 5694,
         "in_both": 324
@@ -2064,7 +2474,7 @@
       "channel_a": 1614,
       "channel_b": 1113,
       "in_both": 178,
-      "restated_by_0078_with_its_build": "178 of 2,549, position-5 build of 2026-08-13, both arms; measured again here on build a/2026-08-16-0085",
+      "restated_by_0078_with_its_build": "178 of 2,549, position-5 build of 2026-08-13, both arms; measured again here on build a/2026-08-16-0088",
       "expected_by_0077": {
         "population": 2549,
         "in_both": 178
@@ -2303,6 +2713,13 @@
       "title",
       "user_idx"
     ],
+    "column_set_verified_against_the_spec_ON_DISK": {
+      "source": "task-sheet.md, the 0080/0081/0082 enumeration block, READ AT RUN TIME -- not the hand transcription in this file",
+      "names_parsed": 89,
+      "distinct_names_parsed": 89,
+      "matches_the_transcription_in_this_file": true,
+      "closes": "Red Team fourth pass F6 (decisions/0087 SS5), carried as a limitation: the code asserted against a transcription and never opened the spec"
+    },
     "column_set_ruling": "decisions/0080: the set is ENUMERATED NAMES, not a count -- 87 there, 88 at 0081 which RESTORES silent_at_tau1, and 89 at 0082 which ADDS p_at_bound. 0077 SS3's count is REPLACED. Asserted here by SET EQUALITY against the spec's list, since a count is satisfiable by the wrong columns -- which is how an earlier dual run produced 88 against 87 for the same contents. Column ORDER is not specified anywhere; this table is in construction order and the sorted list is emitted alongside so a name diff cannot be confused with an order diff.",
     "columns_still_dropped_and_why_both_are_free": {
       "max_episode_in_A": "read by nothing downstream (0080 SS2)",
@@ -2321,7 +2738,7 @@
       "value_DERIV_position_5": 652,
       "value_DERIV_position_7_post_liveness": 652,
       "expected_by_0080": 652,
-      "build": "a/2026-08-16-0085",
+      "build": "a/2026-08-16-0088",
       "why_it_is_here": "0080 dropped the column and stated the loss rather than burying it; 0081 RESTORED the column for exactly that reason. The aggregate is kept alongside so the figure is readable without the table, which is what 0081 SS3 records this instance as having done under 0080."
     },
     "line_6_marginal_decomposition_BOTH_652_AND_1355": {
@@ -2335,7 +2752,7 @@
         "identity_holds": true,
         "expected_line_6": 703,
         "coverage_rows_examined": 196654,
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
       "DERIV_position_5_entering_line_6": {
         "population": "DERIV, position-5 input to line 6",
@@ -2346,7 +2763,7 @@
         "identity_holds": true,
         "expected_line_6": 99,
         "coverage_rows_examined": 147370,
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
       "what_the_spared_pairs_are": "Continued pairs that are silent at tau1. They are spared by the rule's second conjunct, which is what makes line 6 OUTCOME-CONDITIONAL, and they are the reason `silent_at_tau1` is an emitted column (0081): `live` is true for every Continued pair regardless of silence, so the count is not recoverable from `live` and `outcome`."
     },
@@ -2370,7 +2787,7 @@
           "rows_with_p_defined_examined": 19141,
           "rows_with_p_equal_1_examined": 1246
         },
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
       "APPLY_position_7_post_liveness": {
         "population": "APPLY, post-liveness",
@@ -2388,7 +2805,7 @@
           "rows_with_p_defined_examined": 19042,
           "rows_with_p_equal_1_examined": 1230
         },
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
       "DERIV_position_5": {
         "population": "DERIV, position-5 row set",
@@ -2406,7 +2823,7 @@
           "rows_with_p_defined_examined": 16843,
           "rows_with_p_equal_1_examined": 1072
         },
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
       "DERIV_position_7_post_liveness": {
         "population": "DERIV, post-liveness",
@@ -2424,7 +2841,7 @@
           "rows_with_p_defined_examined": 16744,
           "rows_with_p_equal_1_examined": 1056
         },
-        "build": "a/2026-08-16-0085"
+        "build": "a/2026-08-16-0088"
       },
       "column_encoding": "p_at_bound = TRUE iff p reached its bound -- equivalently, iff the rank numerator equals L2 -- on rows where p is defined; null elsewhere. FALSE means p is defined and below its bound.",
       "THE_CHAIN_HAS_THREE_LINKS_AND_ONLY_TWO_ARE_CONSTRUCTION": {
@@ -2459,7 +2876,7 @@
         "s2_aired_lt_listed_shows": 0,
         "meaning": "0 means no S2 numbering gap anywhere in the frame, so F2 = L2 on every show and the rank numerator is m_H itself"
       },
-      "build": "a/2026-08-16-0085"
+      "build": "a/2026-08-16-0088"
     }
   },
   "position_3_drop_set_DELIVERABLE": {
@@ -2478,11 +2895,11 @@
       "reason_short_of_threshold",
       "reason_finale_F1_not_watched"
     ],
-    "build": "a/2026-08-16-0085",
+    "build": "a/2026-08-16-0088",
     "ruling": "decisions/0075 ruling 2, RESTATED by decisions/0077 because as written it named an EMPTY SET: position 3 removes 0 rows from the waterfall, since line 1 is already the S1-completer population (0068). The set retained is the pair universe less the completers -- the pairs that FAIL the S1 COMPLETION RULE, position 3's own rule -- carrying each pair's distinct-episode counts and the show's threshold, which is what D9 half (b) reads. NOT the set-membership drop rule, which is a different rule and deletes 0 records. Both arms had to choose an interpretation to compute anything; they chose this one and 0077 makes it the ruling.",
     "file": "processed/step8/a/position3_drop_set.csv.gz",
     "pairs_failing_the_S1_completion_rule": 58345,
-    "restated_by_0078_with_its_build": "58,345 pairs, position-3 rule, position-5 build of 2026-08-13, reproduced independently by both arms. Measured again here on build a/2026-08-16-0085",
+    "restated_by_0078_with_its_build": "58,345 pairs, position-3 rule, position-5 build of 2026-08-13, reproduced independently by both arms. Measured again here on build a/2026-08-16-0088",
     "expected_by_0077": 58345,
     "rows_position_3_removes_from_the_waterfall": 0,
     "why_those_two_differ": "waterfall line 1 is already the S1-completer population (0068), so the waterfall figure is 0 by construction. The set half (b) needs is the rows the RULE deletes, which is the pair universe less the completers.",
@@ -2496,7 +2913,7 @@
     "value_DERIV_position_5": 652,
     "value_DERIV_position_7_post_liveness": 652,
     "expected_by_0080": 652,
-    "build": "a/2026-08-16-0085",
+    "build": "a/2026-08-16-0088",
     "why_it_is_here": "0080 dropped the column and stated the loss rather than burying it; 0081 RESTORED the column for exactly that reason. The aggregate is kept alongside so the figure is readable without the table, which is what 0081 SS3 records this instance as having done under 0080."
   },
   "line_6_marginal_decomposition_BOTH_652_AND_1355": {
@@ -2510,7 +2927,7 @@
       "identity_holds": true,
       "expected_line_6": 703,
       "coverage_rows_examined": 196654,
-      "build": "a/2026-08-16-0085"
+      "build": "a/2026-08-16-0088"
     },
     "DERIV_position_5_entering_line_6": {
       "population": "DERIV, position-5 input to line 6",
@@ -2521,7 +2938,7 @@
       "identity_holds": true,
       "expected_line_6": 99,
       "coverage_rows_examined": 147370,
-      "build": "a/2026-08-16-0085"
+      "build": "a/2026-08-16-0088"
     },
     "what_the_spared_pairs_are": "Continued pairs that are silent at tau1. They are spared by the rule's second conjunct, which is what makes line 6 OUTCOME-CONDITIONAL, and they are the reason `silent_at_tau1` is an emitted column (0081): `live` is true for every Continued pair regardless of silence, so the count is not recoverable from `live` and `outcome`."
   },
@@ -2545,7 +2962,7 @@
         "rows_with_p_defined_examined": 19141,
         "rows_with_p_equal_1_examined": 1246
       },
-      "build": "a/2026-08-16-0085"
+      "build": "a/2026-08-16-0088"
     },
     "APPLY_position_7_post_liveness": {
       "population": "APPLY, post-liveness",
@@ -2563,7 +2980,7 @@
         "rows_with_p_defined_examined": 19042,
         "rows_with_p_equal_1_examined": 1230
       },
-      "build": "a/2026-08-16-0085"
+      "build": "a/2026-08-16-0088"
     },
     "DERIV_position_5": {
       "population": "DERIV, position-5 row set",
@@ -2581,7 +2998,7 @@
         "rows_with_p_defined_examined": 16843,
         "rows_with_p_equal_1_examined": 1072
       },
-      "build": "a/2026-08-16-0085"
+      "build": "a/2026-08-16-0088"
     },
     "DERIV_position_7_post_liveness": {
       "population": "DERIV, post-liveness",
@@ -2599,7 +3016,7 @@
         "rows_with_p_defined_examined": 16744,
         "rows_with_p_equal_1_examined": 1056
       },
-      "build": "a/2026-08-16-0085"
+      "build": "a/2026-08-16-0088"
     },
     "column_encoding": "p_at_bound = TRUE iff p reached its bound -- equivalently, iff the rank numerator equals L2 -- on rows where p is defined; null elsewhere. FALSE means p is defined and below its bound.",
     "THE_CHAIN_HAS_THREE_LINKS_AND_ONLY_TWO_ARE_CONSTRUCTION": {
@@ -2634,7 +3051,7 @@
       "s2_aired_lt_listed_shows": 0,
       "meaning": "0 means no S2 numbering gap anywhere in the frame, so F2 = L2 on every show and the rank numerator is m_H itself"
     },
-    "build": "a/2026-08-16-0085"
+    "build": "a/2026-08-16-0088"
   },
   "scope_qualifier_travelling_with_the_position_6_population": "covering with respect to insertion-dormancy, exhaustively; open only across channel classes (D4, D9)",
   "scan_summary": {
@@ -2643,24 +3060,24 @@
     "stage": 1,
     "api_calls": 0,
     "build": {
-      "build_tag": "a/2026-08-16-0085",
-      "build_name": "position-5 build of 2026-08-16, instance `a`, RERUN against decisions/0085 (Red Team third pass: B1, B2, P4 and the line-6 decomposition). The earlier 2026-08-16 build of this instance is the one 0085 reviewed; no figure moves between them, but they are different builds and are tagged apart.",
+      "build_tag": "a/2026-08-16-0088",
+      "build_name": "position-5 build of 2026-08-16, instance `a`, RERUN against decisions/0088 (B3 measured: the boundary window and the per-site D11 table; F2: the D9 coverage quantities named as separate objects and the mislabel corrected; the D9 clustering universe ruled to U1, ranked by distinct strict keys merged). The earlier 2026-08-16 builds of this instance -- `a/2026-08-16-0085` and the pre-0085 run -- are what Red Team's third and fourth passes reviewed. NO POPULATION AND NO RULE MOVES between them; what moves is the D9 CLUSTER LIST, because the universe it is computed on was ruled and this instance's previous universe was the D9 coverage pivot rather than the sweep. They are different builds and are tagged apart.",
       "instance": "a",
       "run_date_utc": "2026-08-16",
       "why_this_exists": "decisions/0079 (B6), extending decisions/0078: every count, every invariant result and every waterfall figure names the pipeline it was measured on, not only its population. Partial application is worse than none.",
       "pipeline": "src/step8_a_run.py, one run, stages 1 -> 6 in order",
       "stage_files_sha256_12": {
-        "step8_a_lib.py": "627e27ad1613",
-        "step8_a_1_scan.py": "a01904dba997",
+        "step8_a_lib.py": "11d33fbf7b89",
+        "step8_a_1_scan.py": "baba4ebc7c95",
         "step8_a_2_positions.py": "9f08ac985c8c",
-        "step8_a_3_table.py": "dc4bd39519ff",
+        "step8_a_3_table.py": "c7ecfd8cf3f2",
         "step8_a_4_arms.py": "3d533b88a113",
         "step8_a_4b_slugs.py": "4495f8069adb",
-        "step8_a_5_diagnostics.py": "2e5659a8c793",
-        "step8_a_6_emit.py": "4242c0ddc407",
+        "step8_a_5_diagnostics.py": "5864b3dd030b",
+        "step8_a_6_emit.py": "925903d50dee",
         "step8_a_run.py": "1e858e7bfa89"
       },
-      "git_head_short": "b860956",
+      "git_head_short": "267cfb5",
       "git_worktree_dirty_at_launch": true,
       "parameters": {
         "W_days": 108,
@@ -2689,7 +3106,7 @@
       "spec_read": "task-sheet.md Step 8 as it stands, plus decisions/0066-0085",
       "relation_to_the_2026_08_13_build": "this build reproduces the figures decisions/0078 and 0079 restate on the position-5 build of 2026-08-13 (58,345 pairs; 324 of 5,694; 178 of 2,549; 703/99). Where a figure agrees, that is measured here and stated, not carried."
     },
-    "provenance_note": "EVERY COUNT IN THIS FILE WAS MEASURED ON BUILD a/2026-08-16-0085 (decisions/0079 B6, extending 0078).",
+    "provenance_note": "EVERY COUNT IN THIS FILE WAS MEASURED ON BUILD a/2026-08-16-0088 (decisions/0079 B6, extending 0078).",
     "what": "episode-level scan to pair-level primitives. GATE: adopts nothing.",
     "tau_pull_utc": "2026-08-11T00:00:00Z",
     "records_total": 27656813,
@@ -2734,6 +3151,90 @@
     "distinct_S1_episodes": 2860465,
     "distinct_S2_episodes": 2489811,
     "distinct_episodes_whose_canonical_ts_ge_tau_pull": 142,
+    "distinct_S2_episodes_whose_canonical_ts_ge_tau_pull": 82,
+    "distinct_S1_episodes_whose_canonical_ts_ge_tau_pull": 60,
+    "D11_per_site_records": {
+      "ruling": "Human Lead, decisions/0088 SS1(b): emit records excluded by D11 at EACH site separately and ASSERT AT EACH SITE, not once and about the rest. Prose naming five sites with a count at none is what this replaces.",
+      "tau_pull_utc": "2026-08-11T00:00:00Z",
+      "the_eight_action_count_sites": {
+        "action_count_s1_watch": {
+          "unit": "in-frame in-E S1/S2 episode records",
+          "records_examined_before_D11": 2717040,
+          "records_excluded_by_D11": 49,
+          "records_counted_after_D11": 2716991,
+          "D11_applied": true
+        },
+        "action_count_s1_checkin": {
+          "unit": "in-frame in-E S1/S2 episode records",
+          "records_examined_before_D11": 153246,
+          "records_excluded_by_D11": 1,
+          "records_counted_after_D11": 153245,
+          "D11_applied": true
+        },
+        "action_count_s1_scrobble": {
+          "unit": "in-frame in-E S1/S2 episode records",
+          "records_examined_before_D11": 383834,
+          "records_excluded_by_D11": 23,
+          "records_counted_after_D11": 383811,
+          "D11_applied": true
+        },
+        "action_count_s1_other": {
+          "unit": "in-frame in-E S1/S2 episode records",
+          "records_examined_before_D11": 0,
+          "records_excluded_by_D11": 0,
+          "records_counted_after_D11": 0,
+          "D11_applied": true
+        },
+        "action_count_s2_watch": {
+          "unit": "in-frame in-E S1/S2 episode records",
+          "records_examined_before_D11": 2364954,
+          "records_excluded_by_D11": 52,
+          "records_counted_after_D11": 2364902,
+          "D11_applied": true
+        },
+        "action_count_s2_checkin": {
+          "unit": "in-frame in-E S1/S2 episode records",
+          "records_examined_before_D11": 120993,
+          "records_excluded_by_D11": 4,
+          "records_counted_after_D11": 120989,
+          "D11_applied": true
+        },
+        "action_count_s2_scrobble": {
+          "unit": "in-frame in-E S1/S2 episode records",
+          "records_examined_before_D11": 325637,
+          "records_excluded_by_D11": 38,
+          "records_counted_after_D11": 325599,
+          "D11_applied": true
+        },
+        "action_count_s2_other": {
+          "unit": "in-frame in-E S1/S2 episode records",
+          "records_examined_before_D11": 0,
+          "records_excluded_by_D11": 0,
+          "records_counted_after_D11": 0,
+          "D11_applied": true
+        }
+      },
+      "liveness_evidence": {
+        "unit": "records, ALL kinds and ALL shows -- the insertion clock is account-wide",
+        "records_examined_before_D11": 27656813,
+        "records_excluded_by_D11_watched_at_ge_tau_pull": 1734,
+        "records_excluded_as_undated": 379,
+        "records_used_after_D11": 27654700,
+        "accounts_whose_max_play_id_MOVES_under_D11": 469,
+        "accounts_whose_last_insertion_instant_MOVES_under_D11": 299,
+        "D11_applied": true,
+        "note": "Human Lead ruling 2, decisions/0070: the silence test's evidence is restricted to records dated before tau_pull. This is the site that ruling names, and it is the only site where D11 moves an input on this data."
+      },
+      "S1_completion_walk": {
+        "unit": "in-frame S1 episode records",
+        "records_at_or_after_tau_pull_on_the_S1_side": 73,
+        "D11_applied": false,
+        "why_not": "decisions/0068 fixes waterfall line 1 at the PUBLISHED S1-completer population of 220,107 and lists 'whether D11 moves it' as an OPEN question. This site is declared NOT-APPLIED rather than left unstated, and the counterfactual is measured in stage 2: 4 pairs stop being completers and 0 completion dates move."
+      },
+      "in_frame_S1S2_records_at_or_after_tau_pull_total": 167,
+      "of_which_S1_side": 73,
+      "of_which_S2_side": 94
+    },
     "action_record_counts_in_frame_S1S2_kept_after_D11": {
       "watch": 5081893,
       "checkin": 274234,

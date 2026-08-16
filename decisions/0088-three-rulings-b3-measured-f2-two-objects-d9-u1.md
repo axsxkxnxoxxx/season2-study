@@ -36,10 +36,19 @@ from a check that looked nowhere.
 
 **Three things are now emitted:**
 
-- **(a) The boundary window**, position-5 row set, **both populations**: S2 records in
-  `[τ1 − 24h, τ1)`, records **exactly at** `τ1`, and the same two at `τ2` — the rows on which the
-  half-open and date-level forms could differ. **If the count is 0, the invariant is labelled VACUOUS
-  rather than passing silently.** A zero stated as a zero is evidence; a zero arriving as a pass is not.
+- **(a) The boundary window**, position-5 row set, **both populations**. ***CORRECTED 2026-08-16
+  (`0089`), by instance A: this entry named the window `[τ1 − 24h, τ1)`, WHICH IS THE INTERVAL ON WHICH
+  THE TWO FORMS AGREE.*** `T0` is day-floored, so `τ1` and `τ2` are **midnight-aligned**, which makes
+  `date(ts) < date(τ1)` identical to `ts < τ1` below the boundary. **The SEPARATING interval is
+  `[τ1, τ1 + 24h)`.** **Both arms emitted both intervals rather than only the one named**, which is the
+  only reason the measurement means anything — **an arm that answered with the named window alone would
+  have returned a result on the interval that cannot separate the forms.** **Measured: exactly 1
+  episode falls AT `τ1` on both populations, both arms**, so `0068`'s strictness ruling moves a real row
+  in `|A|`; **and 0 outcome states differ**, because that row already has `|A| ≥ 1`. **If the count is 0,
+  the invariant is labelled VACUOUS rather than passing silently.** ***Instance B's refinement, adopted:
+  this is THREE states, not two — empty boundary / occupied-and-inert / occupied-and-deciding. Collapsing
+  the middle into "vacuous" OR into "load-bearing for the result" are both misreadings***, and the
+  measured state here is **occupied and inert**.
 - **(b) A per-site D11 table.** D11 is specified to apply *"to EVERY computation"*, and one arm names
   **five sites in prose with a count at none.** Records excluded at **each** of `A`, `A_H`, the four
   `action_count_s{1,2}_*`, the liveness evidence, D9's coverage rows and the S1 walk — **asserted at
@@ -61,7 +70,7 @@ and neither is frame-restricted.*** Both are **user-show quantities measured acr
 
 | figure | arm | what it counts |
 | ---: | :--- | :--- |
-| **747,478** | A | **undeduplicated user-show SEASON-COVERAGE ROWS** |
+| **747,478** | A | ***CORRECTED (`0089`): distinct `(user, show)` PAIRS.*** ~~undeduplicated season-coverage rows~~ — **that label was taken from the previous artifact's own `user_show_coverage_rows_undeduplicated` key, which was itself part of what F2 flagged as mislabelled.** Arm A's true undeduplicated row count is **1,217,122** |
 | **726,103** | B | **distinct candidate `(user, show)` PAIRS** (435,643 + 8,834 + 281,626) |
 
 **But the conclusion holds, and on a stronger footing than the reason given.** A user-show carrying two
@@ -106,9 +115,16 @@ list on its own**: the same universe under the same key, ranked by distinct show
 `maigret` with `blackout`. **The basis is named at the point of use.**
 
 **`task-sheet.md`'s former illustration — The Twilight Zone, The Traitors, Manhunt — was U3 and is
-SUPERSEDED as the example.** Under U1 the largest clusters are `secondchance` (8), `theisland` (7),
-`maigret` (6). **The three names are not wrong; they are a different universe's answer, which is why
-this needed ruling at all.**
+SUPERSEDED as the example.** Under U1 the largest clusters are **`secondchance` (8)** and
+**`theisland` (7)**, both unique at their counts and both reproduced exactly by both arms.
+
+***THE THIRD PLACE IS NOT DETERMINED AND THIS ENTRY SHOULD NOT HAVE NAMED ONE.*** ~~`maigret` (6)~~ —
+**there is a SIX-WAY TIE at 6**: `blackout`, `hunted`, `maigret`, `missing`, `thefamily`, `yourhonor`.
+**Which one appears third is the TIE-BREAK, which no rule specifies**, and the arms diverge on it: one
+publishes `blackout` under ascending-key-after-descending-count, and `maigret` is equally correct under
+another. **BOTH ARMS REPORTED THIS INDEPENDENTLY, and neither picked the name this entry gave.**
+**A spec gap inside the ruling that closed a spec gap.** **CARRIED FOR THE HUMAN LEAD** (`0089` §4);
+the divergence is reported, not reconciled, and every key at every rank publishes under both bases.
 
 ## 4. On the pattern — sixth occurrence, and the first with a working countermeasure
 

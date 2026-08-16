@@ -239,6 +239,52 @@ def main() -> None:
             r_user, r_rid, r_ts, m12_pre, sn_all=r_number, NULL_TS=NULL_TS),
     }
 
+    # ---- D11's record-level footprint, per SITE (decisions/0088 Sec 1(b)) ---
+    # "Emit records excluded by D11 at EACH site separately, and assert at each
+    # site, not once and about the rest." The in-frame S1/S2 records D11 removes
+    # are resolved here to season, membership in E, action, distinct episodes and
+    # distinct pairs, so each downstream site can state its own number rather
+    # than inherit one.
+    _dsel = m12_pre & d11_drop
+    _dshow = show_idx[_dsel].astype(np.int64)
+    _dse = r_season[_dsel].astype(np.int64)
+    _dnum = r_number[_dsel].astype(np.int64)
+    _dact = r_action[_dsel].astype(np.int64)
+    _duser = r_user[_dsel].astype(np.int64)
+    _dbad = (_dnum < 0) | (_dnum >= 4096)
+    _dcode = np.where(_dbad, -1,
+                      (show_ids[_dshow] << 20) | (_dse << 12) | np.clip(_dnum, 0, 4095))
+    _dinE = np.isin(_dcode, valid_codes) & ~_dbad
+    _dpair = _duser * n_shows + _dshow
+
+    def _side(season: int) -> dict:
+        m = _dse == season
+        return {
+            "records_excluded": int(m.sum()),
+            "of_those_in_the_season's_listed_set_E": int((m & _dinE).sum()),
+            "distinct_episodes_excluded":
+                int(len(np.unique(_dpair[m & _dinE] * 8192 + _dse[m & _dinE] * 4096
+                                  + _dnum[m & _dinE]))) if (m & _dinE).any() else 0,
+            "distinct_pairs_touched": int(len(np.unique(_dpair[m]))),
+            "by_action": {k: int((m & (_dact == v)).sum())
+                          for k, v in (("watch", 0), ("checkin", 1),
+                                       ("scrobble", 2), ("other", -1))},
+        }
+
+    prov["D11_record_level_footprint"] = {
+        "rule": ("decisions/0088 Sec 1(b) -- the per-site D11 table. This block is the "
+                 "RECORD-LEVEL input each site's row is computed from; the assembled table, "
+                 "site by site, is in results.json under B3_the_two_unasserted_mandates"),
+        "in_frame_S1_S2_records_at_or_after_tau_pull": int(_dsel.sum()),
+        "S1_side": _side(1),
+        "S2_side": _side(2),
+        "records_in_the_whole_sweep_at_or_after_tau_pull":
+            int(d11_drop.sum()),
+        "coverage": (f"{int(m12_pre.sum()):,} in-frame S1/S2 episode records were tested "
+                     f"against tau_pull; {int(_dsel.sum())} are at or after it. This is a "
+                     "measured count on an examined population, not an empty look"),
+    }
+
     # per-show drop counts (records, and distinct (season, number) pairs)
     drop_rows = pd.DataFrame({
         "show_trakt_id": show_ids[ss[~in_E]],
@@ -271,8 +317,57 @@ def main() -> None:
     # ---- action counts per pair, on in-E records ---------------------------
     # `action` is RECORD-level and the row is a pair (0070 ruling 4), so what is
     # emitted is counts by action type, never one action per row.
-    act_key = pair_code * 8 + (se - 1) * 4 + np.where(sa < 0, 3, sa)
+    #
+    # D11 IS APPLIED AT THIS SITE, per decisions/0088 Sec 1(b): D11 is specified
+    # to apply "to EVERY computation", and the per-site table that ruling
+    # mandates has to be ASSERTED AT EACH SITE rather than once and about the
+    # rest. The S1 side of `m12` above is carried past the cutoff for ONE reason
+    # only -- decisions/0068 rules waterfall line 1 at 220,107 AS PUBLISHED, and
+    # that value needs the pairs whose first-pass completion rests on a
+    # post-cutoff record. THAT EXCEPTION IS FOR THE COMPLETION WALK AND NOTHING
+    # ELSE. Measuring the sites separately is what exposed that this arm's
+    # previous build let the same carry-through reach the four
+    # action_count_s1_* columns, where no ruling exempts it.
+    pre_cutoff = st < TAU_PULL
+    act_key = (pair_code * 8 + (se - 1) * 4 + np.where(sa < 0, 3, sa))[pre_cutoff]
     act_u, act_n = np.unique(act_key, return_counts=True)
+    _slotname = ["s1_watch", "s1_checkin", "s1_scrobble", "s1_other",
+                 "s2_watch", "s2_checkin", "s2_scrobble", "s2_other"]
+    _slot_all = (se - 1) * 4 + np.where(sa < 0, 3, sa)
+    prov["D11_action_count_sites"] = {
+        "rule": ("decisions/0088 Sec 1(b) -- D11 applies to EVERY computation and is asserted "
+                 "AT EACH SITE. The eight action_count_s{1,2}_* columns are eight sites"),
+        "records_excluded_by_D11_per_site": {
+            _slotname[k]: int(((~pre_cutoff) & (_slot_all == k)).sum()) for k in range(8)},
+        "records_used_per_site": {
+            _slotname[k]: int((pre_cutoff & (_slot_all == k)).sum()) for k in range(8)},
+        "pairs_whose_action_counts_move_because_D11_is_now_applied_here":
+            int(len(np.unique(pair_code[~pre_cutoff]))),
+        # The per-site assertion is MEASURED, not inferred from the mask that
+        # built it: the latest watched_at actually counted at each site, which
+        # must be strictly below tau_pull wherever D11 is applied.
+        "latest_watched_at_counted_per_site_utc": {
+            _slotname[k]: (str(np.datetime64(int(st[pre_cutoff & (_slot_all == k)].max()), "s"))
+                           if (pre_cutoff & (_slot_all == k)).any() else "NO RECORDS AT THIS SITE")
+            for k in range(8)},
+        "assertion_no_record_at_or_after_tau_pull_is_counted_per_site": {
+            _slotname[k]: bool((pre_cutoff & (_slot_all == k)).sum() == 0
+                               or int(st[pre_cutoff & (_slot_all == k)].max()) < TAU_PULL)
+            for k in range(8)},
+        "sites_with_no_records_at_all": [
+            _slotname[k] for k in range(8) if not (pre_cutoff & (_slot_all == k)).any()],
+        "sites_with_no_records_note": ("a site with zero records is reported as such rather "
+                                       "than as a silent pass: `other` is empty on both "
+                                       "seasons because every action value in the sweep is "
+                                       "watch, checkin or scrobble"),
+        "CHANGED_FROM_THIS_ARMS_PREVIOUS_BUILD": (
+            "YES, and it is reported rather than reconciled. The r3 build computed the eight "
+            "action counts on `m12`, which carries the S1 side past tau_pull so that "
+            "decisions/0068's published line 1 of 220,107 survives. That carry-through has a "
+            "ruling behind it FOR THE COMPLETION WALK and none for the action counts. "
+            "decisions/0088 Sec 1(b)'s per-site assertion is what made the difference visible: "
+            "asserted at each site, the four action_count_s1_* sites would have FAILED on r3"),
+    }
 
     # ---- distinct episodes: canonical timestamp = MIN watched_at -----------
     ep_code = pair_code * 8192 + se * 4096 + sn
@@ -319,6 +414,25 @@ def main() -> None:
         "pairs_with_any_in_E1_S1_evidence": int(n_grp),
         "S1_completer_pairs_line_1": int(ok.sum()),
         "computed": "INDEPENDENTLY from the record level; not read back from any table",
+        # decisions/0088 Sec 1(b) -- this is one of the named D11 SITES, and it
+        # is the one site where D11 is NOT applied. Stated with its number and
+        # its reason rather than left to be inferred from line 1.
+        "D11_site": {
+            "d11_applied_here": False,
+            "why_not": ("decisions/0068 rules waterfall line 1 at 220,107 AS PUBLISHED, and "
+                        "that value needs the pairs whose first-pass completion rests on a "
+                        "record at or after tau_pull. Whether D11 applies to the S1 completion "
+                        "walk is 0068's own OPEN item, not this instance's choice"),
+            "records_at_or_after_tau_pull_that_this_site_uses": int((t1 >= TAU_PULL).sum()),
+            "latest_watched_at_used_by_the_walk_utc": str(np.datetime64(int(t1.max()), "s")),
+            "assertion_no_record_at_or_after_tau_pull_is_counted":
+                bool(int(t1.max()) < TAU_PULL),
+            "assertion_note": ("this assertion is FALSE at this site and that is the correct "
+                               "reported state, not a failure: D11 is deliberately not applied "
+                               "here. Reading C -- D11 applied here too -- is measured below "
+                               "and moves line 1 to 220,103"),
+            "records_examined_by_the_walk": int(len(t1)),
+        },
     }
 
     # ---- the same count WITH D11 applied to S1 too (decisions/0068: OPEN) ----
@@ -463,6 +577,12 @@ def main() -> None:
         s2_any_rec_pairs=np.unique(r_user[m_s2_any].astype(np.int64) * n_shows
                                    + show_idx[m_s2_any]),
         act_key=act_u, act_n=act_n,
+        # decisions/0088 Sec 1(b): the pairs whose action counts move because D11
+        # is now applied at the action-count sites, so the size of this build's
+        # own change can be stated on the analysis population rather than only in
+        # the record universe.
+        d11_s1_pairs=np.unique(_dpair[_dse == 1]),
+        d11_s2_pairs=np.unique(_dpair[_dse == 2]),
     )
 
     # decisions/0079 Sec 2 -- EVERY count group carries the build it was measured on.

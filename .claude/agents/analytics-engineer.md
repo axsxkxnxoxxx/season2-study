@@ -272,7 +272,7 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
         SHOWS ARE CLUSTERED, which the spec never stated.** **The cluster examples are the EVIDENCE for
         the loose key's only warrant**, so two arms giving different evidence for one warrant makes it
         irreproducible while the deliverables read otherwise. **State it: all sweep show IDs with a slug,
-        the 1,138 frame shows, or the D9 candidate pairs. REPORTED, NOT RECONCILED** — if both name the
+        the 1,138 frame shows, or the D9 candidate pairs. REPORTED, NOT RECONCILED** — ***SUPERSEDED by `0088` §3, which RULES the universe (U1) — see the bullet above. This text asked for the universe to be NAMED and left it unruled; it is now ruled, and the superseded framing sat BELOW its replacement in the same section, which is the shape `0067`, `0076` and `0083` §3a each fixed elsewhere (found by instance B, 2026-08-16).*** if both name the
         same universe and still differ, one has a bug.
         - **5. D9 uses the STRICT key, with the loose count of 75 reported alongside.** Strict finds
           **0** complementary pairs; loose finds 75 but **strips the year and merges genuinely different
@@ -323,7 +323,7 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
           `access_denied`, over-tolerance or otherwise skipped contributes a pair scored never-started.
           **A skipped user read as empty becomes a false "never started" in the headline**, so this one
           **fails in the direction of the result.**
-    - **THE ASSERTION SET NOW HAS EIGHT MEMBERS: five pure code checks, one code-by-construction with
+    - **THE ASSERTION SET NOW HAS NINE MEMBERS: SIX pure code checks, one code-by-construction with
       force only as specified, and TWO that can fail on real data.** ***SUPERSEDED: "four of six cannot
       fail" — on the post-`0074` six it was FIVE of six, with ZERO pure data checks.***
     - **D9's TWO KEYS, DEFINED** (`0076`). **STRICT: lowercase, drop every non-alphanumeric character,

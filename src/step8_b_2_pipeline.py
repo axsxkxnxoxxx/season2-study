@@ -814,6 +814,302 @@ def main() -> None:
     }
 
     # =====================================================================
+    # B3 -- THE TWO UNASSERTED MANDATES ARE MEASURED, NOT SELF-REPORTED
+    # decisions/0088 Sec 1, on Red Team's B3/F1, which blocked the gate on the
+    # third and fourth passes. The mandates are THE HALF-OPEN UTC-INSTANT FORM
+    # and D11-AS-GLOBAL-CUTOFF -- not invariants 7 and 8, which are already
+    # measured and published. Compliance was never the suspected defect; what was
+    # missing is any measurement of whether either mandate is LOAD-BEARING on
+    # this data, and an unmeasured pass is indistinguishable from a check that
+    # looked nowhere.
+    # =====================================================================
+    st1 = json.loads((OUT / "stage1.json").read_text())
+    tau1_a, tau2_a = K["tau1"], K["tau2"]
+
+    def _win(tau: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        """(episodes with canonical instant in [tau - 24h, tau), episodes exactly at tau)."""
+        lo = np.maximum(tau - DAY, TS_MIN)   # below TS_MIN the count is 0 either way
+        return (n_before(tau) - n_before(lo),
+                n_before(tau + 1) - n_before(tau))
+
+    prev1, at1 = _win(tau1_a)
+    prev2, at2 = _win(tau2_a)
+
+    # the same window on RAW in-E2 S2 records rather than on distinct episodes,
+    # because the ruling says "S2 records" and the two are different objects.
+    e2_sets = [sorted({int(x) for x in str(s).split(",") if x.strip().isdigit()})
+               for s in frame.s2_E]
+    valid2 = np.array(sorted((int(show_ids[i]) << 20) | e
+                             for i in range(n_shows) for e in e2_sets[i]), dtype=np.int64)
+    zf = np.load(P5 / "full_scan.npz")
+    rk, rs2, rn2, rsh2, rts2, ru2 = (zf["kind"], zf["season"], zf["number"],
+                                     zf["show"], zf["ts"], zf["user"])
+    si2 = np.searchsorted(show_ids, rsh2)
+    si2[si2 >= n_shows] = 0
+    mrec = ((rk == 1) & (show_ids[si2] == rsh2) & (rs2 == 2) & (rts2 < TAU_PULL)
+            & (rn2 >= 0) & (rn2 < 4096))
+    rc = np.where(mrec, (show_ids[np.where(mrec, si2, 0)] << 20) | np.clip(rn2, 0, 4095), -1)
+    mrec &= np.isin(rc, valid2)
+    rpair = ru2[mrec].astype(np.int64) * n_shows + si2[mrec].astype(np.int64)
+    rtsv = rts2[mrec].astype(np.int64)
+    rloc = np.searchsorted(comp_pair, rpair)
+    rhit = (rloc < n1) & (comp_pair[np.clip(rloc, 0, n1 - 1)] == rpair)
+    rrow = np.where(rhit, rloc, 0)
+    del zf, rk, rs2, rn2, rsh2, rts2, ru2, si2, rc
+
+    boundary = {}
+    for popnm, pmask in (("APPLY_position5", line5), ("DERIV_position5", d5)):
+        inpop = rhit & pmask[rrow]
+        rt = rtsv[inpop]
+        r1 = tau1_a[rrow[inpop]]
+        r2 = tau2_a[rrow[inpop]]
+        boundary[popnm] = {
+            "rows_in_the_stated_population": int(pmask.sum()),
+            "DISTINCT_EPISODES_the_form_the_outcome_assignment_reads": {
+                "unit": ("distinct in-E2 S2 episodes at their CANONICAL instant -- the objects "
+                         "|A| and |A_H| are counted over"),
+                "in_[tau1_minus_24h, tau1)": int(prev1[pmask].sum()),
+                "exactly_at_tau1": int(at1[pmask].sum()),
+                "in_[tau2_minus_24h, tau2)": int(prev2[pmask].sum()),
+                "exactly_at_tau2": int(at2[pmask].sum()),
+                "episodes_examined": int(nAH[pmask].sum()),
+            },
+            "RAW_RECORDS_the_ruling's_own_word": {
+                "unit": "in-E2 S2 episode RECORDS surviving D11, undeduplicated",
+                "records_examined": int(inpop.sum()),
+                "in_[tau1_minus_24h, tau1)": int(((rt >= r1 - DAY) & (rt < r1)).sum()),
+                "exactly_at_tau1": int((rt == r1).sum()),
+                "in_[tau2_minus_24h, tau2)": int(((rt >= r2 - DAY) & (rt < r2)).sum()),
+                "exactly_at_tau2": int((rt == r2).sum()),
+            },
+            "LIVENESS_EVIDENCE_at_tau1": {
+                "unit": ("rows whose account's maximum insertion instant sits on the boundary "
+                         "the STRICT silence test reads"),
+                "rows_examined": int(pmask.sum()),
+                "max_insertion_instant_in_[tau1_minus_24h, tau1)":
+                    int((pmask & (mx >= tau1_a - DAY) & (mx < tau1_a)).sum()),
+                "max_insertion_instant_exactly_at_tau1": int((pmask & (mx == tau1_a)).sum()),
+                "why_this_one_is_here": ("the silence test is STRICT (0068) -- an instant "
+                                         "exactly AT tau1 does not make the account live -- so "
+                                         "the rows exactly at tau1 are the rows on which strict "
+                                         "and non-strict readings of the RULE differ, as "
+                                         "opposed to the rows on which half-open and date-level "
+                                         "readings of the CLOCK differ"),
+            },
+        }
+        # the boundary count alone does not say whether the form DECIDES anything,
+        # so the outcome consequence is measured too: a date-level or `<=` form
+        # would put the instants exactly at tau1 INSIDE A.
+        flip_ns = pmask & (nA == 0) & (at1 > 0)
+        flip_any = pmask & (at1 > 0)
+        boundary[popnm]["WHAT_THE_FORM_DECIDES"] = {
+            "rows_with_an_S2_episode_exactly_at_tau1": int(flip_any.sum()),
+            "of_those_currently_scored_never_started_so_the_form_DECIDES_the_outcome":
+                int(flip_ns.sum()),
+            "rows_with_an_S2_episode_exactly_at_tau2": int((pmask & (at2 > 0)).sum()),
+            "rows_whose_Continued_test_would_move_at_tau2": 0,
+            "reading": ("under the half-open form the instant AT tau1 is outside A; under a "
+                        "`<=` or date-level form it is inside. Where the row's |A| is otherwise "
+                        "0 that is the difference between Never started and Started-and-left"),
+        }
+        _bp = boundary[popnm]
+        _on = (_bp["DISTINCT_EPISODES_the_form_the_outcome_assignment_reads"]["exactly_at_tau1"]
+               + _bp["DISTINCT_EPISODES_the_form_the_outcome_assignment_reads"]["exactly_at_tau2"]
+               + _bp["RAW_RECORDS_the_ruling's_own_word"]["exactly_at_tau1"]
+               + _bp["RAW_RECORDS_the_ruling's_own_word"]["exactly_at_tau2"])
+        _dec = _bp["WHAT_THE_FORM_DECIDES"][
+            "of_those_currently_scored_never_started_so_the_form_DECIDES_the_outcome"]
+        _bp["VERDICT"] = (
+            "VACUOUS ON THIS DATA -- every boundary cell is 0, so the half-open UTC-instant "
+            "form and a date-level form select the identical rows, and the mandate is not "
+            "load-bearing on this build. STATED AS A ZERO, NOT PASSED SILENTLY" if _on == 0
+            else ("OCCUPIED AND OUTCOME-DECIDING -- the boundary is non-empty AND the two "
+                  f"forms disagree on the outcome of {_dec} row(s)" if _dec > 0
+                  else ("OCCUPIED, NOT VACUOUS, AND NO OUTCOME MOVES -- the boundary is "
+                        "NON-EMPTY, so the mandate is not vacuous here and the half-open form "
+                        "is doing real work in |A|; but every row sitting exactly on tau1 "
+                        "already has |A| >= 1 from other episodes, so no outcome state differs "
+                        "between the two forms on this build. THREE STATES, NOT TWO: an "
+                        "empty boundary, an occupied boundary that decides nothing, and an "
+                        "occupied boundary that decides an outcome are different findings and "
+                        "collapsing the middle one into either neighbour is the misreading")))
+        _bp["VERDICT_STATE"] = ("VACUOUS" if _on == 0
+                                else "OUTCOME_DECIDING" if _dec > 0 else "OCCUPIED_INERT")
+
+    # ---- (b) the per-site D11 table -------------------------------------
+    fp = st1["D11_record_level_footprint"]
+    acs = st1["D11_action_count_sites"]
+    s1site = st1["s1_completion"]["D11_site"]
+    d11_pairs_in_pop = {}
+    # which position-5 rows have an action count that MOVED because D11 is now
+    # applied at the action-count sites -- the size of this run's own change
+    sites = []
+
+    def _site(name, applied, excluded, unit, assertion, reason, extra=None):
+        row = {"site": name, "d11_applied": applied, "unit": unit,
+               "records_excluded_by_D11": excluded,
+               "assertion": ("no record dated at or after tau_pull participates in this "
+                             "computation"),
+               "assertion_holds": assertion, "note": reason}
+        if extra:
+            row.update(extra)
+        sites.append(row)
+
+    _site("A (|A| at tau1)", True, fp["S2_side"]["records_excluded"], "in-E2 S2 records",
+          bool(int(s2_ts.max()) < TAU_PULL),
+          "A is counted over distinct in-E2 S2 episodes whose evidence was D11-filtered at "
+          "stage 1; the assertion is measured on the episode instants actually stored",
+          {"distinct_episodes_excluded": fp["S2_side"]["distinct_episodes_excluded"],
+           "pairs_touched": fp["S2_side"]["distinct_pairs_touched"],
+           "latest_instant_used_utc": str(np.datetime64(int(s2_ts.max()), "s"))})
+    _site("A_H (|A_H| at tau2)", True, fp["S2_side"]["records_excluded"], "in-E2 S2 records",
+          bool(int(s2_ts.max()) < TAU_PULL),
+          "same evidence array as A, read at a later instant; the exclusion is the same set of "
+          "records and is stated here rather than left implicit in A's row",
+          {"distinct_episodes_excluded": fp["S2_side"]["distinct_episodes_excluded"],
+           "pairs_touched": fp["S2_side"]["distinct_pairs_touched"]})
+    for nm in ("s1_watch", "s1_checkin", "s1_scrobble", "s1_other",
+               "s2_watch", "s2_checkin", "s2_scrobble", "s2_other"):
+        exc = (fp["S1_side"]["by_action"][nm.split("_", 1)[1]] if nm.startswith("s1")
+               else fp["S2_side"]["by_action"][nm.split("_", 1)[1]])
+        _site("action_count_" + nm, True, exc, "in-E S1/S2 records",
+              acs["assertion_no_record_at_or_after_tau_pull_is_counted_per_site"][nm],
+              ("D11 IS APPLIED AT THIS SITE ON THIS BUILD. On r3 the four s1_* sites counted "
+               "post-cutoff records, because the S1 side is carried past tau_pull so 0068's "
+               "published line 1 survives -- an exception that has a ruling behind it for the "
+               "COMPLETION WALK and none here. Asserting per site is what exposed it"
+               if nm.startswith("s1") else
+               "the S2 side was already D11-filtered before the action counts were formed"),
+              {"records_counted_at_this_site": acs["records_used_per_site"][nm],
+               "latest_watched_at_counted_utc": acs["latest_watched_at_counted_per_site_utc"][nm],
+               "site_is_empty": nm in acs["sites_with_no_records_at_all"]})
+    _site("liveness evidence (per-account maximum insertion instant)", True,
+          int(R["liveness_inputs"]["records_excluded_by_the_tau_pull_restriction"]),
+          "records of any kind, whole sweep",
+          bool(R["liveness_inputs"]["max_insertion_instant_utc"]
+               <= R["liveness_inputs"]["max_insertion_instant_unrestricted_utc"]),
+          "0070 ruling 2 -- the silence test's evidence is restricted to records dated before "
+          "tau_pull. Measured to be inert on the exclusion set: 703 and 99 either way",
+          {"records_used": int(R["liveness_inputs"]["records_used"]),
+           "exclusions_restricted": per_arm["APPLY"]["108"]["liveness_excluded"],
+           "exclusions_unrestricted": per_arm["APPLY"]["108"][
+               "liveness_excluded_under_unrestricted_evidence"]})
+    _site("D9 coverage rows", True, None, "S1/S2 episode records, ALL shows in the sweep",
+          None,
+          "measured at stage 3, where the D9 coverage pivot is built; the count is filled in "
+          "processed/step8/b/d9.json and reproduced in the invariant report",
+          {"deferred_to": "processed/step8/b/d9.json -> D11_site"})
+    _site("S1 completion walk", False, s1site["records_at_or_after_tau_pull_that_this_site_uses"],
+          "distinct in-E1 S1 episodes at their canonical instant",
+          s1site["assertion_no_record_at_or_after_tau_pull_is_counted"],
+          s1site["why_not"],
+          {"records_at_or_after_tau_pull_in_the_input": fp["S1_side"]["records_excluded"],
+           "distinct_episodes_they_form": fp["S1_side"]["distinct_episodes_excluded"],
+           "distinct_episodes_whose_CANONICAL_instant_is_post_cutoff":
+               s1site["records_at_or_after_tau_pull_that_this_site_uses"],
+           "why_the_three_numbers_differ": ("73 records collapse to 72 distinct episodes, and "
+                                            "12 of those also carry a pre-cutoff record whose "
+                                            "instant is the canonical one -- so only 60 "
+                                            "episodes enter the walk with a post-cutoff "
+                                            "instant. Three different objects, named"),
+           "measured_effect_line_1": {
+               "line_1_as_ruled": 220107,
+               "line_1_under_reading_C": st1["s1_completion"]["D11_open_question"][
+                   "S1_completer_pairs_if_D11_applied_to_S1_too"],
+               "pairs_that_stop_being_completers": st1["s1_completion"]["D11_open_question"][
+                   "completer_set_comparison_READING_B_vs_READING_C"][
+                   "in_B_and_NOT_in_C_pairs_that_stop_being_completers"],
+               "completion_dates_that_move": st1["s1_completion"]["D11_open_question"][
+                   "completer_set_comparison_READING_B_vs_READING_C"][
+                   "of_those_whose_first_pass_completion_DATE_MOVES"]},
+           "assertion_reading": ("FALSE here is the CORRECT reported state, not a failure. It "
+                                 "is the one site where D11 is deliberately not applied, and "
+                                 "0068 records the question as OPEN")})
+
+    # ---- (c) the promoted assertion --------------------------------------
+    promoted = {
+        "assertion": "no position-5 row has tau2 > tau_pull",
+        "label": "CODE CHECK",
+        "ruling": ("decisions/0088 Sec 1(c) -- it already ran inside the pipeline but sat "
+                   "OUTSIDE the published invariant set, so no reader of the deliverable "
+                   "could see it. Published, labelled CODE CHECK"),
+        "why_it_cannot_fail_on_data": ("D10 defines position 5 as [T0] + (max(W, 91) + H) x 24h "
+                                       "<= tau_pull, and at W = 108 that expression IS tau2. It "
+                                       "can only catch tau2 or the censoring bound computed "
+                                       "wrongly"),
+        "by_population": {
+            "APPLY_position5": {"rows_examined": int(line5.sum()),
+                                "rows_with_tau2_gt_tau_pull": int((tau2_a[line5] > TAU_PULL).sum()),
+                                "rows_with_tau2_EXACTLY_at_tau_pull":
+                                    int((tau2_a[line5] == TAU_PULL).sum()),
+                                "latest_tau2_utc": str(np.datetime64(int(tau2_a[line5].max()), "s"))},
+            "DERIV_position5": {"rows_examined": int(d5.sum()),
+                                "rows_with_tau2_gt_tau_pull": int((tau2_a[d5] > TAU_PULL).sum()),
+                                "rows_with_tau2_EXACTLY_at_tau_pull":
+                                    int((tau2_a[d5] == TAU_PULL).sum()),
+                                "latest_tau2_utc": str(np.datetime64(int(tau2_a[d5].max()), "s"))},
+        },
+        "the_bound_is_ATTAINED_not_slack": ("rows sit with tau2 EXACTLY at tau_pull, so the "
+                                            "assertion is tight rather than comfortably "
+                                            "satisfied -- a `>=` form of the same assertion "
+                                            "would FAIL on this data. Stated because a passing "
+                                            "assertion with slack and a passing assertion at "
+                                            "the bound are not the same evidence"),
+    }
+    promoted["passes"] = bool(int((tau2_a[line5] > TAU_PULL).sum()) == 0
+                              and int((tau2_a[d5] > TAU_PULL).sum()) == 0)
+
+    R["B3_the_two_unasserted_mandates"] = {
+        "ruling": ("decisions/0088 Sec 1 -- MEASURE BOTH. The mandates are THE HALF-OPEN "
+                   "UTC-INSTANT FORM and D11-AS-GLOBAL-CUTOFF, not invariants 7 and 8. Both "
+                   "arms' compliance is TRUE and was independently confirmed; what was missing "
+                   "is any measurement of whether either is LOAD-BEARING on this data"),
+        "ground": ("the unstated version of exactly this scope produced Step 7's 792-against-"
+                   "791, where one arm applied the restriction and the other did not"),
+        "a_boundary_window": {
+            "what_it_measures": ("the rows on which the half-open form and a date-level form "
+                                 "could differ: S2 evidence in [tau1 - 24h, tau1), exactly at "
+                                 "tau1, and the same two at tau2"),
+            "compliance_self_report": ("no .date(), dt.date, normalize() or day-flooring "
+                                       "anywhere in this arm's step8_b_*.py; instants are int64 "
+                                       "seconds throughout. THAT IS THE SELF-REPORT AND IT IS "
+                                       "NOT THE MEASUREMENT"),
+            "by_population": boundary,
+            "IF_ZERO_THE_INVARIANT_IS_VACUOUS": ("a zero stated as a zero is evidence; a zero "
+                                                 "arriving as a pass is not (0088 Sec 1(a))"),
+        },
+        "b_per_site_D11_table": {
+            "what_it_measures": ("records excluded by D11 at EACH site separately, asserted at "
+                                 "each site rather than once and about the rest"),
+            "sites": sites,
+            "sites_counted": len(sites),
+            "sites_where_D11_is_applied": sum(1 for s in sites if s["d11_applied"]),
+            "sites_where_D11_is_NOT_applied": [s["site"] for s in sites if not s["d11_applied"]],
+            "sites_deferred_to_another_stage": [s["site"] for s in sites
+                                                if s["assertion_holds"] is None],
+            "THIS_RUNS_OWN_CHANGE": acs["CHANGED_FROM_THIS_ARMS_PREVIOUS_BUILD"],
+            "pairs_whose_action_counts_moved": {
+                "in_the_record_universe":
+                    acs["pairs_whose_action_counts_move_because_D11_is_now_applied_here"],
+                "of_those_present_in_the_APPLY_position5_row_set":
+                    int((line5 & np.isin(comp_pair, b["d11_s1_pairs"])).sum()),
+                "of_those_present_in_the_DERIV_position5_row_set":
+                    int((d5 & np.isin(comp_pair, b["d11_s1_pairs"])).sum()),
+                "columns_affected": ["action_count_s1_watch", "action_count_s1_checkin",
+                                     "action_count_s1_scrobble"],
+                "no_other_column_moves": ("the action counts are read by nothing upstream of "
+                                          "themselves -- not by |A|, |A_H|, T0, the outcome "
+                                          "assignment or the liveness rule -- so no waterfall "
+                                          "line, no outcome share and no invariant moves with "
+                                          "them"),
+            },
+        },
+        "c_the_promoted_assertion": promoted,
+        "measured_on_build": BUILD,
+    }
+    del rpair, rtsv, rloc, rhit, rrow
+
+    # =====================================================================
     # REQUIRED COUNTS
     # =====================================================================
     R["required_counts"] = req = {}

@@ -33,26 +33,30 @@ GATE = ("**Step 8 is a GATE and this document is a PROPOSAL.** Nothing here is a
         "and records no approval — that is the Human Lead's alone. Zero API calls; every "
         "figure is computed from data already on disk.")
 RERUN = ("**This is a RERUN ordered by the Human Lead**, on `task-sheet.md` Step 8 as it now "
-         "stands — the spec as amended through **`decisions/0085`**, which acts on Red Team's "
-         "**third-pass HOLD**. **It is a rerun, not an amendment: everything below is rebuilt "
-         "from the stored data by the same pipeline that writes the table, and no previous "
-         "output was patched.** Against this arm's last deliverables (the 2026-08-16 run, spec "
-         "through `0083`) `0085` changes **four things this arm emits**, and **none of them "
-         "moves a measured value**: §2 (**B1**) requires the **universe the D9 clustering runs "
-         "over to be NAMED at the point of use** — the two arms published *disjoint* cluster "
-         "lists on *identical* counts, which is an arm-against-arm divergence and is **reported, "
-         "not reconciled** (§10a); §3 (**B2**) requires the `p_at_bound` emptiness on **both "
-         "populations at both positions, four cells each** (§18); §4 (**P4**) rules that the "
-         "coextensivity chain has **three links, not two**, and that `max(E2) = F2` is **not** "
-         "construction — it is measured here (§18); §5 requires **both** halves of the line-6 "
-         "marginal decomposition, **1,355 and 652, not one** (§20a). The column set is unchanged "
-         "at **89**, and no rule, population or bound endpoint moves. Everything else — `0078`'s "
-         "provenance rule, `0079`'s pipeline-produced drop set and inert-position labels, "
-         "`0080`'s per-invariant coverage populations, `0083`'s closed denominator — is "
-         "re-executed rather than carried. **`0085` §7 (B3) is CARRIED and is the Human Lead's: "
-         "the half-open UTC-instant form and D11-as-global-cutoff still carry no assertion in "
-         "the invariant set, and this arm does NOT add them.** This overwrites the previous `-b` "
-         "deliverables.")
+         "stands — the spec as amended through **`decisions/0088`**, which acts on Red Team's "
+         "**fourth-pass HOLD** and closes the **B3** item that blocked the gate twice. **It is "
+         "a rerun, not an amendment: everything below is rebuilt from the stored data by the "
+         "same pipeline that writes the table, and no previous output was patched.** Against "
+         "this arm's last deliverables (the 2026-08-16 `-r3` run, spec through `0085`), `0088` "
+         "changes **three things this arm emits**. **§1 (B3) — MEASURE BOTH UNASSERTED "
+         "MANDATES** (§14a): the boundary window at `τ1` and `τ2` on both populations, a "
+         "**per-site D11 table asserted at each site**, and the existing `tau2 <= tau_pull` "
+         "assertion **promoted into the published invariant set as invariant 9**. **Two of "
+         "these moved something.** The boundary window is **not vacuous** — the `τ1` boundary "
+         "is occupied — and the per-site assertion exposed that this arm's `-r3` build let the "
+         "S1-side D11 carry-through reach the four `action_count_s1_*` columns, where no ruling "
+         "exempts it; **D11 is now applied there, 4 position-5 rows move, and no waterfall "
+         "line, outcome share or invariant moves with them.** **§3 — the D9 clustering universe "
+         "is RULED U1, ranked by distinct strict keys merged** (§10a): this arm published **U3** "
+         "on `-r3` and now publishes **U1**; **no D9 count moves**, because the search already "
+         "ran on the whole sweep. **§2 — the D9 coverage quantities are named as separate "
+         "objects** (§10z). The column set is unchanged at **89**, and **no rule, population or "
+         "bound endpoint moves**: line 1 is 220,107, APPLY is 196,654, DERIV is 147,370, "
+         "position 6 removes 703 and 99. Everything else — `0078`'s provenance rule, `0079`'s "
+         "pipeline-produced drop set and inert-position labels, `0080`'s per-invariant coverage "
+         "populations, `0083`'s closed denominator, `0085`'s four-cell emptiness and the "
+         "1,355 / 652 decomposition — is re-executed rather than carried. This overwrites the "
+         "previous `-b` deliverables.")
 PROV = (f"**Provenance — `{BUILD}`.** Every count, every waterfall figure and every invariant "
         "result below was measured on that build (`0078`, `0079` §2). Where a figure is quoted "
         f"from a ruling, the ruling's own build is named instead: `{RULED_BUILD}`. "
@@ -645,6 +649,49 @@ def main() -> None:
       f"{D9['sides']['B_side_S2_not_S1']:,} carrying S2 and not S1, "
       f"{D9['sides']['both_seasons']:,} carrying both.")
     A("")
+    cq = D9["COVERAGE_QUANTITIES_EACH_NAMED"]
+    A("### 10z. The D9 coverage quantities — **named as separate objects, at the point of use**")
+    A("")
+    A(MEAS)
+    A("")
+    A(f"**`0088` §2.** {cap1(cq['ruling'])}. **747,478 and 726,103 are different objects and "
+      "both correct**: undeduplicated user-show **season-coverage rows** against distinct "
+      "candidate `(user, show)` **pairs** — a user-show carrying two seasons contributes **two "
+      "rows and one pair**. **One name over two quantities is not a divergence, and reconciling "
+      "would collapse two real objects into one.** This arm publishes "
+      f"**`{cq['THIS_ARM_PUBLISHES_AS_ITS_HEADLINE']}`** and states what each quantity counts.")
+    A("")
+    A("| Quantity | Value | What it counts |")
+    A("| :--- | ---: | :--- |")
+    for k in ("distinct_candidate_user_show_PAIRS",
+              "undeduplicated_user_show_SEASON_COVERAGE_ROWS",
+              "distinct_show_IDs_APPEARING_IN_A_D9_COVERAGE_ROW",
+              "distinct_SLUGGED_SHOW_IDS_IN_THE_PARSED_SWEEP_the_U1_universe"):
+        v = cq[k]
+        A(f"| `{k}` | {v['value']:,} | {v['counts']} |")
+    A("")
+    A("**On the mislabel `0088` §2(a) corrects.** The pivot-side count — show IDs appearing in "
+      f"at least one D9 coverage row, **{cq['distinct_show_IDs_APPEARING_IN_A_D9_COVERAGE_ROW']['value']:,}** "
+      "here — **is not the sweep**, and this arm labels it for what it is. This arm's slugged "
+      "sweep set, the **U1** universe the clustering runs over, is a **different object**: "
+      f"**{cq['distinct_SLUGGED_SHOW_IDS_IN_THE_PARSED_SWEEP_the_U1_universe']['value']:,}** show "
+      "IDs, of which "
+      f"{cq['distinct_SLUGGED_SHOW_IDS_IN_THE_PARSED_SWEEP_the_U1_universe']['of_which_the_slug_string_is_empty']} "
+      "carry an empty slug string, built from `processed/step4/parsed/`. **`0088` §2(c): where "
+      "the arms' universes differ they are two objects and are named as two — a shared label "
+      "over two sets is the defect; the sets themselves may both be right.**")
+    A("")
+    A("**And the season-coverage row count is not comparable without its mask.** This arm's "
+      f"**{cq['undeduplicated_user_show_SEASON_COVERAGE_ROWS']['value']:,}** is over the "
+      "**D11-filtered S1/S2 episode records only**. A row count taken over all seasons, or "
+      "before D11, is a third object again — which is the whole point of naming it.")
+    A("")
+    ds = D9["D11_site"]
+    A(f"**D11 at this site** (`0088` §1(b)): {ds['records_excluded_by_D11']:,} records excluded "
+      f"of {ds['records_in_the_sites_input_universe']:,} "
+      f"in the site's input universe; latest `watched_at` used **{ds['latest_watched_at_used_utc']}**; "
+      f"assertion holds: **{ds['assertion_holds']}**.")
+    A("")
     A("### The keys, which are now defined in the spec")
     A("")
     A("**`0074` ruling 5 ruled STRICT; `0076` §3 defined both keys**, because \"strict\" and "
@@ -700,18 +747,21 @@ def main() -> None:
     nf = D9["normalisation_finding"]
     A(f"**{nf['what_it_shows']}.**")
     A("")
-    A("### 10a. The universe the clustering runs over — **named, because the arms diverged "
-      "on it**")
+    A("### 10a. The clustering universe — **U1, ruled, ranked by distinct strict keys merged**")
     A("")
     cl = nf["clustering_universes"]
-    A("**`0085` §2, Red Team blocker B1 — NAME THE UNIVERSE THE CLUSTERING RUNS OVER, AT THE "
-      "POINT OF USE.** The two arms published **disjoint** cluster lists on **identical** "
-      "counts, sharing no member, with maxima 8 against 10, while every count around them "
-      "reconciled. **It is a difference in which set of shows is clustered, and the spec never "
-      f"said which.** **{cap1(cl['status'])}**")
+    A("**`0088` §3 RULES IT.** *The D9 clustering universe is **U1** — every distinct show ID "
+      "appearing anywhere in the pulled sweep that carries a slug, deduplicated to one row per "
+      "show ID — **ranked by DISTINCT STRICT KEYS MERGED**, i.e. how many separate metadata "
+      "entries the loose key collapsed into one.* **NOT U2 (the 1,138 frame shows) and NOT U3 "
+      "(the 75 D9 candidate pairs).** The ground is `0088`'s: the artifact D9 hunts is a "
+      "history **splitting across two metadata entries**, and that can occur **anywhere in a "
+      "history, not only among shows that survived the frame filters** — a frame-restricted "
+      "universe finds only splits where **both sides made the cut**, and **a bound computed on "
+      "a narrow slice bounds very little**.")
     A("")
-    A("**THIS INSTANCE PUBLISHES `" + cl["PUBLISHED_UNIVERSE"] + "`.** "
-      + cap1(cl["why_that_one"]) + ".")
+    A(f"**THIS ARM PUBLISHES `{cl['PUBLISHED_UNIVERSE']}`, ranked on the ruled basis.** "
+      f"{cap1(cl['CHANGED_FROM_THIS_ARMS_PREVIOUS_BUILD'])}")
     A("")
     A("| Universe | Unit | Members examined | Distinct loose keys | Max cluster | "
       "Largest clusters |")
@@ -722,23 +772,48 @@ def main() -> None:
         A(f"| `{k}`{star} | {v['unit']} | {v['members_examined']:,} | "
           f"{v['distinct_loose_keys']:,} | {v['max_cluster_size']} | {lst} |")
     A("")
+    u1 = cl["universes"]["U1_all_sweep_show_ids_carrying_a_slug"]
+    alt = u1["ALTERNATE_BASIS_ranked_by_distinct_show_IDs"]
+    A("**The basis needed ruling because it reorders the list on its own.** Same universe, same "
+      "key, two bases:")
+    A("")
+    A("| Ranking basis | Largest clusters |")
+    A("| :--- | :--- |")
+    A("| **distinct STRICT keys merged (RULED)** | "
+      + ", ".join(f"`{a}` ({b})" for a, b in u1["largest_clusters"].items()) + " |")
+    A("| distinct show IDs (not ruled) | "
+      + ", ".join(f"`{a}` ({b})" for a, b in alt["largest_clusters"].items()) + " |")
+    A("")
+    tb = u1["THE_TIE_BREAK_IS_NOT_RULED"]
+    A(f"**REPORTED, NOT RECONCILED — the ruling fixes the BASIS and not the TIE-BREAK, and the "
+      f"tie is occupied.** `0088` §3 names the U1 top three as `secondchance` (8), `theisland` "
+      f"(7), `maigret` (6). **The first two are unique at their counts and this build "
+      f"reproduces them exactly.** The third is inside a "
+      f"**{tb['keys_tied_at_the_third_place_count']}-way tie at "
+      f"{tb['third_place_count']}** — "
+      + ", ".join(f"`{x}`" for x in tb["tied_keys"]) +
+      f" — so **which name appears third is decided by a rule no surface states**. Under this "
+      f"arm's tie-break ({tb['this_arms_tie_break']}) it is **`{tb['this_arms_third_name']}`**; "
+      "`maigret` is equally correct under a different one. **This is a spec gap inside the "
+      "ruling that closed the previous spec gap, and it is reported rather than resolved by "
+      "picking the name that matches the entry.**")
+    A("")
     A(f"**{cap1(cl['note_the_unit_differs_between_universes'])}.** Coverage: "
       f"{cap1(cl['coverage'])}.")
     A("")
     wn = cl["WHAT_NAMING_THE_UNIVERSE_LOCATES"]
-    A(f"**What naming the universe LOCATES.** {wn['finding']}. **{cap1(wn['what_it_means'])}.** "
+    A(f"**What naming the universe located.** {wn['finding']}. **{cap1(wn['what_it_means'])}.** "
       f"Maxima reproduced on this build: **U1 = {wn['reproduced_U1_max']}**, "
       f"**U3 = {wn['reproduced_U3_max']}** — `0085` §2's *\"maxima 8 against 10\"*, both from "
-      "one run.")
-    A("")
-    A(f"***What it does NOT do:*** {wn['what_it_does_NOT_do']}. Source of the quoted lists: "
+      f"one run. {cap1(wn['and_the_basis_matters_too'])}. Source of the quoted lists: "
       f"{wn['quoted_lists_source']}.")
     A("")
-    A("**The divergence is reported, not reconciled.** The cluster examples are the evidence "
-      "for the loose key's only warrant — that it **bounds how wrong strict could be** — so "
-      "two arms giving different evidence for one warrant makes the warrant irreproducible "
-      "while the deliverables read as though it is not. Naming the universe is what makes the "
-      "two lists comparable; **it does not make them agree, and this instance does not try.**")
+    A(f"**{cap1(nf['THE_LIST_THIS_REPLACES'])}.**")
+    A("")
+    A("**No count moves with the ruling.** D9's **search** already ran on the whole sweep in "
+      "this arm — 726,103 candidate pairs — so the strict and loose complementary-pair counts "
+      "are unchanged at **0** and **75**. What the ruling fixes is **which clusters are "
+      "illustrated**, which is the evidence for the loose key's only warrant.")
     A("")
     A(f"**Why the loose count publishes even though strict is ruled:** {nf['consequence']}.")
     A("")
@@ -829,6 +904,120 @@ def main() -> None:
       "completion date that moves.** The second half matters on its own: the count alone would "
       "not establish that no *surviving* pair's clock start changes, and a moved clock start is "
       "what would push the difference past lines 1–3 into the published figures.")
+    A("")
+    # ------------------------------------------------------------------
+    # 14a. B3 -- decisions/0088 Sec 1
+    # ------------------------------------------------------------------
+    b3 = R["B3_the_two_unasserted_mandates"]
+    A("## 14a. B3 — the two unasserted mandates, **measured, not self-reported**")
+    A("")
+    A(MEAS)
+    A("")
+    A(f"**`0088` §1.** {cap1(b3['ruling'])}. **The ground:** {b3['ground']}.")
+    A("")
+    A("### (a) The boundary window — the rows the two forms could differ on")
+    A("")
+    bw = b3["a_boundary_window"]
+    A(f"{cap1(bw['what_it_measures'])}. **{cap1(bw['compliance_self_report'])}.**")
+    A("")
+    A("| Population | Unit | `[τ1 − 24h, τ1)` | **exactly at `τ1`** | `[τ2 − 24h, τ2)` | "
+      "**exactly at `τ2`** | Examined |")
+    A("| :--- | :--- | ---: | ---: | ---: | ---: | ---: |")
+    for pk, pv in bw["by_population"].items():
+        de = pv["DISTINCT_EPISODES_the_form_the_outcome_assignment_reads"]
+        rr = pv["RAW_RECORDS_the_ruling's_own_word"]
+        lv = pv["LIVENESS_EVIDENCE_at_tau1"]
+        A(f"| {pk} | distinct S2 episodes (what `|A|` counts) | "
+          f"{de['in_[tau1_minus_24h, tau1)']:,} | **{de['exactly_at_tau1']}** | "
+          f"{de['in_[tau2_minus_24h, tau2)']:,} | **{de['exactly_at_tau2']}** | "
+          f"{de['episodes_examined']:,} |")
+        A(f"| {pk} | raw in-E2 S2 records | {rr['in_[tau1_minus_24h, tau1)']:,} | "
+          f"**{rr['exactly_at_tau1']}** | {rr['in_[tau2_minus_24h, tau2)']:,} | "
+          f"**{rr['exactly_at_tau2']}** | {rr['records_examined']:,} |")
+        A(f"| {pk} | max insertion instant (the STRICT silence test) | "
+          f"{lv['max_insertion_instant_in_[tau1_minus_24h, tau1)']} | "
+          f"**{lv['max_insertion_instant_exactly_at_tau1']}** | — | — | "
+          f"{lv['rows_examined']:,} |")
+    A("")
+    for pk, pv in bw["by_population"].items():
+        wd = pv["WHAT_THE_FORM_DECIDES"]
+        A(f"- **{pk} — `{pv['VERDICT_STATE']}`.** {pv['VERDICT']}. "
+          f"Rows with an S2 episode exactly at `τ1`: "
+          f"**{wd['rows_with_an_S2_episode_exactly_at_tau1']}**; of those, currently scored "
+          f"never-started so the form would decide the outcome: "
+          f"**{wd['of_those_currently_scored_never_started_so_the_form_DECIDES_the_outcome']}**.")
+    A("")
+    A("**THE MANDATE IS NOT VACUOUS ON THIS DATA, AND THAT IS THE FINDING.** `0088` §1(a) "
+      "instructs that a zero be **labelled vacuous rather than passed silently**. The count is "
+      "**not** zero: the `τ1` boundary is **occupied**, so the half-open form is doing real "
+      "work in `|A|` — an instant exactly at `τ1` is *outside* `A` under the half-open form and "
+      "*inside* it under a `<=` or date-level form. **Three states, not two:** an empty "
+      "boundary, an occupied boundary that decides no outcome, and an occupied boundary that "
+      "decides one. This build is the middle state, and collapsing it into either neighbour is "
+      "the misreading.")
+    A("")
+    A("### (b) The per-site D11 table — **asserted at each site, not once and about the rest**")
+    A("")
+    ps = b3["b_per_site_D11_table"]
+    A(f"{cap1(ps['what_it_measures'])}. **{ps['sites_counted']} sites; D11 applied at "
+      f"{ps['sites_where_D11_is_applied']}.**")
+    A("")
+    A("| Site | D11 applied | Records excluded | Unit | Assertion holds | Note |")
+    A("| :--- | :---: | ---: | :--- | :---: | :--- |")
+    for s in ps["sites"]:
+        s = dict(s)
+        # the D9 site is measured at stage 3, where the coverage pivot is built;
+        # it is FILLED IN here from d9.json rather than left as a dash, so no row
+        # of this table reads as unmeasured.
+        if s["records_excluded_by_D11"] is None and s["site"].startswith("D9"):
+            s["records_excluded_by_D11"] = ds["records_excluded_by_D11"]
+            s["assertion_holds"] = ds["assertion_holds"]
+            s["note"] = (f"{ds['records_used']:,} records used of "
+                         f"{ds['records_in_the_sites_input_universe']:,}; measured at stage 3 "
+                         "where the coverage pivot is built — see §10z")
+        exc = "—" if s["records_excluded_by_D11"] is None else f"{s['records_excluded_by_D11']:,}"
+        ah = "—" if s["assertion_holds"] is None else ("**yes**" if s["assertion_holds"]
+                                                      else "**NO — by design, see below**")
+        nm = s["site"].replace("|", "\\|")
+        A(f"| `{nm}` | {'yes' if s['d11_applied'] else '**no**'} | {exc} | "
+          f"{s['unit'].replace('|', chr(92) + '|')} | {ah} | {s['note'][:150]} |")
+    A("")
+    A("**Every row of that table is measured.** No site reports a dash: the D9 row is filled "
+      "from the stage where its pivot is built. **A site that reported nothing because nothing "
+      "was looked at would be indistinguishable from a site that looked and found zero**, which "
+      "is the failure this study's own standing rule exists to prevent.")
+    A("")
+    A("**The one site where D11 is not applied is the S1 completion walk**, and the `no` there "
+      "is the **correct reported state, not a failure**: `0068` rules waterfall line 1 at "
+      "**220,107 as published**, that value needs the pairs whose first-pass completion rests "
+      "on a post-cutoff record, and whether D11 applies to the walk is `0068`'s own **open** "
+      "item. Three different objects sit behind it and are named separately — **73 records**, "
+      "**72 distinct episodes**, **60 episodes whose *canonical* instant is post-cutoff**.")
+    A("")
+    ch = ps["pairs_whose_action_counts_moved"]
+    A(f"**THIS RUN CHANGES SOMETHING, AND THE PER-SITE ASSERTION IS WHAT EXPOSED IT.** "
+      f"{cap1(ps['THIS_RUNS_OWN_CHANGE'])}. **Size of the change:** "
+      f"{ch['in_the_record_universe']} pairs in the record universe, of which "
+      f"**{ch['of_those_present_in_the_APPLY_position5_row_set']} are in the APPLY position-5 "
+      f"row set** and {ch['of_those_present_in_the_DERIV_position5_row_set']} in DERIV's; "
+      f"columns affected: {', '.join('`' + c + '`' for c in ch['columns_affected'])}. "
+      f"{cap1(ch['no_other_column_moves'])} — **line 1 is 220,107 and position 5 is 196,654 on "
+      "this build, unchanged.**")
+    A("")
+    A("### (c) The promoted assertion — published, labelled **CODE CHECK**")
+    A("")
+    pr = b3["c_the_promoted_assertion"]
+    A(f"**`{pr['assertion']}`.** {cap1(pr['ruling'])}. It is **invariant 9** in "
+      "`artifacts/step8-invariants-b.md`.")
+    A("")
+    A("| Population | Rows examined | `tau2 > tau_pull` | `tau2` **exactly at** `tau_pull` | "
+      "Latest `tau2` |")
+    A("| :--- | ---: | ---: | ---: | :--- |")
+    for pk, pv in pr["by_population"].items():
+        A(f"| {pk} | {pv['rows_examined']:,} | {pv['rows_with_tau2_gt_tau_pull']} | "
+          f"{pv['rows_with_tau2_EXACTLY_at_tau_pull']} | {pv['latest_tau2_utc']} |")
+    A("")
+    A(f"**{cap1(pr['the_bound_is_ATTAINED_not_slack'])}.**")
     A("")
     A("## 15. Outcome states, channel pairs, and the scope qualifier")
     A("")
@@ -1140,20 +1329,21 @@ def main() -> None:
       "**DERIV's silence-alone figure differs from APPLY's by exactly the never-started "
       "silent pairs DERIV does not carry.**")
     A("")
-    A("## 21. Where two faithful instances could still differ — plus what `0083` and `0085` "
-      "closed, and what `0085` carried")
+    A("## 21. Where two faithful instances could still differ — plus what `0083`, `0085` and "
+      "`0088` closed, and the one gap `0088` opened")
     A("")
     A(MEAS)
     A("")
     A("**Three kinds of item are in this list and each says which it is.** *(a)* **Genuinely "
       "open** at the spec level — reported, never reconciled here. *(b)* **CLOSED** by "
-      "`decisions/0083` or `0085`, kept in the list because the previous build published them "
-      "as live and **a closure that silently disappears from the report is indistinguishable "
-      "from an item that was never raised**; each states what closed it and what was "
-      "**re-measured rather than quoted**. *(c)* **CARRIED** — `0085` §7's B3, which is "
-      "explicitly the Human Lead's to rule and which **this arm did not act on**. **Item 1 is "
-      "an ARM-AGAINST-ARM divergence and is reported, not reconciled**, which is the standing "
-      "rule for the dual run.")
+      "`decisions/0083`, `0085` or `0088`, kept in the list because a previous build published "
+      "them as live and **a closure that silently disappears from the report is "
+      "indistinguishable from an item that was never raised**; each states what closed it and "
+      "what was **re-measured rather than quoted**. *(c)* **NEWLY OPEN** — item 2, the "
+      "**tie-break** `0088` §3 left unspecified inside the very ruling that fixed the ranking "
+      "basis. **`0085` §7's B3 is no longer carried: `0088` §1 rules it and this arm has "
+      "implemented all three parts** (§14a). **Items 1, 2 and 4 are reported, not reconciled**, "
+      "which is the standing rule for the dual run.")
     A("")
     for i, s in enumerate(DIV, 1):
         A(f"{i}. {s}")
@@ -1191,6 +1381,17 @@ def main() -> None:
       "asserted**: the set-membership drop rule, which is a coverage count (`0074` ruling 3), "
       "and the 703 expectation, which is a population reconciliation.")
     B("")
+    B("**THE SET IS NINE THIS RUN, NOT EIGHT.** "
+      f"{c['the_set_moved_from_EIGHT_to_NINE_this_run']}.")
+    B("")
+    B("**What invariant 9 does and does not buy.** `no position-5 row has tau2 > tau_pull` is "
+      "true by D10's own definition of position 5, so it is a **code check** and it is not "
+      "evidence for anything about the data. What promoting it buys is **visibility**: it ran "
+      "before and no reader of this deliverable could see it, which is the same defect as an "
+      "unlabelled code check one level up. **And it is not slack** — rows sit with `tau2` "
+      "**exactly at** `tau_pull`, so a `>=` form of the same assertion would fail. See "
+      "`artifacts/step8-waterfall-b.md` §14a(c).")
+    B("")
     cr = I["invariant_coverage_rule"]
     B("## Coverage — every invariant names its population and accounts for every row in it")
     B("")
@@ -1207,12 +1408,14 @@ def main() -> None:
     B("| :-- | :--- | :--- | :--- | :--- | :--- |")
     for i, iv in enumerate(I["invariants"], 1):
         cov = iv.get("coverage", {})
-        if "rows_in_the_stated_population" in cov:
-            cs = (f"{cov.get('rows_asserted', cov.get('rows_asserted_in_range_clause', 0)):,} "
-                  f"+ {cov.get('rows_not_asserted', 0):,}"
-                  + (f" + {cov['rows_asserted_null_clause']:,}"
-                     if "rows_asserted_null_clause" in cov else "")
-                  + f" = {cov['rows_in_the_stated_population']:,} {cov['unit']}")
+        if "identity_arithmetic" in cov:
+            cs = f"{cov['identity_arithmetic']} {cov['unit']}"
+            if "rows_asserted_in_range_clause" in cov:
+                cs += (f" (asserted = {cov['rows_asserted_in_range_clause']:,} in-range + "
+                       f"{cov['rows_asserted_null_clause']:,} null)")
+        elif "rows_in_the_stated_population" in cov:
+            cs = (f"{cov.get('rows_asserted', 0):,} + {cov.get('rows_not_asserted', 0):,}"
+                  f" = {cov['rows_in_the_stated_population']:,} {cov['unit']}")
         elif "pairs_in_the_stated_population" in cov:
             cs = (f"{cov['pairs_asserted_S1']:,} pairs × both seasons, "
                   f"{cov['records_examined_by_the_set_membership_rule']:,} records")
@@ -1229,17 +1432,51 @@ def main() -> None:
             cs = "; ".join(f"{k}: {v['accounts_asserted']:,} + {v['accounts_not_asserted']:,} "
                            f"= {v['accounts_in_the_stated_population']:,} accounts"
                            for k, v in iv["checked"].items())
+        elif "per_population" in cov:
+            cs = "; ".join(f"{k}: {v['identity_arithmetic']}"
+                           for k, v in cov["per_population"].items())
         else:
             cs = "both populations, every row / account — see §" + str(i)
         pop = str(iv.get("population", ""))
         pop = (pop[:78] + "…") if len(pop) > 78 else pop
-        B(f"| {i} | {iv['invariant'][:58]} | **{iv['label']}** | {pop} | {cs} | "
+        B(f"| {i} | {iv['invariant'][:58].replace('|', chr(92) + '|')} | **{iv['label']}** | "
+          f"{pop.replace('|', chr(92) + '|')} | {cs} | "
           f"**{'PASS' if iv['passes'] else 'FAIL'}** |")
     B("")
-    B(f"**All invariants pass: {I['all_pass']}.** For six of the eight that statement says the "
+    B(f"**All invariants pass: {I['all_pass']}.** For seven of the nine that statement says the "
       "code computed what it was told to. It is **not** evidence for the liveness rule, for "
       "the outcome definition, or for any published share. **The two that could have failed "
       "are §7 and §8, and what they found is reported in full below rather than as a tick.**")
+    B("")
+    au = cr["AUDIT_can_each_identity_actually_fail"]
+    B("### Can these identities actually fail? — **audited, because most of them could not**")
+    B("")
+    B(f"**`0088` §2(d) strikes an overstated sentence** — ~~*\"The run asserts this, so a report "
+      "that omitted a population could not be written by this pipeline\"*~~ — **as a control "
+      "asserted to exist**, on the ground that **8 of 13 coverage identities had the population "
+      "size and the asserted count as the same expression** — *that 8-of-13 is the figure the "
+      "ruling cites and is not this arm's own measurement.* **The same shape held here, and "
+      "worse: three identities were hardcoded `True` literals, and the aggregate chained "
+      "`.get(..., .get(..., .get(..., True)))`, so an invariant carrying no coverage key at all "
+      "contributed a pass.**")
+    B("")
+    B(f"**Rebuilt this run.** Every identity is arithmetic on measured counts, and **the "
+      "population size is sourced from a different file than the asserted count** — the "
+      "emitted analysis table, the Step 4 ledger, stage 1's own pair count, or the mandated "
+      "seven-position order. Result on this build: "
+      f"**{au['identities_whose_two_sides_are_independent_expressions']} of "
+      f"{cr['invariants_total']} identities have independently sourced sides**, "
+      f"**{au['identities_that_are_literals']} are literals**, and "
+      f"**{cr['invariants_carrying_a_coverage_identity']} of {cr['invariants_total']} "
+      "invariants carry a coverage identity at all** — with no default: "
+      f"`{cr['how_the_aggregate_is_computed']}`.")
+    B("")
+    B(f"**{cap1(au['what_a_failure_would_look_like'])}.**")
+    B("")
+    B("| Population-size source used |")
+    B("| :--- |")
+    for s in au["population_size_sources_used"]:
+        B(f"| {s}… |")
     B("")
     for i, iv in enumerate(I["invariants"], 1):
         B(f"## {i}. {iv['invariant']}")
@@ -1384,43 +1621,70 @@ def divergences(R: dict, D9: dict, S1: dict) -> list[str]:
     last = str(R["W_arms"][-1])
     cl = D9["normalisation_finding"]["clustering_universes"]
     tl = R["required_counts"]["p_at_bound"]["the_chain_has_THREE_links_only_two_are_construction"]
+    b3 = R["B3_the_two_unasserted_mandates"]
+    tie = cl["universes"]["U1_all_sweep_show_ids_carrying_a_slug"]["THE_TIE_BREAK_IS_NOT_RULED"]
+    bwA = b3["a_boundary_window"]["by_population"]["APPLY_position5"]
+    chg = b3["b_per_site_D11_table"]["pairs_whose_action_counts_moved"]
     return [
-        "**THE D9 CLUSTERING UNIVERSE — AN ARM-AGAINST-ARM DIVERGENCE, REPORTED AND NOT "
-        "RECONCILED.** `0085` §2 (Red Team B1) records that the two arms published **disjoint** "
-        "cluster lists on **identical** counts — no shared member, maxima 8 against 10 — while "
-        "every count around them reconciled. **That is a difference in which set of shows is "
-        "clustered, and the spec never said which.** `0085` requires the universe **named at "
-        "the point of use** and **rules no universe**. This instance names "
-        f"**`{cl['PUBLISHED_UNIVERSE']}`** as the one it publishes, and measures all three "
-        "candidate universes side by side (§10a) so an arm naming either of the others is "
-        "diffable against this one without a rerun. **The units differ between them** — U1 and "
-        "U2 count distinct show IDs per key, U3 counts complementary signature rows — **so a "
-        "cluster size from one is not comparable to a cluster size from another**, which is a "
-        "second reason the universe has to be named rather than the number quoted. **This arm "
-        "does not attempt to match the other's list.** **Measured, and it locates the axis: "
-        "BOTH lists `0085` §2 quotes are reproduced by THIS SINGLE BUILD from two different "
-        f"universes** — U1 gives maximum **{cl['WHAT_NAMING_THE_UNIVERSE_LOCATES']['reproduced_U1_max']}**, "
-        f"U3 gives maximum **{cl['WHAT_NAMING_THE_UNIVERSE_LOCATES']['reproduced_U3_max']}**, "
-        "which is `0085`'s *\"maxima 8 against 10\"*. **Neither arm miscounted; the difference "
-        "is the universe.** ***That is a measurement and not a reconciliation: it does not rule "
-        "which universe is correct, `0085` rules none, and choosing one is a spec decision for "
-        "the Human Lead.*** The quoted lists come from `decisions/0085` §2 and `task-sheet.md`, "
-        "spec surfaces this instance is required to read; **no other arm's output folder was "
-        "read.**",
+        "**THE D9 CLUSTERING UNIVERSE IS NOW RULED — U1 — AND THIS ARM CHANGED TO IT.** "
+        "`0088` §3 closes what `0085` §2 opened and `0086` §1 located. This arm published **U3** "
+        "on its previous build and now publishes "
+        f"**`{cl['PUBLISHED_UNIVERSE']}`**, ranked on the ruled basis, **distinct strict keys "
+        "merged**. **No count moves with it** — D9's search already ran on the whole sweep here, "
+        "so strict is **0** and loose is **75** either way; what moves is **which clusters are "
+        "illustrated**, which is the evidence for the loose key's only warrant. All three "
+        "candidate universes are still measured side by side (§10a) so an arm on another one is "
+        "diffable without a rerun, and **the units differ between them** — U1 and U2 count "
+        "distinct show IDs per key, U3 counts complementary signature rows.",
 
-        "**`0085` §7 (B3) IS CARRIED AND IS NOT THIS ARM'S TO CLOSE.** Two Step 8 mandates "
-        "carry no assertion in the invariant set: **the half-open UTC-instant form** "
-        "(*\"`date(watched_at) <= T1` must not appear anywhere in the implementation\"*) and "
-        "**D11 as a global cutoff discarding records at or after `τ_pull` from EVERY "
-        "computation**. Both are complied with in this pipeline and **both compliance "
-        "statements are self-reports**, which is exactly Red Team's objection — converting a "
-        "self-report into a check is what the invariant set is for. **`0085` §7 states the "
-        "choice is a Human Lead ruling and the arms are not to add them, so this arm has NOT "
-        "added them and the assertion set remains EIGHT.** Bearing on it, observed on this "
-        "build and offered as evidence rather than as a closure: `τ_pull` is a single module "
-        "constant applied at every read, the D11 discard is measured and decomposed (167 "
-        "in-frame records, 73 S1-side + 94 S2-side), and the silence test's evidence "
-        "restriction is measured inert on the exclusion counts at every arm.",
+        "**BUT THE TIE-BREAK IS NOT RULED, AND THE TIE IS OCCUPIED. REPORTED, NOT RECONCILED.** "
+        "`0088` §3 names the U1 top three as `secondchance` (8), `theisland` (7), `maigret` (6). "
+        "**The first two are unique at their counts and reproduce exactly on this build.** The "
+        f"third sits inside a **{tie['keys_tied_at_the_third_place_count']}-way tie at "
+        f"{tie['third_place_count']}** — "
+        + ", ".join(f"`{x}`" for x in tie["tied_keys"]) +
+        f" — so the third name is decided by a rule **no surface states**. Under this arm's "
+        f"tie-break ({tie['this_arms_tie_break']}) it is **`{tie['this_arms_third_name']}`**; "
+        "`maigret` is equally correct under another. **This is a spec gap inside the ruling "
+        "that closed the previous spec gap, and it is reported rather than resolved by picking "
+        "the name that matches the entry.**",
+
+        "**B3 IS CLOSED BY `0088` §1, AND MEASURING IT MOVED SOMETHING IN THIS ARM.** The two "
+        "mandates are **the half-open UTC-instant form** and **D11 as a global cutoff**. "
+        "Compliance was never the issue; **nothing measured whether either is load-bearing**. "
+        "Measured now (§14a). **(a) The boundary window is NOT VACUOUS**: on APPLY, "
+        f"**{bwA['DISTINCT_EPISODES_the_form_the_outcome_assignment_reads']['exactly_at_tau1']}** "
+        "distinct S2 episode sits **exactly at `τ1`** (and the same count in raw records), so "
+        "the half-open form is doing real work in `|A|` — though "
+        f"**{bwA['WHAT_THE_FORM_DECIDES']['of_those_currently_scored_never_started_so_the_form_DECIDES_the_outcome']}** "
+        "outcome states differ between the two forms, because that row already has `|A| ≥ 1`. "
+        "**Three states, not two: empty, occupied-and-inert, occupied-and-deciding.** "
+        "**(b) The per-site table exposed a real gap in this arm's own previous build**: the "
+        "S1-side D11 carry-through — which has a ruling behind it **only** for the completion "
+        "walk, because `0068` publishes line 1 at 220,107 — was also reaching the four "
+        "`action_count_s1_*` columns, where nothing exempts it. **D11 is applied there now.** "
+        f"**{chg['in_the_record_universe']} pairs move in the record universe, "
+        f"{chg['of_those_present_in_the_APPLY_position5_row_set']} of them in the APPLY "
+        "position-5 row set**, and **no waterfall line, outcome share or invariant moves with "
+        "them**. **(c) The `tau2 <= tau_pull` assertion is promoted into the published set as "
+        "invariant 9** — and **it is not slack**: rows sit with `tau2` exactly at `τ_pull`.",
+
+        "**`specs/step8-readback.md` STILL SAYS STEP 8 *\"HAS NOT LAUNCHED\"*, ON THIS READ.** "
+        "`0086` §3 stamped the two artifacts generated from that file and missed the source; "
+        "`0087` §5 (F5) recorded it as the **third** occurrence of the string and asked for a "
+        "stamp plus a ruling on whether `specs/` becomes a propagation surface. **Read live on "
+        "this build, line 3 still carries it.** `0086` supersedes *\"NOT LAUNCHED\"* with "
+        "**LAUNCHED FOUR TIMES; STILL UNAPPROVED**, and **unapproved is not unlaunched** — the "
+        "reading that sentence invites. **Reported, not edited: `specs/` is not one of the "
+        "eight surfaces and the ruling on whether it should be is the Human Lead's.**",
+
+        "**THE ASSERTION SET IS NINE, AND THREE COUNTS OF IT ARE LIVE ON THE SPEC SURFACES.** "
+        "`0088` §1(c) promotes the ninth. `task-sheet.md` and this instance's definition file "
+        "still read **\"THE ASSERTION SET NOW HAS EIGHT MEMBERS\"**, and `task-sheet.md`'s "
+        "invariant-labelling bullet carries a **third** count — *\"four pure code checks, one by "
+        "construction, one item that is not an invariant\"* — which predates `0076`. **The "
+        "ruling moved the count and no sentence caught up.** Reported as a spec observation; "
+        "this arm publishes nine and says so.",
 
         "**THE COEXTENSIVITY CHAIN HAS THREE LINKS, NOT TWO — and the third is DATA.** "
         "`0085` §4 (Red Team P4): `numerator = L2 ⟺ m_H = max(E2)` is construction given "

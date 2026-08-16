@@ -305,6 +305,62 @@ def main():
         max_rid_d11=max_rid_d11, max_rid_all=max_rid_all,
     )
 
+    # ---- B3(b): THE PER-SITE D11 TABLE, the record-level half ------------------------------
+    # Human Lead ruling, decisions/0088 SS1, on Red Team's B3/F1, which blocked the gate on the
+    # third and fourth passes. D11 is specified to apply "to EVERY computation", and this
+    # instance named FIVE SITES IN PROSE WITH A COUNT AT NONE. Compliance was true and was
+    # independently confirmed; what was missing is any MEASUREMENT of whether the mandate is
+    # load-bearing on this data, and an unmeasured pass is indistinguishable from a check that
+    # looked nowhere. The sites whose unit is a RECORD are counted here, at the point the records
+    # exist; the sites whose unit is a distinct episode, an account or a coverage row are counted
+    # in stage 5, and the table is assembled and ASSERTED AT EACH SITE there.
+    d11_act = {}
+    for s_ in (1, 2):
+        for ai_, an_ in ((0, "watch"), (1, "checkin"), (2, "scrobble"), (3, "other")):
+            sel_ = (se_o == s_) & (acol == ai_)
+            d11_act[f"action_count_s{s_}_{an_}"] = {
+                "unit": "in-frame in-E S1/S2 episode records",
+                "records_examined_before_D11": int(sel_.sum()),
+                "records_excluded_by_D11": int((sel_ & ~keep_o).sum()),
+                "records_counted_after_D11": int((sel_ & keep_o).sum()),
+                "D11_applied": True,
+            }
+    n_undated_all = int(ts_missing.sum())
+    d11_sites_records = {
+        "ruling": "Human Lead, decisions/0088 SS1(b): emit records excluded by D11 at EACH site "
+                  "separately and ASSERT AT EACH SITE, not once and about the rest. Prose naming "
+                  "five sites with a count at none is what this replaces.",
+        "tau_pull_utc": "2026-08-11T00:00:00Z",
+        "the_eight_action_count_sites": d11_act,
+        "liveness_evidence": {
+            "unit": "records, ALL kinds and ALL shows -- the insertion clock is account-wide",
+            "records_examined_before_D11": n_records,
+            "records_excluded_by_D11_watched_at_ge_tau_pull": int(at_or_after_pull.sum()),
+            "records_excluded_as_undated": n_undated_all,
+            "records_used_after_D11": int(usable.sum()),
+            "accounts_whose_max_play_id_MOVES_under_D11": int((max_rid_d11 != max_rid_all).sum()),
+            "accounts_whose_last_insertion_instant_MOVES_under_D11": int(
+                (last_inst_d11 != last_inst_all).sum()),
+            "D11_applied": True,
+            "note": "Human Lead ruling 2, decisions/0070: the silence test's evidence is "
+                    "restricted to records dated before tau_pull. This is the site that ruling "
+                    "names, and it is the only site where D11 moves an input on this data.",
+        },
+        "S1_completion_walk": {
+            "unit": "in-frame S1 episode records",
+            "records_at_or_after_tau_pull_on_the_S1_side": n_d11_s1,
+            "D11_applied": False,
+            "why_not": "decisions/0068 fixes waterfall line 1 at the PUBLISHED S1-completer "
+                       "population of 220,107 and lists 'whether D11 moves it' as an OPEN "
+                       "question. This site is declared NOT-APPLIED rather than left unstated, "
+                       "and the counterfactual is measured in stage 2: 4 pairs stop being "
+                       "completers and 0 completion dates move.",
+        },
+        "in_frame_S1S2_records_at_or_after_tau_pull_total": n_base_at_or_after_pull,
+        "of_which_S1_side": n_d11_s1,
+        "of_which_S2_side": n_d11_s2,
+    }
+
     summary = {
         "step": 8, "instance": "a", "stage": 1, "api_calls": 0,
         "build": lib.build_record(),
@@ -333,6 +389,11 @@ def main():
         "distinct_S1_episodes": int(s1_num.size),
         "distinct_S2_episodes": int(s2_num.size),
         "distinct_episodes_whose_canonical_ts_ge_tau_pull": int((d_ts >= TAU_PULL).sum()),
+        "distinct_S2_episodes_whose_canonical_ts_ge_tau_pull": int(
+            ((d_season == 2) & (d_ts >= TAU_PULL)).sum()),
+        "distinct_S1_episodes_whose_canonical_ts_ge_tau_pull": int(
+            ((d_season == 1) & (d_ts >= TAU_PULL)).sum()),
+        "D11_per_site_records": d11_sites_records,
         "action_record_counts_in_frame_S1S2_kept_after_D11": {
             ACT_NAMES[k]: int(v) for k, v in
             zip([0, 1, 2, -1], [int(((act_o == 0) & keep_o).sum()),

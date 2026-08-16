@@ -33,6 +33,7 @@ Output: processed/step8/a/analysis_table.csv.gz   (position-5 rows, one per user
 """
 import json
 import os
+import re
 
 import numpy as np
 import pandas as pd
@@ -82,6 +83,46 @@ SPEC_COLUMNS = [
     "t0_date", "tau1", "tau2", "title", "user_idx",
 ]
 assert len(SPEC_COLUMNS) == len(set(SPEC_COLUMNS)) == 89
+
+
+def spec_columns_from_disk():
+    """READ THE ENUMERATION OFF task-sheet.md AND ASSERT THE TRANSCRIPTION AGAINST IT.
+
+    Red Team's fourth pass (decisions/0087, F5-F9 item F6) found this arm's column check weaker
+    than its own prose: the report said it asserts set equality "against the spec's list" while
+    the code asserted against the HAND TRANSCRIPTION above and never opened task-sheet.md. A hand
+    transcription is a second copy of the enumeration, so a propagation change to the spec would
+    not reach it -- and THE DUAL DIFF CANNOT CATCH A PROPAGATION FAILURE, because both arms would
+    have to make the same mistake to hide it and only one has to make it to keep it. F6 is a
+    carried limitation and not a ruling; this closes it rather than restating it.
+
+    A parse that finds nothing must FAIL rather than pass (CLAUDE.md), so the extracted count is
+    asserted and its coverage is returned for publication.
+    """
+    path = os.path.join(ROOT, "task-sheet.md")
+    txt = open(path).read()
+    anchor = txt.index("THE COLUMN SET IS ENUMERATED, NOT COUNTED")
+    s = txt.index("`abandonment_point_p`", anchor)
+    e = txt.index("`user_idx`", s) + len("`user_idx`")
+    found = [t for t in re.findall(r"`([A-Za-z0-9_]+)`", txt[s:e]) if not t.isdigit()]
+    uniq = sorted(set(found))
+    assert len(uniq) > 0, (
+        "the column enumeration was not found in task-sheet.md: this check would otherwise pass "
+        "by looking nowhere")
+    return uniq, {"source": "task-sheet.md, the 0080/0081/0082 enumeration block, READ AT RUN "
+                            "TIME -- not the hand transcription in this file",
+                  "names_parsed": len(found), "distinct_names_parsed": len(uniq),
+                  "matches_the_transcription_in_this_file": sorted(uniq) == sorted(SPEC_COLUMNS),
+                  "closes": "Red Team fourth pass F6 (decisions/0087 SS5), carried as a "
+                            "limitation: the code asserted against a transcription and never "
+                            "opened the spec"}
+
+
+SPEC_COLUMNS_ON_DISK, SPEC_COLUMNS_SOURCE = spec_columns_from_disk()
+assert set(SPEC_COLUMNS_ON_DISK) == set(SPEC_COLUMNS), (
+    "the transcribed column set disagrees with task-sheet.md's enumeration: "
+    f"only in the spec {sorted(set(SPEC_COLUMNS_ON_DISK) - set(SPEC_COLUMNS))}, "
+    f"only in this file {sorted(set(SPEC_COLUMNS) - set(SPEC_COLUMNS_ON_DISK))}")
 
 
 def main():
@@ -295,8 +336,11 @@ def main():
     # 0080: the set is ENUMERATED. Assert set equality against the spec's own list, not a count --
     # a count is arithmetically satisfiable by the wrong columns, which is how the previous run
     # produced 88 against 87 for the same contents.
-    extra = sorted(set(t.columns) - set(SPEC_COLUMNS))
-    missing = sorted(set(SPEC_COLUMNS) - set(t.columns))
+    # ...and the list asserted against is verified against task-sheet.md AT RUN TIME (see
+    # spec_columns_from_disk above), so this is set equality against the SPEC and not against a
+    # second copy of it. Red Team fourth pass F6.
+    extra = sorted(set(t.columns) - set(SPEC_COLUMNS_ON_DISK))
+    missing = sorted(set(SPEC_COLUMNS_ON_DISK) - set(t.columns))
     assert not extra and not missing, f"column set differs from decisions/0080: +{extra} -{missing}"
     assert t.shape[1] == 89
     t.to_csv(os.path.join(OUT, "analysis_table.csv.gz"), index=False, compression="gzip")
@@ -326,6 +370,7 @@ def main():
         "step2_show_fields_carried": int(frame.shape[1] - 1),
         "column_names": list(t.columns),
         "column_names_sorted": sorted(t.columns),
+        "column_set_verified_against_the_spec_ON_DISK": SPEC_COLUMNS_SOURCE,
         "column_set_ruling": "decisions/0080: the set is ENUMERATED NAMES, not a count -- 87 there, "
                              "88 at 0081 which RESTORES silent_at_tau1, and 89 at 0082 which ADDS "
                              "p_at_bound. 0077 SS3's count is REPLACED. Asserted here by SET "

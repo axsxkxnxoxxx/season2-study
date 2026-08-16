@@ -2,15 +2,19 @@
 
 **Step 8 is a GATE and this document is a PROPOSAL.** Nothing here is adopted. This instance does not adopt its own proposal, does not begin Step 8b or Step 9, and records no approval — that is the Human Lead's alone. Zero API calls; every figure is computed from data already on disk.
 
-**This is a RERUN ordered by the Human Lead**, on `task-sheet.md` Step 8 as it now stands — the spec as amended through **`decisions/0085`**, which acts on Red Team's **third-pass HOLD**. **It is a rerun, not an amendment: everything below is rebuilt from the stored data by the same pipeline that writes the table, and no previous output was patched.** Against this arm's last deliverables (the 2026-08-16 run, spec through `0083`) `0085` changes **four things this arm emits**, and **none of them moves a measured value**: §2 (**B1**) requires the **universe the D9 clustering runs over to be NAMED at the point of use** — the two arms published *disjoint* cluster lists on *identical* counts, which is an arm-against-arm divergence and is **reported, not reconciled** (§10a); §3 (**B2**) requires the `p_at_bound` emptiness on **both populations at both positions, four cells each** (§18); §4 (**P4**) rules that the coextensivity chain has **three links, not two**, and that `max(E2) = F2` is **not** construction — it is measured here (§18); §5 requires **both** halves of the line-6 marginal decomposition, **1,355 and 652, not one** (§20a). The column set is unchanged at **89**, and no rule, population or bound endpoint moves. Everything else — `0078`'s provenance rule, `0079`'s pipeline-produced drop set and inert-position labels, `0080`'s per-invariant coverage populations, `0083`'s closed denominator — is re-executed rather than carried. **`0085` §7 (B3) is CARRIED and is the Human Lead's: the half-open UTC-instant form and D11-as-global-cutoff still carry no assertion in the invariant set, and this arm does NOT add them.** This overwrites the previous `-b` deliverables.
+**This is a RERUN ordered by the Human Lead**, on `task-sheet.md` Step 8 as it now stands — the spec as amended through **`decisions/0088`**, which acts on Red Team's **fourth-pass HOLD** and closes the **B3** item that blocked the gate twice. **It is a rerun, not an amendment: everything below is rebuilt from the stored data by the same pipeline that writes the table, and no previous output was patched.** Against this arm's last deliverables (the 2026-08-16 `-r3` run, spec through `0085`), `0088` changes **three things this arm emits**. **§1 (B3) — MEASURE BOTH UNASSERTED MANDATES** (§14a): the boundary window at `τ1` and `τ2` on both populations, a **per-site D11 table asserted at each site**, and the existing `tau2 <= tau_pull` assertion **promoted into the published invariant set as invariant 9**. **Two of these moved something.** The boundary window is **not vacuous** — the `τ1` boundary is occupied — and the per-site assertion exposed that this arm's `-r3` build let the S1-side D11 carry-through reach the four `action_count_s1_*` columns, where no ruling exempts it; **D11 is now applied there, 4 position-5 rows move, and no waterfall line, outcome share or invariant moves with them.** **§3 — the D9 clustering universe is RULED U1, ranked by distinct strict keys merged** (§10a): this arm published **U3** on `-r3` and now publishes **U1**; **no D9 count moves**, because the search already ran on the whole sweep. **§2 — the D9 coverage quantities are named as separate objects** (§10z). The column set is unchanged at **89**, and **no rule, population or bound endpoint moves**: line 1 is 220,107, APPLY is 196,654, DERIV is 147,370, position 6 removes 703 and 99. Everything else — `0078`'s provenance rule, `0079`'s pipeline-produced drop set and inert-position labels, `0080`'s per-invariant coverage populations, `0083`'s closed denominator, `0085`'s four-cell emptiness and the 1,355 / 652 decomposition — is re-executed rather than carried. This overwrites the previous `-b` deliverables.
 
-**Provenance — `analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r3 (RERUN on the spec as amended through decisions/0085; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)`.** Every count, every waterfall figure and every invariant result below was measured on that build (`0078`, `0079` §2). Where a figure is quoted from a ruling, the ruling's own build is named instead: `position-5 build of 2026-08-13 (both arms, the run decisions/0078 labelled)`. **A count without its provenance can be correct when written and wrong when read.**
+**Provenance — `analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r4 (RERUN on the spec as amended through decisions/0088; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)`.** Every count, every waterfall figure and every invariant result below was measured on that build (`0078`, `0079` §2). Where a figure is quoted from a ruling, the ruling's own build is named instead: `position-5 build of 2026-08-13 (both arms, the run decisions/0078 labelled)`. **A count without its provenance can be correct when written and wrong when read.**
 
 ## How to read this report
 
-**SIX of the eight assertions CANNOT FAIL ON ANY DATA. Five are pure CODE CHECKS -- the outcome partition, the monotone filter counts, |D| <= L, A subset of A_H, and p in (0, 1]. A sixth, the clock start, is a code check by construction and a genuine cross-check only because the first-pass S1 completion date is recomputed INDEPENDENTLY here. TWO can fail on real data, and both were added by decisions/0076 because before it the set had ZERO: no account dropped wholesale, and no access_denied or skipped account read as empty. 'All invariants passed' is therefore mostly a statement that the code computed what it was told to; it is NOT evidence for the liveness rule or for any published share.**
+**SEVEN of the nine assertions CANNOT FAIL ON ANY DATA. Six are pure CODE CHECKS -- the outcome partition, the monotone filter counts, |D| <= L, A subset of A_H, p in (0, 1], and tau2 <= tau_pull at position 5. A seventh, the clock start, is a code check by construction and a genuine cross-check only because the first-pass S1 completion date is recomputed INDEPENDENTLY here. TWO can fail on real data, and both were added by decisions/0076 because before it the set had ZERO: no account dropped wholesale, and no access_denied or skipped account read as empty. 'All invariants passed' is therefore mostly a statement that the code computed what it was told to; it is NOT evidence for the liveness rule or for any published share.**
 
-Counts: **5 pure code checks**, **1 that is a code check by construction and a genuine cross-check as specified**, and **2 that can fail on real data** — both added by `decisions/0076`, because before it the set had **zero**. **2 further items are reported and NOT asserted**: the set-membership drop rule, which is a coverage count (`0074` ruling 3), and the 703 expectation, which is a population reconciliation.
+Counts: **6 pure code checks**, **1 that is a code check by construction and a genuine cross-check as specified**, and **2 that can fail on real data** — both added by `decisions/0076`, because before it the set had **zero**. **2 further items are reported and NOT asserted**: the set-membership drop rule, which is a coverage count (`0074` ruling 3), and the 703 expectation, which is a population reconciliation.
+
+**THE SET IS NINE THIS RUN, NOT EIGHT.** decisions/0088 Sec 1(c) PROMOTES the tau2 <= tau_pull assertion into the published set. It already ran; it was invisible to a reader of the deliverable. REPORTED AS A SPEC OBSERVATION, NOT RECONCILED: task-sheet.md and this instance's definition file still say 'THE ASSERTION SET NOW HAS EIGHT MEMBERS', and 0088 moved that count without the sentence catching up. task-sheet.md's own labelling bullet carries a THIRD count -- 'four pure code checks, one by construction, one item that is not an invariant' -- which predates 0076. Three counts of one set are live on the surfaces this instance reads.
+
+**What invariant 9 does and does not buy.** `no position-5 row has tau2 > tau_pull` is true by D10's own definition of position 5, so it is a **code check** and it is not evidence for anything about the data. What promoting it buys is **visibility**: it ran before and no reader of this deliverable could see it, which is the same defect as an unlabelled code check one level up. **And it is not slack** — rows sit with `tau2` **exactly at** `tau_pull`, so a `>=` form of the same assertion would fail. See `artifacts/step8-waterfall-b.md` §14a(c).
 
 ## Coverage — every invariant names its population and accounts for every row in it
 
@@ -24,18 +28,34 @@ Counts: **5 pure code checks**, **1 that is a code check by construction and a g
 | :-- | :--- | :--- | :--- | :--- | :--- |
 | 1 | outcome states are mutually exclusive and sum to the POST- | **CODE CHECK** | BOTH ROW SETS ON BOTH POPULATIONS (decisions/0080 Sec 3, row 1): the 196,654 A… | APPLY_position5_row_set: 196,654 + 0 = 196,654; APPLY_post_position_7_live_subset: 195,951 + 0 = 195,951; DERIV_position5_row_set: 147,370 + 0 = 147,370; DERIV_post_position_7_live_subset: 147,271 + 0 = 147,271 | **PASS** |
 | 2 | filter counts decrease monotonically -- CODED AS `>=`, NOT | **CODE CHECK** | BOTH CHAINS (decisions/0080 Sec 3, row 2): APPLY's seven positions and DERIV's… | 7 positions on each chain, 6 transitions asserted on each | **PASS** |
-| 3 | distinct episodes never exceed season length (|D| <= L) | **CODE CHECK** | BOTH SEASONS, every pair the set-membership rule examines (decisions/0080 Sec … | 278,452 pairs × both seasons, 6,065,610 records | **PASS** |
-| 4 | A is a subset of A_H on every row | **CODE CHECK** | the 196,654 APPLY position-5 row set, EVERY ROW (decisions/0080 Sec 3, row 4) | 196,654 + 0 = 196,654 rows | **PASS** |
-| 5 | clock start is on or after the S2 finale date, on or after | **CODE CHECK BY CONSTRUCTION, DATA CHECK AS SPECIFIED** | the 196,654 APPLY position-5 row set, EVERY ROW, with the first-pass S1 comple… | 196,654 + 0 = 196,654 rows | **PASS** |
-| 6 | abandonment point p is in (0, 1] on every Started-and-left | **CODE CHECK** | ALL Started-and-left rows AT POSITION 5, null on the rest -- and the two must … | 19,141 + 0 + 177,513 = 196,654 rows | **PASS** |
+| 3 | distinct episodes never exceed season length (\|D\| <= L) | **CODE CHECK** | BOTH SEASONS, every pair the set-membership rule examines (decisions/0080 Sec … | 278452 + 0 = 278452 pairs | **PASS** |
+| 4 | A is a subset of A_H on every row | **CODE CHECK** | the 196,654 APPLY position-5 row set, EVERY ROW (decisions/0080 Sec 3, row 4) | 196654 + 0 = 196654 rows | **PASS** |
+| 5 | clock start is on or after the S2 finale date, on or after | **CODE CHECK BY CONSTRUCTION, DATA CHECK AS SPECIFIED** | the 196,654 APPLY position-5 row set, EVERY ROW, with the first-pass S1 comple… | 196654 + 0 = 196654 rows | **PASS** |
+| 6 | abandonment point p is in (0, 1] on every Started-and-left | **CODE CHECK** | ALL Started-and-left rows AT POSITION 5, null on the rest -- and the two must … | 196654 + 0 = 196654 rows (asserted = 19,141 in-range + 177,513 null) | **PASS** |
 | 7 | NO ACCOUNT IS DROPPED WHOLESALE BY THE PAIR-LEVEL LIVENESS | **DATA CHECK** | BOTH POPULATIONS, IN ACCOUNTS (decisions/0080 Sec 3, row 7): the accounts in A… | APPLY: 2,422 + 0 = 2,422 accounts; DERIV: 2,402 + 0 = 2,402 accounts | **PASS** |
-| 8 | NO access_denied OR SKIPPED ACCOUNT IS READ AS EMPTY -- no | **DATA CHECK** | THE FULL ACCOUNT LEDGER, IN ACCOUNTS (decisions/0080 Sec 3, row 8), with the s… | 2,874 + 0 = 2,874 accounts | **PASS** |
+| 8 | NO access_denied OR SKIPPED ACCOUNT IS READ AS EMPTY -- no | **DATA CHECK** | THE FULL ACCOUNT LEDGER, IN ACCOUNTS (decisions/0080 Sec 3, row 8), with the s… | 2874 + 0 = 2874 accounts | **PASS** |
+| 9 | no position-5 row has tau2 > tau_pull | **CODE CHECK** | BOTH POPULATIONS: the 196,654 APPLY position-5 row set and the 147,370 DERIV p… | APPLY_position5: 196654 + 0 = 196654; DERIV_position5: 147370 + 0 = 147370 | **PASS** |
 
-**All invariants pass: True.** For six of the eight that statement says the code computed what it was told to. It is **not** evidence for the liveness rule, for the outcome definition, or for any published share. **The two that could have failed are §7 and §8, and what they found is reported in full below rather than as a tick.**
+**All invariants pass: True.** For seven of the nine that statement says the code computed what it was told to. It is **not** evidence for the liveness rule, for the outcome definition, or for any published share. **The two that could have failed are §7 and §8, and what they found is reported in full below rather than as a tick.**
+
+### Can these identities actually fail? — **audited, because most of them could not**
+
+**`0088` §2(d) strikes an overstated sentence** — ~~*"The run asserts this, so a report that omitted a population could not be written by this pipeline"*~~ — **as a control asserted to exist**, on the ground that **8 of 13 coverage identities had the population size and the asserted count as the same expression** — *that 8-of-13 is the figure the ruling cites and is not this arm's own measurement.* **The same shape held here, and worse: three identities were hardcoded `True` literals, and the aggregate chained `.get(..., .get(..., .get(..., True)))`, so an invariant carrying no coverage key at all contributed a pass.**
+
+**Rebuilt this run.** Every identity is arithmetic on measured counts, and **the population size is sourced from a different file than the asserted count** — the emitted analysis table, the Step 4 ledger, stage 1's own pair count, or the mandated seven-position order. Result on this build: **9 of 9 identities have independently sourced sides**, **0 are literals**, and **9 of 9 invariants carry a coverage identity at all** — with no default: `every invariant must CARRY coverage.identity_holds and it must be True. The r3 build chained .get(..., .get(..., .get(..., True))), so an invariant with no coverage key contributed a PASS -- a control that could not see the thing it was built to see. There is no default here`.
+
+**An invariant asserted on the post-liveness 195,951 rows while naming the position-5 population would now report 195,951 + 0 = 196,654 and FAIL. That is exactly the r3 gap at invariant 6, which the old apparatus reported as a pass on a hand-chosen denominator.**
+
+| Population-size source used |
+| :--- |
+| processed/step4/pull_ledger.jsonl, counted by a SECOND pass … |
+| read back off the EMITTED deliverable, processed/step8/b/ana… |
+| stage 1's own count of in-frame pairs carrying any in-E S1 o… |
+| the MANDATED FILTER ORDER -- 7 positions, fixed by decisions… |
 
 ## 1. outcome states are mutually exclusive and sum to the POST-POSITION-7 row set
 
-*Measured on: b: position-5 build of 2026-08-16-r3 (spec through 0085).*
+*Measured on: b: position-5 build of 2026-08-16-r4 (spec through 0088).*
 
 **Label: CODE CHECK.** Step 1 Sec 7's partition A = empty / (A non-empty and C_H) / (A non-empty and not C_H) is proved exhaustive and disjoint, so this can only catch an assignment coded wrongly -- e.g. dropping the |A| >= 1 conjunct from Continued, which would put a day-150 starter completing by day 190 in two states at once.
 
@@ -46,8 +66,65 @@ Counts: **5 pure code checks**, **1 that is a code check by construction and a g
 ```json
 {
   "unit": "rows",
-  "identity_required": "rows_asserted + rows_not_asserted = rows_in_the_stated_population",
-  "holds_on_every_stated_population": true
+  "identity_required": "rows_asserted + rows_not_asserted = rows_in_the_stated_population, ON EACH OF THE FOUR STATED POPULATIONS",
+  "population_size_source": "read back off the EMITTED deliverable, processed/step8/b/analysis_table.csv.gz -- a different expression and a different file from the mask arrays the assertions run over, so an invariant run on the wrong population fails its identity instead of reporting one",
+  "sides_are_independent_expressions": true,
+  "populations_covered": 4,
+  "per_population": {
+    "APPLY_position5_row_set": {
+      "unit": "rows",
+      "rows_in_the_stated_population": 196654,
+      "population_size_source": "read back off the EMITTED deliverable, processed/step8/b/analysis_table.csv.gz -- a different expression and a different file from the mask arrays the assertions run over, so an invariant run on the wrong population fails its identity instead of reporting one",
+      "rows_asserted": 196654,
+      "rows_not_asserted": 0,
+      "identity_required": "rows_asserted + rows_not_asserted = rows_in_the_stated_population",
+      "identity_holds": true,
+      "identity_arithmetic": "196654 + 0 = 196654",
+      "sides_are_independent_expressions": true,
+      "rows_asserted_note": "rows landing in EXACTLY ONE outcome state; the complement is counted from the overlap and unassigned masks, not subtracted",
+      "mask_population_for_comparison": 196654
+    },
+    "APPLY_post_position_7_live_subset": {
+      "unit": "rows",
+      "rows_in_the_stated_population": 195951,
+      "population_size_source": "read back off the EMITTED deliverable, processed/step8/b/analysis_table.csv.gz -- a different expression and a different file from the mask arrays the assertions run over, so an invariant run on the wrong population fails its identity instead of reporting one",
+      "rows_asserted": 195951,
+      "rows_not_asserted": 0,
+      "identity_required": "rows_asserted + rows_not_asserted = rows_in_the_stated_population",
+      "identity_holds": true,
+      "identity_arithmetic": "195951 + 0 = 195951",
+      "sides_are_independent_expressions": true,
+      "rows_asserted_note": "rows landing in EXACTLY ONE outcome state; the complement is counted from the overlap and unassigned masks, not subtracted",
+      "mask_population_for_comparison": 195951
+    },
+    "DERIV_position5_row_set": {
+      "unit": "rows",
+      "rows_in_the_stated_population": 147370,
+      "population_size_source": "read back off the EMITTED deliverable, processed/step8/b/analysis_table.csv.gz -- a different expression and a different file from the mask arrays the assertions run over, so an invariant run on the wrong population fails its identity instead of reporting one",
+      "rows_asserted": 147370,
+      "rows_not_asserted": 0,
+      "identity_required": "rows_asserted + rows_not_asserted = rows_in_the_stated_population",
+      "identity_holds": true,
+      "identity_arithmetic": "147370 + 0 = 147370",
+      "sides_are_independent_expressions": true,
+      "rows_asserted_note": "rows landing in EXACTLY ONE outcome state; the complement is counted from the overlap and unassigned masks, not subtracted",
+      "mask_population_for_comparison": 147370
+    },
+    "DERIV_post_position_7_live_subset": {
+      "unit": "rows",
+      "rows_in_the_stated_population": 147271,
+      "population_size_source": "read back off the EMITTED deliverable, processed/step8/b/analysis_table.csv.gz -- a different expression and a different file from the mask arrays the assertions run over, so an invariant run on the wrong population fails its identity instead of reporting one",
+      "rows_asserted": 147271,
+      "rows_not_asserted": 0,
+      "identity_required": "rows_asserted + rows_not_asserted = rows_in_the_stated_population",
+      "identity_holds": true,
+      "identity_arithmetic": "147271 + 0 = 147271",
+      "sides_are_independent_expressions": true,
+      "rows_asserted_note": "rows landing in EXACTLY ONE outcome state; the complement is counted from the overlap and unassigned masks, not subtracted",
+      "mask_population_for_comparison": 147271
+    }
+  },
+  "identity_holds": true
 }
 ```
 
@@ -65,6 +142,19 @@ Counts: **5 pure code checks**, **1 that is a code check by construction and a g
     "rows_in_no_state": 0,
     "rows_asserted": 196654,
     "rows_not_asserted": 0,
+    "coverage": {
+      "unit": "rows",
+      "rows_in_the_stated_population": 196654,
+      "population_size_source": "read back off the EMITTED deliverable, processed/step8/b/analysis_table.csv.gz -- a different expression and a different file from the mask arrays the assertions run over, so an invariant run on the wrong population fails its identity instead of reporting one",
+      "rows_asserted": 196654,
+      "rows_not_asserted": 0,
+      "identity_required": "rows_asserted + rows_not_asserted = rows_in_the_stated_population",
+      "identity_holds": true,
+      "identity_arithmetic": "196654 + 0 = 196654",
+      "sides_are_independent_expressions": true,
+      "rows_asserted_note": "rows landing in EXACTLY ONE outcome state; the complement is counted from the overlap and unassigned masks, not subtracted",
+      "mask_population_for_comparison": 196654
+    },
     "coverage_identity_holds": true,
     "passes": true
   },
@@ -78,6 +168,19 @@ Counts: **5 pure code checks**, **1 that is a code check by construction and a g
     "rows_in_no_state": 0,
     "rows_asserted": 195951,
     "rows_not_asserted": 0,
+    "coverage": {
+      "unit": "rows",
+      "rows_in_the_stated_population": 195951,
+      "population_size_source": "read back off the EMITTED deliverable, processed/step8/b/analysis_table.csv.gz -- a different expression and a different file from the mask arrays the assertions run over, so an invariant run on the wrong population fails its identity instead of reporting one",
+      "rows_asserted": 195951,
+      "rows_not_asserted": 0,
+      "identity_required": "rows_asserted + rows_not_asserted = rows_in_the_stated_population",
+      "identity_holds": true,
+      "identity_arithmetic": "195951 + 0 = 195951",
+      "sides_are_independent_expressions": true,
+      "rows_asserted_note": "rows landing in EXACTLY ONE outcome state; the complement is counted from the overlap and unassigned masks, not subtracted",
+      "mask_population_for_comparison": 195951
+    },
     "coverage_identity_holds": true,
     "passes": true
   },
@@ -91,6 +194,19 @@ Counts: **5 pure code checks**, **1 that is a code check by construction and a g
     "rows_in_no_state": 0,
     "rows_asserted": 147370,
     "rows_not_asserted": 0,
+    "coverage": {
+      "unit": "rows",
+      "rows_in_the_stated_population": 147370,
+      "population_size_source": "read back off the EMITTED deliverable, processed/step8/b/analysis_table.csv.gz -- a different expression and a different file from the mask arrays the assertions run over, so an invariant run on the wrong population fails its identity instead of reporting one",
+      "rows_asserted": 147370,
+      "rows_not_asserted": 0,
+      "identity_required": "rows_asserted + rows_not_asserted = rows_in_the_stated_population",
+      "identity_holds": true,
+      "identity_arithmetic": "147370 + 0 = 147370",
+      "sides_are_independent_expressions": true,
+      "rows_asserted_note": "rows landing in EXACTLY ONE outcome state; the complement is counted from the overlap and unassigned masks, not subtracted",
+      "mask_population_for_comparison": 147370
+    },
     "coverage_identity_holds": true,
     "passes": true
   },
@@ -104,6 +220,19 @@ Counts: **5 pure code checks**, **1 that is a code check by construction and a g
     "rows_in_no_state": 0,
     "rows_asserted": 147271,
     "rows_not_asserted": 0,
+    "coverage": {
+      "unit": "rows",
+      "rows_in_the_stated_population": 147271,
+      "population_size_source": "read back off the EMITTED deliverable, processed/step8/b/analysis_table.csv.gz -- a different expression and a different file from the mask arrays the assertions run over, so an invariant run on the wrong population fails its identity instead of reporting one",
+      "rows_asserted": 147271,
+      "rows_not_asserted": 0,
+      "identity_required": "rows_asserted + rows_not_asserted = rows_in_the_stated_population",
+      "identity_holds": true,
+      "identity_arithmetic": "147271 + 0 = 147271",
+      "sides_are_independent_expressions": true,
+      "rows_asserted_note": "rows landing in EXACTLY ONE outcome state; the complement is counted from the overlap and unassigned masks, not subtracted",
+      "mask_population_for_comparison": 147271
+    },
     "coverage_identity_holds": true,
     "passes": true
   }
@@ -114,7 +243,7 @@ Counts: **5 pure code checks**, **1 that is a code check by construction and a g
 
 ## 2. filter counts decrease monotonically -- CODED AS `>=`, NOT `>`
 
-*Measured on: b: position-5 build of 2026-08-16-r3 (spec through 0085).*
+*Measured on: b: position-5 build of 2026-08-16-r4 (spec through 0088).*
 
 **Label: CODE CHECK.** filters only remove rows, so this fails only on an implementation that ADDS them -- a duplicating join, most likely.
 
@@ -131,15 +260,37 @@ Counts: **5 pure code checks**, **1 that is a code check by construction and a g
 ```json
 {
   "unit": "filter positions",
-  "APPLY": {
-    "positions_in_the_chain": 7,
-    "transitions_asserted": 6,
-    "transitions_not_asserted": 0
-  },
-  "DERIV": {
-    "positions_in_the_chain": 7,
-    "transitions_asserted": 6,
-    "transitions_not_asserted": 0
+  "identity_required": "transitions_asserted + transitions_not_asserted = the mandated chain length minus one, ON BOTH CHAINS",
+  "population_size_source": "the MANDATED FILTER ORDER -- 7 positions, fixed by decisions/0029 and task-sheet.md Step 8. A spec constant, not a length read off the chain being checked, so a chain that lost or gained a position FAILS this identity",
+  "sides_are_independent_expressions": true,
+  "populations_covered": 2,
+  "per_population": {
+    "APPLY": {
+      "unit": "transitions",
+      "transitions_in_the_stated_population": 6,
+      "population_size_source": "the mandated 7-position order, minus one",
+      "transitions_asserted": 6,
+      "transitions_not_asserted": 0,
+      "identity_required": "transitions_asserted + transitions_not_asserted = transitions_in_the_stated_population",
+      "identity_holds": true,
+      "identity_arithmetic": "6 + 0 = 6",
+      "sides_are_independent_expressions": true,
+      "positions_in_the_chain": 7,
+      "chain_length_matches_the_mandated_order": true
+    },
+    "DERIV": {
+      "unit": "transitions",
+      "transitions_in_the_stated_population": 6,
+      "population_size_source": "the mandated 7-position order, minus one",
+      "transitions_asserted": 6,
+      "transitions_not_asserted": 0,
+      "identity_required": "transitions_asserted + transitions_not_asserted = transitions_in_the_stated_population",
+      "identity_holds": true,
+      "identity_arithmetic": "6 + 0 = 6",
+      "sides_are_independent_expressions": true,
+      "positions_in_the_chain": 7,
+      "chain_length_matches_the_mandated_order": true
+    }
   },
   "identity_holds": true
 }
@@ -149,7 +300,7 @@ Counts: **5 pure code checks**, **1 that is a code check by construction and a g
 
 ## 3. distinct episodes never exceed season length (|D| <= L)
 
-*Measured on: b: position-5 build of 2026-08-16-r3 (spec through 0085).*
+*Measured on: b: position-5 build of 2026-08-16-r4 (spec through 0088).*
 
 **Label: CODE CHECK.** Step 8's own set-membership drop rule already establishes |D| <= L by construction -- an episode whose number is not in the season's listed set E is dropped, so D is a subset of E. It fails only if an implementation filtered by the numeric RANGE 1..F instead of by membership in E.
 
@@ -159,12 +310,18 @@ Counts: **5 pure code checks**, **1 that is a code check by construction and a g
 
 ```json
 {
-  "unit": "pairs, and the records behind them",
+  "unit": "pairs",
   "pairs_in_the_stated_population": 278452,
+  "population_size_source": "stage 1's own count of in-frame pairs carrying any in-E S1 or S2 distinct episode, read back from processed/step8/b/stage1.json -- a different computation and a different file from the ev_pairs array this invariant walks",
+  "pairs_asserted": 278452,
+  "pairs_not_asserted": 0,
+  "identity_required": "pairs_asserted + pairs_not_asserted = pairs_in_the_stated_population",
+  "identity_holds": true,
+  "identity_arithmetic": "278452 + 0 = 278452",
+  "sides_are_independent_expressions": true,
   "pairs_asserted_S1": 278452,
   "pairs_asserted_S2": 278452,
-  "pairs_not_asserted": 0,
-  "identity_holds": true,
+  "asserted_note": "every pair in the evidence universe is asserted on BOTH seasons; a pair carrying no S1 and no S2 distinct episode would be in the population and asserted on neither, and is counted as not_asserted",
   "records_examined_by_the_set_membership_rule": 6065610,
   "pairs_examined_by_the_set_membership_rule": 278452,
   "records_dropped": 0
@@ -192,7 +349,7 @@ Counts: **5 pure code checks**, **1 that is a code check by construction and a g
 
 ## 4. A is a subset of A_H on every row
 
-*Measured on: b: position-5 build of 2026-08-16-r3 (spec through 0085).*
+*Measured on: b: position-5 build of 2026-08-16-r4 (spec through 0088).*
 
 **Label: CODE CHECK.** true by construction since tau1 < tau2 and both sets are prefixes of the same instant-ordered episode list; it can only catch the two sets being computed from different evidence, or tau2 computed below tau1.
 
@@ -204,9 +361,14 @@ Counts: **5 pure code checks**, **1 that is a code check by construction and a g
 {
   "unit": "rows",
   "rows_in_the_stated_population": 196654,
+  "population_size_source": "read back off the EMITTED deliverable, processed/step8/b/analysis_table.csv.gz -- a different expression and a different file from the mask arrays the assertions run over, so an invariant run on the wrong population fails its identity instead of reporting one",
   "rows_asserted": 196654,
   "rows_not_asserted": 0,
-  "identity_holds": true
+  "identity_required": "rows_asserted + rows_not_asserted = rows_in_the_stated_population",
+  "identity_holds": true,
+  "identity_arithmetic": "196654 + 0 = 196654",
+  "sides_are_independent_expressions": true,
+  "rows_asserted_note": "rows the comparison |A| <= |A_H| was evaluated on, counted from the mask it was evaluated over; not_asserted counts rows in the population where |A| is not a finite count, which is a state that cannot arise and is measured rather than assumed"
 }
 ```
 
@@ -224,7 +386,7 @@ Counts: **5 pure code checks**, **1 that is a code check by construction and a g
 
 ## 5. clock start is on or after the S2 finale date, on or after the first-pass S1 completion date, and equals one of those two
 
-*Measured on: b: position-5 build of 2026-08-16-r3 (spec through 0085).*
+*Measured on: b: position-5 build of 2026-08-16-r4 (spec through 0088).*
 
 **Label: CODE CHECK BY CONSTRUCTION, DATA CHECK AS SPECIFIED.** the first-pass S1 completion date is RECOMPUTED here by a second, independent implementation -- a literal per-pair walk over the records, not the vectorised rank computation the pipeline uses, and not read back from any stored value. Read back rather than recomputed it degrades to a code check and proves nothing, because T0 = max() makes all three clauses true of any correct max().
 
@@ -236,10 +398,14 @@ Counts: **5 pure code checks**, **1 that is a code check by construction and a g
 {
   "unit": "rows",
   "rows_in_the_stated_population": 196654,
+  "population_size_source": "read back off the EMITTED deliverable, processed/step8/b/analysis_table.csv.gz -- a different expression and a different file from the mask arrays the assertions run over, so an invariant run on the wrong population fails its identity instead of reporting one",
   "rows_asserted": 196654,
   "rows_not_asserted": 0,
-  "rows_not_asserted_reason": "rows the independent walk does not complete; if this is non-zero the two implementations disagree on the completer SET and that is itself the finding",
-  "identity_holds": true
+  "identity_required": "rows_asserted + rows_not_asserted = rows_in_the_stated_population",
+  "identity_holds": true,
+  "identity_arithmetic": "196654 + 0 = 196654",
+  "sides_are_independent_expressions": true,
+  "rows_not_asserted_reason": "rows the INDEPENDENT walk does not complete; if this is non-zero the two implementations disagree on the completer SET and that disagreement is itself the finding, which is why it is counted and not subtracted"
 }
 ```
 
@@ -282,7 +448,7 @@ Counts: **5 pure code checks**, **1 that is a code check by construction and a g
 
 ## 6. abandonment point p is in (0, 1] on every Started-and-left row, null elsewhere
 
-*Measured on: b: position-5 build of 2026-08-16-r3 (spec through 0085).*
+*Measured on: b: position-5 build of 2026-08-16-r4 (spec through 0088).*
 
 **Label: CODE CHECK.** Started-and-left requires |A| >= 1, so m_H exists; and set membership makes A_H a subset of E2, so the rank numerator |{e in E2 : e <= m_H}| lies in [1, L2]. NO data configuration puts p outside (0, 1]. It fails only on the withdrawn raw-ratio form p = m_H / L2, which can exceed 1 where S2 numbering has a gap.
 
@@ -296,10 +462,16 @@ Counts: **5 pure code checks**, **1 that is a code check by construction and a g
 {
   "unit": "rows",
   "rows_in_the_stated_population": 196654,
+  "population_size_source": "read back off the EMITTED deliverable, processed/step8/b/analysis_table.csv.gz -- a different expression and a different file from the mask arrays the assertions run over, so an invariant run on the wrong population fails its identity instead of reporting one",
+  "rows_asserted": 196654,
+  "rows_not_asserted": 0,
+  "identity_required": "rows_asserted + rows_not_asserted = rows_in_the_stated_population",
+  "identity_holds": true,
+  "identity_arithmetic": "196654 + 0 = 196654",
+  "sides_are_independent_expressions": true,
   "rows_asserted_in_range_clause": 19141,
   "rows_asserted_null_clause": 177513,
-  "rows_not_asserted": 0,
-  "identity_holds": true,
+  "rows_asserted_note": "the two clauses are asserted on disjoint row sets and their sizes are measured separately; the sum is compared against the EMITTED table's row count, which is where the r3 gap would have shown",
   "corrected_this_run": "this arm's previous run asserted the range clause on the POST-LIVENESS 19,042 while the null clause ran on the position-5 177,513 -- 196,555 against a 196,654-row table, with 99 rows covered by NEITHER clause. Those 99 are exactly the started-and-left liveness exclusions. That gap is what decisions/0080 Sec 3 was written on, and it is closed here",
   "started_and_left_rows_post_liveness_for_reference": 19042
 }
@@ -325,7 +497,7 @@ Form: `p = |{e in E2 : e <= m_H}| / L2, rank form, read on A_H (0034)`.
 
 ## 7. NO ACCOUNT IS DROPPED WHOLESALE BY THE PAIR-LEVEL LIVENESS FILTER -- the count of accounts holding BOTH a live and a not-live pair is > 0
 
-*Measured on: b: position-5 build of 2026-08-16-r3 (spec through 0085).*
+*Measured on: b: position-5 build of 2026-08-16-r4 (spec through 0088).*
 
 **Label: DATA CHECK.** 703 pairs from 216 accounts is consistent with a pair-level AND an account-level implementation, and nothing in the exclusion set distinguishes them. An account-level filter would make this count exactly ZERO. CLAUDE.md and Step 7: 'One account can be live for one show and not another. Never drop a user wholesale.' This can fail on real data.
 
@@ -336,8 +508,47 @@ Form: `p = |{e in E2 : e <= m_H}| / L2, rank form, read on A_H (0034)`.
 ```json
 {
   "unit": "accounts",
-  "identity_required": "accounts_asserted + accounts_not_asserted = accounts_in_the_stated_population",
-  "holds_on_both_populations": true
+  "identity_required": "accounts_asserted + accounts_not_asserted = accounts_in_the_stated_population, ON BOTH POPULATIONS",
+  "population_size_source": "read back off the EMITTED deliverable, processed/step8/b/analysis_table.csv.gz -- a different expression and a different file from the mask arrays the assertions run over, so an invariant run on the wrong population fails its identity instead of reporting one",
+  "sides_are_independent_expressions": true,
+  "populations_covered": 2,
+  "per_population": {
+    "APPLY": {
+      "unit": "accounts",
+      "accounts_in_the_stated_population": 2422,
+      "population_size_source": "read back off the EMITTED deliverable, processed/step8/b/analysis_table.csv.gz -- a different expression and a different file from the mask arrays the assertions run over, so an invariant run on the wrong population fails its identity instead of reporting one",
+      "accounts_asserted": 2422,
+      "accounts_not_asserted": 0,
+      "identity_required": "accounts_asserted + accounts_not_asserted = accounts_in_the_stated_population",
+      "identity_holds": true,
+      "identity_arithmetic": "2422 + 0 = 2422",
+      "sides_are_independent_expressions": true,
+      "classes": [
+        "all pairs live",
+        "mixed",
+        "all pairs not live"
+      ],
+      "accounts_asserted_note": "accounts falling into one of the three exhaustive classes, counted from the class arrays; the population size is the distinct user_idx count in the emitted table"
+    },
+    "DERIV": {
+      "unit": "accounts",
+      "accounts_in_the_stated_population": 2402,
+      "population_size_source": "read back off the EMITTED deliverable, processed/step8/b/analysis_table.csv.gz -- a different expression and a different file from the mask arrays the assertions run over, so an invariant run on the wrong population fails its identity instead of reporting one",
+      "accounts_asserted": 2402,
+      "accounts_not_asserted": 0,
+      "identity_required": "accounts_asserted + accounts_not_asserted = accounts_in_the_stated_population",
+      "identity_holds": true,
+      "identity_arithmetic": "2402 + 0 = 2402",
+      "sides_are_independent_expressions": true,
+      "classes": [
+        "all pairs live",
+        "mixed",
+        "all pairs not live"
+      ],
+      "accounts_asserted_note": "accounts falling into one of the three exhaustive classes, counted from the class arrays; the population size is the distinct user_idx count in the emitted table"
+    }
+  },
+  "identity_holds": true
 }
 ```
 
@@ -349,6 +560,23 @@ Form: `p = |{e in E2 : e <= m_H}| / L2, rank form, read on A_H (0034)`.
     "accounts_in_the_stated_population": 2422,
     "accounts_asserted": 2422,
     "accounts_not_asserted": 0,
+    "coverage": {
+      "unit": "accounts",
+      "accounts_in_the_stated_population": 2422,
+      "population_size_source": "read back off the EMITTED deliverable, processed/step8/b/analysis_table.csv.gz -- a different expression and a different file from the mask arrays the assertions run over, so an invariant run on the wrong population fails its identity instead of reporting one",
+      "accounts_asserted": 2422,
+      "accounts_not_asserted": 0,
+      "identity_required": "accounts_asserted + accounts_not_asserted = accounts_in_the_stated_population",
+      "identity_holds": true,
+      "identity_arithmetic": "2422 + 0 = 2422",
+      "sides_are_independent_expressions": true,
+      "classes": [
+        "all pairs live",
+        "mixed",
+        "all pairs not live"
+      ],
+      "accounts_asserted_note": "accounts falling into one of the three exhaustive classes, counted from the class arrays; the population size is the distinct user_idx count in the emitted table"
+    },
     "coverage_identity_holds": true,
     "accounts_holding_only_live_pairs": 2206,
     "pairs_in_the_stated_population": 196654,
@@ -364,6 +592,23 @@ Form: `p = |{e in E2 : e <= m_H}| / L2, rank form, read on A_H (0034)`.
     "accounts_in_the_stated_population": 2402,
     "accounts_asserted": 2402,
     "accounts_not_asserted": 0,
+    "coverage": {
+      "unit": "accounts",
+      "accounts_in_the_stated_population": 2402,
+      "population_size_source": "read back off the EMITTED deliverable, processed/step8/b/analysis_table.csv.gz -- a different expression and a different file from the mask arrays the assertions run over, so an invariant run on the wrong population fails its identity instead of reporting one",
+      "accounts_asserted": 2402,
+      "accounts_not_asserted": 0,
+      "identity_required": "accounts_asserted + accounts_not_asserted = accounts_in_the_stated_population",
+      "identity_holds": true,
+      "identity_arithmetic": "2402 + 0 = 2402",
+      "sides_are_independent_expressions": true,
+      "classes": [
+        "all pairs live",
+        "mixed",
+        "all pairs not live"
+      ],
+      "accounts_asserted_note": "accounts falling into one of the three exhaustive classes, counted from the class arrays; the population size is the distinct user_idx count in the emitted table"
+    },
     "coverage_identity_holds": true,
     "accounts_holding_only_live_pairs": 2329,
     "pairs_in_the_stated_population": 147370,
@@ -384,7 +629,7 @@ Form: `p = |{e in E2 : e <= m_H}| / L2, rank form, read on A_H (0034)`.
 
 ## 8. NO access_denied OR SKIPPED ACCOUNT IS READ AS EMPTY -- no account recorded access_denied, over-tolerance or otherwise skipped contributes a pair scored never-started
 
-*Measured on: b: position-5 build of 2026-08-16-r3 (spec through 0085).*
+*Measured on: b: position-5 build of 2026-08-16-r4 (spec through 0088).*
 
 **Label: DATA CHECK.** CLAUDE.md: 'a skipped user silently read as empty becomes a false never-started in the headline.' A join that treats an absent history as an empty one produces exactly this, and it FAILS IN THE DIRECTION OF THE RESULT, which is the worst direction available. Rule and evidence at artifacts/step0-access-and-setup.md Sec 7.
 
@@ -396,9 +641,13 @@ Form: `p = |{e in E2 : e <= m_H}| / L2, rank form, read on A_H (0034)`.
 {
   "unit": "accounts",
   "accounts_in_the_stated_population": 2874,
+  "population_size_source": "processed/step4/pull_ledger.jsonl, counted by a SECOND pass over the file that keys on slug-or-username and is independent of the outcome classification this invariant sums over",
   "accounts_asserted": 2874,
   "accounts_not_asserted": 0,
+  "identity_required": "accounts_asserted + accounts_not_asserted = accounts_in_the_stated_population",
   "identity_holds": true,
+  "identity_arithmetic": "2874 + 0 = 2874",
+  "sides_are_independent_expressions": true,
   "by_final_ledger_outcome": {
     "complete": {
       "accounts_in_the_ledger": 2549,
@@ -455,9 +704,77 @@ Form: `p = |{e in E2 : e <= m_H}| / L2, rank form, read on A_H (0034)`.
 
 **Result: PASS.**
 
+## 9. no position-5 row has tau2 > tau_pull
+
+*Measured on: b: position-5 build of 2026-08-16-r4 (spec through 0088).*
+
+**Label: CODE CHECK.** D10 defines position 5 as [T0] + (max(W, 91) + H) x 24h <= tau_pull, and at W = 108 that expression IS tau2. It can only catch tau2 or the right-censoring bound computed wrongly -- for instance H dropped from the censoring term while tau2 kept it.
+
+**Population (`0080` §3):** BOTH POPULATIONS: the 196,654 APPLY position-5 row set and the 147,370 DERIV position-5 row set, every row of each.
+
+**coverage**
+
+```json
+{
+  "unit": "rows",
+  "identity_required": "rows_asserted + rows_not_asserted = rows_in_the_stated_population, ON BOTH POPULATIONS",
+  "population_size_source": "read back off the EMITTED deliverable, processed/step8/b/analysis_table.csv.gz -- a different expression and a different file from the mask arrays the assertions run over, so an invariant run on the wrong population fails its identity instead of reporting one",
+  "sides_are_independent_expressions": true,
+  "populations_covered": 2,
+  "per_population": {
+    "APPLY_position5": {
+      "unit": "rows",
+      "rows_in_the_stated_population": 196654,
+      "population_size_source": "read back off the EMITTED deliverable, processed/step8/b/analysis_table.csv.gz -- a different expression and a different file from the mask arrays the assertions run over, so an invariant run on the wrong population fails its identity instead of reporting one",
+      "rows_asserted": 196654,
+      "rows_not_asserted": 0,
+      "identity_required": "rows_asserted + rows_not_asserted = rows_in_the_stated_population",
+      "identity_holds": true,
+      "identity_arithmetic": "196654 + 0 = 196654",
+      "sides_are_independent_expressions": true
+    },
+    "DERIV_position5": {
+      "unit": "rows",
+      "rows_in_the_stated_population": 147370,
+      "population_size_source": "read back off the EMITTED deliverable, processed/step8/b/analysis_table.csv.gz -- a different expression and a different file from the mask arrays the assertions run over, so an invariant run on the wrong population fails its identity instead of reporting one",
+      "rows_asserted": 147370,
+      "rows_not_asserted": 0,
+      "identity_required": "rows_asserted + rows_not_asserted = rows_in_the_stated_population",
+      "identity_holds": true,
+      "identity_arithmetic": "147370 + 0 = 147370",
+      "sides_are_independent_expressions": true
+    }
+  },
+  "identity_holds": true
+}
+```
+
+**checked**
+
+```json
+{
+  "APPLY_position5": {
+    "rows_examined": 196654,
+    "rows_with_tau2_gt_tau_pull": 0,
+    "rows_with_tau2_EXACTLY_at_tau_pull": 20,
+    "latest_tau2_utc": "2026-08-11T00:00:00"
+  },
+  "DERIV_position5": {
+    "rows_examined": 147370,
+    "rows_with_tau2_gt_tau_pull": 0,
+    "rows_with_tau2_EXACTLY_at_tau_pull": 17,
+    "latest_tau2_utc": "2026-08-11T00:00:00"
+  }
+}
+```
+
+**Reading:** rows sit with tau2 EXACTLY at tau_pull, so the assertion is tight rather than comfortably satisfied -- a `>=` form of the same assertion would FAIL on this data. Stated because a passing assertion with slack and a passing assertion at the bound are not the same evidence.
+
+**Result: PASS.**
+
 ## What the two data checks actually found
 
-*Measured on: b: position-5 build of 2026-08-16-r3 (spec through 0085).*
+*Measured on: b: position-5 build of 2026-08-16-r4 (spec through 0088).*
 
 **Wholesale dropping.** On APPLY, **215 of the 216 accounts that supply a liveness exclusion also keep at least one live pair**; on DERIV, **72 of 73**. An account-level filter would make both numbers exactly zero, so this discriminates between the two implementations, which the 703-from-216 figure alone does not. The single account whose pairs are all not-live holds exactly one pair in the population, where the two implementations are indistinguishable by construction.
 
@@ -473,7 +790,7 @@ Form: `p = |{e in E2 : e <= m_H}| / L2, rank form, read on A_H (0034)`.
 
 ## Reported and NOT asserted (1) — the set-membership drop rule
 
-*Measured on: b: position-5 build of 2026-08-16-r3 (spec through 0085).*
+*Measured on: b: position-5 build of 2026-08-16-r4 (spec through 0088).*
 
 A COVERAGE COUNT, NOT AN INVARIANT (decisions/0074 ruling 3). Step 8's own bullet calls it 'an implementation check, not a data check'. Reported, not asserted -- asserting it would add another pass to a report where six of eight cannot fail on data.
 
@@ -484,7 +801,7 @@ A COVERAGE COUNT, NOT AN INVARIANT (decisions/0074 ruling 3). Step 8's own bulle
 
 ## Reported and NOT asserted (2) — the 703 expectation
 
-*Measured on: b: position-5 build of 2026-08-16-r3 (spec through 0085).*
+*Measured on: b: position-5 build of 2026-08-16-r4 (spec through 0088).*
 
 It is a POPULATION RECONCILIATION, and the spec's own instruction to suspect the population before the implementation is what makes it one.
 

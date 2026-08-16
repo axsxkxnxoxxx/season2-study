@@ -72,6 +72,33 @@ def k_loose_any4(slug: str) -> str:
     return k_strict(RE_Y4.sub("", slug))
 
 
+def _tie_report(ranked: list[tuple[str, int]]) -> dict:
+    """decisions/0088 Sec 3 rules the RANKING BASIS. It does not rule the
+    TIE-BREAK, and on this data the tie is occupied at the third place, so which
+    name is published third is decided by a rule no surface states."""
+    if len(ranked) < 3:
+        return {"third_place_count": None, "keys_tied_at_it": 0,
+                "coverage": "fewer than three keys; nothing to tie"}
+    third = ranked[2][1]
+    tied = sorted(k for k, n in ranked if n == third)
+    return {
+        "third_place_count": int(third),
+        "keys_tied_at_the_third_place_count": len(tied),
+        "tied_keys": tied[:12],
+        "this_arms_tie_break": "ascending key, applied after descending count",
+        "this_arms_third_name": ranked[2][0],
+        "REPORTED_NOT_RECONCILED": (
+            "decisions/0088 Sec 3 names the U1 top three as secondchance (8), theisland (7), "
+            "maigret (6). The first two are unique at their counts and reproduce exactly. The "
+            "THIRD is inside a tie, and 0088 rules the BASIS but not the TIE-BREAK -- so the "
+            "third name is decided by a rule no surface states. Under ascending-key this arm "
+            f"publishes `{ranked[2][0]}`; `maigret` is one of the tied keys and is equally "
+            "correct under a different tie-break. This is a spec gap in the ruling that closed "
+            "the previous spec gap, and it is reported rather than resolved by picking the "
+            "name that matches the entry"),
+    }
+
+
 def k_third(slug: str) -> str:
     """NOT A KEY OF THIS STUDY. A trailing digit group of ARBITRARY length --
     it reduces `the-100` to `the`. Measured only to show what it costs."""
@@ -83,7 +110,24 @@ def d9(m: dict, frame: pd.DataFrame, st1: dict) -> dict:
     """Split-artifact counts, both halves. Detection is imperfect: a LOWER BOUND."""
     slugs = {int(k): v for k, v in json.loads((OUT / "show_slugs.json").read_text()).items()}
     z = np.load(P5 / "full_scan.npz")
-    keep = (z["kind"] == 1) & (z["ts"] < TAU_PULL) & ((z["season"] == 1) | (z["season"] == 2))
+    _s12 = (z["kind"] == 1) & ((z["season"] == 1) | (z["season"] == 2))
+    keep = _s12 & (z["ts"] < TAU_PULL)
+    # decisions/0088 Sec 1(b) -- D9's coverage rows are a named D11 SITE and the
+    # count belongs at the site, not once and about the rest.
+    d11_site = {
+        "site": "D9 coverage rows",
+        "d11_applied": True,
+        "unit": "S1/S2 episode records, ALL shows in the sweep, not only frame shows",
+        "records_in_the_sites_input_universe": int(_s12.sum()),
+        "records_excluded_by_D11": int((_s12 & ~keep).sum()),
+        "records_used": int(keep.sum()),
+        "assertion": "no record dated at or after tau_pull participates in the D9 coverage pivot",
+        "assertion_holds": bool(int(z["ts"][keep].max()) < TAU_PULL),
+        "latest_watched_at_used_utc": str(np.datetime64(int(z["ts"][keep].max()), "s")),
+        "note": ("the universe here is WIDER than the in-frame S1/S2 slice the waterfall uses, "
+                 "because a split puts S1 under one show ID and S2 under another and only one "
+                 "of the two need be in the frame"),
+    }
     u, sh, se = z["user"][keep].astype(np.int64), z["show"][keep], z["season"][keep]
     cov = pd.DataFrame({"u": u, "sh": sh, "s1": se == 1, "s2": se == 2}) \
         .groupby(["u", "sh"], sort=False).agg(s1=("s1", "any"), s2=("s2", "any")).reset_index()
@@ -142,40 +186,82 @@ def d9(m: dict, frame: pd.DataFrame, st1: dict) -> dict:
     top = sig_loose.groupby("k_loose").size().sort_values(ascending=False)
 
     def cluster_over_show_ids(ids: list[int]) -> dict:
-        """Cluster DISTINCT SHOW IDs by the loose key. Unit: show IDs per key."""
+        """Cluster DISTINCT SHOW IDs by the loose key.
+
+        TWO ranking bases, and decisions/0088 Sec 3 rules WHICH: DISTINCT STRICT
+        KEYS MERGED -- how many separate metadata entries the loose key collapsed
+        into one. It was unstated and it REORDERS THE LIST ON ITS OWN: the same
+        universe under the same key, ranked by distinct show IDs instead,
+        displaces `maigret` with `blackout`. Both are emitted, the ruled basis is
+        named, and neither is left to be inferred from a number.
+        """
         by: dict[str, set[int]] = {}
+        bystrict: dict[str, set[str]] = {}
         for sid in ids:
-            by.setdefault(k_loose(slugs.get(int(sid), str(sid))), set()).add(int(sid))
-        sizes = sorted(((k, len(v)) for k, v in by.items()),
-                       key=lambda kv: (-kv[1], kv[0]))
+            s = slugs.get(int(sid), str(sid))
+            lk = k_loose(s)
+            by.setdefault(lk, set()).add(int(sid))
+            bystrict.setdefault(lk, set()).add(k_strict(s))
+        rank_strict = sorted(((k, len(bystrict[k])) for k in by), key=lambda kv: (-kv[1], kv[0]))
+        rank_ids = sorted(((k, len(v)) for k, v in by.items()), key=lambda kv: (-kv[1], kv[0]))
         return {
             "unit": "distinct show IDs sharing one LOOSE key",
+            "RANK_BASIS_RULED": ("DISTINCT STRICT KEYS MERGED (decisions/0088 Sec 3) -- how "
+                                 "many separate metadata entries the loose key collapsed into "
+                                 "one. Named at the point of use; a list without it is not "
+                                 "reproducible"),
             "members_examined": len(ids),
             "distinct_loose_keys": len(by),
-            "keys_merging_two_or_more_show_ids": sum(1 for _, n in sizes if n > 1),
-            "largest_clusters": {k: n for k, n in sizes[:8]},
-            "max_cluster_size": sizes[0][1] if sizes else 0,
+            "keys_merging_two_or_more_show_ids": sum(1 for _, n in rank_ids if n > 1),
+            "keys_merging_two_or_more_STRICT_keys": sum(1 for _, n in rank_strict if n > 1),
+            "largest_clusters": {k: n for k, n in rank_strict[:8]},
+            "max_cluster_size": rank_strict[0][1] if rank_strict else 0,
+            # 0088 Sec 3 rules the BASIS. It does not rule the TIE-BREAK, and the
+            # tie is occupied: several keys share the third-place count, so which
+            # name appears third depends on an unspecified rule. Reported.
+            "THE_TIE_BREAK_IS_NOT_RULED": _tie_report(rank_strict),
+            "ALTERNATE_BASIS_ranked_by_distinct_show_IDs": {
+                "largest_clusters": {k: n for k, n in rank_ids[:8]},
+                "max_cluster_size": rank_ids[0][1] if rank_ids else 0,
+                "why_emitted": ("0088 Sec 3 records that the basis reorders the list on its "
+                                "own. Emitting both is what lets a reader see that the "
+                                "reordering is the basis and not a counting difference"),
+            },
+            "the_two_bases_agree_on_the_top_key":
+                bool(rank_strict and rank_ids and rank_strict[0][0] == rank_ids[0][0]),
         }
 
     slugged_ids = sorted(slugs)
     frame_ids_sorted = sorted(frame_ids)
     clustering = {
-        "ruling": ("decisions/0085 Sec 2, Red Team blocker B1 -- NAME THE UNIVERSE THE "
-                   "CLUSTERING RUNS OVER, AT THE POINT OF USE. The two arms published "
-                   "disjoint cluster lists on identical counts, sharing no member, with "
-                   "maxima 8 against 10, while every count around them reconciled. It is a "
-                   "difference in WHICH SET OF SHOWS IS CLUSTERED, and the spec never said"),
-        "status": ("REPORTED, NOT RECONCILED. No universe is ruled by 0085. All three "
-                   "candidate universes it names are measured and labelled; this instance "
-                   "names the one it publishes. If both arms name the SAME universe and still "
-                   "differ, one has a bug and that is the finding"),
-        "PUBLISHED_UNIVERSE": "U3_D9_candidate_complementary_pairs",
-        "why_that_one": ("the loose key publishes for exactly one reason -- it bounds how "
-                         "wrong STRICT could be -- and what STRICT vs LOOSE differ on is the "
-                         "COMPLEMENTARY SIGNATURE PAIRS, 0 against 75. Clustering the pairs "
-                         "the two keys actually disagree about is what the warrant is about. "
-                         "The other two universes are emitted alongside so an arm naming "
-                         "either can be diffed against this one without a rerun"),
+        "ruling": ("decisions/0088 Sec 3 -- THE D9 CLUSTERING UNIVERSE IS U1, ALL SLUGGED SWEEP "
+                   "SHOW IDs, RANKED BY DISTINCT STRICT KEYS MERGED. It closes the gap "
+                   "0085 Sec 2 (Red Team B1) opened and 0086 Sec 1 located: the two arms "
+                   "published DISJOINT cluster lists on IDENTICAL counts, sharing no member, "
+                   "with maxima 8 against 10, while every count around them reconciled -- a "
+                   "difference in WHICH SET OF SHOWS IS CLUSTERED, which the spec never said"),
+        "status": ("RULED. 0085 left it REPORTED-NOT-RECONCILED and 0088 Sec 3 rules it: BOTH "
+                   "ARMS CLUSTER THE SAME OBJECT. All three candidate universes are still "
+                   "measured and labelled here, so an arm on another universe stays diffable "
+                   "without a rerun, but the PUBLISHED list is U1"),
+        "PUBLISHED_UNIVERSE": "U1_all_sweep_show_ids_carrying_a_slug",
+        "CHANGED_FROM_THIS_ARMS_PREVIOUS_BUILD": (
+            "the r3 build published U3, the D9 candidate complementary pairs, on the "
+            "ground that the loose key's warrant concerns exactly the pairs the two keys "
+            "disagree about. 0088 Sec 3 rules otherwise and gives the reason: the artifact D9 "
+            "hunts is a history splitting across two metadata entries, and THAT CAN OCCUR "
+            "ANYWHERE IN A HISTORY, not only among shows that survived the frame filters -- a "
+            "narrow universe finds only splits where both sides made the cut, and a bound "
+            "computed on a narrow slice bounds very little. NO COUNT MOVES WITH IT: the "
+            "strict and loose complementary-pair counts are unchanged, because D9's SEARCH "
+            "already ran on the whole sweep in this arm. What moves is which clusters are "
+            "ILLUSTRATED"),
+        "why_that_one": ("0088 Sec 3's ground, not this instance's: the split can occur "
+                         "anywhere in a history, so a frame-restricted universe finds only the "
+                         "narrowest case. task-sheet.md's former illustration -- The Twilight "
+                         "Zone, The Traitors, Manhunt -- was U3 and is SUPERSEDED as the "
+                         "example. Those three names are not wrong; they are another "
+                         "universe's answer, which is why it needed ruling"),
         "universes": {
             "U1_all_sweep_show_ids_carrying_a_slug": dict(
                 cluster_over_show_ids(slugged_ids),
@@ -187,8 +273,14 @@ def d9(m: dict, frame: pd.DataFrame, st1: dict) -> dict:
                 definition="the Step 2 frame shows only",
             ),
             "U3_D9_candidate_complementary_pairs": {
+                "status": ("NOT THE PUBLISHED UNIVERSE (decisions/0088 Sec 3). It is the "
+                           "narrowest of the three and it is what task-sheet.md's former "
+                           "illustration was measured over"),
                 "unit": ("complementary signature ROWS (user, S1-side show, S2-side show) "
                          "sharing one LOOSE key -- NOT distinct show IDs"),
+                "rank_basis": ("complementary signature rows per loose key. NOT the ruled "
+                               "basis, which is distinct strict keys merged and applies to the "
+                               "show-ID universes"),
                 "definition": ("the complementary signature pairs the LOOSE key finds: one "
                                "show ID carrying S1 and not S2 for that user, another "
                                "carrying S2 and not S1, both normalising to the same loose "
@@ -205,21 +297,27 @@ def d9(m: dict, frame: pd.DataFrame, st1: dict) -> dict:
         "WHAT_NAMING_THE_UNIVERSE_LOCATES": {
             "finding": ("BOTH cluster lists decisions/0085 Sec 2 quotes are reproduced by THIS "
                         "SINGLE BUILD, from two different universes. U1 (all slugged sweep "
-                        "show IDs) gives secondchance 8, theisland 7, maigret 6 with a maximum "
-                        "of 8; U3 (the D9 candidate complementary pairs) gives thetwilightzone "
-                        "10, thetraitors 7, manhunt 5 with a maximum of 10. Those are the two "
-                        "quoted lists and the two quoted maxima"),
-            "what_it_means": ("the divergence is located ON THE UNIVERSE AXIS and not in the "
+                        "show IDs), on the RULED basis of distinct strict keys merged, gives "
+                        "secondchance 8 and theisland 7 -- both unique at their counts -- with "
+                        "a maximum of 8, and a SIX-WAY TIE at 6 that contains maigret; U3 (the "
+                        "D9 candidate complementary pairs) gives thetwilightzone 10, "
+                        "thetraitors 7, manhunt 5 with a maximum of 10. Those are the two "
+                        "quoted lists and the two quoted maxima, with the one qualification "
+                        "that 0088's third U1 name sits inside a tie the ruling does not break "
+                        "-- see THE_TIE_BREAK_IS_NOT_RULED"),
+            "what_it_means": ("the divergence was located ON THE UNIVERSE AXIS and not in the "
                               "counting -- consistent with 0085's own observation that every "
-                              "count around the lists reconciled. Neither arm miscounted"),
-            "what_it_does_NOT_do": ("it does NOT rule which universe is correct, and this "
-                                    "instance does not. 0085 rules no universe and directs "
-                                    "that the divergence be REPORTED, NOT RECONCILED. Locating "
-                                    "the axis is a measurement; choosing the universe is a spec "
-                                    "decision and is the Human Lead's"),
-            "quoted_lists_source": ("decisions/0085 Sec 2 and task-sheet.md Step 8's D9 bullet "
-                                    "-- spec surfaces this instance is required to read. No "
-                                    "other arm's output folder was read"),
+                              "count around the lists reconciled. Neither arm miscounted, and "
+                              "0088 Sec 3 then ruled the universe so both arms cluster one "
+                              "defined object"),
+            "and_the_basis_matters_too": ("0088 Sec 3 also rules the RANKING BASIS, because it "
+                                          "reorders the list on its own: U1 ranked by distinct "
+                                          "SHOW IDS instead of distinct STRICT KEYS displaces "
+                                          "maigret with blackout. Both rankings are emitted "
+                                          "under each show-ID universe"),
+            "quoted_lists_source": ("decisions/0085 Sec 2, 0088 Sec 3 and task-sheet.md Step 8's "
+                                    "D9 bullet -- spec surfaces this instance is required to "
+                                    "read. No other arm's output folder was read"),
             "reproduced_U1_max": None,      # filled below, measured not typed
             "reproduced_U3_max": None,
         },
@@ -276,6 +374,61 @@ def d9(m: dict, frame: pd.DataFrame, st1: dict) -> dict:
         "candidate_user_show_pairs_examined": int(len(cov)),
         "sides": {"A_side_S1_not_S2": int(len(a_side)), "B_side_S2_not_S1": int(len(b_side)),
                   "both_seasons": int(len(both_side))},
+        # decisions/0088 Sec 2(b) -- NAME WHAT EACH COVERAGE FIGURE COUNTS, AT THE
+        # POINT OF USE. 747,478 and 726,103 are DIFFERENT OBJECTS and both correct:
+        # a user-show carrying two seasons contributes TWO ROWS AND ONE PAIR.
+        # Reconciling them would collapse two real quantities into one.
+        "COVERAGE_QUANTITIES_EACH_NAMED": {
+            "ruling": ("decisions/0088 Sec 2 -- one name over two quantities is not a "
+                       "divergence, and reconciling would collapse two real objects into one. "
+                       "Each quantity below states what it counts and over what"),
+            "THIS_ARM_PUBLISHES_AS_ITS_HEADLINE": "distinct_candidate_user_show_PAIRS",
+            "distinct_candidate_user_show_PAIRS": {
+                "value": int(len(cov)),
+                "counts": ("distinct (user, show) PAIRS carrying at least one S1 or S2 episode "
+                           "record after D11, across the WHOLE SWEEP -- not the frame"),
+                "decomposition": [int(len(a_side)), int(len(both_side)), int(len(b_side))],
+                "decomposition_note": "S1-not-S2 + both + S2-not-S1, which sums to the value",
+            },
+            "undeduplicated_user_show_SEASON_COVERAGE_ROWS": {
+                "value": int(len(a_side) + len(b_side) + 2 * len(both_side)),
+                "counts": ("(user, show, season) rows over the same universe -- a user-show "
+                           "carrying both seasons contributes TWO rows and ONE pair"),
+                "why_emitted": ("0088 Sec 2(b) names this as a DIFFERENT OBJECT from the pair "
+                                "count, both correct. It is measured here so this arm's own "
+                                "value of the object exists and is not inferred from the "
+                                "other's"),
+                "NOT_COMPARABLE_WITHOUT_ITS_MASK": ("this value is over the D11-filtered S1/S2 "
+                                                    "episode records only; a season-coverage "
+                                                    "row count taken over all seasons, or "
+                                                    "before D11, is a third object again"),
+            },
+            "distinct_show_IDs_APPEARING_IN_A_D9_COVERAGE_ROW": {
+                "value": int(cov.sh.nunique()),
+                "counts": ("show IDs that appear in at least one coverage row -- i.e. that some "
+                           "user in the sweep has an S1 or S2 record on"),
+                "IS_NOT_THE_SWEEP": ("decisions/0088 Sec 2(a) -- this quantity was published by "
+                                     "one arm mislabelled `distinct_show_ids_in_the_sweep`. It "
+                                     "is a pivot-side count and it is labelled here for what it "
+                                     "is. This arm's slug map is a separate object and is "
+                                     "reported next"),
+            },
+            "distinct_SLUGGED_SHOW_IDS_IN_THE_PARSED_SWEEP_the_U1_universe": {
+                "value": int(len(slugs)),
+                "counts": ("one row per show ID seen anywhere in processed/step4/parsed/ "
+                           "carrying a `show_slug` field -- the U1 universe decisions/0088 "
+                           "Sec 3 rules the clustering runs over"),
+                "of_which_the_slug_string_is_empty":
+                    int(sum(1 for v in slugs.values() if not str(v).strip())),
+                "source_file": "processed/step8/b/show_slugs.json",
+                "NAMED_AS_AN_OBJECT": ("0088 Sec 2(c) -- the two arms' slugged-ID sets stood 62 "
+                                       "apart while both were called U1. A shared label over "
+                                       "two sets is the defect; the sets themselves may both be "
+                                       "right. This is THIS arm's set, with its construction "
+                                       "named"),
+            },
+        },
+        "D11_site": d11_site,
         "keys": {
             "STRICT": {"definition": 're.sub(r"[^a-z0-9]", "", slug.lower()) -- strip nothing else',
                        "complementary_signature_pairs": int(len(sig_strict))},
@@ -301,12 +454,21 @@ def d9(m: dict, frame: pd.DataFrame, st1: dict) -> dict:
                               "The entire D9 signal therefore comes from year-stripping, which "
                               "CANNOT distinguish a Trakt metadata split from a REMAKE or a "
                               "national version sharing a title"),
-            "largest_loose_clusters": {str(k): int(v) for k, v in top.head(8).items()},
+            "largest_loose_clusters": dict(
+                clustering["universes"]["U1_all_sweep_show_ids_carrying_a_slug"][
+                    "largest_clusters"]),
             "THE_UNIVERSE_THIS_LIST_IS_MEASURED_OVER": (
-                "U3, the D9 CANDIDATE COMPLEMENTARY PAIRS -- complementary signature ROWS "
-                "sharing one loose key, NOT distinct show IDs. Named at the point of use per "
-                "decisions/0085 Sec 2; the two other candidate universes are measured "
-                "alongside under clustering_universes"),
+                "U1, ALL SLUGGED SWEEP SHOW IDS -- every distinct show ID appearing anywhere in "
+                "the pulled sweep that carries a slug, deduplicated to one row per show ID. "
+                "RANKED BY DISTINCT STRICT KEYS MERGED. Both are ruled by decisions/0088 Sec 3 "
+                "and named here at the point of use; the two other candidate universes are "
+                "measured alongside under clustering_universes"),
+            "THE_LIST_THIS_REPLACES": (
+                "the r3 build published U3's list -- thetwilightzone 10, thetraitors 7, "
+                "manhunt 5 -- which is also task-sheet.md's former illustration. SUPERSEDED as "
+                "the example by 0088 Sec 3. Those names are not wrong; they are another "
+                "universe's answer, and both lists are still emitted side by side in the "
+                "universe table"),
             "clustering_universes": clustering,
             "consequence": ("The loose count BOUNDS HOW WRONG STRICT COULD BE, and the error "
                             "runs OPPOSITE to D9's own lower-bound caveat: D9 warns that its "
@@ -387,6 +549,19 @@ def independent_s1_completion(frame: pd.DataFrame) -> dict:
 
 
 # ===========================================================================
+def _independent_identity(iv: dict) -> bool:
+    """True iff this invariant's coverage identity compares two INDEPENDENTLY
+    SOURCED quantities -- either directly, or on every sub-population it holds."""
+    c = iv.get("coverage", {})
+    if c.get("sides_are_independent_expressions") is True:
+        sub = c.get("per_population")
+        if isinstance(sub, dict):
+            return all(v.get("sides_are_independent_expressions") is True
+                       for v in sub.values())
+        return True
+    return False
+
+
 def ledger_outcomes() -> dict:
     """Final Step 4 outcome per account, keyed by slug AND by username."""
     rows: dict[str, dict] = {}
@@ -431,26 +606,111 @@ def main() -> None:
     never, contd, sal = m["never"], m["contd"], m["sal"]
     nA, nAH = m["nA"], m["nAH"]
 
+    # ------------------------------------------------------------------
+    # THE COVERAGE IDENTITIES ARE REBUILT SO THEY CAN FAIL.
+    #
+    # decisions/0088 Sec 2(d) strikes "a report that omitted a population could
+    # not be written by this pipeline" as A CONTROL ASSERTED TO EXIST, on the
+    # ground that most coverage identities have the population size and the
+    # asserted count as THE SAME EXPRESSION. Checked in this arm and TRUE HERE
+    # TOO, and worse in one respect: the r3 build HARDCODED
+    # `identity_holds: True` at invariants 2, 4 and 7, and its aggregate chained
+    # `.get(..., .get(..., .get(..., True)))`, so AN INVARIANT WITH NO COVERAGE
+    # KEY AT ALL CONTRIBUTED A PASS.
+    #
+    # Fixed two ways, and both are needed:
+    #   1. NO IDENTITY IS A LITERAL. Every one is arithmetic on measured counts.
+    #   2. THE POPULATION SIZE COMES FROM A DIFFERENT SOURCE THAN THE ASSERTED
+    #      COUNT -- from the EMITTED analysis table on disk, from the Step 4
+    #      ledger file, from stage 1's own pair count, or from a spec constant --
+    #      while the asserted count comes from the invariant's own arrays. An
+    #      invariant run on the wrong population then FAILS its identity, which
+    #      is the failure the apparatus was built for and could not detect.
+    # Where a side genuinely cannot be sourced independently, the row says so
+    # rather than implying otherwise.
+    # ------------------------------------------------------------------
+    _tab = pd.read_csv(OUT / "analysis_table.csv.gz",
+                       usecols=["user_idx", "live", "in_deriv"])
+    _lv = _tab.live.astype(bool).values
+    _dv = _tab.in_deriv.astype(bool).values
+    _ui = _tab.user_idx.values
+    POP = {
+        "APPLY_position5": int(len(_tab)),
+        "APPLY_post_liveness": int(_lv.sum()),
+        "DERIV_position5": int(_dv.sum()),
+        "DERIV_post_liveness": int((_dv & _lv).sum()),
+        "APPLY_accounts_position5": int(pd.unique(_ui).size),
+        "DERIV_accounts_position5": int(pd.unique(_ui[_dv]).size),
+    }
+    POP_SRC = ("read back off the EMITTED deliverable, processed/step8/b/analysis_table.csv.gz "
+               "-- a different expression and a different file from the mask arrays the "
+               "assertions run over, so an invariant run on the wrong population fails its "
+               "identity instead of reporting one")
+    _ledger_keys = set()
+    for _l in open(P4 / "pull_ledger.jsonl"):
+        _d = json.loads(_l)
+        _ledger_keys.add(str(_d.get("slug") or _d.get("username")).lower())
+    POP["ledger_accounts"] = len(_ledger_keys)
+
+    def cover(unit: str, n_pop: int, pop_source: str, asserted: int, not_asserted: int,
+              independent: bool, why_not_independent: str = "", **extra) -> dict:
+        """One coverage block. THE IDENTITY IS ARITHMETIC, NEVER A LITERAL."""
+        d = {
+            "unit": unit,
+            f"{unit}_in_the_stated_population": int(n_pop),
+            "population_size_source": pop_source,
+            f"{unit}_asserted": int(asserted),
+            f"{unit}_not_asserted": int(not_asserted),
+            "identity_required": (f"{unit}_asserted + {unit}_not_asserted = "
+                                  f"{unit}_in_the_stated_population"),
+            "identity_holds": bool(int(asserted) + int(not_asserted) == int(n_pop)),
+            "identity_arithmetic": f"{int(asserted)} + {int(not_asserted)} = {int(n_pop)}",
+            "sides_are_independent_expressions": bool(independent),
+        }
+        if not independent:
+            d["why_the_sides_are_not_independent"] = why_not_independent
+        d.update(extra)
+        return d
+
+    def cover_ok(c: dict) -> bool:
+        """A coverage block passes only if it CARRIES the key. No default."""
+        return isinstance(c, dict) and c.get("identity_holds") is True
+
     # --- 1. outcome states partition the post-position-7 row set ----------
     # decisions/0080 Sec 3 row 1: the population is the 196,654 position-5 row set
     # AND the 195,951 live subset, BOTH STATED, plus the DERIV pair 147,370 /
     # 147,271. The table carries all position-5 rows, so the partition holds on
     # both and NEITHER SUBSTITUTES FOR THE OTHER.
     res = {}
-    for nm, msk in (("APPLY_position5_row_set", line5),
-                    ("APPLY_post_position_7_live_subset", line6),
-                    ("DERIV_position5_row_set", m["deriv5"]),
-                    ("DERIV_post_position_7_live_subset", m["deriv6"])):
+    for nm, msk, popkey in (("APPLY_position5_row_set", line5, "APPLY_position5"),
+                            ("APPLY_post_position_7_live_subset", line6, "APPLY_post_liveness"),
+                            ("DERIV_position5_row_set", m["deriv5"], "DERIV_position5"),
+                            ("DERIV_post_position_7_live_subset", m["deriv6"],
+                             "DERIV_post_liveness")):
         n = int(msk.sum())
         c = [int((msk & never).sum()), int((msk & contd).sum()), int((msk & sal).sum())]
         overlap = int((msk & ((never & contd) | (never & sal) | (contd & sal))).sum())
         unassigned = int((msk & ~(never | contd | sal)).sum())
-        res[nm] = {"rows_in_the_stated_population": n, "never_started": c[0],
-                   "continued": c[1], "started_and_left": c[2], "sum": sum(c),
-                   "rows_in_two_states": overlap, "rows_in_no_state": unassigned,
-                   "rows_asserted": n, "rows_not_asserted": 0,
-                   "coverage_identity_holds": n + 0 == n,
-                   "passes": sum(c) == n and overlap == 0 and unassigned == 0}
+        # ASSERTED = rows that landed in EXACTLY ONE state, counted from the state
+        # masks. NOT ASSERTED = rows in none or in more than one, counted
+        # separately. Neither is the population size, and the population size is
+        # read off the emitted table.
+        exactly_one = n - overlap - unassigned
+        cov = cover("rows", POP[popkey], POP_SRC, exactly_one, overlap + unassigned,
+                    independent=True,
+                    rows_asserted_note=("rows landing in EXACTLY ONE outcome state; the "
+                                        "complement is counted from the overlap and "
+                                        "unassigned masks, not subtracted"),
+                    mask_population_for_comparison=n)
+        res[nm] = {"rows_in_the_stated_population": cov["rows_in_the_stated_population"],
+                   "never_started": c[0], "continued": c[1], "started_and_left": c[2],
+                   "sum": sum(c), "rows_in_two_states": overlap, "rows_in_no_state": unassigned,
+                   "rows_asserted": cov["rows_asserted"],
+                   "rows_not_asserted": cov["rows_not_asserted"],
+                   "coverage": cov,
+                   "coverage_identity_holds": cov["identity_holds"],
+                   "passes": bool(sum(c) == n and overlap == 0 and unassigned == 0
+                                  and cov["identity_holds"])}
     inv.append({
         "invariant": "outcome states are mutually exclusive and sum to the POST-POSITION-7 row set",
         "label": "CODE CHECK",
@@ -467,9 +727,15 @@ def main() -> None:
                        "population and was never run on another READS AS A PASS ON BOTH"),
         "coverage": {"unit": "rows",
                      "identity_required": ("rows_asserted + rows_not_asserted = "
-                                           "rows_in_the_stated_population"),
-                     "holds_on_every_stated_population":
-                         all(v["coverage_identity_holds"] for v in res.values())},
+                                           "rows_in_the_stated_population, ON EACH OF THE FOUR "
+                                           "STATED POPULATIONS"),
+                     "population_size_source": POP_SRC,
+                     "sides_are_independent_expressions": True,
+                     "populations_covered": len(res),
+                     "per_population": {k: v["coverage"] for k, v in res.items()},
+                     "identity_holds":
+                         bool(len(res) == 4
+                              and all(v["coverage"]["identity_holds"] for v in res.values()))},
         "result": res,
         "passes": all(v["passes"] for v in res.values())
                   and all(v["coverage_identity_holds"] for v in res.values()),
@@ -478,6 +744,15 @@ def main() -> None:
     # --- 2. filter counts decrease monotonically, coded >= ----------------
     seqA = [w["retained_pairs"] for w in R["waterfall_APPLY"]]
     seqD = [w["retained_pairs"] for w in R["waterfall_DERIV"]]
+    # transitions actually COMPARED, counted in the loop that compares them --
+    # not len(seq) - 1 asserted about the loop.
+    _okA: list[bool] = []
+    for _i in range(1, len(seqA)):
+        _okA.append(seqA[_i] <= seqA[_i - 1])
+    _okD: list[bool] = []
+    for _i in range(1, len(seqD)):
+        _okD.append(seqD[_i] <= seqD[_i - 1])
+    n_trans_A, n_trans_D = len(_okA), len(_okD)
     inv.append({
         "invariant": "filter counts decrease monotonically -- CODED AS `>=`, NOT `>`",
         "label": "CODE CHECK",
@@ -493,17 +768,33 @@ def main() -> None:
                                           if seqA[i] == seqA[i - 1]],
         "population": ("BOTH CHAINS (decisions/0080 Sec 3, row 2): APPLY's seven positions and "
                        "DERIV's seven"),
-        "coverage": {"unit": "filter positions",
-                     "APPLY": {"positions_in_the_chain": len(seqA),
-                               "transitions_asserted": len(seqA) - 1,
-                               "transitions_not_asserted": 0},
-                     "DERIV": {"positions_in_the_chain": len(seqD),
-                               "transitions_asserted": len(seqD) - 1,
-                               "transitions_not_asserted": 0},
-                     "identity_holds": True},
-        "passes": all(seqA[i] <= seqA[i - 1] for i in range(1, len(seqA)))
-                  and all(seqD[i] <= seqD[i - 1] for i in range(1, len(seqD)))
-                  and len(seqA) == 7 and len(seqD) == 7,
+        "coverage": {
+            "unit": "filter positions",
+            "identity_required": ("transitions_asserted + transitions_not_asserted = "
+                                  "the mandated chain length minus one, ON BOTH CHAINS"),
+            "population_size_source": ("the MANDATED FILTER ORDER -- 7 positions, fixed by "
+                                       "decisions/0029 and task-sheet.md Step 8. A spec "
+                                       "constant, not a length read off the chain being "
+                                       "checked, so a chain that lost or gained a position "
+                                       "FAILS this identity"),
+            "sides_are_independent_expressions": True,
+            "populations_covered": 2,
+            "per_population": {
+                "APPLY": cover("transitions", 7 - 1,
+                               "the mandated 7-position order, minus one",
+                               n_trans_A, max(0, (7 - 1) - n_trans_A), True,
+                               positions_in_the_chain=len(seqA),
+                               chain_length_matches_the_mandated_order=bool(len(seqA) == 7)),
+                "DERIV": cover("transitions", 7 - 1,
+                               "the mandated 7-position order, minus one",
+                               n_trans_D, max(0, (7 - 1) - n_trans_D), True,
+                               positions_in_the_chain=len(seqD),
+                               chain_length_matches_the_mandated_order=bool(len(seqD) == 7)),
+            },
+            "identity_holds": bool(n_trans_A == 6 and n_trans_D == 6
+                                   and len(seqA) == 7 and len(seqD) == 7)},
+        "passes": bool(all(_okA) and all(_okD) and len(seqA) == 7 and len(seqD) == 7
+                       and n_trans_A == 6 and n_trans_D == 6),
     })
 
     # --- 3. distinct episodes never exceed season length ------------------
@@ -517,6 +808,14 @@ def main() -> None:
     viol_s1 = int((ev_s1 > L1[ev_show]).sum())
     viol_s2 = int((ev_s2 > L2[ev_show]).sum())
     n_ev = int(len(ev_pairs))
+    # asserted = pairs this invariant walks, counted from the array it walks;
+    # not_asserted = pairs in the evidence universe carrying no in-E episode on
+    # either season. The POPULATION SIZE comes from stage 1's own pair count in
+    # stage1.json, so running this invariant on the NARROWER reading 0080 Sec 3
+    # forbids -- S2 only, on the 196,654 table rows -- would fail the identity
+    # rather than report a coverage of 196,654 as though it were the population.
+    n_ev_asserted = int(len(ev_pairs))
+    n_ev_neither = int(((ev_s1 == 0) & (ev_s2 == 0)).sum())
     inv.append({
         "invariant": "distinct episodes never exceed season length (|D| <= L)",
         "label": "CODE CHECK",
@@ -530,17 +829,24 @@ def main() -> None:
                        "(decisions/0080 Sec 3, row 3). The narrower reading -- S2 only on the "
                        "196,654 table rows -- DOES NOT SUBSTITUTE and is reported as a subset "
                        "below, not as the check"),
-        "coverage": {
-            "unit": "pairs, and the records behind them",
-            "pairs_in_the_stated_population": n_ev,
-            "pairs_asserted_S1": n_ev, "pairs_asserted_S2": n_ev,
-            "pairs_not_asserted": 0,
-            "identity_holds": n_ev + 0 == n_ev,
-            "records_examined_by_the_set_membership_rule":
-                st1["drop_rule"]["records_examined"],
-            "pairs_examined_by_the_set_membership_rule": st1["drop_rule"]["pairs_examined"],
-            "records_dropped": st1["drop_rule"]["records_dropped"],
-        },
+        "coverage": dict(
+            cover("pairs",
+                  int(st1["position3_drop_set"][
+                      "in_frame_pairs_with_ANY_in_E_S1_or_S2_distinct_episode"]),
+                  ("stage 1's own count of in-frame pairs carrying any in-E S1 or S2 distinct "
+                   "episode, read back from processed/step8/b/stage1.json -- a different "
+                   "computation and a different file from the ev_pairs array this invariant "
+                   "walks"),
+                  n_ev_asserted, n_ev_neither, independent=True,
+                  pairs_asserted_S1=n_ev, pairs_asserted_S2=n_ev,
+                  asserted_note=("every pair in the evidence universe is asserted on BOTH "
+                                 "seasons; a pair carrying no S1 and no S2 distinct episode "
+                                 "would be in the population and asserted on neither, and is "
+                                 "counted as not_asserted"),
+                  records_examined_by_the_set_membership_rule=st1["drop_rule"][
+                      "records_examined"],
+                  pairs_examined_by_the_set_membership_rule=st1["drop_rule"]["pairs_examined"],
+                  records_dropped=st1["drop_rule"]["records_dropped"])),
         "checked": {
             "S1_pairs_violating_|D1|_>_L1": viol_s1,
             "S2_pairs_violating_|D2|_>_L2": viol_s2,
@@ -568,9 +874,14 @@ def main() -> None:
                                        "from different evidence, or tau2 computed below tau1"),
         "population": ("the 196,654 APPLY position-5 row set, EVERY ROW (decisions/0080 Sec 3, "
                        "row 4)"),
-        "coverage": {"unit": "rows", "rows_in_the_stated_population": int(line5.sum()),
-                     "rows_asserted": int(line5.sum()), "rows_not_asserted": 0,
-                     "identity_holds": True},
+        "coverage": cover(
+            "rows", POP["APPLY_position5"], POP_SRC,
+            int(line5.sum()), int((line5 & ~np.isfinite(nA.astype(float))).sum()),
+            independent=True,
+            rows_asserted_note=("rows the comparison |A| <= |A_H| was evaluated on, counted "
+                                "from the mask it was evaluated over; not_asserted counts rows "
+                                "in the population where |A| is not a finite count, which is a "
+                                "state that cannot arise and is measured rather than assumed")),
         "checked": {"rows_examined": int(line5.sum()),
                     "rows_with_|A|_>_|A_H|": int((nA[line5] > nAH[line5]).sum()),
                     "rows_with_tau2_<=_tau1": int((m["tau2"][line5] <= m["tau1"][line5]).sum())},
@@ -626,15 +937,13 @@ def main() -> None:
         "population": ("the 196,654 APPLY position-5 row set, EVERY ROW, with the first-pass S1 "
                        "completion date RECOMPUTED INDEPENDENTLY -- which is the only thing "
                        "giving this one force (decisions/0080 Sec 3, row 5)"),
-        "coverage": {"unit": "rows", "rows_in_the_stated_population": int(sel.sum()),
-                     "rows_asserted": int((sel & have).sum()),
-                     "rows_not_asserted": int((sel & ~have).sum()),
-                     "rows_not_asserted_reason": ("rows the independent walk does not complete; "
-                                                  "if this is non-zero the two implementations "
-                                                  "disagree on the completer SET and that is "
-                                                  "itself the finding"),
-                     "identity_holds": int((sel & have).sum()) + int((sel & ~have).sum())
-                                       == int(sel.sum())},
+        "coverage": cover(
+            "rows", POP["APPLY_position5"], POP_SRC,
+            int((sel & have).sum()), int((sel & ~have).sum()), independent=True,
+            rows_not_asserted_reason=("rows the INDEPENDENT walk does not complete; if this is "
+                                      "non-zero the two implementations disagree on the "
+                                      "completer SET and that disagreement is itself the "
+                                      "finding, which is why it is counted and not subtracted")),
         "clauses_on_the_position_5_population": {
             "rows_examined": int(sel.sum()),
             "T0_on_or_after_the_S2_finale_date": int((sel & ge_finale).sum()),
@@ -680,13 +989,16 @@ def main() -> None:
                        "two must sum to the 196,654 position-5 row set EXACTLY "
                        "(decisions/0080 Sec 3, row 6). DO NOT TAKE THE NUMERATOR POST-LIVENESS "
                        "AND THE DENOMINATOR PRE-LIVENESS"),
-        "coverage": {
-            "unit": "rows",
-            "rows_in_the_stated_population": int(line5.sum()),
-            "rows_asserted_in_range_clause": int(len(psel)),
-            "rows_asserted_null_clause": int(len(elsewhere)),
-            "rows_not_asserted": int(line5.sum()) - int(len(psel)) - int(len(elsewhere)),
-            "identity_holds": int(len(psel)) + int(len(elsewhere)) == int(line5.sum()),
+        "coverage": dict(
+            cover("rows", POP["APPLY_position5"], POP_SRC,
+                  int(len(psel)) + int(len(elsewhere)), 0, independent=True,
+                  rows_asserted_in_range_clause=int(len(psel)),
+                  rows_asserted_null_clause=int(len(elsewhere)),
+                  rows_asserted_note=("the two clauses are asserted on disjoint row sets and "
+                                      "their sizes are measured separately; the sum is compared "
+                                      "against the EMITTED table's row count, which is where "
+                                      "the r3 gap would have shown")),
+            **{
             "corrected_this_run": ("this arm's previous run asserted the range clause on the "
                                    "POST-LIVENESS 19,042 while the null clause ran on the "
                                    "position-5 177,513 -- 196,555 against a 196,654-row table, "
@@ -695,7 +1007,7 @@ def main() -> None:
                                    "is what decisions/0080 Sec 3 was written on, and it is "
                                    "closed here"),
             "started_and_left_rows_post_liveness_for_reference": int((line6 & sal).sum()),
-        },
+        }),
         "checked": {"rows_examined": int(len(psel)), "min": float(np.nanmin(psel)),
                     "max": float(np.nanmax(psel)),
                     "rows_out_of_range": int(((psel <= 0) | (psel > 1)).sum()),
@@ -719,11 +1031,26 @@ def main() -> None:
         # for the accounts that hold ONLY not-live pairs, how many pairs is that?
         sizes = np.bincount(u_idx[p5mask], minlength=int(u_idx.max()) + 1)
         accts_all = np.unique(u_idx[p5mask])
+        # asserted = accounts classified into one of the three exhaustive classes
+        # (all-live / mixed / all-not-live), counted from the class arrays;
+        # not_asserted = accounts in the population that fell into none. The
+        # POPULATION SIZE is the distinct user_idx count read off the EMITTED
+        # table, not len(accts_all).
+        _classified = (int(len(np.setdiff1d(accts_all, accts_notlive)))
+                       + int(len(both)) + int(len(only_nl)))
+        _covk = cover("accounts", POP[nm + "_accounts_position5"], POP_SRC,
+                      _classified, int(len(accts_all)) - _classified, independent=True,
+                      classes=["all pairs live", "mixed", "all pairs not live"],
+                      accounts_asserted_note=("accounts falling into one of the three "
+                                              "exhaustive classes, counted from the class "
+                                              "arrays; the population size is the distinct "
+                                              "user_idx count in the emitted table"))
         whole[nm] = {
-            "accounts_in_the_stated_population": int(len(accts_all)),
-            "accounts_asserted": int(len(accts_all)),
-            "accounts_not_asserted": 0,
-            "coverage_identity_holds": True,
+            "accounts_in_the_stated_population": _covk["accounts_in_the_stated_population"],
+            "accounts_asserted": _covk["accounts_asserted"],
+            "accounts_not_asserted": _covk["accounts_not_asserted"],
+            "coverage": _covk,
+            "coverage_identity_holds": _covk["identity_holds"],
             "accounts_holding_only_live_pairs":
                 int(len(np.setdiff1d(accts_all, accts_notlive))),
             "pairs_in_the_stated_population": int(p5mask.sum()),
@@ -752,9 +1079,14 @@ def main() -> None:
                        "each reporting accounts holding both a live and a not-live pair"),
         "coverage": {"unit": "accounts",
                      "identity_required": ("accounts_asserted + accounts_not_asserted = "
-                                           "accounts_in_the_stated_population"),
-                     "holds_on_both_populations":
-                         all(v["coverage_identity_holds"] for v in whole.values())},
+                                           "accounts_in_the_stated_population, ON BOTH "
+                                           "POPULATIONS"),
+                     "population_size_source": POP_SRC,
+                     "sides_are_independent_expressions": True,
+                     "populations_covered": len(whole),
+                     "per_population": {k: v["coverage"] for k, v in whole.items()},
+                     "identity_holds": bool(len(whole) == 2 and all(
+                         v["coverage"]["identity_holds"] for v in whole.values()))},
         "checked": whole,
         "reading": ("the accounts whose pairs are ALL not-live are not a counter-example: they "
                     "are mostly accounts holding a single pair in the population, for which "
@@ -829,22 +1161,21 @@ def main() -> None:
         "population": ("THE FULL ACCOUNT LEDGER, IN ACCOUNTS (decisions/0080 Sec 3, row 8), "
                        "with the skipped classes counted separately and the pairs they "
                        "contribute stated"),
-        "coverage": {
-            "unit": "accounts",
-            "accounts_in_the_stated_population": len(led),
-            "accounts_asserted": asserted,
-            "accounts_not_asserted": len(led) - asserted,
-            "identity_holds": asserted == len(led),
-            "by_final_ledger_outcome": per_class,
-            "skipped_classes_total_pairs_contributed": skipped_pairs,
-            "skipped_classes_total_never_started_pairs_contributed": skipped_ns,
-            "a_second_class_checked_separately": {
+        "coverage": dict(cover(
+            "accounts", POP["ledger_accounts"],
+            ("processed/step4/pull_ledger.jsonl, counted by a SECOND pass over the file that "
+             "keys on slug-or-username and is independent of the outcome classification this "
+             "invariant sums over"),
+            asserted, len(led) - asserted, independent=True,
+            by_final_ledger_outcome=per_class,
+            skipped_classes_total_pairs_contributed=skipped_pairs,
+            skipped_classes_total_never_started_pairs_contributed=skipped_ns,
+            a_second_class_checked_separately={
                 "parsed_accounts_with_no_ledger_row_at_all": len(idx_unknown),
                 "why": ("an account present in the parsed sweep but absent from the ledger "
                         "would be covered by no ledger class, so it is counted rather than "
                         "assumed empty"),
-            },
-        },
+            })),
         "checked": {
             "step4_ledger_accounts": len(led),
             "accounts_by_final_outcome": {k: len(v) for k, v in NOT_COMPLETE.items()}
@@ -866,6 +1197,51 @@ def main() -> None:
                     "requires"),
         "passes": bool(len(contributes) == 0 and ns_rows == 0 and skipped_ns == 0
                        and asserted == len(led) and len(idx_unknown) == 0),
+    })
+
+    # --- 9. CODE CHECK: no position-5 row has tau2 > tau_pull -------------
+    # decisions/0088 Sec 1(c) -- PROMOTE THE EXISTING ASSERTION. It already ran
+    # inside the pipeline but sat OUTSIDE the published invariant set, so no
+    # reader of the deliverable could see it. Published here, labelled CODE
+    # CHECK. NOTE: this takes the assertion set to NINE members. task-sheet.md's
+    # own count sentence still says the set has eight; that is a count the
+    # ruling moved and the sentence has not caught up, and it is reported as a
+    # spec observation rather than silently reconciled.
+    pr = R["B3_the_two_unasserted_mandates"]["c_the_promoted_assertion"]
+    inv.append({
+        "invariant": "no position-5 row has tau2 > tau_pull",
+        "label": "CODE CHECK",
+        "why_it_cannot_fail_on_data": ("D10 defines position 5 as [T0] + (max(W, 91) + H) x 24h "
+                                       "<= tau_pull, and at W = 108 that expression IS tau2. It "
+                                       "can only catch tau2 or the right-censoring bound "
+                                       "computed wrongly -- for instance H dropped from the "
+                                       "censoring term while tau2 kept it"),
+        "ruling": pr["ruling"],
+        "population": ("BOTH POPULATIONS: the 196,654 APPLY position-5 row set and the 147,370 "
+                       "DERIV position-5 row set, every row of each"),
+        "coverage": {
+            "unit": "rows",
+            "identity_required": ("rows_asserted + rows_not_asserted = "
+                                  "rows_in_the_stated_population, ON BOTH POPULATIONS"),
+            "population_size_source": POP_SRC,
+            "sides_are_independent_expressions": True,
+            "populations_covered": 2,
+            "per_population": {
+                "APPLY_position5": cover(
+                    "rows", POP["APPLY_position5"], POP_SRC,
+                    int(pr["by_population"]["APPLY_position5"]["rows_examined"]), 0, True),
+                "DERIV_position5": cover(
+                    "rows", POP["DERIV_position5"], POP_SRC,
+                    int(pr["by_population"]["DERIV_position5"]["rows_examined"]), 0, True),
+            },
+            "identity_holds": bool(
+                pr["by_population"]["APPLY_position5"]["rows_examined"] == POP["APPLY_position5"]
+                and pr["by_population"]["DERIV_position5"]["rows_examined"]
+                == POP["DERIV_position5"]),
+        },
+        "checked": pr["by_population"],
+        "reading": pr["the_bound_is_ATTAINED_not_slack"],
+        "passes": bool(pr["passes"]),
     })
 
     # ---- the 703 expectation: NOT an invariant ---------------------------
@@ -944,11 +1320,49 @@ def main() -> None:
                                  "exclusions -- were covered by NEITHER clause, and the report "
                                  "did not disclose it. Closed this run: 19,141 + 177,513 = "
                                  "196,654"),
-        "identity_holds_on_every_invariant": all(
-            bool(i.get("coverage", {}).get("identity_holds",
-                 i.get("coverage", {}).get("holds_on_both_populations",
-                 i.get("coverage", {}).get("holds_on_every_stated_population", True))))
-            for i in inv),
+        # NO DEFAULT. An invariant without a coverage identity FAILS this
+        # aggregate; it does not inherit a pass.
+        "invariants_carrying_a_coverage_identity": sum(1 for i in inv if cover_ok(i["coverage"])),
+        "invariants_total": len(inv),
+        "invariants_missing_a_coverage_identity": [
+            i["invariant"][:60] for i in inv if "identity_holds" not in i.get("coverage", {})],
+        "identity_holds_on_every_invariant": bool(
+            len(inv) > 0 and all(cover_ok(i.get("coverage", {})) for i in inv)),
+        "how_the_aggregate_is_computed": (
+            "every invariant must CARRY coverage.identity_holds and it must be True. The r3 "
+            "build chained .get(..., .get(..., .get(..., True))), so an invariant with no "
+            "coverage key contributed a PASS -- a control that could not see the thing it was "
+            "built to see. There is no default here"),
+        "AUDIT_can_each_identity_actually_fail": {
+            "why_this_block_exists": (
+                "decisions/0088 Sec 2(d) strikes 'a report that omitted a population could not "
+                "be written by this pipeline' as A CONTROL ASSERTED TO EXIST, on the ground "
+                "that most coverage identities have the population size and the asserted count "
+                "as THE SAME EXPRESSION. That was true in this arm too, and worse: three "
+                "identities were HARDCODED literals. Rebuilt this run so each identity compares "
+                "a count measured from the invariant's own arrays against a population size "
+                "sourced from a DIFFERENT FILE -- the emitted analysis table, the Step 4 "
+                "ledger, stage 1's own pair count, or the mandated 7-position order"),
+            "identities_whose_two_sides_are_independent_expressions": sum(
+                1 for i in inv if _independent_identity(i)),
+            "identities_that_are_literals": sum(
+                1 for i in inv if isinstance(i.get("coverage", {}).get("identity_holds"), bool)
+                and "identity_arithmetic" not in i.get("coverage", {})
+                and "per_population" not in i.get("coverage", {})),
+            "population_size_sources_used": sorted({
+                str(i.get("coverage", {}).get("population_size_source", ""))[:60]
+                for i in inv if i.get("coverage", {}).get("population_size_source")}),
+            "what_a_failure_would_look_like": (
+                "an invariant asserted on the post-liveness 195,951 rows while naming the "
+                "position-5 population would now report 195,951 + 0 = 196,654 and FAIL. That is "
+                "exactly the r3 gap at invariant 6, which the old apparatus reported as a pass "
+                "on a hand-chosen denominator"),
+            "STRUCK_SENTENCE": (
+                "'The run asserts this, so a report that omitted a population could not be "
+                "written by this pipeline' -- STRUCK by decisions/0088 Sec 2(d), whatever else "
+                "is ruled. This arm did not publish that sentence, and it is recorded here so "
+                "the strike is visible on this surface rather than only in the decision log"),
+        },
         "measured_on_build": BUILD,
     }
 
@@ -958,22 +1372,35 @@ def main() -> None:
         "provenance": provenance_block(),
         "invariant_coverage_rule": cov_rule,
         "how_to_read_this_report": (
-            "SIX of the eight assertions CANNOT FAIL ON ANY DATA. Five are pure CODE CHECKS -- "
-            "the outcome partition, the monotone filter counts, |D| <= L, A subset of A_H, and "
-            "p in (0, 1]. A sixth, the clock start, is a code check by construction and a "
-            "genuine cross-check only because the first-pass S1 completion date is recomputed "
-            "INDEPENDENTLY here. TWO can fail on real data, and both were added by "
-            "decisions/0076 because before it the set had ZERO: no account dropped wholesale, "
-            "and no access_denied or skipped account read as empty. 'All invariants passed' is "
-            "therefore mostly a statement that the code computed what it was told to; it is "
-            "NOT evidence for the liveness rule or for any published share."),
-        "counts": {"pure_code_checks": 5,
+            "SEVEN of the nine assertions CANNOT FAIL ON ANY DATA. Six are pure CODE CHECKS -- "
+            "the outcome partition, the monotone filter counts, |D| <= L, A subset of A_H, "
+            "p in (0, 1], and tau2 <= tau_pull at position 5. A seventh, the clock start, is a "
+            "code check by construction and a genuine cross-check only because the first-pass "
+            "S1 completion date is recomputed INDEPENDENTLY here. TWO can fail on real data, "
+            "and both were added by decisions/0076 because before it the set had ZERO: no "
+            "account dropped wholesale, and no access_denied or skipped account read as empty. "
+            "'All invariants passed' is therefore mostly a statement that the code computed "
+            "what it was told to; it is NOT evidence for the liveness rule or for any "
+            "published share."),
+        "counts": {"pure_code_checks": 6,
                    "code_check_by_construction_and_data_check_as_specified": 1,
                    "genuine_data_checks": 2,
+                   "assertions_total": 9,
+                   "the_set_moved_from_EIGHT_to_NINE_this_run": (
+                       "decisions/0088 Sec 1(c) PROMOTES the tau2 <= tau_pull assertion into "
+                       "the published set. It already ran; it was invisible to a reader of the "
+                       "deliverable. REPORTED AS A SPEC OBSERVATION, NOT RECONCILED: "
+                       "task-sheet.md and this instance's definition file still say 'THE "
+                       "ASSERTION SET NOW HAS EIGHT MEMBERS', and 0088 moved that count "
+                       "without the sentence catching up. task-sheet.md's own labelling bullet "
+                       "carries a THIRD count -- 'four pure code checks, one by construction, "
+                       "one item that is not an invariant' -- which predates 0076. Three counts "
+                       "of one set are live on the surfaces this instance reads"),
                    "items_reported_but_not_asserted": 2,
                    "items_reported_but_not_asserted_named": [
                        "the set-membership drop rule -- a coverage count (0074 ruling 3)",
                        "the 703 expectation -- a population reconciliation (0047, 0069)"]},
+        "B3_the_two_unasserted_mandates": R["B3_the_two_unasserted_mandates"],
         "invariants": inv,
         "coverage_count_not_an_invariant": coverage,
         "population_reconciliation_703_and_99": recon,
