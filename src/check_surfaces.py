@@ -196,15 +196,31 @@ def scan_phrases():
                 cov["skipped"] += 1
                 continue
             if f.endswith(".json"):
-                # A JSON string leaf is a single unit: it carries its own newlines, so
-                # normalising it is enough and there is no cross-line problem.
+                # A JSON string leaf carries its own newlines, so normalising it handles the
+                # wrapping problem. It does NOT handle PROXIMITY, and 0084's first version of
+                # this branch dropped that in the same move -- justified on wrapping while
+                # silently widening STRUCK from a windowed context to the WHOLE value, so any
+                # paragraph-length note mentioning a withdrawal anywhere exempted every phrase
+                # inside it. Red Team P4, third pass. The gap was checked for occupancy and was
+                # empty; it is fixed rather than recorded, because "empty today" is exactly how
+                # the JSON-string limit was recorded at 0060 while a defect sat in it.
                 cov["files"] += 1
                 for v, p in json_strings(f):
                     cov["json_strings"] += 1
-                    low = WS.sub(" ", v.lower())
+                    vlines = v.split("\n")
+                    flat, linemap = _normalised_with_linemap(vlines)
                     for phrase, why in WITHDRAWN_PHRASES.items():
-                        if phrase in low and not STRUCK.search(v):
-                            hits.append((surface, f, p, phrase, why, v.strip()[:110]))
+                        start = 0
+                        while True:
+                            k = flat.find(phrase, start)
+                            if k < 0:
+                                break
+                            start = k + 1
+                            a_, b_ = linemap[k], linemap[min(k + len(phrase), len(linemap) - 1)]
+                            ctx = "\n".join(vlines[max(0, a_ - 1 - CONTEXT):b_ + CONTEXT])
+                            if not STRUCK.search(ctx):
+                                hits.append((surface, f, p, phrase, why,
+                                             " ".join(vlines[a_ - 1:b_]).strip()[:110]))
                 continue
 
             try:

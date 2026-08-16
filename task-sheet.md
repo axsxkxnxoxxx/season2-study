@@ -361,6 +361,13 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
       `NOT Continued` so **`live` is true for every Continued pair regardless of silence**; that count
       closed the rule objection at `0063` §1 and is a published Step 14 limitation, and **its input
       living in Step 7's working files is the same shape as `0079`'s drop set.**
+      **BOTH ARMS PUBLISH THE LINE-6 MARGINAL DECOMPOSITION — 652 AND 1,355, NOT ONE OF THEM.**
+      Red Team third pass (`0085` §5). **703 is NOT the marginal cost of the silence test**: the
+      silence test alone excludes **1,355** on APPLY, and the `NOT Continued` conjunct **spares 652**,
+      giving `1,355 − 652 = 703`. ***One arm published 652 and not 1,355.*** **Derivable, so not a
+      defect — but 1,355 is the figure that makes line 6 readable as a marginal cost**, and a reader
+      with only 652 cannot recover it without knowing to add. **Publish both, on APPLY and DERIV, with
+      the identity stated.**
       **Two columns stay DROPPED and both are free:** **`f2_in_A_H`**, derivable as
       `max_episode_in_A_H == s2_F`, and **`max_episode_in_A`**, read by nothing downstream.
       ***The count moved 88 → 89 as a mechanical consequence of adding `p_at_bound`; it is stated here
@@ -510,7 +517,23 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
       entire number and none was specified:** strict finds **0** complementary signature pairs and loose
       finds **75**, so half (a) is **6 or 0** on an unstated choice. **Loose strips the year and merges
       genuinely different shows** — its largest clusters are **The Twilight Zone, The Traitors and
-      Manhunt**, remakes and national versions rather than split metadata. **The loose count is reported
+      Manhunt**, remakes and national versions rather than split metadata.
+      **NAME THE UNIVERSE THE CLUSTERING RUNS OVER, AT THE POINT OF USE.** Red Team blocker B1, third
+      pass, 2026-08-16 (`0085` §2). **THE TWO ARMS PUBLISHED DISJOINT CLUSTER LISTS ON IDENTICAL
+      COUNTS** — one gave `secondchance` 8, `theisland` 7, `maigret` 6; the other `thetwilightzone` 10,
+      `thetraitors` 7, `manhunt` 5 — **sharing no member, with maxima 8 against 10**, while every count
+      around them reconciled (0 / 75 / 76 both arms; half (a) 0 and 6 both; half (b) 0 and 27 both).
+      **That is not a counting difference. It is a difference in WHICH SET OF SHOWS IS BEING
+      CLUSTERED**, and the spec never said. **The cluster examples are the EVIDENCE for the loose key's
+      only warrant** — that it bounds how wrong strict could be — **so two arms producing different
+      evidence for one warrant means the warrant is not reproducible while the deliverables read as
+      though it is.** **State the universe explicitly**: all sweep show IDs carrying a slug, or the
+      1,138 frame shows, or the D9 candidate pairs. **THE DIVERGENCE IS REPORTED, NOT RECONCILED** — no
+      universe is ruled here. **If the two arms name the SAME universe and still differ, one has a bug
+      and that is the finding.** ***`0084` §5 item 3 filed this as an arm-against-SPEC wording question
+      about what "largest cluster" ranks by. That was wrong: it is an ARM-AGAINST-ARM divergence, which
+      is the dual diff, and it was mis-filed partly because one arm's list happens to match the three
+      names above.*** **The loose count is reported
       because it BOUNDS HOW WRONG STRICT COULD BE**, and **the error runs OPPOSITE to D9's own
       lower-bound caveat** — which is why it publishes rather than being resolved away.
       **REPORT BOTH HALVES UNDER BOTH KEYS — FOUR NUMBERS, NOT THREE.** Human Lead ruling, 2026-08-13
@@ -555,10 +578,29 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
       at `L2`, FALSE where the pair left at the final episode." Those clauses are COEXTENSIVE BY
       CONSTRUCTION and the FALSE class is EMPTY.*** On the adopted rank form
       `p = |{e ∈ E2 : e ≤ m_H}| / L2`, **the set-membership drop rule puts `m_H ∈ E2`**, so the numerator
-      equals `L2` **iff** no listed episode exceeds `m_H`, **iff** `m_H = max(E2) = F2` — which *is*
-      "left at the final episode." **Neither clause can hold without the other.**
+      equals `L2` **iff** no listed episode exceeds `m_H`, **iff** `m_H = max(E2)`, **and `max(E2) = F2`**
+      — which *is* "left at the final episode."
+      ***THE CHAIN HAS THREE LINKS AND ONLY TWO ARE CONSTRUCTION.*** Red Team P4, third pass
+      (`0085` §4). `numerator = L2 ⟺ m_H = max(E2)` is construction given `L2 := |E2|`, which the spec
+      fixes. **`max(E2) = F2` IS NOT** — it holds only because **the finale is the highest-numbered
+      listed episode**, and **where a season lists an episode numbered above its finale the two
+      separate.** That is the `s2_aired_lt_listed` case **this step is told to count**. **It is
+      measured, not assumed: 0 shows in frame** (`shows_where_max_E2_differs_from_L2 = 0`,
+      `s2_aired_lt_listed` 0 shows), **and the frame does not move across Step 13's grid, so nothing
+      reopens.** ***`0083` §2 named TWO causes for a future FALSE row. There are THREE, and this is the
+      third*** — assert it and state its count.
+      **EMIT THE EMPTINESS MEASUREMENT ON BOTH POPULATIONS, AT BOTH POSITIONS — FOUR CELLS EACH.**
+      Red Team blocker B2, third pass (`0085` §3). **Total, in-both-classes, saturated-not-final,
+      final-not-saturated, and in-neither — on APPLY position 5, APPLY post-liveness, DERIV position 5
+      and DERIV post-liveness.** **This is `CLAUDE.md`'s standing rule, not a new one**: *both
+      populations, always; a correction applied to one and not the other is the same defect as not
+      applying it at all.* ***One arm emitted APPLY only, and `1,056` appeared nowhere in its
+      deliverable*** — **while the ground for keeping the column at all is that "an emptiness asserted
+      in prose and never emitted cannot be checked."** **On DERIV that ground was unmet.**
       **Measured, both arms, 2026-08-16 clean run, APPLY: at position 5, 1,246 rows in BOTH classes, 0
-      saturated-not-final, 0 final-not-saturated, 0 in neither; post-liveness 1,230 / 0 / 0 / 0.**
+      saturated-not-final, 0 final-not-saturated, 0 in neither; post-liveness 1,230 / 0 / 0 / 0.
+      DERIV: 1,072 / 0 / 0 / 0 at position 5 and 1,056 / 0 / 0 / 0 post-liveness** (instance B; the
+      DERIV pair is stated here because `0083` §2 gave APPLY only and the standing rule requires both).
       ***AND 1,246 AND 1,230 ARE NO LONGER A SPLIT.*** They are correct counts and both arms reproduce
       them, but they are **one class counted twice, not two classes summed** — **using them as evidence
       that the column separates anything is a WITHDRAWN ARGUMENT** (`CLAUDE.md`, third blindness class).

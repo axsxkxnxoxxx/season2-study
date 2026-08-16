@@ -219,7 +219,16 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
           its pipeline named at the point of use.** **What stays open is NOT this** — whether D11
           applies to the **S1 completion walk** is `0068`'s open item, where C moves line 1 to
           220,103 (**4 pairs stop being completers, 0 completion dates move**). **Answered there.**
-        - **5. D9 uses the STRICT key, with the loose count of 75 reported alongside.** Strict finds
+        - **5a. NAME THE UNIVERSE THE D9 CLUSTERING RUNS OVER, AT THE POINT OF USE** (`0085` §2, Red
+      Team B1). **The two arms published DISJOINT cluster lists on IDENTICAL counts** — `secondchance`
+      8 / `theisland` 7 / `maigret` 6 against `thetwilightzone` 10 / `thetraitors` 7 / `manhunt` 5,
+      **no shared member, maxima 8 against 10** — while every count reconciled. **A difference in WHICH
+      SHOWS ARE CLUSTERED, which the spec never stated.** **The cluster examples are the EVIDENCE for
+      the loose key's only warrant**, so two arms giving different evidence for one warrant makes it
+      irreproducible while the deliverables read otherwise. **State it: all sweep show IDs with a slug,
+      the 1,138 frame shows, or the D9 candidate pairs. REPORTED, NOT RECONCILED** — if both name the
+      same universe and still differ, one has a bug.
+    - **5. D9 uses the STRICT key, with the loose count of 75 reported alongside.** Strict finds
           **0** complementary pairs; loose finds 75 but **strips the year and merges genuinely different
           shows** — The Twilight Zone, The Traitors, Manhunt. **The loose count bounds how wrong strict
           could be, and the error runs OPPOSITE to D9's own lower-bound caveat.**
@@ -301,6 +310,18 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
       `size_quintile`, `size_quintile_per_year`, `size_quintile_raw_count`, `t0_binding_term`
       `t0_date`, `tau1`, `tau2`, `title`
       `user_idx`
+      **EMIT THE EMPTINESS ON BOTH POPULATIONS, BOTH POSITIONS — FOUR CELLS EACH** (`0085` §3, Red
+      Team B2): total, in-both, saturated-not-final, final-not-saturated, in-neither, on **APPLY
+      position 5, APPLY post-liveness, DERIV position 5, DERIV post-liveness**. **`CLAUDE.md`'s
+      standing both-populations rule, not a new one.** ***One arm emitted APPLY only and `1,056`
+      appeared nowhere in its deliverable — while the whole ground for keeping the column is that an
+      emptiness asserted in prose and never emitted cannot be checked.*** **DERIV measures
+      1,072 / 0 / 0 / 0 at position 5 and 1,056 / 0 / 0 / 0 post-liveness.**
+      **AND THE CONSTRUCTION CHAIN HAS THREE LINKS, NOT TWO** (`0085` §4, Red Team P4).
+      `numerator = L2 ⟺ m_H = max(E2)` is construction given `L2 := |E2|`. **`max(E2) = F2` IS NOT** —
+      it needs **the finale to be the highest-numbered listed episode**, and the `s2_aired_lt_listed`
+      case separates them. **Measured 0 shows in frame; assert it and state the count.** ***`0083` §2
+      named two causes for a future FALSE row; there are three.***
       **`p_at_bound` MARKS WHETHER `p` REACHED ITS BOUND, NOT WHY** (`0082`, restated `0083` §2):
       **TRUE where `p` reached its bound**, null where `p` is null. ***SUPERSEDED — `0082` §2's
       definition by two MECHANISMS, "TRUE where the rank numerator saturated at `L2`, FALSE where the
@@ -321,7 +342,11 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
       anywhere means one of them has broken.** **Still report the totals — 1,246 at position 5, 1,230
       post-liveness on APPLY — AS TOTALS, not as a sum of two classes.**
       **`silent_at_tau1` is IN** (`0081`): the only way to recompute the **Continued-and-silent count,
-      652**, from this table. **Dropped and free:** `f2_in_A_H` (derivable) and `max_episode_in_A`.
+      652**, from this table. **PUBLISH 652 AND 1,355, NOT ONE** (`0085` §5, Red Team third pass):
+      **703 is NOT the marginal cost of the silence test** — the silence test alone excludes **1,355**
+      on APPLY and the `NOT Continued` conjunct **spares 652**, so `1,355 − 652 = 703`. ***One arm
+      published 652 and not 1,355.*** **Derivable, so not a defect — but 1,355 is what makes line 6
+      readable as a marginal cost.** **Both populations, with the identity stated.** **Dropped and free:** `f2_in_A_H` (derivable) and `max_episode_in_A`.
     - **COLUMN NAMES ARE FIXED** (`0077`). The rerun gave **88 against 87 columns for the SAME
       contents**, and **Step 8b's schema would inherit it.** **Rule: use the spec's own vocabulary where
       the spec defines the thing; otherwise the more explicit form.** Adopted: **`in_apply` /
