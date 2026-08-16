@@ -503,8 +503,8 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
       **Half (b) is measured on these rows and cannot be computed without them.** Instance A
       found this by needing it. **An instance that does not discover it emits ZERO or fails — and a zero
       here reads as a data finding rather than a missing input**, which is the worse of the two
-      failures. **USE THE STRICT KEY AND REPORT THE LOOSE
-      COUNT ALONGSIDE.** Human Lead ruling, 2026-08-13 (`0074`); **BOTH KEYS ARE DEFINED HERE by
+      failures. ~~**USE THE STRICT KEY AND REPORT THE LOOSE
+      COUNT ALONGSIDE.**~~ ***SUPERSEDED by `0090`: D9 publishes as a BOUND, strict the floor and loose the ceiling, NEITHER the point estimate. Strict is no longer "the answer". See the bound bullet above.*** Human Lead ruling, 2026-08-13 (`0074`); **BOTH KEYS ARE DEFINED HERE by
       `0076`, because "strict" and "loose" existed only inside one instance's code, which the other is
       forbidden to read — so the ruled key was undefined on every surface an isolated instance reads,
       and a re-run against the ruling would have reproduced the divergence.**
@@ -615,6 +615,31 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
       form and set membership are both `W`-invariant — **so a FALSE row anywhere means one of them has
       broken, and that is worth catching.** **Still report the `p = 1.0` totals: 1,246 at position 5 and
       1,230 post-liveness on APPLY**, as totals, not as a sum of two classes.
+- [ ] **D9 PUBLISHES AS A BOUND, NOT A POINT ESTIMATE. STRICT IS THE FLOOR, LOOSE IS THE CEILING, BOTH
+      LABELLED.** Human Lead ruling, 2026-08-16 (`0090`). ***SUPERSEDES the framing "USE THE STRICT KEY
+      AND REPORT THE LOOSE COUNT ALONGSIDE" (`0074` ruling 5), under which STRICT WAS THE ANSWER and
+      loose was context.*** **Neither endpoint is the point estimate and neither may be quoted as
+      "D9's result".**
+      **This is `0074` ruling 5's OWN REASON carried to its conclusion**: the loose count publishes
+      **because it bounds how wrong strict could be**, and a quantity published to bound another is an
+      **endpoint**, not a footnote. **`0078` §3 already ran this argument once** — it extended the loose
+      count to half (b) *"because `0074` ruling 5's own reason applies to half (b) exactly as it applies
+      to half (a)"*. **Same reason, one step further.**
+      **THE BOUND IS `[strict, loose]` ON EVERY D9 QUANTITY THAT HAS BOTH FORMS**, not on the headline
+      alone — **complementary signature pairs `[0, 75]`, half (a) `[0, 6]`, half (b) `[0, 27]`.**
+      **Applying it to one and not the others is the defect `0078` §3 corrected**, and the ruling's
+      phrase *"this half"* is read this way for that reason; **if the Human Lead meant a single half,
+      say so and it narrows.**
+      **DIRECTION IS PART OF THE LABEL.** **Strict is the FLOOR because it only matches slugs identical
+      modulo punctuation, so it cannot over-count; loose is the CEILING because stripping a trailing
+      year MERGES GENUINELY DIFFERENT SHOWS** — remakes and national versions. **The error runs OPPOSITE
+      to D9's own lower-bound caveat**, which is why the interval is published rather than resolved away.
+      **THE THIRD KEY IS NOT AN ENDPOINT.** Stripping a trailing digit group of arbitrary length reduces
+      `the-100` to `the`; its **76** is a different key's answer, **reported as a divergence and never as
+      the ceiling** (`0076`, `0078` §3).
+      **A ZERO FLOOR IS NOT AN ABSENCE OF EVIDENCE.** `0` is a **measured** floor on a stated coverage,
+      and the coverage publishes beside it — **a bound whose floor is 0 and whose coverage is unstated is
+      indistinguishable from a check that looked nowhere.**
 - [ ] **THE D9 CLUSTERING UNIVERSE IS U1 — ALL SLUGGED SWEEP SHOW IDs — RANKED BY DISTINCT STRICT KEYS
       MERGED.** Human Lead ruling, 2026-08-16 (`0088` §3), closing the gap `0085` §2 opened and `0086`
       §1 located. **BOTH ARMS CLUSTER THE SAME OBJECT: every distinct show ID appearing anywhere in the

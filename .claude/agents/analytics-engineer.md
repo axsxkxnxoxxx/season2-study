@@ -223,6 +223,20 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
           its pipeline named at the point of use.** **What stays open is NOT this** — whether D11
           applies to the **S1 completion walk** is `0068`'s open item, where C moves line 1 to
           220,103 (**4 pairs stop being completers, 0 completion dates move**). **Answered there.**
+    - **D9 PUBLISHES AS A BOUND — STRICT IS THE FLOOR, LOOSE IS THE CEILING, BOTH LABELLED, NEITHER IS
+          THE POINT ESTIMATE** (`0090`). ***SUPERSEDES "USE THE STRICT KEY AND REPORT THE LOOSE COUNT
+          ALONGSIDE" (`0074` r5), under which STRICT WAS THE ANSWER.*** **Neither endpoint may be quoted as
+          "D9's result".** **This is `0074` r5's own reason carried through**: a quantity published
+          **because it bounds how wrong another is** is an **endpoint**, not a footnote — and **`0078` §3
+          already ran this argument once** to extend loose to half (b). **THE BOUND APPLIES TO EVERY D9
+          QUANTITY WITH BOTH FORMS: complementary pairs `[0, 75]`, half (a) `[0, 6]`, half (b) `[0, 27]`** —
+          **applying it to one and not the others is the defect `0078` §3 corrected.** **DIRECTION IS PART
+          OF THE LABEL:** strict cannot over-count (slugs identical modulo punctuation) so it is the
+          **floor**; loose **merges genuinely different shows** (remakes, national versions) so it is the
+          **ceiling**, and **the error runs OPPOSITE to D9's own lower-bound caveat.** **THE THIRD KEY (76)
+          IS NOT AN ENDPOINT** — a different key's answer, reported as a divergence. **A ZERO FLOOR IS NOT
+          AN ABSENCE OF EVIDENCE:** publish the coverage beside it, or the bound is indistinguishable from a
+          check that looked nowhere.
     - **D9 CLUSTERING UNIVERSE IS U1, RANKED BY DISTINCT STRICT KEYS MERGED** (`0088` §3), closing
           `0085` §2's gap. **BOTH ARMS CLUSTER: every distinct show ID appearing anywhere in the pulled
           sweep that carries a slug, deduplicated to one row per show ID.** **NOT U2 (1,138 frame shows),
