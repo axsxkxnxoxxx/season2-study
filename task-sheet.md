@@ -615,6 +615,76 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
       form and set membership are both `W`-invariant — **so a FALSE row anywhere means one of them has
       broken, and that is worth catching.** **Still report the `p = 1.0` totals: 1,246 at position 5 and
       1,230 post-liveness on APPLY**, as totals, not as a sum of two classes.
+- [ ] **THE D9 CLUSTERING UNIVERSE IS U1 — ALL SLUGGED SWEEP SHOW IDs — RANKED BY DISTINCT STRICT KEYS
+      MERGED.** Human Lead ruling, 2026-08-16 (`0088` §3), closing the gap `0085` §2 opened and `0086`
+      §1 located. **BOTH ARMS CLUSTER THE SAME OBJECT: every distinct show ID appearing anywhere in the
+      pulled sweep that carries a slug, deduplicated to one row per show ID.** **NOT U2 (the 1,138 frame
+      shows) and NOT U3 (the 75 D9 candidate pairs).**
+      **The ground:** the artifact D9 hunts is **a viewer's history splitting across two metadata
+      entries for the same show**, and **that split can occur anywhere in a history, not only among
+      shows that survived the frame filters.** **A universe inside the frame can only find splits where
+      BOTH sides made the cut**, which is the narrowest case. **This is a bound on how wrong the data
+      might be, and a bound computed on a narrow slice bounds very little.**
+      ***RECORDED WITH THE RULING, because it changes what the ruling buys: D9's SEARCH ALREADY RUNS ON
+      THE WHOLE SWEEP IN BOTH ARMS*** — 726,103 candidate `(user, show)` pairs examined across the
+      sweep, 747,478 season-coverage rows. **So this ruling does NOT widen what D9 finds; the strict and
+      loose counts are unchanged by it.** **It fixes WHICH CLUSTERS ARE ILLUSTRATED**, which is the
+      evidence for the loose key's only warrant, and it **makes the two arms' `U1` one defined object**
+      rather than two sets 62 apart under a shared label.
+      **THE RANKING BASIS IS DISTINCT STRICT KEYS MERGED** — how many separate metadata entries the
+      loose key collapsed into one. **It was unstated and it reorders the list on its own**: the same
+      universe under the same key, ranked by distinct show IDs instead, displaces `maigret` with
+      `blackout`. **Name the basis at the point of use; a list without it is not reproducible.**
+      **`task-sheet.md`'s own former illustration — The Twilight Zone, The Traitors, Manhunt — was U3**
+      and is **SUPERSEDED as the example**; under U1 the largest clusters are `secondchance` (8),
+      `theisland` (7), `maigret` (6). **The three names are not wrong; they are a different universe's
+      answer**, which is the whole reason this needed ruling.
+- [ ] **THE TWO UNASSERTED MANDATES ARE MEASURED, NOT SELF-REPORTED.** Human Lead ruling, 2026-08-16
+      (`0088` §1), on Red Team's B3/F1, which blocked the gate on the third and fourth passes.
+      **The mandates are the HALF-OPEN UTC-INSTANT FORM and D11-AS-GLOBAL-CUTOFF** — not invariants 7
+      and 8, which are already measured, already published and already labelled DATA CHECK by both arms.
+      **Both arms' compliance is TRUE and was independently confirmed** — no `.date()`, `dt.date`,
+      `normalize()` or day-flooring anywhere in `step8_*.py`, instants int64 seconds throughout.
+      ***THAT IS NOT WHAT WAS MISSING. NOTHING MEASURED WHETHER EITHER MANDATE IS LOAD-BEARING ON THIS
+      DATA*** — and an unmeasured pass is indistinguishable from a check that looked nowhere, which is
+      this study's own standing rule. **Emit three things:**
+      **(a) THE BOUNDARY WINDOW.** On the position-5 row set, **both populations**: the count of S2
+      records in `[τ1 − 24h, τ1)`, the count falling **exactly at** `τ1`, and the same two at `τ2`.
+      **These are the rows on which the half-open and date-level forms could differ. IF THE COUNT IS 0,
+      LABEL THE INVARIANT VACUOUS — do not let it pass silently.** A zero that is stated as a zero is
+      evidence; a zero that arrives as a pass is not.
+      **(b) THE PER-SITE D11 TABLE.** D11 is stated to apply *"to EVERY computation"* and one arm names
+      **five sites in prose with a count at none.** Emit records excluded by D11 at **each** site
+      separately — `A`, `A_H`, each of the four `action_count_s{1,2}_*`, the liveness evidence, D9's
+      coverage rows, and the S1 completion walk — **and assert at each site, not once and about the
+      rest.**
+      **(c) PROMOTE THE EXISTING ASSERTION.** `assert (tau2[pos5] > τ_pull).sum() == 0` already runs in
+      one arm's pipeline but sits **outside the published invariant set**, so no reader of the
+      deliverable can see it. **Publish it, labelled CODE CHECK.**
+      **The ground for ruling rather than publishing a residual:** the unstated version of exactly this
+      scope produced Step 7's **792-against-791**, where one arm applied the restriction and the other
+      did not. **A mandate claimed satisfied with nothing measuring it is the shape that has already
+      cost this study once.**
+- [ ] **THE D9 COVERAGE QUANTITIES ARE REPORTED AS SEPARATE OBJECTS, NOT RECONCILED — AND THE MISLABEL
+      IS FIXED.** Human Lead ruling, 2026-08-16 (`0088` §2), on Red Team's F2.
+      **(a) FIX THE LABEL.** One arm publishes **46,428** and **46,366** for one labelled quantity **27
+      lines apart in one section**. The second is computed off the **D9 coverage pivot** and is
+      **mislabelled `distinct_show_ids_in_the_sweep`**; its *"0 carry no slug"* clause is therefore
+      computed against the wrong base. **Correct the label to what it counts.**
+      **(b) NAME WHAT EACH COVERAGE FIGURE COUNTS, AT THE POINT OF USE.** **747,478 and 726,103 ARE
+      DIFFERENT OBJECTS AND ARE BOTH CORRECT**: 747,478 is **undeduplicated user-show SEASON-COVERAGE
+      ROWS**, 726,103 is **distinct candidate `(user, show)` PAIRS**. A user-show carrying two seasons
+      contributes **two rows and one pair**. **THIS IS ONE NAME OVER TWO QUANTITIES, NOT A DIVERGENCE**
+      — and **reconciling would collapse two real objects into one**, which the standing rule forbids.
+      **Each arm states which it publishes and what it counts.**
+      **(c) IF THE TWO ARMS' UNIVERSES DIFFER, THEY ARE TWO OBJECTS AND ARE NAMED AS TWO.** The arms'
+      slugged-show-ID sets stood **62 apart** while both were called `U1`. **A shared label over two
+      sets is the defect; the sets themselves may both be right.**
+      **(d) STRIKE THE OVERSTATED SENTENCE.** ~~*"The run asserts this, so a report that omitted a
+      population could not be written by this pipeline."*~~ **It is a control asserted to exist**, and
+      **8 of 13 coverage identities are `cover(unit, pop, N, N)` where the population size and the
+      asserted count are THE SAME EXPRESSION**, so they cannot detect an invariant run on a population
+      other than the one named. **Struck whatever else is ruled.**
 - [ ] **EVERY INVARIANT NAMES THE POPULATION IT RUNS ON, AT THE POINT OF USE — AND ACCOUNTS FOR EVERY
       ROW IN IT.** Human Lead ruling, 2026-08-13 (`0080`). **This is the provenance rule applied to
       invariants rather than to figures:** an invariant that **passes on one population and was never run

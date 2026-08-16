@@ -223,6 +223,48 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
           its pipeline named at the point of use.** **What stays open is NOT this** — whether D11
           applies to the **S1 completion walk** is `0068`'s open item, where C moves line 1 to
           220,103 (**4 pairs stop being completers, 0 completion dates move**). **Answered there.**
+    - **D9 CLUSTERING UNIVERSE IS U1, RANKED BY DISTINCT STRICT KEYS MERGED** (`0088` §3), closing
+          `0085` §2's gap. **BOTH ARMS CLUSTER: every distinct show ID appearing anywhere in the pulled
+          sweep that carries a slug, deduplicated to one row per show ID.** **NOT U2 (1,138 frame shows),
+          NOT U3 (75 D9 candidate pairs).** **Ground:** the artifact is **a history splitting across two
+          metadata entries for one show**, and **that can occur anywhere in a history, not only among shows
+          that survived the frame filters** — a frame-restricted universe finds only splits where **both
+          sides made the cut**, and **a bound computed on a narrow slice bounds very little.**
+          ***RECORDED WITH IT: D9's SEARCH ALREADY RUNS ON THE WHOLE SWEEP IN BOTH ARMS*** (726,103
+          candidate `(user, show)` pairs; 747,478 season-coverage rows), **so this does NOT widen what D9
+          finds and the strict/loose counts are unchanged.** **It fixes WHICH CLUSTERS ARE ILLUSTRATED** —
+          the evidence for the loose key's only warrant — **and makes both arms' `U1` ONE defined object**
+          instead of two sets 62 apart under a shared label. **RANK BY DISTINCT STRICT KEYS MERGED** (how
+          many separate metadata entries the loose key collapsed): **it was unstated and reorders the list
+          on its own** — ranking by distinct show IDs displaces `maigret` with `blackout`. **Name the basis
+          at the point of use.** **The former example — Twilight Zone / Traitors / Manhunt — was U3 and is
+          SUPERSEDED as the illustration**; under U1 it is `secondchance` (8), `theisland` (7),
+          `maigret` (6). **Those three names are not wrong, they are another universe's answer.**
+    - **B3 — MEASURE THE TWO UNASSERTED MANDATES** (`0088` §1, Red Team B3/F1, which blocked twice).
+          **They are the HALF-OPEN UTC-INSTANT FORM and D11-AS-GLOBAL-CUTOFF** — **NOT invariants 7 and 8,
+          which are already measured, published and labelled DATA CHECK.** **Compliance is TRUE and was
+          independently confirmed; what was missing is any measurement of whether either mandate is
+          LOAD-BEARING on this data.** **(a) Boundary window**, position-5 row set, **both populations**:
+          S2 records in `[τ1 − 24h, τ1)`, records **exactly at** `τ1`, and the same two at `τ2` — the rows
+          where half-open and date-level forms could differ. **IF 0, LABEL THE INVARIANT VACUOUS; do not
+          pass silently.** **(b) Per-site D11 table**: records excluded at **each** of `A`, `A_H`, the four
+          `action_count_s{1,2}_*`, the liveness evidence, D9's coverage rows, the S1 walk — **asserted at
+          each site, not once and about the rest.** **(c) Promote** the existing
+          `assert (tau2[pos5] > τ_pull).sum() == 0` into the **published** invariant set, labelled **CODE
+          CHECK** — it runs today but sits outside the deliverable. **Ground: the unstated version of this
+          scope produced Step 7's 792-against-791.**
+    - **F2 — REPORT THE D9 COVERAGE QUANTITIES AS SEPARATE OBJECTS; FIX THE MISLABEL** (`0088` §2).
+          **(a)** One arm publishes **46,428** and **46,366** for one labelled quantity **27 lines apart**;
+          the second is off the **D9 coverage pivot**, **mislabelled as the sweep**, and its *"0 carry no
+          slug"* clause is computed on the wrong base. **Correct it.** **(b) 747,478 and 726,103 ARE
+          DIFFERENT OBJECTS AND BOTH CORRECT** — undeduplicated **season-coverage ROWS** against distinct
+          candidate **`(user, show)` PAIRS**; a user-show with two seasons gives **two rows, one pair**.
+          **One name over two quantities, NOT a divergence — reconciling would collapse two real objects
+          into one.** **Name what yours counts, at the point of use.** **(c)** Where the arms' universes
+          differ they are **two objects and are named as two** — the slugged-ID sets stood **62 apart**
+          under one label. **(d) STRIKE** ~~*"a report that omitted a population could not be written by
+          this pipeline"*~~ — **a control asserted to exist**; **8 of 13 coverage identities have the
+          population size and the asserted count as THE SAME EXPRESSION.**
         - **5a. NAME THE UNIVERSE THE D9 CLUSTERING RUNS OVER, AT THE POINT OF USE** (`0085` §2, Red
         Team B1). **The two arms published DISJOINT cluster lists on IDENTICAL counts** — `secondchance`
         8 / `theisland` 7 / `maigret` 6 against `thetwilightzone` 10 / `thetraitors` 7 / `manhunt` 5,
