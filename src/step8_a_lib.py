@@ -45,8 +45,8 @@ SRC = os.path.join(ROOT, "src")
 #
 # The tag below is what appears at each point of use; this record is the one full definition.
 # ---------------------------------------------------------------------------------------------
-BUILD_TAG = "a/2026-08-14"
-BUILD_NAME = "position-5 build of 2026-08-14, instance `a`"
+BUILD_TAG = "a/2026-08-16"
+BUILD_NAME = "position-5 build of 2026-08-16, instance `a`"
 STAGE_FILES = ["step8_a_lib.py", "step8_a_1_scan.py", "step8_a_2_positions.py",
                "step8_a_3_table.py", "step8_a_4_arms.py", "step8_a_4b_slugs.py",
                "step8_a_5_diagnostics.py", "step8_a_6_emit.py", "step8_a_run.py"]
@@ -73,7 +73,7 @@ def build_record():
         "build_tag": BUILD_TAG,
         "build_name": BUILD_NAME,
         "instance": "a",
-        "run_date_utc": "2026-08-14",
+        "run_date_utc": "2026-08-16",
         "why_this_exists": "decisions/0079 (B6), extending decisions/0078: every count, every "
                            "invariant result and every waterfall figure names the pipeline it was "
                            "measured on, not only its population. Partial application is worse "
@@ -97,7 +97,7 @@ def build_record():
                    "processed/step2/frame.csv": _sha(os.path.join(ROOT, "processed/step2/frame.csv")),
                    "processed/step4/pull_ledger.jsonl": _sha(
                        os.path.join(ROOT, "processed/step4/pull_ledger.jsonl"))},
-        "spec_read": "task-sheet.md Step 8 as it stands, plus decisions/0066-0080",
+        "spec_read": "task-sheet.md Step 8 as it stands, plus decisions/0066-0082",
         "relation_to_the_2026_08_13_build": "this build reproduces the figures decisions/0078 and "
                                             "0079 restate on the position-5 build of 2026-08-13 "
                                             "(58,345 pairs; 324 of 5,694; 178 of 2,549; 703/99). "
@@ -198,9 +198,19 @@ class Arms:
 
         p = np.full(self.n, np.nan)
         sel = left & (kAH > 0)
-        p[sel] = self.cum[self.pair_slot[sel], mH[sel]] / self.L2[sel]
+        # the RANK NUMERATOR |{e in E2 : e <= m_H}|, kept as its own array because `p_at_bound`
+        # (decisions/0082) is defined on it: TRUE where the numerator SATURATED AT L2, FALSE where
+        # p = 1.0 arises from the pair having left at the final episode. Both quantities are
+        # measured separately below so the two meanings can be reported apart rather than assumed
+        # to coincide.
+        p_num = np.full(self.n, -1, dtype=np.int64)
+        p_num[sel] = self.cum[self.pair_slot[sel], mH[sel]]
+        p[sel] = p_num[sel] / self.L2[sel]
+        p_saturated = sel & (p_num == self.L2)          # rank numerator at its bound L2
+        p_final_ep = sel & (mH == self.F2)              # left at the final episode F2 = max(E2)
 
         return dict(W=W, tau1=tau1, tau2=tau2, keep_term1=keep_term1, keep_d10=keep_d10,
                     pos5=pos5, pos5_deriv=pos5_deriv, kA=kA, kAH=kAH, mH=mH, mA=mA,
                     outcome=outcome, continued=continued, never=never, left=left,
-                    silent=silent, not_live=not_live, live=live, p=p)
+                    silent=silent, not_live=not_live, live=live, p=p, p_num=p_num,
+                    p_defined=sel, p_saturated=p_saturated, p_final_ep=p_final_ep)

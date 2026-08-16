@@ -205,9 +205,20 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
         - **3. The set-membership drop rule is a COVERAGE COUNT, NOT AN INVARIANT** — resolving the
           7-against-6 divergence. The spec already calls it *"an implementation check, not a data
           check."* **Report records examined and records dropped; do not assert it.**
-        - **4. The 94-record denominator difference is REPORTED UNRECONCILED** — 6,065,704 against
-          6,065,610, **both reporting 0 drops.** Neither is wrong on its face and nothing downstream
-          depends on it. **Publish both.** Routed to Step 14.
+        - **4. THE 94-RECORD DENOMINATOR IS CLOSED — NOT a Step 14 limitation** (`0083` §1;
+          ~~*"REPORTED UNRECONCILED … Routed to Step 14"*, `0074` §4~~). **It was never a
+          divergence.** The two figures are two points on a **one-parameter family indexed by where
+          D11 applies**: D11 discards **167** in-frame S1/S2 records at or after `τ_pull`, **94 on
+          the S2 side and 73 on the S1 side**, which is the whole of the gap. **A** — D11 nowhere —
+          **6,065,704**, line 1 220,107. **B** — D11 on the S2 side only, S1 side carried at
+          `0068`'s published line 1 — **6,065,610**, line 1 220,107. **C** — D11 both sides —
+          **6,065,537**, line 1 **220,103**. **ALL THREE DROP 0**, so the numerator is 0 three times
+          over and nothing downstream reads the denominator — which is why it closes rather than
+          publishes. **Other candidate axes are all zero on both arms**: undated records, exact
+          duplicate `(user, play id)` records, non-positive `number`. **PUBLISH ALL THREE, each with
+          its pipeline named at the point of use.** **What stays open is NOT this** — whether D11
+          applies to the **S1 completion walk** is `0068`'s open item, where C moves line 1 to
+          220,103 (**4 pairs stop being completers, 0 completion dates move**). **Answered there.**
         - **5. D9 uses the STRICT key, with the loose count of 75 reported alongside.** Strict finds
           **0** complementary pairs; loose finds 75 but **strips the year and merges genuinely different
           shows** — The Twilight Zone, The Traitors, Manhunt. **The loose count bounds how wrong strict
@@ -290,11 +301,25 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
       `size_quintile`, `size_quintile_per_year`, `size_quintile_raw_count`, `t0_binding_term`
       `t0_date`, `tau1`, `tau2`, `title`
       `user_idx`
-      **`p_at_bound` is NEW** (`0082`) — **a boolean separating the two meanings of `p = 1.0`: TRUE
-      where the rank numerator saturated at `L2`, FALSE where the pair left at the final episode**, null
-      where `p` is null. **Step 10 publishes the abandonment distribution off `abandonment_point_p`, so
-      the two must be separable in it.** **Report the split of the `p = 1.0` rows — 1,246 at position 5
-      and 1,230 post-liveness on APPLY — into the two classes; they must sum to those totals.**
+      **`p_at_bound` MARKS WHETHER `p` REACHED ITS BOUND, NOT WHY** (`0082`, restated `0083` §2):
+      **TRUE where `p` reached its bound**, null where `p` is null. ***SUPERSEDED — `0082` §2's
+      definition by two MECHANISMS, "TRUE where the rank numerator saturated at `L2`, FALSE where the
+      pair left at the final episode". The clauses are COEXTENSIVE BY CONSTRUCTION and the FALSE class
+      is EMPTY:*** on the adopted rank form `p = |{e ∈ E2 : e ≤ m_H}| / L2`, **set membership puts
+      `m_H ∈ E2`**, so the numerator is `L2` **iff** `m_H = max(E2) = F2` — which *is* "left at the
+      final episode." **Both arms measured it, 2026-08-16, APPLY: position 5 — 1,246 in BOTH classes,
+      0 / 0 / 0; post-liveness — 1,230, 0 / 0 / 0.** ***1,246 AND 1,230 ARE NO LONGER A SPLIT*** —
+      correct counts, but **one class counted twice, not two summed**, and **citing them as evidence
+      that the column separates anything is a WITHDRAWN ARGUMENT** (`CLAUDE.md`, third blindness
+      class). ***WITHDRAWN, a MOTIVE not a figure: "a distribution with a spike at 1.0 means two
+      different things about viewers and the column cannot say which." FALSE — the spike means one
+      thing.*** **A SECOND fact, DATA not construction: 0 of 1,138 frame shows have any S2 numbering
+      gap**, so `E2 = {1…L2}` and the rank form reduces to `m_H / L2`; **that could be false on
+      another frame and the coextensivity would still hold.** **KEEP THE COLUMN** — Step 10 needs the
+      spike **labelled**, and **an emptiness asserted in prose and never emitted cannot be checked.**
+      **It stays empty across Step 13's `W` grid** (both grounds are `W`-invariant), **so a FALSE row
+      anywhere means one of them has broken.** **Still report the totals — 1,246 at position 5, 1,230
+      post-liveness on APPLY — AS TOTALS, not as a sum of two classes.**
       **`silent_at_tau1` is IN** (`0081`): the only way to recompute the **Continued-and-silent count,
       652**, from this table. **Dropped and free:** `f2_in_A_H` (derivable) and `max_episode_in_A`.
     - **COLUMN NAMES ARE FIXED** (`0077`). The rerun gave **88 against 87 columns for the SAME
@@ -302,11 +327,15 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
       the spec defines the thing; otherwise the more explicit form.** Adopted: **`in_apply` /
       `in_deriv`**; **`tau1` / `tau2`** (no `_utc` — **every instant here is UTC by Step 1 §2.4, and a
       suffix on some columns implies the others are not**); **`n_A` / `n_A_H` / `max_episode_in_A_H` /
-      `f2_in_A_H`** (the spec writes `A_H`, not `AH`); **`action_count_s{1,2}_{watch,scrobble,checkin,other}`**
+      ~~`f2_in_A_H`~~** (the spec writes `A_H`, not `AH`) — ***`f2_in_A_H` IS NOT AN EMITTED
+      COLUMN (`0080` §2, restated `0083` §3b): DROPPED as derivable, `max_episode_in_A_H == s2_F`.
+      `0077`'s ruling here was about SPELLING and still governs `n_A`, `n_A_H` and
+      `max_episode_in_A_H`; the COLUMN does not survive it. Marked rather than deleted so the
+      spelling ruling is not lost with it***; **`action_count_s{1,2}_{watch,scrobble,checkin,other}`**
       (`0070` ruling 4's own words); **`discovered_channel_a` / `discovered_channel_b`** (`in_channel_*`
       collides with the population flags); **`t0_binding_term` / `t0_date` / `s1_completion_date`**.
       **Keep `has_s3_or_later_evidence` and `s1_completion_used_a_post_cutoff_record`** — D4 reads the
-      first, the open D11-at-position-3 question reads the second. ~~**89 columns.**~~ ***SUPERSEDED — replaced by the 88-name ENUMERATION below (`0080`, `0081`); both instances reported it still reading as current.*** **`f2_in_A_H` is DROPPED as derivable.**
+      first, the open D11-at-position-3 question reads the second. ~~**89 columns.**~~ ***SUPERSEDED — replaced by the 89-NAME ENUMERATION above (`0080`, taken to 88 by `0081` and to 89 by `0082`); both instances reported it still reading as current. AND THIS NOTE THEN CARRIED THE SUPERSEDED 88 FOR ITS OWN REPLACEMENT — corrected at `0083` §3a, reported by instance A, fourth occurrence of the shape and the fourth found by an agent rather than by a control.*** **The enumeration's 89 is NOT `0077`'s 89**: `f2_in_A_H` out, `silent_at_tau1` and `p_at_bound` in. **Matching a count is not matching a set — assert on the names.** **`f2_in_A_H` is DROPPED as derivable.**
     - **POSITION 3's DROP SET IS THE 58,345 PAIRS THAT FAIL THE S1 COMPLETION RULE — position-3 rule,
       position-5 build of 2026-08-13** (`0075`, restated
       by `0077`). **Position 3 removes ZERO rows from the waterfall** — line 1 is already the

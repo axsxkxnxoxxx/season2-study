@@ -5,24 +5,24 @@
   "W_days": 108,
   "H_days": 91,
   "build": {
-    "build_tag": "a/2026-08-14",
-    "build_name": "position-5 build of 2026-08-14, instance `a`",
+    "build_tag": "a/2026-08-16",
+    "build_name": "position-5 build of 2026-08-16, instance `a`",
     "instance": "a",
-    "run_date_utc": "2026-08-14",
+    "run_date_utc": "2026-08-16",
     "why_this_exists": "decisions/0079 (B6), extending decisions/0078: every count, every invariant result and every waterfall figure names the pipeline it was measured on, not only its population. Partial application is worse than none.",
     "pipeline": "src/step8_a_run.py, one run, stages 1 -> 6 in order",
     "stage_files_sha256_12": {
-      "step8_a_lib.py": "b0f0d25e107e",
-      "step8_a_1_scan.py": "ed07fee5d4c0",
-      "step8_a_2_positions.py": "768ac58a35ec",
-      "step8_a_3_table.py": "8ef9d389f890",
+      "step8_a_lib.py": "cf120b83a386",
+      "step8_a_1_scan.py": "a842b073640e",
+      "step8_a_2_positions.py": "9f08ac985c8c",
+      "step8_a_3_table.py": "5b04a7b40ef9",
       "step8_a_4_arms.py": "3d533b88a113",
       "step8_a_4b_slugs.py": "4495f8069adb",
-      "step8_a_5_diagnostics.py": "d2133b965a5a",
-      "step8_a_6_emit.py": "7c7aa700e3b6",
+      "step8_a_5_diagnostics.py": "3964a9195191",
+      "step8_a_6_emit.py": "44428c39536c",
       "step8_a_run.py": "4e6e8a12570a"
     },
-    "git_head_short": "5bb9091",
+    "git_head_short": "ec340dd",
     "git_worktree_dirty_at_launch": true,
     "parameters": {
       "W_days": 108,
@@ -48,10 +48,10 @@
       "processed/step2/frame.csv": "128844b09fc2",
       "processed/step4/pull_ledger.jsonl": "2c47f4537ac6"
     },
-    "spec_read": "task-sheet.md Step 8 as it stands, plus decisions/0066-0080",
+    "spec_read": "task-sheet.md Step 8 as it stands, plus decisions/0066-0082",
     "relation_to_the_2026_08_13_build": "this build reproduces the figures decisions/0078 and 0079 restate on the position-5 build of 2026-08-13 (58,345 pairs; 324 of 5,694; 178 of 2,549; 703/99). Where a figure agrees, that is measured here and stated, not carried."
   },
-  "provenance_note": "EVERY INVARIANT RESULT IN THIS FILE WAS MEASURED ON BUILD a/2026-08-14 (decisions/0079 B6).",
+  "provenance_note": "EVERY INVARIANT RESULT IN THIS FILE WAS MEASURED ON BUILD a/2026-08-16 (decisions/0079 B6).",
   "coverage_identities": {
     "outcome states are mutually exclusive and sum to the post-position-7 row set": [
       {
@@ -126,7 +126,7 @@
           "rows_not_asserted": 0,
           "coverage_identity": "32769 + 19042 + 144140 + 0 not asserted = 195951",
           "coverage_identity_holds": true,
-          "build": "a/2026-08-14",
+          "build": "a/2026-08-16",
           "asserted_clause_counts": [
             32769,
             19042,
@@ -148,7 +148,7 @@
           "rows_not_asserted": 0,
           "coverage_identity": "33373 + 19141 + 144140 + 0 not asserted = 196654",
           "coverage_identity_holds": true,
-          "build": "a/2026-08-14",
+          "build": "a/2026-08-16",
           "asserted_clause_counts": [
             33373,
             19141,
@@ -170,7 +170,7 @@
           "rows_not_asserted": 0,
           "coverage_identity": "9145 + 16744 + 121382 + 0 not asserted = 147271",
           "coverage_identity_holds": true,
-          "build": "a/2026-08-14",
+          "build": "a/2026-08-16",
           "asserted_clause_counts": [
             9145,
             16744,
@@ -192,7 +192,7 @@
           "rows_not_asserted": 0,
           "coverage_identity": "9145 + 16843 + 121382 + 0 not asserted = 147370",
           "coverage_identity_holds": true,
-          "build": "a/2026-08-14",
+          "build": "a/2026-08-16",
           "asserted_clause_counts": [
             9145,
             16843,
@@ -209,7 +209,7 @@
       },
       "coverage_identity_holds_on_every_stated_population": true,
       "passed": true,
-      "build": "a/2026-08-14"
+      "build": "a/2026-08-16"
     },
     {
       "name": "filter counts decrease monotonically, coded >= and not >",
@@ -243,7 +243,7 @@
         "positions_not_asserted": 0,
         "coverage_identity": "7 + 0 not asserted = 7",
         "coverage_identity_holds": true,
-        "build": "a/2026-08-14"
+        "build": "a/2026-08-16"
       },
       "coverage_DERIV": {
         "population": "DERIV's seven filter positions",
@@ -253,7 +253,7 @@
         "positions_not_asserted": 0,
         "coverage_identity": "7 + 0 not asserted = 7",
         "coverage_identity_holds": true,
-        "build": "a/2026-08-14"
+        "build": "a/2026-08-16"
       },
       "chain_note": "chain[i] is the count after filter position i+1; the transition from entry i to entry i+1 is the effect of filter position i+2",
       "filter_positions_removing_exactly_zero_APPLY": [
@@ -268,7 +268,7 @@
       ],
       "inert_positions_labelled_not_silent": "positions 1, 2, 3 and 7 remove 0 BY CONSTRUCTION and are labelled inert with the reason in the waterfall deliverable (decisions/0079 SS4). An unlabelled always-zero filter reads as evidence the rule FOUND NOTHING when it is evidence the rule CANNOT FIRE.",
       "passed": true,
-      "build": "a/2026-08-14"
+      "build": "a/2026-08-16"
     },
     {
       "name": "distinct episodes never exceed season length",
@@ -284,7 +284,7 @@
         "pairs_not_asserted": 0,
         "coverage_identity": "278452 + 0 not asserted = 278452",
         "coverage_identity_holds": true,
-        "build": "a/2026-08-14",
+        "build": "a/2026-08-16",
         "records_examined": 6065704,
         "records_dropped_by_the_rule": 0,
         "seasons_asserted": [
@@ -298,7 +298,7 @@
       "max_D2_minus_L2": 0,
       "max_AH_minus_L2": 0,
       "passed": true,
-      "build": "a/2026-08-14"
+      "build": "a/2026-08-16"
     },
     {
       "name": "A is a subset of A_H on every row",
@@ -314,13 +314,13 @@
         "rows_not_asserted": 0,
         "coverage_identity": "196654 + 0 not asserted = 196654",
         "coverage_identity_holds": true,
-        "build": "a/2026-08-14"
+        "build": "a/2026-08-16"
       },
       "rows_where_A_exceeds_A_H": 0,
       "rows_where_max_A_exceeds_max_A_H": 0,
       "also_holds_on_the_post_position_7_row_set": true,
       "passed": true,
-      "build": "a/2026-08-14"
+      "build": "a/2026-08-16"
     },
     {
       "name": "clock start is on or after the S2 finale date, on or after the first-pass S1 completion date, and equal to one of the two",
@@ -337,7 +337,7 @@
         "rows_not_asserted": 0,
         "coverage_identity": "196654 + 0 not asserted = 196654",
         "coverage_identity_holds": true,
-        "build": "a/2026-08-14",
+        "build": "a/2026-08-16",
         "independent_recomputation_covers_pairs": 278452,
         "read_back_from_the_pipeline": false
       },
@@ -362,7 +362,7 @@
       },
       "tie_break_note": "Step 1 SS2.2 breaks exactly-equal timestamps by episode number then smallest event id. The recomputation applies that tiebreak; the agreement counts above are reported rather than a choice being made about whether a tiebreak difference would count as a failure.",
       "passed": true,
-      "build": "a/2026-08-14"
+      "build": "a/2026-08-16"
     },
     {
       "name": "p lies in (0, 1] on every Started-and-left row and is null everywhere else",
@@ -378,7 +378,7 @@
         "rows_not_asserted": 0,
         "coverage_identity": "19141 + 177513 + 0 not asserted = 196654",
         "coverage_identity_holds": true,
-        "build": "a/2026-08-14",
+        "build": "a/2026-08-16",
         "asserted_clause_counts": [
           19141,
           177513
@@ -392,7 +392,7 @@
       "nulls_among_started_and_left": 0,
       "non_null_outside_started_and_left": 0,
       "passed": true,
-      "build": "a/2026-08-14"
+      "build": "a/2026-08-16"
     },
     {
       "name": "no account is dropped wholesale by the pair-level liveness filter",
@@ -408,7 +408,7 @@
           "accounts_not_asserted": 0,
           "coverage_identity": "2422 + 0 not asserted = 2422",
           "coverage_identity_holds": true,
-          "build": "a/2026-08-14",
+          "build": "a/2026-08-16",
           "accounts_untouched_by_the_exclusion": 2206,
           "accounts_touched_by_the_exclusion": 216,
           "classification_covers_every_account": true,
@@ -425,7 +425,7 @@
           "accounts_not_asserted": 0,
           "coverage_identity": "2402 + 0 not asserted = 2402",
           "coverage_identity_holds": true,
-          "build": "a/2026-08-14",
+          "build": "a/2026-08-16",
           "accounts_untouched_by_the_exclusion": 2329,
           "accounts_touched_by_the_exclusion": 73,
           "classification_covers_every_account": true,
@@ -443,7 +443,7 @@
       "reading": "accounts in the last line held exactly one position-5 pair unless the count above is non-zero; for a single-pair account 'wholesale' and 'pair-level' are indistinguishable and no inference is available either way.",
       "assertion": "accounts_holding_BOTH_a_live_and_a_not_live_pair > 0, ON BOTH POPULATIONS",
       "passed": true,
-      "build": "a/2026-08-14"
+      "build": "a/2026-08-16"
     },
     {
       "name": "no access_denied or otherwise skipped account is read as empty",
@@ -458,7 +458,7 @@
         "accounts_not_asserted": 0,
         "coverage_identity": "2874 + 0 not asserted = 2874",
         "coverage_identity_holds": true,
-        "build": "a/2026-08-14",
+        "build": "a/2026-08-16",
         "accounts_whose_final_state_is_complete": 2549,
         "accounts_whose_final_state_is_a_skip_class": 325,
         "accounts_whose_final_state_is_neither": 0,
@@ -502,7 +502,7 @@
       },
       "assertion": "no account whose final ledger state is a skip class, and no account that was skipped and never yielded data, contributes a pair scored never-started",
       "passed": true,
-      "build": "a/2026-08-14"
+      "build": "a/2026-08-16"
     }
   ],
   "population_reconciliation": {
@@ -532,7 +532,7 @@
       "ALT_MATCHED_793_on_APPLY": false
     },
     "reconciles": true,
-    "build": "a/2026-08-14"
+    "build": "a/2026-08-16"
   },
   "set_membership_is_a_coverage_count_not_an_invariant": {
     "ruling": "decisions/0074 ruling 3",

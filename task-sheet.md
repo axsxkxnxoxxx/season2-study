@@ -374,8 +374,12 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
       Adopted:
       **`in_apply` / `in_deriv`** — the spec names the populations APPLY and DERIV and these are the
       shortest unambiguous forms. **`tau1` / `tau2`** — the spec writes `τ1` and `τ2` with no suffix.
-      **`n_A` / `n_A_H` / `max_episode_in_A_H` / `f2_in_A_H`** — the spec writes `A`, `A_H`, `|A|` and
-      `F2 ∈ A_H`; **`AH` is not the spec's spelling.** **`action_count_s{1,2}_{watch,scrobble,checkin,other}`**
+      **`n_A` / `n_A_H` / `max_episode_in_A_H` / ~~`f2_in_A_H`~~** — the spec writes `A`, `A_H`, `|A|` and
+      `F2 ∈ A_H`; **`AH` is not the spec's spelling.** ***`f2_in_A_H` IS NOT AN EMITTED COLUMN
+      (`0080` §2, restated `0083` §3b): it is DROPPED as derivable — `max_episode_in_A_H == s2_F`.
+      `0077`'s ruling here was about SPELLING and still governs `n_A`, `n_A_H` and `max_episode_in_A_H`;
+      the COLUMN does not survive it. Marked rather than deleted, so the spelling ruling is not lost
+      with it.*** **`action_count_s{1,2}_{watch,scrobble,checkin,other}`**
       — `0070` ruling 4 says *"per-pair COUNTS BY ACTION TYPE"*, and these are those words.
       **`discovered_channel_a` / `discovered_channel_b`** — `0070` ruling 3 says two booleans;
       `in_channel_*` is ambiguous with the population flags. **`t0_binding_term` / `t0_date` /
@@ -383,11 +387,15 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
       UTC by Step 1 §2.4 and a suffix on some columns implies the others are not.**
       **Keep both instances' extra columns**: **`has_s3_or_later_evidence`** (D4 reads it) and
       **`s1_completion_used_a_post_cutoff_record`** (the D11 question at position 3 reads it).
-      ~~**The table is 89 columns.**~~ ***SUPERSEDED — the count is replaced by the ENUMERATION above
-      (`0080`, extended to 88 by `0081`). BOTH Step 8 instances reported this sentence still reading as
-      current one bullet below its replacement*** — the shape `0067` fixed at line 258 and `0076` fixed
-      in the `p` heading. **`f2_in_A_H`, named in the adopted list above, is DROPPED as derivable**
-      (`max_episode_in_A_H == s2_F`).
+      ~~**The table is 89 columns.**~~ ***SUPERSEDED — the count is replaced by the 89-NAME ENUMERATION
+      above (`0080`, taken to 88 by `0081` and to 89 by `0082`). BOTH Step 8 instances reported this
+      sentence still reading as current one bullet below its replacement*** — the shape `0067` fixed at
+      line 258 and `0076` fixed in the `p` heading. ***And this NOTE itself then carried the superseded
+      88 for its own replacement — corrected at `0083` §3a, reported by instance A, fourth occurrence of
+      the shape and the fourth found by an agent rather than by a control.*** **The enumeration's 89 is
+      NOT `0077`'s 89**: `f2_in_A_H` out, `silent_at_tau1` and `p_at_bound` in. **Matching a count is not
+      matching a set — assert on the names.** **`f2_in_A_H`, named in the adopted list above, is DROPPED
+      as derivable** (`max_episode_in_A_H == s2_F`).
 - [ ] **THE TABLE IS THE POSITION-5 ROW SET: 196,654 rows on APPLY, with `live` and `outcome` AS
       COLUMNS.** Human Lead ruling, 2026-08-13 (`0074`). **Both readings of "one row per pair" give
       identical counts** — the dual run produced 195,951 × 86 at position 7 and 196,654 × 87 at position
@@ -541,16 +549,30 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
       counts. `CLAUDE.md`: *"a skipped user silently read as empty becomes a false 'never started' in
       the headline"*; rule and evidence at `artifacts/step0-access-and-setup.md` §7. **This can fail on
       real data, and it fails in the direction of the result.**
-- [ ] **`p_at_bound` — A BOOLEAN SEPARATING THE TWO MEANINGS OF `p = 1.0`.** Human Lead ruling,
-      2026-08-13 (`0082`). **`p = 1.0` carries two meanings computed differently**: the pair **left at
-      the final episode**, or **the abandonment point is at its bound** — the rank numerator saturated
-      at `L2`. **`p_at_bound` is TRUE where `p = 1.0` arises from the bound and FALSE where it arises
-      from the final episode**; null where `p` is null. **Step 10 publishes the abandonment distribution
-      off `abandonment_point_p`, so the two meanings must be separable in it** — a distribution with a
-      spike at 1.0 means two different things about viewers and the column cannot say which.
-      **Report the split of the `p = 1.0` rows into the two classes, on both populations the invariant
-      states: 1,246 at position 5 and 1,230 post-liveness on APPLY**, which are the totals both arms
-      published and which the two classes must sum to.
+- [ ] **`p_at_bound` MARKS WHETHER `p` REACHED ITS BOUND, NOT WHY.** Human Lead ruling, 2026-08-16
+      (`0083` §2), restating `0082`. **TRUE where `p` reached its bound; null where `p` is null.**
+      ***SUPERSEDED — `0082` §2's definition by two MECHANISMS: "TRUE where the rank numerator saturated
+      at `L2`, FALSE where the pair left at the final episode." Those clauses are COEXTENSIVE BY
+      CONSTRUCTION and the FALSE class is EMPTY.*** On the adopted rank form
+      `p = |{e ∈ E2 : e ≤ m_H}| / L2`, **the set-membership drop rule puts `m_H ∈ E2`**, so the numerator
+      equals `L2` **iff** no listed episode exceeds `m_H`, **iff** `m_H = max(E2) = F2` — which *is*
+      "left at the final episode." **Neither clause can hold without the other.**
+      **Measured, both arms, 2026-08-16 clean run, APPLY: at position 5, 1,246 rows in BOTH classes, 0
+      saturated-not-final, 0 final-not-saturated, 0 in neither; post-liveness 1,230 / 0 / 0 / 0.**
+      ***AND 1,246 AND 1,230 ARE NO LONGER A SPLIT.*** They are correct counts and both arms reproduce
+      them, but they are **one class counted twice, not two classes summed** — **using them as evidence
+      that the column separates anything is a WITHDRAWN ARGUMENT** (`CLAUDE.md`, third blindness class).
+      ***WITHDRAWN, and it is a MOTIVE not a figure (`0082` §2): "a distribution with a spike at 1.0
+      means two different things about viewers and the column cannot say which." FALSE on the adopted
+      form — the spike means one thing.*** **A SECOND fact, measured and NOT this argument: 0 of 1,138
+      frame shows have any S2 numbering gap**, so `E2 = {1…L2}` everywhere and the rank form reduces to
+      `m_H / L2`. **That one is DATA and could be false on another frame; the coextensivity would still
+      hold.** **THE COLUMN IS KEPT**, because **Step 10 publishes the abandonment distribution off
+      `abandonment_point_p` and needs the spike LABELLED**, and because **an emptiness asserted in prose
+      and never emitted cannot be checked.** **It stays empty through Step 13's `W` grid** — the rank
+      form and set membership are both `W`-invariant — **so a FALSE row anywhere means one of them has
+      broken, and that is worth catching.** **Still report the `p = 1.0` totals: 1,246 at position 5 and
+      1,230 post-liveness on APPLY**, as totals, not as a sum of two classes.
 - [ ] **EVERY INVARIANT NAMES THE POPULATION IT RUNS ON, AT THE POINT OF USE — AND ACCOUNTS FOR EVERY
       ROW IN IT.** Human Lead ruling, 2026-08-13 (`0080`). **This is the provenance rule applied to
       invariants rather than to figures:** an invariant that **passes on one population and was never run
@@ -839,11 +861,25 @@ none may be netted against another.** Item 8 is a **definitional change**, not a
 - [ ] **Step 9's bounds and Step 9's published shares are on DIFFERENT POPULATIONS, and on one of them the point estimate falls outside its own bound.** Human Lead ruling, 2026-08-13 (`decisions/0052`). The bounds are computed on the **position-5** population (196,654 APPLY / 147,370 DERIV); **the published shares are post-liveness** (195,951 / 147,271). **On APPLY containment holds by arithmetic accident.** **On DERIV it fails outright: the published never-started share is 6.2096% and the published bound is [6.2055%, 6.2055%] — the point estimate lies OUTSIDE its own identified set.** Both arms printed these within two pages of each other and neither said they were on different populations. **State which population each bound bounds at the point of publication.** `0047` §3 fixed endpoint-versus-endpoint and left estimand-versus-headline open; this closes it as a stated limitation, not a repair.
 - [ ] **The liveness rule's insertion clock carries a calibration residual, discharged at `W = 108` only.** Human Lead ruling, 2026-08-13 (`decisions/0050`), routed here because **recording a limit only in `decisions/` is not recording it.** **22.68%** of dated records (6,271,584 of 27,656,434) claim a `watched_at` **later than their own calibrated insertion instant**, and the rule's first conjunct **is** a comparison between an interpolated instant and `τ1`. **Clamping IS inert under the adopted `τ1`-only test — the clamp value 2026-08-10T20:48Z postdates every D10-surviving `τ1`, so no excluded pair sits on a clamped account, both arms.** *(`0053` recorded that clamping is NOT inert at `τ2` — 1 excluded pair — and ruled the old form must not be restated. **Withdrawn with ALT-MATCHED by `0054`: at `τ1` the old form IS the correct one.** It becomes live again only if a silence test is ever re-anchored later than `τ1`.)* **The exclusion set is stable at the residual covering ~91% of records** (703 → [701, 703]) **and not stable in the tail** (±125 d → [414, 1284]); under a direction-only correction **700 of 703 survive and none is created.** **The started-and-left component is the fragile one:** median margin **81.3 days** against 202.5 for never-started, spanning **19×** under tail residual against 2.5×, with **525 of 703 on accounts whose last record is a `watch`, where the residual is not directly measurable.** **All stability figures are `W = 108` only; Step 13 runs to `W = 213`, where the exclusion set is 864 and the started-and-left component 148.**
 - [ ] **The commutation check shows the two filter orders agree on OBSERVED COUNTS. It does not show the estimand is unaffected.** Human Lead ruling, 2026-08-13 (`0058`), from Red Team's eleventh review. **Conjunct 2 of the liveness rule is `NOT Continued`, so liveness is OUTCOME-CONDITIONAL** — the artifact flags this itself at `position_6_label` and `0046` made waterfall line 6 outcome-conditional in the spec. **`ordering_commutation_check` demonstrates that `|A|` and liveness are row-local predicates that commute index-for-index on this data.** That is a statement about **counts on the observed sample**, and it is what both arms verified. **It is NOT a demonstration that conditioning the filter on the outcome leaves the estimand unchanged**, which is a different claim and is not tested anywhere in this study. **The bound construction is designed to absorb it** — every excluded pair is allowed to be in any state at the relevant endpoint — and `0046`, `0048` and `0054` argued that through. **Red Team would not hold on it and neither would I; it publishes as a limitation, not as a resolved question.**
-- [ ] **The two Step 8 instances examined different numbers of records under the set-membership rule —
-      6,065,704 against 6,065,610, 94 apart — and BOTH reported 0 drops.** Human Lead ruling, 2026-08-13
-      (`0074`): **reported unreconciled**, per `CLAUDE.md`. **Neither figure is wrong on its face, both
-      report the same result, and nothing downstream depends on the denominator.** It is a coverage
-      figure for a rule that dropped nothing. **Publish both numbers, not one.**
+- [ ] ~~**The two Step 8 instances examined different numbers of records under the set-membership rule —
+      6,065,704 against 6,065,610, 94 apart — and BOTH reported 0 drops.** Reported unreconciled and
+      routed here.~~ ***CLOSED 2026-08-16 (`0083` §1). IT IS NOT A STEP 14 LIMITATION and does not
+      publish as one*** — a limitation is an uncertainty that **survives into a result**, and this one
+      touches none: **the rule dropped ZERO records under every reading**, so the numerator is 0 three
+      times over and nothing downstream reads the denominator. **It was never a divergence.** The two
+      figures are two points on a **one-parameter family indexed by where D11 applies**: D11 discards
+      **167** in-frame S1/S2 records dated at or after `τ_pull`, splitting **94 on the S2 side and 73 on
+      the S1 side**, which is the whole of the gap. **Reading A — D11 nowhere — 6,065,704, line 1
+      220,107** (instance A). **Reading B — D11 on the S2 side only, the S1 side carried at `0068`'s
+      published line 1 — 6,065,610, line 1 220,107** (instance B). **Reading C — D11 on both sides —
+      6,065,537, line 1 220,103.** **All three drop 0.** **The other candidate axes are all zero on both
+      arms**: undated records, exact duplicate `(user, play id)` records, non-positive `number`.
+      **`0074`'s "publish both numbers, not one" stands and is strengthened to THREE, each with its
+      pipeline named at the point of use** — as a coverage figure, not an open question. **What stays
+      open is NOT this: whether D11 applies to the S1 completion walk is `0068`'s own open item**, where
+      reading C moves line 1 to 220,103 because **4 pairs stop being completers and 0 completion dates
+      move.** **Choosing between B and C is answered there, not here** — recording it twice is how a
+      ruling diverges from itself.
 - [ ] **THE ASSERTION SET PROVES THE CODE, NOT THE RULE, AND THE INVARIANT REPORT MUST SAY SO.** Human Lead ruling, 2026-08-13 (`0070`), **restated by `0076` after the `p` label was corrected.** ***SUPERSEDED: "four of six cannot fail on any data."*** **On the post-`0074` set of six the true figure was FIVE OF SIX, WITH ZERO PURE DATA CHECKS** — the only assertion with force was the clock-start equality, and only via the independent recomputation. **That is why `0076` adds two genuine data checks.** **The set is now EIGHT: five pure code checks, one code-by-construction with force only as specified, and TWO that can fail on real data — added because the set had none.** **A report stating that all invariants passed overstates what was verified unless it names which ones COULD have failed.** The outcome partition, the monotone filter counts, distinct-episodes-vs-season-length and `A ⊆ A_H` are **code checks**: each is true by construction and can only catch an implementation that computed something wrongly. The clock-start check is a **code check by construction and a real cross-check only because the first-pass S1 completion date must be recomputed INDEPENDENTLY** — read back rather than recomputed it proves nothing. And the 703 expectation is **not an invariant at all** but a population reconciliation. **An unlabelled code check reads as evidence FOR THE RULE when it is only evidence that the code computed what it was told to** — and this study's invariant set is four-sixths of that. **Publish the labels with the results, not the count alone.** *(The two read-back instances split 4-of-6 against 6-of-6 on this, and both readings were defensible because the spec had labelled exactly one — `0069`.)*
 - [ ] **The propagation failure count is a FIVE-SURFACE count, and the two surfaces it omits are now measured and non-zero.** Human Lead ruling, 2026-08-13 (`0057`), from `second-brain`'s U2. **All eighteen failures numbered #1–#18 were found on surfaces 1–5** — `task-sheet.md` and the four pipeline agent files — because those were the only surfaces checked. **`artifacts/` and `.claude/agent-memory/second-brain/` were added as surfaces 6 and 7 AFTER the count was fixed**, and the failure rate on them was recorded as *"unmeasured, not zero."* **It is now measured and non-zero at three:** **#19**, the `bb-{a,b}` stamp that certified superseded figures, found **inside the fix added for surface 6**; **#20**, both `.json` halves left carrying the first stamp and the withdrawn bound floor while the `.md` halves were corrected; and **#21**, `open-items-and-contradictions.md` blessing the superseded sub-interval with a ✓ one line from the corrected bound, because a propagation was scoped to one file and reported as a surface. **The count is NOT renumbered — 18 is a true count of surfaces 1–5 — but it must never be published as a total**, which is exactly how it reads without this bullet.
 - [ ] **The liveness rule is a biconditional and `0021` licenses only one direction.** `0021` establishes *insertion after `τ1` ⟹ live* — a **sufficient** condition. The rule also asserts the converse: *no insertion after `τ1` ∧ ¬Continued ⟹ not live*. **ALT-BROAD narrows where that assertion is made, from PF-LIMIT's 1,355 pairs to 703. It does not justify it.** Both arms and Red Team left this open across five reviews; it is recorded as a limitation rather than closed. (`decisions/0048` §9, `0050`)

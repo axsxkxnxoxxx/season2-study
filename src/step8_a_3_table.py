@@ -20,10 +20,11 @@ that principle applied to the row set. Under the position-7 reading anything nee
 pairs reconstructs them, and a reconstruction that agrees today is still a second definition
 tomorrow -- invisible to the dual diff, because both instances would rebuild the same way.
 
-THE COLUMN NAMES ARE FIXED BY decisions/0077 AND THE TABLE IS 89 COLUMNS. The previous dual run
-produced 88 against 87 for the same contents, all of it naming, and Step 8b defines the schema
-Steps 9-13 write into DIRECTLY (0066), so the divergence would have been inherited. Both arms'
-extra columns are kept: `has_s3_or_later_evidence` (D4 reads it) and
+THE COLUMN NAMES ARE FIXED BY decisions/0077 AND THE SET IS THE 89 ENUMERATED NAMES OF
+decisions/0080 as extended by 0081 (`silent_at_tau1` restored) and 0082 (`p_at_bound` added). An
+earlier dual run produced 88 against 87 for the same contents, all of it naming, and Step 8b
+defines the schema Steps 9-13 write into DIRECTLY (0066), so the divergence would have been
+inherited. Both arms' extra columns are kept: `has_s3_or_later_evidence` (D4 reads it) and
 `s1_completion_used_a_post_cutoff_record` (the open D11-at-position-3 question reads it).
 
 Output: processed/step8/a/analysis_table.csv.gz   (position-5 rows, one per user-show pair)
@@ -48,12 +49,15 @@ W = 108
 H = 91
 DAY = 86400
 
-# THE COLUMN SET IS ENUMERATED, NOT COUNTED -- 87 NAMES, EXACTLY THESE. Human Lead ruling,
-# decisions/0080, replacing decisions/0077 SS3's COUNT of 89. The arms converged on these names on
-# the previous run, but CONVERGED IS NOT SPECIFIED and nothing prevents the next run from
-# diverging; Step 8b's schema is built on this vocabulary, with Steps 9-13 writing into it
-# directly and no conversion layer (0066), so it is fixed BEFORE the schema exists.
-# Transcribed from task-sheet.md Step 8. Emit exactly these, no more and no fewer.
+# THE COLUMN SET IS ENUMERATED, NOT COUNTED -- 89 NAMES, EXACTLY THESE. Human Lead ruling,
+# decisions/0080, replacing decisions/0077 SS3's COUNT; extended to 88 by decisions/0081, which
+# RESTORES `silent_at_tau1`, and to 89 by decisions/0082, which ADDS `p_at_bound`. The arms
+# converged on the 87 names on the previous run, but CONVERGED IS NOT SPECIFIED and nothing
+# prevents the next run from diverging; Step 8b's schema is built on this vocabulary, with Steps
+# 9-13 writing into it directly and no conversion layer (0066), so it is fixed BEFORE the schema
+# exists. Transcribed from task-sheet.md Step 8. Emit exactly these, no more and no fewer.
+# Two names stay DROPPED and both are free: `f2_in_A_H` (derivable as max_episode_in_A_H == s2_F)
+# and `max_episode_in_A` (read by nothing downstream).
 SPEC_COLUMNS = [
     "abandonment_point_p", "action_count_s1_checkin", "action_count_s1_other",
     "action_count_s1_scrobble", "action_count_s1_watch", "action_count_s2_checkin",
@@ -62,7 +66,7 @@ SPEC_COLUMNS = [
     "discovered_channel_a", "discovered_channel_b", "e1_internal_gap", "e1_starts_at_1",
     "e2_internal_gap", "e2_starts_at_1", "exclusion", "gap_days", "has_s3_or_later_evidence",
     "in_apply", "in_deriv", "live", "max_episode_in_A_H", "max_season_number", "n_A", "n_A_H",
-    "outcome", "pool_completers", "pool_completers_proxy", "s1_E", "s1_F", "s1_L",
+    "outcome", "p_at_bound", "pool_completers", "pool_completers_proxy", "s1_E", "s1_F", "s1_L",
     "s1_aired_episodes_reported", "s1_aired_lt_listed", "s1_completion_date",
     "s1_completion_used_a_post_cutoff_record", "s1_count_disagreement",
     "s1_episode_count_reported", "s1_exposure_years", "s1_finale_date", "s1_premiere_date",
@@ -73,11 +77,11 @@ SPEC_COLUMNS = [
     "season_numbers", "seasons_returned", "show_aired_episodes", "show_airs_day",
     "show_certification", "show_comment_count", "show_country", "show_first_aired", "show_genres",
     "show_language", "show_languages", "show_rating", "show_runtime", "show_status",
-    "show_subgenres", "show_trakt_id", "show_votes", "show_year", "size_quintile",
-    "size_quintile_per_year", "size_quintile_raw_count", "t0_binding_term", "t0_date", "tau1",
-    "tau2", "title", "user_idx",
+    "show_subgenres", "show_trakt_id", "show_votes", "show_year", "silent_at_tau1",
+    "size_quintile", "size_quintile_per_year", "size_quintile_raw_count", "t0_binding_term",
+    "t0_date", "tau1", "tau2", "title", "user_idx",
 ]
-assert len(SPEC_COLUMNS) == len(set(SPEC_COLUMNS)) == 87
+assert len(SPEC_COLUMNS) == len(set(SPEC_COLUMNS)) == 89
 
 
 def main():
@@ -199,6 +203,18 @@ def main():
         "n_A": r["kA"][keep],
         "n_A_H": r["kAH"][keep],
         "max_episode_in_A_H": r["mH"][keep],
+        # RESTORED by decisions/0081. It is the ONLY way to recompute the Continued-and-silent
+        # count from this table: the liveness rule's second conjunct is `NOT Continued`, so `live`
+        # is true for EVERY Continued pair regardless of silence, and the count cannot be recovered
+        # from `live` and `outcome`.
+        "silent_at_tau1": r["silent"][keep],
+        # NEW at decisions/0082: a boolean separating the two meanings of `p = 1.0`. TRUE where the
+        # RANK NUMERATOR SATURATED AT L2, FALSE where p = 1.0 arises from the pair having left at
+        # the final episode; NULL where `p` is null. Step 10 publishes the abandonment distribution
+        # off `abandonment_point_p`, so the two must be separable in it. Nullable boolean, because
+        # an inapplicable value and a false one must not look alike.
+        "p_at_bound": pd.array(np.where(r["p_defined"][keep], r["p_saturated"][keep], None),
+                               dtype="boolean"),
         "has_s3_or_later_evidence": a.has_s3[keep],
         "action_count_s1_watch": ac[keep, 0, 0], "action_count_s1_checkin": ac[keep, 0, 1],
         "action_count_s1_scrobble": ac[keep, 0, 2], "action_count_s1_other": ac[keep, 0, 3],
@@ -215,7 +231,7 @@ def main():
     extra = sorted(set(t.columns) - set(SPEC_COLUMNS))
     missing = sorted(set(SPEC_COLUMNS) - set(t.columns))
     assert not extra and not missing, f"column set differs from decisions/0080: +{extra} -{missing}"
-    assert t.shape[1] == 87
+    assert t.shape[1] == 89
     t.to_csv(os.path.join(OUT, "analysis_table.csv.gz"), index=False, compression="gzip")
 
     np.savez_compressed(
@@ -243,27 +259,34 @@ def main():
         "step2_show_fields_carried": int(frame.shape[1] - 1),
         "column_names": list(t.columns),
         "column_names_sorted": sorted(t.columns),
-        "column_set_ruling": "decisions/0080: the set is 87 ENUMERATED NAMES, not a count. "
-                             "0077 SS3's count of 89 is REPLACED. Asserted here by SET EQUALITY "
-                             "against the spec's list, since a count is satisfiable by the wrong "
-                             "columns -- which is how the previous dual run produced 88 against 87 "
-                             "for the same contents. Column ORDER is not specified anywhere; this "
-                             "table is in construction order and the sorted list is emitted "
-                             "alongside so a name diff cannot be confused with an order diff.",
-        "columns_dropped_by_0080_relative_to_this_instance_previous_run": {
-            "max_episode_in_A": "not read by anything downstream (0080 SS2)",
-            "silent_at_tau1": "NOT A TIDY-UP AND STATED AS A REAL LOSS (0080 SS2): it is NOT "
-                              "recoverable from `live` and `outcome` on Continued rows, because "
-                              "`live` is true for every Continued pair regardless of silence -- "
-                              "the rule's second conjunct is NOT Continued. So the count of "
-                              "Continued-and-silent pairs, which is the SIZE OF THE "
-                              "OUTCOME-CONDITIONING and what closed the rule objection at 0063 "
-                              "SS1, can no longer be recomputed from this table. It remains "
-                              "recomputable from the Step 7 masks. The count is emitted as an "
-                              "AGGREGATE below so the figure itself is not lost with the column.",
+        "column_set_ruling": "decisions/0080: the set is ENUMERATED NAMES, not a count -- 87 there, "
+                             "88 at 0081 which RESTORES silent_at_tau1, and 89 at 0082 which ADDS "
+                             "p_at_bound. 0077 SS3's count is REPLACED. Asserted here by SET "
+                             "EQUALITY against the spec's list, since a count is satisfiable by "
+                             "the wrong columns -- which is how an earlier dual run produced 88 "
+                             "against 87 for the same contents. Column ORDER is not specified "
+                             "anywhere; this table is in construction order and the sorted list is "
+                             "emitted alongside so a name diff cannot be confused with an order "
+                             "diff.",
+        "columns_still_dropped_and_why_both_are_free": {
+            "max_episode_in_A": "read by nothing downstream (0080 SS2)",
+            "f2_in_A_H": "derivable as max_episode_in_A_H == s2_F (0080 SS2, 0081 SS1)",
+        },
+        "columns_restored_or_added_since_0080": {
+            "silent_at_tau1": "RESTORED by decisions/0081. It is NOT recoverable from `live` and "
+                              "`outcome` on Continued rows, because `live` is true for every "
+                              "Continued pair regardless of silence -- the rule's second conjunct "
+                              "is NOT Continued. Without the column the count of Continued-and-"
+                              "silent pairs, which is the SIZE OF THE OUTCOME-CONDITIONING and "
+                              "what closed the rule objection at 0063 SS1, could not be recomputed "
+                              "from this table. Its input living in Step 7's working files is the "
+                              "same shape as 0079's drop set. The aggregate is emitted below as "
+                              "well, so the figure is available without reading the table.",
+            "p_at_bound": "ADDED by decisions/0082, to separate the two meanings of p = 1.0.",
         },
         "column_naming_ruling": "decisions/0077: names are FIXED, not left to the instance. "
-                                "Its COUNT of 89 is superseded by decisions/0080's enumerated 87. "
+                                "Its COUNT of 89 is superseded by the enumeration of decisions/0080, "
+                                "as extended by 0081 and 0082. "
                                 "Renamed here from this instance's "
                                 "previous run: in_channel_* -> discovered_channel_*, "
                                 "in_population_APPLY/DERIV -> in_apply/in_deriv, tau1_utc/tau2_utc "
@@ -274,14 +297,17 @@ def main():
                                 "-> action_count_s{1,2}_*. ADDED: "
                                 "s1_completion_used_a_post_cutoff_record, the other instance's "
                                 "extra column, which 0077 keeps.",
-        "column_count_note": "CLOSED by decisions/0080. 0077's adopted-name table listed "
-                             "`f2_in_A_H` and its count fixed 89, which could not both be "
-                             "satisfied; the enumerated 87 drops `f2_in_A_H` as derivable "
-                             "(`max_episode_in_A_H == s2_F`) and this instance now matches the "
-                             "list by set equality. The task-sheet bullet carrying 0077's '89 "
-                             "columns' still stands next to 0080's enumerated 87 in the same "
-                             "file; 0080 explicitly replaces it, and the residual is reported.",
-        "surviving_aggregate_of_the_dropped_silent_at_tau1_column": {
+        "column_count_note": "CLOSED by decisions/0080, as extended by 0081 and 0082. 0077's "
+                             "adopted-name table listed `f2_in_A_H` and its count fixed 89, which "
+                             "could not both be satisfied; the enumeration drops `f2_in_A_H` as "
+                             "derivable (`max_episode_in_A_H == s2_F`) and this instance matches "
+                             "the list by set equality. The count is 89 again after 0082, but it "
+                             "is a DIFFERENT 89: `f2_in_A_H` out, `silent_at_tau1` and "
+                             "`p_at_bound` in. The task-sheet strike-through beside the "
+                             "enumeration still reads 'replaced by the 88-name ENUMERATION' after "
+                             "0082 made it 89; the enumeration itself is 89 and was followed. "
+                             "Reported, not edited.",
+        "surviving_aggregate_of_the_silent_at_tau1_column": {
             "what": "Continued pairs that are SILENT at tau1 -- the size of the "
                     "outcome-conditioning in the liveness rule, the figure that closed the rule "
                     "objection at decisions/0063 SS1 and publishes as a Step 14 limitation",
@@ -291,10 +317,68 @@ def main():
             "value_DERIV_position_5": int((pos5d & r["continued"] & r["silent"]).sum()),
             "expected_by_0080": 652,
             "build": lib.BUILD_TAG,
-            "why_it_is_here": "0080 drops the column and states the loss rather than burying it. "
-                              "The COUNT is emitted as an aggregate so it does not vanish with the "
-                              "column; what is lost is the ability to recompute it row-by-row from "
-                              "the table, and that remains true.",
+            "why_it_is_here": "0080 dropped the column and stated the loss rather than burying it; "
+                              "0081 RESTORED the column for exactly that reason. The aggregate is "
+                              "kept alongside so the figure is readable without the table, which "
+                              "is what 0081 SS3 records this instance as having done under 0080.",
+        },
+        "p_at_bound_the_split_of_the_p_equals_1_rows": {
+            "ruling": "decisions/0082. p = 1.0 carries two meanings computed differently: the pair "
+                      "LEFT AT THE FINAL EPISODE, or THE ABANDONMENT POINT IS AT ITS BOUND -- the "
+                      "rank numerator having saturated at L2. p_at_bound is TRUE where p = 1.0 "
+                      "arises from the bound and FALSE where it arises from the final episode, "
+                      "null where p is null. Step 10 publishes the abandonment distribution off "
+                      "abandonment_point_p, so the two must be separable in it.",
+            "APPLY_position_5": {
+                "p_equals_1_rows": int((pos5 & (r["p"] == 1.0)).sum()),
+                "class_rank_numerator_saturated_at_L2": int(
+                    (pos5 & (r["p"] == 1.0) & r["p_saturated"]).sum()),
+                "class_left_at_the_final_episode": int(
+                    (pos5 & (r["p"] == 1.0) & r["p_final_ep"]).sum()),
+                "in_both_classes": int((pos5 & (r["p"] == 1.0) & r["p_saturated"]
+                                        & r["p_final_ep"]).sum()),
+                "in_neither_class": int((pos5 & (r["p"] == 1.0) & ~r["p_saturated"]
+                                         & ~r["p_final_ep"]).sum()),
+                "expected_by_0082": 1246},
+            "APPLY_position_7_post_liveness": {
+                "p_equals_1_rows": int((pos6 & (r["p"] == 1.0)).sum()),
+                "class_rank_numerator_saturated_at_L2": int(
+                    (pos6 & (r["p"] == 1.0) & r["p_saturated"]).sum()),
+                "class_left_at_the_final_episode": int(
+                    (pos6 & (r["p"] == 1.0) & r["p_final_ep"]).sum()),
+                "in_both_classes": int((pos6 & (r["p"] == 1.0) & r["p_saturated"]
+                                        & r["p_final_ep"]).sum()),
+                "in_neither_class": int((pos6 & (r["p"] == 1.0) & ~r["p_saturated"]
+                                         & ~r["p_final_ep"]).sum()),
+                "expected_by_0082": 1230},
+            "DERIV_position_5": {
+                "p_equals_1_rows": int((pos5d & (r["p"] == 1.0)).sum()),
+                "class_rank_numerator_saturated_at_L2": int(
+                    (pos5d & (r["p"] == 1.0) & r["p_saturated"]).sum()),
+                "class_left_at_the_final_episode": int(
+                    (pos5d & (r["p"] == 1.0) & r["p_final_ep"]).sum())},
+            "column_encoding": "p_at_bound = TRUE iff the rank numerator equals L2, on rows where "
+                               "p is defined; null elsewhere. FALSE therefore means 'the "
+                               "abandonment point is not at its bound', which on p < 1.0 rows is "
+                               "true and on p = 1.0 rows is the final-episode class.",
+            "REPORTED_NOT_RESOLVED": "THE TWO CLASSES ARE COEXTENSIVE AND THE COLUMN CANNOT "
+                                     "SEPARATE THEM. Under the set-membership rule A_H is a subset "
+                                     "of E2, so m_H is a member of E2 and the rank numerator "
+                                     "|{e in E2 : e <= m_H}| equals L2 IF AND ONLY IF m_H = "
+                                     "max(E2) = F2 -- which is 'left at the final episode'. The two "
+                                     "meanings 0082 names are the same event, provably, so one "
+                                     "class holds every p = 1.0 row and the other holds none. "
+                                     "Measured, not assumed: the cross-tab above reports both "
+                                     "classes and the in-both / in-neither cells. On this frame it "
+                                     "is stronger still -- every show has E2 = {1..L2} with no "
+                                     "numbering gap, so the rank form reduces to m_H / L2 "
+                                     "identically. REPORTED, NOT RECONCILED.",
+            "frame_evidence": {
+                "shows_where_max_E2_differs_from_L2": int((frame.s2_F != frame.s2_L).sum()),
+                "shows_in_frame": int(frame.shape[0]),
+                "meaning": "0 means no S2 numbering gap anywhere in the frame, so F2 = L2 on every "
+                           "show and the rank numerator is m_H itself"},
+            "build": lib.BUILD_TAG,
         },
     }
     pool = [json.loads(l) for l in open(os.path.join(ROOT, "raw/step3/user_pool.jsonl"))]

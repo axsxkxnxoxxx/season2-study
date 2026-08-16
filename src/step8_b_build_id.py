@@ -23,13 +23,13 @@ from pathlib import Path
 
 ROOT = Path("/Users/alyanashantel/Documents/season2-study")
 
-RUN_DATE = "2026-08-14"
+RUN_DATE = "2026-08-16"
 
-BUILD = ("analytics-engineer-b / Step 8 position-5 build of 2026-08-14 "
-         "(rerun on the spec as amended through decisions/0080; W = 108, "
-         "tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7)")
+BUILD = ("analytics-engineer-b / Step 8 position-5 build of 2026-08-16 "
+         "(CLEAN RERUN on the spec as amended through decisions/0082; W = 108, "
+         "tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)")
 
-BUILD_SHORT = "b: position-5 build of 2026-08-14"
+BUILD_SHORT = "b: position-5 build of 2026-08-16"
 
 # The ruled figures carry the build they were RULED on, which is not this one.
 RULED_BUILD = "position-5 build of 2026-08-13 (both arms, the run decisions/0078 labelled)"

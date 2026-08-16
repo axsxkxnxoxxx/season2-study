@@ -2,7 +2,7 @@
 
 **Owner:** Analytics Engineer (`a`) · **Mode:** GATE, dual implementation · **W = 108 days** · **H = 91 days** · **Zero API calls** · **Counts only**
 
-> **RERUN against `decisions/0078`, `0079` and `0080`.** Two of the three reach this report and both are structural rather than numerical. **`0079` B6: every invariant result names the build it was measured on** — build `a/2026-08-14`, defined in full in the waterfall deliverable §0. **`0080` §3: every invariant names the population it runs on and accounts for every row in it**, reporting `rows_asserted + rows_not_asserted = rows_in_the_stated_population`. **No invariant result moves**; the coverage of five of them is now stated rather than chosen.
+> **CLEAN RERUN, ordered by the Human Lead**, built from the committed state; nothing from the run that was terminated mid-flight is read or relied on. **Every result below is produced by one pipeline run and none is carried from a previous artifact.** The two rulings that reach this report are structural rather than numerical. **`0079` B6: every invariant result names the build it was measured on** — build `a/2026-08-16`, defined in full in the waterfall deliverable §0. **`0080` §3: every invariant names the population it runs on and accounts for every row in it**, reporting `rows_asserted + rows_not_asserted = rows_in_the_stated_population`. **`0081` and `0082` change the column set, not the invariant set: no invariant result moves.**
 
 > **Why that second one matters, in this report's own numbers.** `0080` §3 records that in the previous dual run one arm asserted `p` on **19,042** rows — the *post-liveness* Started-and-left count — against a *pre-liveness* non-S&L clause of **177,513**, summing to **196,555 against a 196,654-row table**. **99 rows were covered by neither clause, and those 99 are exactly the started-and-left liveness exclusions.** Neither report disclosed the gap and no control could see it. **This report states both clauses and their sum for every check** — see the coverage table below, where `p` reads **19,141 + 177,513 = 196,654** and the post-liveness 19,042 appears only as a labelled contrast.
 
@@ -40,7 +40,7 @@
 | 7 | no account is dropped wholesale by the pair-level li… | BOTH POPULATIONS, IN ACCOUNTS (decisions/0080 SS3): the accounts holding a position-5 pair in APPLY and the accounts holding one in DERIV, each report | APPLY_position_5 — `2422 + 0 not asserted = 2422`; DERIV_position_5 — `2402 + 0 not asserted = 2402` |
 | 8 | no access_denied or otherwise skipped account is rea… | THE FULL ACCOUNT LEDGER, IN ACCOUNTS (decisions/0080 SS3) -- every distinct account the Step 4 pull touched, not the accounts that survived into the t | coverage — `2874 + 0 not asserted = 2874` |
 
-**13 coverage identities were checked and all hold: True.** The run asserts this, so a report that omitted a population could not be written by this pipeline. Build: every count in this table measured on `a/2026-08-14` — position-5 build of 2026-08-14, instance `a`; see §0.
+**13 coverage identities were checked and all hold: True.** The run asserts this, so a report that omitted a population could not be written by this pipeline. Build: every count in this table measured on `a/2026-08-16` — position-5 build of 2026-08-16, instance `a`; see §0.
 
 ### 1. outcome states are mutually exclusive and sum to the post-position-7 row set
 
@@ -58,7 +58,7 @@
         - `rows_not_asserted` = `0`
         - `coverage_identity` = `32769 + 19042 + 144140 + 0 not asserted = 195951`
         - `coverage_identity_holds` = `True`
-        - `build` = `a/2026-08-14`
+        - `build` = `a/2026-08-16`
         - `asserted_clause_counts` = `[32769, 19042, 144140]`
         - `exactly_one_state_per_row` = `True`
         - `never_started` = `32769`
@@ -75,7 +75,7 @@
         - `rows_not_asserted` = `0`
         - `coverage_identity` = `33373 + 19141 + 144140 + 0 not asserted = 196654`
         - `coverage_identity_holds` = `True`
-        - `build` = `a/2026-08-14`
+        - `build` = `a/2026-08-16`
         - `asserted_clause_counts` = `[33373, 19141, 144140]`
         - `exactly_one_state_per_row` = `True`
         - `never_started` = `33373`
@@ -92,7 +92,7 @@
         - `rows_not_asserted` = `0`
         - `coverage_identity` = `9145 + 16744 + 121382 + 0 not asserted = 147271`
         - `coverage_identity_holds` = `True`
-        - `build` = `a/2026-08-14`
+        - `build` = `a/2026-08-16`
         - `asserted_clause_counts` = `[9145, 16744, 121382]`
         - `exactly_one_state_per_row` = `True`
         - `never_started` = `9145`
@@ -109,7 +109,7 @@
         - `rows_not_asserted` = `0`
         - `coverage_identity` = `9145 + 16843 + 121382 + 0 not asserted = 147370`
         - `coverage_identity_holds` = `True`
-        - `build` = `a/2026-08-14`
+        - `build` = `a/2026-08-16`
         - `asserted_clause_counts` = `[9145, 16843, 121382]`
         - `exactly_one_state_per_row` = `True`
         - `never_started` = `9145`
@@ -119,7 +119,7 @@
         - `sum_equals_row_set` = `True`
         - `holds` = `True`
 - `coverage_identity_holds_on_every_stated_population` = `True`
-- `build` = `a/2026-08-14`
+- `build` = `a/2026-08-16`
 - **result: PASS**
 
 ### 2. filter counts decrease monotonically, coded >= and not >
@@ -139,7 +139,7 @@
     - `positions_not_asserted` = `0`
     - `coverage_identity` = `7 + 0 not asserted = 7`
     - `coverage_identity_holds` = `True`
-    - `build` = `a/2026-08-14`
+    - `build` = `a/2026-08-16`
 - `coverage_DERIV`:
     - `population` = `DERIV's seven filter positions`
     - `unit` = `positions`
@@ -148,12 +148,12 @@
     - `positions_not_asserted` = `0`
     - `coverage_identity` = `7 + 0 not asserted = 7`
     - `coverage_identity_holds` = `True`
-    - `build` = `a/2026-08-14`
+    - `build` = `a/2026-08-16`
 - `chain_note` = `chain[i] is the count after filter position i+1; the transition from entry i to entry i+1 is the effect of filter position i+2`
 - `filter_positions_removing_exactly_zero_APPLY` = `[2, 3, 7]`
 - `filter_positions_removing_exactly_zero_DERIV` = `[2, 3, 7]`
 - `inert_positions_labelled_not_silent` = `positions 1, 2, 3 and 7 remove 0 BY CONSTRUCTION and are labelled inert with the reason in the waterfall deliverable (decisions/0079 SS4). An unlabelled always-zero filter reads as evidence the rule FOUND NOTHING when it is evidence the rule CANNOT FIRE.`
-- `build` = `a/2026-08-14`
+- `build` = `a/2026-08-16`
 - **result: PASS**
 
 ### 3. distinct episodes never exceed season length
@@ -171,7 +171,7 @@
     - `pairs_not_asserted` = `0`
     - `coverage_identity` = `278452 + 0 not asserted = 278452`
     - `coverage_identity_holds` = `True`
-    - `build` = `a/2026-08-14`
+    - `build` = `a/2026-08-16`
     - `records_examined` = `6065704`
     - `records_dropped_by_the_rule` = `0`
     - `seasons_asserted` = `['S1', 'S2']`
@@ -180,7 +180,7 @@
 - `max_D1_minus_L1` = `0`
 - `max_D2_minus_L2` = `0`
 - `max_AH_minus_L2` = `0`
-- `build` = `a/2026-08-14`
+- `build` = `a/2026-08-16`
 - **result: PASS**
 
 ### 4. A is a subset of A_H on every row
@@ -198,11 +198,11 @@
     - `rows_not_asserted` = `0`
     - `coverage_identity` = `196654 + 0 not asserted = 196654`
     - `coverage_identity_holds` = `True`
-    - `build` = `a/2026-08-14`
+    - `build` = `a/2026-08-16`
 - `rows_where_A_exceeds_A_H` = `0`
 - `rows_where_max_A_exceeds_max_A_H` = `0`
 - `also_holds_on_the_post_position_7_row_set` = `True`
-- `build` = `a/2026-08-14`
+- `build` = `a/2026-08-16`
 - **result: PASS**
 
 ### 5. clock start is on or after the S2 finale date, on or after the first-pass S1 completion date, and equal to one of the two
@@ -221,7 +221,7 @@
     - `rows_not_asserted` = `0`
     - `coverage_identity` = `196654 + 0 not asserted = 196654`
     - `coverage_identity_holds` = `True`
-    - `build` = `a/2026-08-14`
+    - `build` = `a/2026-08-16`
     - `independent_recomputation_covers_pairs` = `278452`
     - `read_back_from_the_pipeline` = `False`
 - `on_or_after_S2_finale` = `True`
@@ -240,7 +240,7 @@
     - `stored_dates_unparseable_s1_then_t0` = `[0, 0]`
     - `pairs_whose_S1_completion_date_is_a_corrupt_year_1_timestamp` = `3`
 - `tie_break_note` = `Step 1 SS2.2 breaks exactly-equal timestamps by episode number then smallest event id. The recomputation applies that tiebreak; the agreement counts above are reported rather than a choice being made about whether a tiebreak difference would count as a failure.`
-- `build` = `a/2026-08-14`
+- `build` = `a/2026-08-16`
 - **result: PASS**
 
 ### 6. p lies in (0, 1] on every Started-and-left row and is null everywhere else
@@ -258,7 +258,7 @@
     - `rows_not_asserted` = `0`
     - `coverage_identity` = `19141 + 177513 + 0 not asserted = 196654`
     - `coverage_identity_holds` = `True`
-    - `build` = `a/2026-08-14`
+    - `build` = `a/2026-08-16`
     - `asserted_clause_counts` = `[19141, 177513]`
     - `clause_1_rows_asserted_p_in_0_1_started_and_left` = `19141`
     - `clause_2_rows_asserted_p_is_null_not_started_and_left` = `177513`
@@ -267,7 +267,7 @@
 - `max` = `1.0`
 - `nulls_among_started_and_left` = `0`
 - `non_null_outside_started_and_left` = `0`
-- `build` = `a/2026-08-14`
+- `build` = `a/2026-08-16`
 - **result: PASS**
 
 ### 7. no account is dropped wholesale by the pair-level liveness filter
@@ -285,7 +285,7 @@
         - `accounts_not_asserted` = `0`
         - `coverage_identity` = `2422 + 0 not asserted = 2422`
         - `coverage_identity_holds` = `True`
-        - `build` = `a/2026-08-14`
+        - `build` = `a/2026-08-16`
         - `accounts_untouched_by_the_exclusion` = `2206`
         - `accounts_touched_by_the_exclusion` = `216`
         - `classification_covers_every_account` = `True`
@@ -301,7 +301,7 @@
         - `accounts_not_asserted` = `0`
         - `coverage_identity` = `2402 + 0 not asserted = 2402`
         - `coverage_identity_holds` = `True`
-        - `build` = `a/2026-08-14`
+        - `build` = `a/2026-08-16`
         - `accounts_untouched_by_the_exclusion` = `2329`
         - `accounts_touched_by_the_exclusion` = `73`
         - `classification_covers_every_account` = `True`
@@ -316,7 +316,7 @@
 - `of_those_accounts_holding_more_than_one_position_5_pair` = `0`
 - `reading` = `accounts in the last line held exactly one position-5 pair unless the count above is non-zero; for a single-pair account 'wholesale' and 'pair-level' are indistinguishable and no inference is available either way.`
 - `assertion` = `accounts_holding_BOTH_a_live_and_a_not_live_pair > 0, ON BOTH POPULATIONS`
-- `build` = `a/2026-08-14`
+- `build` = `a/2026-08-16`
 - **result: PASS**
 
 ### 8. no access_denied or otherwise skipped account is read as empty
@@ -333,7 +333,7 @@
     - `accounts_not_asserted` = `0`
     - `coverage_identity` = `2874 + 0 not asserted = 2874`
     - `coverage_identity_holds` = `True`
-    - `build` = `a/2026-08-14`
+    - `build` = `a/2026-08-16`
     - `accounts_whose_final_state_is_complete` = `2549`
     - `accounts_whose_final_state_is_a_skip_class` = `325`
     - `accounts_whose_final_state_is_neither` = `0`
@@ -370,7 +370,7 @@
     - `never_started_pairs` = `119`
     - `note` = `not a violation -- these accounts have a real parsed history and their never-started rows rest on evidence, not on absence. Reported so the assertion's scope is visible.`
 - `assertion` = `no account whose final ledger state is a skip class, and no account that was skipped and never yielded data, contributes a pair scored never-started`
-- `build` = `a/2026-08-14`
+- `build` = `a/2026-08-16`
 - **result: PASS**
 
 ---
@@ -384,7 +384,7 @@
 | **APPLY** | 196,654 | 703 | **703** | 604 | 99 | 216 |
 | **DERIV** | 147,370 | 99 | **99** | 0 | 99 | 73 |
 
-*Build: every figure in this table measured on `a/2026-08-14` — position-5 build of 2026-08-14, instance `a`; see §0.*
+*Build: every figure in this table measured on `a/2026-08-16` — position-5 build of 2026-08-16, instance `a`; see §0.*
 
 **It reconciles: True.** Neither superseded answer was produced — ALT's 604 on APPLY: False; ALT-MATCHED's 793 on APPLY: False.
 
@@ -400,6 +400,6 @@
 - **What check 8 found:** 325 accounts are recorded in a skip class (discarded_over_tolerance 287, skipped_length_forecast 38), 0 HTTP 403 responses occurred in the entire run and 0 accounts are recorded `access_denied`. **None of the skipped accounts reaches the user index at all**, so none contributes a pair of any kind, let alone a never-started one. Separately, 7 accounts were skipped on one attempt and yielded data on another; they contribute 604 position-5 pairs including 119 never-started, which rest on a real parsed history and are not violations. Reported so the assertion's scope is visible rather than assumed.
 
 
-*Every result in this report was measured on build `a/2026-08-14` — position-5 build of 2026-08-14, instance `a` (`decisions/0079` B6). The full build record, with stage-file hashes and the git HEAD, is in `artifacts/step8-waterfall-a.md` §0 and in the `.json` beside this file.*
+*Every result in this report was measured on build `a/2026-08-16` — position-5 build of 2026-08-16, instance `a` (`decisions/0079` B6). The full build record, with stage-file hashes and the git HEAD, is in `artifacts/step8-waterfall-a.md` §0 and in the `.json` beside this file.*
 
 *Generated by `src/step8_a_6_emit.py` from `processed/step8/a/invariants.json`.*

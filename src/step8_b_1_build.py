@@ -186,14 +186,35 @@ def main() -> None:
                                           "unfiltered because decisions/0068 rules waterfall "
                                           "line 1 at 220,107 AS PUBLISHED and that value needs "
                                           "the 4 pairs whose completing record is post-cutoff"),
-            "in_frame_S1_S2_episode_records_before_any_D11": int(m12_pre.sum()),
-            "this_instances_examined_count": int(len(sn)),
-            "if_D11_were_applied_to_BOTH_seasons": int((m12_pre & ~d11_drop).sum()),
+            "READING_A_no_D11_anywhere": int(m12_pre.sum()),
+            "READING_B_D11_on_the_S2_side_only_THIS_INSTANCE": int(len(sn)),
+            "READING_C_D11_on_both_seasons": int((m12_pre & ~d11_drop).sum()),
+            "decomposition_of_the_full_D11_effect": {
+                "records_D11_discards_on_the_S1_side": int((m12_pre & d11_drop
+                                                            & (r_season == 1)).sum()),
+                "records_D11_discards_on_the_S2_side": int((m12_pre & d11_drop
+                                                            & (r_season == 2)).sum()),
+                "total": int((m12_pre & d11_drop).sum()),
+                "why_it_matters": ("decisions/0074 ruling 4 published the gap between the two "
+                                   "arms as 94 records and routed it to Step 14 as reported-"
+                                   "not-reconciled. The 94 is the S2-SIDE component alone. "
+                                   "D11 applied everywhere moves the figure by the TOTAL, so "
+                                   "the three readings are separated by two different "
+                                   "quantities and the two-figure framing understates the "
+                                   "spread"),
+            },
+            "what_decides_it": ("the denominator is a CONSEQUENCE of one choice and not an "
+                                "independent question: whether D11 is applied to the S1 "
+                                "completion walk. That is exactly the question decisions/0068 "
+                                "records as OPEN when it rules line 1 at 220,107 as published. "
+                                "Close that and the denominator closes with it: READING_C with "
+                                "line 1 = 220,103, or READING_B with line 1 = 220,107"),
             "reported_unreconciled": ("decisions/0074 ruling 4 publishes 6,065,704 against "
                                       "6,065,610, both reporting 0 drops, and rules the "
                                       "difference REPORTED NOT RECONCILED. All three readings "
-                                      "are stated here; this instance does not reconcile them, "
-                                      "and nothing downstream depends on the denominator"),
+                                      "are stated here with their decomposition; this instance "
+                                      "does not reconcile them, and nothing downstream depends "
+                                      "on the denominator"),
         },
     }
 

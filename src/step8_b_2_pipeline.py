@@ -47,9 +47,11 @@ ROOT = Path("/Users/alyanashantel/Documents/season2-study")
 P2, P5 = ROOT / "processed" / "step2", ROOT / "processed" / "step5"
 OUT = ROOT / "processed" / "step8" / "b"
 
-# decisions/0080 Sec 1 -- THE COLUMN SET IS ENUMERATED, NOT COUNTED. 87 names,
-# exactly these, no more and no fewer. Transcribed from task-sheet.md Step 8.
-COLUMNS_87 = [
+# decisions/0080 Sec 1 -- THE COLUMN SET IS ENUMERATED, NOT COUNTED. Extended to
+# 88 by 0081 (silent_at_tau1 restored) and to 89 by 0082 (p_at_bound added).
+# 89 names, exactly these, no more and no fewer. Transcribed from task-sheet.md
+# Step 8 as it now stands.
+COLUMNS_89 = [
     "abandonment_point_p", "action_count_s1_checkin", "action_count_s1_other",
     "action_count_s1_scrobble", "action_count_s1_watch", "action_count_s2_checkin",
     "action_count_s2_other", "action_count_s2_scrobble", "action_count_s2_watch",
@@ -58,7 +60,7 @@ COLUMNS_87 = [
     "e1_internal_gap", "e1_starts_at_1", "e2_internal_gap", "e2_starts_at_1",
     "exclusion", "gap_days", "has_s3_or_later_evidence", "in_apply", "in_deriv",
     "live", "max_episode_in_A_H", "max_season_number", "n_A", "n_A_H", "outcome",
-    "pool_completers", "pool_completers_proxy", "s1_E", "s1_F", "s1_L",
+    "p_at_bound", "pool_completers", "pool_completers_proxy", "s1_E", "s1_F", "s1_L",
     "s1_aired_episodes_reported", "s1_aired_lt_listed", "s1_completion_date",
     "s1_completion_used_a_post_cutoff_record", "s1_count_disagreement",
     "s1_episode_count_reported", "s1_exposure_years", "s1_finale_date",
@@ -70,10 +72,10 @@ COLUMNS_87 = [
     "show_certification", "show_comment_count", "show_country", "show_first_aired",
     "show_genres", "show_language", "show_languages", "show_rating", "show_runtime",
     "show_status", "show_subgenres", "show_trakt_id", "show_votes", "show_year",
-    "size_quintile", "size_quintile_per_year", "size_quintile_raw_count",
+    "silent_at_tau1", "size_quintile", "size_quintile_per_year", "size_quintile_raw_count",
     "t0_binding_term", "t0_date", "tau1", "tau2", "title", "user_idx",
 ]
-assert len(COLUMNS_87) == 87 and len(set(COLUMNS_87)) == 87
+assert len(COLUMNS_89) == 89 and len(set(COLUMNS_89)) == 89
 
 TAU_PULL = 1786406400          # 2026-08-11T00:00:00Z, decisions/0011
 DAY = 86400
@@ -429,7 +431,8 @@ def main() -> None:
             keep_main = dict(nA=nA, nAH=nAH, contd=contd, sal=sal, never=never,
                              notlive=notlive, line5=line5, line6=line6,
                              deriv5=deriv5, deriv6=deriv6, tau1=tau1, tau2=tau2,
-                             f2_in_AH=f2_in_AH, term1=term1, d10=d10)
+                             f2_in_AH=f2_in_AH, term1=term1, d10=d10,
+                             silent=(mx <= tau1))
 
     R["per_arm"] = per_arm
     R["censoring_per_air_period"] = censor_air
@@ -527,6 +530,21 @@ def main() -> None:
     m_H = maxnum_before(nAH)
     p_rank = np.where(m_H >= 0, rank_tab[s_idx, np.clip(m_H, 0, maxE)], 0)
     p_val = np.where(K["sal"] & (m_H >= 0), p_rank / np.maximum(L2a[s_idx], 1), np.nan)
+
+    # ---- p_at_bound (decisions/0082) --------------------------------------
+    # A boolean separating the TWO MEANINGS of p = 1.0: the rank numerator
+    # SATURATED AT L2, or the pair LEFT AT THE FINAL EPISODE. Both are computed
+    # here, separately, because whether they are the same set is a measurement
+    # and not an assumption -- and on the adopted rank form they are provably
+    # the same set (m_H is a member of E2, so |{e in E2 : e <= m_H}| = L2 iff no
+    # listed episode exceeds m_H iff m_H = max(E2) = F2). The column is emitted
+    # on the FIRST reading, which is the one 0082 names ("the rank numerator
+    # saturated at L2"); the second is reported alongside so the coincidence is
+    # a stated fact rather than a silent choice.
+    has_p = ~np.isnan(p_val)
+    rank_saturated = has_p & (p_rank >= L2a[s_idx])
+    left_at_final = has_p & (m_H == F2a[s_idx])
+    p_is_one = has_p & (p_val >= 1.0)
 
     outcome = np.where(K["never"], "never_started",
                        np.where(K["contd"], "continued", "started_and_left"))
@@ -635,6 +653,7 @@ def main() -> None:
         "in_deriv": line4_step5[sel],
         "live": ~K["notlive"][sel],
         "outcome": outcome[sel],
+        "silent_at_tau1": K["silent"][sel],
         "abandonment_point_p": p_val[sel],
         "discovered_channel_a": in_a_u[u_idx[sel]],
         "discovered_channel_b": in_b_u[u_idx[sel]],
@@ -648,16 +667,20 @@ def main() -> None:
         "has_s3_or_later_evidence": has_s3[sel],
         "s1_completion_used_a_post_cutoff_record": comp_post_cutoff[sel],
     })
+    pab = pd.array(rank_saturated[sel], dtype="boolean")
+    pab[~has_p[sel]] = pd.NA                      # null where p is null (0082)
+    tab["p_at_bound"] = pab
     for j, nm in enumerate(act_names):
         tab["action_count_" + nm] = acts[sel, j]
     show_cols = [c for c in frame.columns if c != "show_trakt_id"]
     tab = tab.merge(frame[["show_trakt_id"] + show_cols], on="show_trakt_id", how="left")
     assert len(tab) == int(sel.sum())
 
-    # decisions/0080 Sec 1 -- EXACTLY the 87 enumerated names, no more and no fewer.
-    emitted, ruled = set(tab.columns), set(COLUMNS_87)
+    # decisions/0080 Sec 1, extended by 0081 and 0082 -- EXACTLY the 89
+    # enumerated names, no more and no fewer.
+    emitted, ruled = set(tab.columns), set(COLUMNS_89)
     assert emitted == ruled, {"extra": sorted(emitted - ruled), "missing": sorted(ruled - emitted)}
-    tab = tab[COLUMNS_87]
+    tab = tab[COLUMNS_89]
     tab.to_csv(OUT / "analysis_table.csv.gz", index=False, compression="gzip")
     R["analysis_table"] = {
         "path": "processed/step8/b/analysis_table.csv.gz",
@@ -673,46 +696,47 @@ def main() -> None:
         "column_names": list(tab.columns),
         "action_is_counts_not_a_column": True,
         "discovery_channel_is_two_booleans": True,
-        "column_set_is_ENUMERATED_by_0080": {
-            "ruling": ("decisions/0080 Sec 1 -- THE COLUMN SET IS ENUMERATED, NOT COUNTED: 87 "
-                       "NAMES, EXACTLY THESE, replacing 0077 Sec 3's count. The arms converged "
-                       "on these names but CONVERGED IS NOT SPECIFIED, and Step 8b's schema is "
-                       "built on this vocabulary, so it is fixed before the schema exists"),
-            "names_ruled": 87,
+        "column_set_is_ENUMERATED": {
+            "ruling": ("decisions/0080 Sec 1 -- THE COLUMN SET IS ENUMERATED, NOT COUNTED, "
+                       "replacing 0077 Sec 3's count. EXTENDED TO 88 BY 0081 (silent_at_tau1 "
+                       "restored) AND TO 89 BY 0082 (p_at_bound added). The arms converged on "
+                       "the 87 names at the previous run but CONVERGED IS NOT SPECIFIED, and "
+                       "Step 8b's schema is built on this vocabulary, so it is fixed before the "
+                       "schema exists"),
+            "names_ruled": 89,
             "names_emitted": int(len(tab.columns)),
-            "exact_match_to_the_enumerated_list": sorted(tab.columns) == sorted(COLUMNS_87),
-            "emitted_in_the_enumerated_order": list(tab.columns) == COLUMNS_87,
+            "exact_match_to_the_enumerated_list": sorted(tab.columns) == sorted(COLUMNS_89),
+            "emitted_in_the_enumerated_order": list(tab.columns) == COLUMNS_89,
+            "transcribed_from": ("task-sheet.md Step 8's enumeration as it now stands, name by "
+                                 "name; the same list appears in this instance's own definition "
+                                 "file and the two were checked against each other"),
             "changed_from_this_arms_previous_run": {
-                "dropped": ["f2_in_A_H"],
-                "why": ("0080 drops it as DERIVABLE -- f2_in_A_H == (max_episode_in_A_H == "
-                        "s2_F) -- and this arm emitted it, so this run removes it. The arm's "
-                        "previous 88 becomes 87"),
-                "added": [],
+                "added": ["silent_at_tau1", "p_at_bound"],
+                "dropped": [],
+                "why": ("0081 restores silent_at_tau1 -- it is the only way to recompute the "
+                        "Continued-and-silent count (652) from this table, because the liveness "
+                        "rule's second conjunct is NOT Continued, so `live` is true for every "
+                        "Continued pair REGARDLESS of silence. 0082 adds p_at_bound. This arm's "
+                        "previous run emitted the superseded 87"),
             },
-            "what_the_87_drops_and_the_loss_it_carries": (
-                "0080 Sec 2: three columns are dropped, one arm each. f2_in_A_H and "
-                "max_episode_in_A are cheap. silent_at_tau1 is NOT: it is not recoverable from "
-                "`live` and `outcome` on Continued rows, because `live` is true for every "
-                "Continued pair regardless of silence, so THE COUNT OF CONTINUED-AND-SILENT "
-                "PAIRS (652 -- the size of the outcome-conditioning, which closed the rule "
-                "objection at 0063 Sec 1 and publishes as a Step 14 limitation) CANNOT BE "
-                "RECOMPUTED FROM THIS TABLE. It remains recomputable from the Step 7 masks. "
-                "This arm did not emit that column on either run, so nothing is lost HERE that "
-                "was not already absent -- but the loss is real and is stated at the point of "
-                "use rather than buried"),
-            "residual_defect_in_the_spec": (
-                "task-sheet.md Step 8 still carries 0077's bullet ending 'The table is 89 "
-                "columns' immediately below 0080's enumerated 87. 0080 says in terms that it "
-                "REPLACES 0077 Sec 3's count, and both figures 0077 names -- "
-                "has_s3_or_later_evidence and s1_completion_used_a_post_cutoff_record -- are "
-                "IN the enumerated 87, so the later ruling is self-consistent and is followed. "
-                "REPORTED as a live contradiction between two adjacent bullets in the spec, "
-                "not silently resolved"),
+            "the_two_free_drops_stand": {
+                "f2_in_A_H": "DERIVABLE as (max_episode_in_A_H == s2_F)",
+                "max_episode_in_A": "read by nothing downstream",
+            },
             "superseded_forms_absent": {
                 nm: bool(nm not in tab.columns) for nm in
                 ["in_population_APPLY", "n_rec_s1_watch", "tau1_utc", "tau2_utc",
                  "max_episode_in_AH", "T0_binding_term", "action", "discovery_channel",
-                 "f2_in_A_H", "max_episode_in_A", "silent_at_tau1"]},
+                 "f2_in_A_H", "max_episode_in_A"]},
+            "residual_defect_in_the_spec": (
+                "task-sheet.md Step 8's struck bullet reads 'SUPERSEDED -- the count is "
+                "replaced by the ENUMERATION above (0080, extended to 88 by 0081)', while the "
+                "enumeration above it carries 89 names and its own heading says 89 (0082). The "
+                "'88' inside the strike-through is stale by one ruling. It is INSIDE a "
+                "strike-through and the live enumeration is unambiguous, so it changes nothing "
+                "here -- REPORTED rather than silently resolved, because the same shape "
+                "(a superseded count left standing beside its replacement) is what 0081 Sec 2 "
+                "was written about"),
         },
     }
 
@@ -727,12 +751,15 @@ def main() -> None:
     entire_s2_dropped = np.isin(comp_pair, dropped_s2_pair) & (nA == 0)
     ns5 = int((line5 & K["never"]).sum())
     ns7 = int((line6 & K["never"]).sum())
+    # per-show drop counts are MEASURED from the stage-1 file, never assumed zero
+    psd = pd.read_csv(OUT / "drop_counts_per_show.csv")
     req["drop_counts"] = {
         "per_show_file": "processed/step8/b/drop_counts_per_show.csv",
         "records_examined": st1["drop_rule"]["records_examined"],
         "records_dropped_total": st1["drop_rule"]["records_dropped"],
-        "distinct_season_number_pairs_dropped": 0,
-        "shows_with_any_drop": 0,
+        "distinct_season_number_pairs_dropped":
+            int(psd.distinct_dropped_season_number.sum()),
+        "shows_with_any_drop": int((psd.dropped_records > 0).sum()),
         "per_outcome_pairs_whose_entire_S2_evidence_was_dropped":
             int((line5 & entire_s2_dropped).sum()),
         "denominator_never_started_at_position5": ns5,
@@ -751,6 +778,81 @@ def main() -> None:
                      "records surviving D11 was tested for membership in its season's "
                      "listed set E, and none failed. This check did not look nowhere"),
         "direction": "would INFLATE Never started, the same direction as D4 and D9",
+    }
+
+    # --- p_at_bound: the split of the p = 1.0 rows (decisions/0082) --------
+    pab_split = {}
+    for nm, msk in (("APPLY_position5", line5), ("APPLY_position6_post_liveness", line6),
+                    ("DERIV_position5", d5), ("DERIV_position6_post_liveness", d6)):
+        one = msk & p_is_one
+        pab_split[nm] = {
+            "rows_with_p_equal_1_0": int(one.sum()),
+            "p_at_bound_TRUE_rank_numerator_saturated_at_L2": int((one & rank_saturated).sum()),
+            "p_at_bound_FALSE_left_at_the_final_episode_only":
+                int((one & ~rank_saturated).sum()),
+            "classes_sum_to_the_total":
+                int((one & rank_saturated).sum()) + int((one & ~rank_saturated).sum())
+                == int(one.sum()),
+            "cross_check_rows_where_m_H_equals_F2": int((one & left_at_final).sum()),
+            "started_and_left_rows": int((msk & K["sal"]).sum()),
+            "p_at_bound_TRUE_among_ALL_rows_with_a_non_null_p":
+                int((msk & rank_saturated).sum()),
+            "rows_with_p_below_1_0": int((msk & K["sal"] & ~p_is_one).sum()),
+        }
+    req["p_at_bound"] = {
+        "ruling": ("decisions/0082 Sec 2 -- p = 1.0 CARRIES TWO MEANINGS COMPUTED DIFFERENTLY: "
+                   "the rank numerator SATURATED AT L2, or the pair LEFT AT THE FINAL EPISODE. "
+                   "p_at_bound is TRUE on the first and FALSE on the second, null where p is "
+                   "null. Step 10 publishes the abandonment distribution off "
+                   "abandonment_point_p, so a spike at 1.0 must be separable"),
+        "column_emitted_on": ("the rank-saturation reading -- 'the rank numerator saturated at "
+                             "L2', which is the phrase the ruling uses"),
+        "expected_totals_from_the_ruling": {"position5_APPLY": 1246,
+                                            "post_liveness_APPLY": 1230},
+        "by_population_and_position": pab_split,
+        "MEASURED_FINDING_the_two_classes_are_the_same_set": (
+            "ON THE ADOPTED RANK FORM THE TWO MEANINGS ARE PROVABLY IDENTICAL, and this is "
+            "measured rather than argued: p = |{e in E2 : e <= m_H}| / L2 with m_H = max(A_H) "
+            "and A_H a subset of E2 by set membership. The numerator equals L2 iff no listed "
+            "episode exceeds m_H, iff m_H = max(E2) = F2 -- which IS 'left at the final "
+            "episode'. So the FALSE class is EMPTY by construction, not by accident, and the "
+            "column separates nothing on this data. The two readings are computed separately "
+            "above (rank_saturated and m_H == F2) and agree row for row. THE TWO MEANINGS ARE "
+            "DISTINGUISHABLE ONLY UNDER THE WITHDRAWN RAW-RATIO FORM p = m_H / L2, where a "
+            "numbering gap makes F2 > L2 and the ratio saturates at a value other than the "
+            "finale. REPORTED, not resolved: this instance emits the column as ruled"),
+        "consequence_for_step10": ("a spike at p = 1.0 on this data means exactly one thing -- "
+                                   "the pair watched the S2 finale and missed the 90% "
+                                   "threshold -- and p_at_bound cannot tell Step 10 anything "
+                                   "the finale test does not. The column is emitted because it "
+                                   "is ruled, and its degeneracy is stated so Step 10 does not "
+                                   "read an all-TRUE column as a finding"),
+    }
+
+    # --- Continued-and-silent, the count silent_at_tau1 exists to preserve --
+    req["continued_and_silent"] = {
+        "why_it_is_here": ("decisions/0081 -- `live` is TRUE for every Continued pair "
+                           "REGARDLESS of silence, because the liveness rule's second conjunct "
+                           "is NOT Continued. The Continued-and-silent count is therefore not "
+                           "recoverable from `live` and `outcome`, and silent_at_tau1 is "
+                           "restored to the table so it can be recomputed from Step 8's own "
+                           "output. It is ALSO emitted here as an aggregate so the figure "
+                           "survives independently of the column"),
+        "definition": ("Continued pairs whose account shows NO insertion instant > tau1 -- the "
+                       "silence test, strict, evidence restricted to records dated before "
+                       "tau_pull"),
+        "published_figure_it_reproduces": 652,
+        "by_population": {
+            nm: {"continued": int((msk & K["contd"]).sum()),
+                 "continued_and_silent_at_tau1": int((msk & K["contd"] & K["silent"]).sum()),
+                 "silent_at_tau1_all_rows": int((msk & K["silent"]).sum()),
+                 "silent_and_not_continued_the_liveness_exclusions":
+                     int((msk & K["silent"] & ~K["contd"]).sum())}
+            for nm, msk in (("APPLY_position5", line5), ("DERIV_position5", d5))},
+        "what_it_measures": ("the size of the outcome-conditioning at waterfall line 6 -- the "
+                             "pairs the rule's second conjunct SAVES from exclusion. It closed "
+                             "the rule objection at 0063 Sec 1 and publishes as a Step 14 "
+                             "limitation"),
     }
 
     # --- D2, split THREE ways ----------------------------------------------
@@ -998,6 +1100,7 @@ def main() -> None:
              nA=nA, nAH=nAH, p=p_val, u_idx=u_idx, s_idx=s_idx, comp_pair=comp_pair,
              t0_mid=t0_mid, tau1=tau1, tau2=tau2, binds=binds,
              has_s3=has_s3, has_any_s2_record=has_any_s2_record,
+             silent=K["silent"], rank_saturated=rank_saturated, p_is_one=p_is_one,
              in_a=in_a_u[u_idx], in_b=in_b_u[u_idx], m_H=m_H,
              first_s2=first_s2, loc_ok=loc_ok, comp_date_mid=comp_date_mid)
 

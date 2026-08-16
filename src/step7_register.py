@@ -151,6 +151,40 @@ WITHDRAWN_PHRASES = {
         "the LIVE_ELSEWHERE mechanism, which never fired. Withdrawn 0059"),
     "unreconciled and now specified": (
         "0052 SS6's claim about the bootstrap spec; it was never specified. Struck 0056 SS8"),
+    "means two different things about viewers": (
+        "0082 SS2's MOTIVE for p_at_bound: 'a distribution with a spike at 1.0 means two "
+        "different things about viewers and the column cannot say which.' FALSE on the adopted "
+        "rank form -- set membership puts m_H in E2, so the numerator is L2 iff m_H = max(E2) "
+        "= F2, and the two clauses are coextensive by construction. The spike means ONE thing "
+        "and the FALSE class is empty. Withdrawn 0083 SS2"),
+}
+
+# GROUND WITHDRAWALS -- CLAUDE.md's THIRD BLINDNESS CLASS, which no control sees.
+# A withdrawn ARGUMENT built from CORRECT statistics has no superseded number for the numeric
+# half and no stable string for the phrase half. The register's obligation (0065 SS3) is to
+# name the statistics that remain TRUE but are no longer load-bearing, so a later reader can
+# recognise the argument by what it claims.
+GROUNDS_WITHDRAWN = {
+    "0055 SS2": {
+        "argument": "the widened S&L floor is warranted because the 90 channel pairs had "
+                    "full opportunity to produce evidence (p5 margin 1.7 days, minimum 0.13)",
+        "still_true": [1.7, 0.13, 1.6552, 44.5272, 44.5],
+        "why_not_load_bearing": "cherry-picked the tail -- the same 90 have median 44.5. A "
+                                "floor is a worst case; admissibility sets the endpoint and "
+                                "plausibility does not enter. The correct ground carries NO "
+                                "margin statistic at all",
+    },
+    "0083 SS2": {
+        "argument": "p_at_bound decomposes the p = 1.0 spike, evidenced by the 1,246 and "
+                    "1,230 totals 'splitting' into two classes",
+        "still_true": [1246, 1230],
+        "why_not_load_bearing": "both are correct counts and both arms reproduce them, but "
+                                "they are ONE class counted twice, not two classes summed. "
+                                "The FALSE class is empty by construction, so the column "
+                                "separates nothing on any data the adopted rank form admits. "
+                                "Citing the totals as separation evidence is the withdrawn "
+                                "argument; citing them as p = 1.0 TOTALS is correct",
+    },
 }
 
 # KNOWN LIMIT, recorded 2026-08-13 (0060), found by Red Team on review 13.

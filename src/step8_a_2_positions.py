@@ -28,13 +28,14 @@ not recoverable from the analysis table; a zero here would read as a data findin
 missing input, which is why it is a file.
 
 `s1_completion_used_a_post_cutoff_record` is computed here and carried onto the analysis table
-(column set fixed at 89 by decisions/0077). The walk runs over distinct episodes in ascending
+(it is one of the 89 enumerated names -- decisions/0080, extended by 0081 and 0082). The walk
+runs over distinct episodes in ascending
 canonical-timestamp order, so the completing episode's timestamp is the maximum over the prefix
 the walk consumed: the flag is exactly `complete & (comp_ts >= tau_pull)`. It reads on the OPEN
 D11-at-position-3 question that 0068 lists and does not resolve.
 
 Output: processed/step8/a/positions.npz, processed/step8/a/positions.json,
-        processed/step8/a/position3_dropset.npz
+        processed/step8/a/position3_drop_set.csv.gz
 """
 import json
 import os

@@ -147,22 +147,39 @@ def main():
     # than left as a bare pair of numbers.
     _bu, _br = user[base].astype(np.int64), rid[base].astype(np.int64)
     _dupfree = int(np.unique(_bu * (10 ** 13) + (_br % (10 ** 13))).size)
+    n_d11_s1 = int((base & at_or_after_pull & (season == 1)).sum())
+    n_d11_s2 = int((base & at_or_after_pull & (season == 2)).sum())
     denom_variants = {
         "reported_by_this_instance": n_base_records,
+        "reading_produced": "NO D11 -- every dated-or-undated in-frame S1/S2 episode record the "
+                            "set-membership rule examines",
         "definition": "episode records (kind == episode) whose show is in the Step 2 frame and "
                       "whose season is 1 or 2, counted BEFORE the set-membership drop rule and "
                       "BEFORE D11",
         "undated_watched_at_null": n_base_undated,
         "discarded_by_D11_watched_at_ge_tau_pull": n_base_at_or_after_pull,
+        "discarded_by_D11_S1_side": n_d11_s1,
+        "discarded_by_D11_S2_side": n_d11_s2,
         "after_D11": int(n_base_records - n_base_undated - n_base_at_or_after_pull),
         "exact_duplicate_user_play_id_records": int(n_base_records - _dupfree),
         "records_with_number_le_0": int((base & (number <= 0)).sum()),
-        "note": "decisions/0074 ruling 4 reports 6,065,704 (A) against 6,065,610 (B) UNRECONCILED, "
-                "both with 0 drops. The gap is 94. None of the axes decomposed here produces it: "
-                "the D11 restriction moves the figure by 167, the undated count is 0, exact "
-                "duplicate (user, play id) records are 0, and no record carries a non-positive "
-                "number. Red Team's non-blocking finding that the predicted gap is 167 rather "
-                "than 94 is consistent with this measurement. Reported, not reconciled.",
+        # THE THREE READINGS, all measured here so the open item can be settled off numbers rather
+        # than off a description. decisions/0074 ruling 4 published 6,065,704 (A) against 6,065,610
+        # (B) UNRECONCILED, both reporting 0 drops.
+        "three_readings": {
+            "no_D11": n_base_records,
+            "D11_on_the_S2_side_only": int(n_base_records - n_d11_s2),
+            "D11_on_both_sides": int(n_base_records - n_base_at_or_after_pull),
+            "gap_no_D11_minus_S2_side_only": n_d11_s2,
+            "gap_no_D11_minus_both_sides": n_base_at_or_after_pull,
+        },
+        "note": "the 94-record gap decomposes exactly: D11 discards 167 in-frame S1/S2 records, "
+                "of which the S2 side is 94 and the S1 side is 73. So 6,065,704 is the no-D11 "
+                "reading, 6,065,610 is D11 applied on the S2 side only, and 6,065,537 is D11 "
+                "applied on both. The other candidate axes are all zero: undated records, exact "
+                "duplicate (user, play id) records, and records with a non-positive number. "
+                "Reported with the decomposition; the choice of reading is stated at the point of "
+                "use and the divergence itself is not reconciled here.",
     }
     del _bu, _br
 

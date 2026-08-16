@@ -350,7 +350,7 @@ def main():
                               "rows position 3 removes, RETAINED AS A SIDE OUTPUT (0075) because "
                               "half (b) cannot be computed without them and they are not "
                               "recoverable from the analysis table",
-                "side_output": "processed/step8/a/position3_dropset.npz",
+                "side_output": "processed/step8/a/position3_drop_set.csv.gz",
                 "pairs_failing_S1_completion": int(failed_s1.sum()),
                 "carrying_the_signature": st["half_b_S1_failing_pairs_carrying_the_signature"]},
         },
@@ -488,6 +488,39 @@ def main():
                 (pos6 & r["left"] & (r["p"] == 1.0)).sum()),
             "p_equals_1_residual_APPLY_position_5": int(
                 (pos5 & r["left"] & (r["p"] == 1.0)).sum()),
+            # decisions/0082: the split of the p = 1.0 rows into the two meanings the column
+            # separates, on both populations the ruling names. They must sum to the totals above.
+            "p_at_bound_split": {
+                "APPLY_position_5": {
+                    "total_p_equals_1": int((pos5 & (r["p"] == 1.0)).sum()),
+                    "at_the_bound_rank_numerator_saturated_at_L2": int(
+                        (pos5 & (r["p"] == 1.0) & r["p_saturated"]).sum()),
+                    "at_the_final_episode_not_at_the_bound": int(
+                        (pos5 & (r["p"] == 1.0) & ~r["p_saturated"]).sum()),
+                    "expected_total_by_0082": 1246},
+                "APPLY_position_7_post_liveness": {
+                    "total_p_equals_1": int((pos6 & (r["p"] == 1.0)).sum()),
+                    "at_the_bound_rank_numerator_saturated_at_L2": int(
+                        (pos6 & (r["p"] == 1.0) & r["p_saturated"]).sum()),
+                    "at_the_final_episode_not_at_the_bound": int(
+                        (pos6 & (r["p"] == 1.0) & ~r["p_saturated"]).sum()),
+                    "expected_total_by_0082": 1230},
+                "classes_are_coextensive_REPORTED_NOT_RESOLVED": (
+                    "the two meanings decisions/0082 names -- rank numerator saturated at L2, and "
+                    "left at the final episode -- are the SAME EVENT under the set-membership "
+                    "rule: A_H subset E2 gives m_H in E2, so |{e in E2 : e <= m_H}| = L2 iff "
+                    "m_H = max(E2) = F2. One class therefore holds every p = 1.0 row and the "
+                    "other holds none. Cross-tabulated in outcomes.json rather than assumed."),
+                "cross_tab_APPLY_position_5": {
+                    "saturated_and_final_episode": int(
+                        (pos5 & (r["p"] == 1.0) & r["p_saturated"] & r["p_final_ep"]).sum()),
+                    "saturated_not_final_episode": int(
+                        (pos5 & (r["p"] == 1.0) & r["p_saturated"] & ~r["p_final_ep"]).sum()),
+                    "final_episode_not_saturated": int(
+                        (pos5 & (r["p"] == 1.0) & ~r["p_saturated"] & r["p_final_ep"]).sum()),
+                    "neither": int(
+                        (pos5 & (r["p"] == 1.0) & ~r["p_saturated"] & ~r["p_final_ep"]).sum())},
+            },
             "p_min": float(np.nanmin(r["p"][pos5 & r["left"]])),
             "p_max": float(np.nanmax(r["p"][pos5 & r["left"]])),
             "population_of_the_range": "APPLY, position 5 -- the table's row set",

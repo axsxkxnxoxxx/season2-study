@@ -3,11 +3,11 @@
   "namespace": "b",
   "mode": "GATE -- proposal only, nothing adopted",
   "provenance": {
-    "build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-14 (rerun on the spec as amended through decisions/0080; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7)",
-    "build_short": "b: position-5 build of 2026-08-14",
+    "build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16 (CLEAN RERUN on the spec as amended through decisions/0082; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)",
+    "build_short": "b: position-5 build of 2026-08-16",
     "rule": "decisions/0078 and 0079 Sec 2 -- every count, every invariant result and every waterfall figure names the PIPELINE it was measured on, not only its population. A count without its provenance can be correct when written and wrong when read",
     "ruled_figures_carry_their_own_build": "position-5 build of 2026-08-13 (both arms, the run decisions/0078 labelled)",
-    "run_date": "2026-08-14",
+    "run_date": "2026-08-16",
     "api_calls": 0,
     "inputs": {
       "processed/step2/frame.csv": {
@@ -48,12 +48,12 @@
       }
     },
     "pipeline_sources": {
-      "src/step8_b_1_build.py": "62547c2a1551196b",
+      "src/step8_b_1_build.py": "99f14974e5b1c2d7",
       "src/step8_b_1b_slugs.py": "5bd032033c4a5f96",
-      "src/step8_b_2_pipeline.py": "bcab8499bea046e8",
+      "src/step8_b_2_pipeline.py": "f4b7b83a89d37adf",
       "src/step8_b_3_d9_invariants.py": "79d7bec2c4d8de34",
-      "src/step8_b_4_artifacts.py": "4b5fbcd64648485d",
-      "src/step8_b_build_id.py": "da1c2898e081bf85"
+      "src/step8_b_4_artifacts.py": "341732e3bef544a0",
+      "src/step8_b_build_id.py": "6d68dea42e7c048e"
     }
   },
   "invariant_coverage_rule": {
@@ -61,7 +61,7 @@
     "why": "an invariant that passes on one population and was never run on another READS AS A PASS ON BOTH, and a passing invariant whose coverage the instance chose is a code check on the instance's choice",
     "the_gap_this_arm_had": "this arm's previous run asserted p on 19,042 rows (post-liveness) with a non-S&L clause on 177,513 (position-5), summing to 196,555 against a 196,654-row table. 99 rows -- exactly the started-and-left liveness exclusions -- were covered by NEITHER clause, and the report did not disclose it. Closed this run: 19,141 + 177,513 = 196,654",
     "identity_holds_on_every_invariant": true,
-    "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-14 (rerun on the spec as amended through decisions/0080; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7)"
+    "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16 (CLEAN RERUN on the spec as amended through decisions/0082; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
   },
   "how_to_read_this_report": "SIX of the eight assertions CANNOT FAIL ON ANY DATA. Five are pure CODE CHECKS -- the outcome partition, the monotone filter counts, |D| <= L, A subset of A_H, and p in (0, 1]. A sixth, the clock start, is a code check by construction and a genuine cross-check only because the first-pass S1 completion date is recomputed INDEPENDENTLY here. TWO can fail on real data, and both were added by decisions/0076 because before it the set had ZERO: no account dropped wholesale, and no access_denied or skipped account read as empty. 'All invariants passed' is therefore mostly a statement that the code computed what it was told to; it is NOT evidence for the liveness rule or for any published share.",
   "counts": {
@@ -140,7 +140,7 @@
         }
       },
       "passes": true,
-      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-14 (rerun on the spec as amended through decisions/0080; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7)"
+      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16 (CLEAN RERUN on the spec as amended through decisions/0082; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
     },
     {
       "invariant": "filter counts decrease monotonically -- CODED AS `>=`, NOT `>`",
@@ -186,7 +186,7 @@
         "identity_holds": true
       },
       "passes": true,
-      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-14 (rerun on the spec as amended through decisions/0080; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7)"
+      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16 (CLEAN RERUN on the spec as amended through decisions/0082; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
     },
     {
       "invariant": "distinct episodes never exceed season length (|D| <= L)",
@@ -217,7 +217,7 @@
         }
       },
       "passes": true,
-      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-14 (rerun on the spec as amended through decisions/0080; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7)"
+      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16 (CLEAN RERUN on the spec as amended through decisions/0082; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
     },
     {
       "invariant": "A is a subset of A_H on every row",
@@ -237,7 +237,7 @@
         "rows_with_tau2_<=_tau1": 0
       },
       "passes": true,
-      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-14 (rerun on the spec as amended through decisions/0080; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7)"
+      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16 (CLEAN RERUN on the spec as amended through decisions/0082; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
     },
     {
       "invariant": "clock start is on or after the S2 finale date, on or after the first-pass S1 completion date, and equals one of those two",
@@ -273,7 +273,7 @@
         "why": "for those rows the invariant cannot tell a first-pass implementation from a last-observed one"
       },
       "passes": true,
-      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-14 (rerun on the spec as amended through decisions/0080; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7)"
+      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16 (CLEAN RERUN on the spec as amended through decisions/0082; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
     },
     {
       "invariant": "abandonment point p is in (0, 1] on every Started-and-left row, null elsewhere",
@@ -302,7 +302,7 @@
         "non_started_and_left_rows_that_are_NOT_null": 0
       },
       "passes": true,
-      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-14 (rerun on the spec as amended through decisions/0080; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7)"
+      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16 (CLEAN RERUN on the spec as amended through decisions/0082; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
     },
     {
       "invariant": "NO ACCOUNT IS DROPPED WHOLESALE BY THE PAIR-LEVEL LIVENESS FILTER -- the count of accounts holding BOTH a live and a not-live pair is > 0",
@@ -348,7 +348,7 @@
       },
       "reading": "the accounts whose pairs are ALL not-live are not a counter-example: they are mostly accounts holding a single pair in the population, for which the two implementations are indistinguishable by construction",
       "passes": true,
-      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-14 (rerun on the spec as amended through decisions/0080; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7)"
+      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16 (CLEAN RERUN on the spec as amended through decisions/0082; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
     },
     {
       "invariant": "NO access_denied OR SKIPPED ACCOUNT IS READ AS EMPTY -- no account recorded access_denied, over-tolerance or otherwise skipped contributes a pair scored never-started",
@@ -408,7 +408,7 @@
       },
       "reading": "zero access_denied and zero private_or_absent were recorded in the whole Step 4 pull, so the 403-skip path never fired. The skipped and over-tolerance accounts DO exist -- 287 discarded over tolerance and 38 skipped on the length forecast -- and none of them is parsed, indexed or present in the table. They are ABSENT, not empty, which is what the rule requires",
       "passes": true,
-      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-14 (rerun on the spec as amended through decisions/0080; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7)"
+      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16 (CLEAN RERUN on the spec as amended through decisions/0082; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
     }
   ],
   "coverage_count_not_an_invariant": {
@@ -418,12 +418,19 @@
     "records_dropped": 0,
     "denominator_readings": {
       "what_this_instance_counts": "in-frame S1/S2 episode records after D11 has been applied to the S2 side; the S1 side is carried unfiltered because decisions/0068 rules waterfall line 1 at 220,107 AS PUBLISHED and that value needs the 4 pairs whose completing record is post-cutoff",
-      "in_frame_S1_S2_episode_records_before_any_D11": 6065704,
-      "this_instances_examined_count": 6065610,
-      "if_D11_were_applied_to_BOTH_seasons": 6065537,
-      "reported_unreconciled": "decisions/0074 ruling 4 publishes 6,065,704 against 6,065,610, both reporting 0 drops, and rules the difference REPORTED NOT RECONCILED. All three readings are stated here; this instance does not reconcile them, and nothing downstream depends on the denominator"
+      "READING_A_no_D11_anywhere": 6065704,
+      "READING_B_D11_on_the_S2_side_only_THIS_INSTANCE": 6065610,
+      "READING_C_D11_on_both_seasons": 6065537,
+      "decomposition_of_the_full_D11_effect": {
+        "records_D11_discards_on_the_S1_side": 73,
+        "records_D11_discards_on_the_S2_side": 94,
+        "total": 167,
+        "why_it_matters": "decisions/0074 ruling 4 published the gap between the two arms as 94 records and routed it to Step 14 as reported-not-reconciled. The 94 is the S2-SIDE component alone. D11 applied everywhere moves the figure by the TOTAL, so the three readings are separated by two different quantities and the two-figure framing understates the spread"
+      },
+      "what_decides_it": "the denominator is a CONSEQUENCE of one choice and not an independent question: whether D11 is applied to the S1 completion walk. That is exactly the question decisions/0068 records as OPEN when it rules line 1 at 220,107 as published. Close that and the denominator closes with it: READING_C with line 1 = 220,103, or READING_B with line 1 = 220,107",
+      "reported_unreconciled": "decisions/0074 ruling 4 publishes 6,065,704 against 6,065,610, both reporting 0 drops, and rules the difference REPORTED NOT RECONCILED. All three readings are stated here with their decomposition; this instance does not reconcile them, and nothing downstream depends on the denominator"
     },
-    "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-14 (rerun on the spec as amended through decisions/0080; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7)"
+    "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16 (CLEAN RERUN on the spec as amended through decisions/0082; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
   },
   "population_reconciliation_703_and_99": {
     "this_is_NOT_an_invariant": "it is a POPULATION RECONCILIATION, and the spec's own instruction to suspect the population before the implementation is what makes it one",
@@ -462,8 +469,8 @@
       "793_on_APPLY_is_ALT_MATCHED_withdrawn": true
     },
     "reconciles": true,
-    "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-14 (rerun on the spec as amended through decisions/0080; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7)"
+    "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16 (CLEAN RERUN on the spec as amended through decisions/0082; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
   },
   "all_pass": true,
-  "elapsed_s": 5.047883033752441
+  "elapsed_s": 5.210852146148682
 }
