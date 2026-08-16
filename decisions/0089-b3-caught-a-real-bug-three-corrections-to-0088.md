@@ -69,8 +69,15 @@ wrong set.** A never-started row with an episode in `[τ1, τ1+24h)` **flips to 
 started-and-left row with one in `[τ2, τ2+24h)` **can flip to Continued**. **Arm A already holds the 311
 and 136 row masks.**
 
-**What IS established, both arms, both populations: exactly 1 episode falls AT `τ1`**, so `0068`'s
-strictness ruling moves a real row in `|A|`. **Instance B's THREE-STATE framing is adopted as a
+**What IS established, both arms, both populations: exactly 1 episode falls AT `τ1`.**
+~~so `0068`'s strictness ruling moves a real row in `|A|`.~~ ***FALSE — WRONG OBJECT. Withdrawn
+2026-08-16, Red Team sixth pass, F2.*** **`0068`'s strictness ruling is about INSERTION INSTANTS in the
+silence test** — *"a pair is silent iff it has no insertion instant `> τ1`"*. **The 1 is a distinct S2
+episode by canonical `watched_at`**, a different axis. **Instance B measured the ruling's OWN quantity:
+max insertion instant exactly at `τ1` = 0 on 196,654 rows, both populations.** ***So `0068`'s
+strictness ruling is VACUOUS ON THIS DATA, and one arm publishes that it is load-bearing.*** **The two
+arms agree on every number and disagree on what the number is ABOUT** — the recurring shape, inside the
+section written to close it. **Instance B's THREE-STATE framing is adopted as a
 framing** — empty boundary, occupied-and-inert, occupied-and-deciding — **but WHICH state obtains is
 NOT yet measured, and this entry's "the measured state is occupied and inert" is WITHDRAWN.**
 

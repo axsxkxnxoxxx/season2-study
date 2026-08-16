@@ -30,10 +30,23 @@ pair between **the two states this study exists to separate.**
 unsupported — it is FALSE.*** It was computed on **1 row of the 311**. Withdrawing it was worth more
 than it looked.
 
-**A distinction neither arm had drawn before, and it matters:** **line 6 does not move at all** — 703 on
-APPLY and 99 on DERIV **under every form** — because **the silence test reads an insertion clock, not an
-episode timestamp.** So the mandate is **load-bearing on outcomes and inert on line 6**, and those had
-been reported as one thing.
+~~**A distinction neither arm had drawn before:** line 6 does not move at all — 703 on APPLY and 99 on
+DERIV under every form — **because the silence test reads an insertion clock, not an episode
+timestamp.**~~ ***THE WARRANT IS STRUCTURALLY WRONG. Withdrawn 2026-08-16, Red Team sixth pass, F1.***
+**The liveness rule is conjunct 1 AND conjunct 2, and conjunct 2 is `NOT Continued` — an
+EPISODE-TIMESTAMP computation that moves on 55 APPLY rows under this very counterfactual** (36
+never-started→Continued, 19 started-and-left→Continued). **A property of conjunct 1 cannot explain the
+invariance of the conjunction.**
+***AND IT IS NOT ESTABLISHED THAT THE 703 WAS MEASURED AT ALL.*** The deliverable **does not state
+whether conjunct 2 was recomputed on the COUNTERFACTUAL outcome or held at the ADOPTED one** — **if
+held, `703 → 703` is a TAUTOLOGY and establishes nothing**, and the withdrawn warrant's own reasoning
+implies exactly that. **A reader cannot tell a measurement from an identity.** **Arm B does not report
+the liveness count under the counterfactual, so there is no second arm to settle it.**
+***THE STEP 14 SCOPE AS I STATED IT IS WRONG.*** Correct scope: **load-bearing on OUTCOME STATES — 71
+APPLY / 59 DERIV, BOTH arms, at `W = 108` only**; the position-6 exclusion total **was reported
+unchanged at 703 by ONE arm at ONE arm-value**, the **604/99 split under the counterfactual is not
+reported at all**, and the reason — if it holds — is **a fact about this data (no excluded pair is among
+the flipped rows), not a structure.** **Step 13 re-runs the rule across eight arms.**
 
 **Arm A's joint note, reported not reconciled:** it states the joint form gives 71 *"not 52 + 19, because
 a row can flip twice"* — **but 52 + 19 = 71**, and arm B measured the joint and the sum separately and
@@ -55,10 +68,20 @@ called *"the identity that closes the hole."*
 11 from the emitted `analysis_table.csv.gz`, 3 from earlier stages' JSON, 1 by an independent parse of
 the ledger — and the label and claim are corrected.
 
-***And the mechanism is DEMONSTRATED, not asserted*** — the distinction `0089` §1 got wrong and Red Team
-caught. **All 15 identities are re-run against `population + 1` and must FAIL, asserted, with the
-registry asserted non-empty.** **Invariant 6 reconstructs `0080` §3's exact mispairing —
-`19,042 + 177,513 = 196,555` against `196,654`, 99 rows in neither — and the identity fails.**
+~~***And the mechanism is DEMONSTRATED, not asserted*** — all 15 identities re-run against
+`population + 1` and must FAIL.~~ ***OVERSTATED FOR ARM A. Corrected 2026-08-16, Red Team sixth pass,
+F3.*** **A `+1` perturbation of the stated population fires IDENTICALLY on a same-mask denominator** —
+clauses sum to `N`, stated population reads `N + 1`, identity fails — **so it would have passed on the
+very build whose defect it claims to have fixed.** **It demonstrates that the identity is ARITHMETIC
+rather than a LITERAL, which is what the separate literal counter already does. It does not test
+INDEPENDENCE**, which remains **asserted** by naming a source file — **inside the block citing `0088`
+§2(d)'s strike of an asserted control.**
+**What IS a real control on arm A, and it covers one invariant:** invariant 6's
+`THE_HOLE_THIS_WOULD_NOW_CATCH` reconstructs `0080` §3's exact mispairing —
+`19,042 + 177,513 = 196,555` against `196,654`, 99 rows in neither — **and the identity fails.**
+**Arm B's IS a real control**: 6 injected defects through the same `cover()` and the same published
+aggregate, and **case 4 — an identity whose population size and asserted count are the SAME expression —
+is the one that actually tests independence.**
 
 **Arm B did the same on its side**: 6 injected defects run through the same `cover()`, `cover_ok()`,
 `_independent_identity()` and the same published aggregate; **5 of 5 checkable cases caught**, asserted
