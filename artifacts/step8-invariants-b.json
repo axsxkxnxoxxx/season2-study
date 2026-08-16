@@ -3,8 +3,8 @@
   "namespace": "b",
   "mode": "GATE -- proposal only, nothing adopted",
   "provenance": {
-    "build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r4 (RERUN on the spec as amended through decisions/0088; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)",
-    "build_short": "b: position-5 build of 2026-08-16-r4 (spec through 0088)",
+    "build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r5 (RERUN on the spec as amended through decisions/0090; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)",
+    "build_short": "b: position-5 build of 2026-08-16-r5 (spec through 0090)",
     "rule": "decisions/0078 and 0079 Sec 2 -- every count, every invariant result and every waterfall figure names the PIPELINE it was measured on, not only its population. A count without its provenance can be correct when written and wrong when read",
     "ruled_figures_carry_their_own_build": "position-5 build of 2026-08-13 (both arms, the run decisions/0078 labelled)",
     "run_date": "2026-08-16",
@@ -50,10 +50,10 @@
     "pipeline_sources": {
       "src/step8_b_1_build.py": "3d8dc00059f37c3e",
       "src/step8_b_1b_slugs.py": "5bd032033c4a5f96",
-      "src/step8_b_2_pipeline.py": "6d6a3e5eab7af9d9",
-      "src/step8_b_3_d9_invariants.py": "8957d4df66dba923",
-      "src/step8_b_4_artifacts.py": "163284c961050781",
-      "src/step8_b_build_id.py": "9d1bacf89ce1a3ec"
+      "src/step8_b_2_pipeline.py": "04169a4784b29ca4",
+      "src/step8_b_3_d9_invariants.py": "adb482e069030d4f",
+      "src/step8_b_4_artifacts.py": "231d7cf255aac8a4",
+      "src/step8_b_build_id.py": "eb59628a413eee14"
     }
   },
   "invariant_coverage_rule": {
@@ -75,10 +75,72 @@
         "stage 1's own count of in-frame pairs carrying any in-E S1 o",
         "the MANDATED FILTER ORDER -- 7 positions, fixed by decisions"
       ],
-      "what_a_failure_would_look_like": "an invariant asserted on the post-liveness 195,951 rows while naming the position-5 population would now report 195,951 + 0 = 196,654 and FAIL. That is exactly the r3 gap at invariant 6, which the old apparatus reported as a pass on a hand-chosen denominator",
+      "THE_FAILURE_IS_EXECUTED_NOT_DESCRIBED": {
+        "why_this_block_exists": "this arm's r4 build published `what_a_failure_would_look_like` -- a DESCRIPTION of the failure the apparatus would catch -- and decisions/0089 Sec 1 recorded it as 'demonstrating failing'. It was not demonstrated. CLAUDE.md: a control asserted to exist is not a control. The failures are EXECUTED here",
+        "run_through": "the SAME cover(), cover_ok() and _independent_identity() the published invariants go through, and for the aggregate, the same expression the published `identity_holds_on_every_invariant` uses. Not a re-implementation, which would prove only that a second copy behaves",
+        "cases": [
+          {
+            "case": "invariant asserted on the post-liveness row set while naming position 5",
+            "the_real_defect_it_reproduces": "this arm's r3 build asserted p on 19,042 post-liveness rows with a position-5 non-S&L clause of 177,513, summing to 196,555 against a 196,654-row table",
+            "identity_arithmetic": "195951 + 0 = 196654",
+            "cover_ok_returned": false,
+            "expected": false,
+            "control_caught_it": true
+          },
+          {
+            "case": "invariant carrying no coverage key at all",
+            "the_real_defect_it_reproduces": "the r3 aggregate chained .get(..., .get(..., True)), so an invariant with no coverage key CONTRIBUTED A PASS -- a control that could not see the thing it was built to see",
+            "cover_ok_returned": false,
+            "expected": false,
+            "control_caught_it": true
+          },
+          {
+            "case": "identity_holds hardcoded True with no arithmetic behind it",
+            "the_real_defect_it_reproduces": "the r3 build HARDCODED identity_holds: True at invariants 2, 4 and 7",
+            "cover_ok_returned": true,
+            "expected": true,
+            "note": "cover_ok CANNOT catch this one -- a literal True is indistinguishable from a computed True at that interface, which is why the SEPARATE audit counter `identities_that_are_literals` exists and is reported below. STATED RATHER THAN LEFT AS AN IMPLIED PASS",
+            "control_caught_it": null,
+            "caught_by_instead": "identities_that_are_literals, which must be 0"
+          },
+          {
+            "case": "identity whose population size and asserted count are the SAME expression",
+            "the_real_defect_it_reproduces": "decisions/0088 Sec 2(d): 8 of 13 coverage identities in one arm were cover(unit, pop, N, N), so they could not detect an invariant run on a population other than the one named",
+            "identity_arithmetic": "195951 + 0 = 195951",
+            "cover_ok_returned": true,
+            "expected": true,
+            "note": "it PASSES, and that is the point -- the identity is vacuous. It is caught by _independent_identity, not by cover_ok",
+            "independent_identity_returned": false,
+            "control_caught_it": true
+          },
+          {
+            "case": "the PUBLISHED aggregate expression, run over the real invariant list with one invariant's coverage swapped for the wrong-population block from case 1",
+            "invariants_in_the_corrupted_list": 9,
+            "aggregate_returned": false,
+            "expected": false,
+            "control_caught_it": true
+          },
+          {
+            "case": "the PUBLISHED aggregate expression, run over the real invariant list with one invariant's coverage key DELETED",
+            "invariants_in_the_corrupted_list": 9,
+            "aggregate_returned": false,
+            "expected": false,
+            "control_caught_it": true
+          }
+        ],
+        "cases_run": 6,
+        "cases_whose_control_is_checkable": 5,
+        "cases_caught": 5,
+        "cases_NOT_caught": [],
+        "two_cases_PASS_BY_DESIGN_and_are_named": [
+          "identity_holds hardcoded True with no arithmetic behind it"
+        ],
+        "coverage_note": "this block reports the number of cases it ran. A negative-control block that ran zero cases and reported clean is the failure CLAUDE.md's standing rule exists to prevent",
+        "all_checkable_cases_caught": true
+      },
       "STRUCK_SENTENCE": "'The run asserts this, so a report that omitted a population could not be written by this pipeline' -- STRUCK by decisions/0088 Sec 2(d), whatever else is ruled. This arm did not publish that sentence, and it is recorded here so the strike is visible on this surface rather than only in the decision log"
     },
-    "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r4 (RERUN on the spec as amended through decisions/0088; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
+    "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r5 (RERUN on the spec as amended through decisions/0090; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
   },
   "how_to_read_this_report": "SEVEN of the nine assertions CANNOT FAIL ON ANY DATA. Six are pure CODE CHECKS -- the outcome partition, the monotone filter counts, |D| <= L, A subset of A_H, p in (0, 1], and tau2 <= tau_pull at position 5. A seventh, the clock start, is a code check by construction and a genuine cross-check only because the first-pass S1 completion date is recomputed INDEPENDENTLY here. TWO can fail on real data, and both were added by decisions/0076 because before it the set had ZERO: no account dropped wholesale, and no access_denied or skipped account read as empty. 'All invariants passed' is therefore mostly a statement that the code computed what it was told to; it is NOT evidence for the liveness rule or for any published share.",
   "counts": {
@@ -86,7 +148,27 @@
     "code_check_by_construction_and_data_check_as_specified": 1,
     "genuine_data_checks": 2,
     "assertions_total": 9,
-    "the_set_moved_from_EIGHT_to_NINE_this_run": "decisions/0088 Sec 1(c) PROMOTES the tau2 <= tau_pull assertion into the published set. It already ran; it was invisible to a reader of the deliverable. REPORTED AS A SPEC OBSERVATION, NOT RECONCILED: task-sheet.md and this instance's definition file still say 'THE ASSERTION SET NOW HAS EIGHT MEMBERS', and 0088 moved that count without the sentence catching up. task-sheet.md's own labelling bullet carries a THIRD count -- 'four pure code checks, one by construction, one item that is not an invariant' -- which predates 0076. Three counts of one set are live on the surfaces this instance reads",
+    "the_set_moved_from_EIGHT_to_NINE_at_0088": "decisions/0088 Sec 1(c) PROMOTES the tau2 <= tau_pull assertion into the published set. It already ran; it was invisible to a reader of the deliverable",
+    "the_surface_count_this_arm_reported_last_run_IS_RE_READ_NOT_CARRIED": {
+      "r4_claim": "task-sheet.md and this instance's definition file still read 'THE ASSERTION SET NOW HAS EIGHT MEMBERS', and task-sheet.md's labelling bullet carries a third count, 'four pure code checks'",
+      "occurrences_of_EIGHT_across_the_two_surfaces": 0,
+      "occurrences_of_NINE_across_the_two_surfaces": 1,
+      "per_surface": {
+        "task-sheet.md": {
+          "EIGHT": 0,
+          "NINE": 0
+        },
+        "agent_definition_file": {
+          "EIGHT": 0,
+          "NINE": 1
+        },
+        "reading": "task-sheet.md now states NO count of the assertion set in this phrasing, and the definition file states NINE. NO SURFACE CONTRADICTS ANOTHER, which is what the r4 claim said they did. Reported per surface rather than as a total, because a total of zero EIGHTs is also what two silent files would give"
+      },
+      "task_sheet_four_pure_code_checks_occurrences": 1,
+      "task_sheet_four_pure_code_checks_marked_SUPERSEDED_at_the_point_of_use": true,
+      "status_now": "CLOSED. decisions/0089 Sec 3 acted on both halves and struck the 'four pure code checks' sentence at the point of use. NO SURFACE NOW STATES EIGHT. The r4 claim is NO LONGER TRUE and is not republished. This arm publishes NINE and no surface contradicts it",
+      "note_on_the_positive_half": "the negative grep for 'EIGHT MEMBERS' passes clean on a file that never said nine. Both halves are measured here: EIGHT must be 0 AND NINE must be non-zero"
+    },
     "items_reported_but_not_asserted": 2,
     "items_reported_but_not_asserted_named": [
       "the set-membership drop rule -- a coverage count (0074 ruling 3)",
@@ -97,25 +179,43 @@
     "ruling": "decisions/0088 Sec 1 -- MEASURE BOTH. The mandates are THE HALF-OPEN UTC-INSTANT FORM and D11-AS-GLOBAL-CUTOFF, not invariants 7 and 8. Both arms' compliance is TRUE and was independently confirmed; what was missing is any measurement of whether either is LOAD-BEARING on this data",
     "ground": "the unstated version of exactly this scope produced Step 7's 792-against-791, where one arm applied the restriction and the other did not",
     "a_boundary_window": {
-      "what_it_measures": "the rows on which the half-open form and a date-level form could differ: S2 evidence in [tau1 - 24h, tau1), exactly at tau1, and the same two at tau2",
+      "what_it_measures": "the rows on which the half-open form and a date-level form DIFFER -- S2 evidence in the SEPARATING interval [tau, tau + 24h) at both bounds -- and, on those rows, how many change OUTCOME STATE when the forbidden form is actually applied. The cells decisions/0088 Sec 1(a) named, [tau - 24h, tau) and exactly-at-tau, are reported alongside",
+      "THE_INTERVAL_WAS_CORRECTED": "decisions/0089 Sec 2(a). 0088 Sec 1(a) named [tau - 24h, tau). T0 is day-floored, so tau1 and tau2 are MIDNIGHT-ALIGNED and `date(ts) < date(tau)` is identical to `ts < tau` below the boundary -- THAT WINDOW IS WHERE THE TWO FORMS AGREE. The separating interval is [tau, tau + 24h). This arm's r4 build emitted the ruled window and the single instant exactly at tau and nothing else, and took its verdict off 1 row of the separating interval",
       "compliance_self_report": "no .date(), dt.date, normalize() or day-flooring anywhere in this arm's step8_b_*.py; instants are int64 seconds throughout. THAT IS THE SELF-REPORT AND IT IS NOT THE MEASUREMENT",
+      "THE_FOUR_NUMBERS_THAT_SETTLE_B3": {
+        "definition": "rows changing OUTCOME STATE under the forbidden date-level form, both bounds x both populations, on the position-5 row set",
+        "APPLY_position5_tau1_relaxed": 52,
+        "APPLY_position5_tau2_relaxed": 19,
+        "DERIV_position5_tau1_relaxed": 45,
+        "DERIV_position5_tau2_relaxed": 14,
+        "APPLY_position5_both_bounds_relaxed": 71,
+        "DERIV_position5_both_bounds_relaxed": 59,
+        "why_six_and_not_four": "the ruling asks for four -- two bounds x two populations. The joint form is emitted as well because the forbidden form relaxes BOTH bounds at once and the two per-bound counts do not have to sum to it: a row moved from never-started by tau1 can be moved again by tau2",
+        "the_forbidden_form_is_computed_ONLY_here": "as a counterfactual whose only output is a count. The emitted table, every waterfall line, every share and every other figure in this deliverable are the half-open UTC-instant form. The counterfactual asserts that its own half-open baseline reproduces the pipeline's states exactly before it diffs anything"
+      },
       "by_population": {
         "APPLY_position5": {
           "rows_in_the_stated_population": 196654,
           "DISTINCT_EPISODES_the_form_the_outcome_assignment_reads": {
             "unit": "distinct in-E2 S2 episodes at their CANONICAL instant -- the objects |A| and |A_H| are counted over",
-            "in_[tau1_minus_24h, tau1)": 749,
+            "WHICH_INTERVAL_SEPARATES_THE_FORMS": "[tau, tau + 24h). NOT [tau - 24h, tau), which is where they AGREE (decisions/0089 Sec 2a). tau is midnight-aligned because T0 is day-floored, so below tau the date-level and half-open forms admit the identical set",
+            "SEPARATING_in_[tau1, tau1_plus_24h)": 703,
+            "SEPARATING_in_[tau2, tau2_plus_24h)": 303,
+            "AGREEING_in_[tau1_minus_24h, tau1)": 749,
+            "AGREEING_in_[tau2_minus_24h, tau2)": 291,
             "exactly_at_tau1": 1,
-            "in_[tau2_minus_24h, tau2)": 291,
             "exactly_at_tau2": 0,
-            "episodes_examined": 2023274
+            "episodes_examined": 2023274,
+            "note_on_the_two_ruled_cells": "the [tau - 24h, tau) counts and the exactly-at counts are the cells decisions/0088 Sec 1(a) named and are kept; the exactly-at cells are the FIRST INSTANT of the separating interval, not the whole of it, and this arm's previous build reported its verdict off them alone"
           },
           "RAW_RECORDS_the_ruling's_own_word": {
             "unit": "in-E2 S2 episode RECORDS surviving D11, undeduplicated",
             "records_examined": 2444815,
-            "in_[tau1_minus_24h, tau1)": 951,
+            "SEPARATING_in_[tau1, tau1_plus_24h)": 1042,
+            "SEPARATING_in_[tau2, tau2_plus_24h)": 428,
+            "AGREEING_in_[tau1_minus_24h, tau1)": 951,
+            "AGREEING_in_[tau2_minus_24h, tau2)": 359,
             "exactly_at_tau1": 1,
-            "in_[tau2_minus_24h, tau2)": 359,
             "exactly_at_tau2": 0
           },
           "LIVENESS_EVIDENCE_at_tau1": {
@@ -126,31 +226,66 @@
             "why_this_one_is_here": "the silence test is STRICT (0068) -- an instant exactly AT tau1 does not make the account live -- so the rows exactly at tau1 are the rows on which strict and non-strict readings of the RULE differ, as opposed to the rows on which half-open and date-level readings of the CLOCK differ"
           },
           "WHAT_THE_FORM_DECIDES": {
+            "THE_QUESTION": "how many position-5 rows change OUTCOME STATE under the forbidden `date(watched_at) <= T1` form, which admits `ts < tau + 24h`",
+            "measured_by": "recomputing never_started / continued / started_and_left under the date-level form and diffing row by row against the half-open states this pipeline emits -- not inferred from a boundary count",
+            "tau1_relaxed_only": {
+              "rows_changing_outcome_state": 52,
+              "transitions": {
+                "never_started -> continued": 36,
+                "never_started -> started_and_left": 16
+              },
+              "rows_examined": 196654
+            },
+            "tau2_relaxed_only": {
+              "rows_changing_outcome_state": 19,
+              "transitions": {
+                "started_and_left -> continued": 19
+              },
+              "rows_examined": 196654
+            },
+            "BOTH_bounds_relaxed_the_full_forbidden_form": {
+              "rows_changing_outcome_state": 71,
+              "transitions": {
+                "never_started -> continued": 36,
+                "never_started -> started_and_left": 16,
+                "started_and_left -> continued": 19
+              },
+              "rows_examined": 196654
+            },
+            "rows_with_an_S2_episode_in_the_SEPARATING_interval_at_tau1": 311,
+            "rows_with_an_S2_episode_in_the_SEPARATING_interval_at_tau2": 136,
             "rows_with_an_S2_episode_exactly_at_tau1": 1,
-            "of_those_currently_scored_never_started_so_the_form_DECIDES_the_outcome": 0,
             "rows_with_an_S2_episode_exactly_at_tau2": 0,
-            "rows_whose_Continued_test_would_move_at_tau2": 0,
-            "reading": "under the half-open form the instant AT tau1 is outside A; under a `<=` or date-level form it is inside. Where the row's |A| is otherwise 0 that is the difference between Never started and Started-and-left"
+            "WHAT_THE_PREVIOUS_BUILD_MEASURED": "this arm's r4 build computed its verdict from the rows exactly AT tau1 only -- 1 row of the separating interval -- and reported no outcome state differing. decisions/0089 Sec 2(a) records that as a claim about the set on which the forms differ, computed on the wrong set. The verdict below is recomputed on the separating interval and the previous one is superseded",
+            "reading": "under the half-open form an instant in [tau, tau + 24h) is OUTSIDE the set; under the date-level form it is INSIDE. At tau1 that turns a never-started row with such an episode into a started one; at tau2 it can turn a started-and-left row into a Continued one"
           },
-          "VERDICT": "OCCUPIED, NOT VACUOUS, AND NO OUTCOME MOVES -- the boundary is NON-EMPTY, so the mandate is not vacuous here and the half-open form is doing real work in |A|; but every row sitting exactly on tau1 already has |A| >= 1 from other episodes, so no outcome state differs between the two forms on this build. THREE STATES, NOT TWO: an empty boundary, an occupied boundary that decides nothing, and an occupied boundary that decides an outcome are different findings and collapsing the middle one into either neighbour is the misreading",
-          "VERDICT_STATE": "OCCUPIED_INERT"
+          "OCCUPANCY_BASIS": "the SEPARATING interval [tau, tau + 24h) at both bounds, distinct episodes and raw records; NOT the agreeing window",
+          "VERDICT": "OCCUPIED AND OUTCOME-DECIDING -- the separating interval is non-empty AND the two forms disagree on the OUTCOME STATE of 71 row(s) of 196,654. The mandate is load-bearing and it is load-bearing ON THE RESULT, not only on |A|",
+          "VERDICT_STATE": "OUTCOME_DECIDING",
+          "VERDICT_SUPERSEDES": "this arm's r4 verdict, which was computed on [tau - 24h, tau) and the single instant at tau -- the interval on which the two forms AGREE plus its first separating point (decisions/0089 Sec 2a)"
         },
         "DERIV_position5": {
           "rows_in_the_stated_population": 147370,
           "DISTINCT_EPISODES_the_form_the_outcome_assignment_reads": {
             "unit": "distinct in-E2 S2 episodes at their CANONICAL instant -- the objects |A| and |A_H| are counted over",
-            "in_[tau1_minus_24h, tau1)": 676,
+            "WHICH_INTERVAL_SEPARATES_THE_FORMS": "[tau, tau + 24h). NOT [tau - 24h, tau), which is where they AGREE (decisions/0089 Sec 2a). tau is midnight-aligned because T0 is day-floored, so below tau the date-level and half-open forms admit the identical set",
+            "SEPARATING_in_[tau1, tau1_plus_24h)": 595,
+            "SEPARATING_in_[tau2, tau2_plus_24h)": 261,
+            "AGREEING_in_[tau1_minus_24h, tau1)": 676,
+            "AGREEING_in_[tau2_minus_24h, tau2)": 254,
             "exactly_at_tau1": 1,
-            "in_[tau2_minus_24h, tau2)": 254,
             "exactly_at_tau2": 0,
-            "episodes_examined": 1668088
+            "episodes_examined": 1668088,
+            "note_on_the_two_ruled_cells": "the [tau - 24h, tau) counts and the exactly-at counts are the cells decisions/0088 Sec 1(a) named and are kept; the exactly-at cells are the FIRST INSTANT of the separating interval, not the whole of it, and this arm's previous build reported its verdict off them alone"
           },
           "RAW_RECORDS_the_ruling's_own_word": {
             "unit": "in-E2 S2 episode RECORDS surviving D11, undeduplicated",
             "records_examined": 2034990,
-            "in_[tau1_minus_24h, tau1)": 875,
+            "SEPARATING_in_[tau1, tau1_plus_24h)": 883,
+            "SEPARATING_in_[tau2, tau2_plus_24h)": 385,
+            "AGREEING_in_[tau1_minus_24h, tau1)": 875,
+            "AGREEING_in_[tau2_minus_24h, tau2)": 318,
             "exactly_at_tau1": 1,
-            "in_[tau2_minus_24h, tau2)": 318,
             "exactly_at_tau2": 0
           },
           "LIVENESS_EVIDENCE_at_tau1": {
@@ -161,17 +296,46 @@
             "why_this_one_is_here": "the silence test is STRICT (0068) -- an instant exactly AT tau1 does not make the account live -- so the rows exactly at tau1 are the rows on which strict and non-strict readings of the RULE differ, as opposed to the rows on which half-open and date-level readings of the CLOCK differ"
           },
           "WHAT_THE_FORM_DECIDES": {
+            "THE_QUESTION": "how many position-5 rows change OUTCOME STATE under the forbidden `date(watched_at) <= T1` form, which admits `ts < tau + 24h`",
+            "measured_by": "recomputing never_started / continued / started_and_left under the date-level form and diffing row by row against the half-open states this pipeline emits -- not inferred from a boundary count",
+            "tau1_relaxed_only": {
+              "rows_changing_outcome_state": 45,
+              "transitions": {
+                "never_started -> continued": 31,
+                "never_started -> started_and_left": 14
+              },
+              "rows_examined": 147370
+            },
+            "tau2_relaxed_only": {
+              "rows_changing_outcome_state": 14,
+              "transitions": {
+                "started_and_left -> continued": 14
+              },
+              "rows_examined": 147370
+            },
+            "BOTH_bounds_relaxed_the_full_forbidden_form": {
+              "rows_changing_outcome_state": 59,
+              "transitions": {
+                "never_started -> continued": 31,
+                "never_started -> started_and_left": 14,
+                "started_and_left -> continued": 14
+              },
+              "rows_examined": 147370
+            },
+            "rows_with_an_S2_episode_in_the_SEPARATING_interval_at_tau1": 275,
+            "rows_with_an_S2_episode_in_the_SEPARATING_interval_at_tau2": 117,
             "rows_with_an_S2_episode_exactly_at_tau1": 1,
-            "of_those_currently_scored_never_started_so_the_form_DECIDES_the_outcome": 0,
             "rows_with_an_S2_episode_exactly_at_tau2": 0,
-            "rows_whose_Continued_test_would_move_at_tau2": 0,
-            "reading": "under the half-open form the instant AT tau1 is outside A; under a `<=` or date-level form it is inside. Where the row's |A| is otherwise 0 that is the difference between Never started and Started-and-left"
+            "WHAT_THE_PREVIOUS_BUILD_MEASURED": "this arm's r4 build computed its verdict from the rows exactly AT tau1 only -- 1 row of the separating interval -- and reported no outcome state differing. decisions/0089 Sec 2(a) records that as a claim about the set on which the forms differ, computed on the wrong set. The verdict below is recomputed on the separating interval and the previous one is superseded",
+            "reading": "under the half-open form an instant in [tau, tau + 24h) is OUTSIDE the set; under the date-level form it is INSIDE. At tau1 that turns a never-started row with such an episode into a started one; at tau2 it can turn a started-and-left row into a Continued one"
           },
-          "VERDICT": "OCCUPIED, NOT VACUOUS, AND NO OUTCOME MOVES -- the boundary is NON-EMPTY, so the mandate is not vacuous here and the half-open form is doing real work in |A|; but every row sitting exactly on tau1 already has |A| >= 1 from other episodes, so no outcome state differs between the two forms on this build. THREE STATES, NOT TWO: an empty boundary, an occupied boundary that decides nothing, and an occupied boundary that decides an outcome are different findings and collapsing the middle one into either neighbour is the misreading",
-          "VERDICT_STATE": "OCCUPIED_INERT"
+          "OCCUPANCY_BASIS": "the SEPARATING interval [tau, tau + 24h) at both bounds, distinct episodes and raw records; NOT the agreeing window",
+          "VERDICT": "OCCUPIED AND OUTCOME-DECIDING -- the separating interval is non-empty AND the two forms disagree on the OUTCOME STATE of 59 row(s) of 147,370. The mandate is load-bearing and it is load-bearing ON THE RESULT, not only on |A|",
+          "VERDICT_STATE": "OUTCOME_DECIDING",
+          "VERDICT_SUPERSEDES": "this arm's r4 verdict, which was computed on [tau - 24h, tau) and the single instant at tau -- the interval on which the two forms AGREE plus its first separating point (decisions/0089 Sec 2a)"
         }
       },
-      "IF_ZERO_THE_INVARIANT_IS_VACUOUS": "a zero stated as a zero is evidence; a zero arriving as a pass is not (0088 Sec 1(a))"
+      "IF_ZERO_THE_INVARIANT_IS_VACUOUS": "a zero stated as a zero is evidence; a zero arriving as a pass is not (0088 Sec 1(a)). The zero that would make it vacuous is a zero on the SEPARATING interval, not on the agreeing window"
     },
     "b_per_site_D11_table": {
       "what_it_measures": "records excluded by D11 at EACH site separately, asserted at each site rather than once and about the rest",
@@ -381,7 +545,7 @@
       "the_bound_is_ATTAINED_not_slack": "rows sit with tau2 EXACTLY at tau_pull, so the assertion is tight rather than comfortably satisfied -- a `>=` form of the same assertion would FAIL on this data. Stated because a passing assertion with slack and a passing assertion at the bound are not the same evidence",
       "passes": true
     },
-    "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r4 (RERUN on the spec as amended through decisions/0088; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
+    "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r5 (RERUN on the spec as amended through decisions/0090; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
   },
   "invariants": [
     {
@@ -558,7 +722,7 @@
         }
       },
       "passes": true,
-      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r4 (RERUN on the spec as amended through decisions/0088; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
+      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r5 (RERUN on the spec as amended through decisions/0090; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
     },
     {
       "invariant": "filter counts decrease monotonically -- CODED AS `>=`, NOT `>`",
@@ -626,7 +790,7 @@
         "identity_holds": true
       },
       "passes": true,
-      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r4 (RERUN on the spec as amended through decisions/0088; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
+      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r5 (RERUN on the spec as amended through decisions/0090; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
     },
     {
       "invariant": "distinct episodes never exceed season length (|D| <= L)",
@@ -663,7 +827,7 @@
         }
       },
       "passes": true,
-      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r4 (RERUN on the spec as amended through decisions/0088; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
+      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r5 (RERUN on the spec as amended through decisions/0090; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
     },
     {
       "invariant": "A is a subset of A_H on every row",
@@ -688,7 +852,7 @@
         "rows_with_tau2_<=_tau1": 0
       },
       "passes": true,
-      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r4 (RERUN on the spec as amended through decisions/0088; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
+      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r5 (RERUN on the spec as amended through decisions/0090; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
     },
     {
       "invariant": "clock start is on or after the S2 finale date, on or after the first-pass S1 completion date, and equals one of those two",
@@ -728,7 +892,7 @@
         "why": "for those rows the invariant cannot tell a first-pass implementation from a last-observed one"
       },
       "passes": true,
-      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r4 (RERUN on the spec as amended through decisions/0088; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
+      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r5 (RERUN on the spec as amended through decisions/0090; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
     },
     {
       "invariant": "abandonment point p is in (0, 1] on every Started-and-left row, null elsewhere",
@@ -763,7 +927,7 @@
         "non_started_and_left_rows_that_are_NOT_null": 0
       },
       "passes": true,
-      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r4 (RERUN on the spec as amended through decisions/0088; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
+      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r5 (RERUN on the spec as amended through decisions/0090; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
     },
     {
       "invariant": "NO ACCOUNT IS DROPPED WHOLESALE BY THE PAIR-LEVEL LIVENESS FILTER -- the count of accounts holding BOTH a live and a not-live pair is > 0",
@@ -882,7 +1046,7 @@
       },
       "reading": "the accounts whose pairs are ALL not-live are not a counter-example: they are mostly accounts holding a single pair in the population, for which the two implementations are indistinguishable by construction",
       "passes": true,
-      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r4 (RERUN on the spec as amended through decisions/0088; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
+      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r5 (RERUN on the spec as amended through decisions/0090; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
     },
     {
       "invariant": "NO access_denied OR SKIPPED ACCOUNT IS READ AS EMPTY -- no account recorded access_denied, over-tolerance or otherwise skipped contributes a pair scored never-started",
@@ -946,7 +1110,7 @@
       },
       "reading": "zero access_denied and zero private_or_absent were recorded in the whole Step 4 pull, so the 403-skip path never fired. The skipped and over-tolerance accounts DO exist -- 287 discarded over tolerance and 38 skipped on the length forecast -- and none of them is parsed, indexed or present in the table. They are ABSENT, not empty, which is what the rule requires",
       "passes": true,
-      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r4 (RERUN on the spec as amended through decisions/0088; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
+      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r5 (RERUN on the spec as amended through decisions/0090; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
     },
     {
       "invariant": "no position-5 row has tau2 > tau_pull",
@@ -1002,7 +1166,7 @@
       },
       "reading": "rows sit with tau2 EXACTLY at tau_pull, so the assertion is tight rather than comfortably satisfied -- a `>=` form of the same assertion would FAIL on this data. Stated because a passing assertion with slack and a passing assertion at the bound are not the same evidence",
       "passes": true,
-      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r4 (RERUN on the spec as amended through decisions/0088; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
+      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r5 (RERUN on the spec as amended through decisions/0090; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
     }
   ],
   "coverage_count_not_an_invariant": {
@@ -1039,7 +1203,7 @@
       "conclusion": "the difference between the readings has ONE cause and it is fully accounted: where D11 is applied. 167 in-frame S1/S2 records are dated at or after tau_pull and they split 94 on the S2 side and 73 on the S1 side -- see decomposition_of_the_full_D11_effect above"
     },
     "denominator_status": "CLOSED at decisions/0083 Sec 1, amending 0074 ruling 4's routing to Step 14. The three readings are one one-parameter family indexed by where D11 applies, and EVERY MEMBER DROPS ZERO RECORDS -- the numerator is 0 three times over, so the difference survives into no result and is not a Step 14 limitation. It publishes as a COVERAGE FIGURE WITH ITS PIPELINE NAMED. What stays open is 0068's own item -- whether D11 applies to the S1 completion walk -- and that is answered there",
-    "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r4 (RERUN on the spec as amended through decisions/0088; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
+    "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r5 (RERUN on the spec as amended through decisions/0090; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
   },
   "population_reconciliation_703_and_99": {
     "this_is_NOT_an_invariant": "it is a POPULATION RECONCILIATION, and the spec's own instruction to suspect the population before the implementation is what makes it one",
@@ -1078,8 +1242,8 @@
       "793_on_APPLY_is_ALT_MATCHED_withdrawn": true
     },
     "reconciles": true,
-    "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r4 (RERUN on the spec as amended through decisions/0088; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
+    "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r5 (RERUN on the spec as amended through decisions/0090; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
   },
   "all_pass": true,
-  "elapsed_s": 5.882516145706177
+  "elapsed_s": 5.930728912353516
 }

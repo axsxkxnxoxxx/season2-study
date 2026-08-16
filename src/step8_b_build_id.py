@@ -25,11 +25,11 @@ ROOT = Path("/Users/alyanashantel/Documents/season2-study")
 
 RUN_DATE = "2026-08-16"
 
-BUILD = ("analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r4 "
-         "(RERUN on the spec as amended through decisions/0088; W = 108, "
+BUILD = ("analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r5 "
+         "(RERUN on the spec as amended through decisions/0090; W = 108, "
          "tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)")
 
-BUILD_SHORT = "b: position-5 build of 2026-08-16-r4 (spec through 0088)"
+BUILD_SHORT = "b: position-5 build of 2026-08-16-r5 (spec through 0090)"
 
 # The ruled figures carry the build they were RULED on, which is not this one.
 RULED_BUILD = "position-5 build of 2026-08-13 (both arms, the run decisions/0078 labelled)"

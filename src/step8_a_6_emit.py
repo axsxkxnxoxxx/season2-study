@@ -31,7 +31,7 @@ BT = f"`{lib.BUILD_TAG}`"
 
 def btx(what="every figure in this section"):
     """The build citation as plain text, for use inside a sentence."""
-    return f"Build: {what} measured on {BT} — {lib.BUILD_NAME}; see §0"
+    return f"Build: {what} measured on {BT} — {lib.BUILD_NAME.rstrip(chr(46))}; see §0"
 
 
 def bt(what="every figure in this section"):
@@ -144,7 +144,27 @@ def main():
       "CLOSED** (`0083` §1): all three readings publish, each naming the pipeline that produces "
       "it — see §5.1.")
     A("")
-    A("> **THREE THINGS THIS ARM EMITS DIFFERENTLY FROM ITS LAST RUN, all from `decisions/0088`.** "
+    A("> **THREE THINGS THIS ARM EMITS DIFFERENTLY FROM ITS LAST RUN — one ruling and two defects "
+      "in this arm's own deliverable.** **(1) `decisions/0090`: D9 PUBLISHES AS A BOUND** — strict "
+      "the **FLOOR**, loose the **CEILING**, **neither the point estimate** — ***superseding "
+      "`0074` ruling 5's framing, under which strict was the answer and loose was context.*** The "
+      "bound applies to **every D9 quantity with both forms**: complementary pairs, half (a), "
+      "half (b). **D9's numbers do not change; which of them is presented as the answer does** — "
+      "§5.5. **(2) Red Team fifth pass, F1** (`0089` §2(a)): this arm's B3(a) answer was **stated "
+      "on the wrong object**. It found the right interval — `[τ, τ + 24h)` — and then reported "
+      "**episodes ADMITTED**. The number that settles B3(a) is **how many position-5 rows change "
+      "OUTCOME STATE** under the forbidden date-level form, **four numbers, both bounds × both "
+      "populations** — §5.6a. **(3) Red Team fifth pass, F2**: this arm's **coverage-identity "
+      "independence proxy was wrong.** `len(parts) > 1` admitted identities whose clauses are a "
+      "**complementary partition of the same mask the population size is taken from**, so they "
+      "**cannot fail on any data** — ***including the one this arm's deliverable called \"the "
+      "identity that closes the hole\".*** The population size is now **sourced independently of "
+      "the asserted count**, the label and the claim are corrected, and the mechanism is "
+      "**demonstrated to fire** — see the invariant report. **Also fixed: one hardcoded "
+      "`\"holds\": True` in the per-site D11 table** (the S1-completion-walk site), now computed "
+      "from two measured quantities — §5.6b.")
+    A("")
+    A("> **CARRIED FROM `decisions/0088` AND UNCHANGED THIS RUN.** "
       "**(B3, §1 — the item that blocked the gate on Red Team's third AND fourth passes.)** The "
       "two unasserted mandates are **the half-open UTC-instant form** and **D11-as-global-cutoff** "
       "— ***not invariants 7 and 8***, which were already measured, published and labelled DATA "
@@ -162,19 +182,18 @@ def main():
       "***this arm previously clustered the coverage-pivot subset***, so **the cluster list "
       "moves** — §5.5.")
     A("")
-    A("> **NO POPULATION, NO RULE AND NO BOUND ENDPOINT MOVES, and every ruled D9 count "
-      "reproduces** — strict 0, loose 75, third key 76, half (a) 0 and 6, half (b) 0 and 27. "
-      "**What moves is the D9 CLUSTER LIST**, because the universe it is computed on was ruled "
-      "and this arm's previous universe was not U1. **`0088` §3 records that D9's SEARCH already "
-      "ran on the whole sweep in both arms, so the ruling does not widen what D9 finds** — it "
-      "fixes **which clusters are illustrated**, which is the evidence for the loose key's only "
-      "warrant.")
+    A("> **NO POPULATION, NO RULE, NO BOUND ENDPOINT AND NO WATERFALL LINE MOVES ON THIS RERUN, "
+      "and every ruled D9 count reproduces** — strict 0, loose 75, third key 76, half (a) 0 and "
+      "6, half (b) 0 and 27. **`0090` changes the FRAMING of those numbers, not the numbers.** "
+      "**No invariant result changes either**: the independence correction changes what the "
+      "coverage apparatus is CLAIMED to prove, and every identity still holds — now against a "
+      "denominator that could have disagreed.")
     A("")
     A("> Carried forward and unchanged: the table is the position-5 row set with `live` and "
-      "`outcome` as columns (`0074`/1); D9 uses the defined strict key with the loose count "
-      "alongside (`0074`/5, `0076`/3); the set-membership rule is a coverage count and not an "
-      "invariant (`0074`/3); the `W` grid is fixed by `0075`/3; `p` is a CODE CHECK (`0076`/1); "
-      "and the two DATA CHECKS of `0076`/2 are the only assertions here that can fail on data.")
+      "`outcome` as columns (`0074`/1); both D9 keys are as defined by `0076`/3; the "
+      "set-membership rule is a coverage count and not an invariant (`0074`/3); the `W` grid is "
+      "fixed by `0075`/3; `p` is a CODE CHECK (`0076`/1); and the two DATA CHECKS of `0076`/2 are "
+      "the only assertions here that can fail on data.")
     A("")
     A("---")
     A("")
@@ -189,7 +208,9 @@ def main():
       "it.")
     A("")
     br = wjson["build"]
-    A(f"**Build {BT} — {lib.BUILD_NAME}.**")
+    A(f"**Build {BT} — {lib.BUILD_NAME.rstrip(chr(46))}.**")
+    A("")
+    A(f"**What moved on this build.** {br['what_moved_on_this_build']}")
     A("")
     A(f"| Field | Value |")
     A("| :--- | :--- |")
@@ -845,12 +866,61 @@ def main():
     d9 = diag["D9_split_artifacts"]
     A("### 5.5 D9 — split artifacts, both halves")
     A("")
-    st9 = d9["ADOPTED_strict_key"]
-    lo9 = d9["REPORTED_ALONGSIDE_loose_key"]
+    st9 = d9["FLOOR_strict_key"]
+    lo9 = d9["CEILING_loose_key"]
+    bd9 = d9["BOUND"]
     tk9 = d9["third_key_measured_only_so_the_record_is_complete"]
     ha = st9["half_a_fabricated_never_started_row"]
     hb = st9["half_b_silently_deleted_S1_failing_counterpart"]
     A("Detection is imperfect and **every count here is a lower bound**.")
+    A("")
+    A("**D9 PUBLISHES AS A BOUND. STRICT IS THE FLOOR, LOOSE IS THE CEILING, AND NEITHER IS THE "
+      "POINT ESTIMATE.** Human Lead ruling, `decisions/0090`. ***This SUPERSEDES `0074` ruling "
+      "5's framing — \"use the strict key and report the loose count alongside\" — under which "
+      "STRICT WAS THE ANSWER and loose was context. Neither endpoint may be quoted as \"D9's "
+      "result\".***")
+    A("")
+    A("**It is `0074` ruling 5's own reason carried through:** the loose count publishes "
+      "**because it bounds how wrong strict could be**, and **a quantity published to bound "
+      "another is an endpoint, not a footnote.** `0078` §3 already ran this argument once, to "
+      "extend the loose count to half (b) — **same reason, one step further.**")
+    A("")
+    A("| D9 quantity | **bound `[floor, ceiling]`** |")
+    A("| :--- | :--- |")
+    A(f"| complementary signature ID pairs | **`[{n(bd9['complementary_signature_id_pairs'][0])}, "
+      f"{n(bd9['complementary_signature_id_pairs'][1])}]`** |")
+    A(f"| half (a) — the fabricated never-started row | "
+      f"**`[{n(bd9['half_a_fabricated_never_started_row_APPLY_position_7'][0])}, "
+      f"{n(bd9['half_a_fabricated_never_started_row_APPLY_position_7'][1])}]`** |")
+    A(f"| half (b) — the silently deleted S1-failing counterpart | "
+      f"**`[{n(bd9['half_b_silently_deleted_S1_failing_counterpart'][0])}, "
+      f"{n(bd9['half_b_silently_deleted_S1_failing_counterpart'][1])}]`** |")
+    A("")
+    A(bt("all six endpoints"))
+    A("")
+    A("**DIRECTION IS PART OF THE LABEL, and it is not symmetric.** **Strict is the FLOOR** "
+      "because it matches only slugs identical modulo punctuation, so it **cannot over-count**. "
+      "**Loose is the CEILING** because stripping a trailing year **merges genuinely different "
+      "shows** — remakes and national versions. **The error runs opposite to D9's own lower-bound "
+      "caveat**, which is why the interval publishes rather than being resolved away. **The bound "
+      "applies to every D9 quantity with both forms, not the headline alone** — applying it to "
+      "one and not the others is the defect `0078` §3 corrected.")
+    A("")
+    zf = bd9["a_zero_floor_is_not_an_absence_of_evidence"]
+    A("**A ZERO FLOOR IS NOT AN ABSENCE OF EVIDENCE**, so the coverage publishes beside it — "
+      "**a bound whose floor is 0 and whose coverage is unstated is indistinguishable from a "
+      "check that looked nowhere.** The strict key was applied to "
+      f"**{n(zf['coverage_user_show_pairs_examined_under_the_strict_key'])} slugged user-show "
+      f"pairs**, of which **{n(zf['coverage_D9_candidate_pairs_carrying_S1_or_S2_evidence'])} "
+      "carry S1 or S2 evidence and are matchable**; half (a) was measured against "
+      f"**{n(zf['coverage_never_started_pairs_for_half_a_APPLY_position_7'])} never-started pairs** "
+      f"and half (b) against **{n(zf['coverage_position_3_drop_set_pairs_for_half_b'])} pairs in "
+      "the position-3 drop set**. " + bt("every coverage figure in this paragraph"))
+    A("")
+    A(f"**THE THIRD KEY IS NOT AN ENDPOINT.** Its "
+      f"**{n(bd9['THE_THIRD_KEY_IS_NOT_AN_ENDPOINT']['value'])}** is **a different key's answer** "
+      "— it reduces `the-100` to `the` — and is **reported as a divergence, never as the "
+      "ceiling** (`0090`; `0076`, `0078` §3).")
     A("")
     cov9 = d9["coverage"]
     A("**THE COVERAGE QUANTITIES, EACH NAMED BY WHAT IT COUNTS** — Human Lead ruling, "
@@ -877,13 +947,15 @@ def main():
     A(bt("every figure in this table"))
     A("")
     A(f"**THE FIGURE THIS ARM PUBLISHES AS `747,478` IS B — distinct `(user, show)` PAIRS, not "
-      f"season-coverage rows.** ***Reported, not reconciled: `decisions/0088` §2's table "
-      f"characterises this arm's 747,478 as \"undeduplicated user-show SEASON-COVERAGE ROWS\". "
-      f"Measured on this build it is not — the season-coverage row count is "
-      f"{n(cov9['A_undeduplicated_user_show_SEASON_COVERAGE_ROWS'])}, and 747,478 is the "
-      f"deduplicated pair count.*** The ruling's **conclusion** — two objects, both correct, do "
-      "not reconcile — **holds and is applied here**; what it named as the distinguishing axis is "
-      "not the axis on this arm's figures.")
+      f"season-coverage rows.** **`decisions/0088` §2 had characterised it as \"undeduplicated "
+      f"user-show SEASON-COVERAGE ROWS\"; `decisions/0089` §2(b) CORRECTS that** — it is distinct "
+      f"`(user, show)` pairs, and this arm's undeduplicated row count is "
+      f"{n(cov9['A_undeduplicated_user_show_SEASON_COVERAGE_ROWS'])}, which `0089` §2(b) states. "
+      "***`0089` also records why the wrong label was picked up: it was taken from this arm's own "
+      "`user_show_coverage_rows_undeduplicated` key, which is itself what F2 flagged as "
+      "mislabelled.*** The ruling's **conclusion** — two objects, both correct, do not reconcile — "
+      "**held and is applied here**; only the axis it named was wrong, and it is now corrected on "
+      "the surface as well as here.")
     A("")
     A(f"**And the axis that does separate them is C: {n(cov9['C_split']['S1_evidence_and_no_S2'])} "
       f"+ {n(cov9['C_split']['S2_evidence_and_no_S1'])} + "
@@ -894,22 +966,23 @@ def main():
       "classes agree exactly; the S1-evidence-and-no-S2 class differs by ONE pair**, so the two "
       "totals stand **1 apart**, not 0. ***REPORTED, NOT RECONCILED*** — and it is **not** the "
       f"{n(cov9['bridge_B_minus_C_pairs_with_only_S3_or_later_evidence'])} S3-only pairs, which "
-      "are the whole of the B-against-C gap and are accounted for above. **No entry has recorded "
-      "a one-pair difference in this class**; it is stated here so the diff has it.")
+      "are the whole of the B-against-C gap and are accounted for above. ***The previous build of "
+      "this arm reported that no entry had recorded a one-pair difference in this class. "
+      "`decisions/0089` §3 now has***, on both arms reporting it independently, and it stays "
+      "**reported, not reconciled.**")
     A("")
-    A("**The normalisation key decides the entire number, and both keys are now DEFINED in the "
-      "spec** (`decisions/0074` ruling 5 adopts strict; `0076` §3 defines both, because \"strict\" "
-      "and \"loose\" had existed only inside one instance's code, which the other is forbidden to "
-      "read):")
+    A("**The normalisation key decides the entire number, and both keys are DEFINED in the "
+      "spec** (`0076` §3 defines both, because \"strict\" and \"loose\" had existed only inside "
+      "one instance's code, which the other is forbidden to read):")
     A("")
     A("| Key | Definition | complementary ID pairs | half (a) | half (b) |")
     A("| :--- | :--- | ---: | ---: | ---: |")
-    A(f"| **STRICT — ADOPTED** | lowercase, drop every non-alphanumeric character, strip nothing "
+    A(f"| **STRICT — the FLOOR** | lowercase, drop every non-alphanumeric character, strip nothing "
       f"else | **{n(st9['complementary_signature_id_pairs'])}** | "
       f"**{n(ha['carrying_the_signature'])}** | **{n(hb['carrying_the_signature'])}** |")
-    A(f"| LOOSE — reported alongside | remove a trailing four-digit year, then strict | "
-      f"{n(lo9['complementary_signature_id_pairs'])} | {n(lo9['half_a_APPLY_position_7'])} | "
-      f"{n(lo9['half_b'])} |")
+    A(f"| **LOOSE — the CEILING** | remove a trailing four-digit year, then strict | "
+      f"**{n(lo9['complementary_signature_id_pairs'])}** | "
+      f"**{n(lo9['half_a_APPLY_position_7'])}** | **{n(lo9['half_b'])}** |")
     A(f"| *third key — NOT RULED, measured only* | strip a trailing digit group of arbitrary "
       f"length, then strict | {n(tk9['complementary_signature_id_pairs'])} | "
       f"{n(tk9['half_a_APPLY_position_7'])} | {n(tk9['half_b'])} |")
@@ -925,16 +998,17 @@ def main():
       "reader unable to bound the total**, and the error runs **opposite** to D9's own "
       "lower-bound caveat — the direction they were not warned about.")
     A("")
-    A("| | strict (adopted) | loose (bound) |")
+    A("| | strict — **FLOOR** | loose — **CEILING** |")
     A("| :--- | ---: | ---: |")
     A(f"| **half (a)** — fabricated never-started row | **{n(fn['half_a_strict'])}** | "
-      f"{n(fn['half_a_loose'])} |")
+      f"**{n(fn['half_a_loose'])}** |")
     A(f"| **half (b)** — silently deleted S1-failing counterpart | **{n(fn['half_b_strict'])}** | "
-      f"{n(fn['half_b_loose'])} |")
+      f"**{n(fn['half_b_loose'])}** |")
     A("")
-    A(bt("all four numbers"))
+    A(bt("all four numbers") + " **Both columns are endpoints under `0090`; neither column alone "
+      "is the answer.**")
     A("")
-    A(f"- **(a) the fabricated never-started row, on the adopted key:** "
+    A(f"- **(a) the fabricated never-started row, at the FLOOR:** "
       f"{n(ha['carrying_the_signature'])} of {n(ha['never_started'])} never-started pairs "
       f"(APPLY, position 7); {n(ha['on_APPLY_position_5_the_table_row_set']['carrying_the_signature'])} "
       f"of {n(ha['on_APPLY_position_5_the_table_row_set']['never_started'])} on the position-5 "
@@ -953,9 +1027,9 @@ def main():
       "is a different rule, deletes 0 **records**, and would have put the wrong rule in the spec. "
       "This instance measured the same set before the restatement and the count is unchanged.")
     cu = lo9["clustering_universe_NAMED"]
-    A(f"- **The loose count publishes because it BOUNDS HOW WRONG STRICT COULD BE**, and the "
-      f"error runs **opposite** to D9's own lower-bound caveat. It is not adopted because "
-      f"{lo9['why_it_is_not_adopted']}.")
+    A(f"- **The loose count is the CEILING because it BOUNDS HOW WRONG STRICT COULD BE**, and the "
+      f"error runs **opposite** to D9's own lower-bound caveat. "
+      f"{lo9['why_it_is_the_CEILING_and_not_the_answer']}")
     A("")
     A("**THE CLUSTERING UNIVERSE IS U1, RANKED BY DISTINCT STRICT KEYS MERGED** — Human Lead "
       "ruling, `decisions/0088` §3, closing the gap Red Team's B1 opened (`0085` §2, where **the "
@@ -1147,6 +1221,76 @@ def main():
       f"{n(bw['DERIV_position_5']['tau1']['episodes_EXACTLY_AT_the_bound'])} on DERIV), so "
       "**`0068`'s strictness ruling — an instant *at* the bound is not *after* it — changes the "
       "answer for a real row rather than for none.**")
+    A("")
+    fl = bw["OUTCOME_STATE_FLIPS_the_number_that_settles_B3a"]
+    f4 = fl["THE_FOUR_NUMBERS"]
+    A("#### The number that settles B3(a): OUTCOME-STATE FLIPS, not episodes admitted")
+    A("")
+    A("***CORRECTION TO THIS ARM'S PREVIOUS BUILD.*** `decisions/0089` §2(a), Red Team's fifth "
+      "pass, F1: **\"Arm A reports episodes ADMITTED, not outcomes.\"** Build "
+      "`a/2026-08-16-0088` found the right interval — `[τ, τ + 24h)` — and then answered the "
+      "question with the wrong object. **The number that settles B3(a) is how many position-5 "
+      "rows CHANGE OUTCOME STATE under the forbidden `date(ts) ≤ date(τ)` form — four numbers, "
+      "both bounds × both populations.** The episode counts above are correct and are kept; this "
+      "is what the mandate turns on.")
+    A("")
+    A("**A never-started row with an episode in `[τ1, τ1 + 24h)` flips to started**, because "
+      "`|A|` goes from 0 to ≥ 1. **A started-and-left row with one in `[τ2, τ2 + 24h)` can flip "
+      "to Continued**, because `A_H` gains an episode and both the `F2` clause and the 0.90 "
+      "clause can turn on it. **Each bound is varied ALONE** — that is what \"both bounds\" "
+      "means; the joint form is reported separately because a row can flip at `τ1` and again at "
+      "`τ2`, so it is not the sum.")
+    A("")
+    A("| Population | Bound varied | **rows changing OUTCOME STATE** | transitions | "
+      "liveness exclusions under this form |")
+    A("| :--- | :--- | ---: | :--- | ---: |")
+    for popk, poplab in (("APPLY_position_5", "APPLY, position 5"),
+                         ("DERIV_position_5", "DERIV, position 5")):
+        for vk, vlab in (("tau1_only_date_level", "`τ1` only"),
+                         ("tau2_only_date_level", "`τ2` only"),
+                         ("both_bounds_date_level", "*both (not the sum)*")):
+            c = fl[popk][vk]
+            tr = (", ".join(f"{k.replace('__to__', ' → ')} {n(v)}"
+                            for k, v in c["transitions"].items()) or "—")
+            A(f"| {poplab} | {vlab} | **{n(c['rows_changing_outcome_state'])}** | {tr} | "
+              f"{n(c['liveness_exclusions_under_this_form'])} "
+              f"*(adopted {n(c['liveness_exclusions_adopted'])}, "
+              f"move {c['liveness_exclusions_MOVE']:+d})* |")
+    A("")
+    A(f"**THE FOUR NUMBERS: APPLY at `τ1` = {n(f4['APPLY_at_tau1'])}, APPLY at `τ2` = "
+      f"{n(f4['APPLY_at_tau2'])}, DERIV at `τ1` = {n(f4['DERIV_at_tau1'])}, DERIV at `τ2` = "
+      f"{n(f4['DERIV_at_tau2'])}.** " + bt("all four"))
+    A("")
+    A("**Coverage:** " + f"{n(fl['APPLY_position_5']['rows_examined'])} rows on APPLY and "
+      f"{n(fl['DERIV_position_5']['rows_examined'])} on DERIV — asserted non-empty, because a "
+      "zero measured on zero rows is not a zero. " +
+      ("***VACUOUS ON OUTCOMES: all four are 0.*** The mandate is load-bearing on EPISODES and "
+       "not on OUTCOMES on this data, and that is stated rather than passed silently — a zero "
+       "arriving as a pass is not evidence."
+       if fl["VACUOUS_ON_THIS_BUILD"] else
+       "**NOT VACUOUS: the half-open form decides published outcome states.**"))
+    A("")
+    if not fl["VACUOUS_ON_THIS_BUILD"]:
+        _t1a = fl["APPLY_position_5"]["tau1_only_date_level"]
+        _t2a = fl["APPLY_position_5"]["tau2_only_date_level"]
+        A("**What that buys, stated as an effect on the headline and not only as a count.** On "
+          f"APPLY the `τ1` mandate holds **{n(_t1a['rows_changing_outcome_state'])} rows** in "
+          "**never-started** that the forbidden form would move out of it — "
+          + ", ".join(f"**{n(v)}** to {k.split('__to__')[1].replace('_', ' ')}"
+                      for k, v in _t1a["transitions"].items())
+          + f" — and the `τ2` mandate holds **{n(_t2a['rows_changing_outcome_state'])} rows** in "
+            "**started-and-left** that it would move to Continued. **Both directions run against "
+            "the study's own estimand**: the forbidden form would understate never-started and "
+            "understate abandonment. **The liveness exclusion count does not move at all** "
+            f"({n(_t1a['liveness_exclusions_adopted'])} on APPLY under every form measured "
+            "here), because the silence test reads an insertion clock rather than an episode "
+            "timestamp — **so the mandate is load-bearing on OUTCOMES and inert on LINE 6**, and "
+            "those two facts had been reported as one.")
+        A("")
+    A("> **This is a COUNTERFACTUAL.** `date(watched_at) <= T1` still appears nowhere in the "
+      "implementation, and nothing this pipeline emits changes. The counterfactual state "
+      "function is asserted to reproduce the adopted outcome exactly on the half-open form "
+      "before any comparison is made, so the baseline cannot be the thing that differs.")
     A("")
     ps = diag["B3b_D11_per_site"]
     psa = {x["site"]: x for x in ps["assertions"]}      # by name, never by position
@@ -1580,67 +1724,78 @@ def main():
     A("9. **~~The set-membership records-examined denominator is unruled.~~ CLOSED by "
       "`decisions/0083` §1** — see item 4 and §5.1. `0074`'s *\"publish both, not one\"* is "
       "**strengthened to three, each naming its pipeline**, and the Step 14 routing is withdrawn.")
-    A("10. **NEW, and it is live: `decisions/0083` §2 did not reach SURFACE 7.** "
-      "`.claude/agent-memory/second-brain/glossary-terms-and-thresholds.md` carries the "
-      "**denominator** correction of `0083` §1 in its own row, and its **`p_at_bound` bullet is "
-      "untouched**: it still states `0082`'s **two-mechanism** definition as current, still "
-      "carries **`0082`'s motive sentence — the one `0083` §2 WITHDREW and registered in "
-      "`WITHDRAWN_PHRASES`** — as a live claim, and still calls 1,246 and 1,230 **totals the two "
-      "classes must sum to**, which is the reading `0083` §2 withdrew. **Reported, not edited: "
-      "`second-brain` writes its own memory and no other agent writes into it.** `0083` §4 "
-      "records surface 7 as reached, and it was — **for one of the two rulings.**")
-    A("11. **The phrase control cannot see item 10, and \"none\" is therefore not a clean result "
-      "on wrapped prose.** `WITHDRAWN_PHRASES` is matched as a **literal substring** against "
-      "Markdown that is **hard-wrapped**, so a withdrawn phrase broken across a line break does "
-      "not match. **Reproduced: normalising whitespace before matching turns up three occurrences "
-      "the literal matcher misses** — one is item 10; the other two are in the two "
-      "`analytics-engineer` files, **inside explicit withdrawal notes**, so they are legitimate "
-      "and would pass either way. **`check_surfaces.py` reports `PHRASE HALF … none` with all "
-      "three invisible to it.** **Not fixed here**: the control is shared by both arms and by the "
-      "Human Lead's diff, and changing it mid-gate changes what the diff is taken over. **The "
-      "one-line change is to match against `re.sub(r\"\\s+\", \" \", text)`.**")
-    A("12. **NEW, and it is `decisions/0088`'s own propagation gap: `0088` §1(c) takes the "
-      "assertion set from EIGHT to NINE, and no surface says nine.** **Surfaces 4 and 5** — "
-      "`.claude/agents/analytics-engineer.md` and `-b.md`, both edited by `0088` — still read "
-      "***\"THE ASSERTION SET NOW HAS EIGHT MEMBERS\"***, and **surface 1**, `task-sheet.md`, "
-      "still reads ***\"The set is now EIGHT\"***. **The negative half of the grep control passes "
-      "clean here**, because eight is not a superseded *figure* until the ninth lands; **the "
-      "POSITIVE half is what catches it, and \"nine\" appears on no surface** — which is exactly "
-      "the failure mode `CLAUDE.md` records the analytics-engineer as having added the positive "
-      "half for. **Reported, not edited: `task-sheet.md` and the agent files are not this "
-      "instance's to amend.**")
-    A("13. **NEW: `task-sheet.md`'s invariant-labelling bullet still carries the PRE-`0076` "
-      "count.** It reads *\"The count is four pure code checks, one that is a code check by "
-      "construction … and one item that is not an invariant at all\"* — the **six-member** "
-      "reading, which `0076` superseded and `task-sheet.md:995` itself calls superseded 280 lines "
-      "lower. **One file, two counts, each declaring the other wrong** — the exact shape "
-      "`CLAUDE.md` describes. **Reported, not edited.**")
-    A("14. **NEW: `decisions/0088` §2 characterises THIS ARM's 747,478 as *\"undeduplicated "
-      "user-show SEASON-COVERAGE ROWS\"*. Measured on this build it is not** — it is **distinct "
-      "`(user, show)` PAIRS**; the season-coverage row count is a different and larger number, "
-      "published in §5.5. **The ruling's conclusion is right and is applied** — two objects, both "
-      "correct, do not reconcile — **but the axis it names is not the axis.** ***`0088` §4 "
-      "records that all three of its own rulings named the wrong referent; this is a fourth "
-      "instance of the same shape, in the entry that documents it.*** **Reported, not "
-      "reconciled.**")
-    A("15. **NEW, and it is a genuine ARM-AGAINST-ARM divergence of ONE PAIR.** `0087` §2 and "
-      "`0088` §2 record the other arm's D9 candidate-pair split as **`435,643 + 8,834 + 281,626 "
-      "= 726,103`**. This arm measures **`435,642 + 8,834 + 281,626 = 726,102`** in the same "
-      "three classes — **two classes agree exactly and the S1-evidence-and-no-S2 class differs by "
-      "1.** **It is not the S3-only bridge**, which is accounted for separately in §5.5. **No "
-      "entry has recorded a one-pair difference here**, because the two published totals were "
-      "read as differing by the whole S3-only gap. ***REPORTED, NOT RECONCILED.***")
-    A("16. **NEW: the ruled ranking basis TIES at rank 3, so the illustration is not fully "
-      "determined by it.** `0088` §3 names `secondchance` (8), `theisland` (7), `maigret` (6) — "
-      "and this arm reproduces the first two exactly, **but SIX loose keys tie at 6** and which "
-      "of them appears third is decided by the sort's stability, not by the ruling. **Every key "
-      "at every published rank is listed in §5.5 under both bases**, so the list is comparable "
-      "without depending on the tie order. **Reported, not resolved.**")
-    A("17. **CARRIED, `0087` F5, now the FOURTH occurrence of the string: "
-      "`specs/step8-readback.md:3` still says Step 8 *\"has not launched\"*.** `0086` §3 stamped "
-      "the two artifacts generated from that file and missed the source. **The structural half is "
-      "unchanged: `specs/` is not one of `CLAUDE.md`'s eight propagation surfaces, so no control "
-      "looks at it.** **Reported, not edited.**")
+    A("10. **~~`decisions/0083` §2 did not reach SURFACE 7.~~ CLOSED — VERIFIED FIXED ON DISK "
+      "THIS RUN.** The previous build reported "
+      "`.claude/agent-memory/second-brain/glossary-terms-and-thresholds.md` as still carrying "
+      "`0082`'s two-mechanism definition and its withdrawn motive sentence as live claims. **It "
+      "no longer does**: the `p_at_bound` bullet and the glossary row both now state *\"marks "
+      "WHETHER `p` reached its bound, not why\"*, strike the two mechanisms as **coextensive by "
+      "construction**, record the FALSE class as **empty**, and mark 1,246 / 1,230 as **not a "
+      "split** with the separation argument named as **withdrawn**. **This instance's report was "
+      "true when written and is not now**, which is the provenance rule reaching a claim about a "
+      "surface rather than a figure.")
+    A("11. **~~The phrase control cannot see wrapped prose.~~ CLOSED — VERIFIED FIXED ON DISK "
+      "THIS RUN.** The previous build reported `WITHDRAWN_PHRASES` matched as a literal substring "
+      "against hard-wrapped Markdown, so a phrase broken across a line break did not match, and "
+      "proposed the one-line change. **`src/check_surfaces.py` now normalises whitespace before "
+      "matching** — `_normalised_with_linemap()`, with a char-to-line map so a hit still reports "
+      "its line, and a self-probe on a deliberately wrapped phrase. **Closed by `decisions/0084`, "
+      "not by this instance.**")
+    A("12. **~~`0088` §1(c) takes the assertion set from EIGHT to NINE and no surface says "
+      "nine.~~ CLOSED — VERIFIED FIXED ON DISK THIS RUN.** Surfaces 4 and 5 now read "
+      "***\"THE ASSERTION SET NOW HAS NINE MEMBERS: SIX pure code checks, one "
+      "code-by-construction … and TWO that can fail on real data\"***, and `task-sheet.md` reads "
+      "**\"The set is now NINE\"**. **`decisions/0089` §3 records this as the POSITIVE grep "
+      "half's catch** — the negative half passed clean, because *eight* was not a superseded "
+      "figure until the ninth landed. **This instance reported it; it is fixed.**")
+    A("13. **~~`task-sheet.md`'s invariant-labelling bullet carries the PRE-`0076` count.~~ "
+      "CLOSED — VERIFIED FIXED ON DISK THIS RUN.** The *\"four pure code checks\"* sentence is "
+      "**struck at the point of use** and marked superseded, with the NINE-member reading stated "
+      "in its place. **`0089` §3 records it as struck and reported independently by both arms.**")
+    A("14. **~~`0088` §2 characterises THIS ARM's 747,478 as \"undeduplicated user-show "
+      "SEASON-COVERAGE ROWS\".~~ CLOSED — CORRECTED BY `decisions/0089` §2(b)**, which records "
+      "that it **is distinct `(user, show)` PAIRS** and that this arm's undeduplicated row count "
+      "is a different, larger number; **the label had been taken from this arm's own "
+      "`user_show_coverage_rows_undeduplicated` key, which is itself what F2 flagged as "
+      "mislabelled.** **The ruling's conclusion was unaffected and is applied**; both objects are "
+      "published with what each counts in §5.5.")
+    A("15. **STILL OPEN, and it is a genuine ARM-AGAINST-ARM divergence of ONE PAIR — now "
+      "RECORDED.** `0089` §3 records it: this arm's D9 candidate split is "
+      "**`435,642 + 8,834 + 281,626 = 726,102`** against the other arm's "
+      "**`435,643 + 8,834 + 281,626 = 726,103`** — **two classes agree exactly and the "
+      "S1-evidence-and-no-S2 class differs by 1.** **It is not the S3-only bridge**, accounted "
+      "for separately in §5.5. ***The previous build reported \"no entry has recorded a one-pair "
+      "difference here\"; `0089` §3 now has. REPORTED, NOT RECONCILED.***")
+    A("16. **STILL OPEN, and now CARRIED FOR THE HUMAN LEAD.** `0088` §3 names `secondchance` "
+      "(8), `theisland` (7), `maigret` (6); this arm reproduces the first two exactly, **but SIX "
+      "loose keys tie at 6.** `0089` §2(c) records that **third place is a six-way tie and "
+      "neither arm picked `maigret`** — one arm publishes `blackout` under "
+      "ascending-key-after-descending-count — and `0089` §4 item 1 **carries the tie-break to the "
+      "Human Lead as a ruling, not a measurement.** **Every key at every published rank is listed "
+      "in §5.5 under both bases**, so nothing is lost while it is open. **Reported, not "
+      "resolved.**")
+    A("17. **STAMPED, NOT CLOSED. `specs/step8-readback.md` now carries a status stamp** "
+      "(`0089` §3) recording that its *\"has not launched\"* statement was true when the file was "
+      "written on 2026-08-14 and is superseded — Step 8 has launched, and remains an unapproved "
+      "gate. **The string itself is still in the body below the stamp**, which is the correct "
+      "treatment for a written spec handed to isolated instances. **The structural half is "
+      "UNCHANGED and is the live item: `specs/` is not one of `CLAUDE.md`'s eight propagation "
+      "surfaces, so no control looks at it**, and `0089` §4 item 2 **carries the ninth-surface "
+      "question to the Human Lead.** **Reported, not edited.**")
+    A("18. **NEW, and it is this instance's own defect, folded into this rerun rather than "
+      "reported: the B3(a) answer and the coverage-identity independence claim.** Both are "
+      "described at the head of this file and at §5.6a and in the invariant report. **Neither "
+      "needed a ruling** (`0090` §3) and **neither moves a published figure.** They are recorded "
+      "here because a rerun that fixes its own defects silently leaves the diff unable to tell a "
+      "fix from a drift.")
+    A("19. **NEW: `decisions/0090`'s own reading is flagged by the ruling itself.** `0090` §2 "
+      "records that the ruling says *\"applied to this half\"*, **singular**, and that it is "
+      "**implemented as applying to EVERY D9 quantity with both forms** — complementary pairs, "
+      "half (a), half (b) — **on `0078` §3's ground that publishing a bound for one half and a "
+      "point estimate for the other leaves the reader unable to bound the total.** **This arm "
+      "implements the broad reading**, as the entry directs. ***If a single half was meant, it "
+      "narrows and this arm's §5.5 table is what would change.*** **Reported at the point of "
+      "use.**")
     A("")
     A("---")
     A("")
@@ -1749,25 +1904,81 @@ def main():
     cis = inv["coverage_identity_strength"]
     B("> ***STRUCK, whatever else is ruled*** (`decisions/0088` §2(d), on Red Team's F4): "
       "~~*\"The run asserts this, so a report that omitted a population could not be written by "
-      "this pipeline.\"*~~ **It is a control asserted to exist.** "
+      "this pipeline.\"*~~ **It is a control asserted to exist.**")
+    B("")
+    B("> ***AND THE REPLACEMENT CLAIM WAS ALSO WRONG. CORRECTED ON THIS BUILD*** — Red Team's "
+      "**fifth** pass, F2, folded into this rerun by `decisions/0090` §3. Build "
+      "`a/2026-08-16-0088` classified an identity as **REAL ARITHMETIC** on the test "
+      "`parts is not None and len(parts) > 1` — *\"it has more than one clause\"*. ***That test "
+      "admits an identity that cannot fail on any data.*** Every multi-clause identity in that "
+      "build had clauses forming a **complementary partition of the same mask the population "
+      "size was taken from**, so each summed to the population **for any mask**: invariant 1's "
+      "`never / left / continued` are exhaustive by the expressions that define them; invariant "
+      "6's are `M & left` and `M & ~left`; invariant 7's `mixed` and `wholesale` partition "
+      "`touched` by set algebra; invariant 9's are `τ2 ≤ τ_pull` and its complement. ***Including "
+      "invariant 6's, which that deliverable called \"THE IDENTITY THAT CLOSES THE HOLE\". It "
+      "closed nothing*** — it holds whatever mask `M` is, **including a mask that is not the "
+      "population named, which is the defect** `0080` §3 introduced it to detect.")
+    B("")
+    B("**THE FIX IS THE ONE THE HOLE ACTUALLY NEEDS: the population size is now sourced "
+      "INDEPENDENTLY of the asserted count.** The 99-row hole was a numerator taken "
+      "**post-liveness** against a denominator taken **pre-liveness**; that is detectable only if "
+      "the denominator comes from somewhere other than the masks the numerator is built from. So "
+      f"**{cis['identities_that_CAN_FAIL_population_size_sourced_INDEPENDENTLY']} of the "
+      f"{cis['identities_total']} identities now take their population size from a different "
+      f"file**, and "
       f"**{cis['identities_that_CANNOT_FAIL_population_size_and_asserted_count_are_one_expression']} "
-      f"of the {cis['identities_total']} identities have the population size and the asserted "
-      "count as THE SAME EXPRESSION** — `asserted = N`, `not asserted = N − N = 0` — **so they "
-      "cannot detect an invariant run on a population other than the one named.** The other "
-      f"**{cis['identities_that_are_REAL_ARITHMETIC']}** are real arithmetic, built from "
-      "**independently counted clauses that must sum to the population**: invariant 1's four "
-      "partitions (three outcome states each), invariant 6's two `p` clauses, invariant 7's three "
-      "account classes on each population and invariant 9's two `τ2` clauses on each. **Every "
-      "identity below carries the label, in the `.json` at `what_it_can_detect`** — an unlabelled "
-      "check that cannot fail reads as one that can (`0069`, applied to the coverage apparatus "
-      "rather than to the invariants).")
+      "remain in the cannot-fail class, labelled bookkeeping at the point of use** "
+      "*(the label stays in the code and in the schema whether or not any identity is in that "
+      "class on this build — a class that happens to be empty today must still be nameable "
+      "tomorrow)*. **Every identity carries its tier in the "
+      "`.json` at `population_size_independence` and `what_it_can_detect`** — an unlabelled check "
+      "that cannot fail reads as one that can (`0069`, applied to the coverage apparatus rather "
+      "than to the invariants).")
+    B("")
+    B("| Independence tier | Source | What the identity can detect | count |")
+    B("| :--- | :--- | :--- | ---: |")
+    for _t, _c in sorted(cis["by_independence_tier"].items(), key=lambda kv: -kv[1]):
+        _d = {"EMITTED_DELIVERABLE": ("`analysis_table.csv.gz`, written by stage 3",
+                                      "**an invariant run on a population other than the one it "
+                                      "names**"),
+              "INDEPENDENT_FILE": ("an earlier stage's own JSON",
+                                   "**an invariant run on a population other than the one it "
+                                   "names**"),
+              "INDEPENDENT_CODE_PATH": ("the same file parsed by different code",
+                                        "**a parse or dedup disagreement in the population "
+                                        "size**"),
+              "NOT_INDEPENDENT": ("the same mask the asserted count comes from",
+                                  "**nothing** — `N − N = 0` holds however the mask was "
+                                  "chosen")}[_t]
+        B(f"| `{_t}` | {_d[0]} | {_d[1]} | {_c} |")
+    B("")
+    B(bt("every count in this table"))
+    B("")
+    dm = cis["FALSIFIABILITY_DEMONSTRATED_NOT_ASSERTED"]
+    B("**AND THE MECHANISM IS DEMONSTRATED, NOT ASSERTED.** *A mechanism claimed to work and "
+      "never seen to fail is a control asserted to exist* — which is the sentence `0088` §2(d) "
+      f"struck. Each of the **{dm['identities_demonstrated']}** independent identities is "
+      "re-evaluated against **its population size + 1** and must report FAIL. "
+      f"**All hold against the true value and fail against the perturbed one: "
+      f"{dm['all_hold_against_the_true_value_and_FAIL_against_the_perturbed_one']}.** The run "
+      "**asserts** this, and asserts that the registry is non-empty, so a demonstration that "
+      "looked nowhere fails rather than passes.")
     B("")
     B("| Identity shape | What it can detect |")
     B("| :--- | :--- |")
-    B("| **`cover(unit, pop, N, N)`** — asserted count and population size are the same "
-      "expression | **Nothing.** `N − N = 0` holds however the population was chosen |")
-    B("| **`cover(..., parts=[a, b, …])`** — clauses counted independently | **A row covered by "
-      "no clause**, which is the 99-row hole `0080` §3 was written for |")
+    B("| **population size from the same mask as the asserted count** — with one clause or with "
+      "five | **Nothing.** `N − N = 0`, and a complementary partition of `M` sums to `M` for "
+      "every `M` |")
+    B("| **population size from an independent source** | **An invariant run on a population "
+      "other than the one it names**, which is the 99-row hole `0080` §3 was written for |")
+    B("")
+    B("> **What invariant 6 would now catch, measured rather than described.** Pairing the "
+      "post-liveness Started-and-left numerator with the pre-liveness non-S&L clause — the exact "
+      "mispairing `0080` §3 records — is reconstructed on this build and evaluated against the "
+      "emitted table's row count; the identity **fails**, and the rows covered by neither clause "
+      "are reported. Under the previous build's same-mask denominator that pairing could not be "
+      "detected at all. See invariant 6's `THE_HOLE_THIS_WOULD_NOW_CATCH` below.")
     B("")
 
     def render(node, ind=0):
@@ -1861,7 +2072,8 @@ def main():
        )(next(i for i in inv["invariants"] if i["name"].startswith("no access_denied"))))
     B("")
     B("")
-    B(f"*Every result in this report was measured on build {BT} — {lib.BUILD_NAME} "
+    B(f"*Every result in this report was measured on build {BT} — "
+      f"{lib.BUILD_NAME.rstrip(chr(46))} "
       "(`decisions/0079` B6). The full build record, with stage-file hashes and the git HEAD, is "
       "in `artifacts/step8-waterfall-a.md` §0 and in the `.json` beside this file.*")
     B("")

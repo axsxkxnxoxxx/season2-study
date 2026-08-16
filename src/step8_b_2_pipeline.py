@@ -89,6 +89,111 @@ STEP5_WATERFALL = [201_900, 178_165, 155_131, 152_126, 128_099]
 R: dict = {}
 
 
+def _surface_claims(ts: str, ag: str) -> dict:
+    """RE-READ, off disk, the two claims about OTHER FILES' STATE this arm
+    published on its previous build. Both were true when written and decisions/0089
+    Sec 3 acted on both. A claim about a surface is a measurement with an expiry
+    date; carried as prose it reports a defect that no longer exists.
+
+    COVERAGE IS PRINTED. A path that can return "nothing found" must say whether it
+    found nothing or looked at nothing (CLAUDE.md), so every probe below reports
+    the bytes it read.
+    """
+    spec_p = ROOT / "specs" / "step8-readback.md"
+    spec_txt = spec_p.read_text() if spec_p.exists() else ""
+    # The string, and whether a STATUS STAMP now qualifies it. An unqualified
+    # occurrence and a stamped one are DIFFERENT FINDINGS, so the occurrences are
+    # split by whether they sit INSIDE the stamp block (where the stamp is
+    # quoting the string in order to supersede it) or in the file body.
+    # The stamp block is the leading markdown blockquote; it is located rather
+    # than assumed, and its absence is reported as an absence.
+    lines = spec_txt.split("\n")
+    q = [i for i, l in enumerate(lines) if l.startswith(">")]
+    stamp_lo, stamp_hi = (min(q), max(q)) if q else (-1, -1)
+    stamp_txt = "\n".join(lines[stamp_lo:stamp_hi + 1]) if q else ""
+    body_txt = "\n".join(lines[:max(stamp_lo, 0)] + lines[stamp_hi + 1:]) if q else spec_txt
+    occ = spec_txt.lower().count("has not launched")
+    occ_in_stamp = stamp_txt.lower().count("has not launched")
+    occ_in_body = body_txt.lower().count("has not launched")
+    body_occ_lines = [i for i, l in enumerate(lines)
+                      if "has not launched" in l.lower() and not l.startswith(">")]
+    stamped = bool(q and "STATUS STAMP" in stamp_txt and "SUPERSEDED" in stamp_txt
+                   and all(i > stamp_hi for i in body_occ_lines))
+    eight = ts.count("ASSERTION SET NOW HAS EIGHT") + ag.count("ASSERTION SET NOW HAS EIGHT")
+    nine = ts.count("ASSERTION SET NOW HAS NINE") + ag.count("ASSERTION SET NOW HAS NINE")
+    fourpure = ts.count("four pure code checks")
+    # a struck occurrence is not a live one: the task-sheet marks it SUPERSEDED
+    # at the point of use, which the spec's own rules permit.
+    fourpure_struck = ts.count("SUPERSEDED — \"The count is four pure code checks")
+    return {
+        "why_re_read": ("these are claims about the STATE OF OTHER FILES. They were true when "
+                        "this arm published them on 2026-08-16-r4 and decisions/0089 Sec 3 acted "
+                        "on both. Re-read live here; a surface claim carried as prose is a "
+                        "measurement with an expiry date"),
+        "coverage": {"specs/step8-readback.md_bytes_read": len(spec_txt),
+                     "task-sheet.md_bytes_read": len(ts),
+                     "agent_file_bytes_read": len(ag),
+                     "note": ("a zero occurrence count below means the string was looked for and "
+                              "not found, on a file whose byte count is stated -- not that "
+                              "nothing was looked at")},
+        "item_4_specs_step8_readback_has_not_launched": {
+            "r4_claim": ("`specs/step8-readback.md` STILL SAYS STEP 8 'HAS NOT LAUNCHED', ON "
+                         "THIS READ -- reported, not edited, because specs/ is not one of the "
+                         "eight propagation surfaces"),
+            "file_exists": bool(spec_p.exists()),
+            "occurrences_of_the_string_now": occ,
+            "of_those_inside_the_status_stamp_block_quoting_it_to_supersede_it": occ_in_stamp,
+            "of_those_in_the_file_BODY_still_asserting_it": occ_in_body,
+            "a_status_stamp_now_precedes_and_supersedes_it": stamped,
+            "why_the_split": ("an occurrence inside a stamp that supersedes the string and an "
+                              "unqualified occurrence in the body are DIFFERENT FINDINGS. The "
+                              "r4 claim counted neither -- it said the string was live. It is "
+                              "live in the body AND stamped at the head, and 0089 Sec 3's stamp "
+                              "is negative only, so the body sentence is deliberately not edited"),
+            "status_now": ("CLOSED AS A DEFECT, STANDING AS A QUESTION. decisions/0089 Sec 3 "
+                           "stamped the file, and the stamp precedes every body occurrence and "
+                           "marks the string SUPERSEDED. The r4 claim -- that the string sits "
+                           "there unqualified -- is NO LONGER TRUE and is not republished. The "
+                           "body sentence itself is deliberately unedited, because the stamp is "
+                           "NEGATIVE ONLY. What remains open is not the string but whether "
+                           "specs/ becomes a NINTH propagation surface, which 0089 Sec 4 "
+                           "carries for the Human Lead"
+                           if stamped else
+                           "STILL LIVE AND UNSTAMPED -- republished"),
+        },
+        "item_5_the_assertion_set_count_on_the_spec_surfaces": {
+            "r4_claim": ("task-sheet.md and this instance's definition file still read 'THE "
+                         "ASSERTION SET NOW HAS EIGHT MEMBERS', and task-sheet.md's labelling "
+                         "bullet carries a third count, 'four pure code checks'"),
+            "occurrences_of_EIGHT_across_the_two_surfaces": eight,
+            "occurrences_of_NINE_across_the_two_surfaces": nine,
+            "per_surface": {
+                "task-sheet.md": {"EIGHT": ts.count("ASSERTION SET NOW HAS EIGHT"),
+                                  "NINE": ts.count("ASSERTION SET NOW HAS NINE")},
+                "agent_definition_file": {"EIGHT": ag.count("ASSERTION SET NOW HAS EIGHT"),
+                                          "NINE": ag.count("ASSERTION SET NOW HAS NINE")},
+                "reading": ("task-sheet.md now states NO count of the assertion set in this "
+                            "phrasing, and the definition file states NINE. NO SURFACE "
+                            "CONTRADICTS ANOTHER, which is what the r4 claim said they did. "
+                            "Reported per surface rather than as a total, because a total of "
+                            "zero EIGHTs is also what two silent files would give"),
+            },
+            "task_sheet_four_pure_code_checks_occurrences": fourpure,
+            "task_sheet_four_pure_code_checks_marked_SUPERSEDED_at_the_point_of_use":
+                bool(fourpure_struck),
+            "status_now": ("CLOSED. decisions/0089 Sec 3 acted on both halves and struck the "
+                           "'four pure code checks' sentence at the point of use. NO SURFACE "
+                           "NOW STATES EIGHT. The r4 claim is NO LONGER TRUE and is not "
+                           "republished. This arm publishes NINE and no surface contradicts it"
+                           if eight == 0 and nine > 0 and (fourpure == 0 or fourpure_struck)
+                           else "STILL LIVE -- republished"),
+            "note_on_the_positive_half": ("the negative grep for 'EIGHT MEMBERS' passes clean on "
+                                          "a file that never said nine. Both halves are measured "
+                                          "here: EIGHT must be 0 AND NINE must be non-zero"),
+        },
+    }
+
+
 def _spec_residuals() -> dict:
     """decisions/0083 Sec 3 fixed two residuals INSTANCE A reported and could not
     edit. This arm reported the first of them on its own previous build. They are
@@ -145,6 +250,18 @@ def _spec_residuals() -> dict:
                        "than deleted, so 0077's SPELLING ruling (A_H not AH, which governs n_A, "
                        "n_A_H and max_episode_in_A_H) is not lost with the column"),
         },
+        # ---------------------------------------------------------------
+        # THE SURFACE CLAIMS THIS ARM PUBLISHED LAST RUN ARE RE-READ, NOT
+        # CARRIED. Items 4 and 5 of the r4 divergence list were TYPED
+        # assertions about the state of other files -- "specs/step8-readback.md
+        # STILL SAYS ... ON THIS READ" and "task-sheet.md and this instance's
+        # definition file still read EIGHT MEMBERS". decisions/0089 Sec 3 fixed
+        # both. A claim about another file's state is a MEASUREMENT with an
+        # expiry date, and a deliverable that carries it as prose reports a
+        # defect that no longer exists. Measured live here so the divergence
+        # list states the current reading rather than the previous one.
+        # ---------------------------------------------------------------
+        "c_surface_claims_this_arm_published_last_run_RE_READ": _surface_claims(ts, ag),
         "enumeration_checked_AS_A_SET_not_by_counting": {
             "task_sheet_names": len(ts_names),
             "agent_file_names": len(ag_names),
@@ -826,14 +943,52 @@ def main() -> None:
     st1 = json.loads((OUT / "stage1.json").read_text())
     tau1_a, tau2_a = K["tau1"], K["tau2"]
 
-    def _win(tau: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
-        """(episodes with canonical instant in [tau - 24h, tau), episodes exactly at tau)."""
+    def _win(tau: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """(episodes in [tau - 24h, tau), episodes exactly at tau, episodes in [tau, tau + 24h)).
+
+        THE THIRD ONE IS THE SEPARATING INTERVAL AND IT IS THE ONE THAT SETTLES B3.
+        decisions/0089 Sec 2(a) corrects decisions/0088 Sec 1(a): T0 is day-floored,
+        so tau1 and tau2 are MIDNIGHT-ALIGNED, which makes `date(ts) < date(tau)`
+        identical to `ts < tau` for every instant BELOW tau. [tau - 24h, tau) is
+        therefore the interval on which the half-open and date-level forms AGREE,
+        and measuring the verdict there measures the wrong set. The forbidden form
+        `date(watched_at) <= T1` admits exactly `ts < tau + 24h`, so the rows on
+        which the two forms DIFFER are [tau, tau + 24h) -- the instant exactly at
+        tau being its first member, not the whole of it.
+        """
         lo = np.maximum(tau - DAY, TS_MIN)   # below TS_MIN the count is 0 either way
         return (n_before(tau) - n_before(lo),
-                n_before(tau + 1) - n_before(tau))
+                n_before(tau + 1) - n_before(tau),
+                n_before(tau + DAY) - n_before(tau))
 
-    prev1, at1 = _win(tau1_a)
-    prev2, at2 = _win(tau2_a)
+    prev1, at1, sep1 = _win(tau1_a)
+    prev2, at2, sep2 = _win(tau2_a)
+
+    # ---- THE DATE-LEVEL COUNTERFACTUAL -----------------------------------
+    # The count on the separating interval says how many rows COULD move; it does
+    # not say how many DO. decisions/0089 Sec 2(a): "the number that settles B3 is
+    # how many position-5 rows change OUTCOME STATE under the forbidden date-level
+    # form, four numbers, both bounds x both populations." So the three outcome
+    # states are RECOMPUTED under `date(watched_at) <= T1`, which is `ts < tau +
+    # 24h`, and the states are diffed row by row. The forbidden form is computed
+    # HERE AND NOWHERE ELSE, as a counterfactual whose only output is a count; the
+    # emitted table, every waterfall line and every other figure are half-open.
+    nA_dl = n_before(tau1_a + DAY)
+    nAH_dl = n_before(tau2_a + DAY)
+    f2_in_AH_dl = f2ts < tau2_a + DAY
+    THRr = THR2a[s_idx]
+
+    def _states(nA_, nAH_, f2_):
+        st_ = np.where(nA_ < 1, 0, np.where(f2_ & (nAH_ >= THRr), 1, 2))
+        return st_       # 0 never started, 1 continued, 2 started and left
+
+    st_half = _states(nA, nAH, K["f2_in_AH"])
+    st_tau1 = _states(nA_dl, nAH, K["f2_in_AH"])          # tau1 relaxed only
+    st_tau2 = _states(nA, nAH_dl, f2_in_AH_dl)            # tau2 relaxed only
+    st_both = _states(nA_dl, nAH_dl, f2_in_AH_dl)        # both relaxed
+    assert (st_half == np.where(K["never"], 0, np.where(K["contd"], 1, 2))).all(), \
+        "the counterfactual's half-open baseline must reproduce the pipeline's own states"
+    STATE_NAMES = ["never_started", "continued", "started_and_left"]
 
     # the same window on RAW in-E2 S2 records rather than on distinct episodes,
     # because the ruling says "S2 records" and the two are different objects.
@@ -868,18 +1023,33 @@ def main() -> None:
             "DISTINCT_EPISODES_the_form_the_outcome_assignment_reads": {
                 "unit": ("distinct in-E2 S2 episodes at their CANONICAL instant -- the objects "
                          "|A| and |A_H| are counted over"),
-                "in_[tau1_minus_24h, tau1)": int(prev1[pmask].sum()),
+                "WHICH_INTERVAL_SEPARATES_THE_FORMS": (
+                    "[tau, tau + 24h). NOT [tau - 24h, tau), which is where they AGREE "
+                    "(decisions/0089 Sec 2a). tau is midnight-aligned because T0 is day-floored, "
+                    "so below tau the date-level and half-open forms admit the identical set"),
+                "SEPARATING_in_[tau1, tau1_plus_24h)": int(sep1[pmask].sum()),
+                "SEPARATING_in_[tau2, tau2_plus_24h)": int(sep2[pmask].sum()),
+                "AGREEING_in_[tau1_minus_24h, tau1)": int(prev1[pmask].sum()),
+                "AGREEING_in_[tau2_minus_24h, tau2)": int(prev2[pmask].sum()),
                 "exactly_at_tau1": int(at1[pmask].sum()),
-                "in_[tau2_minus_24h, tau2)": int(prev2[pmask].sum()),
                 "exactly_at_tau2": int(at2[pmask].sum()),
                 "episodes_examined": int(nAH[pmask].sum()),
+                "note_on_the_two_ruled_cells": (
+                    "the [tau - 24h, tau) counts and the exactly-at counts are the cells "
+                    "decisions/0088 Sec 1(a) named and are kept; the exactly-at cells are the "
+                    "FIRST INSTANT of the separating interval, not the whole of it, and this "
+                    "arm's previous build reported its verdict off them alone"),
             },
             "RAW_RECORDS_the_ruling's_own_word": {
                 "unit": "in-E2 S2 episode RECORDS surviving D11, undeduplicated",
                 "records_examined": int(inpop.sum()),
-                "in_[tau1_minus_24h, tau1)": int(((rt >= r1 - DAY) & (rt < r1)).sum()),
+                "SEPARATING_in_[tau1, tau1_plus_24h)":
+                    int(((rt >= r1) & (rt < r1 + DAY)).sum()),
+                "SEPARATING_in_[tau2, tau2_plus_24h)":
+                    int(((rt >= r2) & (rt < r2 + DAY)).sum()),
+                "AGREEING_in_[tau1_minus_24h, tau1)": int(((rt >= r1 - DAY) & (rt < r1)).sum()),
+                "AGREEING_in_[tau2_minus_24h, tau2)": int(((rt >= r2 - DAY) & (rt < r2)).sum()),
                 "exactly_at_tau1": int((rt == r1).sum()),
-                "in_[tau2_minus_24h, tau2)": int(((rt >= r2 - DAY) & (rt < r2)).sum()),
                 "exactly_at_tau2": int((rt == r2).sum()),
             },
             "LIVENESS_EVIDENCE_at_tau1": {
@@ -897,44 +1067,87 @@ def main() -> None:
                                          "readings of the CLOCK differ"),
             },
         }
-        # the boundary count alone does not say whether the form DECIDES anything,
-        # so the outcome consequence is measured too: a date-level or `<=` form
-        # would put the instants exactly at tau1 INSIDE A.
-        flip_ns = pmask & (nA == 0) & (at1 > 0)
-        flip_any = pmask & (at1 > 0)
+        # THE NUMBER THAT SETTLES B3: how many rows CHANGE OUTCOME STATE under the
+        # forbidden date-level form, measured on the SEPARATING interval by
+        # recomputing the three states, not inferred from a boundary occupancy
+        # count. decisions/0089 Sec 2(a): four numbers, both bounds x both
+        # populations. Reported here as the two per-bound numbers for this
+        # population, plus the joint form and the state-transition breakdown.
+        def _diff(stx: np.ndarray) -> dict:
+            ch = pmask & (stx != st_half)
+            trans: dict[str, int] = {}
+            for a_ in range(3):
+                for b_ in range(3):
+                    c_ = int((ch & (st_half == a_) & (stx == b_)).sum())
+                    if c_:
+                        trans[f"{STATE_NAMES[a_]} -> {STATE_NAMES[b_]}"] = c_
+            return {"rows_changing_outcome_state": int(ch.sum()),
+                    "transitions": trans,
+                    "rows_examined": int(pmask.sum())}
+
         boundary[popnm]["WHAT_THE_FORM_DECIDES"] = {
-            "rows_with_an_S2_episode_exactly_at_tau1": int(flip_any.sum()),
-            "of_those_currently_scored_never_started_so_the_form_DECIDES_the_outcome":
-                int(flip_ns.sum()),
+            "THE_QUESTION": ("how many position-5 rows change OUTCOME STATE under the forbidden "
+                             "`date(watched_at) <= T1` form, which admits `ts < tau + 24h`"),
+            "measured_by": ("recomputing never_started / continued / started_and_left under the "
+                            "date-level form and diffing row by row against the half-open "
+                            "states this pipeline emits -- not inferred from a boundary count"),
+            "tau1_relaxed_only": _diff(st_tau1),
+            "tau2_relaxed_only": _diff(st_tau2),
+            "BOTH_bounds_relaxed_the_full_forbidden_form": _diff(st_both),
+            "rows_with_an_S2_episode_in_the_SEPARATING_interval_at_tau1":
+                int((pmask & (sep1 > 0)).sum()),
+            "rows_with_an_S2_episode_in_the_SEPARATING_interval_at_tau2":
+                int((pmask & (sep2 > 0)).sum()),
+            "rows_with_an_S2_episode_exactly_at_tau1": int((pmask & (at1 > 0)).sum()),
             "rows_with_an_S2_episode_exactly_at_tau2": int((pmask & (at2 > 0)).sum()),
-            "rows_whose_Continued_test_would_move_at_tau2": 0,
-            "reading": ("under the half-open form the instant AT tau1 is outside A; under a "
-                        "`<=` or date-level form it is inside. Where the row's |A| is otherwise "
-                        "0 that is the difference between Never started and Started-and-left"),
+            "WHAT_THE_PREVIOUS_BUILD_MEASURED": (
+                "this arm's r4 build computed its verdict from the rows exactly AT tau1 only -- "
+                "1 row of the separating interval -- and reported no outcome state differing. "
+                "decisions/0089 Sec 2(a) records that as a claim about the set on which the "
+                "forms differ, computed on the wrong set. The verdict below is recomputed on "
+                "the separating interval and the previous one is superseded"),
+            "reading": ("under the half-open form an instant in [tau, tau + 24h) is OUTSIDE the "
+                        "set; under the date-level form it is INSIDE. At tau1 that turns a "
+                        "never-started row with such an episode into a started one; at tau2 it "
+                        "can turn a started-and-left row into a Continued one"),
         }
         _bp = boundary[popnm]
-        _on = (_bp["DISTINCT_EPISODES_the_form_the_outcome_assignment_reads"]["exactly_at_tau1"]
-               + _bp["DISTINCT_EPISODES_the_form_the_outcome_assignment_reads"]["exactly_at_tau2"]
-               + _bp["RAW_RECORDS_the_ruling's_own_word"]["exactly_at_tau1"]
-               + _bp["RAW_RECORDS_the_ruling's_own_word"]["exactly_at_tau2"])
+        _de = _bp["DISTINCT_EPISODES_the_form_the_outcome_assignment_reads"]
+        _rr = _bp["RAW_RECORDS_the_ruling's_own_word"]
+        # OCCUPANCY IS MEASURED ON THE SEPARATING INTERVAL, which is the set the
+        # verdict is about. The agreeing-window cells cannot make the mandate
+        # load-bearing however large they are.
+        _on = (_de["SEPARATING_in_[tau1, tau1_plus_24h)"]
+               + _de["SEPARATING_in_[tau2, tau2_plus_24h)"]
+               + _rr["SEPARATING_in_[tau1, tau1_plus_24h)"]
+               + _rr["SEPARATING_in_[tau2, tau2_plus_24h)"])
         _dec = _bp["WHAT_THE_FORM_DECIDES"][
-            "of_those_currently_scored_never_started_so_the_form_DECIDES_the_outcome"]
+            "BOTH_bounds_relaxed_the_full_forbidden_form"]["rows_changing_outcome_state"]
+        _bp["OCCUPANCY_BASIS"] = ("the SEPARATING interval [tau, tau + 24h) at both bounds, "
+                                  "distinct episodes and raw records; NOT the agreeing window")
         _bp["VERDICT"] = (
-            "VACUOUS ON THIS DATA -- every boundary cell is 0, so the half-open UTC-instant "
-            "form and a date-level form select the identical rows, and the mandate is not "
-            "load-bearing on this build. STATED AS A ZERO, NOT PASSED SILENTLY" if _on == 0
-            else ("OCCUPIED AND OUTCOME-DECIDING -- the boundary is non-empty AND the two "
-                  f"forms disagree on the outcome of {_dec} row(s)" if _dec > 0
-                  else ("OCCUPIED, NOT VACUOUS, AND NO OUTCOME MOVES -- the boundary is "
-                        "NON-EMPTY, so the mandate is not vacuous here and the half-open form "
-                        "is doing real work in |A|; but every row sitting exactly on tau1 "
-                        "already has |A| >= 1 from other episodes, so no outcome state differs "
-                        "between the two forms on this build. THREE STATES, NOT TWO: an "
-                        "empty boundary, an occupied boundary that decides nothing, and an "
-                        "occupied boundary that decides an outcome are different findings and "
-                        "collapsing the middle one into either neighbour is the misreading")))
+            "VACUOUS ON THIS DATA -- the separating interval is EMPTY at both bounds, so the "
+            "half-open UTC-instant form and the date-level form select the identical sets and "
+            "the mandate is not load-bearing on this build. STATED AS A ZERO, NOT PASSED "
+            "SILENTLY" if _on == 0
+            else ("OCCUPIED AND OUTCOME-DECIDING -- the separating interval is non-empty AND "
+                  f"the two forms disagree on the OUTCOME STATE of {_dec} row(s) of "
+                  f"{int(pmask.sum()):,}. The mandate is load-bearing and it is load-bearing "
+                  "ON THE RESULT, not only on |A|" if _dec > 0
+                  else ("OCCUPIED, NOT VACUOUS, AND NO OUTCOME MOVES -- the separating interval "
+                        "is NON-EMPTY, so the half-open form is doing real work in |A| and "
+                        "|A_H|; but every row with an episode there already has |A| >= 1 from "
+                        "other episodes and its Continued test does not turn, so no outcome "
+                        "state differs. THREE STATES, NOT TWO: an empty separating interval, an "
+                        "occupied one that decides nothing, and an occupied one that decides an "
+                        "outcome are different findings and collapsing the middle into either "
+                        "neighbour is the misreading")))
         _bp["VERDICT_STATE"] = ("VACUOUS" if _on == 0
                                 else "OUTCOME_DECIDING" if _dec > 0 else "OCCUPIED_INERT")
+        _bp["VERDICT_SUPERSEDES"] = (
+            "this arm's r4 verdict, which was computed on [tau - 24h, tau) and the single "
+            "instant at tau -- the interval on which the two forms AGREE plus its first "
+            "separating point (decisions/0089 Sec 2a)")
 
     # ---- (b) the per-site D11 table -------------------------------------
     fp = st1["D11_record_level_footprint"]
@@ -1068,15 +1281,58 @@ def main() -> None:
                    "791, where one arm applied the restriction and the other did not"),
         "a_boundary_window": {
             "what_it_measures": ("the rows on which the half-open form and a date-level form "
-                                 "could differ: S2 evidence in [tau1 - 24h, tau1), exactly at "
-                                 "tau1, and the same two at tau2"),
+                                 "DIFFER -- S2 evidence in the SEPARATING interval [tau, tau + "
+                                 "24h) at both bounds -- and, on those rows, how many change "
+                                 "OUTCOME STATE when the forbidden form is actually applied. The "
+                                 "cells decisions/0088 Sec 1(a) named, [tau - 24h, tau) and "
+                                 "exactly-at-tau, are reported alongside"),
+            "THE_INTERVAL_WAS_CORRECTED": (
+                "decisions/0089 Sec 2(a). 0088 Sec 1(a) named [tau - 24h, tau). T0 is "
+                "day-floored, so tau1 and tau2 are MIDNIGHT-ALIGNED and `date(ts) < date(tau)` "
+                "is identical to `ts < tau` below the boundary -- THAT WINDOW IS WHERE THE TWO "
+                "FORMS AGREE. The separating interval is [tau, tau + 24h). This arm's r4 build "
+                "emitted the ruled window and the single instant exactly at tau and nothing "
+                "else, and took its verdict off 1 row of the separating interval"),
             "compliance_self_report": ("no .date(), dt.date, normalize() or day-flooring "
                                        "anywhere in this arm's step8_b_*.py; instants are int64 "
                                        "seconds throughout. THAT IS THE SELF-REPORT AND IT IS "
                                        "NOT THE MEASUREMENT"),
+            "THE_FOUR_NUMBERS_THAT_SETTLE_B3": {
+                "definition": ("rows changing OUTCOME STATE under the forbidden date-level form, "
+                               "both bounds x both populations, on the position-5 row set"),
+                "APPLY_position5_tau1_relaxed": boundary["APPLY_position5"][
+                    "WHAT_THE_FORM_DECIDES"]["tau1_relaxed_only"]["rows_changing_outcome_state"],
+                "APPLY_position5_tau2_relaxed": boundary["APPLY_position5"][
+                    "WHAT_THE_FORM_DECIDES"]["tau2_relaxed_only"]["rows_changing_outcome_state"],
+                "DERIV_position5_tau1_relaxed": boundary["DERIV_position5"][
+                    "WHAT_THE_FORM_DECIDES"]["tau1_relaxed_only"]["rows_changing_outcome_state"],
+                "DERIV_position5_tau2_relaxed": boundary["DERIV_position5"][
+                    "WHAT_THE_FORM_DECIDES"]["tau2_relaxed_only"]["rows_changing_outcome_state"],
+                "APPLY_position5_both_bounds_relaxed": boundary["APPLY_position5"][
+                    "WHAT_THE_FORM_DECIDES"]["BOTH_bounds_relaxed_the_full_forbidden_form"][
+                    "rows_changing_outcome_state"],
+                "DERIV_position5_both_bounds_relaxed": boundary["DERIV_position5"][
+                    "WHAT_THE_FORM_DECIDES"]["BOTH_bounds_relaxed_the_full_forbidden_form"][
+                    "rows_changing_outcome_state"],
+                "why_six_and_not_four": ("the ruling asks for four -- two bounds x two "
+                                         "populations. The joint form is emitted as well because "
+                                         "the forbidden form relaxes BOTH bounds at once and the "
+                                         "two per-bound counts do not have to sum to it: a row "
+                                         "moved from never-started by tau1 can be moved again by "
+                                         "tau2"),
+                "the_forbidden_form_is_computed_ONLY_here": (
+                    "as a counterfactual whose only output is a count. The emitted table, every "
+                    "waterfall line, every share and every other figure in this deliverable are "
+                    "the half-open UTC-instant form. The counterfactual asserts that its own "
+                    "half-open baseline reproduces the pipeline's states exactly before it "
+                    "diffs anything"),
+            },
             "by_population": boundary,
             "IF_ZERO_THE_INVARIANT_IS_VACUOUS": ("a zero stated as a zero is evidence; a zero "
-                                                 "arriving as a pass is not (0088 Sec 1(a))"),
+                                                 "arriving as a pass is not (0088 Sec 1(a)). The "
+                                                 "zero that would make it vacuous is a zero on "
+                                                 "the SEPARATING interval, not on the agreeing "
+                                                 "window"),
         },
         "b_per_site_D11_table": {
             "what_it_measures": ("records excluded by D11 at EACH site separately, asserted at "

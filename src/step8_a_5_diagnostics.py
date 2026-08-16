@@ -493,12 +493,62 @@ def main():
                      "carrying S1 and not S2, the other S2 and not S1) whose normalised slugs "
                      "agree. Detection is imperfect and every count here is a LOWER BOUND "
                      "(Step 1 SS10.0b).",
-        "key_ruling": "decisions/0074 ruling 5 adopts the STRICT key; decisions/0076 defines "
-                      "both keys in the spec. STRICT = lowercase, drop every non-alphanumeric "
-                      "character, strip nothing else. LOOSE = remove a trailing four-digit year "
-                      "first, then strict. The loose count publishes alongside because it BOUNDS "
-                      "HOW WRONG STRICT COULD BE, and the error runs OPPOSITE to D9's own "
-                      "lower-bound caveat.",
+        "key_ruling": "D9 PUBLISHES AS A BOUND. Human Lead ruling, decisions/0090. STRICT IS THE "
+                      "FLOOR, LOOSE IS THE CEILING, BOTH LABELLED, AND NEITHER IS THE POINT "
+                      "ESTIMATE -- neither endpoint may be quoted as 'D9's result'. This "
+                      "SUPERSEDES 0074 ruling 5's framing, 'use the strict key and report the "
+                      "loose count alongside', under which STRICT WAS THE ANSWER and loose was "
+                      "context. decisions/0076 defines both keys: STRICT = lowercase, drop every "
+                      "non-alphanumeric character, strip nothing else; LOOSE = remove a trailing "
+                      "four-digit year first, then strict.",
+        "BOUND": {
+            "ruling": "decisions/0090. It is 0074 ruling 5's OWN REASON carried through: the "
+                      "loose count publishes BECAUSE IT BOUNDS HOW WRONG STRICT COULD BE, and a "
+                      "quantity published to bound another IS AN ENDPOINT, not a footnote. "
+                      "decisions/0078 SS3 already ran this argument once, to extend the loose "
+                      "count to half (b). Same reason, one step further.",
+            "applies_to": "EVERY D9 quantity that has both forms, not the headline alone -- "
+                          "applying it to one and not the others is the defect 0078 SS3 "
+                          "corrected. The ruling's phrase 'this half' is read this way for that "
+                          "reason; if a single half was meant, it narrows.",
+            "direction_is_part_of_the_label": "STRICT IS THE FLOOR because it matches only slugs "
+                                              "identical modulo punctuation, so it CANNOT "
+                                              "OVER-COUNT. LOOSE IS THE CEILING because stripping "
+                                              "a trailing year MERGES GENUINELY DIFFERENT SHOWS -- "
+                                              "remakes and national versions. The error runs "
+                                              "OPPOSITE to D9's own lower-bound caveat, which is "
+                                              "why the interval publishes rather than being "
+                                              "resolved away.",
+            "complementary_signature_id_pairs": [st["complementary_signature_id_pairs"],
+                                                 lo["complementary_signature_id_pairs"]],
+            "half_a_fabricated_never_started_row_APPLY_position_7": [
+                st["half_a_never_started_carrying_the_signature_APPLY_position_7"],
+                lo["half_a_never_started_carrying_the_signature_APPLY_position_7"]],
+            "half_b_silently_deleted_S1_failing_counterpart": [
+                st["half_b_S1_failing_pairs_carrying_the_signature"],
+                lo["half_b_S1_failing_pairs_carrying_the_signature"]],
+            "NEITHER_ENDPOINT_IS_THE_POINT_ESTIMATE": True,
+            "a_zero_floor_is_not_an_absence_of_evidence": {
+                "why": "0 is a MEASURED floor on a stated coverage, and the coverage publishes "
+                       "beside it -- a bound whose floor is 0 and whose coverage is unstated is "
+                       "indistinguishable from a check that looked nowhere (decisions/0090 SS1).",
+                "coverage_user_show_pairs_examined_under_the_strict_key": st[
+                    "user_show_pairs_examined_carrying_a_slugged_show"],
+                "coverage_D9_candidate_pairs_carrying_S1_or_S2_evidence": st[
+                    "of_which_are_D9_CANDIDATES_carrying_S1_or_S2_evidence"],
+                "coverage_position_3_drop_set_pairs_for_half_b": int(failed_s1.sum()),
+                "coverage_never_started_pairs_for_half_a_APPLY_position_7": int(
+                    (pos6 & r["never"]).sum()),
+            },
+            "THE_THIRD_KEY_IS_NOT_AN_ENDPOINT": {
+                "value": by_key["third_key_trailing_digit_groups_NOT_RULED"][
+                    "complementary_signature_id_pairs"],
+                "why": "stripping a trailing digit group of arbitrary length reduces `the-100` to "
+                       "`the`; its 76 is A DIFFERENT KEY'S ANSWER, reported as a divergence and "
+                       "NEVER as the ceiling (decisions/0090 SS1; 0076, 0078 SS3).",
+            },
+            "build": lib.BUILD_TAG,
+        },
         # F2(b): NAME WHAT EACH COVERAGE FIGURE COUNTS, AT THE POINT OF USE. Human Lead ruling,
         # decisions/0088 SS2. One name over two quantities is the defect; reconciling would
         # collapse two real objects into one, which the standing rule forbids. Every figure below
@@ -545,7 +595,10 @@ def main():
             "build": lib.BUILD_TAG,
         },
         "position_3_drop_set_input": dropset_meta,
-        "ADOPTED_strict_key": {
+        "FLOOR_strict_key": {
+            "label": "FLOOR of the bound (decisions/0090). NOT the point estimate and NOT 'D9's "
+                     "result'. ***SUPERSEDES the key name `ADOPTED_strict_key`, used on builds "
+                     "through a/2026-08-16-0088 under 0074 ruling 5's framing.***",
             "complementary_signature_id_pairs": st["complementary_signature_id_pairs"],
             "half_a_fabricated_never_started_row": {
                 "population": "APPLY, position 7 (post-liveness), scored Never started",
@@ -569,14 +622,20 @@ def main():
                 "pairs_failing_S1_completion": int(failed_s1.sum()),
                 "carrying_the_signature": st["half_b_S1_failing_pairs_carrying_the_signature"]},
         },
-        "REPORTED_ALONGSIDE_loose_key": {
+        "CEILING_loose_key": {
+            "label": "CEILING of the bound (decisions/0090). NOT the point estimate. ***SUPERSEDES "
+                     "the key name `REPORTED_ALONGSIDE_loose_key`, used on builds through "
+                     "a/2026-08-16-0088, under which strict was the answer and this was "
+                     "context.***",
             "complementary_signature_id_pairs": lo["complementary_signature_id_pairs"],
             "half_a_APPLY_position_7": lo[
                 "half_a_never_started_carrying_the_signature_APPLY_position_7"],
             "half_b": lo["half_b_S1_failing_pairs_carrying_the_signature"],
-            "why_it_is_not_adopted": "it strips the year and merges genuinely different shows -- "
-                                     "remakes and national versions, not split metadata, which is "
-                                     "the artefact D9 exists to count",
+            "why_it_is_the_CEILING_and_not_the_answer": "it strips the year and merges genuinely "
+                                     "different shows -- remakes and national versions, not split "
+                                     "metadata, which is the artefact D9 exists to count. That is "
+                                     "exactly why it CANNOT UNDER-COUNT and is therefore the "
+                                     "upper endpoint (decisions/0090).",
             "clustering_universe_NAMED": clustering_universe,
             "largest_clusters_it_merges": top_merged,
             "largest_clusters_ranked_by_distinct_show_ids_instead": top_merged_by_ids,
@@ -662,7 +721,12 @@ def main():
                                            "appears in any step8_a_*.py; every bound is an int64 "
                                            "second comparison. `date(watched_at) <= T1` appears "
                                            "nowhere.",
-                "tau1_and_tau2_are_midnight_aligned_UTC": True,
+                # MEASURED, not a literal: this decides which interval separates the two forms,
+                # so a hardcoded True here would assert the very thing the block exists to check.
+                "tau1_and_tau2_are_midnight_aligned_UTC": bool(
+                    int((tau1 % DAY).sum()) == 0 and int((tau2 % DAY).sum()) == 0),
+                "rows_whose_tau1_is_not_midnight_aligned": int((tau1 % DAY != 0).sum()),
+                "rows_whose_tau2_is_not_midnight_aligned": int((tau2 % DAY != 0).sum()),
                 "build": lib.BUILD_TAG}
     for _pname, _m in (("APPLY_position_5", pos5), ("DERIV_position_5", pos5d)):
         cells = {}
@@ -696,6 +760,105 @@ def main():
         "answer for that many episodes. The 'exactly at the bound' cells are the ruling's own "
         "second quantity and are a subset of the differing interval, since tau1 and tau2 are "
         "midnight-aligned.")
+    # ---- THE NUMBER THAT SETTLES B3(a): OUTCOME-STATE FLIPS, NOT EPISODES ADMITTED ----------
+    # decisions/0089 SS2(a), Red Team's fifth pass, F1. The block above emits EPISODES ADMITTED on
+    # the separating interval. That is the right interval and the wrong object: the question the
+    # mandate turns on is whether the forbidden form would change the ANSWER, and the answer is an
+    # outcome state. FOUR NUMBERS, BOTH BOUNDS x BOTH POPULATIONS, on the position-5 row set.
+    #
+    #   at tau1: a NEVER-STARTED row with an episode in [tau1, tau1 + 24h) FLIPS TO STARTED,
+    #            because |A| goes from 0 to >= 1.
+    #   at tau2: a STARTED-AND-LEFT row with an episode in [tau2, tau2 + 24h) CAN FLIP TO
+    #            CONTINUED, because A_H gains an episode and both the F2 clause and the 0.90
+    #            clause can turn on it.
+    #
+    # The row masks are the same ones the block above counts rows on -- this recomputes the two
+    # outcome instants under the forbidden bound and cross-tabulates against the adopted state.
+    # It is a COUNTERFACTUAL: nothing here changes what the pipeline emits. `date(watched_at) <=
+    # T1` still appears nowhere in the implementation; this measures what would happen if it did.
+    kA_dl = a.count_before(tau1 + DAY)          # date(ts) <= date(tau1), tau1 midnight-aligned
+    kAH_dl = a.count_before(tau2 + DAY)         # date(ts) <= date(tau2)
+    mH_dl = a.maxnum_before(kAH_dl)
+
+    def _state(kA_, kAH_, mH_):
+        cont_ = (kA_ >= 1) & (mH_ == a.F2) & (kAH_ >= a.need2)
+        nev_ = kA_ == 0
+        return (np.where(nev_, lib.NEVER, np.where(cont_, lib.CONT, lib.LEFT)).astype(np.int8),
+                cont_)
+
+    base_state, base_cont = _state(r["kA"], r["kAH"], r["mH"])
+    assert bool((base_state == r["outcome"]).all()), (
+        "the counterfactual state function does not reproduce the adopted outcome on the "
+        "half-open form; the comparison below would be against the wrong baseline")
+    variants = {
+        "tau1_only_date_level": _state(kA_dl, r["kAH"], r["mH"]),
+        "tau2_only_date_level": _state(r["kA"], kAH_dl, mH_dl),
+        "both_bounds_date_level": _state(kA_dl, kAH_dl, mH_dl),
+    }
+    _NAME = {lib.NEVER: "never_started", lib.LEFT: "started_and_left", lib.CONT: "continued"}
+
+    flips = {"ruling": "decisions/0089 SS2(a), Red Team fifth pass F1. THE NUMBER THAT SETTLES "
+                       "B3(a) is how many POSITION-5 ROWS CHANGE OUTCOME STATE under the "
+                       "forbidden date-level form -- four numbers, both bounds x both "
+                       "populations -- NOT how many episodes the form admits. The previous build "
+                       "of this arm emitted episodes admitted and is corrected here.",
+             "forbidden_form": "date(watched_at) <= date(tau), which on midnight-aligned bounds "
+                               "admits the whole of [tau, tau + 24h). It appears NOWHERE in the "
+                               "implementation; this is a counterfactual measured on the adopted "
+                               "build, and nothing the pipeline emits changes.",
+             "unit": "POSITION-5 ROWS whose outcome state differs, not episodes",
+             "build": lib.BUILD_TAG}
+    for _pname, _m in (("APPLY_position_5", pos5), ("DERIV_position_5", pos5d)):
+        cell = {"rows_examined": int(_m.sum())}
+        for vname, (st_, cont_) in variants.items():
+            ch = _m & (st_ != base_state)
+            trans = {}
+            for f_ in (lib.NEVER, lib.LEFT, lib.CONT):
+                for t_ in (lib.NEVER, lib.LEFT, lib.CONT):
+                    if f_ == t_:
+                        continue
+                    c_ = int((ch & (base_state == f_) & (st_ == t_)).sum())
+                    if c_:
+                        trans[f"{_NAME[f_]}__to__{_NAME[t_]}"] = c_
+            nl_ = r["silent"] & ~cont_
+            cell[vname] = {
+                "rows_changing_outcome_state": int(ch.sum()),
+                "transitions": trans,
+                "liveness_exclusions_under_this_form": int((_m & nl_).sum()),
+                "liveness_exclusions_adopted": int((_m & r["not_live"]).sum()),
+                "liveness_exclusions_MOVE": int((_m & nl_).sum())
+                                             - int((_m & r["not_live"]).sum()),
+            }
+        assert cell["rows_examined"] > 0, (
+            "the outcome-flip counterfactual looked at zero rows on " + _pname + ": an empty "
+            "result and a clean result are the same value and only the control knows which it "
+            "produced")
+        flips[_pname] = cell
+    flips["THE_FOUR_NUMBERS"] = {
+        "APPLY_at_tau1": flips["APPLY_position_5"]["tau1_only_date_level"][
+            "rows_changing_outcome_state"],
+        "APPLY_at_tau2": flips["APPLY_position_5"]["tau2_only_date_level"][
+            "rows_changing_outcome_state"],
+        "DERIV_at_tau1": flips["DERIV_position_5"]["tau1_only_date_level"][
+            "rows_changing_outcome_state"],
+        "DERIV_at_tau2": flips["DERIV_position_5"]["tau2_only_date_level"][
+            "rows_changing_outcome_state"],
+        "reading": "each bound is varied ALONE, which is what 'both bounds' means here; the "
+                   "joint form is reported separately because it is not the sum of the two -- a "
+                   "row can flip at tau1 and flip again at tau2.",
+    }
+    flips["VACUOUS_ON_THIS_BUILD"] = all(
+        v == 0 for k, v in flips["THE_FOUR_NUMBERS"].items() if k != "reading")
+    flips["reading"] = (
+        "If every one of the four is 0 the mandate is LOAD-BEARING ON EPISODES BUT NOT ON "
+        "OUTCOMES on this data, and that is stated rather than passed silently. A non-zero says "
+        "the half-open form decides that many published outcome states.")
+    boundary["OUTCOME_STATE_FLIPS_the_number_that_settles_B3a"] = flips
+    boundary["CORRECTION_TO_THE_PREVIOUS_BUILD"] = (
+        "build a/2026-08-16-0088 emitted the separating interval and the EPISODES ADMITTED on it, "
+        "and stopped there. decisions/0089 SS2(a) records that as answering B3(a) with the wrong "
+        "object: 'Arm A reports episodes ADMITTED, not outcomes.' The episode counts are correct "
+        "and are kept; the outcome-state block above is what settles the question.")
     D["B3a_boundary_window_half_open_form"] = boundary
 
     # ---- 7b. B3(b): THE PER-SITE D11 TABLE, ASSERTED AT EACH SITE ---------------------------
@@ -781,20 +944,44 @@ def main():
                               == _sv["records_excluded_by_D11"] + _sv["records_used_after_D11"]),
                 "VACUOUS_ON_THIS_BUILD": bool(_sv["records_excluded_by_D11"] == 0)})
         elif _sn == "S1_completion_walk":
+            # MEASURED, NOT A LITERAL. This site published `"holds": True` as a hardcoded literal
+            # on build a/2026-08-16-0088 -- a result asserted rather than measured, inside the
+            # very table decisions/0088 SS1(b) created to stop mandates being self-reported. It is
+            # the same shape as a control asserted to exist, and it sat in the one site whose
+            # declaration is the interesting one.
+            #
+            # WHAT A NOT-APPLIED SITE CAN ASSERT. It cannot assert that D11 removed the right
+            # records, because it removes none. It CAN assert that the DECLARATION MATCHES THE
+            # WALK'S OWN OUTPUT: if D11 were silently applied here, no completer's first-pass walk
+            # could have used a post-cutoff record and that count would be 0. So the site is
+            # not-applied iff the count is positive, and both sides are measured.
             cf = _sv["counterfactual_measured_in_stage_2"]
+            _used_post_cutoff = int(cf["completers_whose_first_pass_walk_used_a_post_cutoff_record"])
+            _excluded_here = 0                       # measured: this site applies no D11 filter
+            _declared_not_applied = (_sv["D11_applied"] is False)
+            _consistent = bool((_used_post_cutoff > 0) == _declared_not_applied)
             site_assertions.append({
                 "site": _sn, "D11_applied": False,
-                "assertion": "THIS SITE IS DECLARED NOT-APPLIED, NOT SILENT. decisions/0068 fixes "
-                             "waterfall line 1 at the published 220,107 and lists whether D11 "
-                             "moves it as an OPEN question; the counterfactual is measured and "
-                             "published rather than the site being omitted from the table.",
+                "assertion": "THIS SITE IS DECLARED NOT-APPLIED, AND THE DECLARATION IS CHECKED "
+                             "AGAINST THE WALK'S OWN OUTPUT: completers whose first-pass walk used "
+                             "a record at or after tau_pull is > 0 IFF D11 is genuinely not "
+                             "applied here. A silent application would drive that count to 0 and "
+                             "this assertion would FAIL. decisions/0068 fixes waterfall line 1 at "
+                             "the published 220,107 and lists whether D11 moves it as an OPEN "
+                             "question; the counterfactual is measured and published rather than "
+                             "the site being omitted from the table.",
                 "coverage_unit_count": _sv["records_at_or_after_tau_pull_on_the_S1_side"],
-                "excluded_by_D11": 0,
+                "excluded_by_D11": _excluded_here,
+                "completers_whose_first_pass_walk_used_a_post_cutoff_record": _used_post_cutoff,
+                "declaration_matches_the_measurement": _consistent,
                 "pairs_that_would_stop_being_completers": cf[
                     "pairs_that_stop_being_completers_under_D11"],
                 "completion_dates_that_would_move": cf[
                     "completers_whose_completion_date_moves_under_D11"],
-                "holds": True})
+                "MEASURED_NOT_A_LITERAL": "build a/2026-08-16-0088 published `holds: True` here "
+                                          "as a hardcoded literal; it is computed from the two "
+                                          "measured quantities above on this build.",
+                "holds": bool(_consistent and _excluded_here == 0)})
     # A CHECK THAT FINDS NOTHING BECAUSE IT LOOKED NOWHERE MUST NOT READ AS A PASS (CLAUDE.md).
     # Two of the thirteen sites -- action_count_s1_other and action_count_s2_other -- examine
     # ZERO units, because no record in the sweep carries an action outside
@@ -959,7 +1146,12 @@ def main():
                          != frame.s2_F).sum()),
                     "s2_aired_lt_listed_shows": int(frame.s2_aired_lt_listed.sum()),
                     "shows_in_frame_examined": int(frame.shape[0]),
-                    "holds_on_every_frame_show": True,
+                    # MEASURED, not a literal: read off the count immediately above rather than
+                    # asserted beside it, so the two cannot disagree on a future frame.
+                    "holds_on_every_frame_show": bool(
+                        int((frame.s2_E.map(lambda s: max(int(x) for x in str(s).split(",")
+                                                          if x.strip().isdigit()))
+                             != frame.s2_F).sum()) == 0),
                     "why_it_matters": "where a season lists an episode numbered above its finale, "
                                       "saturation of the rank numerator and 'left at the final "
                                       "episode' come apart and a FALSE row becomes possible. The "
@@ -1050,52 +1242,174 @@ def main():
     # 196,555 against a 196,654-row table -- 99 rows covered by NEITHER clause, exactly the
     # started-and-left liveness exclusions. A passing invariant whose coverage the instance chose
     # is a code check on the instance's choice.
+    #
+    # =====================================================================================
+    # THE COVERAGE-IDENTITY INDEPENDENCE PROXY WAS WRONG, AND IT IS CORRECTED HERE.
+    #
+    # Red Team's fifth pass, F2, carried into this rerun by decisions/0090 SS3. Build
+    # a/2026-08-16-0088 classified an identity as REAL ARITHMETIC on the test
+    #
+    #     real = parts is not None and len(parts) > 1
+    #
+    # -- i.e. "it has more than one clause". THAT TEST ADMITS AN IDENTITY THAT CANNOT FAIL ON ANY
+    # DATA. Every multi-clause identity in that build had clauses that are a COMPLEMENTARY
+    # PARTITION OF THE SAME MASK the population size is taken from:
+    #
+    #   invariant 1  parts = [never & M, left & M, continued & M],  n_pop = M.sum()
+    #                the three states are mutually exclusive and exhaustive BY THE EXPRESSIONS
+    #                THAT DEFINE THEM (never = kA == 0; continued = (kA >= 1) & ...;
+    #                left = (kA >= 1) & ~continued), so the three always sum to M.sum().
+    #   invariant 6  parts = [M & left, M & ~left],  n_pop = M.sum()   -- X and its complement.
+    #   invariant 7  parts = [|all| - |touched|, |mixed|, |wholesale|], n_pop = |all|, and
+    #                mixed + wholesale = touched by set algebra, so the three always sum to |all|.
+    #   invariant 9  parts = [tau2 <= tau_pull, tau2 > tau_pull],  n_pop = M.sum() -- complement.
+    #
+    # In all four, `sum(parts) == n_pop` is an identity of the expressions, not a fact about the
+    # data. THE PREVIOUS DELIVERABLE CALLED INVARIANT 6's "the identity that closes the hole".
+    # It closes nothing on its own: it holds whatever mask M is, including a mask that is not the
+    # population the invariant names -- which is the exact defect (0080 SS3's 99-row hole) it was
+    # introduced to detect.
+    #
+    # THE FIX IS THE ONE THE HOLE ACTUALLY NEEDS: SOURCE THE POPULATION SIZE INDEPENDENTLY OF THE
+    # ASSERTED COUNT. The 99-row hole was an invariant asserted on a POST-liveness numerator
+    # against a PRE-liveness denominator. That is detectable only if the denominator comes from
+    # somewhere other than the masks the numerator is built from. So every identity below states
+    # where its population size came from, and where an independent source exists the identity is
+    # checked against THAT number:
+    #
+    #   EMITTED_DELIVERABLE   read back from processed/step8/a/analysis_table.csv.gz -- the file
+    #                         this step delivers, written by STAGE 3 from a different code path.
+    #   INDEPENDENT_FILE      a count written by an earlier stage into its own JSON.
+    #   INDEPENDENT_CODE_PATH the same file parsed by different code (used once, for the ledger).
+    #   NOT_INDEPENDENT       the population size and the asserted count are one expression.
+    #                         Bookkeeping. Labelled as such and NOT counted as a check.
+    #
+    # The clause counts are KEPT -- they are informative and they are what a reader needs to see
+    # the hole -- but they are no longer what makes an identity falsifiable. And the mechanism is
+    # DEMONSTRATED rather than asserted: at the end of this section every independent identity is
+    # re-run against a deliberately perturbed population size and must report FAIL.
     # =====================================================================================
     inv = []
 
-    def cover(unit, population, n_pop, n_asserted, extra=None, parts=None, n_not=None):
+    # --- the independent sources, read before any identity is built -------------------------
+    oc = json.load(open(os.path.join(OUT, "outcomes.json")))          # written by STAGE 3
+    _tbl = pd.read_csv(os.path.join(OUT, "analysis_table.csv.gz"),
+                       usecols=["user_idx", "in_deriv", "live"])
+    IND = {
+        "APPLY_pos5_rows": (int(_tbl.shape[0]),
+                            "processed/step8/a/analysis_table.csv.gz, rows -- the EMITTED "
+                            "DELIVERABLE, written by stage 3", "EMITTED_DELIVERABLE"),
+        "APPLY_pos6_rows": (int(_tbl.live.astype(bool).sum()),
+                            "processed/step8/a/analysis_table.csv.gz, rows with live = True",
+                            "EMITTED_DELIVERABLE"),
+        "DERIV_pos5_rows": (int(_tbl.in_deriv.astype(bool).sum()),
+                            "processed/step8/a/analysis_table.csv.gz, rows with in_deriv = True",
+                            "EMITTED_DELIVERABLE"),
+        "DERIV_pos6_rows": (int((_tbl.in_deriv.astype(bool) & _tbl.live.astype(bool)).sum()),
+                            "processed/step8/a/analysis_table.csv.gz, rows with in_deriv and live",
+                            "EMITTED_DELIVERABLE"),
+        "APPLY_pos5_accounts": (int(_tbl.user_idx.nunique()),
+                                "processed/step8/a/analysis_table.csv.gz, distinct user_idx",
+                                "EMITTED_DELIVERABLE"),
+        "DERIV_pos5_accounts": (int(_tbl.loc[_tbl.in_deriv.astype(bool), "user_idx"].nunique()),
+                                "processed/step8/a/analysis_table.csv.gz, distinct user_idx on "
+                                "in_deriv rows", "EMITTED_DELIVERABLE"),
+        "pair_universe": (int(scan_sum["pair_universe_any_inE_S1S2_record"]),
+                          "processed/step8/a/scan_summary.json, written by stage 1",
+                          "INDEPENDENT_FILE"),
+    }
+    del _tbl
+    # the ledger account count, parsed by a DIFFERENT code path from the pandas read below
+    _ledger_slugs = set()
+    with open(os.path.join(P4, "pull_ledger.jsonl")) as _fh:
+        for _line in _fh:
+            _line = _line.strip()
+            if _line:
+                _o = json.loads(_line)
+                if _o.get("slug") is not None:
+                    _ledger_slugs.add(_o["slug"])
+    IND["ledger_accounts"] = (len(_ledger_slugs),
+                              "processed/step4/pull_ledger.jsonl, distinct `slug` counted by a "
+                              "line-by-line json.loads pass rather than by pandas.read_json",
+                              "INDEPENDENT_CODE_PATH")
+    # the seven filter positions, recovered from the two files that wrote them
+    _wf = pos_sum["waterfall_APPLY"]
+    _wfd = pos_sum["waterfall_DERIV"]
+    IND["positions_APPLY"] = (len(_wf) + 2,
+                              "processed/step8/a/positions.json waterfall_APPLY (positions 1-5, "
+                              "stage 2) plus positions 6 and 7 from outcomes.json (stage 3)",
+                              "INDEPENDENT_FILE")
+    IND["positions_DERIV"] = (len(_wfd) + 2,
+                              "processed/step8/a/positions.json waterfall_DERIV (positions 1-5, "
+                              "stage 2) plus positions 6 and 7 from outcomes.json (stage 3)",
+                              "INDEPENDENT_FILE")
+
+    _identity_registry = []
+
+    def cover(unit, population, n_pop, n_asserted, extra=None, parts=None, n_not=None,
+              indep=None, clause_note=None):
         """rows_asserted + rows_not_asserted = rows_in_the_stated_population (decisions/0080).
 
-        `parts` lets an invariant with two clauses state each clause's count separately, so the
-        identity is a real arithmetic check on independently measured numbers rather than a
-        subtraction that cannot fail -- which is exactly how the 99-row hole was hidden."""
+        `indep` names an INDEPENDENT source for the population size. Without one the identity is
+        bookkeeping: the asserted count and the population size are the same expression and
+        `N - N = 0` holds however the mask was chosen. `parts` states each clause's count, which
+        is what a reader needs to see a hole -- but multi-clause is NOT what makes the identity
+        falsifiable, and treating it as such was the F2 defect corrected on this build."""
         asserted = int(sum(parts)) if parts is not None else int(n_asserted)
         not_asserted = int(n_not) if n_not is not None else int(n_pop) - asserted
         lhs = (" + ".join(str(int(x)) for x in parts) if parts is not None else str(asserted)
                ) + f" + {not_asserted} not asserted"
-        # WHAT THIS IDENTITY CAN DETECT, stated rather than left to read as a check. Red Team's
-        # fourth pass (0087 SS4) found that most of them have the population size and the
-        # asserted count as THE SAME EXPRESSION, so `not_asserted = N - N = 0` holds however the
-        # population was chosen and the identity cannot detect an invariant run on a population
-        # other than the one named. Only the multi-clause forms are real arithmetic. Labelled at
-        # the point of use, because an unlabelled check that cannot fail reads as one that can.
-        real = parts is not None and len(parts) > 1
+        iv, isrc, itier = (indep if indep is not None else (None, None, "NOT_INDEPENDENT"))
+        can_fail = itier != "NOT_INDEPENDENT"
         d = {"population": population, "unit": unit,
              f"{unit}_in_the_stated_population": int(n_pop),
              f"{unit}_asserted": asserted,
              f"{unit}_not_asserted": not_asserted,
              "coverage_identity": f"{lhs} = {int(n_pop)}",
              "coverage_identity_holds": bool(asserted + not_asserted == int(n_pop)),
-             "identity_is_REAL_ARITHMETIC": bool(real),
+             "population_size_independence": itier,
+             "population_size_source": (isrc if isrc is not None else
+                                        "THE SAME MASK THE ASSERTED COUNT IS TAKEN FROM -- not "
+                                        "independent"),
+             "independent_population_size": (int(iv) if iv is not None else None),
+             "identity_against_the_independent_source": (
+                 f"{lhs} = {int(iv)}" if iv is not None else None),
+             "identity_against_the_independent_source_holds": (
+                 bool(asserted + not_asserted == int(iv)) if iv is not None else None),
+             "identity_CAN_FAIL_ON_ANY_DATA": bool(can_fail),
              "what_it_can_detect": (
-                 "a unit covered by NO clause -- the 99-row hole decisions/0080 SS3 was written "
-                 "for. The clauses are counted independently and must sum to the population."
-                 if real else
+                 "AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole "
+                 "decisions/0080 SS3 was written for. The population size comes from " + str(isrc)
+                 + ", so the clauses and the denominator are not the same expression and the "
+                   "identity can fail." if can_fail else
                  "NOTHING. The asserted count and the population size are the same expression, so "
-                 "N - N = 0 holds however the population was chosen. This is bookkeeping, not a "
-                 "check (Red Team fourth pass, decisions/0087 SS4)."),
+                 "N - N = 0 holds however the mask was chosen -- and that is true whether the "
+                 "identity has one clause or five. Bookkeeping, not a check (Red Team fourth pass "
+                 "decisions/0087 SS4; the multi-clause proxy corrected on Red Team's FIFTH pass, "
+                 "F2)."),
              "build": lib.BUILD_TAG}
         if parts is not None:
             d["asserted_clause_counts"] = [int(x) for x in parts]
+            d["clauses_are_a_complementary_partition_of_the_population_mask"] = (
+                clause_note if clause_note is not None else
+                "NOT STATED -- treat as possibly forced by construction")
         if extra:
             d.update(extra)
+        if iv is not None:
+            _identity_registry.append((population, unit, asserted, not_asserted, int(iv),
+                                       str(isrc)))
         return d
 
-    def partition_of(mask, label):
+    def partition_of(mask, label, indep=None):
         st_ = np.stack([r["never"], r["left"], r["continued"]])[:, mask]
         return {**cover("rows", label, int(mask.sum()), None,
                         parts=[int((mask & r["never"]).sum()), int((mask & r["left"]).sum()),
-                               int((mask & r["continued"]).sum())], n_not=0),
+                               int((mask & r["continued"]).sum())], n_not=0, indep=indep,
+                        clause_note="YES -- never / continued / left are mutually exclusive and "
+                                    "exhaustive by the expressions that define them, so the three "
+                                    "always sum to the mask. The clause counts are informative; "
+                                    "what makes this identity falsifiable is the INDEPENDENT "
+                                    "population size, not the clause count."),
                 "exactly_one_state_per_row": bool((st_.sum(axis=0) == 1).all()),
                 "never_started": int((mask & r["never"]).sum()),
                 "started_and_left": int((mask & r["left"]).sum()),
@@ -1105,11 +1419,15 @@ def main():
                 "holds": bool((st_.sum(axis=0) == 1).all()) and int(st_.sum()) == int(mask.sum())}
 
     parts = {
-        "APPLY_post_position_7_195951": partition_of(pos6, "APPLY, post-position-7 row set"),
+        "APPLY_post_position_7_195951": partition_of(pos6, "APPLY, post-position-7 row set",
+                                                     IND["APPLY_pos6_rows"]),
         "APPLY_position_5_table_row_set_196654": partition_of(
-            pos5, "APPLY, position-5 row set -- what the analysis table carries"),
-        "DERIV_post_position_7_147271": partition_of(pos6d, "DERIV, post-position-7 row set"),
-        "DERIV_position_5_147370": partition_of(pos5d, "DERIV, position-5 row set"),
+            pos5, "APPLY, position-5 row set -- what the analysis table carries",
+            IND["APPLY_pos5_rows"]),
+        "DERIV_post_position_7_147271": partition_of(pos6d, "DERIV, post-position-7 row set",
+                                                     IND["DERIV_pos6_rows"]),
+        "DERIV_position_5_147370": partition_of(pos5d, "DERIV, position-5 row set",
+                                                IND["DERIV_pos5_rows"]),
     }
     inv.append({
         "name": "outcome states are mutually exclusive and sum to the post-position-7 row set",
@@ -1127,6 +1445,8 @@ def main():
         # a control asserted to exist. It now reads the identity off each stated population.
         "coverage_identity_holds_on_every_stated_population": bool(
             all(v["coverage_identity_holds"] for v in parts.values())),
+        "identity_holds_against_the_INDEPENDENT_source_on_every_stated_population": bool(
+            all(v["identity_against_the_independent_source_holds"] for v in parts.values())),
         "populations_whose_identity_was_checked": len(parts),
         "passed": all(v["holds"] for v in parts.values()),
     })
@@ -1150,9 +1470,23 @@ def main():
         "chain_DERIV": chain_d,
         "coverage_positions": len(chain) + len(chain_d),
         "coverage_APPLY": cover("positions", "APPLY's seven filter positions", len(chain),
-                                len(chain)),
+                                len(chain), indep=IND["positions_APPLY"]),
         "coverage_DERIV": cover("positions", "DERIV's seven filter positions", len(chain_d),
-                                len(chain_d)),
+                                len(chain_d), indep=IND["positions_DERIV"]),
+        # the chain values themselves cross-checked against the files the earlier stages wrote,
+        # so this invariant is not asserting over a chain it also built
+        "chain_APPLY_agrees_with_positions_json_and_outcomes_json": bool(
+            chain[:5] == [pos_sum["waterfall_APPLY"][k] for k in
+                          ("position_1_step2_frame", "position_2_L2_eq_1_excluded",
+                           "position_3_S1_completion_rule", "position_4_contamination",
+                           "position_5_right_censoring")]
+            and chain[5] == oc["position_6_liveness"]["APPLY"]["retained"]),
+        "chain_DERIV_agrees_with_positions_json_and_outcomes_json": bool(
+            chain_d[:5] == [pos_sum["waterfall_DERIV"][k] for k in
+                            ("position_1_step2_frame", "position_2_L2_eq_1_excluded",
+                             "position_3_S1_completion_rule", "position_4_contamination_DERIV_depth",
+                             "position_5_right_censoring")]
+            and chain_d[5] == oc["position_6_liveness"]["DERIV"]["retained"]),
         "chain_note": "chain[i] is the count after filter position i+1; the transition from entry "
                       "i to entry i+1 is the effect of filter position i+2",
         "filter_positions_removing_exactly_zero_APPLY": [i + 2 for i in range(len(chain) - 1)
@@ -1186,7 +1520,8 @@ def main():
                       "The record count is stated with it.",
         "coverage_pairs": int(a.n),
         "coverage": cover("pairs", "the pair universe the set-membership rule examines", a.n, a.n,
-                          {"records_examined": scan_sum["in_frame_S1S2_episode_records"],
+                          indep=IND["pair_universe"],
+                          extra={"records_examined": scan_sum["in_frame_S1S2_episode_records"],
                            "records_dropped_by_the_rule": scan_sum[
                                "dropped_by_set_membership_records"],
                            "seasons_asserted": ["S1", "S2"],
@@ -1207,7 +1542,7 @@ def main():
         "population": "the 196,654 position-5 row set, EVERY ROW (decisions/0080 SS3)",
         "coverage_rows": int(pos5.sum()),
         "coverage": cover("rows", "APPLY, position 5 -- the analysis table's row set",
-                          int(pos5.sum()), int(pos5.sum())),
+                          int(pos5.sum()), int(pos5.sum()), indep=IND["APPLY_pos5_rows"]),
         "rows_where_A_exceeds_A_H": int((r["kA"][pos5] > r["kAH"][pos5]).sum()),
         "rows_where_max_A_exceeds_max_A_H": int((r["mA"][pos5] > r["mH"][pos5]).sum()),
         "also_holds_on_the_post_position_7_row_set": bool(
@@ -1236,9 +1571,9 @@ def main():
                       "force (decisions/0080 SS3)",
         "coverage_rows": int(pos5.sum()),
         "coverage": cover("rows", "APPLY, position 5 -- the analysis table's row set",
-                          int(pos5.sum()), int(pos5.sum()),
-                          {"independent_recomputation_covers_pairs": int(a.n),
-                           "read_back_from_the_pipeline": False}),
+                          int(pos5.sum()), int(pos5.sum()), indep=IND["APPLY_pos5_rows"],
+                          extra={"independent_recomputation_covers_pairs": int(a.n),
+                                 "read_back_from_the_pipeline": False}),
         "on_or_after_S2_finale": c1,
         "on_or_after_first_pass_S1_completion": c2,
         "equals_one_of_the_two": c3,
@@ -1262,23 +1597,56 @@ def main():
                "a gap. It is kept because Step 10 publishes p -- but it proves the code, not the "
                "rule.",
         "population": "ALL Started-and-left rows AT POSITION 5, null on the rest, and the two "
-                      "clauses must sum to 196,654 EXACTLY (decisions/0080 SS3). THIS IS THE "
-                      "IDENTITY THAT CLOSES THE HOLE: the dual run had one arm assert p on 19,042 "
-                      "rows -- the POST-LIVENESS Started-and-left count -- against a PRE-LIVENESS "
-                      "denominator of 177,513 non-S&L rows, leaving 99 rows covered by neither "
-                      "clause, exactly the started-and-left liveness exclusions. Do not take the "
-                      "numerator post-liveness and the denominator pre-liveness.",
+                      "clauses must sum to 196,654 EXACTLY (decisions/0080 SS3). The dual run had "
+                      "one arm assert p on 19,042 rows -- the POST-LIVENESS Started-and-left "
+                      "count -- against a PRE-LIVENESS denominator of 177,513 non-S&L rows, "
+                      "leaving 99 rows covered by neither clause, exactly the started-and-left "
+                      "liveness exclusions. Do not take the numerator post-liveness and the "
+                      "denominator pre-liveness. ***CORRECTED ON THIS BUILD (Red Team fifth pass, "
+                      "F2): the previous deliverable called this two-clause sum 'THE IDENTITY "
+                      "THAT CLOSES THE HOLE'. IT DOES NOT CLOSE IT. The clauses are `M & left` "
+                      "and `M & ~left` -- a set and its complement within the same mask M -- so "
+                      "they sum to M.sum() for EVERY M, including a mask that is not the "
+                      "population named, which is the defect. What closes the hole is the "
+                      "denominator coming from somewhere else: it is now read from the EMITTED "
+                      "analysis table, so a numerator taken post-liveness against a pre-liveness "
+                      "denominator FAILS.***",
         "coverage_rows": int((pos5 & r["left"]).sum()),
         "coverage": cover("rows", "APPLY, position 5 -- the analysis table's row set",
-                          int(pos5.sum()), None,
-                          {"clause_1_rows_asserted_p_in_0_1_started_and_left": int(
-                               (pos5 & r["left"]).sum()),
-                           "clause_2_rows_asserted_p_is_null_not_started_and_left": int(
-                               (pos5 & ~r["left"]).sum()),
-                           "started_and_left_post_liveness_for_contrast_NOT_the_numerator": int(
-                               (pos6 & r["left"]).sum())},
+                          int(pos5.sum()), None, indep=IND["APPLY_pos5_rows"],
+                          extra={"clause_1_rows_asserted_p_in_0_1_started_and_left": int(
+                                     (pos5 & r["left"]).sum()),
+                                 "clause_2_rows_asserted_p_is_null_not_started_and_left": int(
+                                     (pos5 & ~r["left"]).sum()),
+                                 "started_and_left_post_liveness_for_contrast_NOT_the_numerator":
+                                     int((pos6 & r["left"]).sum()),
+                                 "THE_HOLE_THIS_WOULD_NOW_CATCH": {
+                                     "the_defective_pairing": "numerator " + str(
+                                         int((pos6 & r["left"]).sum())) + " (post-liveness S&L) "
+                                         "with denominator clause " + str(
+                                             int((pos5 & ~r["left"]).sum())) + " (pre-liveness "
+                                         "non-S&L)",
+                                     "what_it_sums_to": int((pos6 & r["left"]).sum())
+                                                        + int((pos5 & ~r["left"]).sum()),
+                                     "independent_population_size": IND["APPLY_pos5_rows"][0],
+                                     "rows_covered_by_neither_clause": IND["APPLY_pos5_rows"][0]
+                                     - (int((pos6 & r["left"]).sum())
+                                        + int((pos5 & ~r["left"]).sum())),
+                                     "would_the_identity_FAIL": bool(
+                                         int((pos6 & r["left"]).sum())
+                                         + int((pos5 & ~r["left"]).sum())
+                                         != IND["APPLY_pos5_rows"][0]),
+                                     "note": "measured on this build, not asserted: the exact "
+                                             "mispairing decisions/0080 SS3 describes is "
+                                             "reconstructed and the identity is evaluated on it. "
+                                             "Under the previous build's same-mask denominator "
+                                             "this pairing could not be detected at all."}},
                           parts=[int((pos5 & r["left"]).sum()), int((pos5 & ~r["left"]).sum())],
-                          n_not=0),
+                          n_not=0,
+                          clause_note="YES -- `M & left` and `M & ~left` are a set and its "
+                                      "complement within the same mask, so they sum to M for "
+                                      "every M. The clause counts show a reader where a hole "
+                                      "would be; the INDEPENDENT denominator is what detects one."),
         "min": float(np.nanmin(p_sl)), "max": float(np.nanmax(p_sl)),
         "nulls_among_started_and_left": int(np.isnan(p_sl).sum()),
         "non_null_outside_started_and_left": int((pos5 & ~r["left"] & ~np.isnan(r["p"])).sum()),
@@ -1293,7 +1661,7 @@ def main():
     # decisions/0076. 703 pairs from 216 accounts is consistent with BOTH a pair-level and an
     # account-level implementation, and nothing in the set distinguished them. This can fail on
     # real data.
-    def wholesale_on(mask, label):
+    def wholesale_on(mask, label, indep=None):
         nl_ = mask & r["not_live"]
         lv2 = mask & ~r["not_live"]
         un = np.unique(a.pair_user[nl_])
@@ -1303,25 +1671,32 @@ def main():
         allu = np.unique(a.pair_user[mask])
         cnt_ = pd.Series(a.pair_user[mask]).value_counts()
         # the classification is MEASURED against the population, not asserted: `True` was a
-        # hardcoded literal here until Red Team's fourth pass (0087 SS4). The three classes --
-        # untouched, mixed, wholesale -- are counted independently and must sum to the accounts
-        # in the population, which is real arithmetic rather than N - N = 0.
-        return {**cover("accounts", label, allu.size, None,
-                        {"accounts_untouched_by_the_exclusion": int(allu.size - un.size),
-                         "accounts_touched_by_the_exclusion": int(un.size),
-                         "classification_covers_every_account": bool(
-                             int(allu.size - un.size) + int(mixed.size) + int(whole.size)
-                             == int(allu.size))},
+        # hardcoded literal here until Red Team's fourth pass (0087 SS4). ***AND THE THREE CLASSES
+        # DO NOT MAKE THE IDENTITY FALSIFIABLE*** -- mixed and wholesale partition `touched` by
+        # set algebra, so untouched + mixed + wholesale = |all| for any mask. Red Team's FIFTH
+        # pass, F2. The account count is therefore taken from the EMITTED TABLE's distinct
+        # user_idx, which is where the check gets its force.
+        return {**cover("accounts", label, allu.size, None, indep=indep,
+                        extra={"accounts_untouched_by_the_exclusion": int(allu.size - un.size),
+                               "accounts_touched_by_the_exclusion": int(un.size),
+                               "classification_covers_every_account": bool(
+                                   int(allu.size - un.size) + int(mixed.size) + int(whole.size)
+                                   == int(allu.size))},
                         parts=[int(allu.size - un.size), int(mixed.size), int(whole.size)],
-                        n_not=0),
+                        n_not=0,
+                        clause_note="YES -- mixed and wholesale partition `touched` by set "
+                                    "algebra, so the three classes sum to the account total for "
+                                    "any mask. The INDEPENDENT account count is what can fail."),
                 "accounts_holding_BOTH_a_live_and_a_not_live_pair": int(mixed.size),
                 "accounts_all_of_whose_pairs_are_excluded": int(whole.size),
                 "of_those_holding_more_than_one_pair_in_this_population": int(
                     (cnt_.reindex(whole).fillna(0) > 1).sum()),
                 "holds": bool(mixed.size > 0)}
 
-    who = {"APPLY_position_5": wholesale_on(pos5, "accounts holding a position-5 APPLY pair"),
-           "DERIV_position_5": wholesale_on(pos5d, "accounts holding a position-5 DERIV pair")}
+    who = {"APPLY_position_5": wholesale_on(pos5, "accounts holding a position-5 APPLY pair",
+                                            IND["APPLY_pos5_accounts"]),
+           "DERIV_position_5": wholesale_on(pos5d, "accounts holding a position-5 DERIV pair",
+                                            IND["DERIV_pos5_accounts"])}
     nl = pos5 & r["not_live"]
     lv_ = pos5 & ~r["not_live"]
     u_nl = np.unique(a.pair_user[nl])
@@ -1401,7 +1776,8 @@ def main():
                       "empty would be visible rather than absent.",
         "coverage": cover("accounts", "every distinct account in processed/step4/pull_ledger.jsonl",
                           int(last.shape[0]), int(last.shape[0]),
-                          {"accounts_whose_final_state_is_complete": int(
+                          indep=IND["ledger_accounts"],
+                          extra={"accounts_whose_final_state_is_complete": int(
                               (last.outcome == "complete").sum()),
                            "accounts_whose_final_state_is_a_skip_class": int(len(final_skip)),
                            "accounts_whose_final_state_is_neither": int(
@@ -1448,19 +1824,32 @@ def main():
     # OUTSIDE the published invariant set, so no reader of the deliverable could see it. It is
     # published here, labelled CODE CHECK, and it is the same expression rather than a second
     # definition of it.
-    def outcome_window_site(mask, label):
+    def outcome_window_site(mask, label, indep=None):
         le2 = int((r["tau2"][mask] <= lib.TAU_PULL).sum())
         gt2 = int((r["tau2"][mask] > lib.TAU_PULL).sum())
+        eq2 = int((r["tau2"][mask] == lib.TAU_PULL).sum())
         le1 = int((r["tau1"][mask] <= lib.TAU_PULL).sum())
-        return {**cover("rows", label, int(mask.sum()), None,
-                        {"rows_with_tau2_at_or_before_tau_pull": le2,
-                         "rows_with_tau2_after_tau_pull": gt2,
-                         "rows_with_tau1_at_or_before_tau_pull": le1},
-                        parts=[le2, gt2], n_not=0),
+        return {**cover("rows", label, int(mask.sum()), None, indep=indep,
+                        extra={"rows_with_tau2_at_or_before_tau_pull": le2,
+                               "rows_with_tau2_after_tau_pull": gt2,
+                               "rows_with_tau2_EXACTLY_AT_tau_pull": eq2,
+                               "rows_with_tau1_at_or_before_tau_pull": le1},
+                        parts=[le2, gt2], n_not=0,
+                        clause_note="YES -- `tau2 <= tau_pull` and `tau2 > tau_pull` are a set "
+                                    "and its complement within the same mask, so they sum to the "
+                                    "mask for any mask. The INDEPENDENT row count is what can "
+                                    "fail."),
+                # THE BOUND IS ATTAINED, and a passing assertion at the bound is not the same
+                # evidence as one with slack: a `>=` form of this same assertion would FAIL on
+                # these rows. Reported because only the arm that measured it can tell them apart.
+                "rows_with_tau2_EXACTLY_AT_tau_pull": eq2,
+                "the_bound_is_ATTAINED_a_ge_form_would_fail": bool(eq2 > 0),
                 "holds": bool(gt2 == 0)}
 
-    ow = {"APPLY_position_5": outcome_window_site(pos5, "APPLY, position-5 row set"),
-          "DERIV_position_5": outcome_window_site(pos5d, "DERIV, position-5 row set")}
+    ow = {"APPLY_position_5": outcome_window_site(pos5, "APPLY, position-5 row set",
+                                                  IND["APPLY_pos5_rows"]),
+          "DERIV_position_5": outcome_window_site(pos5d, "DERIV, position-5 row set",
+                                                  IND["DERIV_pos5_rows"])}
     inv.append({
         "name": "no retained row's outcome window extends past tau_pull: tau2 <= tau_pull on "
                 "every position-5 row",
@@ -1598,8 +1987,10 @@ def main():
 
     def walk_kind(node, acc):
         if isinstance(node, dict):
-            if "identity_is_REAL_ARITHMETIC" in node:
-                acc.append(bool(node["identity_is_REAL_ARITHMETIC"]))
+            if "identity_CAN_FAIL_ON_ANY_DATA" in node:
+                acc.append((bool(node["identity_CAN_FAIL_ON_ANY_DATA"]),
+                            node.get("population_size_independence"),
+                            node.get("identity_against_the_independent_source_holds")))
             for v in node.values():
                 walk_kind(v, acc)
         elif isinstance(node, list):
@@ -1608,19 +1999,80 @@ def main():
         return acc
 
     kinds = walk_kind(inv, [])
+    n_can = sum(1 for k in kinds if k[0])
+    tiers = {}
+    for k in kinds:
+        tiers[k[1]] = tiers.get(k[1], 0) + 1
+
+    # --- DEMONSTRATED, NOT ASSERTED: every independent identity must FAIL when the population --
+    # --- size it is checked against is perturbed. An assertion mechanism claimed to work and ---
+    # --- never seen to fail is a control asserted to exist (CLAUDE.md). -----------------------
+    demo = []
+    for (popn, unit, asserted, not_asserted, ivalue, isrc) in _identity_registry:
+        demo.append({"population": popn, "unit": unit,
+                     "true_independent_population_size": ivalue,
+                     "perturbed_to": ivalue + 1,
+                     "holds_against_the_true_value": bool(asserted + not_asserted == ivalue),
+                     "holds_against_the_perturbed_value": bool(
+                         asserted + not_asserted == ivalue + 1)})
+    demo_ok = bool(demo) and all(d["holds_against_the_true_value"]
+                                 and not d["holds_against_the_perturbed_value"] for d in demo)
+
     report["coverage_identity_strength"] = {
-        "ruling": "Red Team's fourth pass, decisions/0087 SS4, carried as a limitation; the one "
-                  "sentence it required struck either way is struck by decisions/0088 SS2(d).",
+        "ruling": "Red Team's FIFTH pass, F2, carried into this rerun by decisions/0090 SS3. "
+                  "Red Team's fourth pass (decisions/0087 SS4) had already recorded that most "
+                  "identities have the population size and the asserted count as one expression; "
+                  "the sentence it required struck either way is struck by decisions/0088 SS2(d).",
+        "CORRECTION_ON_THIS_BUILD": "build a/2026-08-16-0088 classified an identity as REAL "
+                                    "ARITHMETIC on the test `parts is not None and len(parts) > "
+                                    "1`. THAT TEST WAS WRONG. Every multi-clause identity in that "
+                                    "build had clauses forming a COMPLEMENTARY PARTITION OF THE "
+                                    "SAME MASK the population size was taken from, so each summed "
+                                    "to the population for ANY mask and NONE of them could fail "
+                                    "on any data -- including invariant 6's, which that "
+                                    "deliverable called 'the identity that closes the hole'. It "
+                                    "closed nothing. THE LABEL AND THE CLAIM ARE BOTH CORRECTED, "
+                                    "and the population size is now sourced independently of the "
+                                    "asserted count, which is what the hole actually needs.",
         "identities_total": len(kinds),
-        "identities_that_are_REAL_ARITHMETIC": int(sum(kinds)),
+        "identities_that_CAN_FAIL_population_size_sourced_INDEPENDENTLY": int(n_can),
         "identities_that_CANNOT_FAIL_population_size_and_asserted_count_are_one_expression": int(
-            len(kinds) - sum(kinds)),
-        "note": "the second group is bookkeeping and is labelled as such at each identity. An "
-                "unlabelled check that cannot fail reads as one that can -- decisions/0069's "
-                "rule, applied to the coverage apparatus rather than to the invariants.",
+            len(kinds) - n_can),
+        "by_independence_tier": tiers,
+        "tier_meanings": {
+            "EMITTED_DELIVERABLE": "the population size is read back from "
+                                   "processed/step8/a/analysis_table.csv.gz -- the file this step "
+                                   "delivers, written by stage 3 through a different code path "
+                                   "from the masks this stage builds",
+            "INDEPENDENT_FILE": "the population size is a count an earlier stage wrote into its "
+                                "own JSON",
+            "INDEPENDENT_CODE_PATH": "the same file parsed by different code (the ledger: "
+                                     "line-by-line json.loads against pandas.read_json)",
+            "NOT_INDEPENDENT": "the population size and the asserted count are one expression. "
+                               "Bookkeeping, not a check, and labelled so at each identity.",
+        },
+        "all_independent_identities_hold_against_their_independent_source": bool(
+            all(k[2] for k in kinds if k[0])),
+        "FALSIFIABILITY_DEMONSTRATED_NOT_ASSERTED": {
+            "method": "each independent identity is re-evaluated against its population size + 1 "
+                      "and must FAIL. A mechanism claimed to work and never seen to fail is a "
+                      "control asserted to exist.",
+            "identities_demonstrated": len(demo),
+            "all_hold_against_the_true_value_and_FAIL_against_the_perturbed_one": demo_ok,
+            "per_identity": demo,
+        },
+        "note": "the NOT_INDEPENDENT group is bookkeeping and is labelled as such at each "
+                "identity. An unlabelled check that cannot fail reads as one that can -- "
+                "decisions/0069's rule, applied to the coverage apparatus rather than to the "
+                "invariants.",
         "build": lib.BUILD_TAG,
     }
     assert len(kinds) == len(ids), "an identity was emitted without its strength label"
+    assert demo_ok, ("the coverage-identity falsifiability demonstration did not fire: an "
+                     "independent identity held against a perturbed population size, or none "
+                     "was registered -- a check that looked nowhere must fail, not pass")
+    assert all(k[2] for k in kinds if k[0]), (
+        "an invariant's coverage disagrees with the independently sourced population size")
     assert all(ids) and len(ids) >= 9, "an invariant does not account for every row it names"
     assert len(inv) == 9, f"the assertion set is {len(inv)}, expected 9 (decisions/0088 SS1(c))"
 

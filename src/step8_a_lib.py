@@ -58,16 +58,30 @@ SRC = os.path.join(ROOT, "src")
 # The stage-file SHA-256 prefixes in build_record() are what identify the code, and they are
 # emitted with every build record. F7 is a carried limitation, not a ruling; this states the
 # convention rather than proposing one.
-BUILD_TAG = "a/2026-08-16-0088"
-BUILD_NAME = ("position-5 build of 2026-08-16, instance `a`, RERUN against decisions/0088 "
-              "(B3 measured: the boundary window and the per-site D11 table; F2: the D9 coverage "
-              "quantities named as separate objects and the mislabel corrected; the D9 clustering "
-              "universe ruled to U1, ranked by distinct strict keys merged). The earlier "
-              "2026-08-16 builds of this instance -- `a/2026-08-16-0085` and the pre-0085 run -- "
-              "are what Red Team's third and fourth passes reviewed. NO POPULATION AND NO RULE "
-              "MOVES between them; what moves is the D9 CLUSTER LIST, because the universe it is "
-              "computed on was ruled and this instance's previous universe was the D9 coverage "
-              "pivot rather than the sweep. They are different builds and are tagged apart.")
+BUILD_TAG = "a/2026-08-16-0090"
+BUILD_NAME = ("position-5 build of 2026-08-16, instance `a`, RERUN against decisions/0090 plus "
+              "Red Team fifth-pass F1 and F2, which 0090 SS3 folds into this rerun")
+# The long form lives in build_record()["what_moved_on_this_build"], stated ONCE. BUILD_NAME is
+# quoted at every point of use, so a paragraph there is a paragraph repeated forty times -- and a
+# stamp that buries the figure it stamps is worse than a short one that points at it.
+WHAT_MOVED = (
+    "THREE THINGS MOVE, none of them a population, a rule, a waterfall line, an outcome share, a "
+    "bound endpoint or an invariant result. (1) decisions/0090: D9 PUBLISHES AS A BOUND -- strict "
+    "the FLOOR, loose the CEILING, NEITHER the point estimate -- superseding 0074 ruling 5's "
+    "framing, under which strict was the answer and loose was context. D9's numbers do not move; "
+    "which of them is presented as the answer does. (2) Red Team fifth pass F1 (decisions/0089 "
+    "SS2(a)): this arm's B3(a) answer was stated on the WRONG OBJECT. It found the right interval "
+    "-- [tau, tau + 24h) -- and then reported EPISODES ADMITTED. The number that settles B3(a) is "
+    "how many position-5 rows CHANGE OUTCOME STATE under the forbidden date-level form: four "
+    "numbers, both bounds x both populations. (3) Red Team fifth pass F2: this arm's "
+    "coverage-identity independence proxy was wrong. `len(parts) > 1` admitted identities whose "
+    "clauses are a COMPLEMENTARY PARTITION OF THE SAME MASK the population size is taken from, so "
+    "they cannot fail on any data -- including the one the previous deliverable called 'the "
+    "identity that closes the hole'. The population size is now sourced INDEPENDENTLY of the "
+    "asserted count; the label and the claim are corrected and the mechanism is demonstrated to "
+    "fire. ALSO FIXED: one hardcoded `holds: True` in the per-site D11 table, at the "
+    "S1-completion-walk site. PRIOR BUILDS OF THIS INSTANCE: a/2026-08-16-0088 (what Red Team's "
+    "fifth pass reviewed), a/2026-08-16-0085 (fourth) and the pre-0085 run (third).")
 STAGE_FILES = ["step8_a_lib.py", "step8_a_1_scan.py", "step8_a_2_positions.py",
                "step8_a_3_table.py", "step8_a_4_arms.py", "step8_a_4b_slugs.py",
                "step8_a_5_diagnostics.py", "step8_a_6_emit.py", "step8_a_run.py"]
@@ -93,6 +107,7 @@ def build_record():
     return {
         "build_tag": BUILD_TAG,
         "build_name": BUILD_NAME,
+        "what_moved_on_this_build": WHAT_MOVED,
         "instance": "a",
         "run_date_utc": "2026-08-16",
         "why_this_exists": "decisions/0079 (B6), extending decisions/0078: every count, every "
@@ -118,7 +133,7 @@ def build_record():
                    "processed/step2/frame.csv": _sha(os.path.join(ROOT, "processed/step2/frame.csv")),
                    "processed/step4/pull_ledger.jsonl": _sha(
                        os.path.join(ROOT, "processed/step4/pull_ledger.jsonl"))},
-        "spec_read": "task-sheet.md Step 8 as it stands, plus decisions/0066-0085",
+        "spec_read": "task-sheet.md Step 8 as it stands, plus decisions/0066-0090",
         "relation_to_the_2026_08_13_build": "this build reproduces the figures decisions/0078 and "
                                             "0079 restate on the position-5 build of 2026-08-13 "
                                             "(58,345 pairs; 324 of 5,694; 178 of 2,549; 703/99). "

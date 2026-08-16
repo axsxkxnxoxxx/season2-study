@@ -2,7 +2,7 @@
 
 **Owner:** Analytics Engineer (`a`) · **Mode:** GATE, dual implementation · **W = 108 days** · **H = 91 days** · **Zero API calls** · **Counts only**
 
-> **RERUN AGAINST `decisions/0088`, ordered by the Human Lead — a rerun, not an amendment.** The previous `-a` invariant report was **not patched**; nothing in it is read or carried. **Every result below is produced by one pipeline run.** ***`0088` §1(c) ADDS AN INVARIANT — the set is NINE, not eight.*** It promotes the `τ2 ≤ τ_pull` assertion, which **already ran in this arm's stage 3 and sat outside the published set**, into the deliverable, labelled **CODE CHECK**. ***It makes the falsifiability ratio worse, not better***: six pure code checks now, and **still exactly TWO checks that can fail on real data**. **`0088` §2(d) also STRIKES one sentence from this report** — see the coverage section. The other rulings that reach this report are structural rather than numerical. **`0079` B6: every invariant result names the build it was measured on** — build `a/2026-08-16-0088`, defined in full in the waterfall deliverable §0. **`0080` §3: every invariant names the population it runs on and accounts for every row in it**, reporting `rows_asserted + rows_not_asserted = rows_in_the_stated_population`. **`0081` and `0082` change the column set, not the invariant set: no invariant result moves.**
+> **RERUN AGAINST `decisions/0088`, ordered by the Human Lead — a rerun, not an amendment.** The previous `-a` invariant report was **not patched**; nothing in it is read or carried. **Every result below is produced by one pipeline run.** ***`0088` §1(c) ADDS AN INVARIANT — the set is NINE, not eight.*** It promotes the `τ2 ≤ τ_pull` assertion, which **already ran in this arm's stage 3 and sat outside the published set**, into the deliverable, labelled **CODE CHECK**. ***It makes the falsifiability ratio worse, not better***: six pure code checks now, and **still exactly TWO checks that can fail on real data**. **`0088` §2(d) also STRIKES one sentence from this report** — see the coverage section. The other rulings that reach this report are structural rather than numerical. **`0079` B6: every invariant result names the build it was measured on** — build `a/2026-08-16-0090`, defined in full in the waterfall deliverable §0. **`0080` §3: every invariant names the population it runs on and accounts for every row in it**, reporting `rows_asserted + rows_not_asserted = rows_in_the_stated_population`. **`0081` and `0082` change the column set, not the invariant set: no invariant result moves.**
 
 > **Why that second one matters, in this report's own numbers.** `0080` §3 records that in the previous dual run one arm asserted `p` on **19,042** rows — the *post-liveness* Started-and-left count — against a *pre-liveness* non-S&L clause of **177,513**, summing to **196,555 against a 196,654-row table**. **99 rows were covered by neither clause, and those 99 are exactly the started-and-left liveness exclusions.** Neither report disclosed the gap and no control could see it. **This report states both clauses and their sum for every check** — see the coverage table below, where `p` reads **19,141 + 177,513 = 196,654** and the post-liveness 19,042 appears only as a labelled contrast.
 
@@ -44,14 +44,30 @@
 | 8 | no access_denied or otherwise skipped account is rea… | THE FULL ACCOUNT LEDGER, IN ACCOUNTS (decisions/0080 SS3) -- every distinct account the Step 4 pull touched, not the accounts that survived into the t | coverage — `2874 + 0 not asserted = 2874` |
 | 9 | no retained row's outcome window extends past tau_pu… | BOTH POPULATIONS, EVERY ROW: the 196,654 APPLY position-5 row set and the 147,370 DERIV position-5 row set | APPLY_position_5 — `196654 + 0 + 0 not asserted = 196654`; DERIV_position_5 — `147370 + 0 + 0 not asserted = 147370` |
 
-**15 coverage identities were checked and all hold: True.** Build: every count in this table measured on `a/2026-08-16-0088` — position-5 build of 2026-08-16, instance `a`, RERUN against decisions/0088 (B3 measured: the boundary window and the per-site D11 table; F2: the D9 coverage quantities named as separate objects and the mislabel corrected; the D9 clustering universe ruled to U1, ranked by distinct strict keys merged). The earlier 2026-08-16 builds of this instance -- `a/2026-08-16-0085` and the pre-0085 run -- are what Red Team's third and fourth passes reviewed. NO POPULATION AND NO RULE MOVES between them; what moves is the D9 CLUSTER LIST, because the universe it is computed on was ruled and this instance's previous universe was the D9 coverage pivot rather than the sweep. They are different builds and are tagged apart.; see §0.
+**15 coverage identities were checked and all hold: True.** Build: every count in this table measured on `a/2026-08-16-0090` — position-5 build of 2026-08-16, instance `a`, RERUN against decisions/0090 plus Red Team fifth-pass F1 and F2, which 0090 SS3 folds into this rerun; see §0.
 
-> ***STRUCK, whatever else is ruled*** (`decisions/0088` §2(d), on Red Team's F4): ~~*"The run asserts this, so a report that omitted a population could not be written by this pipeline."*~~ **It is a control asserted to exist.** **6 of the 15 identities have the population size and the asserted count as THE SAME EXPRESSION** — `asserted = N`, `not asserted = N − N = 0` — **so they cannot detect an invariant run on a population other than the one named.** The other **9** are real arithmetic, built from **independently counted clauses that must sum to the population**: invariant 1's four partitions (three outcome states each), invariant 6's two `p` clauses, invariant 7's three account classes on each population and invariant 9's two `τ2` clauses on each. **Every identity below carries the label, in the `.json` at `what_it_can_detect`** — an unlabelled check that cannot fail reads as one that can (`0069`, applied to the coverage apparatus rather than to the invariants).
+> ***STRUCK, whatever else is ruled*** (`decisions/0088` §2(d), on Red Team's F4): ~~*"The run asserts this, so a report that omitted a population could not be written by this pipeline."*~~ **It is a control asserted to exist.**
+
+> ***AND THE REPLACEMENT CLAIM WAS ALSO WRONG. CORRECTED ON THIS BUILD*** — Red Team's **fifth** pass, F2, folded into this rerun by `decisions/0090` §3. Build `a/2026-08-16-0088` classified an identity as **REAL ARITHMETIC** on the test `parts is not None and len(parts) > 1` — *"it has more than one clause"*. ***That test admits an identity that cannot fail on any data.*** Every multi-clause identity in that build had clauses forming a **complementary partition of the same mask the population size was taken from**, so each summed to the population **for any mask**: invariant 1's `never / left / continued` are exhaustive by the expressions that define them; invariant 6's are `M & left` and `M & ~left`; invariant 7's `mixed` and `wholesale` partition `touched` by set algebra; invariant 9's are `τ2 ≤ τ_pull` and its complement. ***Including invariant 6's, which that deliverable called "THE IDENTITY THAT CLOSES THE HOLE". It closed nothing*** — it holds whatever mask `M` is, **including a mask that is not the population named, which is the defect** `0080` §3 introduced it to detect.
+
+**THE FIX IS THE ONE THE HOLE ACTUALLY NEEDS: the population size is now sourced INDEPENDENTLY of the asserted count.** The 99-row hole was a numerator taken **post-liveness** against a denominator taken **pre-liveness**; that is detectable only if the denominator comes from somewhere other than the masks the numerator is built from. So **15 of the 15 identities now take their population size from a different file**, and **0 remain in the cannot-fail class, labelled bookkeeping at the point of use** *(the label stays in the code and in the schema whether or not any identity is in that class on this build — a class that happens to be empty today must still be nameable tomorrow)*. **Every identity carries its tier in the `.json` at `population_size_independence` and `what_it_can_detect`** — an unlabelled check that cannot fail reads as one that can (`0069`, applied to the coverage apparatus rather than to the invariants).
+
+| Independence tier | Source | What the identity can detect | count |
+| :--- | :--- | :--- | ---: |
+| `EMITTED_DELIVERABLE` | `analysis_table.csv.gz`, written by stage 3 | **an invariant run on a population other than the one it names** | 11 |
+| `INDEPENDENT_FILE` | an earlier stage's own JSON | **an invariant run on a population other than the one it names** | 3 |
+| `INDEPENDENT_CODE_PATH` | the same file parsed by different code | **a parse or dedup disagreement in the population size** | 1 |
+
+*Build: every count in this table measured on `a/2026-08-16-0090` — position-5 build of 2026-08-16, instance `a`, RERUN against decisions/0090 plus Red Team fifth-pass F1 and F2, which 0090 SS3 folds into this rerun; see §0.*
+
+**AND THE MECHANISM IS DEMONSTRATED, NOT ASSERTED.** *A mechanism claimed to work and never seen to fail is a control asserted to exist* — which is the sentence `0088` §2(d) struck. Each of the **15** independent identities is re-evaluated against **its population size + 1** and must report FAIL. **All hold against the true value and fail against the perturbed one: True.** The run **asserts** this, and asserts that the registry is non-empty, so a demonstration that looked nowhere fails rather than passes.
 
 | Identity shape | What it can detect |
 | :--- | :--- |
-| **`cover(unit, pop, N, N)`** — asserted count and population size are the same expression | **Nothing.** `N − N = 0` holds however the population was chosen |
-| **`cover(..., parts=[a, b, …])`** — clauses counted independently | **A row covered by no clause**, which is the 99-row hole `0080` §3 was written for |
+| **population size from the same mask as the asserted count** — with one clause or with five | **Nothing.** `N − N = 0`, and a complementary partition of `M` sums to `M` for every `M` |
+| **population size from an independent source** | **An invariant run on a population other than the one it names**, which is the 99-row hole `0080` §3 was written for |
+
+> **What invariant 6 would now catch, measured rather than described.** Pairing the post-liveness Started-and-left numerator with the pre-liveness non-S&L clause — the exact mispairing `0080` §3 records — is reconstructed on this build and evaluated against the emitted table's row count; the identity **fails**, and the rows covered by neither clause are reported. Under the previous build's same-mask denominator that pairing could not be detected at all. See invariant 6's `THE_HOLE_THIS_WOULD_NOW_CATCH` below.
 
 ### 1. outcome states are mutually exclusive and sum to the post-position-7 row set
 
@@ -69,10 +85,16 @@
         - `rows_not_asserted` = `0`
         - `coverage_identity` = `32769 + 19042 + 144140 + 0 not asserted = 195951`
         - `coverage_identity_holds` = `True`
-        - `identity_is_REAL_ARITHMETIC` = `True`
-        - `what_it_can_detect` = `a unit covered by NO clause -- the 99-row hole decisions/0080 SS3 was written for. The clauses are counted independently and must sum to the population.`
-        - `build` = `a/2026-08-16-0088`
+        - `population_size_independence` = `EMITTED_DELIVERABLE`
+        - `population_size_source` = `processed/step8/a/analysis_table.csv.gz, rows with live = True`
+        - `independent_population_size` = `195951`
+        - `identity_against_the_independent_source` = `32769 + 19042 + 144140 + 0 not asserted = 195951`
+        - `identity_against_the_independent_source_holds` = `True`
+        - `identity_CAN_FAIL_ON_ANY_DATA` = `True`
+        - `what_it_can_detect` = `AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/analysis_table.csv.gz, rows with live = True, so the clauses and the denominator are not the same expression and the identity can fail.`
+        - `build` = `a/2026-08-16-0090`
         - `asserted_clause_counts` = `[32769, 19042, 144140]`
+        - `clauses_are_a_complementary_partition_of_the_population_mask` = `YES -- never / continued / left are mutually exclusive and exhaustive by the expressions that define them, so the three always sum to the mask. The clause counts are informative; what makes this identity falsifiable is the INDEPENDENT population size, not the clause count.`
         - `exactly_one_state_per_row` = `True`
         - `never_started` = `32769`
         - `started_and_left` = `19042`
@@ -88,10 +110,16 @@
         - `rows_not_asserted` = `0`
         - `coverage_identity` = `33373 + 19141 + 144140 + 0 not asserted = 196654`
         - `coverage_identity_holds` = `True`
-        - `identity_is_REAL_ARITHMETIC` = `True`
-        - `what_it_can_detect` = `a unit covered by NO clause -- the 99-row hole decisions/0080 SS3 was written for. The clauses are counted independently and must sum to the population.`
-        - `build` = `a/2026-08-16-0088`
+        - `population_size_independence` = `EMITTED_DELIVERABLE`
+        - `population_size_source` = `processed/step8/a/analysis_table.csv.gz, rows -- the EMITTED DELIVERABLE, written by stage 3`
+        - `independent_population_size` = `196654`
+        - `identity_against_the_independent_source` = `33373 + 19141 + 144140 + 0 not asserted = 196654`
+        - `identity_against_the_independent_source_holds` = `True`
+        - `identity_CAN_FAIL_ON_ANY_DATA` = `True`
+        - `what_it_can_detect` = `AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/analysis_table.csv.gz, rows -- the EMITTED DELIVERABLE, written by stage 3, so the clauses and the denominator are not the same expression and the identity can fail.`
+        - `build` = `a/2026-08-16-0090`
         - `asserted_clause_counts` = `[33373, 19141, 144140]`
+        - `clauses_are_a_complementary_partition_of_the_population_mask` = `YES -- never / continued / left are mutually exclusive and exhaustive by the expressions that define them, so the three always sum to the mask. The clause counts are informative; what makes this identity falsifiable is the INDEPENDENT population size, not the clause count.`
         - `exactly_one_state_per_row` = `True`
         - `never_started` = `33373`
         - `started_and_left` = `19141`
@@ -107,10 +135,16 @@
         - `rows_not_asserted` = `0`
         - `coverage_identity` = `9145 + 16744 + 121382 + 0 not asserted = 147271`
         - `coverage_identity_holds` = `True`
-        - `identity_is_REAL_ARITHMETIC` = `True`
-        - `what_it_can_detect` = `a unit covered by NO clause -- the 99-row hole decisions/0080 SS3 was written for. The clauses are counted independently and must sum to the population.`
-        - `build` = `a/2026-08-16-0088`
+        - `population_size_independence` = `EMITTED_DELIVERABLE`
+        - `population_size_source` = `processed/step8/a/analysis_table.csv.gz, rows with in_deriv and live`
+        - `independent_population_size` = `147271`
+        - `identity_against_the_independent_source` = `9145 + 16744 + 121382 + 0 not asserted = 147271`
+        - `identity_against_the_independent_source_holds` = `True`
+        - `identity_CAN_FAIL_ON_ANY_DATA` = `True`
+        - `what_it_can_detect` = `AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/analysis_table.csv.gz, rows with in_deriv and live, so the clauses and the denominator are not the same expression and the identity can fail.`
+        - `build` = `a/2026-08-16-0090`
         - `asserted_clause_counts` = `[9145, 16744, 121382]`
+        - `clauses_are_a_complementary_partition_of_the_population_mask` = `YES -- never / continued / left are mutually exclusive and exhaustive by the expressions that define them, so the three always sum to the mask. The clause counts are informative; what makes this identity falsifiable is the INDEPENDENT population size, not the clause count.`
         - `exactly_one_state_per_row` = `True`
         - `never_started` = `9145`
         - `started_and_left` = `16744`
@@ -126,10 +160,16 @@
         - `rows_not_asserted` = `0`
         - `coverage_identity` = `9145 + 16843 + 121382 + 0 not asserted = 147370`
         - `coverage_identity_holds` = `True`
-        - `identity_is_REAL_ARITHMETIC` = `True`
-        - `what_it_can_detect` = `a unit covered by NO clause -- the 99-row hole decisions/0080 SS3 was written for. The clauses are counted independently and must sum to the population.`
-        - `build` = `a/2026-08-16-0088`
+        - `population_size_independence` = `EMITTED_DELIVERABLE`
+        - `population_size_source` = `processed/step8/a/analysis_table.csv.gz, rows with in_deriv = True`
+        - `independent_population_size` = `147370`
+        - `identity_against_the_independent_source` = `9145 + 16843 + 121382 + 0 not asserted = 147370`
+        - `identity_against_the_independent_source_holds` = `True`
+        - `identity_CAN_FAIL_ON_ANY_DATA` = `True`
+        - `what_it_can_detect` = `AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/analysis_table.csv.gz, rows with in_deriv = True, so the clauses and the denominator are not the same expression and the identity can fail.`
+        - `build` = `a/2026-08-16-0090`
         - `asserted_clause_counts` = `[9145, 16843, 121382]`
+        - `clauses_are_a_complementary_partition_of_the_population_mask` = `YES -- never / continued / left are mutually exclusive and exhaustive by the expressions that define them, so the three always sum to the mask. The clause counts are informative; what makes this identity falsifiable is the INDEPENDENT population size, not the clause count.`
         - `exactly_one_state_per_row` = `True`
         - `never_started` = `9145`
         - `started_and_left` = `16843`
@@ -138,8 +178,9 @@
         - `sum_equals_row_set` = `True`
         - `holds` = `True`
 - `coverage_identity_holds_on_every_stated_population` = `True`
+- `identity_holds_against_the_INDEPENDENT_source_on_every_stated_population` = `True`
 - `populations_whose_identity_was_checked` = `4`
-- `build` = `a/2026-08-16-0088`
+- `build` = `a/2026-08-16-0090`
 - **result: PASS**
 
 ### 2. filter counts decrease monotonically, coded >= and not >
@@ -159,9 +200,14 @@
     - `positions_not_asserted` = `0`
     - `coverage_identity` = `7 + 0 not asserted = 7`
     - `coverage_identity_holds` = `True`
-    - `identity_is_REAL_ARITHMETIC` = `False`
-    - `what_it_can_detect` = `NOTHING. The asserted count and the population size are the same expression, so N - N = 0 holds however the population was chosen. This is bookkeeping, not a check (Red Team fourth pass, decisions/0087 SS4).`
-    - `build` = `a/2026-08-16-0088`
+    - `population_size_independence` = `INDEPENDENT_FILE`
+    - `population_size_source` = `processed/step8/a/positions.json waterfall_APPLY (positions 1-5, stage 2) plus positions 6 and 7 from outcomes.json (stage 3)`
+    - `independent_population_size` = `7`
+    - `identity_against_the_independent_source` = `7 + 0 not asserted = 7`
+    - `identity_against_the_independent_source_holds` = `True`
+    - `identity_CAN_FAIL_ON_ANY_DATA` = `True`
+    - `what_it_can_detect` = `AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/positions.json waterfall_APPLY (positions 1-5, stage 2) plus positions 6 and 7 from outcomes.json (stage 3), so the clauses and the denominator are not the same expression and the identity can fail.`
+    - `build` = `a/2026-08-16-0090`
 - `coverage_DERIV`:
     - `population` = `DERIV's seven filter positions`
     - `unit` = `positions`
@@ -170,14 +216,21 @@
     - `positions_not_asserted` = `0`
     - `coverage_identity` = `7 + 0 not asserted = 7`
     - `coverage_identity_holds` = `True`
-    - `identity_is_REAL_ARITHMETIC` = `False`
-    - `what_it_can_detect` = `NOTHING. The asserted count and the population size are the same expression, so N - N = 0 holds however the population was chosen. This is bookkeeping, not a check (Red Team fourth pass, decisions/0087 SS4).`
-    - `build` = `a/2026-08-16-0088`
+    - `population_size_independence` = `INDEPENDENT_FILE`
+    - `population_size_source` = `processed/step8/a/positions.json waterfall_DERIV (positions 1-5, stage 2) plus positions 6 and 7 from outcomes.json (stage 3)`
+    - `independent_population_size` = `7`
+    - `identity_against_the_independent_source` = `7 + 0 not asserted = 7`
+    - `identity_against_the_independent_source_holds` = `True`
+    - `identity_CAN_FAIL_ON_ANY_DATA` = `True`
+    - `what_it_can_detect` = `AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/positions.json waterfall_DERIV (positions 1-5, stage 2) plus positions 6 and 7 from outcomes.json (stage 3), so the clauses and the denominator are not the same expression and the identity can fail.`
+    - `build` = `a/2026-08-16-0090`
+- `chain_APPLY_agrees_with_positions_json_and_outcomes_json` = `True`
+- `chain_DERIV_agrees_with_positions_json_and_outcomes_json` = `True`
 - `chain_note` = `chain[i] is the count after filter position i+1; the transition from entry i to entry i+1 is the effect of filter position i+2`
 - `filter_positions_removing_exactly_zero_APPLY` = `[2, 3, 7]`
 - `filter_positions_removing_exactly_zero_DERIV` = `[2, 3, 7]`
 - `inert_positions_labelled_not_silent` = `positions 1, 2, 3 and 7 remove 0 BY CONSTRUCTION and are labelled inert with the reason in the waterfall deliverable (decisions/0079 SS4). An unlabelled always-zero filter reads as evidence the rule FOUND NOTHING when it is evidence the rule CANNOT FIRE.`
-- `build` = `a/2026-08-16-0088`
+- `build` = `a/2026-08-16-0090`
 - **result: PASS**
 
 ### 3. distinct episodes never exceed season length
@@ -195,9 +248,14 @@
     - `pairs_not_asserted` = `0`
     - `coverage_identity` = `278452 + 0 not asserted = 278452`
     - `coverage_identity_holds` = `True`
-    - `identity_is_REAL_ARITHMETIC` = `False`
-    - `what_it_can_detect` = `NOTHING. The asserted count and the population size are the same expression, so N - N = 0 holds however the population was chosen. This is bookkeeping, not a check (Red Team fourth pass, decisions/0087 SS4).`
-    - `build` = `a/2026-08-16-0088`
+    - `population_size_independence` = `INDEPENDENT_FILE`
+    - `population_size_source` = `processed/step8/a/scan_summary.json, written by stage 1`
+    - `independent_population_size` = `278452`
+    - `identity_against_the_independent_source` = `278452 + 0 not asserted = 278452`
+    - `identity_against_the_independent_source_holds` = `True`
+    - `identity_CAN_FAIL_ON_ANY_DATA` = `True`
+    - `what_it_can_detect` = `AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/scan_summary.json, written by stage 1, so the clauses and the denominator are not the same expression and the identity can fail.`
+    - `build` = `a/2026-08-16-0090`
     - `records_examined` = `6065704`
     - `records_dropped_by_the_rule` = `0`
     - `seasons_asserted` = `['S1', 'S2']`
@@ -206,7 +264,7 @@
 - `max_D1_minus_L1` = `0`
 - `max_D2_minus_L2` = `0`
 - `max_AH_minus_L2` = `0`
-- `build` = `a/2026-08-16-0088`
+- `build` = `a/2026-08-16-0090`
 - **result: PASS**
 
 ### 4. A is a subset of A_H on every row
@@ -224,13 +282,18 @@
     - `rows_not_asserted` = `0`
     - `coverage_identity` = `196654 + 0 not asserted = 196654`
     - `coverage_identity_holds` = `True`
-    - `identity_is_REAL_ARITHMETIC` = `False`
-    - `what_it_can_detect` = `NOTHING. The asserted count and the population size are the same expression, so N - N = 0 holds however the population was chosen. This is bookkeeping, not a check (Red Team fourth pass, decisions/0087 SS4).`
-    - `build` = `a/2026-08-16-0088`
+    - `population_size_independence` = `EMITTED_DELIVERABLE`
+    - `population_size_source` = `processed/step8/a/analysis_table.csv.gz, rows -- the EMITTED DELIVERABLE, written by stage 3`
+    - `independent_population_size` = `196654`
+    - `identity_against_the_independent_source` = `196654 + 0 not asserted = 196654`
+    - `identity_against_the_independent_source_holds` = `True`
+    - `identity_CAN_FAIL_ON_ANY_DATA` = `True`
+    - `what_it_can_detect` = `AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/analysis_table.csv.gz, rows -- the EMITTED DELIVERABLE, written by stage 3, so the clauses and the denominator are not the same expression and the identity can fail.`
+    - `build` = `a/2026-08-16-0090`
 - `rows_where_A_exceeds_A_H` = `0`
 - `rows_where_max_A_exceeds_max_A_H` = `0`
 - `also_holds_on_the_post_position_7_row_set` = `True`
-- `build` = `a/2026-08-16-0088`
+- `build` = `a/2026-08-16-0090`
 - **result: PASS**
 
 ### 5. clock start is on or after the S2 finale date, on or after the first-pass S1 completion date, and equal to one of the two
@@ -249,9 +312,14 @@
     - `rows_not_asserted` = `0`
     - `coverage_identity` = `196654 + 0 not asserted = 196654`
     - `coverage_identity_holds` = `True`
-    - `identity_is_REAL_ARITHMETIC` = `False`
-    - `what_it_can_detect` = `NOTHING. The asserted count and the population size are the same expression, so N - N = 0 holds however the population was chosen. This is bookkeeping, not a check (Red Team fourth pass, decisions/0087 SS4).`
-    - `build` = `a/2026-08-16-0088`
+    - `population_size_independence` = `EMITTED_DELIVERABLE`
+    - `population_size_source` = `processed/step8/a/analysis_table.csv.gz, rows -- the EMITTED DELIVERABLE, written by stage 3`
+    - `independent_population_size` = `196654`
+    - `identity_against_the_independent_source` = `196654 + 0 not asserted = 196654`
+    - `identity_against_the_independent_source_holds` = `True`
+    - `identity_CAN_FAIL_ON_ANY_DATA` = `True`
+    - `what_it_can_detect` = `AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/analysis_table.csv.gz, rows -- the EMITTED DELIVERABLE, written by stage 3, so the clauses and the denominator are not the same expression and the identity can fail.`
+    - `build` = `a/2026-08-16-0090`
     - `independent_recomputation_covers_pairs` = `278452`
     - `read_back_from_the_pipeline` = `False`
 - `on_or_after_S2_finale` = `True`
@@ -270,14 +338,14 @@
     - `stored_dates_unparseable_s1_then_t0` = `[0, 0]`
     - `pairs_whose_S1_completion_date_is_a_corrupt_year_1_timestamp` = `3`
 - `tie_break_note` = `Step 1 SS2.2 breaks exactly-equal timestamps by episode number then smallest event id. The recomputation applies that tiebreak; the agreement counts above are reported rather than a choice being made about whether a tiebreak difference would count as a failure.`
-- `build` = `a/2026-08-16-0088`
+- `build` = `a/2026-08-16-0090`
 - **result: PASS**
 
 ### 6. p lies in (0, 1] on every Started-and-left row and is null everywhere else
 
 **CODE CHECK.** SPECIFIED by decisions/0074 ruling 2; LABEL CORRECTED from DATA CHECK to CODE CHECK by decisions/0076 on both instances' own proof. Started-and-left requires |A| >= 1, so max(A_H) exists; set membership bounds the rank numerator in [1, L2]. NO data configuration puts p outside (0, 1]. It fails only on the withdrawn raw-ratio form max(A_H)/L2, which can exceed 1 where S2 numbering has a gap. It is kept because Step 10 publishes p -- but it proves the code, not the rule.
 
-**Population:** ALL Started-and-left rows AT POSITION 5, null on the rest, and the two clauses must sum to 196,654 EXACTLY (decisions/0080 SS3). THIS IS THE IDENTITY THAT CLOSES THE HOLE: the dual run had one arm assert p on 19,042 rows -- the POST-LIVENESS Started-and-left count -- against a PRE-LIVENESS denominator of 177,513 non-S&L rows, leaving 99 rows covered by neither clause, exactly the started-and-left liveness exclusions. Do not take the numerator post-liveness and the denominator pre-liveness.
+**Population:** ALL Started-and-left rows AT POSITION 5, null on the rest, and the two clauses must sum to 196,654 EXACTLY (decisions/0080 SS3). The dual run had one arm assert p on 19,042 rows -- the POST-LIVENESS Started-and-left count -- against a PRE-LIVENESS denominator of 177,513 non-S&L rows, leaving 99 rows covered by neither clause, exactly the started-and-left liveness exclusions. Do not take the numerator post-liveness and the denominator pre-liveness. ***CORRECTED ON THIS BUILD (Red Team fifth pass, F2): the previous deliverable called this two-clause sum 'THE IDENTITY THAT CLOSES THE HOLE'. IT DOES NOT CLOSE IT. The clauses are `M & left` and `M & ~left` -- a set and its complement within the same mask M -- so they sum to M.sum() for EVERY M, including a mask that is not the population named, which is the defect. What closes the hole is the denominator coming from somewhere else: it is now read from the EMITTED analysis table, so a numerator taken post-liveness against a pre-liveness denominator FAILS.***
 
 - `coverage_rows` = `19141`
 - `coverage`:
@@ -288,18 +356,31 @@
     - `rows_not_asserted` = `0`
     - `coverage_identity` = `19141 + 177513 + 0 not asserted = 196654`
     - `coverage_identity_holds` = `True`
-    - `identity_is_REAL_ARITHMETIC` = `True`
-    - `what_it_can_detect` = `a unit covered by NO clause -- the 99-row hole decisions/0080 SS3 was written for. The clauses are counted independently and must sum to the population.`
-    - `build` = `a/2026-08-16-0088`
+    - `population_size_independence` = `EMITTED_DELIVERABLE`
+    - `population_size_source` = `processed/step8/a/analysis_table.csv.gz, rows -- the EMITTED DELIVERABLE, written by stage 3`
+    - `independent_population_size` = `196654`
+    - `identity_against_the_independent_source` = `19141 + 177513 + 0 not asserted = 196654`
+    - `identity_against_the_independent_source_holds` = `True`
+    - `identity_CAN_FAIL_ON_ANY_DATA` = `True`
+    - `what_it_can_detect` = `AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/analysis_table.csv.gz, rows -- the EMITTED DELIVERABLE, written by stage 3, so the clauses and the denominator are not the same expression and the identity can fail.`
+    - `build` = `a/2026-08-16-0090`
     - `asserted_clause_counts` = `[19141, 177513]`
+    - `clauses_are_a_complementary_partition_of_the_population_mask` = `YES -- `M & left` and `M & ~left` are a set and its complement within the same mask, so they sum to M for every M. The clause counts show a reader where a hole would be; the INDEPENDENT denominator is what detects one.`
     - `clause_1_rows_asserted_p_in_0_1_started_and_left` = `19141`
     - `clause_2_rows_asserted_p_is_null_not_started_and_left` = `177513`
     - `started_and_left_post_liveness_for_contrast_NOT_the_numerator` = `19042`
+    - `THE_HOLE_THIS_WOULD_NOW_CATCH`:
+        - `the_defective_pairing` = `numerator 19042 (post-liveness S&L) with denominator clause 177513 (pre-liveness non-S&L)`
+        - `what_it_sums_to` = `196555`
+        - `independent_population_size` = `196654`
+        - `rows_covered_by_neither_clause` = `99`
+        - `would_the_identity_FAIL` = `True`
+        - `note` = `measured on this build, not asserted: the exact mispairing decisions/0080 SS3 describes is reconstructed and the identity is evaluated on it. Under the previous build's same-mask denominator this pairing could not be detected at all.`
 - `min` = `0.038461538461538464`
 - `max` = `1.0`
 - `nulls_among_started_and_left` = `0`
 - `non_null_outside_started_and_left` = `0`
-- `build` = `a/2026-08-16-0088`
+- `build` = `a/2026-08-16-0090`
 - **result: PASS**
 
 ### 7. no account is dropped wholesale by the pair-level liveness filter
@@ -317,10 +398,16 @@
         - `accounts_not_asserted` = `0`
         - `coverage_identity` = `2206 + 215 + 1 + 0 not asserted = 2422`
         - `coverage_identity_holds` = `True`
-        - `identity_is_REAL_ARITHMETIC` = `True`
-        - `what_it_can_detect` = `a unit covered by NO clause -- the 99-row hole decisions/0080 SS3 was written for. The clauses are counted independently and must sum to the population.`
-        - `build` = `a/2026-08-16-0088`
+        - `population_size_independence` = `EMITTED_DELIVERABLE`
+        - `population_size_source` = `processed/step8/a/analysis_table.csv.gz, distinct user_idx`
+        - `independent_population_size` = `2422`
+        - `identity_against_the_independent_source` = `2206 + 215 + 1 + 0 not asserted = 2422`
+        - `identity_against_the_independent_source_holds` = `True`
+        - `identity_CAN_FAIL_ON_ANY_DATA` = `True`
+        - `what_it_can_detect` = `AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/analysis_table.csv.gz, distinct user_idx, so the clauses and the denominator are not the same expression and the identity can fail.`
+        - `build` = `a/2026-08-16-0090`
         - `asserted_clause_counts` = `[2206, 215, 1]`
+        - `clauses_are_a_complementary_partition_of_the_population_mask` = `YES -- mixed and wholesale partition `touched` by set algebra, so the three classes sum to the account total for any mask. The INDEPENDENT account count is what can fail.`
         - `accounts_untouched_by_the_exclusion` = `2206`
         - `accounts_touched_by_the_exclusion` = `216`
         - `classification_covers_every_account` = `True`
@@ -336,10 +423,16 @@
         - `accounts_not_asserted` = `0`
         - `coverage_identity` = `2329 + 72 + 1 + 0 not asserted = 2402`
         - `coverage_identity_holds` = `True`
-        - `identity_is_REAL_ARITHMETIC` = `True`
-        - `what_it_can_detect` = `a unit covered by NO clause -- the 99-row hole decisions/0080 SS3 was written for. The clauses are counted independently and must sum to the population.`
-        - `build` = `a/2026-08-16-0088`
+        - `population_size_independence` = `EMITTED_DELIVERABLE`
+        - `population_size_source` = `processed/step8/a/analysis_table.csv.gz, distinct user_idx on in_deriv rows`
+        - `independent_population_size` = `2402`
+        - `identity_against_the_independent_source` = `2329 + 72 + 1 + 0 not asserted = 2402`
+        - `identity_against_the_independent_source_holds` = `True`
+        - `identity_CAN_FAIL_ON_ANY_DATA` = `True`
+        - `what_it_can_detect` = `AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/analysis_table.csv.gz, distinct user_idx on in_deriv rows, so the clauses and the denominator are not the same expression and the identity can fail.`
+        - `build` = `a/2026-08-16-0090`
         - `asserted_clause_counts` = `[2329, 72, 1]`
+        - `clauses_are_a_complementary_partition_of_the_population_mask` = `YES -- mixed and wholesale partition `touched` by set algebra, so the three classes sum to the account total for any mask. The INDEPENDENT account count is what can fail.`
         - `accounts_untouched_by_the_exclusion` = `2329`
         - `accounts_touched_by_the_exclusion` = `73`
         - `classification_covers_every_account` = `True`
@@ -354,7 +447,7 @@
 - `of_those_accounts_holding_more_than_one_position_5_pair` = `0`
 - `reading` = `accounts in the last line held exactly one position-5 pair unless the count above is non-zero; for a single-pair account 'wholesale' and 'pair-level' are indistinguishable and no inference is available either way.`
 - `assertion` = `accounts_holding_BOTH_a_live_and_a_not_live_pair > 0, ON BOTH POPULATIONS`
-- `build` = `a/2026-08-16-0088`
+- `build` = `a/2026-08-16-0090`
 - **result: PASS**
 
 ### 8. no access_denied or otherwise skipped account is read as empty
@@ -371,9 +464,14 @@
     - `accounts_not_asserted` = `0`
     - `coverage_identity` = `2874 + 0 not asserted = 2874`
     - `coverage_identity_holds` = `True`
-    - `identity_is_REAL_ARITHMETIC` = `False`
-    - `what_it_can_detect` = `NOTHING. The asserted count and the population size are the same expression, so N - N = 0 holds however the population was chosen. This is bookkeeping, not a check (Red Team fourth pass, decisions/0087 SS4).`
-    - `build` = `a/2026-08-16-0088`
+    - `population_size_independence` = `INDEPENDENT_CODE_PATH`
+    - `population_size_source` = `processed/step4/pull_ledger.jsonl, distinct `slug` counted by a line-by-line json.loads pass rather than by pandas.read_json`
+    - `independent_population_size` = `2874`
+    - `identity_against_the_independent_source` = `2874 + 0 not asserted = 2874`
+    - `identity_against_the_independent_source_holds` = `True`
+    - `identity_CAN_FAIL_ON_ANY_DATA` = `True`
+    - `what_it_can_detect` = `AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step4/pull_ledger.jsonl, distinct `slug` counted by a line-by-line json.loads pass rather than by pandas.read_json, so the clauses and the denominator are not the same expression and the identity can fail.`
+    - `build` = `a/2026-08-16-0090`
     - `accounts_whose_final_state_is_complete` = `2549`
     - `accounts_whose_final_state_is_a_skip_class` = `325`
     - `accounts_whose_final_state_is_neither` = `0`
@@ -410,7 +508,7 @@
     - `never_started_pairs` = `119`
     - `note` = `not a violation -- these accounts have a real parsed history and their never-started rows rest on evidence, not on absence. Reported so the assertion's scope is visible.`
 - `assertion` = `no account whose final ledger state is a skip class, and no account that was skipped and never yielded data, contributes a pair scored never-started`
-- `build` = `a/2026-08-16-0088`
+- `build` = `a/2026-08-16-0090`
 - **result: PASS**
 
 ### 9. no retained row's outcome window extends past tau_pull: tau2 <= tau_pull on every position-5 row
@@ -429,13 +527,21 @@
         - `rows_not_asserted` = `0`
         - `coverage_identity` = `196654 + 0 + 0 not asserted = 196654`
         - `coverage_identity_holds` = `True`
-        - `identity_is_REAL_ARITHMETIC` = `True`
-        - `what_it_can_detect` = `a unit covered by NO clause -- the 99-row hole decisions/0080 SS3 was written for. The clauses are counted independently and must sum to the population.`
-        - `build` = `a/2026-08-16-0088`
+        - `population_size_independence` = `EMITTED_DELIVERABLE`
+        - `population_size_source` = `processed/step8/a/analysis_table.csv.gz, rows -- the EMITTED DELIVERABLE, written by stage 3`
+        - `independent_population_size` = `196654`
+        - `identity_against_the_independent_source` = `196654 + 0 + 0 not asserted = 196654`
+        - `identity_against_the_independent_source_holds` = `True`
+        - `identity_CAN_FAIL_ON_ANY_DATA` = `True`
+        - `what_it_can_detect` = `AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/analysis_table.csv.gz, rows -- the EMITTED DELIVERABLE, written by stage 3, so the clauses and the denominator are not the same expression and the identity can fail.`
+        - `build` = `a/2026-08-16-0090`
         - `asserted_clause_counts` = `[196654, 0]`
+        - `clauses_are_a_complementary_partition_of_the_population_mask` = `YES -- `tau2 <= tau_pull` and `tau2 > tau_pull` are a set and its complement within the same mask, so they sum to the mask for any mask. The INDEPENDENT row count is what can fail.`
         - `rows_with_tau2_at_or_before_tau_pull` = `196654`
         - `rows_with_tau2_after_tau_pull` = `0`
+        - `rows_with_tau2_EXACTLY_AT_tau_pull` = `20`
         - `rows_with_tau1_at_or_before_tau_pull` = `196654`
+        - `the_bound_is_ATTAINED_a_ge_form_would_fail` = `True`
         - `holds` = `True`
     - `DERIV_position_5`:
         - `population` = `DERIV, position-5 row set`
@@ -445,16 +551,24 @@
         - `rows_not_asserted` = `0`
         - `coverage_identity` = `147370 + 0 + 0 not asserted = 147370`
         - `coverage_identity_holds` = `True`
-        - `identity_is_REAL_ARITHMETIC` = `True`
-        - `what_it_can_detect` = `a unit covered by NO clause -- the 99-row hole decisions/0080 SS3 was written for. The clauses are counted independently and must sum to the population.`
-        - `build` = `a/2026-08-16-0088`
+        - `population_size_independence` = `EMITTED_DELIVERABLE`
+        - `population_size_source` = `processed/step8/a/analysis_table.csv.gz, rows with in_deriv = True`
+        - `independent_population_size` = `147370`
+        - `identity_against_the_independent_source` = `147370 + 0 + 0 not asserted = 147370`
+        - `identity_against_the_independent_source_holds` = `True`
+        - `identity_CAN_FAIL_ON_ANY_DATA` = `True`
+        - `what_it_can_detect` = `AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/analysis_table.csv.gz, rows with in_deriv = True, so the clauses and the denominator are not the same expression and the identity can fail.`
+        - `build` = `a/2026-08-16-0090`
         - `asserted_clause_counts` = `[147370, 0]`
+        - `clauses_are_a_complementary_partition_of_the_population_mask` = `YES -- `tau2 <= tau_pull` and `tau2 > tau_pull` are a set and its complement within the same mask, so they sum to the mask for any mask. The INDEPENDENT row count is what can fail.`
         - `rows_with_tau2_at_or_before_tau_pull` = `147370`
         - `rows_with_tau2_after_tau_pull` = `0`
+        - `rows_with_tau2_EXACTLY_AT_tau_pull` = `17`
         - `rows_with_tau1_at_or_before_tau_pull` = `147370`
+        - `the_bound_is_ATTAINED_a_ge_form_would_fail` = `True`
         - `holds` = `True`
 - `coverage_rows` = `196654`
-- `build` = `a/2026-08-16-0088`
+- `build` = `a/2026-08-16-0090`
 - **result: PASS**
 
 ---
@@ -468,7 +582,7 @@
 | **APPLY** | 196,654 | 703 | **703** | 604 | 99 | 216 |
 | **DERIV** | 147,370 | 99 | **99** | 0 | 99 | 73 |
 
-*Build: every figure in this table measured on `a/2026-08-16-0088` — position-5 build of 2026-08-16, instance `a`, RERUN against decisions/0088 (B3 measured: the boundary window and the per-site D11 table; F2: the D9 coverage quantities named as separate objects and the mislabel corrected; the D9 clustering universe ruled to U1, ranked by distinct strict keys merged). The earlier 2026-08-16 builds of this instance -- `a/2026-08-16-0085` and the pre-0085 run -- are what Red Team's third and fourth passes reviewed. NO POPULATION AND NO RULE MOVES between them; what moves is the D9 CLUSTER LIST, because the universe it is computed on was ruled and this instance's previous universe was the D9 coverage pivot rather than the sweep. They are different builds and are tagged apart.; see §0.*
+*Build: every figure in this table measured on `a/2026-08-16-0090` — position-5 build of 2026-08-16, instance `a`, RERUN against decisions/0090 plus Red Team fifth-pass F1 and F2, which 0090 SS3 folds into this rerun; see §0.*
 
 **It reconciles: True.** Neither superseded answer was produced — ALT's 604 on APPLY: False; ALT-MATCHED's 793 on APPLY: False.
 
@@ -484,6 +598,6 @@
 - **What check 8 found:** 325 accounts are recorded in a skip class (discarded_over_tolerance 287, skipped_length_forecast 38), 0 HTTP 403 responses occurred in the entire run and 0 accounts are recorded `access_denied`. **None of the skipped accounts reaches the user index at all**, so none contributes a pair of any kind, let alone a never-started one. Separately, 7 accounts were skipped on one attempt and yielded data on another; they contribute 604 position-5 pairs including 119 never-started, which rest on a real parsed history and are not violations. Reported so the assertion's scope is visible rather than assumed.
 
 
-*Every result in this report was measured on build `a/2026-08-16-0088` — position-5 build of 2026-08-16, instance `a`, RERUN against decisions/0088 (B3 measured: the boundary window and the per-site D11 table; F2: the D9 coverage quantities named as separate objects and the mislabel corrected; the D9 clustering universe ruled to U1, ranked by distinct strict keys merged). The earlier 2026-08-16 builds of this instance -- `a/2026-08-16-0085` and the pre-0085 run -- are what Red Team's third and fourth passes reviewed. NO POPULATION AND NO RULE MOVES between them; what moves is the D9 CLUSTER LIST, because the universe it is computed on was ruled and this instance's previous universe was the D9 coverage pivot rather than the sweep. They are different builds and are tagged apart. (`decisions/0079` B6). The full build record, with stage-file hashes and the git HEAD, is in `artifacts/step8-waterfall-a.md` §0 and in the `.json` beside this file.*
+*Every result in this report was measured on build `a/2026-08-16-0090` — position-5 build of 2026-08-16, instance `a`, RERUN against decisions/0090 plus Red Team fifth-pass F1 and F2, which 0090 SS3 folds into this rerun (`decisions/0079` B6). The full build record, with stage-file hashes and the git HEAD, is in `artifacts/step8-waterfall-a.md` §0 and in the `.json` beside this file.*
 
 *Generated by `src/step8_a_6_emit.py` from `processed/step8/a/invariants.json`.*

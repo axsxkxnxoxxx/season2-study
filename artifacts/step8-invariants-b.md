@@ -2,9 +2,9 @@
 
 **Step 8 is a GATE and this document is a PROPOSAL.** Nothing here is adopted. This instance does not adopt its own proposal, does not begin Step 8b or Step 9, and records no approval — that is the Human Lead's alone. Zero API calls; every figure is computed from data already on disk.
 
-**This is a RERUN ordered by the Human Lead**, on `task-sheet.md` Step 8 as it now stands — the spec as amended through **`decisions/0088`**, which acts on Red Team's **fourth-pass HOLD** and closes the **B3** item that blocked the gate twice. **It is a rerun, not an amendment: everything below is rebuilt from the stored data by the same pipeline that writes the table, and no previous output was patched.** Against this arm's last deliverables (the 2026-08-16 `-r3` run, spec through `0085`), `0088` changes **three things this arm emits**. **§1 (B3) — MEASURE BOTH UNASSERTED MANDATES** (§14a): the boundary window at `τ1` and `τ2` on both populations, a **per-site D11 table asserted at each site**, and the existing `tau2 <= tau_pull` assertion **promoted into the published invariant set as invariant 9**. **Two of these moved something.** The boundary window is **not vacuous** — the `τ1` boundary is occupied — and the per-site assertion exposed that this arm's `-r3` build let the S1-side D11 carry-through reach the four `action_count_s1_*` columns, where no ruling exempts it; **D11 is now applied there, 4 position-5 rows move, and no waterfall line, outcome share or invariant moves with them.** **§3 — the D9 clustering universe is RULED U1, ranked by distinct strict keys merged** (§10a): this arm published **U3** on `-r3` and now publishes **U1**; **no D9 count moves**, because the search already ran on the whole sweep. **§2 — the D9 coverage quantities are named as separate objects** (§10z). The column set is unchanged at **89**, and **no rule, population or bound endpoint moves**: line 1 is 220,107, APPLY is 196,654, DERIV is 147,370, position 6 removes 703 and 99. Everything else — `0078`'s provenance rule, `0079`'s pipeline-produced drop set and inert-position labels, `0080`'s per-invariant coverage populations, `0083`'s closed denominator, `0085`'s four-cell emptiness and the 1,355 / 652 decomposition — is re-executed rather than carried. This overwrites the previous `-b` deliverables.
+**This is a RERUN ordered by the Human Lead**, on `task-sheet.md` Step 8 as it now stands — the spec as amended through **`decisions/0090`**. **It is a rerun, not an amendment: everything below is rebuilt from the stored data by the same pipeline that writes the table, and no previous output was patched.** Against this arm's last deliverables (the 2026-08-16 `-r4` run, spec through `0088`), **three things change and two of them are corrections to this arm's own work.** **(1) `0090` — D9 PUBLISHES AS A BOUND** (§10): strict is the floor, loose the ceiling, **neither is the point estimate**, on every quantity with both forms — complementary pairs `[0, 75]`, half (a) `[0, 6]`, half (b) `[0, 27]`. **No D9 count moves; what moves is which of them is presented as the answer**, and `-r4` presented strict as the ruled key. **(2) B3(a) WAS MEASURED ON THE WRONG SET AND THE VERDICT REVERSES** (§14a). `0089` §2(a) corrects `0088` §1(a): `τ1` and `τ2` are midnight-aligned, so `[τ − 24h, τ)` is where the half-open and date-level forms **agree**; the separating interval is **`[τ, τ + 24h)`**, and `-r4` did not emit it. Measured on the right set, the verdict is **`OUTCOME_DECIDING`**, not `OCCUPIED_INERT`: the forbidden `date(watched_at) <= T1` form moves **71 APPLY rows** and **59 DERIV rows** into a different outcome state (`τ1` alone 52 / 45, `τ2` alone 19 / 14). **The mandate is load-bearing on the RESULT.** **No figure of this build moves** — the forbidden form is computed as a counterfactual and nowhere else. **(3) THE NEGATIVE CONTROL IS EXECUTED, NOT DESCRIBED** (`step8-invariants-b.md`). `-r4` published a *sentence* about the failure its rebuilt coverage apparatus would catch; **replaced by 6 injected defects run through the same functions and the same aggregate — 5 of 5 checkable cases caught, asserted, with the one that passes by design named.** **Nothing else moves.** Line 1 is **220,107**, APPLY is **196,654**, DERIV is **147,370**, position 6 removes **703** and **99**, and the column set is **89**. `0088`'s three rulings — the per-site D11 table, the U1 clustering universe, the named coverage objects — and everything before them are **re-executed rather than carried**. This overwrites the previous `-b` deliverables.
 
-**Provenance — `analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r4 (RERUN on the spec as amended through decisions/0088; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)`.** Every count, every waterfall figure and every invariant result below was measured on that build (`0078`, `0079` §2). Where a figure is quoted from a ruling, the ruling's own build is named instead: `position-5 build of 2026-08-13 (both arms, the run decisions/0078 labelled)`. **A count without its provenance can be correct when written and wrong when read.**
+**Provenance — `analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r5 (RERUN on the spec as amended through decisions/0090; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)`.** Every count, every waterfall figure and every invariant result below was measured on that build (`0078`, `0079` §2). Where a figure is quoted from a ruling, the ruling's own build is named instead: `position-5 build of 2026-08-13 (both arms, the run decisions/0078 labelled)`. **A count without its provenance can be correct when written and wrong when read.**
 
 ## How to read this report
 
@@ -12,7 +12,9 @@
 
 Counts: **6 pure code checks**, **1 that is a code check by construction and a genuine cross-check as specified**, and **2 that can fail on real data** — both added by `decisions/0076`, because before it the set had **zero**. **2 further items are reported and NOT asserted**: the set-membership drop rule, which is a coverage count (`0074` ruling 3), and the 703 expectation, which is a population reconciliation.
 
-**THE SET IS NINE THIS RUN, NOT EIGHT.** decisions/0088 Sec 1(c) PROMOTES the tau2 <= tau_pull assertion into the published set. It already ran; it was invisible to a reader of the deliverable. REPORTED AS A SPEC OBSERVATION, NOT RECONCILED: task-sheet.md and this instance's definition file still say 'THE ASSERTION SET NOW HAS EIGHT MEMBERS', and 0088 moved that count without the sentence catching up. task-sheet.md's own labelling bullet carries a THIRD count -- 'four pure code checks, one by construction, one item that is not an invariant' -- which predates 0076. Three counts of one set are live on the surfaces this instance reads.
+**THE SET IS NINE, NOT EIGHT.** decisions/0088 Sec 1(c) PROMOTES the tau2 <= tau_pull assertion into the published set. It already ran; it was invisible to a reader of the deliverable.
+
+**And the surface count this arm reported last run is RE-READ, not carried.** `-r4` published that `task-sheet.md` and this instance's definition file *"still say THE ASSERTION SET NOW HAS EIGHT MEMBERS"*. **That was true when written and `0089` §3 acted on it.** Re-read off disk on this build: *EIGHT* occurs **0** times across the two surfaces, *NINE* occurs **1**, and `task-sheet.md`'s *"four pure code checks"* sentence is marked SUPERSEDED at the point of use: **True**. CLOSED. decisions/0089 Sec 3 acted on both halves and struck the 'four pure code checks' sentence at the point of use. NO SURFACE NOW STATES EIGHT. The r4 claim is NO LONGER TRUE and is not republished. This arm publishes NINE and no surface contradicts it. **The negative grep for 'EIGHT MEMBERS' passes clean on a file that never said nine. Both halves are measured here: EIGHT must be 0 AND NINE must be non-zero.**
 
 **What invariant 9 does and does not buy.** `no position-5 row has tau2 > tau_pull` is true by D10's own definition of position 5, so it is a **code check** and it is not evidence for anything about the data. What promoting it buys is **visibility**: it ran before and no reader of this deliverable could see it, which is the same defect as an unlabelled code check one level up. **And it is not slack** — rows sit with `tau2` **exactly at** `tau_pull`, so a `>=` form of the same assertion would fail. See `artifacts/step8-waterfall-b.md` §14a(c).
 
@@ -44,8 +46,6 @@ Counts: **6 pure code checks**, **1 that is a code check by construction and a g
 
 **Rebuilt this run.** Every identity is arithmetic on measured counts, and **the population size is sourced from a different file than the asserted count** — the emitted analysis table, the Step 4 ledger, stage 1's own pair count, or the mandated seven-position order. Result on this build: **9 of 9 identities have independently sourced sides**, **0 are literals**, and **9 of 9 invariants carry a coverage identity at all** — with no default: `every invariant must CARRY coverage.identity_holds and it must be True. The r3 build chained .get(..., .get(..., .get(..., True))), so an invariant with no coverage key contributed a PASS -- a control that could not see the thing it was built to see. There is no default here`.
 
-**An invariant asserted on the post-liveness 195,951 rows while naming the position-5 population would now report 195,951 + 0 = 196,654 and FAIL. That is exactly the r3 gap at invariant 6, which the old apparatus reported as a pass on a hand-chosen denominator.**
-
 | Population-size source used |
 | :--- |
 | processed/step4/pull_ledger.jsonl, counted by a SECOND pass … |
@@ -53,9 +53,28 @@ Counts: **6 pure code checks**, **1 that is a code check by construction and a g
 | stage 1's own count of in-frame pairs carrying any in-E S1 o… |
 | the MANDATED FILTER ORDER -- 7 positions, fixed by decisions… |
 
+### The negative control — **executed, not described**
+
+**This arm's r4 build published `what_a_failure_would_look_like` -- a DESCRIPTION of the failure the apparatus would catch -- and decisions/0089 Sec 1 recorded it as 'demonstrating failing'. It was not demonstrated. CLAUDE.md: a control asserted to exist is not a control. The failures are EXECUTED here.** The SAME cover(), cover_ok() and _independent_identity() the published invariants go through, and for the aggregate, the same expression the published `identity_holds_on_every_invariant` uses. Not a re-implementation, which would prove only that a second copy behaves.
+
+| # | Injected defect | Which control | It returned | Caught |
+| ---: | :--- | :--- | :---: | :--- |
+| 1 | invariant asserted on the post-liveness row set while naming position 5 | `cover_ok` | `False` | **yes** |
+| 2 | invariant carrying no coverage key at all | `cover_ok` | `False` | **yes** |
+| 3 | identity_holds hardcoded True with no arithmetic behind it | `cover_ok` | `True` | n/a — passes by design |
+| 4 | identity whose population size and asserted count are the SAME expression | `_independent_identity` (`cover_ok` passes it, by design) | `False` | **yes** |
+| 5 | the PUBLISHED aggregate expression, run over the real invariant list with one invariant's coverage swapped for the wrong-population block from case 1 | the published aggregate expression | `False` | **yes** |
+| 6 | the PUBLISHED aggregate expression, run over the real invariant list with one invariant's coverage key DELETED | the published aggregate expression | `False` | **yes** |
+
+**6 cases run; 5 have a checkable control; 5 caught; 0 not caught.** **The run asserts `all_checkable_cases_caught` — True — so an injected defect that got through would abort this pipeline before a deliverable was written.** This block reports the number of cases it ran. A negative-control block that ran zero cases and reported clean is the failure CLAUDE.md's standing rule exists to prevent.
+
+**The case that passes by design is named rather than hidden:** *identity_holds hardcoded True with no arithmetic behind it*. `cover_ok` cannot distinguish a hardcoded `True` from a computed one at that interface, which is exactly why the separate literal counter exists and reads **0**.
+
+**Why this replaces a sentence.** The previous build published a field named `what_a_failure_would_look_like` — a description of the failure this apparatus would catch — and `0089` §1 recorded it as *demonstrating failing*. **It was not demonstrated.** `CLAUDE.md`: *a control asserted to exist is not a control*, and that file records a property withdrawn because *the mechanism never fired*, found by reading the code rather than the claim. **The same reading applied here found the same shape in this arm's own deliverable.**
+
 ## 1. outcome states are mutually exclusive and sum to the POST-POSITION-7 row set
 
-*Measured on: b: position-5 build of 2026-08-16-r4 (spec through 0088).*
+*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
 
 **Label: CODE CHECK.** Step 1 Sec 7's partition A = empty / (A non-empty and C_H) / (A non-empty and not C_H) is proved exhaustive and disjoint, so this can only catch an assignment coded wrongly -- e.g. dropping the |A| >= 1 conjunct from Continued, which would put a day-150 starter completing by day 190 in two states at once.
 
@@ -243,7 +262,7 @@ Counts: **6 pure code checks**, **1 that is a code check by construction and a g
 
 ## 2. filter counts decrease monotonically -- CODED AS `>=`, NOT `>`
 
-*Measured on: b: position-5 build of 2026-08-16-r4 (spec through 0088).*
+*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
 
 **Label: CODE CHECK.** filters only remove rows, so this fails only on an implementation that ADDS them -- a duplicating join, most likely.
 
@@ -300,7 +319,7 @@ Counts: **6 pure code checks**, **1 that is a code check by construction and a g
 
 ## 3. distinct episodes never exceed season length (|D| <= L)
 
-*Measured on: b: position-5 build of 2026-08-16-r4 (spec through 0088).*
+*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
 
 **Label: CODE CHECK.** Step 8's own set-membership drop rule already establishes |D| <= L by construction -- an episode whose number is not in the season's listed set E is dropped, so D is a subset of E. It fails only if an implementation filtered by the numeric RANGE 1..F instead of by membership in E.
 
@@ -349,7 +368,7 @@ Counts: **6 pure code checks**, **1 that is a code check by construction and a g
 
 ## 4. A is a subset of A_H on every row
 
-*Measured on: b: position-5 build of 2026-08-16-r4 (spec through 0088).*
+*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
 
 **Label: CODE CHECK.** true by construction since tau1 < tau2 and both sets are prefixes of the same instant-ordered episode list; it can only catch the two sets being computed from different evidence, or tau2 computed below tau1.
 
@@ -386,7 +405,7 @@ Counts: **6 pure code checks**, **1 that is a code check by construction and a g
 
 ## 5. clock start is on or after the S2 finale date, on or after the first-pass S1 completion date, and equals one of those two
 
-*Measured on: b: position-5 build of 2026-08-16-r4 (spec through 0088).*
+*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
 
 **Label: CODE CHECK BY CONSTRUCTION, DATA CHECK AS SPECIFIED.** the first-pass S1 completion date is RECOMPUTED here by a second, independent implementation -- a literal per-pair walk over the records, not the vectorised rank computation the pipeline uses, and not read back from any stored value. Read back rather than recomputed it degrades to a code check and proves nothing, because T0 = max() makes all three clauses true of any correct max().
 
@@ -448,7 +467,7 @@ Counts: **6 pure code checks**, **1 that is a code check by construction and a g
 
 ## 6. abandonment point p is in (0, 1] on every Started-and-left row, null elsewhere
 
-*Measured on: b: position-5 build of 2026-08-16-r4 (spec through 0088).*
+*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
 
 **Label: CODE CHECK.** Started-and-left requires |A| >= 1, so m_H exists; and set membership makes A_H a subset of E2, so the rank numerator |{e in E2 : e <= m_H}| lies in [1, L2]. NO data configuration puts p outside (0, 1]. It fails only on the withdrawn raw-ratio form p = m_H / L2, which can exceed 1 where S2 numbering has a gap.
 
@@ -497,7 +516,7 @@ Form: `p = |{e in E2 : e <= m_H}| / L2, rank form, read on A_H (0034)`.
 
 ## 7. NO ACCOUNT IS DROPPED WHOLESALE BY THE PAIR-LEVEL LIVENESS FILTER -- the count of accounts holding BOTH a live and a not-live pair is > 0
 
-*Measured on: b: position-5 build of 2026-08-16-r4 (spec through 0088).*
+*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
 
 **Label: DATA CHECK.** 703 pairs from 216 accounts is consistent with a pair-level AND an account-level implementation, and nothing in the exclusion set distinguishes them. An account-level filter would make this count exactly ZERO. CLAUDE.md and Step 7: 'One account can be live for one show and not another. Never drop a user wholesale.' This can fail on real data.
 
@@ -629,7 +648,7 @@ Form: `p = |{e in E2 : e <= m_H}| / L2, rank form, read on A_H (0034)`.
 
 ## 8. NO access_denied OR SKIPPED ACCOUNT IS READ AS EMPTY -- no account recorded access_denied, over-tolerance or otherwise skipped contributes a pair scored never-started
 
-*Measured on: b: position-5 build of 2026-08-16-r4 (spec through 0088).*
+*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
 
 **Label: DATA CHECK.** CLAUDE.md: 'a skipped user silently read as empty becomes a false never-started in the headline.' A join that treats an absent history as an empty one produces exactly this, and it FAILS IN THE DIRECTION OF THE RESULT, which is the worst direction available. Rule and evidence at artifacts/step0-access-and-setup.md Sec 7.
 
@@ -706,7 +725,7 @@ Form: `p = |{e in E2 : e <= m_H}| / L2, rank form, read on A_H (0034)`.
 
 ## 9. no position-5 row has tau2 > tau_pull
 
-*Measured on: b: position-5 build of 2026-08-16-r4 (spec through 0088).*
+*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
 
 **Label: CODE CHECK.** D10 defines position 5 as [T0] + (max(W, 91) + H) x 24h <= tau_pull, and at W = 108 that expression IS tau2. It can only catch tau2 or the right-censoring bound computed wrongly -- for instance H dropped from the censoring term while tau2 kept it.
 
@@ -774,7 +793,7 @@ Form: `p = |{e in E2 : e <= m_H}| / L2, rank form, read on A_H (0034)`.
 
 ## What the two data checks actually found
 
-*Measured on: b: position-5 build of 2026-08-16-r4 (spec through 0088).*
+*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
 
 **Wholesale dropping.** On APPLY, **215 of the 216 accounts that supply a liveness exclusion also keep at least one live pair**; on DERIV, **72 of 73**. An account-level filter would make both numbers exactly zero, so this discriminates between the two implementations, which the 703-from-216 figure alone does not. The single account whose pairs are all not-live holds exactly one pair in the population, where the two implementations are indistinguishable by construction.
 
@@ -790,7 +809,7 @@ Form: `p = |{e in E2 : e <= m_H}| / L2, rank form, read on A_H (0034)`.
 
 ## Reported and NOT asserted (1) — the set-membership drop rule
 
-*Measured on: b: position-5 build of 2026-08-16-r4 (spec through 0088).*
+*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
 
 A COVERAGE COUNT, NOT AN INVARIANT (decisions/0074 ruling 3). Step 8's own bullet calls it 'an implementation check, not a data check'. Reported, not asserted -- asserting it would add another pass to a report where six of eight cannot fail on data.
 
@@ -801,7 +820,7 @@ A COVERAGE COUNT, NOT AN INVARIANT (decisions/0074 ruling 3). Step 8's own bulle
 
 ## Reported and NOT asserted (2) — the 703 expectation
 
-*Measured on: b: position-5 build of 2026-08-16-r4 (spec through 0088).*
+*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
 
 It is a POPULATION RECONCILIATION, and the spec's own instruction to suspect the population before the implementation is what makes it one.
 

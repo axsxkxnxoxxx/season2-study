@@ -32,31 +32,60 @@ GATE = ("**Step 8 is a GATE and this document is a PROPOSAL.** Nothing here is a
         "This instance does not adopt its own proposal, does not begin Step 8b or Step 9, "
         "and records no approval — that is the Human Lead's alone. Zero API calls; every "
         "figure is computed from data already on disk.")
-RERUN = ("**This is a RERUN ordered by the Human Lead**, on `task-sheet.md` Step 8 as it now "
-         "stands — the spec as amended through **`decisions/0088`**, which acts on Red Team's "
-         "**fourth-pass HOLD** and closes the **B3** item that blocked the gate twice. **It is "
-         "a rerun, not an amendment: everything below is rebuilt from the stored data by the "
-         "same pipeline that writes the table, and no previous output was patched.** Against "
-         "this arm's last deliverables (the 2026-08-16 `-r3` run, spec through `0085`), `0088` "
-         "changes **three things this arm emits**. **§1 (B3) — MEASURE BOTH UNASSERTED "
-         "MANDATES** (§14a): the boundary window at `τ1` and `τ2` on both populations, a "
-         "**per-site D11 table asserted at each site**, and the existing `tau2 <= tau_pull` "
-         "assertion **promoted into the published invariant set as invariant 9**. **Two of "
-         "these moved something.** The boundary window is **not vacuous** — the `τ1` boundary "
-         "is occupied — and the per-site assertion exposed that this arm's `-r3` build let the "
-         "S1-side D11 carry-through reach the four `action_count_s1_*` columns, where no ruling "
-         "exempts it; **D11 is now applied there, 4 position-5 rows move, and no waterfall "
-         "line, outcome share or invariant moves with them.** **§3 — the D9 clustering universe "
-         "is RULED U1, ranked by distinct strict keys merged** (§10a): this arm published **U3** "
-         "on `-r3` and now publishes **U1**; **no D9 count moves**, because the search already "
-         "ran on the whole sweep. **§2 — the D9 coverage quantities are named as separate "
-         "objects** (§10z). The column set is unchanged at **89**, and **no rule, population or "
-         "bound endpoint moves**: line 1 is 220,107, APPLY is 196,654, DERIV is 147,370, "
-         "position 6 removes 703 and 99. Everything else — `0078`'s provenance rule, `0079`'s "
-         "pipeline-produced drop set and inert-position labels, `0080`'s per-invariant coverage "
-         "populations, `0083`'s closed denominator, `0085`'s four-cell emptiness and the "
-         "1,355 / 652 decomposition — is re-executed rather than carried. This overwrites the "
-         "previous `-b` deliverables.")
+def rerun_note(R: dict, D9: dict, I: dict) -> str:
+    """The lead paragraph, with its claims READ FROM THE MEASURED OBJECTS.
+
+    The previous build typed this paragraph, and it then asserted a boundary
+    verdict ("not vacuous — the tau1 boundary is occupied") that was computed on
+    the wrong interval, and a spec vintage that has since moved. A summary that
+    is typed is a second definition of every figure in it.
+    """
+    fn = R["B3_the_two_unasserted_mandates"]["a_boundary_window"][
+        "THE_FOUR_NUMBERS_THAT_SETTLE_B3"]
+    vs = R["B3_the_two_unasserted_mandates"]["a_boundary_window"]["by_population"][
+        "APPLY_position5"]["VERDICT_STATE"]
+    pf = D9["PUBLICATION_FORM_decisions_0090"]["bounds"]
+    ng = I["invariant_coverage_rule"]["AUDIT_can_each_identity_actually_fail"][
+        "THE_FAILURE_IS_EXECUTED_NOT_DESCRIBED"]
+    wf = {w["position"]: w for w in R["waterfall_APPLY"]}
+    return (
+        "**This is a RERUN ordered by the Human Lead**, on `task-sheet.md` Step 8 as it now "
+        "stands — the spec as amended through **`decisions/0090`**. **It is a rerun, not an "
+        "amendment: everything below is rebuilt from the stored data by the same pipeline that "
+        "writes the table, and no previous output was patched.** Against this arm's last "
+        "deliverables (the 2026-08-16 `-r4` run, spec through `0088`), **three things change and "
+        "two of them are corrections to this arm's own work.** "
+        "**(1) `0090` — D9 PUBLISHES AS A BOUND** (§10): strict is the floor, loose the ceiling, "
+        "**neither is the point estimate**, on every quantity with both forms — complementary "
+        f"pairs `{pf['complementary_signature_pairs']['BOUND']}`, half (a) "
+        f"`{pf['half_a_APPLY_position5']['BOUND']}`, half (b) "
+        f"`{pf['half_b_present_in_the_position3_drop_set']['BOUND']}`. **No D9 count moves; what "
+        "moves is which of them is presented as the answer**, and `-r4` presented strict as the "
+        "ruled key. "
+        "**(2) B3(a) WAS MEASURED ON THE WRONG SET AND THE VERDICT REVERSES** (§14a). `0089` "
+        "§2(a) corrects `0088` §1(a): `τ1` and `τ2` are midnight-aligned, so `[τ − 24h, τ)` is "
+        "where the half-open and date-level forms **agree**; the separating interval is "
+        "**`[τ, τ + 24h)`**, and `-r4` did not emit it. Measured on the right set, the verdict "
+        f"is **`{vs}`**, not `OCCUPIED_INERT`: the forbidden `date(watched_at) <= T1` form moves "
+        f"**{fn['APPLY_position5_both_bounds_relaxed']} APPLY rows** and "
+        f"**{fn['DERIV_position5_both_bounds_relaxed']} DERIV rows** into a different outcome "
+        f"state (`τ1` alone {fn['APPLY_position5_tau1_relaxed']} / "
+        f"{fn['DERIV_position5_tau1_relaxed']}, `τ2` alone "
+        f"{fn['APPLY_position5_tau2_relaxed']} / {fn['DERIV_position5_tau2_relaxed']}). **The "
+        "mandate is load-bearing on the RESULT.** **No figure of this build moves** — the "
+        "forbidden form is computed as a counterfactual and nowhere else. "
+        "**(3) THE NEGATIVE CONTROL IS EXECUTED, NOT DESCRIBED** (`step8-invariants-b.md`). "
+        "`-r4` published a *sentence* about the failure its rebuilt coverage apparatus would "
+        f"catch; **replaced by {ng['cases_run']} injected defects run through the same "
+        f"functions and the same aggregate — {ng['cases_caught']} of "
+        f"{ng['cases_whose_control_is_checkable']} checkable cases caught, asserted, with the "
+        "one that passes by design named.** "
+        "**Nothing else moves.** Line 1 is "
+        f"**{wf[1]['retained_pairs']:,}**, APPLY is **{wf[5]['retained_pairs']:,}**, DERIV is "
+        "**147,370**, position 6 removes **703** and **99**, and the column set is **89**. "
+        "`0088`'s three rulings — the per-site D11 table, the U1 clustering universe, the named "
+        "coverage objects — and everything before them are **re-executed rather than carried**. "
+        "This overwrites the previous `-b` deliverables.")
 PROV = (f"**Provenance — `{BUILD}`.** Every count, every waterfall figure and every invariant "
         "result below was measured on that build (`0078`, `0079` §2). Where a figure is quoted "
         f"from a ruling, the ruling's own build is named instead: `{RULED_BUILD}`. "
@@ -90,7 +119,8 @@ def main() -> None:
         {k: v for k, v in sorted(hist.items(), key=lambda kv: int(kv[0]))}
     q["drop_counts"]["shows_examined"] = sum(hist.values())
 
-    DIV = divergences(R, D9, S1)
+    RR = rerun_note(R, D9, I)
+    DIV = divergences(R, D9, S1, I)
 
     # ==================================================================
     # WATERFALL
@@ -98,7 +128,7 @@ def main() -> None:
     wj = {
         "artifact": "step8-waterfall-b", "instance": "analytics-engineer-b", "namespace": "b",
         "step": 8, "mode": "GATE -- proposal only, nothing adopted", "api_calls": 0,
-        "run": ("RERUN on the spec as amended through decisions/0083, carrying 0068-0082"),
+        "run": ("RERUN on the spec as amended through decisions/0090, carrying 0068-0089"),
         "provenance": provenance_block(),
         "deliverables_of_this_run": {
             "analysis_table": "processed/step8/b/analysis_table.csv.gz",
@@ -171,7 +201,7 @@ def main() -> None:
     A("")
     A(GATE)
     A("")
-    A(RERUN)
+    A(RR)
     A("")
     A(PROV)
     A("")
@@ -692,11 +722,48 @@ def main() -> None:
       f"in the site's input universe; latest `watched_at` used **{ds['latest_watched_at_used_utc']}**; "
       f"assertion holds: **{ds['assertion_holds']}**.")
     A("")
+    # -----------------------------------------------------------------
+    # decisions/0090 -- D9 PUBLISHES AS A BOUND. This section leads with the
+    # interval, because under 0090 the interval IS the result.
+    # -----------------------------------------------------------------
+    pf = D9["PUBLICATION_FORM_decisions_0090"]
+    A("### **D9 publishes as a BOUND** (`0090`) — strict is the floor, loose is the ceiling, "
+      "**neither is the point estimate**")
+    A("")
+    A(f"**{cap1(pf['ruling'])}.** ***SUPERSEDED: {pf['supersedes']}.*** "
+      f"**The ground:** {pf['ground']}. **It applies to every D9 quantity with both forms** — "
+      f"{pf['applies_to_every_quantity_with_both_forms']}.")
+    A("")
+    A("| D9 quantity | **BOUND `[strict, loose]`** | Floor (STRICT) | Ceiling (LOOSE) | Point "
+      "estimate |")
+    A("| :--- | :---: | ---: | ---: | :--- |")
+    for k, v in pf["bounds"].items():
+        A(f"| {v['quantity']} | **`[{v['floor_STRICT']}, {v['ceiling_LOOSE']}]`** | "
+          f"{v['floor_STRICT']} | {v['ceiling_LOOSE']} | **none — `0090`** |")
+    A("")
+    _hd = pf["bounds"]["complementary_signature_pairs"]
+    A(f"**Direction is part of the label and it is not symmetric.** {_hd['direction']}.")
+    A("")
+    A(f"**A zero floor is not an absence of evidence.** {cap1(_hd['why_the_coverage_is_here'])}. "
+      "**The coverage beside the floor, on this build:** "
+      f"**{_hd['COVERAGE_BESIDE_THE_FLOOR']['candidate_user_show_pairs_examined']:,}** candidate "
+      f"`(user, show)` pairs examined across "
+      f"**{_hd['COVERAGE_BESIDE_THE_FLOOR']['distinct_show_ids_appearing_in_a_coverage_row']:,}** "
+      "distinct show IDs, on "
+      f"**{_hd['COVERAGE_BESIDE_THE_FLOOR']['records_used_after_D11']:,}** S1/S2 records "
+      f"surviving D11 — {_hd['COVERAGE_BESIDE_THE_FLOOR']['universe']}.")
+    A("")
+    A(f"**{cap1(pf['THE_THIRD_KEY_IS_NOT_AN_ENDPOINT'])}.** On this build it gives "
+      f"**{pf['THE_THIRD_KEYS_ANSWER_NOT_AN_ENDPOINT']['complementary_signature_pairs']}**.")
+    A("")
+    A(f"**{cap1(pf['NO_COUNT_MOVES_WITH_THIS_RULING'])}.**")
+    A("")
     A("### The keys, which are now defined in the spec")
     A("")
-    A("**`0074` ruling 5 ruled STRICT; `0076` §3 defined both keys**, because \"strict\" and "
-      "\"loose\" had existed only inside one instance's code and the ruled key was undefined "
-      "on every surface an isolated instance reads.")
+    A("**`0076` §3 defined both keys**, because \"strict\" and \"loose\" had existed only inside "
+      "one instance's code and were undefined on every surface an isolated instance reads. "
+      "~~**`0074` ruling 5 ruled STRICT**~~ — ***that framing is SUPERSEDED by `0090`: strict is "
+      "the floor of a published bound, not the answer. The keys themselves are unchanged.***")
     A("")
     A("| Key | Definition | Complementary signature pairs |")
     A("| :--- | :--- | ---: |")
@@ -713,13 +780,18 @@ def main() -> None:
     A("")
     A("### Half (a) — fabricated never-started rows")
     A("")
-    A("| Population / position | Never started | STRICT (ruled) | LOOSE (alongside) | "
-      "Share, loose |")
-    A("| :--- | ---: | ---: | ---: | ---: |")
+    A("| Population / position | Never started | **BOUND `[floor, ceiling]`** | floor STRICT | "
+      "ceiling LOOSE | Bound as a share |")
+    A("| :--- | ---: | :---: | ---: | ---: | :---: |")
     for k, v in D9["half_a_fabricated_never_started_rows"].items():
-        A(f"| {k} | {v['never_started_n']:,} | {v['carrying_a_split_signature_STRICT']:,} | "
+        bd = v["BOUND_decisions_0090"]
+        sh = v["BOUND_as_a_share_of_never_started_pct"]
+        A(f"| {k} | {v['never_started_n']:,} | **`[{bd['floor_STRICT']}, "
+          f"{bd['ceiling_LOOSE']}]`** | {v['carrying_a_split_signature_STRICT']:,} | "
           f"{v['carrying_a_split_signature_LOOSE']:,} | "
-          f"{v['share_of_never_started_pct_LOOSE']:.4f}% |")
+          f"`[{sh[0]:.4f}%, {sh[1]:.4f}%]` |")
+    A("")
+    A("**No point estimate on any row** (`0090`). The interval is the result.")
     A("")
     A("### Half (b) — the silently deleted S1-failing counterparts")
     A("")
@@ -727,16 +799,27 @@ def main() -> None:
     A("**Measured on position 3's drop set** (`0075` ruling 2), which this run writes as a "
       f"deliverable. {cap1(hb['why_they_are_invisible_otherwise'])}.")
     A("")
-    A("| | STRICT (ruled) | LOOSE (alongside) |")
-    A("| :--- | ---: | ---: |")
-    A(f"| B-side pairs on frame shows | {hb['STRICT']['B_side_pairs_in_frame']:,} | "
+    _hbb = hb["BOUND_decisions_0090"]
+    A("| | **BOUND `[floor, ceiling]`** | floor STRICT | ceiling LOOSE |")
+    A("| :--- | :---: | ---: | ---: |")
+    A(f"| B-side pairs on frame shows | "
+      f"**`[{_hbb['B_side_pairs_in_frame']['floor_STRICT']}, "
+      f"{_hbb['B_side_pairs_in_frame']['ceiling_LOOSE']}]`** | "
+      f"{hb['STRICT']['B_side_pairs_in_frame']:,} | "
       f"{hb['LOOSE']['B_side_pairs_in_frame']:,} |")
     A(f"| of those, present in the position-3 drop set | "
+      f"**`[{_hbb['present_in_the_retained_position3_drop_set']['floor_STRICT']}, "
+      f"{_hbb['present_in_the_retained_position3_drop_set']['ceiling_LOOSE']}]`** | "
       f"{hb['STRICT']['of_those_present_in_the_retained_position3_drop_set']:,} | "
       f"{hb['LOOSE']['of_those_present_in_the_retained_position3_drop_set']:,} |")
     A(f"| of those, in the S2-evidence-and-no-S1-evidence subset | "
+      f"**`[{_hbb['in_the_S2_and_no_S1_subset']['floor_STRICT']}, "
+      f"{_hbb['in_the_S2_and_no_S1_subset']['ceiling_LOOSE']}]`** | "
       f"{hb['STRICT']['of_those_in_the_S2_evidence_and_NO_S1_evidence_subset']:,} | "
       f"{hb['LOOSE']['of_those_in_the_S2_evidence_and_NO_S1_evidence_subset']:,} |")
+    A("")
+    A("**`0078` §3 put both keys on this half; `0090` makes the pair an interval rather than an "
+      "answer with a footnote.** **No point estimate on any row.**")
     A("")
     A(f"Every one of the {hb['LOOSE']['B_side_pairs_in_frame']} loose-key B-side pairs is "
       "accounted for inside the drop set — **which is the check that the side output is the "
@@ -915,46 +998,101 @@ def main() -> None:
     A("")
     A(f"**`0088` §1.** {cap1(b3['ruling'])}. **The ground:** {b3['ground']}.")
     A("")
-    A("### (a) The boundary window — the rows the two forms could differ on")
+    A("### (a) The boundary window — **the SEPARATING interval, corrected by `0089` §2(a)**")
     A("")
     bw = b3["a_boundary_window"]
     A(f"{cap1(bw['what_it_measures'])}. **{cap1(bw['compliance_self_report'])}.**")
     A("")
-    A("| Population | Unit | `[τ1 − 24h, τ1)` | **exactly at `τ1`** | `[τ2 − 24h, τ2)` | "
-      "**exactly at `τ2`** | Examined |")
-    A("| :--- | :--- | ---: | ---: | ---: | ---: | ---: |")
+    A(f"**THE INTERVAL WAS WRONG ON THIS ARM'S PREVIOUS BUILD, AND SO WAS THE VERDICT TAKEN "
+      f"OFF IT.** {cap1(bw['THE_INTERVAL_WAS_CORRECTED'])}.")
+    A("")
+    A("| Population | Unit | **`[τ1, τ1+24h)` SEPARATING** | **`[τ2, τ2+24h)` SEPARATING** | "
+      "`[τ1−24h, τ1)` agreeing | `[τ2−24h, τ2)` agreeing | at `τ1` | at `τ2` | Examined |")
+    A("| :--- | :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |")
     for pk, pv in bw["by_population"].items():
         de = pv["DISTINCT_EPISODES_the_form_the_outcome_assignment_reads"]
         rr = pv["RAW_RECORDS_the_ruling's_own_word"]
-        lv = pv["LIVENESS_EVIDENCE_at_tau1"]
         A(f"| {pk} | distinct S2 episodes (what `|A|` counts) | "
-          f"{de['in_[tau1_minus_24h, tau1)']:,} | **{de['exactly_at_tau1']}** | "
-          f"{de['in_[tau2_minus_24h, tau2)']:,} | **{de['exactly_at_tau2']}** | "
+          f"**{de['SEPARATING_in_[tau1, tau1_plus_24h)']:,}** | "
+          f"**{de['SEPARATING_in_[tau2, tau2_plus_24h)']:,}** | "
+          f"{de['AGREEING_in_[tau1_minus_24h, tau1)']:,} | "
+          f"{de['AGREEING_in_[tau2_minus_24h, tau2)']:,} | "
+          f"{de['exactly_at_tau1']} | {de['exactly_at_tau2']} | "
           f"{de['episodes_examined']:,} |")
-        A(f"| {pk} | raw in-E2 S2 records | {rr['in_[tau1_minus_24h, tau1)']:,} | "
-          f"**{rr['exactly_at_tau1']}** | {rr['in_[tau2_minus_24h, tau2)']:,} | "
-          f"**{rr['exactly_at_tau2']}** | {rr['records_examined']:,} |")
-        A(f"| {pk} | max insertion instant (the STRICT silence test) | "
-          f"{lv['max_insertion_instant_in_[tau1_minus_24h, tau1)']} | "
-          f"**{lv['max_insertion_instant_exactly_at_tau1']}** | — | — | "
-          f"{lv['rows_examined']:,} |")
+        A(f"| {pk} | raw in-E2 S2 records | "
+          f"**{rr['SEPARATING_in_[tau1, tau1_plus_24h)']:,}** | "
+          f"**{rr['SEPARATING_in_[tau2, tau2_plus_24h)']:,}** | "
+          f"{rr['AGREEING_in_[tau1_minus_24h, tau1)']:,} | "
+          f"{rr['AGREEING_in_[tau2_minus_24h, tau2)']:,} | "
+          f"{rr['exactly_at_tau1']} | {rr['exactly_at_tau2']} | {rr['records_examined']:,} |")
+    A("")
+    for pk, pv in bw["by_population"].items():
+        lv = pv["LIVENESS_EVIDENCE_at_tau1"]
+        A(f"- **{pk}, the STRICT silence test's own boundary** — max insertion instant in "
+          f"`[τ1−24h, τ1)`: **{lv['max_insertion_instant_in_[tau1_minus_24h, tau1)']}**; "
+          f"exactly at `τ1`: **{lv['max_insertion_instant_exactly_at_tau1']}**, on "
+          f"{lv['rows_examined']:,} rows. **A different axis from the one above** — "
+          f"{lv['why_this_one_is_here']}.")
+    A("")
+    A("#### The four numbers that settle B3 — **rows changing OUTCOME STATE**")
+    A("")
+    fn = bw["THE_FOUR_NUMBERS_THAT_SETTLE_B3"]
+    A(f"{cap1(fn['definition'])}. **The forbidden form is computed only here,** "
+      f"{fn['the_forbidden_form_is_computed_ONLY_here']}.")
+    A("")
+    A("| Population | `τ1` relaxed | `τ2` relaxed | **both — the full forbidden form** | Rows |")
+    A("| :--- | ---: | ---: | ---: | ---: |")
+    for pk, pv in bw["by_population"].items():
+        wd = pv["WHAT_THE_FORM_DECIDES"]
+        A(f"| {pk} | **{wd['tau1_relaxed_only']['rows_changing_outcome_state']}** | "
+          f"**{wd['tau2_relaxed_only']['rows_changing_outcome_state']}** | "
+          f"**{wd['BOTH_bounds_relaxed_the_full_forbidden_form']['rows_changing_outcome_state']}**"
+          f" | {wd['tau1_relaxed_only']['rows_examined']:,} |")
     A("")
     for pk, pv in bw["by_population"].items():
         wd = pv["WHAT_THE_FORM_DECIDES"]
-        A(f"- **{pk} — `{pv['VERDICT_STATE']}`.** {pv['VERDICT']}. "
-          f"Rows with an S2 episode exactly at `τ1`: "
-          f"**{wd['rows_with_an_S2_episode_exactly_at_tau1']}**; of those, currently scored "
-          f"never-started so the form would decide the outcome: "
-          f"**{wd['of_those_currently_scored_never_started_so_the_form_DECIDES_the_outcome']}**.")
+        tr = ", ".join(f"**{k}** {v}" for k, v in
+                       wd["BOTH_bounds_relaxed_the_full_forbidden_form"]["transitions"].items())
+        A(f"- **{pk} transitions under the full forbidden form:** {tr}. Rows holding an S2 "
+          f"episode in the separating interval: "
+          f"**{wd['rows_with_an_S2_episode_in_the_SEPARATING_interval_at_tau1']}** at `τ1` and "
+          f"**{wd['rows_with_an_S2_episode_in_the_SEPARATING_interval_at_tau2']}** at `τ2` — "
+          f"more rows than change state, because most already have `|A| ≥ 1` or already fail "
+          f"the Continued test.")
     A("")
-    A("**THE MANDATE IS NOT VACUOUS ON THIS DATA, AND THAT IS THE FINDING.** `0088` §1(a) "
-      "instructs that a zero be **labelled vacuous rather than passed silently**. The count is "
-      "**not** zero: the `τ1` boundary is **occupied**, so the half-open form is doing real "
-      "work in `|A|` — an instant exactly at `τ1` is *outside* `A` under the half-open form and "
-      "*inside* it under a `<=` or date-level form. **Three states, not two:** an empty "
-      "boundary, an occupied boundary that decides no outcome, and an occupied boundary that "
-      "decides one. This build is the middle state, and collapsing it into either neighbour is "
-      "the misreading.")
+    for pk, pv in bw["by_population"].items():
+        wd = pv["WHAT_THE_FORM_DECIDES"]
+        a_, b_, j_ = (wd["tau1_relaxed_only"]["rows_changing_outcome_state"],
+                      wd["tau2_relaxed_only"]["rows_changing_outcome_state"],
+                      wd["BOTH_bounds_relaxed_the_full_forbidden_form"][
+                          "rows_changing_outcome_state"])
+        A(f"- **{pk} — the two per-bound counts sum to the joint one on this data: "
+          f"{a_} + {b_} = {j_} — {a_ + b_ == j_}.** **Measured, not assumed.** They need not: a "
+          "row moved out of never-started by the `τ1` relaxation could be moved again by the "
+          "`τ2` one, and that row would be counted once in the joint form and twice in the "
+          "sum. **No row does both here**, which is why the joint count is reported as its own "
+          "number rather than left to be added.")
+    A("")
+    for pk, pv in bw["by_population"].items():
+        A(f"- **{pk} — `{pv['VERDICT_STATE']}`.** {pv['VERDICT']}.")
+    A("")
+    A("**THE MANDATE IS LOAD-BEARING ON THE RESULT, AND THAT IS THE FINDING.** `0088` §1(a) "
+      "instructs that a zero be **labelled vacuous rather than passed silently**. It is not "
+      "zero, and it is not inert either: the forbidden `date(watched_at) <= T1` form would move "
+      f"**{fn['APPLY_position5_both_bounds_relaxed']} rows on APPLY** and "
+      f"**{fn['DERIV_position5_both_bounds_relaxed']} on DERIV** into a different outcome state. "
+      "**Three states, not two:** an empty separating interval, an occupied one that decides no "
+      "outcome, and an occupied one that decides one. **This build is the third**, and this "
+      "arm's previous build published the second — because it measured the interval on which "
+      "the two forms *agree* plus the single instant at `τ1`, and read a verdict about "
+      "disagreement off it. **That is corrected here, not carried.**")
+    A("")
+    A("**Reconciled with what the decision log records of the other arm, without reading its "
+      "output.** `0089` §2(a) quotes 703 episodes on 311 rows at `τ1` and 303 on 136 at `τ2` on "
+      "APPLY, 595/275 and 261/117 on DERIV. **This build measures the same six numbers** — the "
+      "table and the bullets above. **Those figures were taken from `decisions/0089`, a spec "
+      "surface this instance is required to read, not from the other arm's folder.** **The "
+      "outcome-state counts are new: `0089` §2(a) records them as measured by neither arm.**")
     A("")
     A("### (b) The per-site D11 table — **asserted at each site, not once and about the rest**")
     A("")
@@ -1146,6 +1284,44 @@ def main() -> None:
       f"definition file == code **{rs['agent_file_equals_code']}**, and the two surfaces agree "
       f"with each other **{rs['task_sheet_equals_agent_file']}**. **Matching a count is not "
       "matching a set.**")
+    A("")
+    # ------------------------------------------------------------------
+    # THE TWO SURFACE CLAIMS THIS ARM PUBLISHED LAST RUN, RE-READ.
+    # A claim about another file's state is a measurement with an expiry
+    # date. Carried as prose it reports a defect that has since been fixed.
+    # ------------------------------------------------------------------
+    sc = rr["c_surface_claims_this_arm_published_last_run_RE_READ"]
+    s4, s5 = (sc["item_4_specs_step8_readback_has_not_launched"],
+              sc["item_5_the_assertion_set_count_on_the_spec_surfaces"])
+    A("**And the two SURFACE CLAIMS this arm published last run are re-read, not carried.** "
+      f"{cap1(sc['why_re_read'])}.")
+    A("")
+    A("| Claim published on `-r4` | Measured now | Status |")
+    A("| :--- | :--- | :--- |")
+    A(f"| *\"`specs/step8-readback.md` still says Step 8 has not launched\"* | string occurs "
+      f"**{s4['occurrences_of_the_string_now']}**× — "
+      f"**{s4['of_those_inside_the_status_stamp_block_quoting_it_to_supersede_it']}** inside the "
+      f"status stamp that supersedes it, "
+      f"**{s4['of_those_in_the_file_BODY_still_asserting_it']}** in the body; the stamp precedes "
+      f"every body occurrence: **{s4['a_status_stamp_now_precedes_and_supersedes_it']}** | "
+      f"{s4['status_now']} |")
+    _ps = s5["per_surface"]
+    A(f"| *\"both spec surfaces still read THE ASSERTION SET NOW HAS EIGHT MEMBERS\"* | "
+      f"`task-sheet.md` EIGHT **{_ps['task-sheet.md']['EIGHT']}** / NINE "
+      f"**{_ps['task-sheet.md']['NINE']}**; definition file EIGHT "
+      f"**{_ps['agent_definition_file']['EIGHT']}** / NINE "
+      f"**{_ps['agent_definition_file']['NINE']}**; *\"four pure code checks\"* marked "
+      f"SUPERSEDED at the point of use: "
+      f"**{s5['task_sheet_four_pure_code_checks_marked_SUPERSEDED_at_the_point_of_use']}** | "
+      f"{s5['status_now']} |")
+    A("")
+    A(f"**Reported per surface, not as a total** — {_ps['reading']}.")
+    A("")
+    A(f"**Coverage, so a zero is a zero found and not a file unopened** (`CLAUDE.md`): "
+      f"`specs/step8-readback.md` **{sc['coverage']['specs/step8-readback.md_bytes_read']:,}** "
+      f"bytes, `task-sheet.md` **{sc['coverage']['task-sheet.md_bytes_read']:,}**, this arm's "
+      f"definition file **{sc['coverage']['agent_file_bytes_read']:,}**. "
+      f"**{cap1(s5['note_on_the_positive_half'])}.**")
     A("")
     A("**`silent_at_tau1` is the column that was worth restoring, and the reason is not "
       "symmetry.** It is **not recoverable from `live` and `outcome` on Continued rows** — "
@@ -1363,7 +1539,7 @@ def main() -> None:
     B("")
     B(GATE)
     B("")
-    B(RERUN)
+    B(RR)
     B("")
     B(PROV)
     B("")
@@ -1381,8 +1557,19 @@ def main() -> None:
       "asserted**: the set-membership drop rule, which is a coverage count (`0074` ruling 3), "
       "and the 703 expectation, which is a population reconciliation.")
     B("")
-    B("**THE SET IS NINE THIS RUN, NOT EIGHT.** "
-      f"{c['the_set_moved_from_EIGHT_to_NINE_this_run']}.")
+    B("**THE SET IS NINE, NOT EIGHT.** "
+      f"{c['the_set_moved_from_EIGHT_to_NINE_at_0088']}.")
+    B("")
+    _s5 = c["the_surface_count_this_arm_reported_last_run_IS_RE_READ_NOT_CARRIED"]
+    B("**And the surface count this arm reported last run is RE-READ, not carried.** `-r4` "
+      "published that `task-sheet.md` and this instance's definition file *\"still say THE "
+      "ASSERTION SET NOW HAS EIGHT MEMBERS\"*. **That was true when written and `0089` §3 acted "
+      f"on it.** Re-read off disk on this build: *EIGHT* occurs "
+      f"**{_s5['occurrences_of_EIGHT_across_the_two_surfaces']}** times across the two surfaces, "
+      f"*NINE* occurs **{_s5['occurrences_of_NINE_across_the_two_surfaces']}**, and "
+      "`task-sheet.md`'s *\"four pure code checks\"* sentence is marked SUPERSEDED at the point "
+      f"of use: **{_s5['task_sheet_four_pure_code_checks_marked_SUPERSEDED_at_the_point_of_use']}**. "
+      f"{cap1(_s5['status_now'])}. **{cap1(_s5['note_on_the_positive_half'])}.**")
     B("")
     B("**What invariant 9 does and does not buy.** `no position-5 row has tau2 > tau_pull` is "
       "true by D10's own definition of position 5, so it is a **code check** and it is not "
@@ -1471,12 +1658,51 @@ def main() -> None:
       "invariants carry a coverage identity at all** — with no default: "
       f"`{cr['how_the_aggregate_is_computed']}`.")
     B("")
-    B(f"**{cap1(au['what_a_failure_would_look_like'])}.**")
-    B("")
     B("| Population-size source used |")
     B("| :--- |")
     for s in au["population_size_sources_used"]:
         B(f"| {s}… |")
+    B("")
+    # --------------------------------------------------------------
+    # THE NEGATIVE CONTROL, PUBLISHED AS WHAT RAN.
+    # --------------------------------------------------------------
+    ng = au["THE_FAILURE_IS_EXECUTED_NOT_DESCRIBED"]
+    B("### The negative control — **executed, not described**")
+    B("")
+    B(f"**{cap1(ng['why_this_block_exists'])}.** {cap1(ng['run_through'])}.")
+    B("")
+    B("| # | Injected defect | Which control | It returned | Caught |")
+    B("| ---: | :--- | :--- | :---: | :--- |")
+    for i, cse in enumerate(ng["cases"], 1):
+        which, got = "`cover_ok`", cse.get("cover_ok_returned")
+        if "aggregate_returned" in cse:
+            which, got = "the published aggregate expression", cse["aggregate_returned"]
+        if "independent_identity_returned" in cse:
+            which = "`_independent_identity` (`cover_ok` passes it, by design)"
+            got = cse["independent_identity_returned"]
+        cau = ("**yes**" if cse["control_caught_it"] else "**NO**") \
+            if cse["control_caught_it"] is not None else "n/a — passes by design"
+        B(f"| {i} | {cse['case']} | {which} | `{got}` | {cau} |")
+    B("")
+    B(f"**{ng['cases_run']} cases run; {ng['cases_whose_control_is_checkable']} have a "
+      f"checkable control; {ng['cases_caught']} caught; "
+      f"{len(ng['cases_NOT_caught'])} not caught.** "
+      f"**The run asserts `all_checkable_cases_caught` — {ng['all_checkable_cases_caught']} — "
+      "so an injected defect that got through would abort this pipeline before a deliverable "
+      f"was written.** {cap1(ng['coverage_note'])}.")
+    B("")
+    B("**The case that passes by design is named rather than hidden:** "
+      f"*{ng['two_cases_PASS_BY_DESIGN_and_are_named'][0]}*. `cover_ok` cannot distinguish a "
+      "hardcoded `True` from a computed one at that interface, which is exactly why the separate "
+      f"literal counter exists and reads **{au['identities_that_are_literals']}**.")
+    B("")
+    B("**Why this replaces a sentence.** The previous build published a field named "
+      "`what_a_failure_would_look_like` — a description of the failure this apparatus would "
+      "catch — and `0089` §1 recorded it as *demonstrating failing*. **It was not demonstrated.** "
+      "`CLAUDE.md`: *a control asserted to exist is not a control*, and that file records a "
+      "property withdrawn because *the mechanism never fired*, found by reading the code rather "
+      "than the claim. **The same reading applied here found the same shape in this arm's own "
+      "deliverable.**")
     B("")
     for i, iv in enumerate(I["invariants"], 1):
         B(f"## {i}. {iv['invariant']}")
@@ -1605,7 +1831,7 @@ def main() -> None:
     print("wrote 4 artifacts")
 
 
-def divergences(R: dict, D9: dict, S1: dict) -> list[str]:
+def divergences(R: dict, D9: dict, S1: dict, I: dict) -> list[str]:
     """Every figure in this list is READ FROM THE MEASURED OBJECTS, not typed.
 
     CLAUDE.md: derived figures are regenerated, not patched -- "if you find
@@ -1625,7 +1851,44 @@ def divergences(R: dict, D9: dict, S1: dict) -> list[str]:
     tie = cl["universes"]["U1_all_sweep_show_ids_carrying_a_slug"]["THE_TIE_BREAK_IS_NOT_RULED"]
     bwA = b3["a_boundary_window"]["by_population"]["APPLY_position5"]
     chg = b3["b_per_site_D11_table"]["pairs_whose_action_counts_moved"]
+    _sc = R["analysis_table"]["column_set_is_ENUMERATED"][
+        "residuals_this_arm_reported_last_run_RE_MEASURED"][
+        "c_surface_claims_this_arm_published_last_run_RE_READ"]
+    sc4 = _sc["item_4_specs_step8_readback_has_not_launched"]
+    sc5 = _sc["item_5_the_assertion_set_count_on_the_spec_surfaces"]
+    d9b = D9["PUBLICATION_FORM_decisions_0090"]
+    neg = I["invariant_coverage_rule"]["AUDIT_can_each_identity_actually_fail"][
+        "THE_FAILURE_IS_EXECUTED_NOT_DESCRIBED"]
     return [
+        "**`0090` — D9 NOW PUBLISHES AS A BOUND, AND THIS ARM'S PREVIOUS BUILD PUBLISHED A "
+        "RULED KEY.** Strict is the **floor**, loose is the **ceiling**, **neither is the point "
+        "estimate**, and the interval applies to every D9 quantity that has both forms: "
+        f"complementary signature pairs **{d9b['bounds']['complementary_signature_pairs']['BOUND']}**, "
+        f"half (a) **{d9b['bounds']['half_a_APPLY_position5']['BOUND']}** on APPLY position 5, "
+        f"half (b) **{d9b['bounds']['half_b_present_in_the_position3_drop_set']['BOUND']}**. "
+        "**No D9 count moves** — `0090` §4 says so and this build confirms it — **what moves is "
+        "which of them is presented as the answer.** `-r4` published *\"ruled key: STRICT, with "
+        "the loose count reported alongside\"*; that framing is superseded at the point of use "
+        "in §10. **The third key's "
+        f"{d9b['THE_THIRD_KEYS_ANSWER_NOT_AN_ENDPOINT']['complementary_signature_pairs']} is not "
+        "an endpoint** — it is a different key's answer, reported as a divergence. **The "
+        "coverage publishes beside the zero floor** so the bound is distinguishable from a check "
+        "that looked nowhere.",
+
+        "**THE NEGATIVE CONTROL IS NOW EXECUTED, NOT DESCRIBED — AND THIS ARM'S OWN CLAIM WAS "
+        "THE DEFECT.** `-r4` published a field named `what_a_failure_would_look_like`, a "
+        "**sentence** about the failure the rebuilt coverage apparatus would catch, and `0089` "
+        "§1 recorded it as *\"demonstrating failing\"*. **It was described, not demonstrated** — "
+        "`CLAUDE.md`: *a control asserted to exist is not a control*, a rule that file records "
+        "as having been broken by a mechanism that *\"never fired\"*. **Replaced by "
+        f"{neg['cases_run']} injected defects run through the SAME `cover()`, `cover_ok()` and "
+        "`_independent_identity()` the published invariants go through, and through the SAME "
+        f"aggregate expression: {neg['cases_caught']} of {neg['cases_whose_control_is_checkable']} "
+        "checkable cases caught, and the run asserts it — an injected defect that got through "
+        "would abort before a deliverable was written.** **One case passes by design and is "
+        f"named rather than hidden: {neg['two_cases_PASS_BY_DESIGN_and_are_named'][0]}**, which "
+        "`cover_ok` cannot distinguish from a computed `True` and which the separate "
+        "literal-counter catches instead.",
         "**THE D9 CLUSTERING UNIVERSE IS NOW RULED — U1 — AND THIS ARM CHANGED TO IT.** "
         "`0088` §3 closes what `0085` §2 opened and `0086` §1 located. This arm published **U3** "
         "on its previous build and now publishes "
@@ -1649,16 +1912,28 @@ def divergences(R: dict, D9: dict, S1: dict) -> list[str]:
         "that closed the previous spec gap, and it is reported rather than resolved by picking "
         "the name that matches the entry.**",
 
-        "**B3 IS CLOSED BY `0088` §1, AND MEASURING IT MOVED SOMETHING IN THIS ARM.** The two "
-        "mandates are **the half-open UTC-instant form** and **D11 as a global cutoff**. "
-        "Compliance was never the issue; **nothing measured whether either is load-bearing**. "
-        "Measured now (§14a). **(a) The boundary window is NOT VACUOUS**: on APPLY, "
-        f"**{bwA['DISTINCT_EPISODES_the_form_the_outcome_assignment_reads']['exactly_at_tau1']}** "
-        "distinct S2 episode sits **exactly at `τ1`** (and the same count in raw records), so "
-        "the half-open form is doing real work in `|A|` — though "
-        f"**{bwA['WHAT_THE_FORM_DECIDES']['of_those_currently_scored_never_started_so_the_form_DECIDES_the_outcome']}** "
-        "outcome states differ between the two forms, because that row already has `|A| ≥ 1`. "
-        "**Three states, not two: empty, occupied-and-inert, occupied-and-deciding.** "
+        "**B3(a) WAS MEASURED ON THE WRONG SET LAST RUN, AND CORRECTING IT REVERSES THIS ARM'S "
+        "OWN VERDICT.** `0089` §2(a) corrects `0088` §1(a): `T0` is day-floored, so `τ1` and "
+        "`τ2` are midnight-aligned and `[τ − 24h, τ)` is the interval on which the half-open and "
+        "date-level forms **agree**. **The separating interval is `[τ, τ + 24h)`, and this arm's "
+        "`-r4` deliverable did not emit it** — it published the ruled window and the single "
+        "instant at `τ1`, then read `OCCUPIED_INERT` and *\"no outcome state differs\"* off "
+        f"**1 row of {bwA['WHAT_THE_FORM_DECIDES']['rows_with_an_S2_episode_in_the_SEPARATING_interval_at_tau1']}**. "
+        "**Measured on the right set (§14a): the verdict is "
+        f"`{bwA['VERDICT_STATE']}`.** On APPLY the separating interval holds "
+        f"**{bwA['DISTINCT_EPISODES_the_form_the_outcome_assignment_reads']['SEPARATING_in_[tau1, tau1_plus_24h)']:,}** "
+        "distinct S2 episodes at `τ1` and "
+        f"**{bwA['DISTINCT_EPISODES_the_form_the_outcome_assignment_reads']['SEPARATING_in_[tau2, tau2_plus_24h)']:,}** "
+        "at `τ2`, and **the forbidden form moves "
+        f"{b3['a_boundary_window']['THE_FOUR_NUMBERS_THAT_SETTLE_B3']['APPLY_position5_both_bounds_relaxed']} "
+        "APPLY rows and "
+        f"{b3['a_boundary_window']['THE_FOUR_NUMBERS_THAT_SETTLE_B3']['DERIV_position5_both_bounds_relaxed']} "
+        "DERIV rows into a different outcome state.** **The mandate is load-bearing on the "
+        "RESULT, not merely on `|A|`.** **No published figure of this build moves** — the "
+        "forbidden form is computed as a counterfactual and nowhere else — **but the previous "
+        "verdict is withdrawn, not amended.**",
+
+        "**B3(b) AND B3(c) STAND FROM THE PREVIOUS RUN AND ARE RE-EXECUTED.** "
         "**(b) The per-site table exposed a real gap in this arm's own previous build**: the "
         "S1-side D11 carry-through — which has a ruling behind it **only** for the completion "
         "walk, because `0068` publishes line 1 at 220,107 — was also reaching the four "
@@ -1669,22 +1944,30 @@ def divergences(R: dict, D9: dict, S1: dict) -> list[str]:
         "them**. **(c) The `tau2 <= tau_pull` assertion is promoted into the published set as "
         "invariant 9** — and **it is not slack**: rows sit with `tau2` exactly at `τ_pull`.",
 
-        "**`specs/step8-readback.md` STILL SAYS STEP 8 *\"HAS NOT LAUNCHED\"*, ON THIS READ.** "
-        "`0086` §3 stamped the two artifacts generated from that file and missed the source; "
-        "`0087` §5 (F5) recorded it as the **third** occurrence of the string and asked for a "
-        "stamp plus a ruling on whether `specs/` becomes a propagation surface. **Read live on "
-        "this build, line 3 still carries it.** `0086` supersedes *\"NOT LAUNCHED\"* with "
-        "**LAUNCHED FOUR TIMES; STILL UNAPPROVED**, and **unapproved is not unlaunched** — the "
-        "reading that sentence invites. **Reported, not edited: `specs/` is not one of the "
-        "eight surfaces and the ruling on whether it should be is the Human Lead's.**",
-
-        "**THE ASSERTION SET IS NINE, AND THREE COUNTS OF IT ARE LIVE ON THE SPEC SURFACES.** "
-        "`0088` §1(c) promotes the ninth. `task-sheet.md` and this instance's definition file "
-        "still read **\"THE ASSERTION SET NOW HAS EIGHT MEMBERS\"**, and `task-sheet.md`'s "
-        "invariant-labelling bullet carries a **third** count — *\"four pure code checks, one by "
-        "construction, one item that is not an invariant\"* — which predates `0076`. **The "
-        "ruling moved the count and no sentence caught up.** Reported as a spec observation; "
-        "this arm publishes nine and says so.",
+        "**THE TWO SURFACE CLAIMS THIS ARM PUBLISHED LAST RUN ARE BOTH NO LONGER TRUE, AND THEY "
+        "ARE RE-READ RATHER THAN CARRIED.** A claim about the state of another file is a "
+        "**measurement with an expiry date**; republished as prose it reports a defect that has "
+        "since been fixed, which is the stale-figure problem one level up. Both were re-read off "
+        f"disk on this build. **(4) `specs/step8-readback.md`** — the string *\"has not "
+        f"launched\"* occurs **{sc4['occurrences_of_the_string_now']}** time(s), "
+        f"**{sc4['of_those_inside_the_status_stamp_block_quoting_it_to_supersede_it']}** of them "
+        f"inside the status stamp that supersedes it and "
+        f"**{sc4['of_those_in_the_file_BODY_still_asserting_it']}** in the body, and the **stamp "
+        f"precedes every body occurrence: "
+        f"{sc4['a_status_stamp_now_precedes_and_supersedes_it']}** (`0089` §3, negative only — "
+        "the body sentence is deliberately unedited). "
+        f"{cap1(sc4['status_now'])}. **(5) The assertion-set count** "
+        f"— *\"ASSERTION SET NOW HAS EIGHT\"* occurs "
+        f"**{sc5['occurrences_of_EIGHT_across_the_two_surfaces']}** times across `task-sheet.md` "
+        f"and this arm's definition file, *\"NINE\"* occurs "
+        f"**{sc5['occurrences_of_NINE_across_the_two_surfaces']}**, and `task-sheet.md`'s "
+        f"*\"four pure code checks\"* sentence is now **marked SUPERSEDED at the point of use: "
+        f"{sc5['task_sheet_four_pure_code_checks_marked_SUPERSEDED_at_the_point_of_use']}**. "
+        f"{cap1(sc5['status_now'])}. **Both halves are measured** — "
+        f"{sc5['note_on_the_positive_half']} — and the bytes read are reported, so a zero here "
+        "is a zero found and not a file unopened. **What remains open on item 4 is not the "
+        "string but whether `specs/` becomes a NINTH propagation surface**, carried for the "
+        "Human Lead at `0089` §4.",
 
         "**THE COEXTENSIVITY CHAIN HAS THREE LINKS, NOT TWO — and the third is DATA.** "
         "`0085` §4 (Red Team P4): `numerator = L2 ⟺ m_H = max(E2)` is construction given "

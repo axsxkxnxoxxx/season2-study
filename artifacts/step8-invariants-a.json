@@ -5,24 +5,25 @@
   "W_days": 108,
   "H_days": 91,
   "build": {
-    "build_tag": "a/2026-08-16-0088",
-    "build_name": "position-5 build of 2026-08-16, instance `a`, RERUN against decisions/0088 (B3 measured: the boundary window and the per-site D11 table; F2: the D9 coverage quantities named as separate objects and the mislabel corrected; the D9 clustering universe ruled to U1, ranked by distinct strict keys merged). The earlier 2026-08-16 builds of this instance -- `a/2026-08-16-0085` and the pre-0085 run -- are what Red Team's third and fourth passes reviewed. NO POPULATION AND NO RULE MOVES between them; what moves is the D9 CLUSTER LIST, because the universe it is computed on was ruled and this instance's previous universe was the D9 coverage pivot rather than the sweep. They are different builds and are tagged apart.",
+    "build_tag": "a/2026-08-16-0090",
+    "build_name": "position-5 build of 2026-08-16, instance `a`, RERUN against decisions/0090 plus Red Team fifth-pass F1 and F2, which 0090 SS3 folds into this rerun",
+    "what_moved_on_this_build": "THREE THINGS MOVE, none of them a population, a rule, a waterfall line, an outcome share, a bound endpoint or an invariant result. (1) decisions/0090: D9 PUBLISHES AS A BOUND -- strict the FLOOR, loose the CEILING, NEITHER the point estimate -- superseding 0074 ruling 5's framing, under which strict was the answer and loose was context. D9's numbers do not move; which of them is presented as the answer does. (2) Red Team fifth pass F1 (decisions/0089 SS2(a)): this arm's B3(a) answer was stated on the WRONG OBJECT. It found the right interval -- [tau, tau + 24h) -- and then reported EPISODES ADMITTED. The number that settles B3(a) is how many position-5 rows CHANGE OUTCOME STATE under the forbidden date-level form: four numbers, both bounds x both populations. (3) Red Team fifth pass F2: this arm's coverage-identity independence proxy was wrong. `len(parts) > 1` admitted identities whose clauses are a COMPLEMENTARY PARTITION OF THE SAME MASK the population size is taken from, so they cannot fail on any data -- including the one the previous deliverable called 'the identity that closes the hole'. The population size is now sourced INDEPENDENTLY of the asserted count; the label and the claim are corrected and the mechanism is demonstrated to fire. ALSO FIXED: one hardcoded `holds: True` in the per-site D11 table, at the S1-completion-walk site. PRIOR BUILDS OF THIS INSTANCE: a/2026-08-16-0088 (what Red Team's fifth pass reviewed), a/2026-08-16-0085 (fourth) and the pre-0085 run (third).",
     "instance": "a",
     "run_date_utc": "2026-08-16",
     "why_this_exists": "decisions/0079 (B6), extending decisions/0078: every count, every invariant result and every waterfall figure names the pipeline it was measured on, not only its population. Partial application is worse than none.",
     "pipeline": "src/step8_a_run.py, one run, stages 1 -> 6 in order",
     "stage_files_sha256_12": {
-      "step8_a_lib.py": "11d33fbf7b89",
+      "step8_a_lib.py": "761b2ff762b8",
       "step8_a_1_scan.py": "baba4ebc7c95",
       "step8_a_2_positions.py": "9f08ac985c8c",
       "step8_a_3_table.py": "c7ecfd8cf3f2",
       "step8_a_4_arms.py": "3d533b88a113",
       "step8_a_4b_slugs.py": "4495f8069adb",
-      "step8_a_5_diagnostics.py": "5864b3dd030b",
-      "step8_a_6_emit.py": "925903d50dee",
+      "step8_a_5_diagnostics.py": "89e6c0df550b",
+      "step8_a_6_emit.py": "6855c45a39af",
       "step8_a_run.py": "1e858e7bfa89"
     },
-    "git_head_short": "267cfb5",
+    "git_head_short": "4069d87",
     "git_worktree_dirty_at_launch": true,
     "parameters": {
       "W_days": 108,
@@ -48,10 +49,10 @@
       "processed/step2/frame.csv": "128844b09fc2",
       "processed/step4/pull_ledger.jsonl": "2c47f4537ac6"
     },
-    "spec_read": "task-sheet.md Step 8 as it stands, plus decisions/0066-0085",
+    "spec_read": "task-sheet.md Step 8 as it stands, plus decisions/0066-0090",
     "relation_to_the_2026_08_13_build": "this build reproduces the figures decisions/0078 and 0079 restate on the position-5 build of 2026-08-13 (58,345 pairs; 324 of 5,694; 178 of 2,549; 703/99). Where a figure agrees, that is measured here and stated, not carried."
   },
-  "provenance_note": "EVERY INVARIANT RESULT IN THIS FILE WAS MEASURED ON BUILD a/2026-08-16-0088 (decisions/0079 B6).",
+  "provenance_note": "EVERY INVARIANT RESULT IN THIS FILE WAS MEASURED ON BUILD a/2026-08-16-0090 (decisions/0079 B6).",
   "coverage_identities": {
     "outcome states are mutually exclusive and sum to the post-position-7 row set": [
       {
@@ -134,14 +135,20 @@
           "rows_not_asserted": 0,
           "coverage_identity": "32769 + 19042 + 144140 + 0 not asserted = 195951",
           "coverage_identity_holds": true,
-          "identity_is_REAL_ARITHMETIC": true,
-          "what_it_can_detect": "a unit covered by NO clause -- the 99-row hole decisions/0080 SS3 was written for. The clauses are counted independently and must sum to the population.",
-          "build": "a/2026-08-16-0088",
+          "population_size_independence": "EMITTED_DELIVERABLE",
+          "population_size_source": "processed/step8/a/analysis_table.csv.gz, rows with live = True",
+          "independent_population_size": 195951,
+          "identity_against_the_independent_source": "32769 + 19042 + 144140 + 0 not asserted = 195951",
+          "identity_against_the_independent_source_holds": true,
+          "identity_CAN_FAIL_ON_ANY_DATA": true,
+          "what_it_can_detect": "AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/analysis_table.csv.gz, rows with live = True, so the clauses and the denominator are not the same expression and the identity can fail.",
+          "build": "a/2026-08-16-0090",
           "asserted_clause_counts": [
             32769,
             19042,
             144140
           ],
+          "clauses_are_a_complementary_partition_of_the_population_mask": "YES -- never / continued / left are mutually exclusive and exhaustive by the expressions that define them, so the three always sum to the mask. The clause counts are informative; what makes this identity falsifiable is the INDEPENDENT population size, not the clause count.",
           "exactly_one_state_per_row": true,
           "never_started": 32769,
           "started_and_left": 19042,
@@ -158,14 +165,20 @@
           "rows_not_asserted": 0,
           "coverage_identity": "33373 + 19141 + 144140 + 0 not asserted = 196654",
           "coverage_identity_holds": true,
-          "identity_is_REAL_ARITHMETIC": true,
-          "what_it_can_detect": "a unit covered by NO clause -- the 99-row hole decisions/0080 SS3 was written for. The clauses are counted independently and must sum to the population.",
-          "build": "a/2026-08-16-0088",
+          "population_size_independence": "EMITTED_DELIVERABLE",
+          "population_size_source": "processed/step8/a/analysis_table.csv.gz, rows -- the EMITTED DELIVERABLE, written by stage 3",
+          "independent_population_size": 196654,
+          "identity_against_the_independent_source": "33373 + 19141 + 144140 + 0 not asserted = 196654",
+          "identity_against_the_independent_source_holds": true,
+          "identity_CAN_FAIL_ON_ANY_DATA": true,
+          "what_it_can_detect": "AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/analysis_table.csv.gz, rows -- the EMITTED DELIVERABLE, written by stage 3, so the clauses and the denominator are not the same expression and the identity can fail.",
+          "build": "a/2026-08-16-0090",
           "asserted_clause_counts": [
             33373,
             19141,
             144140
           ],
+          "clauses_are_a_complementary_partition_of_the_population_mask": "YES -- never / continued / left are mutually exclusive and exhaustive by the expressions that define them, so the three always sum to the mask. The clause counts are informative; what makes this identity falsifiable is the INDEPENDENT population size, not the clause count.",
           "exactly_one_state_per_row": true,
           "never_started": 33373,
           "started_and_left": 19141,
@@ -182,14 +195,20 @@
           "rows_not_asserted": 0,
           "coverage_identity": "9145 + 16744 + 121382 + 0 not asserted = 147271",
           "coverage_identity_holds": true,
-          "identity_is_REAL_ARITHMETIC": true,
-          "what_it_can_detect": "a unit covered by NO clause -- the 99-row hole decisions/0080 SS3 was written for. The clauses are counted independently and must sum to the population.",
-          "build": "a/2026-08-16-0088",
+          "population_size_independence": "EMITTED_DELIVERABLE",
+          "population_size_source": "processed/step8/a/analysis_table.csv.gz, rows with in_deriv and live",
+          "independent_population_size": 147271,
+          "identity_against_the_independent_source": "9145 + 16744 + 121382 + 0 not asserted = 147271",
+          "identity_against_the_independent_source_holds": true,
+          "identity_CAN_FAIL_ON_ANY_DATA": true,
+          "what_it_can_detect": "AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/analysis_table.csv.gz, rows with in_deriv and live, so the clauses and the denominator are not the same expression and the identity can fail.",
+          "build": "a/2026-08-16-0090",
           "asserted_clause_counts": [
             9145,
             16744,
             121382
           ],
+          "clauses_are_a_complementary_partition_of_the_population_mask": "YES -- never / continued / left are mutually exclusive and exhaustive by the expressions that define them, so the three always sum to the mask. The clause counts are informative; what makes this identity falsifiable is the INDEPENDENT population size, not the clause count.",
           "exactly_one_state_per_row": true,
           "never_started": 9145,
           "started_and_left": 16744,
@@ -206,14 +225,20 @@
           "rows_not_asserted": 0,
           "coverage_identity": "9145 + 16843 + 121382 + 0 not asserted = 147370",
           "coverage_identity_holds": true,
-          "identity_is_REAL_ARITHMETIC": true,
-          "what_it_can_detect": "a unit covered by NO clause -- the 99-row hole decisions/0080 SS3 was written for. The clauses are counted independently and must sum to the population.",
-          "build": "a/2026-08-16-0088",
+          "population_size_independence": "EMITTED_DELIVERABLE",
+          "population_size_source": "processed/step8/a/analysis_table.csv.gz, rows with in_deriv = True",
+          "independent_population_size": 147370,
+          "identity_against_the_independent_source": "9145 + 16843 + 121382 + 0 not asserted = 147370",
+          "identity_against_the_independent_source_holds": true,
+          "identity_CAN_FAIL_ON_ANY_DATA": true,
+          "what_it_can_detect": "AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/analysis_table.csv.gz, rows with in_deriv = True, so the clauses and the denominator are not the same expression and the identity can fail.",
+          "build": "a/2026-08-16-0090",
           "asserted_clause_counts": [
             9145,
             16843,
             121382
           ],
+          "clauses_are_a_complementary_partition_of_the_population_mask": "YES -- never / continued / left are mutually exclusive and exhaustive by the expressions that define them, so the three always sum to the mask. The clause counts are informative; what makes this identity falsifiable is the INDEPENDENT population size, not the clause count.",
           "exactly_one_state_per_row": true,
           "never_started": 9145,
           "started_and_left": 16843,
@@ -224,9 +249,10 @@
         }
       },
       "coverage_identity_holds_on_every_stated_population": true,
+      "identity_holds_against_the_INDEPENDENT_source_on_every_stated_population": true,
       "populations_whose_identity_was_checked": 4,
       "passed": true,
-      "build": "a/2026-08-16-0088"
+      "build": "a/2026-08-16-0090"
     },
     {
       "name": "filter counts decrease monotonically, coded >= and not >",
@@ -260,9 +286,14 @@
         "positions_not_asserted": 0,
         "coverage_identity": "7 + 0 not asserted = 7",
         "coverage_identity_holds": true,
-        "identity_is_REAL_ARITHMETIC": false,
-        "what_it_can_detect": "NOTHING. The asserted count and the population size are the same expression, so N - N = 0 holds however the population was chosen. This is bookkeeping, not a check (Red Team fourth pass, decisions/0087 SS4).",
-        "build": "a/2026-08-16-0088"
+        "population_size_independence": "INDEPENDENT_FILE",
+        "population_size_source": "processed/step8/a/positions.json waterfall_APPLY (positions 1-5, stage 2) plus positions 6 and 7 from outcomes.json (stage 3)",
+        "independent_population_size": 7,
+        "identity_against_the_independent_source": "7 + 0 not asserted = 7",
+        "identity_against_the_independent_source_holds": true,
+        "identity_CAN_FAIL_ON_ANY_DATA": true,
+        "what_it_can_detect": "AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/positions.json waterfall_APPLY (positions 1-5, stage 2) plus positions 6 and 7 from outcomes.json (stage 3), so the clauses and the denominator are not the same expression and the identity can fail.",
+        "build": "a/2026-08-16-0090"
       },
       "coverage_DERIV": {
         "population": "DERIV's seven filter positions",
@@ -272,10 +303,17 @@
         "positions_not_asserted": 0,
         "coverage_identity": "7 + 0 not asserted = 7",
         "coverage_identity_holds": true,
-        "identity_is_REAL_ARITHMETIC": false,
-        "what_it_can_detect": "NOTHING. The asserted count and the population size are the same expression, so N - N = 0 holds however the population was chosen. This is bookkeeping, not a check (Red Team fourth pass, decisions/0087 SS4).",
-        "build": "a/2026-08-16-0088"
+        "population_size_independence": "INDEPENDENT_FILE",
+        "population_size_source": "processed/step8/a/positions.json waterfall_DERIV (positions 1-5, stage 2) plus positions 6 and 7 from outcomes.json (stage 3)",
+        "independent_population_size": 7,
+        "identity_against_the_independent_source": "7 + 0 not asserted = 7",
+        "identity_against_the_independent_source_holds": true,
+        "identity_CAN_FAIL_ON_ANY_DATA": true,
+        "what_it_can_detect": "AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/positions.json waterfall_DERIV (positions 1-5, stage 2) plus positions 6 and 7 from outcomes.json (stage 3), so the clauses and the denominator are not the same expression and the identity can fail.",
+        "build": "a/2026-08-16-0090"
       },
+      "chain_APPLY_agrees_with_positions_json_and_outcomes_json": true,
+      "chain_DERIV_agrees_with_positions_json_and_outcomes_json": true,
       "chain_note": "chain[i] is the count after filter position i+1; the transition from entry i to entry i+1 is the effect of filter position i+2",
       "filter_positions_removing_exactly_zero_APPLY": [
         2,
@@ -289,7 +327,7 @@
       ],
       "inert_positions_labelled_not_silent": "positions 1, 2, 3 and 7 remove 0 BY CONSTRUCTION and are labelled inert with the reason in the waterfall deliverable (decisions/0079 SS4). An unlabelled always-zero filter reads as evidence the rule FOUND NOTHING when it is evidence the rule CANNOT FIRE.",
       "passed": true,
-      "build": "a/2026-08-16-0088"
+      "build": "a/2026-08-16-0090"
     },
     {
       "name": "distinct episodes never exceed season length",
@@ -305,9 +343,14 @@
         "pairs_not_asserted": 0,
         "coverage_identity": "278452 + 0 not asserted = 278452",
         "coverage_identity_holds": true,
-        "identity_is_REAL_ARITHMETIC": false,
-        "what_it_can_detect": "NOTHING. The asserted count and the population size are the same expression, so N - N = 0 holds however the population was chosen. This is bookkeeping, not a check (Red Team fourth pass, decisions/0087 SS4).",
-        "build": "a/2026-08-16-0088",
+        "population_size_independence": "INDEPENDENT_FILE",
+        "population_size_source": "processed/step8/a/scan_summary.json, written by stage 1",
+        "independent_population_size": 278452,
+        "identity_against_the_independent_source": "278452 + 0 not asserted = 278452",
+        "identity_against_the_independent_source_holds": true,
+        "identity_CAN_FAIL_ON_ANY_DATA": true,
+        "what_it_can_detect": "AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/scan_summary.json, written by stage 1, so the clauses and the denominator are not the same expression and the identity can fail.",
+        "build": "a/2026-08-16-0090",
         "records_examined": 6065704,
         "records_dropped_by_the_rule": 0,
         "seasons_asserted": [
@@ -321,7 +364,7 @@
       "max_D2_minus_L2": 0,
       "max_AH_minus_L2": 0,
       "passed": true,
-      "build": "a/2026-08-16-0088"
+      "build": "a/2026-08-16-0090"
     },
     {
       "name": "A is a subset of A_H on every row",
@@ -337,15 +380,20 @@
         "rows_not_asserted": 0,
         "coverage_identity": "196654 + 0 not asserted = 196654",
         "coverage_identity_holds": true,
-        "identity_is_REAL_ARITHMETIC": false,
-        "what_it_can_detect": "NOTHING. The asserted count and the population size are the same expression, so N - N = 0 holds however the population was chosen. This is bookkeeping, not a check (Red Team fourth pass, decisions/0087 SS4).",
-        "build": "a/2026-08-16-0088"
+        "population_size_independence": "EMITTED_DELIVERABLE",
+        "population_size_source": "processed/step8/a/analysis_table.csv.gz, rows -- the EMITTED DELIVERABLE, written by stage 3",
+        "independent_population_size": 196654,
+        "identity_against_the_independent_source": "196654 + 0 not asserted = 196654",
+        "identity_against_the_independent_source_holds": true,
+        "identity_CAN_FAIL_ON_ANY_DATA": true,
+        "what_it_can_detect": "AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/analysis_table.csv.gz, rows -- the EMITTED DELIVERABLE, written by stage 3, so the clauses and the denominator are not the same expression and the identity can fail.",
+        "build": "a/2026-08-16-0090"
       },
       "rows_where_A_exceeds_A_H": 0,
       "rows_where_max_A_exceeds_max_A_H": 0,
       "also_holds_on_the_post_position_7_row_set": true,
       "passed": true,
-      "build": "a/2026-08-16-0088"
+      "build": "a/2026-08-16-0090"
     },
     {
       "name": "clock start is on or after the S2 finale date, on or after the first-pass S1 completion date, and equal to one of the two",
@@ -362,9 +410,14 @@
         "rows_not_asserted": 0,
         "coverage_identity": "196654 + 0 not asserted = 196654",
         "coverage_identity_holds": true,
-        "identity_is_REAL_ARITHMETIC": false,
-        "what_it_can_detect": "NOTHING. The asserted count and the population size are the same expression, so N - N = 0 holds however the population was chosen. This is bookkeeping, not a check (Red Team fourth pass, decisions/0087 SS4).",
-        "build": "a/2026-08-16-0088",
+        "population_size_independence": "EMITTED_DELIVERABLE",
+        "population_size_source": "processed/step8/a/analysis_table.csv.gz, rows -- the EMITTED DELIVERABLE, written by stage 3",
+        "independent_population_size": 196654,
+        "identity_against_the_independent_source": "196654 + 0 not asserted = 196654",
+        "identity_against_the_independent_source_holds": true,
+        "identity_CAN_FAIL_ON_ANY_DATA": true,
+        "what_it_can_detect": "AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/analysis_table.csv.gz, rows -- the EMITTED DELIVERABLE, written by stage 3, so the clauses and the denominator are not the same expression and the identity can fail.",
+        "build": "a/2026-08-16-0090",
         "independent_recomputation_covers_pairs": 278452,
         "read_back_from_the_pipeline": false
       },
@@ -389,13 +442,13 @@
       },
       "tie_break_note": "Step 1 SS2.2 breaks exactly-equal timestamps by episode number then smallest event id. The recomputation applies that tiebreak; the agreement counts above are reported rather than a choice being made about whether a tiebreak difference would count as a failure.",
       "passed": true,
-      "build": "a/2026-08-16-0088"
+      "build": "a/2026-08-16-0090"
     },
     {
       "name": "p lies in (0, 1] on every Started-and-left row and is null everywhere else",
       "label": "CODE CHECK",
       "why": "SPECIFIED by decisions/0074 ruling 2; LABEL CORRECTED from DATA CHECK to CODE CHECK by decisions/0076 on both instances' own proof. Started-and-left requires |A| >= 1, so max(A_H) exists; set membership bounds the rank numerator in [1, L2]. NO data configuration puts p outside (0, 1]. It fails only on the withdrawn raw-ratio form max(A_H)/L2, which can exceed 1 where S2 numbering has a gap. It is kept because Step 10 publishes p -- but it proves the code, not the rule.",
-      "population": "ALL Started-and-left rows AT POSITION 5, null on the rest, and the two clauses must sum to 196,654 EXACTLY (decisions/0080 SS3). THIS IS THE IDENTITY THAT CLOSES THE HOLE: the dual run had one arm assert p on 19,042 rows -- the POST-LIVENESS Started-and-left count -- against a PRE-LIVENESS denominator of 177,513 non-S&L rows, leaving 99 rows covered by neither clause, exactly the started-and-left liveness exclusions. Do not take the numerator post-liveness and the denominator pre-liveness.",
+      "population": "ALL Started-and-left rows AT POSITION 5, null on the rest, and the two clauses must sum to 196,654 EXACTLY (decisions/0080 SS3). The dual run had one arm assert p on 19,042 rows -- the POST-LIVENESS Started-and-left count -- against a PRE-LIVENESS denominator of 177,513 non-S&L rows, leaving 99 rows covered by neither clause, exactly the started-and-left liveness exclusions. Do not take the numerator post-liveness and the denominator pre-liveness. ***CORRECTED ON THIS BUILD (Red Team fifth pass, F2): the previous deliverable called this two-clause sum 'THE IDENTITY THAT CLOSES THE HOLE'. IT DOES NOT CLOSE IT. The clauses are `M & left` and `M & ~left` -- a set and its complement within the same mask M -- so they sum to M.sum() for EVERY M, including a mask that is not the population named, which is the defect. What closes the hole is the denominator coming from somewhere else: it is now read from the EMITTED analysis table, so a numerator taken post-liveness against a pre-liveness denominator FAILS.***",
       "coverage_rows": 19141,
       "coverage": {
         "population": "APPLY, position 5 -- the analysis table's row set",
@@ -405,23 +458,37 @@
         "rows_not_asserted": 0,
         "coverage_identity": "19141 + 177513 + 0 not asserted = 196654",
         "coverage_identity_holds": true,
-        "identity_is_REAL_ARITHMETIC": true,
-        "what_it_can_detect": "a unit covered by NO clause -- the 99-row hole decisions/0080 SS3 was written for. The clauses are counted independently and must sum to the population.",
-        "build": "a/2026-08-16-0088",
+        "population_size_independence": "EMITTED_DELIVERABLE",
+        "population_size_source": "processed/step8/a/analysis_table.csv.gz, rows -- the EMITTED DELIVERABLE, written by stage 3",
+        "independent_population_size": 196654,
+        "identity_against_the_independent_source": "19141 + 177513 + 0 not asserted = 196654",
+        "identity_against_the_independent_source_holds": true,
+        "identity_CAN_FAIL_ON_ANY_DATA": true,
+        "what_it_can_detect": "AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/analysis_table.csv.gz, rows -- the EMITTED DELIVERABLE, written by stage 3, so the clauses and the denominator are not the same expression and the identity can fail.",
+        "build": "a/2026-08-16-0090",
         "asserted_clause_counts": [
           19141,
           177513
         ],
+        "clauses_are_a_complementary_partition_of_the_population_mask": "YES -- `M & left` and `M & ~left` are a set and its complement within the same mask, so they sum to M for every M. The clause counts show a reader where a hole would be; the INDEPENDENT denominator is what detects one.",
         "clause_1_rows_asserted_p_in_0_1_started_and_left": 19141,
         "clause_2_rows_asserted_p_is_null_not_started_and_left": 177513,
-        "started_and_left_post_liveness_for_contrast_NOT_the_numerator": 19042
+        "started_and_left_post_liveness_for_contrast_NOT_the_numerator": 19042,
+        "THE_HOLE_THIS_WOULD_NOW_CATCH": {
+          "the_defective_pairing": "numerator 19042 (post-liveness S&L) with denominator clause 177513 (pre-liveness non-S&L)",
+          "what_it_sums_to": 196555,
+          "independent_population_size": 196654,
+          "rows_covered_by_neither_clause": 99,
+          "would_the_identity_FAIL": true,
+          "note": "measured on this build, not asserted: the exact mispairing decisions/0080 SS3 describes is reconstructed and the identity is evaluated on it. Under the previous build's same-mask denominator this pairing could not be detected at all."
+        }
       },
       "min": 0.038461538461538464,
       "max": 1.0,
       "nulls_among_started_and_left": 0,
       "non_null_outside_started_and_left": 0,
       "passed": true,
-      "build": "a/2026-08-16-0088"
+      "build": "a/2026-08-16-0090"
     },
     {
       "name": "no account is dropped wholesale by the pair-level liveness filter",
@@ -437,14 +504,20 @@
           "accounts_not_asserted": 0,
           "coverage_identity": "2206 + 215 + 1 + 0 not asserted = 2422",
           "coverage_identity_holds": true,
-          "identity_is_REAL_ARITHMETIC": true,
-          "what_it_can_detect": "a unit covered by NO clause -- the 99-row hole decisions/0080 SS3 was written for. The clauses are counted independently and must sum to the population.",
-          "build": "a/2026-08-16-0088",
+          "population_size_independence": "EMITTED_DELIVERABLE",
+          "population_size_source": "processed/step8/a/analysis_table.csv.gz, distinct user_idx",
+          "independent_population_size": 2422,
+          "identity_against_the_independent_source": "2206 + 215 + 1 + 0 not asserted = 2422",
+          "identity_against_the_independent_source_holds": true,
+          "identity_CAN_FAIL_ON_ANY_DATA": true,
+          "what_it_can_detect": "AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/analysis_table.csv.gz, distinct user_idx, so the clauses and the denominator are not the same expression and the identity can fail.",
+          "build": "a/2026-08-16-0090",
           "asserted_clause_counts": [
             2206,
             215,
             1
           ],
+          "clauses_are_a_complementary_partition_of_the_population_mask": "YES -- mixed and wholesale partition `touched` by set algebra, so the three classes sum to the account total for any mask. The INDEPENDENT account count is what can fail.",
           "accounts_untouched_by_the_exclusion": 2206,
           "accounts_touched_by_the_exclusion": 216,
           "classification_covers_every_account": true,
@@ -461,14 +534,20 @@
           "accounts_not_asserted": 0,
           "coverage_identity": "2329 + 72 + 1 + 0 not asserted = 2402",
           "coverage_identity_holds": true,
-          "identity_is_REAL_ARITHMETIC": true,
-          "what_it_can_detect": "a unit covered by NO clause -- the 99-row hole decisions/0080 SS3 was written for. The clauses are counted independently and must sum to the population.",
-          "build": "a/2026-08-16-0088",
+          "population_size_independence": "EMITTED_DELIVERABLE",
+          "population_size_source": "processed/step8/a/analysis_table.csv.gz, distinct user_idx on in_deriv rows",
+          "independent_population_size": 2402,
+          "identity_against_the_independent_source": "2329 + 72 + 1 + 0 not asserted = 2402",
+          "identity_against_the_independent_source_holds": true,
+          "identity_CAN_FAIL_ON_ANY_DATA": true,
+          "what_it_can_detect": "AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/analysis_table.csv.gz, distinct user_idx on in_deriv rows, so the clauses and the denominator are not the same expression and the identity can fail.",
+          "build": "a/2026-08-16-0090",
           "asserted_clause_counts": [
             2329,
             72,
             1
           ],
+          "clauses_are_a_complementary_partition_of_the_population_mask": "YES -- mixed and wholesale partition `touched` by set algebra, so the three classes sum to the account total for any mask. The INDEPENDENT account count is what can fail.",
           "accounts_untouched_by_the_exclusion": 2329,
           "accounts_touched_by_the_exclusion": 73,
           "classification_covers_every_account": true,
@@ -486,7 +565,7 @@
       "reading": "accounts in the last line held exactly one position-5 pair unless the count above is non-zero; for a single-pair account 'wholesale' and 'pair-level' are indistinguishable and no inference is available either way.",
       "assertion": "accounts_holding_BOTH_a_live_and_a_not_live_pair > 0, ON BOTH POPULATIONS",
       "passed": true,
-      "build": "a/2026-08-16-0088"
+      "build": "a/2026-08-16-0090"
     },
     {
       "name": "no access_denied or otherwise skipped account is read as empty",
@@ -501,9 +580,14 @@
         "accounts_not_asserted": 0,
         "coverage_identity": "2874 + 0 not asserted = 2874",
         "coverage_identity_holds": true,
-        "identity_is_REAL_ARITHMETIC": false,
-        "what_it_can_detect": "NOTHING. The asserted count and the population size are the same expression, so N - N = 0 holds however the population was chosen. This is bookkeeping, not a check (Red Team fourth pass, decisions/0087 SS4).",
-        "build": "a/2026-08-16-0088",
+        "population_size_independence": "INDEPENDENT_CODE_PATH",
+        "population_size_source": "processed/step4/pull_ledger.jsonl, distinct `slug` counted by a line-by-line json.loads pass rather than by pandas.read_json",
+        "independent_population_size": 2874,
+        "identity_against_the_independent_source": "2874 + 0 not asserted = 2874",
+        "identity_against_the_independent_source_holds": true,
+        "identity_CAN_FAIL_ON_ANY_DATA": true,
+        "what_it_can_detect": "AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step4/pull_ledger.jsonl, distinct `slug` counted by a line-by-line json.loads pass rather than by pandas.read_json, so the clauses and the denominator are not the same expression and the identity can fail.",
+        "build": "a/2026-08-16-0090",
         "accounts_whose_final_state_is_complete": 2549,
         "accounts_whose_final_state_is_a_skip_class": 325,
         "accounts_whose_final_state_is_neither": 0,
@@ -547,7 +631,7 @@
       },
       "assertion": "no account whose final ledger state is a skip class, and no account that was skipped and never yielded data, contributes a pair scored never-started",
       "passed": true,
-      "build": "a/2026-08-16-0088"
+      "build": "a/2026-08-16-0090"
     },
     {
       "name": "no retained row's outcome window extends past tau_pull: tau2 <= tau_pull on every position-5 row",
@@ -564,16 +648,24 @@
           "rows_not_asserted": 0,
           "coverage_identity": "196654 + 0 + 0 not asserted = 196654",
           "coverage_identity_holds": true,
-          "identity_is_REAL_ARITHMETIC": true,
-          "what_it_can_detect": "a unit covered by NO clause -- the 99-row hole decisions/0080 SS3 was written for. The clauses are counted independently and must sum to the population.",
-          "build": "a/2026-08-16-0088",
+          "population_size_independence": "EMITTED_DELIVERABLE",
+          "population_size_source": "processed/step8/a/analysis_table.csv.gz, rows -- the EMITTED DELIVERABLE, written by stage 3",
+          "independent_population_size": 196654,
+          "identity_against_the_independent_source": "196654 + 0 + 0 not asserted = 196654",
+          "identity_against_the_independent_source_holds": true,
+          "identity_CAN_FAIL_ON_ANY_DATA": true,
+          "what_it_can_detect": "AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/analysis_table.csv.gz, rows -- the EMITTED DELIVERABLE, written by stage 3, so the clauses and the denominator are not the same expression and the identity can fail.",
+          "build": "a/2026-08-16-0090",
           "asserted_clause_counts": [
             196654,
             0
           ],
+          "clauses_are_a_complementary_partition_of_the_population_mask": "YES -- `tau2 <= tau_pull` and `tau2 > tau_pull` are a set and its complement within the same mask, so they sum to the mask for any mask. The INDEPENDENT row count is what can fail.",
           "rows_with_tau2_at_or_before_tau_pull": 196654,
           "rows_with_tau2_after_tau_pull": 0,
+          "rows_with_tau2_EXACTLY_AT_tau_pull": 20,
           "rows_with_tau1_at_or_before_tau_pull": 196654,
+          "the_bound_is_ATTAINED_a_ge_form_would_fail": true,
           "holds": true
         },
         "DERIV_position_5": {
@@ -584,22 +676,30 @@
           "rows_not_asserted": 0,
           "coverage_identity": "147370 + 0 + 0 not asserted = 147370",
           "coverage_identity_holds": true,
-          "identity_is_REAL_ARITHMETIC": true,
-          "what_it_can_detect": "a unit covered by NO clause -- the 99-row hole decisions/0080 SS3 was written for. The clauses are counted independently and must sum to the population.",
-          "build": "a/2026-08-16-0088",
+          "population_size_independence": "EMITTED_DELIVERABLE",
+          "population_size_source": "processed/step8/a/analysis_table.csv.gz, rows with in_deriv = True",
+          "independent_population_size": 147370,
+          "identity_against_the_independent_source": "147370 + 0 + 0 not asserted = 147370",
+          "identity_against_the_independent_source_holds": true,
+          "identity_CAN_FAIL_ON_ANY_DATA": true,
+          "what_it_can_detect": "AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/analysis_table.csv.gz, rows with in_deriv = True, so the clauses and the denominator are not the same expression and the identity can fail.",
+          "build": "a/2026-08-16-0090",
           "asserted_clause_counts": [
             147370,
             0
           ],
+          "clauses_are_a_complementary_partition_of_the_population_mask": "YES -- `tau2 <= tau_pull` and `tau2 > tau_pull` are a set and its complement within the same mask, so they sum to the mask for any mask. The INDEPENDENT row count is what can fail.",
           "rows_with_tau2_at_or_before_tau_pull": 147370,
           "rows_with_tau2_after_tau_pull": 0,
+          "rows_with_tau2_EXACTLY_AT_tau_pull": 17,
           "rows_with_tau1_at_or_before_tau_pull": 147370,
+          "the_bound_is_ATTAINED_a_ge_form_would_fail": true,
           "holds": true
         }
       },
       "coverage_rows": 196654,
       "passed": true,
-      "build": "a/2026-08-16-0088"
+      "build": "a/2026-08-16-0090"
     }
   ],
   "population_reconciliation": {
@@ -629,7 +729,7 @@
       "ALT_MATCHED_793_on_APPLY": false
     },
     "reconciles": true,
-    "build": "a/2026-08-16-0088"
+    "build": "a/2026-08-16-0090"
   },
   "set_membership_is_a_coverage_count_not_an_invariant": {
     "ruling": "decisions/0074 ruling 3",
@@ -656,11 +756,151 @@
   "coverage_identity_checks_run": 15,
   "all_coverage_identities_hold": true,
   "coverage_identity_strength": {
-    "ruling": "Red Team's fourth pass, decisions/0087 SS4, carried as a limitation; the one sentence it required struck either way is struck by decisions/0088 SS2(d).",
+    "ruling": "Red Team's FIFTH pass, F2, carried into this rerun by decisions/0090 SS3. Red Team's fourth pass (decisions/0087 SS4) had already recorded that most identities have the population size and the asserted count as one expression; the sentence it required struck either way is struck by decisions/0088 SS2(d).",
+    "CORRECTION_ON_THIS_BUILD": "build a/2026-08-16-0088 classified an identity as REAL ARITHMETIC on the test `parts is not None and len(parts) > 1`. THAT TEST WAS WRONG. Every multi-clause identity in that build had clauses forming a COMPLEMENTARY PARTITION OF THE SAME MASK the population size was taken from, so each summed to the population for ANY mask and NONE of them could fail on any data -- including invariant 6's, which that deliverable called 'the identity that closes the hole'. It closed nothing. THE LABEL AND THE CLAIM ARE BOTH CORRECTED, and the population size is now sourced independently of the asserted count, which is what the hole actually needs.",
     "identities_total": 15,
-    "identities_that_are_REAL_ARITHMETIC": 9,
-    "identities_that_CANNOT_FAIL_population_size_and_asserted_count_are_one_expression": 6,
-    "note": "the second group is bookkeeping and is labelled as such at each identity. An unlabelled check that cannot fail reads as one that can -- decisions/0069's rule, applied to the coverage apparatus rather than to the invariants.",
-    "build": "a/2026-08-16-0088"
+    "identities_that_CAN_FAIL_population_size_sourced_INDEPENDENTLY": 15,
+    "identities_that_CANNOT_FAIL_population_size_and_asserted_count_are_one_expression": 0,
+    "by_independence_tier": {
+      "EMITTED_DELIVERABLE": 11,
+      "INDEPENDENT_FILE": 3,
+      "INDEPENDENT_CODE_PATH": 1
+    },
+    "tier_meanings": {
+      "EMITTED_DELIVERABLE": "the population size is read back from processed/step8/a/analysis_table.csv.gz -- the file this step delivers, written by stage 3 through a different code path from the masks this stage builds",
+      "INDEPENDENT_FILE": "the population size is a count an earlier stage wrote into its own JSON",
+      "INDEPENDENT_CODE_PATH": "the same file parsed by different code (the ledger: line-by-line json.loads against pandas.read_json)",
+      "NOT_INDEPENDENT": "the population size and the asserted count are one expression. Bookkeeping, not a check, and labelled so at each identity."
+    },
+    "all_independent_identities_hold_against_their_independent_source": true,
+    "FALSIFIABILITY_DEMONSTRATED_NOT_ASSERTED": {
+      "method": "each independent identity is re-evaluated against its population size + 1 and must FAIL. A mechanism claimed to work and never seen to fail is a control asserted to exist.",
+      "identities_demonstrated": 15,
+      "all_hold_against_the_true_value_and_FAIL_against_the_perturbed_one": true,
+      "per_identity": [
+        {
+          "population": "APPLY, post-position-7 row set",
+          "unit": "rows",
+          "true_independent_population_size": 195951,
+          "perturbed_to": 195952,
+          "holds_against_the_true_value": true,
+          "holds_against_the_perturbed_value": false
+        },
+        {
+          "population": "APPLY, position-5 row set -- what the analysis table carries",
+          "unit": "rows",
+          "true_independent_population_size": 196654,
+          "perturbed_to": 196655,
+          "holds_against_the_true_value": true,
+          "holds_against_the_perturbed_value": false
+        },
+        {
+          "population": "DERIV, post-position-7 row set",
+          "unit": "rows",
+          "true_independent_population_size": 147271,
+          "perturbed_to": 147272,
+          "holds_against_the_true_value": true,
+          "holds_against_the_perturbed_value": false
+        },
+        {
+          "population": "DERIV, position-5 row set",
+          "unit": "rows",
+          "true_independent_population_size": 147370,
+          "perturbed_to": 147371,
+          "holds_against_the_true_value": true,
+          "holds_against_the_perturbed_value": false
+        },
+        {
+          "population": "APPLY's seven filter positions",
+          "unit": "positions",
+          "true_independent_population_size": 7,
+          "perturbed_to": 8,
+          "holds_against_the_true_value": true,
+          "holds_against_the_perturbed_value": false
+        },
+        {
+          "population": "DERIV's seven filter positions",
+          "unit": "positions",
+          "true_independent_population_size": 7,
+          "perturbed_to": 8,
+          "holds_against_the_true_value": true,
+          "holds_against_the_perturbed_value": false
+        },
+        {
+          "population": "the pair universe the set-membership rule examines",
+          "unit": "pairs",
+          "true_independent_population_size": 278452,
+          "perturbed_to": 278453,
+          "holds_against_the_true_value": true,
+          "holds_against_the_perturbed_value": false
+        },
+        {
+          "population": "APPLY, position 5 -- the analysis table's row set",
+          "unit": "rows",
+          "true_independent_population_size": 196654,
+          "perturbed_to": 196655,
+          "holds_against_the_true_value": true,
+          "holds_against_the_perturbed_value": false
+        },
+        {
+          "population": "APPLY, position 5 -- the analysis table's row set",
+          "unit": "rows",
+          "true_independent_population_size": 196654,
+          "perturbed_to": 196655,
+          "holds_against_the_true_value": true,
+          "holds_against_the_perturbed_value": false
+        },
+        {
+          "population": "APPLY, position 5 -- the analysis table's row set",
+          "unit": "rows",
+          "true_independent_population_size": 196654,
+          "perturbed_to": 196655,
+          "holds_against_the_true_value": true,
+          "holds_against_the_perturbed_value": false
+        },
+        {
+          "population": "accounts holding a position-5 APPLY pair",
+          "unit": "accounts",
+          "true_independent_population_size": 2422,
+          "perturbed_to": 2423,
+          "holds_against_the_true_value": true,
+          "holds_against_the_perturbed_value": false
+        },
+        {
+          "population": "accounts holding a position-5 DERIV pair",
+          "unit": "accounts",
+          "true_independent_population_size": 2402,
+          "perturbed_to": 2403,
+          "holds_against_the_true_value": true,
+          "holds_against_the_perturbed_value": false
+        },
+        {
+          "population": "every distinct account in processed/step4/pull_ledger.jsonl",
+          "unit": "accounts",
+          "true_independent_population_size": 2874,
+          "perturbed_to": 2875,
+          "holds_against_the_true_value": true,
+          "holds_against_the_perturbed_value": false
+        },
+        {
+          "population": "APPLY, position-5 row set",
+          "unit": "rows",
+          "true_independent_population_size": 196654,
+          "perturbed_to": 196655,
+          "holds_against_the_true_value": true,
+          "holds_against_the_perturbed_value": false
+        },
+        {
+          "population": "DERIV, position-5 row set",
+          "unit": "rows",
+          "true_independent_population_size": 147370,
+          "perturbed_to": 147371,
+          "holds_against_the_true_value": true,
+          "holds_against_the_perturbed_value": false
+        }
+      ]
+    },
+    "note": "the NOT_INDEPENDENT group is bookkeeping and is labelled as such at each identity. An unlabelled check that cannot fail reads as one that can -- decisions/0069's rule, applied to the coverage apparatus rather than to the invariants.",
+    "build": "a/2026-08-16-0090"
   }
 }

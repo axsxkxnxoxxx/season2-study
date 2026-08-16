@@ -288,10 +288,22 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
         irreproducible while the deliverables read otherwise. **State it: all sweep show IDs with a slug,
         the 1,138 frame shows, or the D9 candidate pairs. REPORTED, NOT RECONCILED** — ***SUPERSEDED by `0088` §3, which RULES the universe (U1) — see the bullet above. This text asked for the universe to be NAMED and left it unruled; it is now ruled, and the superseded framing sat BELOW its replacement in the same section, which is the shape `0067`, `0076` and `0083` §3a each fixed elsewhere (found by instance B, 2026-08-16).*** if both name the
         same universe and still differ, one has a bug.
-        - **5. D9 uses the STRICT key, with the loose count of 75 reported alongside.** Strict finds
+        - ~~**5. D9 uses the STRICT key, with the loose count of 75 reported alongside.**~~
+          ***SUPERSEDED by `0090`, which is filed ABOVE this bullet: D9 publishes as a BOUND —
+          strict the FLOOR, loose the CEILING, NEITHER the point estimate. Strict is no longer
+          "the key used"; it is an endpoint.*** ***AND the example names below are U3's and were
+          SUPERSEDED as the illustration by `0088` §3, which rules the universe U1*** — under U1 the
+          largest clusters are `secondchance` (8) and `theisland` (7), with a six-way tie at 6 whose
+          ordering is unruled. **Marked at the point of use 2026-08-16 (`0091`), reported by instance
+          B: `0090`'s propagation struck `task-sheet.md:506`'s equivalent framing and left this one
+          unmarked, so the superseded text sat BELOW its replacement in the file the isolated
+          instances read** — the shape `0067`, `0076`, `0083` §3a and `0089` §3 each fixed elsewhere,
+          **and the second time in three entries that a `0090`-era propagation reached `task-sheet.md`
+          and missed the pair.** Retained for its record: strict finds
           **0** complementary pairs; loose finds 75 but **strips the year and merges genuinely different
-          shows** — The Twilight Zone, The Traitors, Manhunt. **The loose count bounds how wrong strict
-          could be, and the error runs OPPOSITE to D9's own lower-bound caveat.**
+          shows** — ~~The Twilight Zone, The Traitors, Manhunt~~. **The loose count bounds how wrong strict
+          could be, and the error runs OPPOSITE to D9's own lower-bound caveat** — **that reason is now
+          the GROUND FOR THE BOUND** (`0090`), not for reporting loose alongside a strict answer.
         - **6. `processed/` IS THE EIGHTH PROPAGATION SURFACE.** **It is the first file an
           implementation reaches for and no control covered it** — `adopted_rule.json` carried
           revision-3 figures (215,258 / 4,849) against the approved revision-6 rule (201,900 / 18,207),

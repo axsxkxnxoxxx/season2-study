@@ -366,11 +366,86 @@ def d9(m: dict, frame: pd.DataFrame, st1: dict) -> dict:
             "half (a) counts"),
     }
 
+    # =====================================================================
+    # decisions/0090 -- D9 PUBLISHES AS A BOUND. STRICT IS THE FLOOR, LOOSE IS
+    # THE CEILING, BOTH LABELLED, AND NEITHER IS THE POINT ESTIMATE. This
+    # SUPERSEDES 0074 ruling 5's framing ("use the strict key and report the
+    # loose count alongside"), under which STRICT WAS THE ANSWER and loose was
+    # context. Direction is part of the label and it is not symmetric: strict
+    # matches only slugs identical modulo punctuation so it CANNOT OVER-COUNT;
+    # loose strips a trailing year and MERGES GENUINELY DIFFERENT SHOWS, so it
+    # cannot under-count. The bound applies to EVERY D9 quantity with both
+    # forms, because applying it to one and not the others is the defect
+    # 0078 Sec 3 corrected.
+    # =====================================================================
+    def _bound(name: str, floor: int, ceiling: int, unit: str, coverage: dict) -> dict:
+        return {
+            "quantity": name,
+            "unit": unit,
+            "BOUND": [int(floor), int(ceiling)],
+            "floor_STRICT": int(floor),
+            "ceiling_LOOSE": int(ceiling),
+            "width": int(ceiling) - int(floor),
+            "point_estimate": None,
+            "point_estimate_note": ("NONE. decisions/0090 -- neither endpoint may be quoted as "
+                                    "D9's result. The interval is the result"),
+            "direction": ("STRICT is the FLOOR: it matches only slugs identical modulo "
+                          "punctuation, so it cannot over-count. LOOSE is the CEILING: "
+                          "year-stripping merges remakes and national versions, so it cannot "
+                          "under-count. The error runs OPPOSITE to D9's own lower-bound caveat"),
+            "COVERAGE_BESIDE_THE_FLOOR": coverage,
+            "why_the_coverage_is_here": ("decisions/0090 -- a zero floor is not an absence of "
+                                         "evidence. 0 is a MEASURED floor on a stated coverage, "
+                                         "and a bound whose floor is 0 with the coverage unstated "
+                                         "is indistinguishable from a check that looked nowhere"),
+        }
+
+    _cov_common = {
+        "candidate_user_show_pairs_examined": int(len(cov)),
+        "distinct_show_ids_appearing_in_a_coverage_row": int(cov.sh.nunique()),
+        "S1_not_S2_pairs": int(len(a_side)),
+        "S2_not_S1_pairs": int(len(b_side)),
+        "records_used_after_D11": int(d11_site["records_used"]),
+        "universe": ("the WHOLE PULLED SWEEP, not the frame -- a split puts S1 under one show "
+                     "ID and S2 under another and only one of the two need be in the frame"),
+    }
+
     out = {
         "signature": ("one show ID carrying S1 and not S2 for that user, another carrying S2 "
                       "and not S1, and the two slugs normalise to the same title key"),
         "detection": "IMPERFECT -- Step 1 D9 states the count is a LOWER BOUND",
-        "ruled_key": "STRICT (decisions/0074 ruling 5), with the LOOSE count reported alongside",
+        "PUBLICATION_FORM_decisions_0090": {
+            "ruling": ("D9 PUBLISHES AS A BOUND. STRICT IS THE FLOOR, LOOSE IS THE CEILING, both "
+                       "labelled, and NEITHER IS THE POINT ESTIMATE. Neither endpoint may be "
+                       "quoted as 'D9's result'"),
+            "supersedes": ("decisions/0074 ruling 5's framing, 'USE THE STRICT KEY AND REPORT "
+                           "THE LOOSE COUNT ALONGSIDE', under which STRICT WAS THE ANSWER and "
+                           "loose was context. The keys themselves are unchanged (0076 Sec 3)"),
+            "ground": ("0074 ruling 5's own reason carried through: the loose count publishes "
+                       "BECAUSE IT BOUNDS HOW WRONG STRICT COULD BE, and a quantity published to "
+                       "bound another is an ENDPOINT, not a footnote. 0078 Sec 3 already ran "
+                       "this argument once, to extend loose to half (b)"),
+            "applies_to_every_quantity_with_both_forms": (
+                "complementary signature pairs, half (a) and half (b) -- applying it to one and "
+                "not the others is the defect 0078 Sec 3 corrected"),
+            "THE_THIRD_KEY_IS_NOT_AN_ENDPOINT": (
+                "a trailing digit group of arbitrary length reduces `the-100` to `the`. Its "
+                "count is a DIFFERENT KEY'S ANSWER, reported as a divergence and never as the "
+                "ceiling (0090, 0076, 0078 Sec 3)"),
+            "NO_COUNT_MOVES_WITH_THIS_RULING": ("0090 Sec 4 -- D9's own numbers do not change. "
+                                                "What changes is which of them is presented as "
+                                                "the answer, and this arm's r4 build presented "
+                                                "strict as the ruled key"),
+            "bounds": {
+                "complementary_signature_pairs": _bound(
+                    "complementary signature pairs", len(sig_strict), len(sig_loose),
+                    "(user, S1-side show, S2-side show) complementary signature rows",
+                    dict(_cov_common)),
+            },
+        },
+        "ruled_key": ("BOTH -- decisions/0090 publishes D9 as the BOUND [STRICT, LOOSE]. "
+                      "SUPERSEDED: 'STRICT (decisions/0074 ruling 5), with the LOOSE count "
+                      "reported alongside', under which strict was the answer"),
         "candidate_user_show_pairs_examined": int(len(cov)),
         "sides": {"A_side_S1_not_S2": int(len(a_side)), "B_side_S2_not_S1": int(len(b_side)),
                   "both_seasons": int(len(both_side))},
@@ -493,7 +568,55 @@ def d9(m: dict, frame: pd.DataFrame, st1: dict) -> dict:
             "carrying_a_split_signature_LOOSE": int((ns & in_a_loose).sum()),
             "share_of_never_started_pct_STRICT": 100.0 * int((ns & in_a_strict).sum()) / max(n, 1),
             "share_of_never_started_pct_LOOSE": 100.0 * int((ns & in_a_loose).sum()) / max(n, 1),
+            # decisions/0090 -- the bound, not a point estimate, on this population
+            "BOUND_decisions_0090": _bound(
+                f"half (a) fabricated never-started rows, {nm}",
+                int((ns & in_a_strict).sum()), int((ns & in_a_loose).sum()),
+                "never-started rows carrying a split signature on the A side",
+                {**_cov_common, "never_started_rows_examined": n,
+                 "population": nm}),
+            "BOUND_as_a_share_of_never_started_pct": [
+                100.0 * int((ns & in_a_strict).sum()) / max(n, 1),
+                100.0 * int((ns & in_a_loose).sum()) / max(n, 1)],
         }
+    # decisions/0090 -- half (b) publishes as a bound too, on both of its
+    # quantities. 0078 Sec 3 already extended the loose count to this half; 0090
+    # makes the pair an interval rather than an answer plus a footnote.
+    hb["BOUND_decisions_0090"] = {
+        "B_side_pairs_in_frame": _bound(
+            "half (b) B-side pairs in frame",
+            hb["STRICT"]["B_side_pairs_in_frame"], hb["LOOSE"]["B_side_pairs_in_frame"],
+            "(user, show) pairs on the S2-not-S1 side of a complementary signature, in frame",
+            {**_cov_common,
+             "position3_drop_set_pairs": hb["position3_drop_set_pairs"],
+             "of_which_carry_S2_and_no_S1": hb["of_which_carry_S2_evidence_and_NO_S1_evidence"]}),
+        "present_in_the_retained_position3_drop_set": _bound(
+            "half (b) B-side pairs present in position 3's retained drop set",
+            hb["STRICT"]["of_those_present_in_the_retained_position3_drop_set"],
+            hb["LOOSE"]["of_those_present_in_the_retained_position3_drop_set"],
+            "pairs the S1 completion rule removed that carry a split signature",
+            {**_cov_common,
+             "position3_drop_set_pairs": hb["position3_drop_set_pairs"],
+             "of_which_carry_S2_and_no_S1": hb["of_which_carry_S2_evidence_and_NO_S1_evidence"]}),
+        "in_the_S2_and_no_S1_subset": _bound(
+            "half (b) B-side pairs in the S2-evidence-and-no-S1-evidence subset",
+            hb["STRICT"]["of_those_in_the_S2_evidence_and_NO_S1_evidence_subset"],
+            hb["LOOSE"]["of_those_in_the_S2_evidence_and_NO_S1_evidence_subset"],
+            "pairs invisible to the analysis population entirely",
+            {**_cov_common,
+             "position3_drop_set_pairs": hb["position3_drop_set_pairs"],
+             "of_which_carry_S2_and_no_S1": hb["of_which_carry_S2_evidence_and_NO_S1_evidence"]}),
+    }
+    out["PUBLICATION_FORM_decisions_0090"]["bounds"]["half_a_APPLY_position5"] = \
+        out["half_a_fabricated_never_started_rows"]["APPLY_position5"]["BOUND_decisions_0090"]
+    out["PUBLICATION_FORM_decisions_0090"]["bounds"]["half_b_present_in_the_position3_drop_set"] = \
+        hb["BOUND_decisions_0090"]["present_in_the_retained_position3_drop_set"]
+    out["PUBLICATION_FORM_decisions_0090"]["THE_THIRD_KEYS_ANSWER_NOT_AN_ENDPOINT"] = {
+        "complementary_signature_pairs": int(len(sig_third)),
+        "status": ("a DIFFERENT KEY'S answer. Reported as a divergence, never as the ceiling "
+                   "(decisions/0090, 0076 Sec 3). One instance used it and published 76 against "
+                   "the other's 75; that divergence is REPORTED, NOT RECONCILED"),
+    }
     return out
 
 
@@ -1298,6 +1421,144 @@ def main() -> None:
                                "to the S1 completion walk -- and that is answered there"),
     }
 
+    # =====================================================================
+    # THE NEGATIVE CONTROL IS RUN, NOT DESCRIBED.
+    #
+    # This arm's r4 build published a field called `what_a_failure_would_look_
+    # like` -- a SENTENCE describing the failure the rebuilt coverage apparatus
+    # would catch. decisions/0089 Sec 1 then recorded it as "demonstrating
+    # failing". IT WAS NOT DEMONSTRATED; it was described. CLAUDE.md's own words:
+    # "a control asserted to exist is not a control", and the same file records
+    # a withdrawn property whose "mechanism never fired" -- found by reading the
+    # code rather than the claim.
+    #
+    # So the failure is EXECUTED here, through the SAME cover(), cover_ok() and
+    # _independent_identity() the real invariants go through -- not a re-
+    # implementation, which would prove only that a second copy behaves. Four
+    # injected defects, each the shape of a real one this chain has hit, and
+    # each ASSERTED to be caught. If any control passes the bad input the run
+    # dies here.
+    # =====================================================================
+    _neg_cases = []
+
+    # 1. the r3 gap at invariant 6 exactly: asserted on the post-liveness row
+    #    set while NAMING the position-5 population.
+    _bad_pop = cover("rows", POP["APPLY_position5"], POP_SRC,
+                     int(line6.sum()), 0, True)
+    _neg_cases.append({
+        "case": "invariant asserted on the post-liveness row set while naming position 5",
+        "the_real_defect_it_reproduces": ("this arm's r3 build asserted p on 19,042 post-liveness "
+                                          "rows with a position-5 non-S&L clause of 177,513, "
+                                          "summing to 196,555 against a 196,654-row table"),
+        "identity_arithmetic": _bad_pop["identity_arithmetic"],
+        "cover_ok_returned": cover_ok(_bad_pop),
+        "expected": False,
+        "control_caught_it": cover_ok(_bad_pop) is False,
+    })
+
+    # 2. the r3 aggregate bug: an invariant carrying NO coverage key at all,
+    #    which the chained .get(..., True) default turned into a pass.
+    _neg_cases.append({
+        "case": "invariant carrying no coverage key at all",
+        "the_real_defect_it_reproduces": ("the r3 aggregate chained .get(..., .get(..., True)), "
+                                          "so an invariant with no coverage key CONTRIBUTED A "
+                                          "PASS -- a control that could not see the thing it was "
+                                          "built to see"),
+        "cover_ok_returned": cover_ok({}),
+        "expected": False,
+        "control_caught_it": cover_ok({}) is False,
+    })
+
+    # 3. a hardcoded literal identity -- what invariants 2, 4 and 7 carried on r3.
+    _neg_cases.append({
+        "case": "identity_holds hardcoded True with no arithmetic behind it",
+        "the_real_defect_it_reproduces": ("the r3 build HARDCODED identity_holds: True at "
+                                          "invariants 2, 4 and 7"),
+        "cover_ok_returned": cover_ok({"identity_holds": True}),
+        "expected": True,
+        "note": ("cover_ok CANNOT catch this one -- a literal True is indistinguishable from a "
+                 "computed True at that interface, which is why the SEPARATE audit counter "
+                 "`identities_that_are_literals` exists and is reported below. STATED RATHER "
+                 "THAN LEFT AS AN IMPLIED PASS"),
+        "control_caught_it": None,
+        "caught_by_instead": "identities_that_are_literals, which must be 0",
+    })
+
+    # 4. decisions/0088 Sec 2(d)'s own finding: an identity whose two sides are
+    #    the same expression cannot detect a wrong population.
+    _same_expr = cover("rows", int(line6.sum()), "the asserted count itself",
+                       int(line6.sum()), 0, False,
+                       "both sides are the same expression -- 0088 Sec 2(d)")
+    _neg_cases.append({
+        "case": "identity whose population size and asserted count are the SAME expression",
+        "the_real_defect_it_reproduces": ("decisions/0088 Sec 2(d): 8 of 13 coverage identities "
+                                          "in one arm were cover(unit, pop, N, N), so they could "
+                                          "not detect an invariant run on a population other "
+                                          "than the one named"),
+        "identity_arithmetic": _same_expr["identity_arithmetic"],
+        "cover_ok_returned": cover_ok(_same_expr),
+        "expected": True,
+        "note": ("it PASSES, and that is the point -- the identity is vacuous. It is caught by "
+                 "_independent_identity, not by cover_ok"),
+        "independent_identity_returned": _independent_identity({"coverage": _same_expr}),
+        "control_caught_it": _independent_identity({"coverage": _same_expr}) is False,
+    })
+
+    # 5. the aggregate itself, run over a corrupted copy of the REAL invariant
+    #    list, so what is exercised is the published aggregate expression.
+    _corrupt = [dict(i) for i in inv]
+    _corrupt[0] = dict(_corrupt[0], coverage=_bad_pop)
+    _agg_corrupt = bool(len(_corrupt) > 0
+                        and all(cover_ok(i.get("coverage", {})) for i in _corrupt))
+    _corrupt2 = [dict(i) for i in inv]
+    _corrupt2[0] = {k: v for k, v in _corrupt2[0].items() if k != "coverage"}
+    _agg_corrupt2 = bool(len(_corrupt2) > 0
+                         and all(cover_ok(i.get("coverage", {})) for i in _corrupt2))
+    _neg_cases.append({
+        "case": "the PUBLISHED aggregate expression, run over the real invariant list with one "
+                "invariant's coverage swapped for the wrong-population block from case 1",
+        "invariants_in_the_corrupted_list": len(_corrupt),
+        "aggregate_returned": _agg_corrupt,
+        "expected": False,
+        "control_caught_it": _agg_corrupt is False,
+    })
+    _neg_cases.append({
+        "case": "the PUBLISHED aggregate expression, run over the real invariant list with one "
+                "invariant's coverage key DELETED",
+        "invariants_in_the_corrupted_list": len(_corrupt2),
+        "aggregate_returned": _agg_corrupt2,
+        "expected": False,
+        "control_caught_it": _agg_corrupt2 is False,
+    })
+
+    _checkable = [c for c in _neg_cases if c["control_caught_it"] is not None]
+    neg = {
+        "why_this_block_exists": (
+            "this arm's r4 build published `what_a_failure_would_look_like` -- a DESCRIPTION of "
+            "the failure the apparatus would catch -- and decisions/0089 Sec 1 recorded it as "
+            "'demonstrating failing'. It was not demonstrated. CLAUDE.md: a control asserted to "
+            "exist is not a control. The failures are EXECUTED here"),
+        "run_through": ("the SAME cover(), cover_ok() and _independent_identity() the published "
+                        "invariants go through, and for the aggregate, the same expression the "
+                        "published `identity_holds_on_every_invariant` uses. Not a "
+                        "re-implementation, which would prove only that a second copy behaves"),
+        "cases": _neg_cases,
+        "cases_run": len(_neg_cases),
+        "cases_whose_control_is_checkable": len(_checkable),
+        "cases_caught": sum(1 for c in _checkable if c["control_caught_it"]),
+        "cases_NOT_caught": [c["case"] for c in _checkable if not c["control_caught_it"]],
+        "two_cases_PASS_BY_DESIGN_and_are_named": [
+            c["case"] for c in _neg_cases if c["control_caught_it"] is None],
+        "coverage_note": ("this block reports the number of cases it ran. A negative-control "
+                          "block that ran zero cases and reported clean is the failure "
+                          "CLAUDE.md's standing rule exists to prevent"),
+    }
+    neg["all_checkable_cases_caught"] = bool(
+        len(_checkable) > 0 and all(c["control_caught_it"] for c in _checkable))
+    # a control that cannot fail is not a control: if any injected defect got
+    # through, this run does not produce a deliverable.
+    assert neg["all_checkable_cases_caught"], neg["cases_NOT_caught"]
+
     # decisions/0079 Sec 2 -- EVERY invariant result carries the build it was
     # measured on, and decisions/0080 Sec 3 -- EVERY invariant names the
     # population it runs on AND accounts for every row in it.
@@ -1352,11 +1613,7 @@ def main() -> None:
             "population_size_sources_used": sorted({
                 str(i.get("coverage", {}).get("population_size_source", ""))[:60]
                 for i in inv if i.get("coverage", {}).get("population_size_source")}),
-            "what_a_failure_would_look_like": (
-                "an invariant asserted on the post-liveness 195,951 rows while naming the "
-                "position-5 population would now report 195,951 + 0 = 196,654 and FAIL. That is "
-                "exactly the r3 gap at invariant 6, which the old apparatus reported as a pass "
-                "on a hand-chosen denominator"),
+            "THE_FAILURE_IS_EXECUTED_NOT_DESCRIBED": neg,
             "STRUCK_SENTENCE": (
                 "'The run asserts this, so a report that omitted a population could not be "
                 "written by this pipeline' -- STRUCK by decisions/0088 Sec 2(d), whatever else "
@@ -1365,6 +1622,14 @@ def main() -> None:
         },
         "measured_on_build": BUILD,
     }
+
+    # the r4 build TYPED a claim about task-sheet.md's and this arm's definition
+    # file's assertion-set count. decisions/0089 Sec 3 moved both. Read live at
+    # stage 2 and carried here as the MEASUREMENT, not as the previous prose.
+    _sc5 = R["analysis_table"]["column_set_is_ENUMERATED"][
+        "residuals_this_arm_reported_last_run_RE_MEASURED"][
+        "c_surface_claims_this_arm_published_last_run_RE_READ"][
+        "item_5_the_assertion_set_count_on_the_spec_surfaces"]
 
     out = {
         "instance": "analytics-engineer-b", "namespace": "b",
@@ -1386,16 +1651,11 @@ def main() -> None:
                    "code_check_by_construction_and_data_check_as_specified": 1,
                    "genuine_data_checks": 2,
                    "assertions_total": 9,
-                   "the_set_moved_from_EIGHT_to_NINE_this_run": (
+                   "the_set_moved_from_EIGHT_to_NINE_at_0088": (
                        "decisions/0088 Sec 1(c) PROMOTES the tau2 <= tau_pull assertion into "
                        "the published set. It already ran; it was invisible to a reader of the "
-                       "deliverable. REPORTED AS A SPEC OBSERVATION, NOT RECONCILED: "
-                       "task-sheet.md and this instance's definition file still say 'THE "
-                       "ASSERTION SET NOW HAS EIGHT MEMBERS', and 0088 moved that count "
-                       "without the sentence catching up. task-sheet.md's own labelling bullet "
-                       "carries a THIRD count -- 'four pure code checks, one by construction, "
-                       "one item that is not an invariant' -- which predates 0076. Three counts "
-                       "of one set are live on the surfaces this instance reads"),
+                       "deliverable"),
+                   "the_surface_count_this_arm_reported_last_run_IS_RE_READ_NOT_CARRIED": _sc5,
                    "items_reported_but_not_asserted": 2,
                    "items_reported_but_not_asserted_named": [
                        "the set-membership drop rule -- a coverage count (0074 ruling 3)",
