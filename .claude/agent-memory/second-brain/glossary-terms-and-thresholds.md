@@ -80,11 +80,24 @@ governs; this is a pointer, not a copy.**
   `0063` §1** and publishes as a Step 14 limitation. Decisive argument: its input living in Step 7's
   working files is **the same shape as `0079`'s drop set** — a required input must not live in a
   working file.
-- **`p_at_bound` is NEW** (`0082`). A boolean separating the two meanings of **`p = 1.0`**: the pair
-  **left at the final episode**, versus **the rank numerator saturating at `L2`**. **Step 10 publishes
-  the abandonment distribution off `abandonment_point_p`**, and a spike at 1.0 means two different
-  things about viewers. **Totals the two classes must sum to: 1,246 at position 5, 1,230
-  post-liveness, on APPLY.**
+- **`p_at_bound` MARKS WHETHER `p` REACHED ITS BOUND, NOT WHY** (`0082`, restated `0083` §2).
+  **TRUE where `p` reached its bound**, null where `p` is null. ***SUPERSEDED — this bullet said:***
+  ~~*a boolean separating the two meanings of `p = 1.0`: the pair left at the final episode, versus*~~
+  ~~*the rank numerator saturating at `L2`; and a spike at 1.0 means two different things about*~~
+  ~~*viewers.*~~ ***The two clauses are COEXTENSIVE BY CONSTRUCTION*** — set membership puts `m_H ∈ E2`, so
+  the numerator is `L2` **iff** `m_H = max(E2) = F2`, which *is* "left at the final episode."
+  **The FALSE class is EMPTY**: both arms measured 1,246 / 0 / 0 / 0 at position 5 and
+  1,230 / 0 / 0 / 0 post-liveness on APPLY (and 1,072 / 1,056 on DERIV, arm b). ***1,246 and 1,230
+  ARE STILL TRUE BUT ARE NOT A SPLIT*** — one class counted twice, not two summed. **Citing them as
+  evidence the column separates anything is a WITHDRAWN ARGUMENT — Mode H**, registered in
+  `GROUNDS_WITHDRAWN` (`src/step7_register.py`). **Separate DATA fact, not the same argument:
+  0 of 1,138 frame shows have any S2 numbering gap**, so `E2 = {1…L2}` and the rank form reduces to
+  `m_H / L2`; that could be false on another frame and the coextensivity would still hold.
+  **The column is KEPT** — Step 10 needs the spike labelled, and an emptiness asserted in prose and
+  never emitted cannot be checked.
+  ***This bullet was propagation failure #22*** (`0084`): `0083` §2 reached the table row 71 lines
+  below and not this bullet, and **the phrase control could not see it because the withdrawn sentence
+  wrapped across a line break** — found by instance A on the rerun, not by a control.
 - **Two columns stay DROPPED, both free:** **`f2_in_A_H`** (derivable as `max_episode_in_A_H == s2_F`)
   and **`max_episode_in_A`** (read by nothing downstream).
 - **Naming rule** (`0077` §3): **use the spec's own vocabulary at the point the spec defines the thing;

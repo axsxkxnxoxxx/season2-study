@@ -35,6 +35,7 @@ from __future__ import annotations
 import gzip
 import json
 import math
+import re
 import time
 from pathlib import Path
 
@@ -86,6 +87,75 @@ BACKFILL_D, POSTDATE_D = 180.0, -30.0
 STEP5_WATERFALL = [201_900, 178_165, 155_131, 152_126, 128_099]
 
 R: dict = {}
+
+
+def _spec_residuals() -> dict:
+    """decisions/0083 Sec 3 fixed two residuals INSTANCE A reported and could not
+    edit. This arm reported the first of them on its own previous build. They are
+    RE-MEASURED here against the live spec surfaces rather than assumed fixed --
+    a correction quoted from a ruling and not re-read is the shape this chain
+    keeps failing on.
+
+    Read-only on the two surfaces an isolated Step 8 instance actually reads:
+    task-sheet.md and its own definition file. It does not read the other arm's.
+    """
+    ts = (ROOT / "task-sheet.md").read_text()
+    ag = (ROOT / ".claude" / "agents" / "analytics-engineer-b.md").read_text()
+    i = ts.index("THE COLUMN SET IS ENUMERATED, NOT COUNTED")
+    j = ts.index("THE TABLE IS THE POSITION-5 ROW SET", i)
+    seg_ts = ts[i:j]
+    k = ag.index("THE COLUMN SET IS ENUMERATED")
+    l = ag.index("POSITION 3's DROP SET IS THE 58,345", k)
+    seg_ag = ag[k:l]
+
+    def enumerated(seg: str) -> list[str]:
+        a = seg.index("`abandonment_point_p`")
+        b = seg.index("`user_idx`") + len("`user_idx`")
+        return sorted(set(re.findall(r"`([A-Za-z0-9_]+)`", seg[a:b])))
+
+    ts_names, ag_names = enumerated(seg_ts), enumerated(seg_ag)
+    return {
+        "why_re_measured": ("decisions/0083 Sec 3 records both as corrected on all three "
+                            "surfaces. A correction READ BACK is verified; a correction QUOTED "
+                            "is not. Both are re-read here, off disk, on this build"),
+        "a_the_stale_88_inside_the_strike_through": {
+            "reported_by": ("instance A, artifacts/step8-waterfall-a.md Sec 8; this arm "
+                            "reported the same shape on its previous build"),
+            "was": ("the strike-through withdrawing 0077's '89 columns' said it was replaced "
+                    "by the '88-name ENUMERATION', while the enumeration directly above it "
+                    "carries 89 names"),
+            "task_sheet_strike_through_now_says_89":
+                bool("89-NAME ENUMERATION" in seg_ts),
+            "agent_file_strike_through_now_says_89":
+                bool("89-NAME ENUMERATION" in seg_ag),
+            "status": ("CLOSED at decisions/0083 Sec 3a -- verified live on both surfaces this "
+                       "instance reads, not quoted from the entry"),
+        },
+        "b_f2_in_A_H_in_0077s_adopted_name_table": {
+            "was": ("the adopted-name table lists f2_in_A_H among the ADOPTED names while a "
+                    "bullet in the same section drops it as derivable"),
+            "task_sheet_marks_it_dropped_at_the_point_of_use":
+                bool("f2_in_A_H` IS NOT AN EMITTED" in seg_ts),
+            "agent_file_marks_it_dropped_at_the_point_of_use":
+                bool("f2_in_A_H` IS NOT AN EMITTED" in seg_ag),
+            "the_spelling_ruling_survives_it":
+                bool("`AH` is not the spec's spelling" in seg_ts
+                     or "the spec writes `A_H`, not `AH`" in seg_ag),
+            "status": ("CLOSED at decisions/0083 Sec 3b -- marked at the point of use rather "
+                       "than deleted, so 0077's SPELLING ruling (A_H not AH, which governs n_A, "
+                       "n_A_H and max_episode_in_A_H) is not lost with the column"),
+        },
+        "enumeration_checked_AS_A_SET_not_by_counting": {
+            "task_sheet_names": len(ts_names),
+            "agent_file_names": len(ag_names),
+            "code_names": len(COLUMNS_89),
+            "task_sheet_equals_code": sorted(ts_names) == sorted(COLUMNS_89),
+            "agent_file_equals_code": sorted(ag_names) == sorted(COLUMNS_89),
+            "task_sheet_equals_agent_file": sorted(ts_names) == sorted(ag_names),
+            "why": ("decisions/0083 Sec 3 verifies the three surfaces' name sets as SETS, off "
+                    "disk, not by counting. Matching a count is not matching a set"),
+        },
+    }
 
 
 def insert_time(rid, knot_rid, knot_time):
@@ -531,16 +601,22 @@ def main() -> None:
     p_rank = np.where(m_H >= 0, rank_tab[s_idx, np.clip(m_H, 0, maxE)], 0)
     p_val = np.where(K["sal"] & (m_H >= 0), p_rank / np.maximum(L2a[s_idx], 1), np.nan)
 
-    # ---- p_at_bound (decisions/0082) --------------------------------------
-    # A boolean separating the TWO MEANINGS of p = 1.0: the rank numerator
-    # SATURATED AT L2, or the pair LEFT AT THE FINAL EPISODE. Both are computed
-    # here, separately, because whether they are the same set is a measurement
-    # and not an assumption -- and on the adopted rank form they are provably
-    # the same set (m_H is a member of E2, so |{e in E2 : e <= m_H}| = L2 iff no
-    # listed episode exceeds m_H iff m_H = max(E2) = F2). The column is emitted
-    # on the FIRST reading, which is the one 0082 names ("the rank numerator
-    # saturated at L2"); the second is reported alongside so the coincidence is
-    # a stated fact rather than a silent choice.
+    # ---- p_at_bound (decisions/0082, RESTATED by 0083 Sec 2) ---------------
+    # THE COLUMN MARKS WHETHER p REACHED ITS BOUND, NOT WHY. TRUE where p
+    # reached its bound, null where p is null.
+    #
+    # 0082's definition by two MECHANISMS -- "TRUE where the rank numerator
+    # saturated at L2, FALSE where the pair left at the final episode" -- is
+    # SUPERSEDED: the clauses are COEXTENSIVE BY CONSTRUCTION and the FALSE class
+    # is EMPTY. On the adopted rank form p = |{e in E2 : e <= m_H}| / L2 the
+    # set-membership drop rule puts m_H in E2, so the numerator equals L2 iff no
+    # listed episode exceeds m_H, iff m_H = max(E2) = F2 -- which IS "left at the
+    # final episode". Neither clause can hold without the other.
+    #
+    # Both mechanisms are still COMPUTED SEPARATELY below, because an emptiness
+    # asserted in prose and never emitted cannot be checked: if a future run ever
+    # produces a row in one class and not the other, the rank form or the
+    # set-membership rule has broken, and that is worth catching.
     has_p = ~np.isnan(p_val)
     rank_saturated = has_p & (p_rank >= L2a[s_idx])
     left_at_final = has_p & (m_H == F2a[s_idx])
@@ -667,8 +743,9 @@ def main() -> None:
         "has_s3_or_later_evidence": has_s3[sel],
         "s1_completion_used_a_post_cutoff_record": comp_post_cutoff[sel],
     })
+    # TRUE where p reached its bound; null where p is null (0082, restated 0083).
     pab = pd.array(rank_saturated[sel], dtype="boolean")
-    pab[~has_p[sel]] = pd.NA                      # null where p is null (0082)
+    pab[~has_p[sel]] = pd.NA
     tab["p_at_bound"] = pab
     for j, nm in enumerate(act_names):
         tab["action_count_" + nm] = acts[sel, j]
@@ -711,13 +788,17 @@ def main() -> None:
                                  "name; the same list appears in this instance's own definition "
                                  "file and the two were checked against each other"),
             "changed_from_this_arms_previous_run": {
-                "added": ["silent_at_tau1", "p_at_bound"],
-                "dropped": [],
-                "why": ("0081 restores silent_at_tau1 -- it is the only way to recompute the "
-                        "Continued-and-silent count (652) from this table, because the liveness "
-                        "rule's second conjunct is NOT Continued, so `live` is true for every "
-                        "Continued pair REGARDLESS of silence. 0082 adds p_at_bound. This arm's "
-                        "previous run emitted the superseded 87"),
+                "added": [], "dropped": [],
+                "why": ("the column SET does not move at 0083. This arm's previous build "
+                        "(2026-08-16 clean run, spec through 0082) already emitted these 89 "
+                        "names. What 0083 Sec 2 changes is what p_at_bound MEANS -- WHETHER p "
+                        "reached its bound, not WHY -- which restates the column's definition "
+                        "and MOVES NO VALUE, because the WHETHER form and 0082's rank-saturation "
+                        "clause select the identical rows. The two 0083 Sec 3 residuals are spec "
+                        "corrections on surfaces this instance reads, not column changes"),
+                "the_87_is_two_builds_back": ("the 87-name build predates 0081 and 0082; it is "
+                                              "named here so the 87 is not later read as this "
+                                              "arm's current answer"),
             },
             "the_two_free_drops_stand": {
                 "f2_in_A_H": "DERIVABLE as (max_episode_in_A_H == s2_F)",
@@ -728,15 +809,7 @@ def main() -> None:
                 ["in_population_APPLY", "n_rec_s1_watch", "tau1_utc", "tau2_utc",
                  "max_episode_in_AH", "T0_binding_term", "action", "discovery_channel",
                  "f2_in_A_H", "max_episode_in_A"]},
-            "residual_defect_in_the_spec": (
-                "task-sheet.md Step 8's struck bullet reads 'SUPERSEDED -- the count is "
-                "replaced by the ENUMERATION above (0080, extended to 88 by 0081)', while the "
-                "enumeration above it carries 89 names and its own heading says 89 (0082). The "
-                "'88' inside the strike-through is stale by one ruling. It is INSIDE a "
-                "strike-through and the live enumeration is unambiguous, so it changes nothing "
-                "here -- REPORTED rather than silently resolved, because the same shape "
-                "(a superseded count left standing beside its replacement) is what 0081 Sec 2 "
-                "was written about"),
+            "residuals_this_arm_reported_last_run_RE_MEASURED": _spec_residuals(),
         },
     }
 
@@ -780,53 +853,92 @@ def main() -> None:
         "direction": "would INFLATE Never started, the same direction as D4 and D9",
     }
 
-    # --- p_at_bound: the split of the p = 1.0 rows (decisions/0082) --------
-    pab_split = {}
+    # --- p_at_bound: the p = 1.0 TOTALS (0082, restated by 0083 Sec 2) ------
+    # 0083: "Still report the p = 1.0 totals -- 1,246 at position 5 and 1,230
+    # post-liveness on APPLY -- AS TOTALS, NOT AS A SUM OF TWO CLASSES." The
+    # coextensivity is reported separately, as the emptiness check it is.
+    pab_tot, pab_coext = {}, {}
     for nm, msk in (("APPLY_position5", line5), ("APPLY_position6_post_liveness", line6),
                     ("DERIV_position5", d5), ("DERIV_position6_post_liveness", d6)):
         one = msk & p_is_one
-        pab_split[nm] = {
-            "rows_with_p_equal_1_0": int(one.sum()),
-            "p_at_bound_TRUE_rank_numerator_saturated_at_L2": int((one & rank_saturated).sum()),
-            "p_at_bound_FALSE_left_at_the_final_episode_only":
-                int((one & ~rank_saturated).sum()),
-            "classes_sum_to_the_total":
-                int((one & rank_saturated).sum()) + int((one & ~rank_saturated).sum())
-                == int(one.sum()),
-            "cross_check_rows_where_m_H_equals_F2": int((one & left_at_final).sum()),
+        pab_tot[nm] = {
+            "rows_with_p_equal_1_0_TOTAL": int(one.sum()),
+            "p_at_bound_TRUE": int((msk & rank_saturated).sum()),
             "started_and_left_rows": int((msk & K["sal"]).sum()),
-            "p_at_bound_TRUE_among_ALL_rows_with_a_non_null_p":
-                int((msk & rank_saturated).sum()),
-            "rows_with_p_below_1_0": int((msk & K["sal"] & ~p_is_one).sum()),
+            "rows_with_p_below_1_0_p_at_bound_FALSE": int((msk & K["sal"] & ~p_is_one).sum()),
+            "rows_with_p_null_p_at_bound_null": int((msk & ~has_p).sum()),
+            "coverage_identity": (int((msk & rank_saturated).sum())
+                                  + int((msk & K["sal"] & ~p_is_one).sum())
+                                  + int((msk & ~has_p).sum()) == int(msk.sum())),
         }
+        pab_coext[nm] = {
+            "in_BOTH_classes": int((one & rank_saturated & left_at_final).sum()),
+            "saturated_not_final": int((one & rank_saturated & ~left_at_final).sum()),
+            "final_not_saturated": int((one & ~rank_saturated & left_at_final).sum()),
+            "in_NEITHER": int((one & ~rank_saturated & ~left_at_final).sum()),
+            "rows_examined": int(one.sum()),
+            "empty_classes_are_empty": int((one & rank_saturated & ~left_at_final).sum()) == 0
+                                       and int((one & ~rank_saturated & left_at_final).sum()) == 0,
+        }
+    # A SECOND fact, DATA and not construction (0083 Sec 2): whether any frame
+    # show has an S2 numbering gap. If none does, E2 = {1..L2} everywhere and the
+    # rank form reduces to m_H / L2 -- but that could be FALSE on another frame
+    # and the coextensivity above would still hold, so the two are stated apart.
+    e2_lists = [sorted({int(x) for x in str(s).split(",") if x.strip().isdigit()})
+                for s in frame.s2_E]
+    gap_shows = sum(1 for e in e2_lists if e and (e != list(range(1, len(e) + 1))))
     req["p_at_bound"] = {
-        "ruling": ("decisions/0082 Sec 2 -- p = 1.0 CARRIES TWO MEANINGS COMPUTED DIFFERENTLY: "
-                   "the rank numerator SATURATED AT L2, or the pair LEFT AT THE FINAL EPISODE. "
-                   "p_at_bound is TRUE on the first and FALSE on the second, null where p is "
-                   "null. Step 10 publishes the abandonment distribution off "
-                   "abandonment_point_p, so a spike at 1.0 must be separable"),
-        "column_emitted_on": ("the rank-saturation reading -- 'the rank numerator saturated at "
-                             "L2', which is the phrase the ruling uses"),
+        "ruling": ("decisions/0083 Sec 2, restating 0082 -- p_at_bound MARKS WHETHER p REACHED "
+                   "ITS BOUND, NOT WHY. TRUE where p reached its bound; null where p is null. "
+                   "Step 10 publishes the abandonment distribution off abandonment_point_p and "
+                   "needs the spike LABELLED"),
+        "SUPERSEDED_definition": ("0082 Sec 2's definition by two MECHANISMS -- 'TRUE where the "
+                                  "rank numerator saturated at L2, FALSE where the pair left at "
+                                  "the final episode'. The clauses are COEXTENSIVE BY "
+                                  "CONSTRUCTION and the FALSE class is EMPTY, so the mechanism "
+                                  "form does not define a column"),
+        "the_proof_is_one_line": ("p = |{e in E2 : e <= m_H}| / L2, and the set-membership drop "
+                                  "rule puts m_H in E2. So the numerator equals L2 IFF no listed "
+                                  "episode exceeds m_H, IFF m_H = max(E2) = F2 -- which IS 'left "
+                                  "at the final episode'. Neither clause can hold without the "
+                                  "other"),
+        "totals_not_a_split": ("decisions/0083 Sec 2 -- the p = 1.0 counts are reported AS "
+                               "TOTALS. 1,246 and 1,230 are correct counts and both arms "
+                               "reproduce them, but they are ONE CLASS COUNTED TWICE, NOT TWO "
+                               "CLASSES SUMMED. Citing them as evidence that the column "
+                               "separates anything is a WITHDRAWN ARGUMENT (CLAUDE.md, third "
+                               "blindness class; registered at src/step7_register.py "
+                               "GROUNDS_WITHDRAWN['0083 SS2'])"),
         "expected_totals_from_the_ruling": {"position5_APPLY": 1246,
                                             "post_liveness_APPLY": 1230},
-        "by_population_and_position": pab_split,
-        "MEASURED_FINDING_the_two_classes_are_the_same_set": (
-            "ON THE ADOPTED RANK FORM THE TWO MEANINGS ARE PROVABLY IDENTICAL, and this is "
-            "measured rather than argued: p = |{e in E2 : e <= m_H}| / L2 with m_H = max(A_H) "
-            "and A_H a subset of E2 by set membership. The numerator equals L2 iff no listed "
-            "episode exceeds m_H, iff m_H = max(E2) = F2 -- which IS 'left at the final "
-            "episode'. So the FALSE class is EMPTY by construction, not by accident, and the "
-            "column separates nothing on this data. The two readings are computed separately "
-            "above (rank_saturated and m_H == F2) and agree row for row. THE TWO MEANINGS ARE "
-            "DISTINGUISHABLE ONLY UNDER THE WITHDRAWN RAW-RATIO FORM p = m_H / L2, where a "
-            "numbering gap makes F2 > L2 and the ratio saturates at a value other than the "
-            "finale. REPORTED, not resolved: this instance emits the column as ruled"),
-        "consequence_for_step10": ("a spike at p = 1.0 on this data means exactly one thing -- "
-                                   "the pair watched the S2 finale and missed the 90% "
-                                   "threshold -- and p_at_bound cannot tell Step 10 anything "
-                                   "the finale test does not. The column is emitted because it "
-                                   "is ruled, and its degeneracy is stated so Step 10 does not "
-                                   "read an all-TRUE column as a finding"),
+        "totals_by_population_and_position": pab_tot,
+        "coextensivity_check_the_emptiness_is_EMITTED_not_asserted_in_prose": {
+            "why": ("an emptiness asserted in prose and never emitted cannot be checked "
+                    "(decisions/0083 Sec 2). Both mechanisms are computed separately and the "
+                    "four cells are reported. The FALSE class stays empty across Step 13's W "
+                    "grid because the rank form and set membership are both W-invariant, so a "
+                    "non-empty cell anywhere means one of them has broken"),
+            "by_population_and_position": pab_coext,
+            "all_populations_agree_row_for_row":
+                all(v["empty_classes_are_empty"] for v in pab_coext.values()),
+            "coverage": ("this check did not look nowhere: it examined "
+                         f"{int((line5 & p_is_one).sum())} rows on APPLY at position 5"),
+        },
+        "a_SECOND_fact_DATA_not_construction": {
+            "statement": ("frame shows with any S2 numbering gap -- if zero, E2 = {1..L2} "
+                          "everywhere and the rank form reduces to m_H / L2"),
+            "shows_examined": n_shows,
+            "shows_with_an_S2_numbering_gap": int(gap_shows),
+            "why_stated_separately": ("this one is DATA and could be false on another frame; "
+                                      "the coextensivity above would still hold. Collapsing "
+                                      "them would make a construction argument look like a "
+                                      "frame accident (decisions/0083 Sec 2)"),
+        },
+        "why_the_column_is_KEPT": ("not because it decomposes the spike -- it does not -- but "
+                                   "because Step 10 publishes the abandonment distribution off "
+                                   "abandonment_point_p and needs the spike LABELLED, and "
+                                   "because an emptiness asserted in prose and never emitted "
+                                   "cannot be checked"),
     }
 
     # --- Continued-and-silent, the count silent_at_tau1 exists to preserve --
@@ -1017,10 +1129,16 @@ def main() -> None:
     }
 
     # --- the D11 open question, with its downstream effect measured --------
+    _dq = st1["s1_completion"]["D11_open_question"]
+    _cmp = _dq["completer_set_comparison_READING_B_vs_READING_C"]
     req["D11_open_question"] = {
         "line_1_as_ruled": 220107,
-        "line_1_if_D11_is_applied_to_the_S1_completion_walk_too": 220103,
-        "pairs_affected": 4,
+        "line_1_if_D11_is_applied_to_the_S1_completion_walk_too":
+            _dq["S1_completer_pairs_if_D11_applied_to_S1_too"],
+        "pairs_affected": _cmp["in_B_and_NOT_in_C_pairs_that_stop_being_completers"],
+        "completer_set_comparison": _cmp,
+        "completion_dates_that_move_among_the_surviving_pairs":
+            _cmp["of_those_whose_first_pass_completion_DATE_MOVES"],
         "all_four_are_removed_at_position_5_under_either_reading":
             bool((~line5[comp_post_cutoff]).all()),
         "lines_4_to_7_are_identical_under_both_readings": True,

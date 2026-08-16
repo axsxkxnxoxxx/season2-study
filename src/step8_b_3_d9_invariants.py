@@ -796,6 +796,16 @@ def main() -> None:
         "records_examined": st1["drop_rule"]["records_examined"],
         "records_dropped": st1["drop_rule"]["records_dropped"],
         "denominator_readings": st1["drop_rule"]["denominator_note"],
+        "other_candidate_axes": st1["drop_rule"][
+            "other_candidate_axes_for_the_denominator_difference"],
+        "denominator_status": ("CLOSED at decisions/0083 Sec 1, amending 0074 ruling 4's routing "
+                               "to Step 14. The three readings are one one-parameter family "
+                               "indexed by where D11 applies, and EVERY MEMBER DROPS ZERO "
+                               "RECORDS -- the numerator is 0 three times over, so the "
+                               "difference survives into no result and is not a Step 14 "
+                               "limitation. It publishes as a COVERAGE FIGURE WITH ITS PIPELINE "
+                               "NAMED. What stays open is 0068's own item -- whether D11 applies "
+                               "to the S1 completion walk -- and that is answered there"),
     }
 
     # decisions/0079 Sec 2 -- EVERY invariant result carries the build it was

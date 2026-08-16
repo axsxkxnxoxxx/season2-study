@@ -12,17 +12,17 @@
     "why_this_exists": "decisions/0079 (B6), extending decisions/0078: every count, every invariant result and every waterfall figure names the pipeline it was measured on, not only its population. Partial application is worse than none.",
     "pipeline": "src/step8_a_run.py, one run, stages 1 -> 6 in order",
     "stage_files_sha256_12": {
-      "step8_a_lib.py": "cf120b83a386",
-      "step8_a_1_scan.py": "a842b073640e",
+      "step8_a_lib.py": "14e28cc5d4fb",
+      "step8_a_1_scan.py": "a01904dba997",
       "step8_a_2_positions.py": "9f08ac985c8c",
-      "step8_a_3_table.py": "5b04a7b40ef9",
+      "step8_a_3_table.py": "840d7e73cb14",
       "step8_a_4_arms.py": "3d533b88a113",
       "step8_a_4b_slugs.py": "4495f8069adb",
-      "step8_a_5_diagnostics.py": "3964a9195191",
-      "step8_a_6_emit.py": "44428c39536c",
+      "step8_a_5_diagnostics.py": "8e3c61ba7e15",
+      "step8_a_6_emit.py": "ee39aaab9cf8",
       "step8_a_run.py": "4e6e8a12570a"
     },
-    "git_head_short": "ec340dd",
+    "git_head_short": "0af0d92",
     "git_worktree_dirty_at_launch": true,
     "parameters": {
       "W_days": 108,

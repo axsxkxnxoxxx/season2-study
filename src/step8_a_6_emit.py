@@ -91,8 +91,8 @@ def main():
         "position_3_drop_set_DELIVERABLE": pos["position_3_drop_set_DELIVERABLE"],
         "surviving_aggregate_of_the_silent_at_tau1_column":
             outc["analysis_table"]["surviving_aggregate_of_the_silent_at_tau1_column"],
-        "p_at_bound_the_split_of_the_p_equals_1_rows":
-            outc["analysis_table"]["p_at_bound_the_split_of_the_p_equals_1_rows"],
+        "p_at_bound_whether_not_why_and_the_p_equals_1_totals":
+            outc["analysis_table"]["p_at_bound_whether_not_why_and_the_p_equals_1_totals"],
         "scope_qualifier_travelling_with_the_position_6_population": SCOPE,
         "scan_summary": scan,
     }
@@ -134,11 +134,15 @@ def main():
       "`0080` §1 **as extended by `0081`** — which **restores `silent_at_tau1`** — **and by "
       "`0082`**, which **adds `p_at_bound`**; asserted by set equality, never by count. **(6)** "
       "**Every invariant states its population and accounts for every row in it** (`0080` §3). "
-      "**(7)** **D9 reports four numbers, not three** (`0078` §3). **(8)** The **`p = 1.0` split "
-      "into its two classes is reported** on both populations `0082` names — see §3.")
+      "**(7)** **D9 reports four numbers, not three** (`0078` §3). **(8)** **`p_at_bound` marks "
+      "WHETHER `p` reached its bound, not why** (`0083` §2, restating `0082`), and the `p = 1.0` "
+      "counts are reported as **totals** — see §3.1. **(9)** The **records-examined denominator is "
+      "CLOSED** (`0083` §1): all three readings publish, each naming the pipeline that produces "
+      "it — see §5.1.")
     A("")
-    A("> **No figure this instance previously published moves.** The column set changes — two "
-      "names in, `f2_in_A_H` still out — and the `p = 1.0` split is new.")
+    A("> **No figure this instance previously published moves.** What moves is what the figures "
+      "are *called*: `0083` closed the denominator item this instance had reported as open and "
+      "restated `p_at_bound`'s definition, and neither ruling changes a measured quantity here.")
     A("")
     A("> Carried forward and unchanged: the table is the position-5 row set with `live` and "
       "`outcome` as columns (`0074`/1); D9 uses the defined strict key with the loose count "
@@ -383,51 +387,58 @@ def main():
       "category, not part of 'near-finale'. `p` is null on every row that is not "
       "Started-and-left.")
     A("")
-    sp = ap["p_at_bound_split"]
-    fe = outc["analysis_table"]["p_at_bound_the_split_of_the_p_equals_1_rows"]["frame_evidence"]
+    sp = ap["p_at_bound_totals_and_coextensivity"]
+    fe = outc["analysis_table"][
+        "p_at_bound_whether_not_why_and_the_p_equals_1_totals"]["frame_evidence"]
     sp2_shows_gap, sp2_shows = fe["shows_where_max_E2_differs_from_L2"], fe["shows_in_frame"]
-    A("### 3.1 `p_at_bound` — the split of the `p = 1.0` rows, and why one class is empty")
+    A("### 3.1 `p_at_bound` — WHETHER `p` reached its bound, and the `p = 1.0` totals")
     A("")
-    A("**`decisions/0082` adds `p_at_bound`, a boolean separating the two meanings of `p = 1.0`**: "
-      "the pair **left at the final episode**, or **the abandonment point is at its bound** — the "
-      "rank numerator having saturated at `L2`. **Step 10 publishes the abandonment distribution "
-      "off `abandonment_point_p`, so a spike at 1.0 must be separable.** The ruling requires the "
-      "split on both populations, summing to the totals already published.")
+    A("**`p_at_bound` marks WHETHER `p` reached its bound, NOT WHY** — Human Lead ruling, "
+      "2026-08-16 (`decisions/0083` §2), restating `0082`. **`TRUE` where `p` is at its bound, "
+      "null where `p` is null.** `0082`'s definition **by two mechanisms** is **superseded**: the "
+      "two clauses are **coextensive by construction**, so the class it called `FALSE` is "
+      "**empty** and on the adopted rank form there is only one why. **The column is kept** — "
+      "Step 10 publishes the abandonment distribution off `abandonment_point_p` and needs the "
+      "spike **labelled**, and **an emptiness asserted in prose and never emitted cannot be "
+      "checked.**")
     A("")
-    A("| Population | `p = 1.0` rows | at the bound (numerator = `L2`) | at the final episode | "
-      "sum |")
-    A("| :--- | ---: | ---: | ---: | ---: |")
+    A("**The `p = 1.0` counts are TOTALS, not a sum of two classes** (`0083` §2). "
+      "**1,246 and 1,230 remain true and this instance reproduces them**, but they are **one "
+      "class counted twice**; reading them as a split is a **withdrawn argument** (`CLAUDE.md`, "
+      "third blindness class).")
+    A("")
+    A("| Population | `p = 1.0` rows, TOTAL | `p_at_bound` `TRUE` | `p = 1.0` with `p_at_bound` "
+      "`FALSE` |")
+    A("| :--- | ---: | ---: | ---: |")
     for k, lab in (("APPLY_position_5", "APPLY, position 5"),
                    ("APPLY_position_7_post_liveness", "APPLY, position 7")):
         v = sp[k]
-        A(f"| {lab} | {n(v['total_p_equals_1'])} | "
-          f"{n(v['at_the_bound_rank_numerator_saturated_at_L2'])} | "
-          f"{n(v['at_the_final_episode_not_at_the_bound'])} | "
-          f"{n(v['at_the_bound_rank_numerator_saturated_at_L2'] + v['at_the_final_episode_not_at_the_bound'])} |")
+        A(f"| {lab} | {n(v['total_p_equals_1'])} | {n(v['p_at_bound_TRUE'])} | "
+          f"{n(v['p_equals_1_but_p_at_bound_FALSE'])} |")
     A("")
     A(bt("every figure in this table"))
     A("")
     ct = sp["cross_tab_APPLY_position_5"]
-    A("**REPORTED, NOT RESOLVED: the two classes are provably coextensive, so the column cannot "
-      "separate them.** Under the set-membership rule `A_H ⊆ E2`, so `m_H ∈ E2`, and therefore "
+    A("**The two clauses are coextensive BY CONSTRUCTION, and it is measured here rather than "
+      "asserted.** Under the set-membership rule `A_H ⊆ E2`, so `m_H ∈ E2`, and therefore "
       "`|{e ∈ E2 : e ≤ m_H}| = L2` **if and only if** `m_H = max(E2) = F2` — which *is* \"left at "
-      "the final episode\". **The two meanings the ruling names are the same event.** One class "
-      "holds every `p = 1.0` row and the other holds none.")
+      "the final episode\". **Neither clause can hold without the other.** On APPLY position 5: "
+      f"**{n(ct['saturated_and_final_episode'])}** rows satisfy both, "
+      f"**{n(ct['saturated_not_final_episode'])}** satisfy the numerator clause alone, "
+      f"**{n(ct['final_episode_not_saturated'])}** the final-episode clause alone, and "
+      f"**{n(ct['neither'])}** neither.")
     A("")
-    A("**Measured rather than argued**, on APPLY position 5: "
-      f"**{n(ct['saturated_and_final_episode'])}** rows are in both classes, "
-      f"**{n(ct['saturated_not_final_episode'])}** saturated but not at the final episode, "
-      f"**{n(ct['final_episode_not_saturated'])}** at the final episode but not saturated, and "
-      f"**{n(ct['neither'])}** in neither. On this frame it is stronger still: "
-      f"**{sp2_shows_gap} of {n(sp2_shows)} shows have any S2 numbering gap**, so `E2 = {{1…L2}}` "
-      "everywhere, `F2 = L2`, and the rank form reduces to `m_H / L2` identically.")
+    A("**A SECOND fact, measured and NOT the same argument:** "
+      f"**{sp2_shows_gap} of {n(sp2_shows)} frame shows have any S2 numbering gap**, so "
+      "`E2 = {1…L2}` everywhere, `F2 = L2`, and the rank form reduces to `m_H / L2`. **That one "
+      "is DATA and could be false on another frame; the coextensivity above would still hold.** "
+      "Stated separately so a construction argument is not read as a frame accident.")
     A("")
-    A("**The column is emitted as specified and the ruling's requirement is met** — the split is "
-      "reported and the two classes sum to the published totals. **What is reported and not fixed "
-      "is that the encoding carries no information beyond `p = 1.0` itself**: `p_at_bound` is "
-      "`TRUE` exactly on the `p = 1.0` rows, `FALSE` on the rest of Started-and-left, and null "
-      "elsewhere. **Step 10 cannot use it to tell the two viewer behaviours apart, because under "
-      "the adopted rank form they are not two behaviours.**")
+    A("**Why the column is still worth emitting.** The `FALSE` class is empty because of the rank "
+      "form and the set-membership rule, **both of which are `W`-invariant**, so it stays empty "
+      "across Step 13's arms. **A `FALSE` row anywhere means one of the two has broken**, and "
+      "that is a thing worth catching. `p_at_bound` is `TRUE` exactly on the `p = 1.0` rows, "
+      "`FALSE` on the rest of Started-and-left, and null elsewhere.")
     A("")
     A("---")
     A("")
@@ -604,30 +615,41 @@ def main():
       "never-started liveness exclusions. Direction, had it been non-zero: it **inflates** never "
       "started.")
     A("")
-    rd = dc["records_examined_denominator_reported_unreconciled"]
+    rd = dc["records_examined_denominator_CLOSED_by_0083"]
     tr = rd["three_readings"]
-    A("**The records-examined denominator: which reading this instance produces, and why.** "
-      "`decisions/0074` ruling 4 published **6,065,704 against 6,065,610, both reporting 0 drops**, "
-      "**unreconciled** and routed to Step 14. **It is still unruled.** This instance produces "
-      f"**{n(rd['reported_by_this_instance'])} — the NO-D11 reading** — and states the other two "
-      "with the arithmetic that separates them, so the choice is visible rather than silent.")
+    A("**The records-examined denominator — CLOSED, and it publishes as a coverage figure.** "
+      "Human Lead ruling, 2026-08-16 (`decisions/0083` §1). `0074` ruling 4 published "
+      "**6,065,704 against 6,065,610, both reporting 0 drops**, reported unreconciled and routed "
+      "to Step 14; **that routing is withdrawn and the item is closed.** **It was never a "
+      "divergence**: the readings are **one family indexed by where D11 is applied**, and "
+      "**`0074`'s \"publish both, not one\" stands and is strengthened to three, each naming the "
+      "pipeline that produces it.** This instance produces "
+      f"**{n(rd['reported_by_this_instance'])} — reading A, D11 nowhere.**")
     A("")
-    A("| Reading | Records examined | Drops |")
-    A("| :--- | ---: | ---: |")
-    A(f"| **no D11 — produced here** | **{n(tr['no_D11'])}** | "
-      f"{n(dc['coverage_records_dropped'])} |")
-    A(f"| D11 on the S2 side only | {n(tr['D11_on_the_S2_side_only'])} | — |")
-    A(f"| D11 on both sides | {n(tr['D11_on_both_sides'])} | — |")
+    A("| Reading | Where D11 is applied | Pipeline | Records examined | Drops |")
+    A("| :--- | :--- | :--- | ---: | ---: |")
+    A(f"| **A — produced here** | nowhere | `src/step8_a_run.py`, build `{lib.BUILD_TAG}` | "
+      f"**{n(tr['reading_A_no_D11'])}** | {n(dc['coverage_records_dropped'])} |")
+    A(f"| B | S2 side only | not this instance's pipeline; recorded at `0083` §1 | "
+      f"{n(tr['reading_B_D11_on_the_S2_side_only'])} | 0 |")
+    A(f"| C | both sides | not this instance's pipeline; measured here as a counterfactual | "
+      f"{n(tr['reading_C_D11_on_both_sides'])} | 0 |")
     A("")
     A(bt("every figure in this table"))
+    A("")
+    A("**Readings B and C drop 0 because reading A drops 0.** The dropped set measured on the "
+      "full record set is **empty**, and B and C examine **subsets of it**, so their drop counts "
+      "are 0 by containment rather than by assumption. **The numerator is 0 three times over, "
+      "which is why nothing downstream reads the denominator** and why this closes.")
     A("")
     A(f"**The gap decomposes exactly.** D11 discards "
       f"**{n(rd['discarded_by_D11_watched_at_ge_tau_pull'])}** in-frame S1/S2 records, of which "
       f"**{n(rd['discarded_by_D11_S2_side'])} are S2-side and {n(rd['discarded_by_D11_S1_side'])} "
       "are S1-side.** So the three readings differ by **where D11 is applied and nowhere else**: "
-      f"{n(tr['no_D11'])} with none, {n(tr['D11_on_the_S2_side_only'])} with D11 on the S2 side, "
-      f"{n(tr['D11_on_both_sides'])} with D11 on both. **The published 94 is exactly the S2-side "
-      "count.** Every other candidate axis is zero and was measured, not assumed:")
+      f"{n(tr['reading_A_no_D11'])} with none, {n(tr['reading_B_D11_on_the_S2_side_only'])} with "
+      f"D11 on the S2 side, {n(tr['reading_C_D11_on_both_sides'])} with D11 on both. **The "
+      "94-record difference `0074` reported is exactly the S2-side count.** Every other candidate "
+      "axis is zero and was measured, not assumed:")
     A("")
     A(f"- definition used here: {rd['definition']}")
     A(f"- undated (`watched_at` null): **{n(rd['undated_watched_at_null'])}**")
@@ -644,16 +666,22 @@ def main():
       "evidence, on D9's coverage rows. **It does not bear on this one**, because this one is not "
       "a computation on the timeline.")
     A("")
-    A("**Is it closable? Yes — on the arithmetic above, and this instance says so rather than "
-      "leaving it as a Step 14 limitation.** The three readings are not three measurements of one "
-      "quantity that disagree; they are **three different quantities, exactly identified**, and "
-      f"the {n(rd['discarded_by_D11_S2_side'])}/{n(rd['discarded_by_D11_S1_side'])} split says "
-      "which is which with nothing left over. **A ruling naming the reading closes it "
-      "completely**; a Step 14 limitation would publish as *\"the arms disagreed and we do not "
-      "know why\"*, which is not the case — **the cause is known and is one sentence long.** "
-      "**This instance does not adopt its own answer**: the reading it produces is stated, the "
-      "reason is given, and the choice remains the Human Lead's. **Reported, not reconciled** "
-      "(`CLAUDE.md`).")
+    A("**Why it closes rather than routing to Step 14.** A Step 14 limitation is an uncertainty "
+      "that **survives into a result**, and this one touches none — the rule it is the "
+      "denominator of **dropped zero records under every reading**. The three readings are not "
+      "three measurements of one quantity that disagree; they are **three different quantities, "
+      "exactly identified**, and the "
+      f"{n(rd['discarded_by_D11_S2_side'])}/{n(rd['discarded_by_D11_S1_side'])} split says which "
+      "is which with nothing left over.")
+    A("")
+    A("**What stays open is NOT this.** Whether D11 applies to the **S1 completion walk** is "
+      "`0068`'s own open item: reading C moves waterfall line 1 to "
+      f"**{n(pos['D11_counterfactual_on_position_3']['completers_with_D11_applied_to_the_S1_walk'])}**"
+      f" because **{n(pos['D11_counterfactual_on_position_3']['pairs_that_stop_being_completers_under_D11'])}"
+      " pairs stop being completers** and "
+      f"**{n(pos['D11_counterfactual_on_position_3']['completers_whose_completion_date_moves_under_D11'])}"
+      " completion dates move** (§5.6). **That question is answered there, not here** — recording "
+      "it in two places is how a ruling gets made twice and diverges.")
     A("")
     A("### 5.2 D2 — negative lag, split THREE ways")
     A("")
@@ -1005,17 +1033,20 @@ def main():
       f"{n(sil['value_APPLY_position_7_post_liveness'])} post-liveness, "
       f"{n(sil['value_DERIV_position_5'])} on DERIV position 5), so the figure is readable without "
       f"opening the table. {btx('these three counts')}.")
-    A("- **`p_at_bound` — NEW at `decisions/0082`**, separating the two meanings of `p = 1.0`. "
-      "Emitted as a **nullable** boolean: null where `p` is null, because an inapplicable value "
-      "and a false one must not look alike. **The split it is meant to expose is reported in §3.1 "
-      "— and one of its two classes is empty, provably**, which is reported there and not "
-      "resolved.")
+    A("- **`p_at_bound` — added at `decisions/0082`, definition restated by `0083` §2.** It marks "
+      "**WHETHER `p` reached its bound, not why.** Emitted as a **nullable** boolean: null where "
+      "`p` is null, because an inapplicable value and a false one must not look alike. **`0082`'s "
+      "two-mechanism definition is superseded** — the clauses are coextensive by construction and "
+      "the `FALSE` class is empty — **and the column is kept anyway**, because Step 10 needs the "
+      "spike labelled and because an emptiness asserted in prose and never emitted cannot be "
+      "checked. §3.1.")
     A("")
     A("**Two names stay dropped and both are free** (`0080` §2, unchanged by `0081` and `0082`): "
       "**`max_episode_in_A`**, read by nothing downstream, and **`f2_in_A_H`**, derivable as "
-      "`max_episode_in_A_H == s2_F`. **`f2_in_A_H` closes the item this instance reported "
-      "unreconciled two runs ago**, where `0077` listed the name and fixed a count that could not "
-      "both be met.")
+      "`max_episode_in_A_H == s2_F`. **`0083` §3b finished this one**: `0077`'s adopted-name "
+      "table still listed `f2_in_A_H` beside a bullet dropping it, and the name is now **marked "
+      "at the point of use rather than deleted**, so `0077`'s spelling ruling — `A_H`, not `AH` — "
+      "survives without the column.")
     A("")
     A("**The names themselves are `decisions/0077` §3's and were not chosen here.** Renamed from "
       "this instance's earlier run: `in_channel_*` → **`discovered_channel_a` / "
@@ -1124,11 +1155,11 @@ def main():
       "the direction it flagged.** The trade `0080` made — dropping `silent_at_tau1` — was "
       "**reversed by `0081` on the ground this instance's own report gave for calling it a real "
       "loss**, and the aggregate is kept beside the column anyway.")
-    A("13. **`p_at_bound`'s two classes are not two classes.** The spec defines them as distinct "
-      "meanings of `p = 1.0`; under the adopted rank form and the set-membership rule they are the "
-      "same event, so the column is `TRUE` exactly where `p = 1.0`. **Emitted as specified, split "
-      "reported, coextensiveness measured and stated** — §3.1. **Reported, not resolved:** "
-      "resolving it is a spec decision about what Step 10 needs, not an implementation choice.")
+    A("13. **~~`p_at_bound`'s two classes are not two classes.~~ CLOSED by `decisions/0083` §2**, "
+      "in the direction this instance reported. The column now marks **whether** `p` reached its "
+      "bound rather than **why**; the `FALSE` class is empty by construction and the `p = 1.0` "
+      "counts publish as **totals** — §3.1. **Nothing measured moves**: the encoding this "
+      "instance emitted under `0082` and the encoding `0083` specifies are the same predicate.")
     A("11. **Column ORDER is specified nowhere.** This table is in construction order; the sorted "
       "name list is in the `.json`. **If the arms differ here it is an order difference, not a "
       "name difference**, and the enumerated set is identical either way.")
@@ -1156,12 +1187,11 @@ def main():
     A("3. **~~`decisions/0034`'s D3′ cleared-share series~~ — CLOSED by `0075`.** The ruled "
       "series is now 99.53% → 97.73% with its population stated; this instance reproduces it — "
       "see §4.3.")
-    A("4. **The 94-record denominator is OPEN and is published unreconciled — but it is "
-      "CLOSABLE, and §5.1 gives the arithmetic that closes it.** The three readings differ only in "
-      "where D11 is applied: D11 discards 167 in-frame S1/S2 records, **94 S2-side and 73 "
-      "S1-side**, so 6,065,704 / 6,065,610 / 6,065,537 are no-D11 / S2-side-only / both-sides, and "
-      "**the published 94 is exactly the S2-side count.** This instance produces the no-D11 "
-      "reading and says why. **The choice is the Human Lead's and is not taken here.**")
+    A("4. **~~The 94-record denominator is open and published unreconciled.~~ CLOSED by "
+      "`decisions/0083` §1**, on the arithmetic this instance published last run and on the same "
+      "arithmetic reproduced here. **It was never a divergence**: the three readings differ only "
+      "in where D11 is applied, all three drop 0, and the item publishes as a **coverage figure "
+      "with its pipeline named** rather than as a Step 14 limitation — §5.1.")
     A("5. **D3′ is not monotone in `W`** between the 91 and 107 arms — see §4.3. Measured, not "
       "resolved.")
     A("6. **`task-sheet.md` Step 8's open D11 question at position 3 is untouched** — applying "
@@ -1172,23 +1202,39 @@ def main():
       "superseded sentence is now struck in `task-sheet.md` and in the `analytics-engineer` file "
       "— **the defect this instance reported on the previous run has been fixed on both "
       "surfaces.**")
-    A("8. **Two residuals in the column-set bullets, on both surfaces, both reported and neither "
-      "load-bearing.** **(a)** The strike-through note is **one revision stale**: `task-sheet.md` "
-      "Step 8 strikes *\"The table is 89 columns\"* as *\"replaced by the ENUMERATION above "
-      "(`0080`, extended to 88 by `0081`)\"*, and the `analytics-engineer` file as *\"replaced by "
-      f"the 88-name ENUMERATION\"* — **but the enumeration immediately above is {at['columns']} "
-      "names**, `0082` having added `p_at_bound` after `0081` set it at 88. **(b)** `0077`'s "
-      "adopted-name table, quoted in both files, **still lists `f2_in_A_H` as an adopted name** — "
-      "while a bullet in the same section drops it as derivable. **The enumeration is the "
-      "operative object in both cases and this instance followed it**, asserting set equality "
-      "against the 89 names; no figure depends on either residual. **Reported, not edited**: "
-      "neither file is this instance's to amend. Both are the shape `0081` §2 fixed — a superseded "
-      "count standing beside its replacement — now surviving inside the withdrawal note and the "
-      "quoted table rather than in live prose.")
-    A("9. **The set-membership records-examined denominator is still unruled**, and the readings "
-      "differ by where D11 is applied rather than by anything about the rule. See §5.1: this "
-      "instance reports the **no-D11** reading with the full decomposition, and states the two "
-      "other readings and the reason for the choice.")
+    A("8. **~~Two residuals in the column-set bullets, on both surfaces.~~ BOTH FIXED by "
+      "`decisions/0083` §3**, and both were reported here on the previous run as not this "
+      f"instance's to amend. **(a)** The strike-through note read *\"the 88-name ENUMERATION\"* "
+      f"for its own replacement while the enumeration above it was {at['columns']} names; it now "
+      "reads 89, with the 88 kept as the intermediate state it was. **(b)** `0077`'s adopted-name "
+      "table listed `f2_in_A_H` among the adopted names while a bullet in the same section "
+      "dropped it as derivable; it is now **marked at the point of use rather than deleted**, so "
+      "`0077`'s **spelling** ruling — which still governs `n_A`, `n_A_H` and "
+      "`max_episode_in_A_H` — is not lost with the column. **Nothing this instance emits "
+      "changes**: the enumeration was the operative object in both cases and was followed by set "
+      "equality against the 89 names.")
+    A("9. **~~The set-membership records-examined denominator is unruled.~~ CLOSED by "
+      "`decisions/0083` §1** — see item 4 and §5.1. `0074`'s *\"publish both, not one\"* is "
+      "**strengthened to three, each naming its pipeline**, and the Step 14 routing is withdrawn.")
+    A("10. **NEW, and it is live: `decisions/0083` §2 did not reach SURFACE 7.** "
+      "`.claude/agent-memory/second-brain/glossary-terms-and-thresholds.md` carries the "
+      "**denominator** correction of `0083` §1 in its own row, and its **`p_at_bound` bullet is "
+      "untouched**: it still states `0082`'s **two-mechanism** definition as current, still "
+      "carries **`0082`'s motive sentence — the one `0083` §2 WITHDREW and registered in "
+      "`WITHDRAWN_PHRASES`** — as a live claim, and still calls 1,246 and 1,230 **totals the two "
+      "classes must sum to**, which is the reading `0083` §2 withdrew. **Reported, not edited: "
+      "`second-brain` writes its own memory and no other agent writes into it.** `0083` §4 "
+      "records surface 7 as reached, and it was — **for one of the two rulings.**")
+    A("11. **The phrase control cannot see item 10, and \"none\" is therefore not a clean result "
+      "on wrapped prose.** `WITHDRAWN_PHRASES` is matched as a **literal substring** against "
+      "Markdown that is **hard-wrapped**, so a withdrawn phrase broken across a line break does "
+      "not match. **Reproduced: normalising whitespace before matching turns up three occurrences "
+      "the literal matcher misses** — one is item 10; the other two are in the two "
+      "`analytics-engineer` files, **inside explicit withdrawal notes**, so they are legitimate "
+      "and would pass either way. **`check_surfaces.py` reports `PHRASE HALF … none` with all "
+      "three invisible to it.** **Not fixed here**: the control is shared by both arms and by the "
+      "Human Lead's diff, and changing it mid-gate changes what the diff is taken over. **The "
+      "one-line change is to match against `re.sub(r\"\\s+\", \" \", text)`.**")
     A("")
     A("---")
     A("")

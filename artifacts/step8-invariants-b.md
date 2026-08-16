@@ -2,9 +2,9 @@
 
 **Step 8 is a GATE and this document is a PROPOSAL.** Nothing here is adopted. This instance does not adopt its own proposal, does not begin Step 8b or Step 9, and records no approval — that is the Human Lead's alone. Zero API calls; every figure is computed from data already on disk.
 
-**This is the CLEAN RERUN ordered by the Human Lead**, on `task-sheet.md` Step 8 as it now stands — the spec as amended through `decisions/0082`. **A previous attempt was terminated after writing its deliverables and before either arm confirmed them; all of its output was discarded and this run was built from the committed state.** Against this arm's last confirmed deliverables the executable changes are `0081` (**`silent_at_tau1` restored**) and `0082` (**`p_at_bound` added**), which together take the enumerated column set from 87 to **89**; everything else — `0078`'s provenance rule, `0079`'s pipeline-produced drop set and inert-position labels, `0080`'s per-invariant coverage populations — is re-executed rather than assumed. This overwrites the previous `-b` deliverables.
+**This is a RERUN ordered by the Human Lead**, on `task-sheet.md` Step 8 as it now stands — the spec as amended through **`decisions/0083`**. **It is a rerun, not an amendment: everything below is rebuilt from the stored data by the same pipeline that writes the table, and no previous output was patched.** Against this arm's last confirmed deliverables (the 2026-08-16 clean run, spec through `0082`) `0083` changes three things and **none of them moves a measured value**: §1 **CLOSES** the set-membership denominator, which `0074` ruling 4 had routed to Step 14 as reported-not-reconciled; §2 **restates `p_at_bound` as marking WHETHER `p` reached its bound, not WHY**, withdrawing `0082`'s two-mechanism definition and its motive; §3 **fixes two spec residuals**, one of which this arm reported itself and could not edit — both are **re-read off disk here rather than assumed fixed** (§17). The column set is unchanged at **89**. Everything else — `0078`'s provenance rule, `0079`'s pipeline-produced drop set and inert-position labels, `0080`'s per-invariant coverage populations — is re-executed rather than carried. This overwrites the previous `-b` deliverables.
 
-**Provenance — `analytics-engineer-b / Step 8 position-5 build of 2026-08-16 (CLEAN RERUN on the spec as amended through decisions/0082; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)`.** Every count, every waterfall figure and every invariant result below was measured on that build (`0078`, `0079` §2). Where a figure is quoted from a ruling, the ruling's own build is named instead: `position-5 build of 2026-08-13 (both arms, the run decisions/0078 labelled)`. **A count without its provenance can be correct when written and wrong when read.**
+**Provenance — `analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r2 (RERUN on the spec as amended through decisions/0083; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)`.** Every count, every waterfall figure and every invariant result below was measured on that build (`0078`, `0079` §2). Where a figure is quoted from a ruling, the ruling's own build is named instead: `position-5 build of 2026-08-13 (both arms, the run decisions/0078 labelled)`. **A count without its provenance can be correct when written and wrong when read.**
 
 ## How to read this report
 
@@ -35,7 +35,7 @@ Counts: **5 pure code checks**, **1 that is a code check by construction and a g
 
 ## 1. outcome states are mutually exclusive and sum to the POST-POSITION-7 row set
 
-*Measured on: b: position-5 build of 2026-08-16.*
+*Measured on: b: position-5 build of 2026-08-16-r2 (spec through 0083).*
 
 **Label: CODE CHECK.** Step 1 Sec 7's partition A = empty / (A non-empty and C_H) / (A non-empty and not C_H) is proved exhaustive and disjoint, so this can only catch an assignment coded wrongly -- e.g. dropping the |A| >= 1 conjunct from Continued, which would put a day-150 starter completing by day 190 in two states at once.
 
@@ -114,7 +114,7 @@ Counts: **5 pure code checks**, **1 that is a code check by construction and a g
 
 ## 2. filter counts decrease monotonically -- CODED AS `>=`, NOT `>`
 
-*Measured on: b: position-5 build of 2026-08-16.*
+*Measured on: b: position-5 build of 2026-08-16-r2 (spec through 0083).*
 
 **Label: CODE CHECK.** filters only remove rows, so this fails only on an implementation that ADDS them -- a duplicating join, most likely.
 
@@ -149,7 +149,7 @@ Counts: **5 pure code checks**, **1 that is a code check by construction and a g
 
 ## 3. distinct episodes never exceed season length (|D| <= L)
 
-*Measured on: b: position-5 build of 2026-08-16.*
+*Measured on: b: position-5 build of 2026-08-16-r2 (spec through 0083).*
 
 **Label: CODE CHECK.** Step 8's own set-membership drop rule already establishes |D| <= L by construction -- an episode whose number is not in the season's listed set E is dropped, so D is a subset of E. It fails only if an implementation filtered by the numeric RANGE 1..F instead of by membership in E.
 
@@ -192,7 +192,7 @@ Counts: **5 pure code checks**, **1 that is a code check by construction and a g
 
 ## 4. A is a subset of A_H on every row
 
-*Measured on: b: position-5 build of 2026-08-16.*
+*Measured on: b: position-5 build of 2026-08-16-r2 (spec through 0083).*
 
 **Label: CODE CHECK.** true by construction since tau1 < tau2 and both sets are prefixes of the same instant-ordered episode list; it can only catch the two sets being computed from different evidence, or tau2 computed below tau1.
 
@@ -224,7 +224,7 @@ Counts: **5 pure code checks**, **1 that is a code check by construction and a g
 
 ## 5. clock start is on or after the S2 finale date, on or after the first-pass S1 completion date, and equals one of those two
 
-*Measured on: b: position-5 build of 2026-08-16.*
+*Measured on: b: position-5 build of 2026-08-16-r2 (spec through 0083).*
 
 **Label: CODE CHECK BY CONSTRUCTION, DATA CHECK AS SPECIFIED.** the first-pass S1 completion date is RECOMPUTED here by a second, independent implementation -- a literal per-pair walk over the records, not the vectorised rank computation the pipeline uses, and not read back from any stored value. Read back rather than recomputed it degrades to a code check and proves nothing, because T0 = max() makes all three clauses true of any correct max().
 
@@ -282,7 +282,7 @@ Counts: **5 pure code checks**, **1 that is a code check by construction and a g
 
 ## 6. abandonment point p is in (0, 1] on every Started-and-left row, null elsewhere
 
-*Measured on: b: position-5 build of 2026-08-16.*
+*Measured on: b: position-5 build of 2026-08-16-r2 (spec through 0083).*
 
 **Label: CODE CHECK.** Started-and-left requires |A| >= 1, so m_H exists; and set membership makes A_H a subset of E2, so the rank numerator |{e in E2 : e <= m_H}| lies in [1, L2]. NO data configuration puts p outside (0, 1]. It fails only on the withdrawn raw-ratio form p = m_H / L2, which can exceed 1 where S2 numbering has a gap.
 
@@ -325,7 +325,7 @@ Form: `p = |{e in E2 : e <= m_H}| / L2, rank form, read on A_H (0034)`.
 
 ## 7. NO ACCOUNT IS DROPPED WHOLESALE BY THE PAIR-LEVEL LIVENESS FILTER -- the count of accounts holding BOTH a live and a not-live pair is > 0
 
-*Measured on: b: position-5 build of 2026-08-16.*
+*Measured on: b: position-5 build of 2026-08-16-r2 (spec through 0083).*
 
 **Label: DATA CHECK.** 703 pairs from 216 accounts is consistent with a pair-level AND an account-level implementation, and nothing in the exclusion set distinguishes them. An account-level filter would make this count exactly ZERO. CLAUDE.md and Step 7: 'One account can be live for one show and not another. Never drop a user wholesale.' This can fail on real data.
 
@@ -384,7 +384,7 @@ Form: `p = |{e in E2 : e <= m_H}| / L2, rank form, read on A_H (0034)`.
 
 ## 8. NO access_denied OR SKIPPED ACCOUNT IS READ AS EMPTY -- no account recorded access_denied, over-tolerance or otherwise skipped contributes a pair scored never-started
 
-*Measured on: b: position-5 build of 2026-08-16.*
+*Measured on: b: position-5 build of 2026-08-16-r2 (spec through 0083).*
 
 **Label: DATA CHECK.** CLAUDE.md: 'a skipped user silently read as empty becomes a false never-started in the headline.' A join that treats an absent history as an empty one produces exactly this, and it FAILS IN THE DIRECTION OF THE RESULT, which is the worst direction available. Rule and evidence at artifacts/step0-access-and-setup.md Sec 7.
 
@@ -457,7 +457,7 @@ Form: `p = |{e in E2 : e <= m_H}| / L2, rank form, read on A_H (0034)`.
 
 ## What the two data checks actually found
 
-*Measured on: b: position-5 build of 2026-08-16.*
+*Measured on: b: position-5 build of 2026-08-16-r2 (spec through 0083).*
 
 **Wholesale dropping.** On APPLY, **215 of the 216 accounts that supply a liveness exclusion also keep at least one live pair**; on DERIV, **72 of 73**. An account-level filter would make both numbers exactly zero, so this discriminates between the two implementations, which the 703-from-216 figure alone does not. The single account whose pairs are all not-live holds exactly one pair in the population, where the two implementations are indistinguishable by construction.
 
@@ -473,18 +473,18 @@ Form: `p = |{e in E2 : e <= m_H}| / L2, rank form, read on A_H (0034)`.
 
 ## Reported and NOT asserted (1) — the set-membership drop rule
 
-*Measured on: b: position-5 build of 2026-08-16.*
+*Measured on: b: position-5 build of 2026-08-16-r2 (spec through 0083).*
 
 A COVERAGE COUNT, NOT AN INVARIANT (decisions/0074 ruling 3). Step 8's own bullet calls it 'an implementation check, not a data check'. Reported, not asserted -- asserting it would add another pass to a report where six of eight cannot fail on data.
 
 - Records examined: **6,065,610**
 - Records dropped: **0**
 
-The denominator has three readings on this data and `0074` ruling 4 publishes two of them unreconciled; all three are tabulated in `artifacts/step8-waterfall-b.md` §6.
+**The denominator is CLOSED** (`0083` §1, amending `0074` ruling 4's routing to Step 14). It has three readings on this data, they are one one-parameter family indexed by where D11 applies, and **every member drops zero records** — so the numerator is 0 under all three and the difference survives into no result. All three publish as a **coverage figure with its pipeline named**, tabulated in `artifacts/step8-waterfall-b.md` §6; this instance publishes reading B.
 
 ## Reported and NOT asserted (2) — the 703 expectation
 
-*Measured on: b: position-5 build of 2026-08-16.*
+*Measured on: b: position-5 build of 2026-08-16-r2 (spec through 0083).*
 
 It is a POPULATION RECONCILIATION, and the spec's own instruction to suspect the population before the implementation is what makes it one.
 

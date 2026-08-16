@@ -209,13 +209,34 @@ def main() -> None:
                                 "records as OPEN when it rules line 1 at 220,107 as published. "
                                 "Close that and the denominator closes with it: READING_C with "
                                 "line 1 = 220,103, or READING_B with line 1 = 220,107"),
-            "reported_unreconciled": ("decisions/0074 ruling 4 publishes 6,065,704 against "
-                                      "6,065,610, both reporting 0 drops, and rules the "
-                                      "difference REPORTED NOT RECONCILED. All three readings "
-                                      "are stated here with their decomposition; this instance "
-                                      "does not reconcile them, and nothing downstream depends "
-                                      "on the denominator"),
+            "STATUS_CLOSED": ("decisions/0083 Sec 1 -- CLOSED, NOT A STEP 14 LIMITATION. "
+                              "decisions/0074 ruling 4 had published 6,065,704 against "
+                              "6,065,610 as REPORTED-NOT-RECONCILED and routed the difference "
+                              "to Step 14; 0083 amends that routing. There was never a conflict "
+                              "to reconcile: the readings are points on a ONE-PARAMETER FAMILY "
+                              "indexed by where D11 applies, the parameter is 0068's own open "
+                              "item, and EVERY MEMBER OF THE FAMILY DROPS ZERO RECORDS. A Step "
+                              "14 limitation is an uncertainty that SURVIVES INTO A RESULT; this "
+                              "one touches none. It publishes as a COVERAGE FIGURE WITH ITS "
+                              "PIPELINE NAMED, and 0074's 'publish both, not one' stands and is "
+                              "STRENGTHENED TO THREE"),
+            "which_reading_each_arm_published": ("decisions/0083 Sec 1 -- instance A published "
+                                                 "READING_A and instance B published READING_B, "
+                                                 "each naming its pipeline. This instance is B "
+                                                 "and publishes READING_B; all three are stated "
+                                                 "here so no reading is later read as a "
+                                                 "divergence"),
+            "what_remains_open_and_it_is_NOT_this": ("whether D11 applies to the S1 COMPLETION "
+                                                     "WALK is decisions/0068's own open item. "
+                                                     "READING_C moves line 1 to 220,103 because "
+                                                     "4 pairs stop being completers and 0 "
+                                                     "completion dates move. Choosing between B "
+                                                     "and C is answered THERE, not here -- "
+                                                     "recording it in two places is how a ruling "
+                                                     "gets made twice and diverges"),
         },
+        "other_candidate_axes_for_the_denominator_difference": _other_axes(
+            r_user, r_rid, r_ts, m12_pre, sn_all=r_number, NULL_TS=NULL_TS),
     }
 
     # per-show drop counts (records, and distinct (season, number) pairs)
@@ -310,6 +331,32 @@ def main() -> None:
     comp_pair = s1_pair[ok]
     comp_ts_ok = comp_ts[ok]
     comp_date_mid = (comp_ts_ok // DAY) * DAY
+
+    # decisions/0083 Sec 1: "READING_C moves line 1 to 220,103, because 4 PAIRS
+    # STOP BEING COMPLETERS and 0 COMPLETION DATES MOVE." Both halves are
+    # MEASURED here rather than quoted -- the count alone does not establish that
+    # no surviving pair's clock start changes, and that is the half that would
+    # move lines 4-7 if it were non-zero.
+    _dq = prov["s1_completion"]["D11_open_question"]
+    c_pairs, c_ts = _dq.pop("_pairs"), _dq.pop("_ts")
+    b_pos = np.searchsorted(comp_pair, c_pairs)
+    b_hit = (b_pos < len(comp_pair)) & (comp_pair[np.clip(b_pos, 0, len(comp_pair) - 1)]
+                                        == c_pairs)
+    _dq["completer_set_comparison_READING_B_vs_READING_C"] = {
+        "READING_B_completers_line_1": int(len(comp_pair)),
+        "READING_C_completers": int(len(c_pairs)),
+        "in_B_and_NOT_in_C_pairs_that_stop_being_completers":
+            int(len(comp_pair) - int(b_hit.sum())),
+        "in_C_and_NOT_in_B": int((~b_hit).sum()),
+        "common_pairs_examined": int(b_hit.sum()),
+        "of_those_whose_first_pass_completion_DATE_MOVES":
+            int(((c_ts[b_hit] // DAY) * DAY
+                 != comp_date_mid[b_pos[b_hit]]).sum()),
+        "why_both_halves": ("decisions/0083 Sec 1 states 4 and 0. The count alone does not "
+                            "establish that no SURVIVING pair's clock start moves, and that is "
+                            "the half that would move waterfall lines 4-7 if it were non-zero. "
+                            "Both are measured on this build"),
+    }
     comp_show_idx = s1_show_idx[ok]
     t0_mid = np.maximum(finale_mid[comp_show_idx], comp_date_mid)
     binds = np.where(finale_mid[comp_show_idx] == comp_date_mid, "tie",
@@ -428,6 +475,44 @@ def main() -> None:
     print(json.dumps(prov, indent=2))
 
 
+def _other_axes(r_user, r_rid, r_ts, m12_pre, sn_all, NULL_TS) -> dict:
+    """decisions/0083 Sec 1 -- the OTHER candidate axes for the 94-record gap.
+
+    0083 records that they "were checked and are all zero, on both arms". A
+    figure quoted from a ruling and not re-measured is exactly the shape this
+    study keeps failing on, so all three are measured here, on this build, with
+    their coverage counts stated. An empty result and a clean result are the same
+    value and only the control knows which it produced (CLAUDE.md).
+    """
+    u12, r12, t12, n12 = r_user[m12_pre], r_rid[m12_pre], r_ts[m12_pre], sn_all[m12_pre]
+    key = u12.astype(np.int64) * (int(r12.max()) + 1) + r12.astype(np.int64)
+    key.sort()
+    dupes = int((key[1:] == key[:-1]).sum()) if len(key) > 1 else 0
+    key_all = (r_user.astype(np.int64) * (int(r_rid.max()) + 1) + r_rid.astype(np.int64))
+    key_all.sort()
+    dupes_all = int((key_all[1:] == key_all[:-1]).sum()) if len(key_all) > 1 else 0
+    return {
+        "why_measured": ("decisions/0083 Sec 1 states these were checked and are all zero. "
+                         "They are RE-MEASURED here rather than quoted: a figure carried from "
+                         "a ruling and not re-run is a figure that can be correct when written "
+                         "and wrong when read"),
+        "records_examined": int(m12_pre.sum()),
+        "records_examined_note": ("the in-frame S1/S2 episode record slice BEFORE D11, which is "
+                                  "READING_A's denominator -- the widest of the three"),
+        "undated_records_in_the_slice": int((t12 == NULL_TS).sum()),
+        "undated_records_in_the_whole_sweep": int((r_ts == NULL_TS).sum()),
+        "exact_duplicate_user_play_id_records_in_the_slice": dupes,
+        "exact_duplicate_user_play_id_records_in_the_whole_sweep": dupes_all,
+        "records_with_a_non_positive_number_in_the_slice": int((n12 <= 0).sum()),
+        "all_three_are_zero": bool((t12 == NULL_TS).sum() == 0 and dupes == 0
+                                   and (n12 <= 0).sum() == 0),
+        "conclusion": ("the difference between the readings has ONE cause and it is fully "
+                       "accounted: where D11 is applied. 167 in-frame S1/S2 records are dated "
+                       "at or after tau_pull and they split 94 on the S2 side and 73 on the S1 "
+                       "side -- see decomposition_of_the_full_D11_effect above"),
+    }
+
+
 def _grouped_running_max(vals: np.ndarray, starts: np.ndarray) -> np.ndarray:
     out = np.empty_like(vals)
     ends = np.r_[starts[1:], len(vals)]
@@ -466,11 +551,17 @@ def _completers_with_d11(r_user, r_ts, r_kind, r_season, r_number, show_idx,
     rf = np.full(len(starts), -1, dtype=np.int64)
     rf[gid[isf]] = rank[isf]
     ok = (rf > 0) & (cnt >= THR1[sidx])
+    need_c = THR1[sidx]
+    comp_rank_c = np.maximum(need_c, rf)
+    comp_pos_c = starts + comp_rank_c - 1
+    comp_ts_c = np.where(ok, st[np.clip(comp_pos_c, 0, len(st) - 1)], -1)
+    pairs_c = pc[starts][ok]
     return {
         "S1_completer_pairs_if_D11_applied_to_S1_too": int(ok.sum()),
         "published_line_1": 220107,
         "note": ("decisions/0068 rules line 1 = 220,107 AS PUBLISHED and records "
                  "whether D11 moves it as a SEPARATE OPEN QUESTION"),
+        "_pairs": pairs_c, "_ts": comp_ts_c[ok],
     }
 
 

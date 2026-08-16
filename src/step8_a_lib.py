@@ -199,10 +199,12 @@ class Arms:
         p = np.full(self.n, np.nan)
         sel = left & (kAH > 0)
         # the RANK NUMERATOR |{e in E2 : e <= m_H}|, kept as its own array because `p_at_bound`
-        # (decisions/0082) is defined on it: TRUE where the numerator SATURATED AT L2, FALSE where
-        # p = 1.0 arises from the pair having left at the final episode. Both quantities are
-        # measured separately below so the two meanings can be reported apart rather than assumed
-        # to coincide.
+        # is defined on it. decisions/0083 SS2 restates the column: it marks WHETHER p reached its
+        # bound, not why -- 0082's two mechanisms are COEXTENSIVE by construction, since set
+        # membership puts m_H in E2 and the numerator is L2 iff m_H = max(E2) = F2. Both clauses
+        # are still computed separately, so the emptiness of the FALSE class is MEASURED at every
+        # arm rather than asserted; it is W-invariant, so a FALSE row anywhere means the rank form
+        # or the set-membership rule has broken.
         p_num = np.full(self.n, -1, dtype=np.int64)
         p_num[sel] = self.cum[self.pair_slot[sel], mH[sel]]
         p[sel] = p_num[sel] / self.L2[sel]

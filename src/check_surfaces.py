@@ -152,31 +152,106 @@ def text_numbers(path):
 STRUCK = re.compile(r"~~|WITHDRAWN|withdrawn|struck|STRUCK|FALSE:|was false", re.I)
 
 
+WS = re.compile(r"\s+")
+
+
+def _normalised_with_linemap(lines):
+    """The file as ONE whitespace-normalised lowercase string, plus char -> line number.
+
+    0084, found by instance A on the 2026-08-16 rerun. The previous implementation tested
+    `phrase in line` ONE LINE AT A TIME, so a withdrawn claim that WRAPS across a line break
+    could never match it -- and this repo hard-wraps its prose at ~100 columns, which makes
+    wrapping the COMMON case for any phrase over about six words.
+
+    It was not hypothetical when it was found: 0082's withdrawn p_at_bound motive was live in
+    second-brain's glossary, broken across a line break, while this half reported `none`. The
+    phrase had been registered hours earlier and adversarially probed -- but probed against
+    task-sheet.md, where it happens to sit on a single line. THE PROBE CONFIRMED THE CONTROL
+    FIRES ON THE UNWRAPPED CASE AND WAS REPORTED AS CONFIRMING THE CONTROL.
+    """
+    out, linemap = [], []
+    for i, line in enumerate(lines, 1):
+        # Collapse runs, drop the edges, then rejoin with EXACTLY one space. Joining
+        # un-stripped lines leaves a double space at every wrap, which is the same blindness
+        # one character narrower -- the self-test below caught precisely that.
+        for ch in WS.sub(" ", line.lower()).strip() + " ":
+            if ch == " " and out and out[-1] == " ":
+                continue                            # never emit two spaces in a row
+            out.append(ch)
+            linemap.append(i)
+    return "".join(out), linemap
+
+
 def scan_phrases():
-    """Every occurrence of a withdrawn claim outside a strikethrough or a withdrawal note."""
+    """Every occurrence of a withdrawn claim outside a strikethrough or a withdrawal note.
+
+    Returns (hits, coverage). CLAUDE.md: an empty result and a clean result are the same value
+    and only the control knows which it produced, so the coverage is returned, never inferred.
+    """
     hits = []
+    cov = dict(files=0, lines=0, json_strings=0, phrases=len(WITHDRAWN_PHRASES), skipped=0)
     for surface, files in SURFACES.items():
         for f in files:
             if file_is_wholly_superseded(f):
+                cov["skipped"] += 1
                 continue
             if f.endswith(".json"):
-                items = [(v, p, v) for v, p in json_strings(f)]
-            else:
-                try:
-                    lines = Path(f).read_text().split("\n")
-                except UnicodeDecodeError:
-                    continue                        # binary: no prose to carry a claim
-                except OSError as e:
-                    READ_FAILURES.append((f, f"scan_phrases: {e}"))
-                    continue
-                items = [(l, f"line {i}", "\n".join(lines[max(0, i - 2):i + 1]))
-                         for i, l in enumerate(lines, 1)]
-            for text, where, ctx in items:
-                low = text.lower()
-                for phrase, why in WITHDRAWN_PHRASES.items():
-                    if phrase in low and not STRUCK.search(ctx):
-                        hits.append((surface, f, where, phrase, why, text.strip()[:110]))
-    return hits
+                # A JSON string leaf is a single unit: it carries its own newlines, so
+                # normalising it is enough and there is no cross-line problem.
+                cov["files"] += 1
+                for v, p in json_strings(f):
+                    cov["json_strings"] += 1
+                    low = WS.sub(" ", v.lower())
+                    for phrase, why in WITHDRAWN_PHRASES.items():
+                        if phrase in low and not STRUCK.search(v):
+                            hits.append((surface, f, p, phrase, why, v.strip()[:110]))
+                continue
+
+            try:
+                lines = Path(f).read_text().split("\n")
+            except UnicodeDecodeError:
+                cov["skipped"] += 1
+                continue                            # binary: no prose to carry a claim
+            except OSError as e:
+                READ_FAILURES.append((f, f"scan_phrases: {e}"))
+                cov["skipped"] += 1
+                continue
+
+            cov["files"] += 1
+            cov["lines"] += len(lines)
+            flat, linemap = _normalised_with_linemap(lines)
+            for phrase, why in WITHDRAWN_PHRASES.items():
+                start = 0
+                while True:
+                    k = flat.find(phrase, start)
+                    if k < 0:
+                        break
+                    start = k + 1
+                    a, b = linemap[k], linemap[min(k + len(phrase), len(linemap) - 1)]
+                    # The marker may sit on either side of a claim that itself spans lines,
+                    # so the window is CONTEXT lines around the whole SPAN, not around a line.
+                    ctx = "\n".join(lines[max(0, a - 1 - CONTEXT):b + CONTEXT])
+                    if not STRUCK.search(ctx):
+                        where = f"line {a}" if a == b else f"lines {a}-{b}"
+                        hits.append((surface, f, where, phrase, why,
+                                     " ".join(lines[a - 1:b]).strip()[:110]))
+    return hits, cov
+
+
+# The wrapped-phrase defect above is exactly the shape CLAUDE.md warns about, so it gets a
+# self-test rather than a promise: a registered phrase, hard-wrapped, MUST be found.
+def _selftest_phrase_matcher():
+    probe = next(iter(WITHDRAWN_PHRASES))
+    words = probe.split()
+    assert len(words) >= 2, "phrase self-test needs a multi-word phrase"
+    wrapped = ["   " + " ".join(words[:1]), "   " + " ".join(words[1:]) + " tail"]
+    flat, _ = _normalised_with_linemap(wrapped)
+    assert probe in flat, (
+        f"PHRASE MATCHER IS BLIND TO WRAPPING: {probe!r} not found across a line break. "
+        "This is 0084's defect reappearing.")
+
+
+_selftest_phrase_matcher()
 
 
 def scan():
@@ -241,7 +316,7 @@ def scan():
 
 if __name__ == "__main__":
     neg, pos, pos_in, allowed, legit_seen = scan()
-    phrase_hits = scan_phrases()
+    phrase_hits, phrase_cov = scan_phrases()
     n_files = sum(len(v) for v in SURFACES.values())
     print(f"eight surfaces, {n_files} files, numeric matching at tol {TOL} "
           f"-- 4-dp and 6-dp forms both matched\n")
@@ -267,6 +342,15 @@ if __name__ == "__main__":
         print()
 
     print("PHRASE HALF -- withdrawn CLAIMS, which the numeric halves cannot see (0061):")
+    # 0084: the coverage prints ALWAYS, hit or no hit. This half reported `none` while blind
+    # to every phrase that wrapped across a line break, and `none` with no coverage beside it
+    # is indistinguishable from `looked nowhere`. Matching is whitespace-normalised.
+    print(f"  coverage: {phrase_cov['phrases']} registered phrases x {phrase_cov['files']} files "
+          f"({phrase_cov['lines']:,} lines, {phrase_cov['json_strings']:,} JSON strings); "
+          f"{phrase_cov['skipped']} skipped. Matching is WHITESPACE-NORMALISED, so a claim "
+          f"wrapped across lines is seen (0084).")
+    assert phrase_cov["files"] > 0 and phrase_cov["lines"] > 0, \
+        "PHRASE HALF LOOKED NOWHERE -- an empty result reported as a clean one"
     if not phrase_hits:
         print("  none\n")
     for surface, f, where, phrase, why, text in phrase_hits:

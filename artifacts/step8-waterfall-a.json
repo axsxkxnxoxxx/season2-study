@@ -14,17 +14,17 @@
     "why_this_exists": "decisions/0079 (B6), extending decisions/0078: every count, every invariant result and every waterfall figure names the pipeline it was measured on, not only its population. Partial application is worse than none.",
     "pipeline": "src/step8_a_run.py, one run, stages 1 -> 6 in order",
     "stage_files_sha256_12": {
-      "step8_a_lib.py": "cf120b83a386",
-      "step8_a_1_scan.py": "a842b073640e",
+      "step8_a_lib.py": "14e28cc5d4fb",
+      "step8_a_1_scan.py": "a01904dba997",
       "step8_a_2_positions.py": "9f08ac985c8c",
-      "step8_a_3_table.py": "5b04a7b40ef9",
+      "step8_a_3_table.py": "840d7e73cb14",
       "step8_a_4_arms.py": "3d533b88a113",
       "step8_a_4b_slugs.py": "4495f8069adb",
-      "step8_a_5_diagnostics.py": "3964a9195191",
-      "step8_a_6_emit.py": "44428c39536c",
+      "step8_a_5_diagnostics.py": "8e3c61ba7e15",
+      "step8_a_6_emit.py": "ee39aaab9cf8",
       "step8_a_run.py": "4e6e8a12570a"
     },
-    "git_head_short": "ec340dd",
+    "git_head_short": "0af0d92",
     "git_worktree_dirty_at_launch": true,
     "parameters": {
       "W_days": 108,
@@ -202,17 +202,17 @@
       "why_this_exists": "decisions/0079 (B6), extending decisions/0078: every count, every invariant result and every waterfall figure names the pipeline it was measured on, not only its population. Partial application is worse than none.",
       "pipeline": "src/step8_a_run.py, one run, stages 1 -> 6 in order",
       "stage_files_sha256_12": {
-        "step8_a_lib.py": "cf120b83a386",
-        "step8_a_1_scan.py": "a842b073640e",
+        "step8_a_lib.py": "14e28cc5d4fb",
+        "step8_a_1_scan.py": "a01904dba997",
         "step8_a_2_positions.py": "9f08ac985c8c",
-        "step8_a_3_table.py": "5b04a7b40ef9",
+        "step8_a_3_table.py": "840d7e73cb14",
         "step8_a_4_arms.py": "3d533b88a113",
         "step8_a_4b_slugs.py": "4495f8069adb",
-        "step8_a_5_diagnostics.py": "3964a9195191",
-        "step8_a_6_emit.py": "44428c39536c",
+        "step8_a_5_diagnostics.py": "8e3c61ba7e15",
+        "step8_a_6_emit.py": "ee39aaab9cf8",
         "step8_a_run.py": "4e6e8a12570a"
       },
-      "git_head_short": "ec340dd",
+      "git_head_short": "0af0d92",
       "git_worktree_dirty_at_launch": true,
       "parameters": {
         "W_days": 108,
@@ -1142,17 +1142,17 @@
       "why_this_exists": "decisions/0079 (B6), extending decisions/0078: every count, every invariant result and every waterfall figure names the pipeline it was measured on, not only its population. Partial application is worse than none.",
       "pipeline": "src/step8_a_run.py, one run, stages 1 -> 6 in order",
       "stage_files_sha256_12": {
-        "step8_a_lib.py": "cf120b83a386",
-        "step8_a_1_scan.py": "a842b073640e",
+        "step8_a_lib.py": "14e28cc5d4fb",
+        "step8_a_1_scan.py": "a01904dba997",
         "step8_a_2_positions.py": "9f08ac985c8c",
-        "step8_a_3_table.py": "5b04a7b40ef9",
+        "step8_a_3_table.py": "840d7e73cb14",
         "step8_a_4_arms.py": "3d533b88a113",
         "step8_a_4b_slugs.py": "4495f8069adb",
-        "step8_a_5_diagnostics.py": "3964a9195191",
-        "step8_a_6_emit.py": "44428c39536c",
+        "step8_a_5_diagnostics.py": "8e3c61ba7e15",
+        "step8_a_6_emit.py": "ee39aaab9cf8",
         "step8_a_run.py": "4e6e8a12570a"
       },
-      "git_head_short": "ec340dd",
+      "git_head_short": "0af0d92",
       "git_worktree_dirty_at_launch": true,
       "parameters": {
         "W_days": 108,
@@ -1189,7 +1189,7 @@
       "status": "A COVERAGE COUNT, NOT AN INVARIANT (Human Lead ruling, decisions/0074 ruling 3). Step 8's own bullet already calls it 'an implementation check, not a data check'. Records examined and records dropped are REPORTED; nothing is asserted. Asserting it would add another pass to a report where five of eight checks cannot fail.",
       "coverage_records_examined": 6065704,
       "coverage_records_dropped": 0,
-      "records_examined_denominator_reported_unreconciled": {
+      "records_examined_denominator_CLOSED_by_0083": {
         "reported_by_this_instance": 6065704,
         "reading_produced": "NO D11 -- every dated-or-undated in-frame S1/S2 episode record the set-membership rule examines",
         "definition": "episode records (kind == episode) whose show is in the Step 2 frame and whose season is 1 or 2, counted BEFORE the set-membership drop rule and BEFORE D11",
@@ -1201,13 +1201,18 @@
         "exact_duplicate_user_play_id_records": 0,
         "records_with_number_le_0": 0,
         "three_readings": {
-          "no_D11": 6065704,
-          "D11_on_the_S2_side_only": 6065610,
-          "D11_on_both_sides": 6065537,
-          "gap_no_D11_minus_S2_side_only": 94,
-          "gap_no_D11_minus_both_sides": 167
+          "reading_A_no_D11": 6065704,
+          "reading_B_D11_on_the_S2_side_only": 6065610,
+          "reading_C_D11_on_both_sides": 6065537,
+          "gap_A_minus_B": 94,
+          "gap_A_minus_C": 167,
+          "pipelines": {
+            "reading_A_no_D11": "the pipeline this instance runs (src/step8_a_run.py). D11 is applied to every computation on the timeline and NOT to this coverage count, because the set-membership rule reads only `number in E` and never reads watched_at",
+            "reading_B_D11_on_the_S2_side_only": "D11 applied on the S2 side, the S1 side carried at 0068's published line 1",
+            "reading_C_D11_on_both_sides": "D11 applied on both sides; line 1 moves to 220,103, which is 0068's own open item and is answered there, not here"
+          }
         },
-        "note": "the 94-record gap decomposes exactly: D11 discards 167 in-frame S1/S2 records, of which the S2 side is 94 and the S1 side is 73. So 6,065,704 is the no-D11 reading, 6,065,610 is D11 applied on the S2 side only, and 6,065,537 is D11 applied on both. The other candidate axes are all zero: undated records, exact duplicate (user, play id) records, and records with a non-positive number. Reported with the decomposition; the choice of reading is stated at the point of use and the divergence itself is not reconciled here.",
+        "note": "CLOSED by decisions/0083 SS1, and it was never a divergence. The readings are one family indexed by WHERE D11 IS APPLIED: D11 discards 167 in-frame S1/S2 records, 94 on the S2 side and 73 on the S1 side, and that split is the whole of the difference. 6,065,704 is the no-D11 reading, 6,065,610 is D11 on the S2 side only, 6,065,537 is D11 on both. EVERY READING DROPS ZERO RECORDS, so the numerator is 0 three times over and nothing downstream reads the denominator. The other candidate axes are all zero and were measured, not assumed: undated records, exact duplicate (user, play id) records, and records with a non-positive number. This publishes as a COVERAGE FIGURE with its pipeline named, not as an open question.",
         "build": "a/2026-08-16"
       },
       "per_show": {
@@ -1225,7 +1230,7 @@
         "share_of_never_started_at_position_5": 0.0,
         "denominator_post_liveness_never_started_APPLY": 32769,
         "share_of_never_started_post_liveness": 0.0,
-        "direction_on_the_headline": "would INFLATE never started (Step 1 SS3.4); the measured count is 0, on 6,065,704 records examined",
+        "direction_on_the_headline": "would INFLATE never started (Step 1 SS3.4); the measured count is 0, and it is 0 under all three readings of the records-examined denominator (decisions/0083 SS1)",
         "denominator_note": "position 5 is what entered the liveness filter (0070 ruling 6); the difference between the two denominators is exactly the 604 never-started liveness exclusions",
         "build": "a/2026-08-16"
       },
@@ -1858,20 +1863,21 @@
         "form": "rank: |{e in E2 : e <= max(A_H)}| / L2; the raw ratio max(A_H)/L2 is withdrawn and must not be reinstated",
         "p_equals_1_residual_APPLY_position_7": 1230,
         "p_equals_1_residual_APPLY_position_5": 1246,
-        "p_at_bound_split": {
+        "p_at_bound_totals_and_coextensivity": {
           "APPLY_position_5": {
             "total_p_equals_1": 1246,
-            "at_the_bound_rank_numerator_saturated_at_L2": 1246,
-            "at_the_final_episode_not_at_the_bound": 0,
-            "expected_total_by_0082": 1246
+            "p_at_bound_TRUE": 1246,
+            "p_equals_1_but_p_at_bound_FALSE": 0,
+            "expected_total_by_0083": 1246
           },
           "APPLY_position_7_post_liveness": {
             "total_p_equals_1": 1230,
-            "at_the_bound_rank_numerator_saturated_at_L2": 1230,
-            "at_the_final_episode_not_at_the_bound": 0,
-            "expected_total_by_0082": 1230
+            "p_at_bound_TRUE": 1230,
+            "p_equals_1_but_p_at_bound_FALSE": 0,
+            "expected_total_by_0083": 1230
           },
-          "classes_are_coextensive_REPORTED_NOT_RESOLVED": "the two meanings decisions/0082 names -- rank numerator saturated at L2, and left at the final episode -- are the SAME EVENT under the set-membership rule: A_H subset E2 gives m_H in E2, so |{e in E2 : e <= m_H}| = L2 iff m_H = max(E2) = F2. One class therefore holds every p = 1.0 row and the other holds none. Cross-tabulated in outcomes.json rather than assumed.",
+          "these_are_TOTALS_not_a_split": "decisions/0083 SS2. 1,246 and 1,230 are correct counts and both arms reproduce them, but they are ONE class counted twice, not two classes summed. Using them as evidence that the column separates anything is a WITHDRAWN ARGUMENT (CLAUDE.md, third blindness class); using them as p = 1.0 TOTALS is correct.",
+          "clauses_are_coextensive_BY_CONSTRUCTION": "the two clauses decisions/0082 named -- rank numerator saturated at L2, and left at the final episode -- are the SAME EVENT under the set-membership rule: A_H subset E2 gives m_H in E2, so |{e in E2 : e <= m_H}| = L2 iff m_H = max(E2) = F2. The FALSE class is therefore EMPTY, which is measured in the cross-tab below rather than asserted, and it is W-invariant, so a FALSE row at any Step 13 arm means the rank form or the set-membership rule has broken.",
           "cross_tab_APPLY_position_5": {
             "saturated_and_final_episode": 1246,
             "saturated_not_final_episode": 0,
@@ -2185,10 +2191,10 @@
     },
     "columns_restored_or_added_since_0080": {
       "silent_at_tau1": "RESTORED by decisions/0081. It is NOT recoverable from `live` and `outcome` on Continued rows, because `live` is true for every Continued pair regardless of silence -- the rule's second conjunct is NOT Continued. Without the column the count of Continued-and-silent pairs, which is the SIZE OF THE OUTCOME-CONDITIONING and what closed the rule objection at 0063 SS1, could not be recomputed from this table. Its input living in Step 7's working files is the same shape as 0079's drop set. The aggregate is emitted below as well, so the figure is available without reading the table.",
-      "p_at_bound": "ADDED by decisions/0082, to separate the two meanings of p = 1.0."
+      "p_at_bound": "ADDED by decisions/0082 and RESTATED by 0083 SS2: it marks WHETHER p reached its bound, not why. KEPT because Step 10 publishes the abandonment distribution off abandonment_point_p and needs the spike LABELLED, and because an emptiness asserted in prose and never emitted cannot be checked."
     },
     "column_naming_ruling": "decisions/0077: names are FIXED, not left to the instance. Its COUNT of 89 is superseded by the enumeration of decisions/0080, as extended by 0081 and 0082. Renamed here from this instance's previous run: in_channel_* -> discovered_channel_*, in_population_APPLY/DERIV -> in_apply/in_deriv, tau1_utc/tau2_utc -> tau1/tau2, T0_utc_date -> t0_date, T0_binding_term -> t0_binding_term, s1_completion_date_utc -> s1_completion_date, n_A_distinct_s2_before_tau1 -> n_A, n_AH_distinct_s2_before_tau2 -> n_A_H, max_episode_in_AH -> max_episode_in_A_H, n_rec_s{1,2}_* -> action_count_s{1,2}_*. ADDED: s1_completion_used_a_post_cutoff_record, the other instance's extra column, which 0077 keeps.",
-    "column_count_note": "CLOSED by decisions/0080, as extended by 0081 and 0082. 0077's adopted-name table listed `f2_in_A_H` and its count fixed 89, which could not both be satisfied; the enumeration drops `f2_in_A_H` as derivable (`max_episode_in_A_H == s2_F`) and this instance matches the list by set equality. The count is 89 again after 0082, but it is a DIFFERENT 89: `f2_in_A_H` out, `silent_at_tau1` and `p_at_bound` in. The task-sheet strike-through beside the enumeration still reads 'replaced by the 88-name ENUMERATION' after 0082 made it 89; the enumeration itself is 89 and was followed. Reported, not edited.",
+    "column_count_note": "CLOSED by decisions/0080, as extended by 0081 and 0082. 0077's adopted-name table listed `f2_in_A_H` and its count fixed 89, which could not both be satisfied; the enumeration drops `f2_in_A_H` as derivable (`max_episode_in_A_H == s2_F`) and this instance matches the list by set equality. The count is 89 again after 0082, but it is a DIFFERENT 89: `f2_in_A_H` out, `silent_at_tau1` and `p_at_bound` in. BOTH RESIDUALS THIS INSTANCE REPORTED LAST RUN ARE NOW FIXED ON DISK by 0083 SS3 -- the strike-through beside the enumeration read 'the 88-name ENUMERATION' for its own 89-name replacement, and 0077's adopted-name table still listed f2_in_A_H among the adopted names. Both were reported here, neither was this instance's to amend, and both were corrected at the point of use rather than deleted, so 0077's SPELLING ruling survives.",
     "surviving_aggregate_of_the_silent_at_tau1_column": {
       "what": "Continued pairs that are SILENT at tau1 -- the size of the outcome-conditioning in the liveness rule, the figure that closed the rule objection at decisions/0063 SS1 and publishes as a Step 14 limitation",
       "value_APPLY_position_5": 652,
@@ -2198,31 +2204,35 @@
       "build": "a/2026-08-16",
       "why_it_is_here": "0080 dropped the column and stated the loss rather than burying it; 0081 RESTORED the column for exactly that reason. The aggregate is kept alongside so the figure is readable without the table, which is what 0081 SS3 records this instance as having done under 0080."
     },
-    "p_at_bound_the_split_of_the_p_equals_1_rows": {
-      "ruling": "decisions/0082. p = 1.0 carries two meanings computed differently: the pair LEFT AT THE FINAL EPISODE, or THE ABANDONMENT POINT IS AT ITS BOUND -- the rank numerator having saturated at L2. p_at_bound is TRUE where p = 1.0 arises from the bound and FALSE where it arises from the final episode, null where p is null. Step 10 publishes the abandonment distribution off abandonment_point_p, so the two must be separable in it.",
+    "p_at_bound_whether_not_why_and_the_p_equals_1_totals": {
+      "ruling": "decisions/0083 SS2, restating 0082. p_at_bound marks WHETHER p reached its bound, NOT WHY: TRUE where p is at its bound, null where p is null. 0082's definition by two MECHANISMS -- TRUE where the rank numerator saturated at L2, FALSE where the pair left at the final episode -- is SUPERSEDED: the clauses are coextensive by construction and the FALSE class is empty. The column is KEPT because Step 10 publishes the abandonment distribution off abandonment_point_p and needs the spike LABELLED, and because an emptiness asserted in prose and never emitted cannot be checked.",
+      "the_totals_are_TOTALS_not_a_sum_of_two_classes": "0083 SS2 and CLAUDE.md's third blindness class. 1,246 and 1,230 remain TRUE and both arms reproduce them, but they are ONE class counted twice. Citing them as evidence that this column SEPARATES anything is a withdrawn argument; citing them as p = 1.0 TOTALS is correct, and that is how they are reported here.",
       "APPLY_position_5": {
-        "p_equals_1_rows": 1246,
-        "class_rank_numerator_saturated_at_L2": 1246,
-        "class_left_at_the_final_episode": 1246,
-        "in_both_classes": 1246,
-        "in_neither_class": 0,
-        "expected_by_0082": 1246
+        "p_equals_1_rows_TOTAL": 1246,
+        "rows_with_rank_numerator_at_L2": 1246,
+        "rows_with_m_H_equal_to_F2": 1246,
+        "rows_satisfying_both_clauses": 1246,
+        "rows_satisfying_neither_clause": 0,
+        "p_at_bound_FALSE_rows": 0,
+        "expected_total_by_0083": 1246
       },
       "APPLY_position_7_post_liveness": {
-        "p_equals_1_rows": 1230,
-        "class_rank_numerator_saturated_at_L2": 1230,
-        "class_left_at_the_final_episode": 1230,
-        "in_both_classes": 1230,
-        "in_neither_class": 0,
-        "expected_by_0082": 1230
+        "p_equals_1_rows_TOTAL": 1230,
+        "rows_with_rank_numerator_at_L2": 1230,
+        "rows_with_m_H_equal_to_F2": 1230,
+        "rows_satisfying_both_clauses": 1230,
+        "rows_satisfying_neither_clause": 0,
+        "p_at_bound_FALSE_rows": 0,
+        "expected_total_by_0083": 1230
       },
       "DERIV_position_5": {
-        "p_equals_1_rows": 1072,
-        "class_rank_numerator_saturated_at_L2": 1072,
-        "class_left_at_the_final_episode": 1072
+        "p_equals_1_rows_TOTAL": 1072,
+        "rows_with_rank_numerator_at_L2": 1072,
+        "rows_with_m_H_equal_to_F2": 1072
       },
-      "column_encoding": "p_at_bound = TRUE iff the rank numerator equals L2, on rows where p is defined; null elsewhere. FALSE therefore means 'the abandonment point is not at its bound', which on p < 1.0 rows is true and on p = 1.0 rows is the final-episode class.",
-      "REPORTED_NOT_RESOLVED": "THE TWO CLASSES ARE COEXTENSIVE AND THE COLUMN CANNOT SEPARATE THEM. Under the set-membership rule A_H is a subset of E2, so m_H is a member of E2 and the rank numerator |{e in E2 : e <= m_H}| equals L2 IF AND ONLY IF m_H = max(E2) = F2 -- which is 'left at the final episode'. The two meanings 0082 names are the same event, provably, so one class holds every p = 1.0 row and the other holds none. Measured, not assumed: the cross-tab above reports both classes and the in-both / in-neither cells. On this frame it is stronger still -- every show has E2 = {1..L2} with no numbering gap, so the rank form reduces to m_H / L2 identically. REPORTED, NOT RECONCILED.",
+      "column_encoding": "p_at_bound = TRUE iff p reached its bound -- equivalently, iff the rank numerator equals L2 -- on rows where p is defined; null elsewhere. FALSE means p is defined and below its bound.",
+      "coextensivity_PROVED_AND_MEASURED": "Under the set-membership rule A_H is a subset of E2, so m_H is a member of E2 and the rank numerator |{e in E2 : e <= m_H}| equals L2 IF AND ONLY IF m_H = max(E2) = F2 -- which is 'left at the final episode'. Neither clause can hold without the other, so on p = 1.0 rows the class 0082 called FALSE is EMPTY. Measured here, not assumed: the both / neither cells above are the measurement, and they are 1,246 and 0 at position 5. This is a CONSTRUCTION argument and is W-invariant, so the FALSE class stays empty across Step 13's arms; a FALSE row anywhere means the rank form or the set-membership rule has broken, which is what the column is now worth catching.",
+      "a_SECOND_and_DIFFERENT_fact_measured_on_this_frame": "0 of the frame's shows have any S2 numbering gap, so E2 = {1..L2} everywhere and the rank form reduces to m_H / L2. This one is DATA and could be false on another frame; the coextensivity above would still hold. Stated separately so a construction argument is not read as a frame accident (0083 SS2).",
       "frame_evidence": {
         "shows_where_max_E2_differs_from_L2": 0,
         "shows_in_frame": 1138,
@@ -2267,31 +2277,35 @@
     "build": "a/2026-08-16",
     "why_it_is_here": "0080 dropped the column and stated the loss rather than burying it; 0081 RESTORED the column for exactly that reason. The aggregate is kept alongside so the figure is readable without the table, which is what 0081 SS3 records this instance as having done under 0080."
   },
-  "p_at_bound_the_split_of_the_p_equals_1_rows": {
-    "ruling": "decisions/0082. p = 1.0 carries two meanings computed differently: the pair LEFT AT THE FINAL EPISODE, or THE ABANDONMENT POINT IS AT ITS BOUND -- the rank numerator having saturated at L2. p_at_bound is TRUE where p = 1.0 arises from the bound and FALSE where it arises from the final episode, null where p is null. Step 10 publishes the abandonment distribution off abandonment_point_p, so the two must be separable in it.",
+  "p_at_bound_whether_not_why_and_the_p_equals_1_totals": {
+    "ruling": "decisions/0083 SS2, restating 0082. p_at_bound marks WHETHER p reached its bound, NOT WHY: TRUE where p is at its bound, null where p is null. 0082's definition by two MECHANISMS -- TRUE where the rank numerator saturated at L2, FALSE where the pair left at the final episode -- is SUPERSEDED: the clauses are coextensive by construction and the FALSE class is empty. The column is KEPT because Step 10 publishes the abandonment distribution off abandonment_point_p and needs the spike LABELLED, and because an emptiness asserted in prose and never emitted cannot be checked.",
+    "the_totals_are_TOTALS_not_a_sum_of_two_classes": "0083 SS2 and CLAUDE.md's third blindness class. 1,246 and 1,230 remain TRUE and both arms reproduce them, but they are ONE class counted twice. Citing them as evidence that this column SEPARATES anything is a withdrawn argument; citing them as p = 1.0 TOTALS is correct, and that is how they are reported here.",
     "APPLY_position_5": {
-      "p_equals_1_rows": 1246,
-      "class_rank_numerator_saturated_at_L2": 1246,
-      "class_left_at_the_final_episode": 1246,
-      "in_both_classes": 1246,
-      "in_neither_class": 0,
-      "expected_by_0082": 1246
+      "p_equals_1_rows_TOTAL": 1246,
+      "rows_with_rank_numerator_at_L2": 1246,
+      "rows_with_m_H_equal_to_F2": 1246,
+      "rows_satisfying_both_clauses": 1246,
+      "rows_satisfying_neither_clause": 0,
+      "p_at_bound_FALSE_rows": 0,
+      "expected_total_by_0083": 1246
     },
     "APPLY_position_7_post_liveness": {
-      "p_equals_1_rows": 1230,
-      "class_rank_numerator_saturated_at_L2": 1230,
-      "class_left_at_the_final_episode": 1230,
-      "in_both_classes": 1230,
-      "in_neither_class": 0,
-      "expected_by_0082": 1230
+      "p_equals_1_rows_TOTAL": 1230,
+      "rows_with_rank_numerator_at_L2": 1230,
+      "rows_with_m_H_equal_to_F2": 1230,
+      "rows_satisfying_both_clauses": 1230,
+      "rows_satisfying_neither_clause": 0,
+      "p_at_bound_FALSE_rows": 0,
+      "expected_total_by_0083": 1230
     },
     "DERIV_position_5": {
-      "p_equals_1_rows": 1072,
-      "class_rank_numerator_saturated_at_L2": 1072,
-      "class_left_at_the_final_episode": 1072
+      "p_equals_1_rows_TOTAL": 1072,
+      "rows_with_rank_numerator_at_L2": 1072,
+      "rows_with_m_H_equal_to_F2": 1072
     },
-    "column_encoding": "p_at_bound = TRUE iff the rank numerator equals L2, on rows where p is defined; null elsewhere. FALSE therefore means 'the abandonment point is not at its bound', which on p < 1.0 rows is true and on p = 1.0 rows is the final-episode class.",
-    "REPORTED_NOT_RESOLVED": "THE TWO CLASSES ARE COEXTENSIVE AND THE COLUMN CANNOT SEPARATE THEM. Under the set-membership rule A_H is a subset of E2, so m_H is a member of E2 and the rank numerator |{e in E2 : e <= m_H}| equals L2 IF AND ONLY IF m_H = max(E2) = F2 -- which is 'left at the final episode'. The two meanings 0082 names are the same event, provably, so one class holds every p = 1.0 row and the other holds none. Measured, not assumed: the cross-tab above reports both classes and the in-both / in-neither cells. On this frame it is stronger still -- every show has E2 = {1..L2} with no numbering gap, so the rank form reduces to m_H / L2 identically. REPORTED, NOT RECONCILED.",
+    "column_encoding": "p_at_bound = TRUE iff p reached its bound -- equivalently, iff the rank numerator equals L2 -- on rows where p is defined; null elsewhere. FALSE means p is defined and below its bound.",
+    "coextensivity_PROVED_AND_MEASURED": "Under the set-membership rule A_H is a subset of E2, so m_H is a member of E2 and the rank numerator |{e in E2 : e <= m_H}| equals L2 IF AND ONLY IF m_H = max(E2) = F2 -- which is 'left at the final episode'. Neither clause can hold without the other, so on p = 1.0 rows the class 0082 called FALSE is EMPTY. Measured here, not assumed: the both / neither cells above are the measurement, and they are 1,246 and 0 at position 5. This is a CONSTRUCTION argument and is W-invariant, so the FALSE class stays empty across Step 13's arms; a FALSE row anywhere means the rank form or the set-membership rule has broken, which is what the column is now worth catching.",
+    "a_SECOND_and_DIFFERENT_fact_measured_on_this_frame": "0 of the frame's shows have any S2 numbering gap, so E2 = {1..L2} everywhere and the rank form reduces to m_H / L2. This one is DATA and could be false on another frame; the coextensivity above would still hold. Stated separately so a construction argument is not read as a frame accident (0083 SS2).",
     "frame_evidence": {
       "shows_where_max_E2_differs_from_L2": 0,
       "shows_in_frame": 1138,
@@ -2313,17 +2327,17 @@
       "why_this_exists": "decisions/0079 (B6), extending decisions/0078: every count, every invariant result and every waterfall figure names the pipeline it was measured on, not only its population. Partial application is worse than none.",
       "pipeline": "src/step8_a_run.py, one run, stages 1 -> 6 in order",
       "stage_files_sha256_12": {
-        "step8_a_lib.py": "cf120b83a386",
-        "step8_a_1_scan.py": "a842b073640e",
+        "step8_a_lib.py": "14e28cc5d4fb",
+        "step8_a_1_scan.py": "a01904dba997",
         "step8_a_2_positions.py": "9f08ac985c8c",
-        "step8_a_3_table.py": "5b04a7b40ef9",
+        "step8_a_3_table.py": "840d7e73cb14",
         "step8_a_4_arms.py": "3d533b88a113",
         "step8_a_4b_slugs.py": "4495f8069adb",
-        "step8_a_5_diagnostics.py": "3964a9195191",
-        "step8_a_6_emit.py": "44428c39536c",
+        "step8_a_5_diagnostics.py": "8e3c61ba7e15",
+        "step8_a_6_emit.py": "ee39aaab9cf8",
         "step8_a_run.py": "4e6e8a12570a"
       },
-      "git_head_short": "ec340dd",
+      "git_head_short": "0af0d92",
       "git_worktree_dirty_at_launch": true,
       "parameters": {
         "W_days": 108,
@@ -2371,13 +2385,18 @@
       "exact_duplicate_user_play_id_records": 0,
       "records_with_number_le_0": 0,
       "three_readings": {
-        "no_D11": 6065704,
-        "D11_on_the_S2_side_only": 6065610,
-        "D11_on_both_sides": 6065537,
-        "gap_no_D11_minus_S2_side_only": 94,
-        "gap_no_D11_minus_both_sides": 167
+        "reading_A_no_D11": 6065704,
+        "reading_B_D11_on_the_S2_side_only": 6065610,
+        "reading_C_D11_on_both_sides": 6065537,
+        "gap_A_minus_B": 94,
+        "gap_A_minus_C": 167,
+        "pipelines": {
+          "reading_A_no_D11": "the pipeline this instance runs (src/step8_a_run.py). D11 is applied to every computation on the timeline and NOT to this coverage count, because the set-membership rule reads only `number in E` and never reads watched_at",
+          "reading_B_D11_on_the_S2_side_only": "D11 applied on the S2 side, the S1 side carried at 0068's published line 1",
+          "reading_C_D11_on_both_sides": "D11 applied on both sides; line 1 moves to 220,103, which is 0068's own open item and is answered there, not here"
+        }
       },
-      "note": "the 94-record gap decomposes exactly: D11 discards 167 in-frame S1/S2 records, of which the S2 side is 94 and the S1 side is 73. So 6,065,704 is the no-D11 reading, 6,065,610 is D11 applied on the S2 side only, and 6,065,537 is D11 applied on both. The other candidate axes are all zero: undated records, exact duplicate (user, play id) records, and records with a non-positive number. Reported with the decomposition; the choice of reading is stated at the point of use and the divergence itself is not reconciled here."
+      "note": "CLOSED by decisions/0083 SS1, and it was never a divergence. The readings are one family indexed by WHERE D11 IS APPLIED: D11 discards 167 in-frame S1/S2 records, 94 on the S2 side and 73 on the S1 side, and that split is the whole of the difference. 6,065,704 is the no-D11 reading, 6,065,610 is D11 on the S2 side only, 6,065,537 is D11 on both. EVERY READING DROPS ZERO RECORDS, so the numerator is 0 three times over and nothing downstream reads the denominator. The other candidate axes are all zero and were measured, not assumed: undated records, exact duplicate (user, play id) records, and records with a non-positive number. This publishes as a COVERAGE FIGURE with its pipeline named, not as an open question."
     },
     "in_frame_S1S2_records_undated": 0,
     "in_frame_S1S2_records_discarded_by_D11": 167,

@@ -10,9 +10,12 @@ What this stage produces, and the rule each thing obeys:
     counted, per show and per pair. Never a numeric range 1..F. It is a COVERAGE COUNT and NOT
     an invariant (Human Lead ruling, decisions/0074): records examined and records dropped are
     reported; nothing is asserted.
-  * The records-examined denominator is reported with its full decomposition, because the dual
-    run split 6,065,704 against 6,065,610 and decisions/0074 ruling 4 publishes both UNRECONCILED
-    rather than picking one.
+  * The records-examined denominator is reported with its full decomposition and all THREE
+    readings, each naming the pipeline that produces it. decisions/0083 SS1 CLOSES it: the
+    readings are one family indexed by where D11 is applied, they differ by exactly the 167
+    in-frame records D11 discards (94 S2-side, 73 S1-side), and every reading drops ZERO
+    records, so nothing downstream reads the denominator. 0074 ruling 4's "publish both, not
+    one" stands and is strengthened to three; its routing to Step 14 is withdrawn.
   * Dedup (Step 1 SS2.1/2.2): distinct (show, season, number) per user, canonical timestamp =
     the MINIMUM watched_at across its records; ties broken by episode number then smallest
     event id.
@@ -142,9 +145,9 @@ def main():
     n_base_undated = int((base & ts_missing).sum())
     n_base_at_or_after_pull = int((base & at_or_after_pull).sum())
 
-    # the records-examined denominator, decomposed. 0074 ruling 4 publishes 6,065,704 against
-    # 6,065,610 unreconciled; the decomposition is emitted so the diff can be localised rather
-    # than left as a bare pair of numbers.
+    # the records-examined denominator, decomposed. decisions/0083 SS1 closes it on exactly this
+    # decomposition: three readings, one per placement of D11, all dropping zero records. Every
+    # reading is emitted with the pipeline that produces it, as a COVERAGE FIGURE.
     _bu, _br = user[base].astype(np.int64), rid[base].astype(np.int64)
     _dupfree = int(np.unique(_bu * (10 ** 13) + (_br % (10 ** 13))).size)
     n_d11_s1 = int((base & at_or_after_pull & (season == 1)).sum())
@@ -163,23 +166,36 @@ def main():
         "after_D11": int(n_base_records - n_base_undated - n_base_at_or_after_pull),
         "exact_duplicate_user_play_id_records": int(n_base_records - _dupfree),
         "records_with_number_le_0": int((base & (number <= 0)).sum()),
-        # THE THREE READINGS, all measured here so the open item can be settled off numbers rather
-        # than off a description. decisions/0074 ruling 4 published 6,065,704 (A) against 6,065,610
-        # (B) UNRECONCILED, both reporting 0 drops.
+        # THE THREE READINGS, each with the pipeline that produces it. decisions/0083 SS1 closes
+        # the item on this decomposition; 0074 ruling 4's pair is strengthened to three and its
+        # Step 14 routing is withdrawn. All three drop ZERO records.
         "three_readings": {
-            "no_D11": n_base_records,
-            "D11_on_the_S2_side_only": int(n_base_records - n_d11_s2),
-            "D11_on_both_sides": int(n_base_records - n_base_at_or_after_pull),
-            "gap_no_D11_minus_S2_side_only": n_d11_s2,
-            "gap_no_D11_minus_both_sides": n_base_at_or_after_pull,
+            "reading_A_no_D11": n_base_records,
+            "reading_B_D11_on_the_S2_side_only": int(n_base_records - n_d11_s2),
+            "reading_C_D11_on_both_sides": int(n_base_records - n_base_at_or_after_pull),
+            "gap_A_minus_B": n_d11_s2,
+            "gap_A_minus_C": n_base_at_or_after_pull,
+            "pipelines": {
+                "reading_A_no_D11": "the pipeline this instance runs (src/step8_a_run.py). D11 is "
+                                    "applied to every computation on the timeline and NOT to this "
+                                    "coverage count, because the set-membership rule reads only "
+                                    "`number in E` and never reads watched_at",
+                "reading_B_D11_on_the_S2_side_only": "D11 applied on the S2 side, the S1 side "
+                                                     "carried at 0068's published line 1",
+                "reading_C_D11_on_both_sides": "D11 applied on both sides; line 1 moves to "
+                                               "220,103, which is 0068's own open item and is "
+                                               "answered there, not here"},
         },
-        "note": "the 94-record gap decomposes exactly: D11 discards 167 in-frame S1/S2 records, "
-                "of which the S2 side is 94 and the S1 side is 73. So 6,065,704 is the no-D11 "
-                "reading, 6,065,610 is D11 applied on the S2 side only, and 6,065,537 is D11 "
-                "applied on both. The other candidate axes are all zero: undated records, exact "
-                "duplicate (user, play id) records, and records with a non-positive number. "
-                "Reported with the decomposition; the choice of reading is stated at the point of "
-                "use and the divergence itself is not reconciled here.",
+        "note": "CLOSED by decisions/0083 SS1, and it was never a divergence. The readings are "
+                "one family indexed by WHERE D11 IS APPLIED: D11 discards 167 in-frame S1/S2 "
+                "records, 94 on the S2 side and 73 on the S1 side, and that split is the whole of "
+                "the difference. 6,065,704 is the no-D11 reading, 6,065,610 is D11 on the S2 side "
+                "only, 6,065,537 is D11 on both. EVERY READING DROPS ZERO RECORDS, so the "
+                "numerator is 0 three times over and nothing downstream reads the denominator. "
+                "The other candidate axes are all zero and were measured, not assumed: undated "
+                "records, exact duplicate (user, play id) records, and records with a "
+                "non-positive number. This publishes as a COVERAGE FIGURE with its pipeline "
+                "named, not as an open question.",
     }
     del _bu, _br
 

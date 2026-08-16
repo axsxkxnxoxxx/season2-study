@@ -208,11 +208,12 @@ def main():
         # is true for EVERY Continued pair regardless of silence, and the count cannot be recovered
         # from `live` and `outcome`.
         "silent_at_tau1": r["silent"][keep],
-        # NEW at decisions/0082: a boolean separating the two meanings of `p = 1.0`. TRUE where the
-        # RANK NUMERATOR SATURATED AT L2, FALSE where p = 1.0 arises from the pair having left at
-        # the final episode; NULL where `p` is null. Step 10 publishes the abandonment distribution
-        # off `abandonment_point_p`, so the two must be separable in it. Nullable boolean, because
-        # an inapplicable value and a false one must not look alike.
+        # ADDED at decisions/0082; DEFINITION RESTATED at 0083 SS2. It marks WHETHER `p` reached
+        # its bound, NOT WHY: TRUE where `p` is at its bound, NULL where `p` is null. 0082's
+        # definition by two MECHANISMS is superseded -- the two clauses are coextensive by
+        # construction, so the FALSE class is empty and there is only one why. Step 10 publishes
+        # the abandonment distribution off `abandonment_point_p` and needs the spike LABELLED.
+        # Nullable boolean, because an inapplicable value and a false one must not look alike.
         "p_at_bound": pd.array(np.where(r["p_defined"][keep], r["p_saturated"][keep], None),
                                dtype="boolean"),
         "has_s3_or_later_evidence": a.has_s3[keep],
@@ -282,7 +283,11 @@ def main():
                               "from this table. Its input living in Step 7's working files is the "
                               "same shape as 0079's drop set. The aggregate is emitted below as "
                               "well, so the figure is available without reading the table.",
-            "p_at_bound": "ADDED by decisions/0082, to separate the two meanings of p = 1.0.",
+            "p_at_bound": "ADDED by decisions/0082 and RESTATED by 0083 SS2: it marks WHETHER p "
+                          "reached its bound, not why. KEPT because Step 10 publishes the "
+                          "abandonment distribution off abandonment_point_p and needs the spike "
+                          "LABELLED, and because an emptiness asserted in prose and never emitted "
+                          "cannot be checked.",
         },
         "column_naming_ruling": "decisions/0077: names are FIXED, not left to the instance. "
                                 "Its COUNT of 89 is superseded by the enumeration of decisions/0080, "
@@ -303,10 +308,13 @@ def main():
                              "derivable (`max_episode_in_A_H == s2_F`) and this instance matches "
                              "the list by set equality. The count is 89 again after 0082, but it "
                              "is a DIFFERENT 89: `f2_in_A_H` out, `silent_at_tau1` and "
-                             "`p_at_bound` in. The task-sheet strike-through beside the "
-                             "enumeration still reads 'replaced by the 88-name ENUMERATION' after "
-                             "0082 made it 89; the enumeration itself is 89 and was followed. "
-                             "Reported, not edited.",
+                             "`p_at_bound` in. BOTH RESIDUALS THIS INSTANCE REPORTED LAST RUN ARE "
+                             "NOW FIXED ON DISK by 0083 SS3 -- the strike-through beside the "
+                             "enumeration read 'the 88-name ENUMERATION' for its own 89-name "
+                             "replacement, and 0077's adopted-name table still listed f2_in_A_H "
+                             "among the adopted names. Both were reported here, neither was this "
+                             "instance's to amend, and both were corrected at the point of use "
+                             "rather than deleted, so 0077's SPELLING ruling survives.",
         "surviving_aggregate_of_the_silent_at_tau1_column": {
             "what": "Continued pairs that are SILENT at tau1 -- the size of the "
                     "outcome-conditioning in the liveness rule, the figure that closed the rule "
@@ -322,57 +330,73 @@ def main():
                               "kept alongside so the figure is readable without the table, which "
                               "is what 0081 SS3 records this instance as having done under 0080.",
         },
-        "p_at_bound_the_split_of_the_p_equals_1_rows": {
-            "ruling": "decisions/0082. p = 1.0 carries two meanings computed differently: the pair "
-                      "LEFT AT THE FINAL EPISODE, or THE ABANDONMENT POINT IS AT ITS BOUND -- the "
-                      "rank numerator having saturated at L2. p_at_bound is TRUE where p = 1.0 "
-                      "arises from the bound and FALSE where it arises from the final episode, "
-                      "null where p is null. Step 10 publishes the abandonment distribution off "
-                      "abandonment_point_p, so the two must be separable in it.",
+        "p_at_bound_whether_not_why_and_the_p_equals_1_totals": {
+            "ruling": "decisions/0083 SS2, restating 0082. p_at_bound marks WHETHER p reached its "
+                      "bound, NOT WHY: TRUE where p is at its bound, null where p is null. 0082's "
+                      "definition by two MECHANISMS -- TRUE where the rank numerator saturated at "
+                      "L2, FALSE where the pair left at the final episode -- is SUPERSEDED: the "
+                      "clauses are coextensive by construction and the FALSE class is empty. The "
+                      "column is KEPT because Step 10 publishes the abandonment distribution off "
+                      "abandonment_point_p and needs the spike LABELLED, and because an emptiness "
+                      "asserted in prose and never emitted cannot be checked.",
+            "the_totals_are_TOTALS_not_a_sum_of_two_classes": "0083 SS2 and CLAUDE.md's third "
+                      "blindness class. 1,246 and 1,230 remain TRUE and both arms reproduce them, "
+                      "but they are ONE class counted twice. Citing them as evidence that this "
+                      "column SEPARATES anything is a withdrawn argument; citing them as p = 1.0 "
+                      "TOTALS is correct, and that is how they are reported here.",
             "APPLY_position_5": {
-                "p_equals_1_rows": int((pos5 & (r["p"] == 1.0)).sum()),
-                "class_rank_numerator_saturated_at_L2": int(
+                "p_equals_1_rows_TOTAL": int((pos5 & (r["p"] == 1.0)).sum()),
+                "rows_with_rank_numerator_at_L2": int(
                     (pos5 & (r["p"] == 1.0) & r["p_saturated"]).sum()),
-                "class_left_at_the_final_episode": int(
+                "rows_with_m_H_equal_to_F2": int(
                     (pos5 & (r["p"] == 1.0) & r["p_final_ep"]).sum()),
-                "in_both_classes": int((pos5 & (r["p"] == 1.0) & r["p_saturated"]
-                                        & r["p_final_ep"]).sum()),
-                "in_neither_class": int((pos5 & (r["p"] == 1.0) & ~r["p_saturated"]
-                                         & ~r["p_final_ep"]).sum()),
-                "expected_by_0082": 1246},
+                "rows_satisfying_both_clauses": int((pos5 & (r["p"] == 1.0) & r["p_saturated"]
+                                                     & r["p_final_ep"]).sum()),
+                "rows_satisfying_neither_clause": int((pos5 & (r["p"] == 1.0) & ~r["p_saturated"]
+                                                       & ~r["p_final_ep"]).sum()),
+                "p_at_bound_FALSE_rows": int((pos5 & r["p_defined"] & ~r["p_saturated"]
+                                              & (r["p"] == 1.0)).sum()),
+                "expected_total_by_0083": 1246},
             "APPLY_position_7_post_liveness": {
-                "p_equals_1_rows": int((pos6 & (r["p"] == 1.0)).sum()),
-                "class_rank_numerator_saturated_at_L2": int(
+                "p_equals_1_rows_TOTAL": int((pos6 & (r["p"] == 1.0)).sum()),
+                "rows_with_rank_numerator_at_L2": int(
                     (pos6 & (r["p"] == 1.0) & r["p_saturated"]).sum()),
-                "class_left_at_the_final_episode": int(
+                "rows_with_m_H_equal_to_F2": int(
                     (pos6 & (r["p"] == 1.0) & r["p_final_ep"]).sum()),
-                "in_both_classes": int((pos6 & (r["p"] == 1.0) & r["p_saturated"]
-                                        & r["p_final_ep"]).sum()),
-                "in_neither_class": int((pos6 & (r["p"] == 1.0) & ~r["p_saturated"]
-                                         & ~r["p_final_ep"]).sum()),
-                "expected_by_0082": 1230},
+                "rows_satisfying_both_clauses": int((pos6 & (r["p"] == 1.0) & r["p_saturated"]
+                                                     & r["p_final_ep"]).sum()),
+                "rows_satisfying_neither_clause": int((pos6 & (r["p"] == 1.0) & ~r["p_saturated"]
+                                                       & ~r["p_final_ep"]).sum()),
+                "p_at_bound_FALSE_rows": int((pos6 & r["p_defined"] & ~r["p_saturated"]
+                                              & (r["p"] == 1.0)).sum()),
+                "expected_total_by_0083": 1230},
             "DERIV_position_5": {
-                "p_equals_1_rows": int((pos5d & (r["p"] == 1.0)).sum()),
-                "class_rank_numerator_saturated_at_L2": int(
+                "p_equals_1_rows_TOTAL": int((pos5d & (r["p"] == 1.0)).sum()),
+                "rows_with_rank_numerator_at_L2": int(
                     (pos5d & (r["p"] == 1.0) & r["p_saturated"]).sum()),
-                "class_left_at_the_final_episode": int(
+                "rows_with_m_H_equal_to_F2": int(
                     (pos5d & (r["p"] == 1.0) & r["p_final_ep"]).sum())},
-            "column_encoding": "p_at_bound = TRUE iff the rank numerator equals L2, on rows where "
-                               "p is defined; null elsewhere. FALSE therefore means 'the "
-                               "abandonment point is not at its bound', which on p < 1.0 rows is "
-                               "true and on p = 1.0 rows is the final-episode class.",
-            "REPORTED_NOT_RESOLVED": "THE TWO CLASSES ARE COEXTENSIVE AND THE COLUMN CANNOT "
-                                     "SEPARATE THEM. Under the set-membership rule A_H is a subset "
-                                     "of E2, so m_H is a member of E2 and the rank numerator "
+            "column_encoding": "p_at_bound = TRUE iff p reached its bound -- equivalently, iff the "
+                               "rank numerator equals L2 -- on rows where p is defined; null "
+                               "elsewhere. FALSE means p is defined and below its bound.",
+            "coextensivity_PROVED_AND_MEASURED": "Under the set-membership rule A_H is a subset of "
+                                     "E2, so m_H is a member of E2 and the rank numerator "
                                      "|{e in E2 : e <= m_H}| equals L2 IF AND ONLY IF m_H = "
-                                     "max(E2) = F2 -- which is 'left at the final episode'. The two "
-                                     "meanings 0082 names are the same event, provably, so one "
-                                     "class holds every p = 1.0 row and the other holds none. "
-                                     "Measured, not assumed: the cross-tab above reports both "
-                                     "classes and the in-both / in-neither cells. On this frame it "
-                                     "is stronger still -- every show has E2 = {1..L2} with no "
-                                     "numbering gap, so the rank form reduces to m_H / L2 "
-                                     "identically. REPORTED, NOT RECONCILED.",
+                                     "max(E2) = F2 -- which is 'left at the final episode'. "
+                                     "Neither clause can hold without the other, so on p = 1.0 "
+                                     "rows the class 0082 called FALSE is EMPTY. Measured here, "
+                                     "not assumed: the both / neither cells above are the "
+                                     "measurement, and they are 1,246 and 0 at position 5. This is "
+                                     "a CONSTRUCTION argument and is W-invariant, so the FALSE "
+                                     "class stays empty across Step 13's arms; a FALSE row "
+                                     "anywhere means the rank form or the set-membership rule has "
+                                     "broken, which is what the column is now worth catching.",
+            "a_SECOND_and_DIFFERENT_fact_measured_on_this_frame": "0 of the frame's shows have any "
+                                     "S2 numbering gap, so E2 = {1..L2} everywhere and the rank "
+                                     "form reduces to m_H / L2. This one is DATA and could be "
+                                     "false on another frame; the coextensivity above would still "
+                                     "hold. Stated separately so a construction argument is not "
+                                     "read as a frame accident (0083 SS2).",
             "frame_evidence": {
                 "shows_where_max_E2_differs_from_L2": int((frame.s2_F != frame.s2_L).sum()),
                 "shows_in_frame": int(frame.shape[0]),

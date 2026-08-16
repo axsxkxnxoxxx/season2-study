@@ -70,7 +70,7 @@ def main():
                   "checks cannot fail.",
         "coverage_records_examined": scan_sum["in_frame_S1S2_episode_records"],
         "coverage_records_dropped": scan_sum["dropped_by_set_membership_records"],
-        "records_examined_denominator_reported_unreconciled": scan_sum[
+        "records_examined_denominator_CLOSED_by_0083": scan_sum[
             "record_denominator_reconciliation"],
         "per_show": {
             "shows_examined": int(len(drops)),
@@ -88,7 +88,9 @@ def main():
             "denominator_post_liveness_never_started_APPLY": int((pos6 & r["never"]).sum()),
             "share_of_never_started_post_liveness": 0.0,
             "direction_on_the_headline": "would INFLATE never started (Step 1 SS3.4); the "
-                                         "measured count is 0, on 6,065,704 records examined",
+                                         "measured count is 0, and it is 0 under all three "
+                                         "readings of the records-examined denominator "
+                                         "(decisions/0083 SS1)",
             "denominator_note": "position 5 is what entered the liveness filter (0070 ruling 6); "
                                 "the difference between the two denominators is exactly the 604 "
                                 "never-started liveness exclusions"},
@@ -488,29 +490,38 @@ def main():
                 (pos6 & r["left"] & (r["p"] == 1.0)).sum()),
             "p_equals_1_residual_APPLY_position_5": int(
                 (pos5 & r["left"] & (r["p"] == 1.0)).sum()),
-            # decisions/0082: the split of the p = 1.0 rows into the two meanings the column
-            # separates, on both populations the ruling names. They must sum to the totals above.
-            "p_at_bound_split": {
+            # decisions/0083 SS2, restating 0082: p_at_bound marks WHETHER p reached its bound,
+            # not why. The p = 1.0 counts below are TOTALS, not a sum of two classes -- the two
+            # clauses 0082 named are coextensive by construction and the FALSE class is empty.
+            "p_at_bound_totals_and_coextensivity": {
                 "APPLY_position_5": {
                     "total_p_equals_1": int((pos5 & (r["p"] == 1.0)).sum()),
-                    "at_the_bound_rank_numerator_saturated_at_L2": int(
+                    "p_at_bound_TRUE": int(
                         (pos5 & (r["p"] == 1.0) & r["p_saturated"]).sum()),
-                    "at_the_final_episode_not_at_the_bound": int(
+                    "p_equals_1_but_p_at_bound_FALSE": int(
                         (pos5 & (r["p"] == 1.0) & ~r["p_saturated"]).sum()),
-                    "expected_total_by_0082": 1246},
+                    "expected_total_by_0083": 1246},
                 "APPLY_position_7_post_liveness": {
                     "total_p_equals_1": int((pos6 & (r["p"] == 1.0)).sum()),
-                    "at_the_bound_rank_numerator_saturated_at_L2": int(
+                    "p_at_bound_TRUE": int(
                         (pos6 & (r["p"] == 1.0) & r["p_saturated"]).sum()),
-                    "at_the_final_episode_not_at_the_bound": int(
+                    "p_equals_1_but_p_at_bound_FALSE": int(
                         (pos6 & (r["p"] == 1.0) & ~r["p_saturated"]).sum()),
-                    "expected_total_by_0082": 1230},
-                "classes_are_coextensive_REPORTED_NOT_RESOLVED": (
-                    "the two meanings decisions/0082 names -- rank numerator saturated at L2, and "
+                    "expected_total_by_0083": 1230},
+                "these_are_TOTALS_not_a_split": (
+                    "decisions/0083 SS2. 1,246 and 1,230 are correct counts and both arms "
+                    "reproduce them, but they are ONE class counted twice, not two classes "
+                    "summed. Using them as evidence that the column separates anything is a "
+                    "WITHDRAWN ARGUMENT (CLAUDE.md, third blindness class); using them as p = 1.0 "
+                    "TOTALS is correct."),
+                "clauses_are_coextensive_BY_CONSTRUCTION": (
+                    "the two clauses decisions/0082 named -- rank numerator saturated at L2, and "
                     "left at the final episode -- are the SAME EVENT under the set-membership "
                     "rule: A_H subset E2 gives m_H in E2, so |{e in E2 : e <= m_H}| = L2 iff "
-                    "m_H = max(E2) = F2. One class therefore holds every p = 1.0 row and the "
-                    "other holds none. Cross-tabulated in outcomes.json rather than assumed."),
+                    "m_H = max(E2) = F2. The FALSE class is therefore EMPTY, which is measured "
+                    "in the cross-tab below rather than asserted, and it is W-invariant, so a "
+                    "FALSE row at any Step 13 arm means the rank form or the set-membership rule "
+                    "has broken."),
                 "cross_tab_APPLY_position_5": {
                     "saturated_and_final_episode": int(
                         (pos5 & (r["p"] == 1.0) & r["p_saturated"] & r["p_final_ep"]).sum()),
