@@ -50,15 +50,29 @@ day-floored, so `τ1` and `τ2` are midnight-aligned**, which makes `date(ts) < 
 `ts < τ1` below the boundary — **the named window is where the two forms AGREE.** The separating
 interval is **`[τ1, τ1 + 24h)`**.
 
-**Both arms emitted both intervals rather than only the one ruled**, which is the only reason the answer
-means anything: **an arm that had answered with the named window alone would have reported on the
-interval that cannot separate the forms, and B3 would have closed on a measurement proving nothing.**
+***CORRECTED 2026-08-16, Red Team fifth pass, F1. This entry said "Both arms emitted both intervals
+rather than only the one ruled." THAT IS FALSE OF ARM B.*** **Arm A emits the separating interval — 703
+episodes on 311 rows at `τ1` and 303 on 136 at `τ2` on APPLY, 595/275 and 261/117 on DERIV. Arm B emits
+the RULED window and the single instant exactly at `τ1`, and nothing else**; the separating interval
+appears nowhere in its deliverable or its source. **Only ONE arm emitted both.**
 
-**Measured, both arms, both populations: exactly 1 episode falls AT `τ1`** — so `0068`'s strictness
-ruling moves a real row in `|A|` — **and 0 outcome states differ**, because that row already has
-`|A| ≥ 1`. **Instance B's refinement is adopted: this is THREE states, not two** — empty boundary,
-occupied-and-inert, occupied-and-deciding — **and collapsing the middle into "vacuous" or into
-"load-bearing for the result" are both misreadings.** The measured state is **occupied and inert**.
+***AND THE VERDICT THIS ENTRY ADOPTED WAS MEASURED ON THE WRONG SET.*** Arm B's `OCCUPIED_INERT` and
+*"no outcome state differs between the two forms"* is a claim about **the set on which the forms
+differ**, computed on **1 row of the 311.** **Adopting it here repeated the exact defect this section
+was written to correct** — a statement right in substance and wrong in the object it names — **inside
+the entry fixing the first instance of it.**
+
+***THE NUMBER THAT SETTLES B3 IS MEASURED BY NEITHER ARM:*** on `[τ, τ + 24h)`, **how many position-5
+rows change OUTCOME STATE** under the forbidden `date(ts) ≤ date(τ)` form — **four numbers, both bounds
+× both populations.** **Arm A reports episodes ADMITTED, not outcomes; arm B reports outcomes, on the
+wrong set.** A never-started row with an episode in `[τ1, τ1+24h)` **flips to started**; a
+started-and-left row with one in `[τ2, τ2+24h)` **can flip to Continued**. **Arm A already holds the 311
+and 136 row masks.**
+
+**What IS established, both arms, both populations: exactly 1 episode falls AT `τ1`**, so `0068`'s
+strictness ruling moves a real row in `|A|`. **Instance B's THREE-STATE framing is adopted as a
+framing** — empty boundary, occupied-and-inert, occupied-and-deciding — **but WHICH state obtains is
+NOT yet measured, and this entry's "the measured state is occupied and inert" is WITHDRAWN.**
 
 **(b) `747,478` was mischaracterised.** `0088` §2 called it *undeduplicated season-coverage rows*. **It
 is distinct `(user, show)` pairs**; arm A's undeduplicated row count is **1,217,122**. **The label was
