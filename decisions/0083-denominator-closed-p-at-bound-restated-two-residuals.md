@@ -10,6 +10,15 @@
 | **Verified by** | `check_surfaces.py` **PASS — all halves, all EIGHT surfaces**; `step7_regenerate_derived.py` **PASS**; `step7_floor_extremes.py` **11/11 CONFIRMED** |
 | **Status** | Closed. **Step 8 is the remaining gate and it is NOT approved.** |
 
+
+> **SURFACE NUMBERING CORRECTED 2026-08-16 (`0087`).** This entry numbered the
+> `analytics-engineer` pair **2–3** and the `data-scientist` pair **4–5**. `CLAUDE.md` numbers them
+> the other way: **2–3 is the `data-scientist` pair, 4–5 is the `analytics-engineer` pair.**
+> **The FILES edited were always the right ones; the NUMBERS naming them were inverted**, so the
+> propagation record pointed a re-verifier at the two files that were not touched and exempted the
+> two that were. **Found by Red Team on the fourth Step 8 pass, in `0086` — and it was in `0083`
+> and `0085` too.** Corrected in place with this note, as `0058` §6 did.
+
 ---
 
 ## 1. The set-membership denominator — closed, because there was never a conflict to reconcile
@@ -127,8 +136,8 @@ sets, off disk, not by counting.
 | # | Surface | Reached | What landed |
 | :-- | :--- | :--- | :--- |
 | 1 | `task-sheet.md` | **yes** | §1 closure, §2 restatement and withdrawal, both residuals |
-| 2–3 | `analytics-engineer{,-b}.md` | **yes, identically** | the same three, verified byte-identical apart from `name:` |
-| 4–5 | `data-scientist{,-b}.md` | **deliberately NOT** | neither file names the denominator, `p_at_bound` or the column set. **Step 10 reads `p_at_bound` and will gain the WHETHER statement when Step 10's obligations are written** — recorded here so the pass is not forgotten, which is how the covering qualifier went six entries reaching no agent file |
+| **4–5** | `analytics-engineer{,-b}.md` | **yes, identically** | the same three, verified byte-identical apart from `name:` |
+| **2–3** | `data-scientist{,-b}.md` | **deliberately NOT** | neither file names the denominator, `p_at_bound` or the column set. **Step 10 reads `p_at_bound` and will gain the WHETHER statement when Step 10's obligations are written** — recorded here so the pass is not forgotten, which is how the covering qualifier went six entries reaching no agent file |
 | 6 | `artifacts/` | **no edit** | both arms' deliverables already state all three readings with pipelines and already report the coextensivity as measured. **They were RIGHT; this entry ratifies them** |
 | 7 | `second-brain` memory | **yes** | the glossary's denominator row said *"REPORTED, NOT RECONCILED … Routed to Step 14"* |
 | 8 | `processed/` | **no edit** | `step8/{a,b}/` are per-arm working output and carry each arm's own reading, which is correct for them |

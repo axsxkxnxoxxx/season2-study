@@ -2,13 +2,22 @@
 
 | | |
 | :--- | :--- |
-| **Decision** | **B1's diagnostic is CLOSED: the D9 divergence is entirely a UNIVERSE difference, and instance B reproduced BOTH published lists from ONE build by varying only the universe.** Arm A publishes **U1**, arm B publishes **U3**, each named at the point of use. **Choosing the universe is a spec decision and is NOT made here.** **Three defects fixed:** `0085`'s propagation broke list indentation on surfaces 2–3 (**a substring match that started mid-line passed the uniqueness assertion**); the `analytics-engineer` pair said Step 8 was **NOT LAUNCHED** after four launches; and two read-backs on surface 6 carried the same stale claim, now stamped. **B3 remains open and still blocks.** |
+| **Decision** | **B1's diagnostic is CLOSED: the D9 divergence is entirely a UNIVERSE difference, and instance B reproduced BOTH published lists from ONE build by varying only the universe.** Arm A publishes **U1**, arm B publishes **U3**, each named at the point of use. **Choosing the universe is a spec decision and is NOT made here.** **Three defects fixed:** `0085`'s propagation broke list indentation on surfaces 4–5 (**a substring match that started mid-line passed the uniqueness assertion**); the `analytics-engineer` pair said Step 8 was **NOT LAUNCHED** after four launches; and two read-backs on surface 6 carried the same stale claim, now stamped. **B3 remains open and still blocks.** |
 | **Recorded by** | Analytics Engineer, on both arms' rerun findings |
 | **Date** | 2026-08-16 |
 | **Occasioned by** | The 2026-08-16 reruns against `0085`. **Both arms independently reported the indentation defect; each reported one of the two stale-launch surfaces** |
 | **Amends** | `0085` §2 (which posed the universe question without measuring the axis) and `0085`'s own propagation |
 | **Verified by** | `check_surfaces.py` **PASS**; `step7_regenerate_derived.py` **PASS**; `step7_floor_extremes.py` **11/11**; the pair byte-identical apart from `name:`, re-verified after each of the two edits |
 | **Status** | Open. **Step 8 is NOT approved. B3 (`0085` §7) blocks and is the Human Lead's. The universe choice is a second item awaiting ruling.** |
+
+
+> **SURFACE NUMBERING CORRECTED 2026-08-16 (`0087`).** This entry numbered the
+> `analytics-engineer` pair **2–3** and the `data-scientist` pair **4–5**. `CLAUDE.md` numbers them
+> the other way: **2–3 is the `data-scientist` pair, 4–5 is the `analytics-engineer` pair.**
+> **The FILES edited were always the right ones; the NUMBERS naming them were inverted**, so the
+> propagation record pointed a re-verifier at the two files that were not touched and exempted the
+> two that were. **Found by Red Team on the fourth Step 8 pass, in `0086` — and it was in `0083`
+> and `0085` too.** Corrected in place with this note, as `0058` §6 did.
 
 ---
 
@@ -19,7 +28,7 @@ That is the measurement `0085` §2 asked for and did not have.
 
 | universe | clustering | largest | maximum |
 | :--- | :--- | :--- | ---: |
-| **U1** — all slugged sweep show IDs (**46,366** arm A / **46,428** arm B) | by loose key | `secondchance` 8, `theisland` 7, `maigret` 6 | **8** |
+| **U1** — slugged show IDs (***the two arms' U1 are NOT one set — see the restriction below***) | by loose key | `secondchance` 8, `theisland` 7, `maigret` 6 | **8** |
 | **U2** — the **1,138** frame shows | by loose key | — | **2** |
 | **U3** — the **75** D9 candidate complementary pairs | by loose key | `thetwilightzone` 10, `thetraitors` 7, `manhunt` 5 | **10** |
 
@@ -43,11 +52,29 @@ example silently presumed one universe while its instruction named none, **which
 matched it and arm A's did not, and why `0084` §5 filed the whole thing as an arm-A wording problem.**
 
 **Not ruled here.** The loose key publishes because it **bounds how wrong strict could be**, and which
-universe makes that bound meaningful is a judgement about the estimand. **Every D9 count still
-reconciles across both arms** — strict 0, loose 75, third key 76, half (a) 0 and 6, half (b) 0 and 27 —
-**so nothing downstream is blocked by leaving it open.**
+universe makes that bound meaningful is a judgement about the estimand.
 
-## 2. `0085`'s propagation broke the list structure on surfaces 2–3
+***RESTRICTED 2026-08-16 (`0087`), Red Team F2.*** This section said ***"every D9 count still reconciles
+across both arms."*** **That generalises past what was checked and is FALSE as written.**
+
+**The FIVE RULED counts do reconcile** — strict 0, loose 75, third key 76, half (a) 0 and 6, half (b) 0
+and 27 — **and that is the whole of what was verified.** **THREE COVERAGE counts do NOT:**
+
+1. **Arm A publishes 46,428 and 46,366 for one labelled quantity, 27 lines apart in one section.** The
+   second is computed off the **D9 coverage pivot** and **mislabelled as the sweep**, and its "0 carry no
+   slug" clause is therefore computed on the wrong base.
+2. **The two arms' "U1" are consequently TWO DIFFERENT SETS, 62 IDs apart.** **Naming "U1" does not
+   identify the object**, so the axis this section claims to have located is located only to the first
+   digit.
+3. **The user-show coverage rows are unreconciled — 747,478 (A) against 726,103 (B)** — **reported by
+   neither arm and by no entry until now.**
+
+**D9's ruled result is 0 and 0, and the coverage counts are the only thing separating that from "looked
+nowhere."** That is why these are not bookkeeping. **And the U1 parenthetical above compounded it: both
+of its numbers are recoverable from arm A alone, so it was never the arm-against-arm comparison it read
+as.** **The universe question remains unruled and the three coverage defects are open.**
+
+## 2. `0085`'s propagation broke the list structure on surfaces 4–5
 
 **Both arms reported it independently.** `0085` §2's item entered `0074`'s six-ruling list as **`5a`**,
 and **ruling 5 dropped from 8-space to 4-space indentation**, so the list rendered `4, 5a, 5, 6` with
@@ -65,9 +92,9 @@ is anchoring to line starts**, which the repair used: both blocks were located b
 throughout; no figure was affected** — which is exactly why no numeric control saw it and both readers
 did.
 
-## 3. "NOT LAUNCHED" after four launches — surfaces 2–3 and 6
+## 3. "NOT LAUNCHED" after four launches — surfaces 4–5 and 6
 
-**Surfaces 2–3.** The `analytics-engineer` pair's Step 8 bullet read **"GATE, dual implementation. NOT
+**Surfaces 4–5.** The `analytics-engineer` pair's Step 8 bullet read **"GATE, dual implementation. NOT
 LAUNCHED."** Step 8 has launched **four times**; both arms have executed against the spec through
 `0085`; Red Team has returned **three** gate reviews. **Unapproved is not unlaunched, and the line read
 as the latter in the file the isolated instances consult.** Corrected, with the superseded phrase named.
@@ -79,7 +106,7 @@ stamped rather than left to read as current. **The stamps are negative only**: e
 superseded, confirms the *unapproved* half still holds, points at the operative spec and deliverables,
 and **restates no adopted figure.**
 
-**Arm A reported the surface-2 instance; arm B reported the surface-6 instance. Neither control saw
+**Arm A reported the surface-4 instance; arm B reported the surface-6 instance. Neither control saw
 either**, because both are prose about state carrying no number and no registered phrase — the first
 blindness class, still unchecked by design.
 
@@ -119,8 +146,8 @@ convention is unstated in the spec; both arms disambiguated and did so different
 ## 6. Scope
 
 - **No rule change, no population change, no figure moves.**
-- **Surfaces reached:** 2–3 (indentation and the launch status, identically) and 6 (two stamps).
+- **Surfaces reached:** **4–5** (indentation and the launch status, identically) and 6 (two stamps).
   **Surface 1 needed no edit** — `task-sheet.md`'s D9 bullet already carries `0085` §2's requirement and
-  its list structure was not touched by the defective match. **Surfaces 4–5, 7, 8: not applicable.**
+  its list structure was not touched by the defective match. **Surfaces 2–3, 7, 8: not applicable.**
 - **Zero API calls.**
 - **Step 8 goes to Red Team for a fourth pass, with B3 declared open in the brief.**

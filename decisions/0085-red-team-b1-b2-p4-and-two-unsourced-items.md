@@ -10,6 +10,15 @@
 | **Verified by** | `check_surfaces.py` **PASS** with a **proximity probe** on the fixed JSON branch; `step7_regenerate_derived.py` **PASS**; `step7_floor_extremes.py` **11/11 CONFIRMED**; the `analytics-engineer` pair byte-identical apart from `name:` |
 | **Status** | Open. **Step 8 is NOT approved. B3 blocks and is the Human Lead's.** |
 
+
+> **SURFACE NUMBERING CORRECTED 2026-08-16 (`0087`).** This entry numbered the
+> `analytics-engineer` pair **2–3** and the `data-scientist` pair **4–5**. `CLAUDE.md` numbers them
+> the other way: **2–3 is the `data-scientist` pair, 4–5 is the `analytics-engineer` pair.**
+> **The FILES edited were always the right ones; the NUMBERS naming them were inverted**, so the
+> propagation record pointed a re-verifier at the two files that were not touched and exempted the
+> two that were. **Found by Red Team on the fourth Step 8 pass, in `0086` — and it was in `0083`
+> and `0085` too.** Corrected in place with this note, as `0058` §6 did.
+
 ---
 
 ## 1. Two directed items had no referent — checked before acting, not propagated
@@ -167,8 +176,8 @@ The arms are rerunning against §§2–5; B3 is not among them, and Red Team wil
 
 - **No rule change, no population change, no bound endpoint moves.** No figure on any `CLAUDE.md`
   dependency list is touched, so no list is run.
-- **Surfaces reached:** 1 (`task-sheet.md`), 2–3 (both `analytics-engineer` files, identically), and the
-  control in `src/`. **Surfaces 4–5 deliberately not** — the `data-scientist` pair names none of these
+- **Surfaces reached:** 1 (`task-sheet.md`), **4–5** (both `analytics-engineer` files, identically), and the
+  control in `src/`. **Surfaces 2–3 deliberately not** — the `data-scientist` pair names none of these
   objects. **Surface 6 not edited** — both arms rerun. **Surface 7 not edited** — the glossary carries
   none of the four.
 - **Zero API calls.**
