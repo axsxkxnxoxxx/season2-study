@@ -14,7 +14,7 @@ Order, and what each stage owes the next:
   2  positions     S1 completion walk (INDEPENDENT), the clock, positions 1-5,
                    and the POSITION-3 DROP SET DELIVERABLE
   4b slugs         show id -> slug map, which D9 needs for both keys
-  3  table         positions 6 and 7 at W = 108, the 87-column analysis table
+  3  table         positions 6 and 7 at W = 108, the 89-column analysis table
   4  arms          the per-arm required counts over the fixed W grid
   5  diagnostics   the required counts and the eight invariants; READS the drop set
   6  emit          the two artifacts, generated from the stage outputs

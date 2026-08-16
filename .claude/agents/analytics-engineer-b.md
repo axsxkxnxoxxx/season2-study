@@ -104,7 +104,11 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
       (`0034`); **never drop a user wholesale**.
     - **Do not reintroduce a pre-`τ1` requirement in any form** — withdrawn twice.
 
-- **Step 8, analysis table. GATE, dual implementation. NOT LAUNCHED.** Build one row per user-show pair
+- **Step 8, analysis table. GATE, dual implementation. LAUNCHED FOUR TIMES; STILL UNAPPROVED.**
+  ***SUPERSEDED: "NOT LAUNCHED" (`0086`).*** **Both arms have executed against the spec through
+  `0085`**, and Red Team has returned three gate reviews — the third a **HOLD** whose B3 is open.
+  **Unapproved is not unlaunched**, and this line read as the latter in the file the isolated
+  instances consult. Build one row per user-show pair
   carrying outcome state, abandonment point, discovery channel and all Step 2 show fields; ~~**retain
   `action` as a column**, Step 13 has an arm that needs it.~~ ***SUPERSEDED by `0070` ruling 4,
   propagated here by `0073` — this head bullet contradicted ruling 4 further down its own section.***
@@ -220,15 +224,15 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
           applies to the **S1 completion walk** is `0068`'s open item, where C moves line 1 to
           220,103 (**4 pairs stop being completers, 0 completion dates move**). **Answered there.**
         - **5a. NAME THE UNIVERSE THE D9 CLUSTERING RUNS OVER, AT THE POINT OF USE** (`0085` §2, Red
-      Team B1). **The two arms published DISJOINT cluster lists on IDENTICAL counts** — `secondchance`
-      8 / `theisland` 7 / `maigret` 6 against `thetwilightzone` 10 / `thetraitors` 7 / `manhunt` 5,
-      **no shared member, maxima 8 against 10** — while every count reconciled. **A difference in WHICH
-      SHOWS ARE CLUSTERED, which the spec never stated.** **The cluster examples are the EVIDENCE for
-      the loose key's only warrant**, so two arms giving different evidence for one warrant makes it
-      irreproducible while the deliverables read otherwise. **State it: all sweep show IDs with a slug,
-      the 1,138 frame shows, or the D9 candidate pairs. REPORTED, NOT RECONCILED** — if both name the
-      same universe and still differ, one has a bug.
-    - **5. D9 uses the STRICT key, with the loose count of 75 reported alongside.** Strict finds
+        Team B1). **The two arms published DISJOINT cluster lists on IDENTICAL counts** — `secondchance`
+        8 / `theisland` 7 / `maigret` 6 against `thetwilightzone` 10 / `thetraitors` 7 / `manhunt` 5,
+        **no shared member, maxima 8 against 10** — while every count reconciled. **A difference in WHICH
+        SHOWS ARE CLUSTERED, which the spec never stated.** **The cluster examples are the EVIDENCE for
+        the loose key's only warrant**, so two arms giving different evidence for one warrant makes it
+        irreproducible while the deliverables read otherwise. **State it: all sweep show IDs with a slug,
+        the 1,138 frame shows, or the D9 candidate pairs. REPORTED, NOT RECONCILED** — if both name the
+        same universe and still differ, one has a bug.
+        - **5. D9 uses the STRICT key, with the loose count of 75 reported alongside.** Strict finds
           **0** complementary pairs; loose finds 75 but **strips the year and merges genuinely different
           shows** — The Twilight Zone, The Traitors, Manhunt. **The loose count bounds how wrong strict
           could be, and the error runs OPPOSITE to D9's own lower-bound caveat.**

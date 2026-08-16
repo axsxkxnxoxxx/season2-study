@@ -91,6 +91,8 @@ def main():
         "position_3_drop_set_DELIVERABLE": pos["position_3_drop_set_DELIVERABLE"],
         "surviving_aggregate_of_the_silent_at_tau1_column":
             outc["analysis_table"]["surviving_aggregate_of_the_silent_at_tau1_column"],
+        "line_6_marginal_decomposition_BOTH_652_AND_1355":
+            outc["analysis_table"]["line_6_marginal_decomposition_BOTH_652_AND_1355"],
         "p_at_bound_whether_not_why_and_the_p_equals_1_totals":
             outc["analysis_table"]["p_at_bound_whether_not_why_and_the_p_equals_1_totals"],
         "scope_qualifier_travelling_with_the_position_6_population": SCOPE,
@@ -118,10 +120,12 @@ def main():
       "position 6 filters; **DERIV** = Step 5 waterfall line 4 less D10 = **147,370**, which "
       "requires S2 evidence. Step 8 produces both (`decisions/0070` ruling 1).")
     A("")
-    A("> **CLEAN RERUN, ordered by the Human Lead.** This replaces the previous `-a` deliverable "
-      "in full and is built from the committed state; nothing from the run that was terminated "
-      "mid-flight is read or relied on. **Everything below is regenerated from one pipeline run** "
-      "— no figure is typed by hand and none is carried from a previous artifact.")
+    A("> **RERUN AGAINST `decisions/0085`, ordered by the Human Lead — a rerun, not an "
+      "amendment.** This replaces the previous `-a` deliverable **in full**; the previous output "
+      "was **not patched** and nothing in it is read or carried. **Everything below is "
+      "regenerated from one pipeline run** — no figure is typed by hand. **Two builds now exist "
+      "on 2026-08-16** — the one Red Team's third pass reviewed and this one — so they are "
+      "**tagged apart**, and every figure names which.")
     A("")
     A("> **The spec this run executes, and what moved since the last one that completed.** "
       "**(1)** Every count, every invariant result and every waterfall figure **carries the build "
@@ -140,9 +144,26 @@ def main():
       "CLOSED** (`0083` §1): all three readings publish, each naming the pipeline that produces "
       "it — see §5.1.")
     A("")
-    A("> **No figure this instance previously published moves.** What moves is what the figures "
-      "are *called*: `0083` closed the denominator item this instance had reported as open and "
-      "restated `p_at_bound`'s definition, and neither ruling changes a measured quantity here.")
+    A("> **FOUR THINGS THIS ARM EMITS DIFFERENTLY FROM ITS LAST RUN, all from `decisions/0085`, "
+      "Red Team's third pass.** **(B1, §2)** The **universe the D9 clustering runs over is named "
+      "at the point of use** — the two arms published disjoint cluster lists on identical counts, "
+      "which is a difference in *which shows are clustered* and **is reported, not reconciled** — "
+      "see §6. **(B2, §3)** The `p_at_bound` emptiness is emitted on **four populations with four "
+      "cells each**, APPLY and DERIV at position 5 and post-liveness; ***this instance's previous "
+      "run gave APPLY only in that block***, on the very ground that an emptiness asserted in "
+      "prose and never emitted cannot be checked — see §3.1. **(P4, §4)** The coextensivity chain "
+      "has **three links, not two**, and `max(E2) = F2` is **not construction**; it is **measured "
+      "and its count stated** — see §3.1. **(§5)** The **line-6 marginal decomposition publishes "
+      "both 652 and 1,355**, on both populations, with the identity stated; ***this instance "
+      "published 652 alone*** — see §2.1. **B3 is CARRIED and is NOT closed here**: `0085` §7 "
+      "leaves the half-open UTC-instant form and D11-as-global-cutoff without assertions, and "
+      "**that is a Human Lead ruling, not this instance's to make** — no assertion for either was "
+      "added.")
+    A("")
+    A("> **No figure this instance previously published moves.** What moves is what is *emitted*: "
+      "`0085` adds populations, cells and a named universe to figures already measured, and "
+      "1,355 is derivable from figures already published. **No rule, population or bound endpoint "
+      "changes.**")
     A("")
     A("> Carried forward and unchanged: the table is the position-5 row set with `live` and "
       "`outcome` as columns (`0074`/1); D9 uses the defined strict key with the loose count "
@@ -352,6 +373,38 @@ def main():
       f"calibration clamp at {scan['calibration']['last_instant_max_utc_D11']}Z and D10 already "
       "forces `τ1 ≤ τ_pull − 91 d`.")
     A("")
+    md = outc["analysis_table"]["line_6_marginal_decomposition_BOTH_652_AND_1355"]
+    A("### 2.1 Line 6 read as a marginal cost — both figures, on both populations")
+    A("")
+    A("**703 is NOT the marginal cost of the silence test** — Red Team third pass, "
+      "`decisions/0085` §5. **The silence test alone excludes 1,355 on APPLY; the `NOT Continued` "
+      "conjunct spares 652; `1,355 − 652 = 703`.** ***This instance published 652 and not 1,355 on "
+      "its previous run.*** **Derivable, so not a defect — but 1,355 is the figure that makes line "
+      "6 readable as a marginal cost, and a reader holding only 652 cannot recover it without "
+      "knowing to add.** **Both, on both populations, with the identity stated:**")
+    A("")
+    A("| Population entering line 6 | Silence test ALONE excludes | `NOT Continued` SPARES | "
+      "Line 6 exclusions | Identity |")
+    A("| :--- | ---: | ---: | ---: | :--- |")
+    for k in ("APPLY_position_5_entering_line_6", "DERIV_position_5_entering_line_6"):
+        v = md[k]
+        A(f"| {v['population']} ({n(v['coverage_rows_examined'])} rows) | "
+          f"**{n(v['silence_test_ALONE_excludes'])}** | **{n(v['NOT_Continued_conjunct_SPARES'])}** "
+          f"| **{n(v['line_6_exclusions'])}** | "
+          f"{n(v['silence_test_ALONE_excludes'])} − {n(v['NOT_Continued_conjunct_SPARES'])} = "
+          f"{n(v['line_6_exclusions'])} "
+          f"{'✓' if v['identity_holds'] else 'FAILS'} |")
+    A("")
+    A(bt("every figure in this table"))
+    A("")
+    A("**The spared pairs are the Continued-and-silent ones.** They are what makes line 6 "
+      "**outcome-conditional**, and they are why `silent_at_tau1` is an emitted column (`0081`): "
+      "`live` is true for every Continued pair regardless of silence, so the count is not "
+      "recoverable from `live` and `outcome` alone. **On DERIV the spared count is the same "
+      f"{n(md['DERIV_position_5_entering_line_6']['NOT_Continued_conjunct_SPARES'])}**: Continued "
+      "requires S2 evidence, so every Continued-and-silent pair on APPLY is also a DERIV pair, and "
+      "the two populations differ in line 6 only through the silence-alone term.")
+    A("")
     A("---")
     A("")
     A("## 3. Position 7 — outcome assignment at two instants")
@@ -396,7 +449,9 @@ def main():
     A("**`p_at_bound` marks WHETHER `p` reached its bound, NOT WHY** — Human Lead ruling, "
       "2026-08-16 (`decisions/0083` §2), restating `0082`. **`TRUE` where `p` is at its bound, "
       "null where `p` is null.** `0082`'s definition **by two mechanisms** is **superseded**: the "
-      "two clauses are **coextensive by construction**, so the class it called `FALSE` is "
+      "two clauses are **coextensive** — on a chain of three links of which the first two are "
+      "construction and the third, `max(E2) = F2`, is MEASURED (`0085` §4) — so the class it "
+      "called `FALSE` is "
       "**empty** and on the adopted rank form there is only one why. **The column is kept** — "
       "Step 10 publishes the abandonment distribution off `abandonment_point_p` and needs the "
       "spike **labelled**, and **an emptiness asserted in prose and never emitted cannot be "
@@ -407,23 +462,57 @@ def main():
       "class counted twice**; reading them as a split is a **withdrawn argument** (`CLAUDE.md`, "
       "third blindness class).")
     A("")
-    A("| Population | `p = 1.0` rows, TOTAL | `p_at_bound` `TRUE` | `p = 1.0` with `p_at_bound` "
-      "`FALSE` |")
-    A("| :--- | ---: | ---: | ---: |")
+    A("**FOUR CELLS ON FOUR POPULATIONS** — Red Team blocker B2, `decisions/0085` §3. **Total, "
+      "in-both-classes, saturated-not-final, final-not-saturated and in-neither, on APPLY "
+      "position 5, APPLY post-liveness, DERIV position 5 and DERIV post-liveness.** This is "
+      "`CLAUDE.md`'s standing **both populations, always** rule, not a new requirement. ***On this "
+      "instance's previous run the `p_at_bound_totals_and_coextensivity` block carried "
+      "`APPLY_position_5` and `APPLY_position_7` and nothing else, so the DERIV post-liveness "
+      "figure appeared nowhere*** — **on the population where the ground for keeping the column, "
+      "that an emptiness asserted in prose and never emitted cannot be checked, was therefore "
+      "unmet.**")
+    A("")
+    A("| Population | `p = 1.0` TOTAL | in BOTH classes | saturated, not final | final, not "
+      "saturated | in NEITHER | rows examined (`p` defined) |")
+    A("| :--- | ---: | ---: | ---: | ---: | ---: | ---: |")
     for k, lab in (("APPLY_position_5", "APPLY, position 5"),
-                   ("APPLY_position_7_post_liveness", "APPLY, position 7")):
+                   ("APPLY_position_7_post_liveness", "APPLY, post-liveness"),
+                   ("DERIV_position_5", "DERIV, position 5"),
+                   ("DERIV_position_7_post_liveness", "DERIV, post-liveness")):
         v = sp[k]
-        A(f"| {lab} | {n(v['total_p_equals_1'])} | {n(v['p_at_bound_TRUE'])} | "
-          f"{n(v['p_equals_1_but_p_at_bound_FALSE'])} |")
+        A(f"| {lab} | **{n(v['total_p_equals_1'])}** | {n(v['in_BOTH_classes'])} | "
+          f"{n(v['saturated_not_final'])} | {n(v['final_not_saturated'])} | "
+          f"{n(v['in_NEITHER_class'])} | {n(v['coverage']['rows_with_p_defined_examined'])} |")
     A("")
     A(bt("every figure in this table"))
     A("")
+    A("**The coverage column is not decoration.** Three of the four cells are zero on every row "
+      "of this table, and **an empty result and a clean result are the same value** — the count "
+      "of rows the cells were computed over is what says which this is.")
+    A("")
+    A("**The `p = 1.0` figures are TOTALS, not a sum of two classes**, and the `TRUE` count "
+      "equals the total on all four populations because the `FALSE` class is empty.")
+    A("")
     ct = sp["cross_tab_APPLY_position_5"]
-    A("**The two clauses are coextensive BY CONSTRUCTION, and it is measured here rather than "
-      "asserted.** Under the set-membership rule `A_H ⊆ E2`, so `m_H ∈ E2`, and therefore "
-      "`|{e ∈ E2 : e ≤ m_H}| = L2` **if and only if** `m_H = max(E2) = F2` — which *is* \"left at "
-      "the final episode\". **Neither clause can hold without the other.** On APPLY position 5: "
-      f"**{n(ct['saturated_and_final_episode'])}** rows satisfy both, "
+    lk3 = sp["link_3_max_E2_equals_F2_MEASURED_NOT_ASSUMED"]
+    A("**THE CHAIN HAS THREE LINKS AND ONLY TWO ARE CONSTRUCTION** — Red Team P4, "
+      "`decisions/0085` §4. ***`0083` §2 named two causes for a future `FALSE` row; there are "
+      "three.***")
+    A("")
+    A("1. **`m_H ∈ E2`** — **CONSTRUCTION.** The set-membership drop rule drops any episode whose "
+      "`number` is not in `E2`, so `A_H ⊆ E2` and its maximum is a member of `E2`.")
+    A("2. **`|{e ∈ E2 : e ≤ m_H}| = L2 ⟺ m_H = max(E2)`** — **CONSTRUCTION**, given `L2 := |E2|`, "
+      "which the spec fixes.")
+    A(f"3. **`max(E2) = F2`** — **NOT CONSTRUCTION.** It holds only because **the finale is the "
+      "highest-numbered listed episode**, and **where a season lists an episode numbered above "
+      "its finale the two separate** — the `s2_aired_lt_listed` case this step is told to count. "
+      f"**MEASURED, NOT ASSUMED: {lk3['shows_where_max_E2_differs_from_F2']} of "
+      f"{n(lk3['shows_in_frame_examined'])} frame shows have `max(E2) ≠ F2`, and "
+      f"{lk3['s2_aired_lt_listed_shows']} shows carry `s2_aired_lt_listed`.** The frame does not "
+      "move across Step 13's grid, so this is measured once and holds at every arm.")
+    A("")
+    A("**So the two clauses are coextensive, and the emptiness is measured rather than asserted.** "
+      f"On APPLY position 5: **{n(ct['saturated_and_final_episode'])}** rows satisfy both, "
       f"**{n(ct['saturated_not_final_episode'])}** satisfy the numerator clause alone, "
       f"**{n(ct['final_episode_not_saturated'])}** the final-episode clause alone, and "
       f"**{n(ct['neither'])}** neither.")
@@ -434,11 +523,11 @@ def main():
       "is DATA and could be false on another frame; the coextensivity above would still hold.** "
       "Stated separately so a construction argument is not read as a frame accident.")
     A("")
-    A("**Why the column is still worth emitting.** The `FALSE` class is empty because of the rank "
-      "form and the set-membership rule, **both of which are `W`-invariant**, so it stays empty "
-      "across Step 13's arms. **A `FALSE` row anywhere means one of the two has broken**, and "
-      "that is a thing worth catching. `p_at_bound` is `TRUE` exactly on the `p = 1.0` rows, "
-      "`FALSE` on the rest of Started-and-left, and null elsewhere.")
+    A("**Why the column is still worth emitting.** The `FALSE` class is empty because of links 1 "
+      "and 2, **both `W`-invariant**, and link 3, **a frame property that does not move across "
+      "Step 13's grid** — so it stays empty at every arm. **A `FALSE` row anywhere means one of "
+      "the THREE has broken**, and that is a thing worth catching. `p_at_bound` is `TRUE` exactly "
+      "on the `p = 1.0` rows, `FALSE` on the rest of Started-and-left, and null elsewhere.")
     A("")
     A("---")
     A("")
@@ -816,12 +905,48 @@ def main():
       "less the completers, 58,345 PAIRS**, and it is **not** the set-membership drop rule, which "
       "is a different rule, deletes 0 **records**, and would have put the wrong rule in the spec. "
       "This instance measured the same set before the restatement and the count is unchanged.")
+    cu = lo9["clustering_universe_NAMED"]
     A(f"- **The loose count publishes because it BOUNDS HOW WRONG STRICT COULD BE**, and the "
       f"error runs **opposite** to D9's own lower-bound caveat. It is not adopted because "
-      f"{lo9['why_it_is_not_adopted']}. Measured here: its largest merged clusters are "
-      + ", ".join(f"`{c['loose_key']}` ({c['distinct_strict_keys_merged']} distinct strict keys)"
-                  for c in lo9["largest_clusters_it_merges"][:3])
-      + " — remakes and national versions, exactly the failure `0074` names.")
+      f"{lo9['why_it_is_not_adopted']}.")
+    A("")
+    A("**THE UNIVERSE THE CLUSTERING RUNS OVER, NAMED AT THE POINT OF USE** — Red Team blocker "
+      "B1, `decisions/0085` §2. **The two arms published DISJOINT cluster lists on IDENTICAL "
+      "counts** — no shared member, maxima 8 against 10 — **while every count around them "
+      "reconciled.** That is **not a counting difference; it is a difference in WHICH SET OF SHOWS "
+      "IS BEING CLUSTERED**, and the spec never said which. **The cluster examples are the "
+      "EVIDENCE for the loose key's only warrant**, so two arms giving different evidence for one "
+      "warrant makes the warrant irreproducible while the deliverables read otherwise. **THE "
+      "DIVERGENCE IS REPORTED, NOT RECONCILED.**")
+    A("")
+    A(f"**This arm clusters {cu['THIS_ARM_CLUSTERS']}** — "
+      f"**{n(cu['distinct_show_ids_carrying_a_slug_CLUSTERED'])} show IDs**, out of "
+      f"{n(cu['distinct_show_ids_in_the_sweep'])} distinct show IDs in the sweep "
+      f"({n(cu['distinct_show_ids_without_a_slug_excluded'])} carry no slug and are excluded), "
+      f"standing behind {n(cu['user_show_coverage_rows_behind_them'])} user-show coverage rows. "
+      "**It is NOT the 1,138 frame shows and NOT the undeduplicated coverage rows**, both of "
+      "which are sized in the `.json` so a reader can see which universe this is not. "
+      f"**{n(cu['clusters_with_more_than_one_strict_key'])} loose keys merge more than one strict "
+      "key.**")
+    A("")
+    A(f"**And \"largest\" ranks by {cu['what_LARGEST_ranks_by_here']}**")
+    A("")
+    A("| Ranked by distinct STRICT keys merged | | Ranked by distinct SHOW IDs merged | |")
+    A("| :--- | ---: | :--- | ---: |")
+    _l1 = lo9["largest_clusters_it_merges"][:3]
+    _l2 = lo9["largest_clusters_ranked_by_distinct_show_ids_instead"][:3]
+    for i in range(max(len(_l1), len(_l2))):
+        c1 = (f"`{_l1[i]['loose_key']}` | {_l1[i]['distinct_strict_keys_merged']}"
+              if i < len(_l1) else " | ")
+        c2 = (f"`{_l2[i]['loose_key']}` | {_l2[i]['distinct_show_ids_merged']}"
+              if i < len(_l2) else " | ")
+        A(f"| {c1} | {c2} |")
+    A("")
+    A(bt("both cluster lists and the universe counts"))
+    A("")
+    A("**If the other arm names the same universe and still differs, one of us has a bug and that "
+      "is the finding.** These are remakes and national versions, exactly the failure `0074` "
+      "names.")
     A(f"- **The third key is reported for the record and is neither ruled key.** It reduces "
       f"`the-100` to `the`. **This instance used it on its previous run and published "
       f"{n(tk9['complementary_signature_id_pairs'])} complementary pairs against the other arm's "
@@ -1036,7 +1161,8 @@ def main():
     A("- **`p_at_bound` — added at `decisions/0082`, definition restated by `0083` §2.** It marks "
       "**WHETHER `p` reached its bound, not why.** Emitted as a **nullable** boolean: null where "
       "`p` is null, because an inapplicable value and a false one must not look alike. **`0082`'s "
-      "two-mechanism definition is superseded** — the clauses are coextensive by construction and "
+      "two-mechanism definition is superseded** — the clauses are coextensive, on a three-link "
+      "chain whose third link is measured and not construction (`0085` §4), and "
       "the `FALSE` class is empty — **and the column is kept anyway**, because Step 10 needs the "
       "spike labelled and because an emptiness asserted in prose and never emitted cannot be "
       "checked. §3.1.")
@@ -1253,9 +1379,12 @@ def main():
       "**W = 108 days** · **H = 91 days** · **Zero API calls** · **Counts only**")
     B("")
     wcf = inv["what_can_actually_fail"]
-    B("> **CLEAN RERUN, ordered by the Human Lead**, built from the committed state; nothing from "
-      "the run that was terminated mid-flight is read or relied on. **Every result below is "
-      "produced by one pipeline run and none is carried from a previous artifact.** The two "
+    B("> **RERUN AGAINST `decisions/0085`, ordered by the Human Lead — a rerun, not an "
+      "amendment.** The previous `-a` invariant report was **not patched**; nothing in it is read "
+      "or carried. **Every result below is produced by one pipeline run.** **`0085` adds no "
+      "invariant**: its §7 leaves B3 — the half-open UTC-instant form and D11 as a global cutoff "
+      "— **carried and open, and that is a Human Lead ruling, so neither was added here.** The "
+      "two "
       "rulings that reach this report are structural rather than numerical. **`0079` B6: every "
       "invariant result names the build it was measured on** — build " + BT + ", defined in full "
       "in the waterfall deliverable §0. **`0080` §3: every invariant names the population it runs "

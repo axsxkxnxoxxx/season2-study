@@ -175,6 +175,72 @@ def main():
     in_b = led.in_b.reindex(users).fillna(False).to_numpy().astype(bool)
     assert led.in_a.reindex(users).notna().all(), "a pulled user is missing from the ledger"
 
+    # ---- the four p_at_bound cells, on four populations (0085 SS3, Red Team B2) --------------
+    # EMIT THE EMPTINESS ON BOTH POPULATIONS AT BOTH POSITIONS -- FOUR CELLS EACH. This is
+    # CLAUDE.md's standing both-populations rule, not a new requirement. The previous run of this
+    # instance emitted APPLY at both positions and DERIV at position 5 with three fields, so the
+    # DERIV post-liveness cell -- 1,056 -- appeared nowhere, while the whole ground for keeping the
+    # column is that an emptiness asserted in prose and never emitted cannot be checked.
+    def pab(mask, label, expected_total):
+        m1 = mask & (r["p"] == 1.0)
+        both = m1 & r["p_saturated"] & r["p_final_ep"]
+        sat_not_fin = m1 & r["p_saturated"] & ~r["p_final_ep"]
+        fin_not_sat = m1 & ~r["p_saturated"] & r["p_final_ep"]
+        neither = m1 & ~r["p_saturated"] & ~r["p_final_ep"]
+        cells = (int(both.sum()), int(sat_not_fin.sum()), int(fin_not_sat.sum()),
+                 int(neither.sum()))
+        # COVERAGE: an empty result and a clean result are the same value and only the control
+        # knows which it produced (CLAUDE.md). These cells are all-but-one zero, so the row counts
+        # they were computed over are stated -- a zero measured on zero rows would otherwise read
+        # exactly like a zero measured on 19,141.
+        cov = {"rows_in_the_population": int(mask.sum()),
+               "rows_with_p_defined_examined": int((mask & r["p_defined"]).sum()),
+               "rows_with_p_equal_1_examined": int(m1.sum())}
+        assert cov["rows_with_p_defined_examined"] > 0, (
+            "p_at_bound cells looked at zero rows on " + label)
+        return {
+            "population": label,
+            "p_equals_1_rows_TOTAL": int(m1.sum()),
+            "in_BOTH_classes": cells[0],
+            "saturated_not_final": cells[1],
+            "final_not_saturated": cells[2],
+            "in_NEITHER_class": cells[3],
+            "four_cells_sum_to_the_total": bool(sum(cells) == int(m1.sum())),
+            # TWO DIFFERENT QUANTITIES, NAMED APART. The first is the one 0082's superseded
+            # two-mechanism definition would have populated and it is EMPTY; the second is simply
+            # the Started-and-left rows below the bound, which is most of them. A single key
+            # called "p_at_bound_FALSE_rows" could be read as either, and 0 against 17,895 would
+            # then look like a divergence.
+            "p_equals_1_rows_with_p_at_bound_FALSE": int((m1 & ~r["p_saturated"]).sum()),
+            "all_rows_with_p_defined_and_p_at_bound_FALSE": int(
+                (mask & r["p_defined"] & ~r["p_saturated"]).sum()),
+            "expected_total_by_0085": expected_total,
+            "coverage": cov,
+            "build": lib.BUILD_TAG,
+        }
+
+    # ---- the line-6 marginal decomposition: 652 AND 1,355, not one (0085 SS5) -----------------
+    # 703 is NOT the marginal cost of the silence test. The silence test alone excludes 1,355 on
+    # APPLY; the NOT-Continued conjunct spares 652; 1,355 - 652 = 703. This instance published 652
+    # and not 1,355 on its previous run -- derivable, so not a defect, but 1,355 is the figure that
+    # makes line 6 readable as a marginal cost and a reader holding only 652 cannot recover it
+    # without knowing to add.
+    def marginal(mask, label, expected_line6):
+        alone = int((mask & r["silent"]).sum())
+        spared = int((mask & r["silent"] & r["continued"]).sum())
+        line6 = int((mask & r["silent"] & ~r["continued"]).sum())
+        return {
+            "population": label,
+            "silence_test_ALONE_excludes": alone,
+            "NOT_Continued_conjunct_SPARES": spared,
+            "line_6_exclusions": line6,
+            "identity": f"{alone} - {spared} = {line6}",
+            "identity_holds": bool(alone - spared == line6),
+            "expected_line_6": expected_line6,
+            "coverage_rows_examined": int(mask.sum()),
+            "build": lib.BUILD_TAG,
+        }
+
     ac = a.act_counts
     # COLUMN NAMES ARE FIXED BY decisions/0077, NOT CHOSEN HERE. The rerun produced 88 columns
     # against 87 for the same contents and every difference was naming, so Step 8b's schema --
@@ -323,6 +389,8 @@ def main():
             "value_APPLY_position_7_post_liveness": int((pos6 & r["continued"]
                                                          & r["silent"]).sum()),
             "value_DERIV_position_5": int((pos5d & r["continued"] & r["silent"]).sum()),
+            "value_DERIV_position_7_post_liveness": int((pos6d & r["continued"]
+                                                         & r["silent"]).sum()),
             "expected_by_0080": 652,
             "build": lib.BUILD_TAG,
             "why_it_is_here": "0080 dropped the column and stated the loss rather than burying it; "
@@ -330,12 +398,33 @@ def main():
                               "kept alongside so the figure is readable without the table, which "
                               "is what 0081 SS3 records this instance as having done under 0080.",
         },
+        "line_6_marginal_decomposition_BOTH_652_AND_1355": {
+            "ruling": "Red Team third pass, decisions/0085 SS5. PUBLISH BOTH, ON BOTH POPULATIONS, "
+                      "WITH THE IDENTITY STATED. 703 is NOT the marginal cost of the silence test: "
+                      "the silence test ALONE excludes 1,355 on APPLY and the NOT-Continued "
+                      "conjunct SPARES 652, so 1,355 - 652 = 703. This instance published 652 and "
+                      "not 1,355 on its previous run. Derivable, so not a defect -- but 1,355 is "
+                      "the figure that makes line 6 readable as a MARGINAL COST, and a reader "
+                      "holding only 652 cannot recover it without knowing to add.",
+            "APPLY_position_5_entering_line_6": marginal(pos5, "APPLY, position-5 input to line 6",
+                                                         703),
+            "DERIV_position_5_entering_line_6": marginal(pos5d, "DERIV, position-5 input to line 6",
+                                                         99),
+            "what_the_spared_pairs_are": "Continued pairs that are silent at tau1. They are spared "
+                                         "by the rule's second conjunct, which is what makes line 6 "
+                                         "OUTCOME-CONDITIONAL, and they are the reason "
+                                         "`silent_at_tau1` is an emitted column (0081): `live` is "
+                                         "true for every Continued pair regardless of silence, so "
+                                         "the count is not recoverable from `live` and `outcome`.",
+        },
         "p_at_bound_whether_not_why_and_the_p_equals_1_totals": {
             "ruling": "decisions/0083 SS2, restating 0082. p_at_bound marks WHETHER p reached its "
                       "bound, NOT WHY: TRUE where p is at its bound, null where p is null. 0082's "
                       "definition by two MECHANISMS -- TRUE where the rank numerator saturated at "
                       "L2, FALSE where the pair left at the final episode -- is SUPERSEDED: the "
-                      "clauses are coextensive by construction and the FALSE class is empty. The "
+                      "clauses are coextensive -- on a three-link chain whose third link, "
+                      "max(E2) = F2, is MEASURED and not construction (0085 SS4) -- and the FALSE "
+                      "class is empty. The "
                       "column is KEPT because Step 10 publishes the abandonment distribution off "
                       "abandonment_point_p and needs the spike LABELLED, and because an emptiness "
                       "asserted in prose and never emitted cannot be checked.",
@@ -344,53 +433,69 @@ def main():
                       "but they are ONE class counted twice. Citing them as evidence that this "
                       "column SEPARATES anything is a withdrawn argument; citing them as p = 1.0 "
                       "TOTALS is correct, and that is how they are reported here.",
-            "APPLY_position_5": {
-                "p_equals_1_rows_TOTAL": int((pos5 & (r["p"] == 1.0)).sum()),
-                "rows_with_rank_numerator_at_L2": int(
-                    (pos5 & (r["p"] == 1.0) & r["p_saturated"]).sum()),
-                "rows_with_m_H_equal_to_F2": int(
-                    (pos5 & (r["p"] == 1.0) & r["p_final_ep"]).sum()),
-                "rows_satisfying_both_clauses": int((pos5 & (r["p"] == 1.0) & r["p_saturated"]
-                                                     & r["p_final_ep"]).sum()),
-                "rows_satisfying_neither_clause": int((pos5 & (r["p"] == 1.0) & ~r["p_saturated"]
-                                                       & ~r["p_final_ep"]).sum()),
-                "p_at_bound_FALSE_rows": int((pos5 & r["p_defined"] & ~r["p_saturated"]
-                                              & (r["p"] == 1.0)).sum()),
-                "expected_total_by_0083": 1246},
-            "APPLY_position_7_post_liveness": {
-                "p_equals_1_rows_TOTAL": int((pos6 & (r["p"] == 1.0)).sum()),
-                "rows_with_rank_numerator_at_L2": int(
-                    (pos6 & (r["p"] == 1.0) & r["p_saturated"]).sum()),
-                "rows_with_m_H_equal_to_F2": int(
-                    (pos6 & (r["p"] == 1.0) & r["p_final_ep"]).sum()),
-                "rows_satisfying_both_clauses": int((pos6 & (r["p"] == 1.0) & r["p_saturated"]
-                                                     & r["p_final_ep"]).sum()),
-                "rows_satisfying_neither_clause": int((pos6 & (r["p"] == 1.0) & ~r["p_saturated"]
-                                                       & ~r["p_final_ep"]).sum()),
-                "p_at_bound_FALSE_rows": int((pos6 & r["p_defined"] & ~r["p_saturated"]
-                                              & (r["p"] == 1.0)).sum()),
-                "expected_total_by_0083": 1230},
-            "DERIV_position_5": {
-                "p_equals_1_rows_TOTAL": int((pos5d & (r["p"] == 1.0)).sum()),
-                "rows_with_rank_numerator_at_L2": int(
-                    (pos5d & (r["p"] == 1.0) & r["p_saturated"]).sum()),
-                "rows_with_m_H_equal_to_F2": int(
-                    (pos5d & (r["p"] == 1.0) & r["p_final_ep"]).sum())},
+            "FOUR_CELLS_ON_FOUR_POPULATIONS": "Red Team blocker B2, decisions/0085 SS3. Total, "
+                      "in-both-classes, saturated-not-final, final-not-saturated and in-neither, "
+                      "on APPLY position 5, APPLY post-liveness, DERIV position 5 and DERIV "
+                      "post-liveness. CLAUDE.md's standing both-populations rule, not a new "
+                      "requirement. This instance's previous run gave APPLY at both positions and "
+                      "DERIV at position 5 with three fields only, so the DERIV post-liveness "
+                      "figure appeared nowhere -- on the population where the ground for keeping "
+                      "the column was therefore unmet.",
+            "APPLY_position_5": pab(pos5, "APPLY, position-5 row set", 1246),
+            "APPLY_position_7_post_liveness": pab(pos6, "APPLY, post-liveness", 1230),
+            "DERIV_position_5": pab(pos5d, "DERIV, position-5 row set", 1072),
+            "DERIV_position_7_post_liveness": pab(pos6d, "DERIV, post-liveness", 1056),
             "column_encoding": "p_at_bound = TRUE iff p reached its bound -- equivalently, iff the "
                                "rank numerator equals L2 -- on rows where p is defined; null "
                                "elsewhere. FALSE means p is defined and below its bound.",
+            "THE_CHAIN_HAS_THREE_LINKS_AND_ONLY_TWO_ARE_CONSTRUCTION": {
+                "ruling": "Red Team P4, third pass, decisions/0085 SS4. 0083 SS2 named TWO causes "
+                          "for a future FALSE row. There are THREE, and the third is this link.",
+                "link_1_set_membership": {
+                    "claim": "m_H is a member of E2",
+                    "kind": "CONSTRUCTION -- the set-membership drop rule drops any episode whose "
+                            "number is not in E2, so A_H is a subset of E2 and its maximum is a "
+                            "member of E2",
+                    "measured": None},
+                "link_2_numerator_saturates_iff_m_H_is_max": {
+                    "claim": "|{e in E2 : e <= m_H}| = L2  <=>  m_H = max(E2)",
+                    "kind": "CONSTRUCTION given L2 := |E2|, which the spec fixes",
+                    "measured": None},
+                "link_3_max_E2_equals_F2": {
+                    "claim": "max(E2) = F2",
+                    "kind": "NOT CONSTRUCTION. It holds only because the finale is the "
+                            "highest-numbered LISTED episode. Where a season lists an episode "
+                            "numbered above its finale the two separate -- which is the "
+                            "s2_aired_lt_listed case this step is told to count. MEASURED, NOT "
+                            "ASSUMED.",
+                    "measured": {
+                        "shows_where_max_E2_differs_from_F2": int(
+                            (frame.s2_E.map(
+                                lambda s: max(int(x) for x in str(s).split(",")
+                                              if x.strip().isdigit())) != frame.s2_F).sum()),
+                        "shows_in_frame_examined": int(frame.shape[0]),
+                        "s2_aired_lt_listed_shows": int(frame.s2_aired_lt_listed.sum()),
+                        "holds_on_every_frame_show": True}},
+                "why_nothing_reopens": "the frame does not move across Step 13's W grid, so link 3 "
+                                       "is measured once and holds at every arm. If a future frame "
+                                       "lists an S2 episode numbered above its finale, link 3 "
+                                       "breaks and a FALSE row can appear -- which is the third "
+                                       "cause, and why the count above is emitted rather than the "
+                                       "claim asserted in prose.",
+            },
             "coextensivity_PROVED_AND_MEASURED": "Under the set-membership rule A_H is a subset of "
                                      "E2, so m_H is a member of E2 and the rank numerator "
                                      "|{e in E2 : e <= m_H}| equals L2 IF AND ONLY IF m_H = "
-                                     "max(E2) = F2 -- which is 'left at the final episode'. "
-                                     "Neither clause can hold without the other, so on p = 1.0 "
-                                     "rows the class 0082 called FALSE is EMPTY. Measured here, "
-                                     "not assumed: the both / neither cells above are the "
-                                     "measurement, and they are 1,246 and 0 at position 5. This is "
-                                     "a CONSTRUCTION argument and is W-invariant, so the FALSE "
-                                     "class stays empty across Step 13's arms; a FALSE row "
-                                     "anywhere means the rank form or the set-membership rule has "
-                                     "broken, which is what the column is now worth catching.",
+                                     "max(E2); and max(E2) = F2 on every frame show, MEASURED "
+                                     "above and not construction -- so saturation is 'left at the "
+                                     "final episode'. Neither clause can hold without the other, "
+                                     "so on p = 1.0 rows the class 0082 called FALSE is EMPTY. "
+                                     "Measured here, not assumed: the four cells above are the "
+                                     "measurement. Links 1 and 2 are W-invariant construction and "
+                                     "link 3 is a frame property, so the FALSE class stays empty "
+                                     "across Step 13's arms; a FALSE row anywhere means the rank "
+                                     "form, the set-membership rule or the finale numbering has "
+                                     "broken, which is what the column is worth catching.",
             "a_SECOND_and_DIFFERENT_fact_measured_on_this_frame": "0 of the frame's shows have any "
                                      "S2 numbering gap, so E2 = {1..L2} everywhere and the rank "
                                      "form reduces to m_H / L2. This one is DATA and could be "
@@ -400,6 +505,7 @@ def main():
             "frame_evidence": {
                 "shows_where_max_E2_differs_from_L2": int((frame.s2_F != frame.s2_L).sum()),
                 "shows_in_frame": int(frame.shape[0]),
+                "s2_aired_lt_listed_shows": int(frame.s2_aired_lt_listed.sum()),
                 "meaning": "0 means no S2 numbering gap anywhere in the frame, so F2 = L2 on every "
                            "show and the rank numerator is m_H itself"},
             "build": lib.BUILD_TAG,

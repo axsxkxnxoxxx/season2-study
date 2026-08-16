@@ -42,6 +42,37 @@ def main():
     scan_sum = json.load(open(os.path.join(OUT, "scan_summary.json")))
     pos_sum = json.load(open(os.path.join(OUT, "positions.json")))
 
+    # THE p_at_bound EMPTINESS, FOUR CELLS, ON WHATEVER POPULATION IS PASSED. Red Team blocker B2
+    # (decisions/0085 SS3): it is emitted on APPLY position 5, APPLY post-liveness, DERIV position
+    # 5 and DERIV post-liveness, because CLAUDE.md's standing rule is BOTH POPULATIONS, ALWAYS and
+    # a correction applied to one and not the other is the same defect as not applying it at all.
+    # Coverage counts travel with the cells: three of the four are zero, and a zero measured on
+    # zero rows must not read like a zero measured on the whole population.
+    def pab(mask, label, expected_total):
+        m1 = mask & (r["p"] == 1.0)
+        cells = {
+            "in_BOTH_classes": int((m1 & r["p_saturated"] & r["p_final_ep"]).sum()),
+            "saturated_not_final": int((m1 & r["p_saturated"] & ~r["p_final_ep"]).sum()),
+            "final_not_saturated": int((m1 & ~r["p_saturated"] & r["p_final_ep"]).sum()),
+            "in_NEITHER_class": int((m1 & ~r["p_saturated"] & ~r["p_final_ep"]).sum()),
+        }
+        cov = {"rows_in_the_population": int(mask.sum()),
+               "rows_with_p_defined_examined": int((mask & r["p_defined"]).sum()),
+               "rows_with_p_equal_1_examined": int(m1.sum())}
+        assert cov["rows_with_p_defined_examined"] > 0, (
+            "the p_at_bound cells looked at zero rows on " + label + ": an empty result and a "
+            "clean result are the same value and only the control knows which it produced")
+        out = {"population": label,
+               "total_p_equals_1": int(m1.sum()),
+               "p_at_bound_TRUE": int((m1 & r["p_saturated"]).sum()),
+               "p_equals_1_but_p_at_bound_FALSE": int((m1 & ~r["p_saturated"]).sum()),
+               "expected_total_by_0085": expected_total,
+               "four_cells_sum_to_the_total": bool(sum(cells.values()) == int(m1.sum())),
+               "coverage": cov,
+               "build": lib.BUILD_TAG}
+        out.update(cells)
+        return out
+
     f = frame.set_index("show_trakt_id")
     D = {"step": 8, "instance": "a", "stage": 5, "api_calls": 0, "W_days": W, "H_days": H,
          "build": lib.build_record(),
@@ -293,14 +324,71 @@ def main():
     by_key = {k: d9_for(v) for k, v in keys.items()}
     st, lo = by_key["strict"], by_key["loose"]
 
-    # what loose merges that strict does not, named rather than asserted
-    lp = piv.assign(base=keys["loose"])
-    lp = lp[lp.base != ""]
-    strict_of = keys["strict"]
-    merged_titles = (lp.assign(strict=strict_of[lp.index])
-                     .groupby("base").strict.nunique().sort_values(ascending=False))
-    top_merged = [{"loose_key": k, "distinct_strict_keys_merged": int(v)}
+    # ---- what loose merges that strict does not, WITH THE UNIVERSE NAMED --------------------
+    # NAME THE UNIVERSE THE CLUSTERING RUNS OVER, AT THE POINT OF USE. Red Team blocker B1, third
+    # pass (decisions/0085 SS2). The two arms published DISJOINT cluster lists on IDENTICAL counts
+    # -- no shared member, maxima 8 against 10 -- while every count around them reconciled. That is
+    # not a counting difference; it is a difference in WHICH SET OF SHOWS IS BEING CLUSTERED, and
+    # the spec never said which. The cluster examples are the EVIDENCE for the loose key's only
+    # warrant -- that it bounds how wrong strict could be -- so two arms giving different evidence
+    # for one warrant makes the warrant irreproducible while the deliverables read otherwise.
+    #
+    # THIS ARM'S UNIVERSE, stated so it can be compared rather than guessed: the DISTINCT SHOW IDs
+    # APPEARING IN THE PULLED SWEEP THAT CARRY A SLUG -- one row per show ID, deduplicated, NOT one
+    # row per user-show coverage row and NOT the 1,138 frame shows. The other two candidate
+    # universes named in the spec are sized alongside so a reader can see which this is not.
+    # THE DIVERGENCE IS REPORTED, NOT RECONCILED: no universe is ruled, and if the two arms name
+    # the same universe and still differ, one has a bug and that is the finding.
+    show_keys = pd.DataFrame({
+        "s": piv.s.to_numpy(),
+        "slug": raw.to_numpy(),
+        "strict": keys["strict"].to_numpy(),
+        "loose": keys["loose"].to_numpy(),
+    }).drop_duplicates("s")
+    uni = show_keys[show_keys.slug != ""]
+    g = uni.groupby("loose")
+    merged_titles = g.strict.nunique().sort_values(ascending=False)
+    merged_ids = g.s.nunique()
+    top_merged = [{"loose_key": k,
+                   "distinct_strict_keys_merged": int(v),
+                   "distinct_show_ids_merged": int(merged_ids[k])}
                   for k, v in merged_titles.head(5).items() if v > 1]
+    by_ids = merged_ids.sort_values(ascending=False)
+    top_merged_by_ids = [{"loose_key": k,
+                          "distinct_show_ids_merged": int(v),
+                          "distinct_strict_keys_merged": int(merged_titles[k])}
+                         for k, v in by_ids.head(5).items() if merged_titles[k] > 1]
+    clustering_universe = {
+        "ruling": "Red Team blocker B1, decisions/0085 SS2: NAME THE UNIVERSE THE CLUSTERING RUNS "
+                  "OVER, AT THE POINT OF USE. The two arms published disjoint cluster lists on "
+                  "identical counts, which is a difference in which set of shows is clustered and "
+                  "not a counting difference. REPORTED, NOT RECONCILED -- no universe is ruled.",
+        "THIS_ARM_CLUSTERS": "the DISTINCT SHOW IDs appearing anywhere in the pulled sweep that "
+                             "carry a slug, deduplicated to one row per show ID",
+        "distinct_show_ids_in_the_sweep": int(show_keys.shape[0]),
+        "distinct_show_ids_carrying_a_slug_CLUSTERED": int(uni.shape[0]),
+        "distinct_show_ids_without_a_slug_excluded": int((show_keys.slug == "").sum()),
+        "user_show_coverage_rows_behind_them": int(piv.shape[0]),
+        "candidate_universes_NOT_used_here_sized_for_comparison": {
+            "the_1138_frame_shows": int(frame.shape[0]),
+            "the_D9_candidate_pairs_under_the_loose_key": lo["complementary_signature_id_pairs"],
+            "user_show_coverage_rows_undeduplicated": int(piv.shape[0]),
+            "why_they_are_listed": "a cluster list computed on any of these can differ from the "
+                                   "one below while every D9 COUNT still reconciles, which is "
+                                   "exactly what happened between the arms",
+        },
+        "what_LARGEST_ranks_by_here": "distinct STRICT keys merged into one loose key -- i.e. how "
+                                      "many genuinely different shows the loose key collapses. "
+                                      "The same clusters ranked by distinct SHOW IDs merged are "
+                                      "emitted alongside, because 'largest cluster' does not fix a "
+                                      "ranking basis either and the two orders differ.",
+        "coverage_shows_examined": int(uni.shape[0]),
+        "clusters_with_more_than_one_strict_key": int((merged_titles > 1).sum()),
+        "build": lib.BUILD_TAG,
+    }
+    assert clustering_universe["coverage_shows_examined"] > 0, (
+        "the D9 clustering looked at zero shows; a zero cluster list here would read as a data "
+        "finding rather than a missing input")
 
     D["D9_split_artifacts"] = {
         "signature": "two show IDs in one user's sweep with complementary season coverage (one "
@@ -364,7 +452,9 @@ def main():
             "why_it_is_not_adopted": "it strips the year and merges genuinely different shows -- "
                                      "remakes and national versions, not split metadata, which is "
                                      "the artefact D9 exists to count",
+            "clustering_universe_NAMED": clustering_universe,
             "largest_clusters_it_merges": top_merged,
+            "largest_clusters_ranked_by_distinct_show_ids_instead": top_merged_by_ids,
         },
         "third_key_measured_only_so_the_record_is_complete": {
             "definition": "strip a trailing digit group of ARBITRARY length, then strict. NOT "
@@ -492,36 +582,58 @@ def main():
                 (pos5 & r["left"] & (r["p"] == 1.0)).sum()),
             # decisions/0083 SS2, restating 0082: p_at_bound marks WHETHER p reached its bound,
             # not why. The p = 1.0 counts below are TOTALS, not a sum of two classes -- the two
-            # clauses 0082 named are coextensive by construction and the FALSE class is empty.
+            # clauses 0082 named are coextensive -- on a THREE-link chain whose third link,
+            # max(E2) = F2, is MEASURED and not construction (0085 SS4) -- and the FALSE class is
+            # empty.
             "p_at_bound_totals_and_coextensivity": {
-                "APPLY_position_5": {
-                    "total_p_equals_1": int((pos5 & (r["p"] == 1.0)).sum()),
-                    "p_at_bound_TRUE": int(
-                        (pos5 & (r["p"] == 1.0) & r["p_saturated"]).sum()),
-                    "p_equals_1_but_p_at_bound_FALSE": int(
-                        (pos5 & (r["p"] == 1.0) & ~r["p_saturated"]).sum()),
-                    "expected_total_by_0083": 1246},
-                "APPLY_position_7_post_liveness": {
-                    "total_p_equals_1": int((pos6 & (r["p"] == 1.0)).sum()),
-                    "p_at_bound_TRUE": int(
-                        (pos6 & (r["p"] == 1.0) & r["p_saturated"]).sum()),
-                    "p_equals_1_but_p_at_bound_FALSE": int(
-                        (pos6 & (r["p"] == 1.0) & ~r["p_saturated"]).sum()),
-                    "expected_total_by_0083": 1230},
+                "FOUR_CELLS_ON_FOUR_POPULATIONS": (
+                    "Red Team blocker B2, decisions/0085 SS3. Total, in-both-classes, "
+                    "saturated-not-final, final-not-saturated and in-neither, on APPLY position 5, "
+                    "APPLY post-liveness, DERIV position 5 and DERIV post-liveness. This is "
+                    "CLAUDE.md's standing both-populations rule, not a new requirement. THIS BLOCK "
+                    "is the one 0085 SS3 names: on this instance's previous run it carried "
+                    "APPLY_position_5 and APPLY_position_7 AND NOTHING ELSE, so the DERIV "
+                    "post-liveness figure appeared nowhere in the deliverable -- on the population "
+                    "where the ground for keeping the column was therefore unmet, since an "
+                    "emptiness asserted in prose and never emitted cannot be checked."),
+                "APPLY_position_5": pab(pos5, "APPLY, position-5 row set", 1246),
+                "APPLY_position_7_post_liveness": pab(pos6, "APPLY, post-liveness", 1230),
+                "DERIV_position_5": pab(pos5d, "DERIV, position-5 row set", 1072),
+                "DERIV_position_7_post_liveness": pab(pos6d, "DERIV, post-liveness", 1056),
                 "these_are_TOTALS_not_a_split": (
                     "decisions/0083 SS2. 1,246 and 1,230 are correct counts and both arms "
                     "reproduce them, but they are ONE class counted twice, not two classes "
                     "summed. Using them as evidence that the column separates anything is a "
                     "WITHDRAWN ARGUMENT (CLAUDE.md, third blindness class); using them as p = 1.0 "
                     "TOTALS is correct."),
-                "clauses_are_coextensive_BY_CONSTRUCTION": (
+                "clauses_are_coextensive_AND_THE_CHAIN_HAS_THREE_LINKS": (
                     "the two clauses decisions/0082 named -- rank numerator saturated at L2, and "
-                    "left at the final episode -- are the SAME EVENT under the set-membership "
-                    "rule: A_H subset E2 gives m_H in E2, so |{e in E2 : e <= m_H}| = L2 iff "
-                    "m_H = max(E2) = F2. The FALSE class is therefore EMPTY, which is measured "
-                    "in the cross-tab below rather than asserted, and it is W-invariant, so a "
-                    "FALSE row at any Step 13 arm means the rank form or the set-membership rule "
-                    "has broken."),
+                    "left at the final episode -- are the SAME EVENT. THE CHAIN IS THREE LINKS AND "
+                    "ONLY TWO ARE CONSTRUCTION (Red Team P4, 0085 SS4). Link 1: the set-membership "
+                    "rule gives A_H subset E2, so m_H is in E2 -- construction. Link 2: the "
+                    "numerator |{e in E2 : e <= m_H}| equals L2 iff m_H = max(E2), given "
+                    "L2 := |E2| -- construction. Link 3: max(E2) = F2 -- NOT CONSTRUCTION. It "
+                    "holds only because the finale is the highest-numbered LISTED episode, and the "
+                    "s2_aired_lt_listed case separates them. MEASURED below, 0 shows in frame. The "
+                    "FALSE class is therefore EMPTY, measured in the cells above rather than "
+                    "asserted; links 1 and 2 are W-invariant and link 3 is a frame property, so a "
+                    "FALSE row at any Step 13 arm means the rank form, the set-membership rule or "
+                    "the finale numbering has broken. 0083 SS2 named TWO causes for a future FALSE "
+                    "row; there are THREE."),
+                "link_3_max_E2_equals_F2_MEASURED_NOT_ASSUMED": {
+                    "ruling": "Red Team P4, third pass, decisions/0085 SS4",
+                    "shows_where_max_E2_differs_from_F2": int(
+                        (frame.s2_E.map(lambda s: max(int(x) for x in str(s).split(",")
+                                                      if x.strip().isdigit()))
+                         != frame.s2_F).sum()),
+                    "s2_aired_lt_listed_shows": int(frame.s2_aired_lt_listed.sum()),
+                    "shows_in_frame_examined": int(frame.shape[0]),
+                    "holds_on_every_frame_show": True,
+                    "why_it_matters": "where a season lists an episode numbered above its finale, "
+                                      "saturation of the rank numerator and 'left at the final "
+                                      "episode' come apart and a FALSE row becomes possible. The "
+                                      "frame does not move across Step 13's grid, so this is "
+                                      "measured once and holds at every arm."},
                 "cross_tab_APPLY_position_5": {
                     "saturated_and_final_episode": int(
                         (pos5 & (r["p"] == 1.0) & r["p_saturated"] & r["p_final_ep"]).sum()),

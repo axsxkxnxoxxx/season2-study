@@ -45,8 +45,15 @@ SRC = os.path.join(ROOT, "src")
 #
 # The tag below is what appears at each point of use; this record is the one full definition.
 # ---------------------------------------------------------------------------------------------
-BUILD_TAG = "a/2026-08-16"
-BUILD_NAME = "position-5 build of 2026-08-16, instance `a`"
+# TWO BUILDS EXIST ON 2026-08-16 -- the run that Red Team's third pass reviewed, and this rerun
+# against decisions/0085. A shared tag would make every figure in this file ambiguous between
+# them, which is the exact failure the provenance rule exists to prevent, so the tag carries the
+# `-0085` suffix and the name says which run it is.
+BUILD_TAG = "a/2026-08-16-0085"
+BUILD_NAME = ("position-5 build of 2026-08-16, instance `a`, RERUN against decisions/0085 "
+              "(Red Team third pass: B1, B2, P4 and the line-6 decomposition). The earlier "
+              "2026-08-16 build of this instance is the one 0085 reviewed; no figure moves "
+              "between them, but they are different builds and are tagged apart.")
 STAGE_FILES = ["step8_a_lib.py", "step8_a_1_scan.py", "step8_a_2_positions.py",
                "step8_a_3_table.py", "step8_a_4_arms.py", "step8_a_4b_slugs.py",
                "step8_a_5_diagnostics.py", "step8_a_6_emit.py", "step8_a_run.py"]
@@ -97,7 +104,7 @@ def build_record():
                    "processed/step2/frame.csv": _sha(os.path.join(ROOT, "processed/step2/frame.csv")),
                    "processed/step4/pull_ledger.jsonl": _sha(
                        os.path.join(ROOT, "processed/step4/pull_ledger.jsonl"))},
-        "spec_read": "task-sheet.md Step 8 as it stands, plus decisions/0066-0082",
+        "spec_read": "task-sheet.md Step 8 as it stands, plus decisions/0066-0085",
         "relation_to_the_2026_08_13_build": "this build reproduces the figures decisions/0078 and "
                                             "0079 restate on the position-5 build of 2026-08-13 "
                                             "(58,345 pairs; 324 of 5,694; 178 of 2,549; 703/99). "

@@ -125,7 +125,115 @@ def d9(m: dict, frame: pd.DataFrame, st1: dict) -> dict:
     in_a_strict = np.isin(cp, code_a_strict)
     in_a_loose = np.isin(cp, code_a_loose)
 
+    # ---- B1 (decisions/0085 Sec 2): NAME THE UNIVERSE THE CLUSTERING RUNS
+    # OVER, AT THE POINT OF USE.  The two arms published DISJOINT cluster lists
+    # on IDENTICAL counts -- no shared member, maxima 8 against 10 -- while
+    # every count around them reconciled. That is not a counting difference: it
+    # is a difference in WHICH SET OF SHOWS IS BEING CLUSTERED, and the spec
+    # never said which.  The cluster examples are the EVIDENCE for the loose
+    # key's only warrant (that it bounds how wrong strict could be), so two arms
+    # giving different evidence for one warrant makes the warrant irreproducible
+    # while the deliverables read otherwise.
+    #
+    # THE DIVERGENCE IS REPORTED, NOT RECONCILED. No universe is ruled. So all
+    # THREE candidate universes the ruling names are measured here and each is
+    # labelled, and the one this instance PUBLISHES as its headline list is
+    # named explicitly rather than left to be inferred from a number.
     top = sig_loose.groupby("k_loose").size().sort_values(ascending=False)
+
+    def cluster_over_show_ids(ids: list[int]) -> dict:
+        """Cluster DISTINCT SHOW IDs by the loose key. Unit: show IDs per key."""
+        by: dict[str, set[int]] = {}
+        for sid in ids:
+            by.setdefault(k_loose(slugs.get(int(sid), str(sid))), set()).add(int(sid))
+        sizes = sorted(((k, len(v)) for k, v in by.items()),
+                       key=lambda kv: (-kv[1], kv[0]))
+        return {
+            "unit": "distinct show IDs sharing one LOOSE key",
+            "members_examined": len(ids),
+            "distinct_loose_keys": len(by),
+            "keys_merging_two_or_more_show_ids": sum(1 for _, n in sizes if n > 1),
+            "largest_clusters": {k: n for k, n in sizes[:8]},
+            "max_cluster_size": sizes[0][1] if sizes else 0,
+        }
+
+    slugged_ids = sorted(slugs)
+    frame_ids_sorted = sorted(frame_ids)
+    clustering = {
+        "ruling": ("decisions/0085 Sec 2, Red Team blocker B1 -- NAME THE UNIVERSE THE "
+                   "CLUSTERING RUNS OVER, AT THE POINT OF USE. The two arms published "
+                   "disjoint cluster lists on identical counts, sharing no member, with "
+                   "maxima 8 against 10, while every count around them reconciled. It is a "
+                   "difference in WHICH SET OF SHOWS IS CLUSTERED, and the spec never said"),
+        "status": ("REPORTED, NOT RECONCILED. No universe is ruled by 0085. All three "
+                   "candidate universes it names are measured and labelled; this instance "
+                   "names the one it publishes. If both arms name the SAME universe and still "
+                   "differ, one has a bug and that is the finding"),
+        "PUBLISHED_UNIVERSE": "U3_D9_candidate_complementary_pairs",
+        "why_that_one": ("the loose key publishes for exactly one reason -- it bounds how "
+                         "wrong STRICT could be -- and what STRICT vs LOOSE differ on is the "
+                         "COMPLEMENTARY SIGNATURE PAIRS, 0 against 75. Clustering the pairs "
+                         "the two keys actually disagree about is what the warrant is about. "
+                         "The other two universes are emitted alongside so an arm naming "
+                         "either can be diffed against this one without a rerun"),
+        "universes": {
+            "U1_all_sweep_show_ids_carrying_a_slug": dict(
+                cluster_over_show_ids(slugged_ids),
+                definition=("every show ID appearing anywhere in the Step 4 parsed sweep that "
+                            "carries a slug -- processed/step8/b/show_slugs.json"),
+            ),
+            "U2_the_frame_shows": dict(
+                cluster_over_show_ids(frame_ids_sorted),
+                definition="the Step 2 frame shows only",
+            ),
+            "U3_D9_candidate_complementary_pairs": {
+                "unit": ("complementary signature ROWS (user, S1-side show, S2-side show) "
+                         "sharing one LOOSE key -- NOT distinct show IDs"),
+                "definition": ("the complementary signature pairs the LOOSE key finds: one "
+                               "show ID carrying S1 and not S2 for that user, another "
+                               "carrying S2 and not S1, both normalising to the same loose "
+                               "key. This is the set STRICT and LOOSE disagree about"),
+                "members_examined": int(len(sig_loose)),
+                "distinct_loose_keys": int(sig_loose.k_loose.nunique()),
+                "largest_clusters": {str(k): int(v) for k, v in top.head(8).items()},
+                "max_cluster_size": int(top.iloc[0]) if len(top) else 0,
+            },
+        },
+        "coverage": ("three universes measured, none of them an empty look: "
+                     f"{len(slugged_ids):,} slugged sweep show IDs, {len(frame_ids_sorted):,} "
+                     f"frame shows, {len(sig_loose):,} candidate complementary pairs"),
+        "WHAT_NAMING_THE_UNIVERSE_LOCATES": {
+            "finding": ("BOTH cluster lists decisions/0085 Sec 2 quotes are reproduced by THIS "
+                        "SINGLE BUILD, from two different universes. U1 (all slugged sweep "
+                        "show IDs) gives secondchance 8, theisland 7, maigret 6 with a maximum "
+                        "of 8; U3 (the D9 candidate complementary pairs) gives thetwilightzone "
+                        "10, thetraitors 7, manhunt 5 with a maximum of 10. Those are the two "
+                        "quoted lists and the two quoted maxima"),
+            "what_it_means": ("the divergence is located ON THE UNIVERSE AXIS and not in the "
+                              "counting -- consistent with 0085's own observation that every "
+                              "count around the lists reconciled. Neither arm miscounted"),
+            "what_it_does_NOT_do": ("it does NOT rule which universe is correct, and this "
+                                    "instance does not. 0085 rules no universe and directs "
+                                    "that the divergence be REPORTED, NOT RECONCILED. Locating "
+                                    "the axis is a measurement; choosing the universe is a spec "
+                                    "decision and is the Human Lead's"),
+            "quoted_lists_source": ("decisions/0085 Sec 2 and task-sheet.md Step 8's D9 bullet "
+                                    "-- spec surfaces this instance is required to read. No "
+                                    "other arm's output folder was read"),
+            "reproduced_U1_max": None,      # filled below, measured not typed
+            "reproduced_U3_max": None,
+        },
+        "note_the_unit_differs_between_universes": (
+            "U1 and U2 count DISTINCT SHOW IDS per key; U3 counts complementary signature "
+            "ROWS per key. A cluster size from one is not comparable to a cluster size from "
+            "another, which is a second reason the universe has to be named rather than the "
+            "number quoted"),
+    }
+    _w = clustering["WHAT_NAMING_THE_UNIVERSE_LOCATES"]
+    _w["reproduced_U1_max"] = clustering["universes"][
+        "U1_all_sweep_show_ids_carrying_a_slug"]["max_cluster_size"]
+    _w["reproduced_U3_max"] = clustering["universes"][
+        "U3_D9_candidate_complementary_pairs"]["max_cluster_size"]
 
     # ---- half (b), measured ON POSITION 3's RETAINED DROP SET (0075) -------
     pos3_drop = m["pos3_drop_pairs"]
@@ -194,6 +302,12 @@ def d9(m: dict, frame: pd.DataFrame, st1: dict) -> dict:
                               "CANNOT distinguish a Trakt metadata split from a REMAKE or a "
                               "national version sharing a title"),
             "largest_loose_clusters": {str(k): int(v) for k, v in top.head(8).items()},
+            "THE_UNIVERSE_THIS_LIST_IS_MEASURED_OVER": (
+                "U3, the D9 CANDIDATE COMPLEMENTARY PAIRS -- complementary signature ROWS "
+                "sharing one loose key, NOT distinct show IDs. Named at the point of use per "
+                "decisions/0085 Sec 2; the two other candidate universes are measured "
+                "alongside under clustering_universes"),
+            "clustering_universes": clustering,
             "consequence": ("The loose count BOUNDS HOW WRONG STRICT COULD BE, and the error "
                             "runs OPPOSITE to D9's own lower-bound caveat: D9 warns that its "
                             "count misses splits, while the loose key catches non-splits. Both "

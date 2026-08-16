@@ -33,19 +33,25 @@ GATE = ("**Step 8 is a GATE and this document is a PROPOSAL.** Nothing here is a
         "and records no approval — that is the Human Lead's alone. Zero API calls; every "
         "figure is computed from data already on disk.")
 RERUN = ("**This is a RERUN ordered by the Human Lead**, on `task-sheet.md` Step 8 as it now "
-         "stands — the spec as amended through **`decisions/0083`**. **It is a rerun, not an "
-         "amendment: everything below is rebuilt from the stored data by the same pipeline that "
-         "writes the table, and no previous output was patched.** Against this arm's last "
-         "confirmed deliverables (the 2026-08-16 clean run, spec through `0082`) `0083` changes "
-         "three things and **none of them moves a measured value**: §1 **CLOSES** the "
-         "set-membership denominator, which `0074` ruling 4 had routed to Step 14 as "
-         "reported-not-reconciled; §2 **restates `p_at_bound` as marking WHETHER `p` reached its "
-         "bound, not WHY**, withdrawing `0082`'s two-mechanism definition and its motive; §3 "
-         "**fixes two spec residuals**, one of which this arm reported itself and could not "
-         "edit — both are **re-read off disk here rather than assumed fixed** (§17). The column "
-         "set is unchanged at **89**. Everything else — `0078`'s provenance rule, `0079`'s "
-         "pipeline-produced drop set and inert-position labels, `0080`'s per-invariant coverage "
-         "populations — is re-executed rather than carried. This overwrites the previous `-b` "
+         "stands — the spec as amended through **`decisions/0085`**, which acts on Red Team's "
+         "**third-pass HOLD**. **It is a rerun, not an amendment: everything below is rebuilt "
+         "from the stored data by the same pipeline that writes the table, and no previous "
+         "output was patched.** Against this arm's last deliverables (the 2026-08-16 run, spec "
+         "through `0083`) `0085` changes **four things this arm emits**, and **none of them "
+         "moves a measured value**: §2 (**B1**) requires the **universe the D9 clustering runs "
+         "over to be NAMED at the point of use** — the two arms published *disjoint* cluster "
+         "lists on *identical* counts, which is an arm-against-arm divergence and is **reported, "
+         "not reconciled** (§10a); §3 (**B2**) requires the `p_at_bound` emptiness on **both "
+         "populations at both positions, four cells each** (§18); §4 (**P4**) rules that the "
+         "coextensivity chain has **three links, not two**, and that `max(E2) = F2` is **not** "
+         "construction — it is measured here (§18); §5 requires **both** halves of the line-6 "
+         "marginal decomposition, **1,355 and 652, not one** (§20a). The column set is unchanged "
+         "at **89**, and no rule, population or bound endpoint moves. Everything else — `0078`'s "
+         "provenance rule, `0079`'s pipeline-produced drop set and inert-position labels, "
+         "`0080`'s per-invariant coverage populations, `0083`'s closed denominator — is "
+         "re-executed rather than carried. **`0085` §7 (B3) is CARRIED and is the Human Lead's: "
+         "the half-open UTC-instant form and D11-as-global-cutoff still carry no assertion in "
+         "the invariant set, and this arm does NOT add them.** This overwrites the previous `-b` "
          "deliverables.")
 PROV = (f"**Provenance — `{BUILD}`.** Every count, every waterfall figure and every invariant "
         "result below was measured on that build (`0078`, `0079` §2). Where a figure is quoted "
@@ -692,9 +698,47 @@ def main() -> None:
       "distinction `0079` §1 exists to preserve.")
     A("")
     nf = D9["normalisation_finding"]
-    A(f"**{nf['what_it_shows']}.** The largest loose clusters are "
-      + ", ".join(f"`{k}` ({v})" for k, v in nf["largest_loose_clusters"].items())
-      + " — remakes and national versions, not split metadata.")
+    A(f"**{nf['what_it_shows']}.**")
+    A("")
+    A("### 10a. The universe the clustering runs over — **named, because the arms diverged "
+      "on it**")
+    A("")
+    cl = nf["clustering_universes"]
+    A("**`0085` §2, Red Team blocker B1 — NAME THE UNIVERSE THE CLUSTERING RUNS OVER, AT THE "
+      "POINT OF USE.** The two arms published **disjoint** cluster lists on **identical** "
+      "counts, sharing no member, with maxima 8 against 10, while every count around them "
+      "reconciled. **It is a difference in which set of shows is clustered, and the spec never "
+      f"said which.** **{cap1(cl['status'])}**")
+    A("")
+    A("**THIS INSTANCE PUBLISHES `" + cl["PUBLISHED_UNIVERSE"] + "`.** "
+      + cap1(cl["why_that_one"]) + ".")
+    A("")
+    A("| Universe | Unit | Members examined | Distinct loose keys | Max cluster | "
+      "Largest clusters |")
+    A("| :--- | :--- | ---: | ---: | ---: | :--- |")
+    for k, v in cl["universes"].items():
+        lst = ", ".join(f"`{a}` ({b})" for a, b in v["largest_clusters"].items())
+        star = " **(PUBLISHED)**" if k == cl["PUBLISHED_UNIVERSE"] else ""
+        A(f"| `{k}`{star} | {v['unit']} | {v['members_examined']:,} | "
+          f"{v['distinct_loose_keys']:,} | {v['max_cluster_size']} | {lst} |")
+    A("")
+    A(f"**{cap1(cl['note_the_unit_differs_between_universes'])}.** Coverage: "
+      f"{cap1(cl['coverage'])}.")
+    A("")
+    wn = cl["WHAT_NAMING_THE_UNIVERSE_LOCATES"]
+    A(f"**What naming the universe LOCATES.** {wn['finding']}. **{cap1(wn['what_it_means'])}.** "
+      f"Maxima reproduced on this build: **U1 = {wn['reproduced_U1_max']}**, "
+      f"**U3 = {wn['reproduced_U3_max']}** — `0085` §2's *\"maxima 8 against 10\"*, both from "
+      "one run.")
+    A("")
+    A(f"***What it does NOT do:*** {wn['what_it_does_NOT_do']}. Source of the quoted lists: "
+      f"{wn['quoted_lists_source']}.")
+    A("")
+    A("**The divergence is reported, not reconciled.** The cluster examples are the evidence "
+      "for the loose key's only warrant — that it **bounds how wrong strict could be** — so "
+      "two arms giving different evidence for one warrant makes the warrant irreproducible "
+      "while the deliverables read as though it is not. Naming the universe is what makes the "
+      "two lists comparable; **it does not make them agree, and this instance does not try.**")
     A("")
     A(f"**Why the loose count publishes even though strict is ruled:** {nf['consequence']}.")
     A("")
@@ -938,6 +982,32 @@ def main() -> None:
       "`m_H`, **iff** `m_H = max(E2) = F2` — which *is* \"left at the final episode.\" "
       "**Neither clause can hold without the other.**")
     A("")
+    tl = pab["the_chain_has_THREE_links_only_two_are_construction"]
+    A("***THE CHAIN HAS THREE LINKS AND ONLY THE FIRST IS CONSTRUCTION*** — `0085` §4, Red "
+      "Team P4. `0083` §2 named **two** causes for a future FALSE row; **there are three.**")
+    A("")
+    A("| Link | Status | Measured |")
+    A("| :--- | :--- | :--- |")
+    l1, l2 = tl["link_1_numerator_eq_L2_iff_m_H_eq_max_E2"], tl["link_2_max_E2_eq_F2"]
+    A(f"| `numerator = L2` ⟺ `m_H = max(E2)` | **CONSTRUCTION**, given `L2 := |E2|`, which the "
+      f"spec fixes | shows where `L2 ≠ |E2|`: **{l1['shows_where_L2_differs_from_len_E2']}** |")
+    A(f"| `max(E2) = F2` | ***NOT CONSTRUCTION — DATA.*** It needs the finale to be the "
+      f"highest-numbered listed episode | shows where `max(E2) ≠ s2_F`: "
+      f"**{l2['shows_where_max_E2_differs_from_F2']}**; where `max(E2) ≠ L2`: "
+      f"**{l2['shows_where_max_E2_differs_from_L2']}**; `s2_aired_lt_listed`: "
+      f"**{l2['s2_aired_lt_listed_shows']}** shows |")
+    A("")
+    A(f"**Measured, not assumed: {l2['shows_where_max_E2_differs_from_F2']} of "
+      f"{l2['shows_examined']:,} frame shows separate the two** — {l2['coverage']}. **Where a "
+      "season lists an episode numbered above its finale the two would separate** — that is "
+      "the `s2_aired_lt_listed` case this step is told to count, and it is "
+      f"**{l2['s2_aired_lt_listed_shows']} shows in frame.** Does it reopen across Step 13's "
+      f"`W` grid? {cap1(tl['does_it_reopen_across_Step_13_W_grid'])}.")
+    A("")
+    A("**The three causes of a future FALSE row:**")
+    for i, s in enumerate(tl["three_causes_of_a_future_FALSE_row_not_two"], 1):
+        A(f"{i}. {s}")
+    A("")
     A("**The `p = 1.0` counts, reported AS TOTALS.**")
     A("")
     A("| Population / position | rows with `p = 1.0` (TOTAL) | `p_at_bound` TRUE | "
@@ -960,15 +1030,31 @@ def main() -> None:
     co = pab["coextensivity_check_the_emptiness_is_EMITTED_not_asserted_in_prose"]
     A("**The emptiness is EMITTED, not asserted in prose** — an emptiness asserted in prose and "
       "never emitted cannot be checked. Both mechanisms are computed separately and all four "
-      "cells reported:")
+      "cells reported, **on BOTH POPULATIONS AT BOTH POSITIONS — four cells each on four "
+      "populations** (`0085` §3, Red Team blocker B2). **This is `CLAUDE.md`'s standing "
+      "both-populations rule, not a new requirement.** ***One arm emitted APPLY only, and "
+      "`1,056` appeared nowhere in its deliverable — while the whole ground for keeping the "
+      "column is that an emptiness asserted in prose and never emitted cannot be checked. On "
+      "DERIV that ground was unmet.***")
     A("")
-    A("| Population / position | rows examined | in BOTH classes | saturated, not final | "
-      "final, not saturated | in NEITHER |")
+    A("| Population / position | rows examined (total) | in BOTH classes | saturated, not "
+      "final | final, not saturated | in NEITHER |")
     A("| :--- | ---: | ---: | ---: | ---: | ---: |")
     for k, v in co["by_population_and_position"].items():
         A(f"| {k} | {v['rows_examined']:,} | **{v['in_BOTH_classes']:,}** | "
           f"{v['saturated_not_final']:,} | {v['final_not_saturated']:,} | "
           f"{v['in_NEITHER']:,} |")
+    A("")
+    A("**Coverage, per population, because an empty result and a clean result are the same "
+      "value and only the control knows which it produced:** "
+      + ", ".join(f"{k} {v:,} rows"
+                  for k, v in co["coverage"]["rows_examined_per_population"].items())
+      + f". Populations examined: **{co['coverage']['populations_examined']}**. Looked "
+      f"nowhere: **{co['coverage']['looked_nowhere']}**.")
+    A("")
+    exp = pab["expected_emptiness_cells_from_the_ruling_BOTH_POPULATIONS"]
+    A("**The ruling's stated cells, for comparison against the measured table above:** "
+      + ", ".join(f"{k} `{v}`" for k, v in exp.items() if k != "source") + ".")
     A("")
     A("**Which FALSE class is empty, said explicitly, because two different ones are on this "
       "page.** The empty one is `0082`'s **mechanism** class — rows *final but not saturated*, "
@@ -1025,23 +1111,49 @@ def main() -> None:
           f"{v['silent_at_tau1_all_rows']:,} | "
           f"{v['silent_and_not_continued_the_liveness_exclusions']:,} |")
     A("")
-    A(f"**This reproduces the published {cs['published_figure_it_reproduces']}** — the figure "
-      "that closed the rule objection at `0063` §1 and publishes as a Step 14 limitation. On "
-      "APPLY the silence test alone would exclude 1,355 pairs; the `NOT Continued` conjunct "
-      "cuts that to 703 by sparing 652 Continued pairs. **DERIV's Continued-and-silent count "
-      "is the same 652**, because every one of those pairs carries S2 evidence by definition "
-      "of Continued.")
+    md = cs["LINE_6_MARGINAL_DECOMPOSITION"]
+    A("### 20a. The line-6 marginal decomposition — **both figures, not one**")
     A("")
-    A("## 21. Where two faithful instances could still differ — and what `0083` closed")
+    A("***`703` IS NOT THE MARGINAL COST OF THE SILENCE TEST*** (`0085` §5, Red Team third "
+      "pass). The silence test **alone** excludes **1,355** on APPLY; the `NOT Continued` "
+      "conjunct **spares 652**; `1,355 − 652 = 703`. ***One arm published 652 and not 1,355.*** "
+      "**Derivable, so not a defect — but 1,355 is the figure that makes line 6 readable as a "
+      "marginal cost**, and a reader holding only 652 cannot recover it without knowing to "
+      "add. **Both publish, on both populations, with the identity stated.**")
+    A("")
+    A("**Identity: `silence test alone − NOT-Continued spares = line-6 exclusions`.**")
+    A("")
+    A("| Population (position 5) | rows examined | silence test **alone** would exclude | "
+      "`NOT Continued` **spares** | **line-6 exclusions** | identity holds |")
+    A("| :--- | ---: | ---: | ---: | ---: | :--- |")
+    for k, v in md["by_population"].items():
+        A(f"| {k} | {v['rows_examined']:,} | **{v['silence_test_alone_would_exclude']:,}** | "
+          f"**{v['NOT_Continued_conjunct_spares']:,}** | "
+          f"**{v['line_6_exclusions']:,}** | **{v['identity_holds']}** |")
+    A("")
+    A(f"Coverage: {md['coverage']}.")
+    A("")
+    A("**This reproduces the published 652 and the published 1,355** — 652 is the figure that "
+      "closed the rule objection at `0063` §1 and publishes as a Step 14 limitation; 1,355 is "
+      "what makes line 6 legible. **DERIV's Continued-and-silent count is the same 652**, "
+      "because every one of those pairs carries S2 evidence by definition of Continued, so "
+      "**DERIV's silence-alone figure differs from APPLY's by exactly the never-started "
+      "silent pairs DERIV does not carry.**")
+    A("")
+    A("## 21. Where two faithful instances could still differ — plus what `0083` and `0085` "
+      "closed, and what `0085` carried")
     A("")
     A(MEAS)
     A("")
-    A("**Items 1, 2 and 4 are CLOSED by `decisions/0083` and are listed as closed, not as "
-      "open.** They are kept in the list because the previous build published them as live, and "
-      "a closure that silently disappears from the report is indistinguishable from an item "
-      "that was never raised. Each states what closed it and what was re-measured rather than "
-      "quoted. **Every remaining item is genuinely open at the spec level; none is reconciled "
-      "here.**")
+    A("**Three kinds of item are in this list and each says which it is.** *(a)* **Genuinely "
+      "open** at the spec level — reported, never reconciled here. *(b)* **CLOSED** by "
+      "`decisions/0083` or `0085`, kept in the list because the previous build published them "
+      "as live and **a closure that silently disappears from the report is indistinguishable "
+      "from an item that was never raised**; each states what closed it and what was "
+      "**re-measured rather than quoted**. *(c)* **CARRIED** — `0085` §7's B3, which is "
+      "explicitly the Human Lead's to rule and which **this arm did not act on**. **Item 1 is "
+      "an ARM-AGAINST-ARM divergence and is reported, not reconciled**, which is the standing "
+      "rule for the dual run.")
     A("")
     for i, s in enumerate(DIV, 1):
         A(f"{i}. {s}")
@@ -1270,7 +1382,58 @@ def divergences(R: dict, D9: dict, S1: dict) -> list[str]:
     d3 = R["per_arm"]["APPLY"]
     k = D9["keys"]
     last = str(R["W_arms"][-1])
+    cl = D9["normalisation_finding"]["clustering_universes"]
+    tl = R["required_counts"]["p_at_bound"]["the_chain_has_THREE_links_only_two_are_construction"]
     return [
+        "**THE D9 CLUSTERING UNIVERSE — AN ARM-AGAINST-ARM DIVERGENCE, REPORTED AND NOT "
+        "RECONCILED.** `0085` §2 (Red Team B1) records that the two arms published **disjoint** "
+        "cluster lists on **identical** counts — no shared member, maxima 8 against 10 — while "
+        "every count around them reconciled. **That is a difference in which set of shows is "
+        "clustered, and the spec never said which.** `0085` requires the universe **named at "
+        "the point of use** and **rules no universe**. This instance names "
+        f"**`{cl['PUBLISHED_UNIVERSE']}`** as the one it publishes, and measures all three "
+        "candidate universes side by side (§10a) so an arm naming either of the others is "
+        "diffable against this one without a rerun. **The units differ between them** — U1 and "
+        "U2 count distinct show IDs per key, U3 counts complementary signature rows — **so a "
+        "cluster size from one is not comparable to a cluster size from another**, which is a "
+        "second reason the universe has to be named rather than the number quoted. **This arm "
+        "does not attempt to match the other's list.** **Measured, and it locates the axis: "
+        "BOTH lists `0085` §2 quotes are reproduced by THIS SINGLE BUILD from two different "
+        f"universes** — U1 gives maximum **{cl['WHAT_NAMING_THE_UNIVERSE_LOCATES']['reproduced_U1_max']}**, "
+        f"U3 gives maximum **{cl['WHAT_NAMING_THE_UNIVERSE_LOCATES']['reproduced_U3_max']}**, "
+        "which is `0085`'s *\"maxima 8 against 10\"*. **Neither arm miscounted; the difference "
+        "is the universe.** ***That is a measurement and not a reconciliation: it does not rule "
+        "which universe is correct, `0085` rules none, and choosing one is a spec decision for "
+        "the Human Lead.*** The quoted lists come from `decisions/0085` §2 and `task-sheet.md`, "
+        "spec surfaces this instance is required to read; **no other arm's output folder was "
+        "read.**",
+
+        "**`0085` §7 (B3) IS CARRIED AND IS NOT THIS ARM'S TO CLOSE.** Two Step 8 mandates "
+        "carry no assertion in the invariant set: **the half-open UTC-instant form** "
+        "(*\"`date(watched_at) <= T1` must not appear anywhere in the implementation\"*) and "
+        "**D11 as a global cutoff discarding records at or after `τ_pull` from EVERY "
+        "computation**. Both are complied with in this pipeline and **both compliance "
+        "statements are self-reports**, which is exactly Red Team's objection — converting a "
+        "self-report into a check is what the invariant set is for. **`0085` §7 states the "
+        "choice is a Human Lead ruling and the arms are not to add them, so this arm has NOT "
+        "added them and the assertion set remains EIGHT.** Bearing on it, observed on this "
+        "build and offered as evidence rather than as a closure: `τ_pull` is a single module "
+        "constant applied at every read, the D11 discard is measured and decomposed (167 "
+        "in-frame records, 73 S1-side + 94 S2-side), and the silence test's evidence "
+        "restriction is measured inert on the exclusion counts at every arm.",
+
+        "**THE COEXTENSIVITY CHAIN HAS THREE LINKS, NOT TWO — and the third is DATA.** "
+        "`0085` §4 (Red Team P4): `numerator = L2 ⟺ m_H = max(E2)` is construction given "
+        "`L2 := |E2|`, but **`max(E2) = F2` is not** — it needs the finale to be the "
+        "highest-numbered listed episode, and the `s2_aired_lt_listed` case separates them. "
+        "**Measured here, not assumed: "
+        f"{tl['link_2_max_E2_eq_F2']['shows_where_max_E2_differs_from_F2']} of "
+        f"{tl['link_2_max_E2_eq_F2']['shows_examined']:,} frame shows separate them**, and "
+        f"`s2_aired_lt_listed` is "
+        f"{tl['link_2_max_E2_eq_F2']['s2_aired_lt_listed_shows']} shows. ***`0083` §2 named "
+        "TWO causes for a future FALSE row; there are THREE.*** No value moves; listed "
+        "because the previous build's proof asserted a data premise as construction.",
+    ] + [
         f"**THE TWO RESIDUALS THIS ARM AND INSTANCE A REPORTED ARE CLOSED, AND THE CLOSURE WAS "
         f"RE-READ RATHER THAN QUOTED.** `0083` §3 fixed the stale `88` inside the strike-through "
         f"and `f2_in_A_H`'s survival in `0077`'s adopted-name table. Both were re-read off disk "

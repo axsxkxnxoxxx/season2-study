@@ -1,5 +1,14 @@
 # Step 8 — read-back, instance `a`
 
+> **STATUS STAMP, 2026-08-16 (`0086`).** **This file is a HISTORICAL READ-BACK of 2026-08-14,
+> not a Step 8 deliverable.** Its statement that Step 8 *"has not launched"* was true when
+> written and is **SUPERSEDED**: Step 8 has since launched four times, and both arms have
+> executed against the spec through `0085`. **Step 8 remains an UNAPPROVED gate** — that half
+> of the sentence still holds. **Nothing in this file is operative**; the spec is
+> `task-sheet.md` Step 8 and the deliverables are `artifacts/step8-{waterfall,invariants}-*`.
+> **This stamp names what is superseded and restates no adopted figure** (`CLAUDE.md`:
+> stamps are negative only).
+
 **Owner:** Analytics Engineer (`a`) · **Task:** `specs/step8-readback.md` · **Date:** 2026-08-14
 
 > **THIS IS NOT STEP 8.** Step 8 is a gate, it is unapproved, and it has not launched. **Nothing was

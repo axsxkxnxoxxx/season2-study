@@ -887,6 +887,54 @@ def main() -> None:
     e2_lists = [sorted({int(x) for x in str(s).split(",") if x.strip().isdigit()})
                 for s in frame.s2_E]
     gap_shows = sum(1 for e in e2_lists if e and (e != list(range(1, len(e) + 1))))
+
+    # ---- P4 (decisions/0085 Sec 4): THE CHAIN HAS THREE LINKS AND ONLY TWO
+    # ARE CONSTRUCTION.  numerator = L2 <=> m_H = max(E2) is construction given
+    # L2 := |E2|, which the spec fixes.  max(E2) = F2 IS NOT: it holds only
+    # because the finale is the HIGHEST-NUMBERED LISTED EPISODE, and where a
+    # season lists an episode numbered above its finale the two separate. That
+    # is the s2_aired_lt_listed case this step is told to count.  So it is
+    # MEASURED, not assumed, and its count is stated.
+    #
+    # 0083 Sec 2 named TWO causes for a future FALSE row. There are THREE.
+    f2_vals = pd.to_numeric(frame.s2_F, errors="coerce").values
+    l2_vals = pd.to_numeric(frame.s2_L, errors="coerce").values
+    max_e2 = np.array([max(e) if e else -1 for e in e2_lists], dtype=np.int64)
+    len_e2 = np.array([len(e) for e in e2_lists], dtype=np.int64)
+    shows_max_e2_ne_f2 = int(np.sum(max_e2 != f2_vals))
+    shows_max_e2_ne_l2 = int(np.sum(max_e2 != l2_vals))
+    shows_l2_ne_len_e2 = int(np.sum(l2_vals != len_e2))
+    third_link = {
+        "ruling": ("decisions/0085 Sec 4, Red Team P4 -- the coextensivity chain is "
+                   "numerator = L2 <=> m_H = max(E2) <=> m_H = F2, and ONLY THE FIRST LINK "
+                   "IS CONSTRUCTION. The second holds only because the finale is the "
+                   "highest-numbered listed episode, which the s2_aired_lt_listed case can "
+                   "break. It is measured here, not assumed"),
+        "link_1_numerator_eq_L2_iff_m_H_eq_max_E2": {
+            "status": "CONSTRUCTION, given L2 := |E2|, which the spec fixes",
+            "shows_where_L2_differs_from_len_E2": shows_l2_ne_len_e2,
+            "holds_on_every_frame_show": shows_l2_ne_len_e2 == 0,
+        },
+        "link_2_max_E2_eq_F2": {
+            "status": ("NOT CONSTRUCTION -- DATA. It needs the finale to be the "
+                       "highest-numbered listed episode"),
+            "shows_examined": n_shows,
+            "shows_where_max_E2_differs_from_F2": shows_max_e2_ne_f2,
+            "shows_where_max_E2_differs_from_L2": shows_max_e2_ne_l2,
+            "s2_aired_lt_listed_shows": int(frame.s2_aired_lt_listed.values.astype(bool).sum()),
+            "holds_on_every_frame_show": shows_max_e2_ne_f2 == 0,
+            "coverage": (f"a measured zero, not an empty look: all {n_shows:,} frame shows "
+                         "were compared, max(E2) against s2_F and against s2_L"),
+        },
+        "three_causes_of_a_future_FALSE_row_not_two": [
+            "the rank form is changed away from p = |{e in E2 : e <= m_H}| / L2",
+            "the set-membership drop rule stops putting m_H in E2",
+            "a frame show lists an S2 episode numbered above its finale, so max(E2) != F2 "
+            "-- the third cause, added by 0085 Sec 4",
+        ],
+        "does_it_reopen_across_Step_13_W_grid": ("no -- the frame does not move with W, so a "
+                                                 "zero here is zero at every arm"),
+    }
     req["p_at_bound"] = {
         "ruling": ("decisions/0083 Sec 2, restating 0082 -- p_at_bound MARKS WHETHER p REACHED "
                    "ITS BOUND, NOT WHY. TRUE where p reached its bound; null where p is null. "
@@ -901,7 +949,10 @@ def main() -> None:
                                   "rule puts m_H in E2. So the numerator equals L2 IFF no listed "
                                   "episode exceeds m_H, IFF m_H = max(E2) = F2 -- which IS 'left "
                                   "at the final episode'. Neither clause can hold without the "
-                                  "other"),
+                                  "other. BUT THE CHAIN HAS THREE LINKS AND ONLY THE FIRST IS "
+                                  "CONSTRUCTION (0085 Sec 4) -- see "
+                                  "the_chain_has_THREE_links_only_two_are_construction"),
+        "the_chain_has_THREE_links_only_two_are_construction": third_link,
         "totals_not_a_split": ("decisions/0083 Sec 2 -- the p = 1.0 counts are reported AS "
                                "TOTALS. 1,246 and 1,230 are correct counts and both arms "
                                "reproduce them, but they are ONE CLASS COUNTED TWICE, NOT TWO "
@@ -911,6 +962,18 @@ def main() -> None:
                                "GROUNDS_WITHDRAWN['0083 SS2'])"),
         "expected_totals_from_the_ruling": {"position5_APPLY": 1246,
                                             "post_liveness_APPLY": 1230},
+        "expected_emptiness_cells_from_the_ruling_BOTH_POPULATIONS": {
+            "source": ("decisions/0085 Sec 3, Red Team blocker B2 -- the emptiness is emitted "
+                       "on BOTH populations at BOTH positions, four cells each. This is "
+                       "CLAUDE.md's standing both-populations rule, not a new requirement. "
+                       "One arm emitted APPLY only and 1,056 appeared nowhere in its "
+                       "deliverable, while the whole ground for keeping the column is that an "
+                       "emptiness asserted in prose and never emitted cannot be checked"),
+            "APPLY_position5": "1,246 / 0 / 0 / 0",
+            "APPLY_post_liveness": "1,230 / 0 / 0 / 0",
+            "DERIV_position5": "1,072 / 0 / 0 / 0",
+            "DERIV_post_liveness": "1,056 / 0 / 0 / 0",
+        },
         "totals_by_population_and_position": pab_tot,
         "coextensivity_check_the_emptiness_is_EMITTED_not_asserted_in_prose": {
             "why": ("an emptiness asserted in prose and never emitted cannot be checked "
@@ -918,11 +981,23 @@ def main() -> None:
                     "four cells are reported. The FALSE class stays empty across Step 13's W "
                     "grid because the rank form and set membership are both W-invariant, so a "
                     "non-empty cell anywhere means one of them has broken"),
+            "populations_required": ("FOUR, by decisions/0085 Sec 3 -- APPLY position 5, APPLY "
+                                     "post-liveness, DERIV position 5, DERIV post-liveness. "
+                                     "Emitting APPLY alone leaves the DERIV emptiness asserted "
+                                     "in prose and never emitted, which is the one thing the "
+                                     "column is kept to prevent"),
             "by_population_and_position": pab_coext,
             "all_populations_agree_row_for_row":
                 all(v["empty_classes_are_empty"] for v in pab_coext.values()),
-            "coverage": ("this check did not look nowhere: it examined "
-                         f"{int((line5 & p_is_one).sum())} rows on APPLY at position 5"),
+            "coverage": {
+                "why": ("an empty result and a clean result are the same value and only the "
+                        "control knows which it produced -- so each cell states how many rows "
+                        "it LOOKED AT, on each of the four required populations"),
+                "rows_examined_per_population": {nm: int(v["rows_examined"])
+                                                 for nm, v in pab_coext.items()},
+                "populations_examined": len(pab_coext),
+                "looked_nowhere": any(v["rows_examined"] == 0 for v in pab_coext.values()),
+            },
         },
         "a_SECOND_fact_DATA_not_construction": {
             "statement": ("frame shows with any S2 numbering gap -- if zero, E2 = {1..L2} "
@@ -953,7 +1028,18 @@ def main() -> None:
         "definition": ("Continued pairs whose account shows NO insertion instant > tau1 -- the "
                        "silence test, strict, evidence restricted to records dated before "
                        "tau_pull"),
-        "published_figure_it_reproduces": 652,
+        "published_figures_it_reproduces_BOTH_NOT_ONE": {
+            "silence_test_alone_APPLY": 1355,
+            "NOT_Continued_conjunct_spares_APPLY": 652,
+            "line_6_exclusions_APPLY": 703,
+            "ruling": ("decisions/0085 Sec 5, Red Team third pass -- 703 IS NOT THE MARGINAL "
+                       "COST OF THE SILENCE TEST. The silence test alone excludes 1,355 on "
+                       "APPLY and the NOT Continued conjunct spares 652, so 1,355 - 652 = 703. "
+                       "One arm published 652 and not 1,355. Derivable, so not a defect -- but "
+                       "1,355 is the figure that makes line 6 readable as a marginal cost, and "
+                       "a reader holding only 652 cannot recover it without knowing to add. "
+                       "BOTH publish, on BOTH populations, WITH THE IDENTITY STATED"),
+        },
         "by_population": {
             nm: {"continued": int((msk & K["contd"]).sum()),
                  "continued_and_silent_at_tau1": int((msk & K["contd"] & K["silent"]).sum()),
@@ -961,6 +1047,28 @@ def main() -> None:
                  "silent_and_not_continued_the_liveness_exclusions":
                      int((msk & K["silent"] & ~K["contd"]).sum())}
             for nm, msk in (("APPLY_position5", line5), ("DERIV_position5", d5))},
+        "LINE_6_MARGINAL_DECOMPOSITION": {
+            "why": ("decisions/0085 Sec 5 -- line 6 removes 703 pairs on APPLY, and a reader "
+                    "given only that number reads it as the cost of the silence test. It is "
+                    "not. The silence test ALONE would remove every silent pair; the rule's "
+                    "second conjunct (NOT Continued) then hands back every Continued one. The "
+                    "decomposition is what makes line 6 readable as a marginal cost"),
+            "identity": ("silence_test_alone - NOT_Continued_conjunct_spares = "
+                         "line_6_exclusions"),
+            "by_population": {
+                nm: {
+                    "silence_test_alone_would_exclude": int((msk & K["silent"]).sum()),
+                    "NOT_Continued_conjunct_spares": int((msk & K["silent"] & K["contd"]).sum()),
+                    "line_6_exclusions": int((msk & K["silent"] & ~K["contd"]).sum()),
+                    "identity_holds": (int((msk & K["silent"]).sum())
+                                       - int((msk & K["silent"] & K["contd"]).sum())
+                                       == int((msk & K["silent"] & ~K["contd"]).sum())),
+                    "rows_examined": int(msk.sum()),
+                }
+                for nm, msk in (("APPLY_position5", line5), ("DERIV_position5", d5))},
+            "coverage": ("both populations, every position-5 row of each; neither cell is an "
+                         "empty look"),
+        },
         "what_it_measures": ("the size of the outcome-conditioning at waterfall line 6 -- the "
                              "pairs the rule's second conjunct SAVES from exclusion. It closed "
                              "the rule objection at 0063 Sec 1 and publishes as a Step 14 "
