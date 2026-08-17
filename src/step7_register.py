@@ -173,6 +173,32 @@ WITHDRAWN_PHRASES = {
 # name the statistics that remain TRUE but are no longer load-bearing, so a later reader can
 # recognise the argument by what it claims.
 GROUNDS_WITHDRAWN = {
+    # 0100. The two second-brain listed as CANDIDATES and correctly declined to add itself --
+    # "extending my human half past the source would be the two-registers defect committed by me."
+    # Added HERE, in the single register, which is where they belong.
+    "0091 SS1": {
+        "argument": "line 6 does not move under the counterfactual BECAUSE the silence test reads "
+                    "an insertion clock rather than an episode timestamp",
+        "still_true": [703, 99, 55, 45],
+        "why_not_load_bearing": "STRUCTURALLY WRONG. The liveness rule is conjunct 1 AND conjunct 2, "
+                                "and conjunct 2 is NOT Continued -- an episode-timestamp computation "
+                                "that moves on 55 APPLY and 45 DERIV rows under this very "
+                                "counterfactual. A property of conjunct 1 cannot explain the "
+                                "invariance of the conjunction. The counts are correct and the "
+                                "invariance is real; the REASON given for it was not. Withdrawn "
+                                "0091 SS1, Red Team sixth pass",
+    },
+    "0089 SS2a": {
+        "argument": "exactly 1 episode falls at tau1, SO 0068's strictness ruling moves a real row",
+        "still_true": [1],
+        "why_not_load_bearing": "WRONG OBJECT. 0068 is about INSERTION INSTANTS in the silence test; "
+                                "the 1 is a distinct S2 episode by canonical watched_at -- a "
+                                "different axis. The ruling's own quantity is 0 pairs and 0 accounts "
+                                "on both populations, both arms, so 0068's strictness ruling is "
+                                "VACUOUS on this data. The 1 is a true count of the wrong thing. "
+                                "Withdrawn 0089 SS2(a), Red Team sixth pass",
+    },
+
     "0094 SS2": {
         "argument": "arm a's symmetric-difference-0 published as strictly stronger evidence than "
                     "the unchanged exclusion total -- 'a total that does not move can still be a "

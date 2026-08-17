@@ -97,7 +97,7 @@ D9 as a bound, `[0, 75]`, `[0, 6]`, `[0, 27]` · 2,874 ledger accounts · invari
    D9 half-(b) grains** — both unruled spec choices, both disclosed by the arm that made them.
 7. **The D9 rank-3 tie-break is unruled and the tie is occupied** — six keys at 6. Both arms list all
    six; neither picked the name `0088` §3 gave.
-8. **439 unread needle candidates**, deliberately neither failed nor narrowed.
+8. **Unread needle candidates**, deliberately neither failed nor narrowed. ***The count is a LIVE MEASUREMENT that moves with the repository*** — 439 when this record was drafted, **442 today** (`0100`). **Read it from the scan, not from here.**
 
 **None of these touches a filter position, a population, a waterfall line, an outcome count, an invariant
 result or a bound endpoint.**

@@ -85,7 +85,7 @@ including DERIV's **153**, D11's `94 + 73 = 167`, and D9's `726,102 + 21,376 = 7
 row, and no arithmetic defect in either arm across the last three.**
 
 **Carried, not ruled here:** the D9 tie-break; `specs/` and `CLAUDE.md` as candidate propagation
-surfaces; the **439** untriaged needle candidates, with Red Team's proposal to **scope the register per
+surfaces; the **439** untriaged needle candidates ***(a LIVE count — see `0100`; 442 today)***, with Red Team's proposal to **scope the register per
 needle to the file set it was authored for and FAIL on that scope** while reporting repo-wide without
 failing — *"not narrowing, because the authored scope IS the original scope"*; and `second-brain`'s
 R1–R9.

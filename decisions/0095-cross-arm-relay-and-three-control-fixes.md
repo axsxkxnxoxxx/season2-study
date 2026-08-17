@@ -63,7 +63,7 @@ characters** and single paragraphs run to thousands. **Same defect the JSON bran
 the `.md` branch was **not wrong when written**: *the unit changed underneath it* when the arms began
 emitting paragraph-per-line. **Now measured in characters.**
 
-***The needle scan returns 441 candidate hits and is wired REPORT-ONLY, labelled NOT YET A CONTROL.***
+***The needle scan returns 441 candidate hits ***CORRECTED 2026-08-17 (`0100`): THIS IS A LIVE MEASUREMENT, NOT A FIXED FIGURE.*** It counts candidate hits across every file on all eight surfaces, so **it moves whenever the repository moves** — 441 at `0095`, 439 at `0096` after one arm removed two of its own, and **442 as measured today**. ***The three numbers were never in conflict; quoting a live scan as a constant is the defect***, and it is `0096` §1's own lesson — a measurement published as though it were permanent. **Read the count from the scan, never from an entry.** It is wired REPORT-ONLY, labelled NOT YET A CONTROL.***
 The needles were authored for one arm's four artifacts; repo-wide, short ones like `793` and `97.6%`
 match **legitimate historical records**. **Failing on 441 unread lines would block the gate on lines
 nobody has read; narrowing until it passes is how a control gets disarmed. Neither was done**, and the
@@ -86,7 +86,7 @@ provenance names `0095` — so the arm's own deliverable pulled the citation int
 it passes."* **It reported `EXIT 1` with the cause named and left it for the Human Lead.** That is the
 correct handling of a control that fails for a reason outside the arm's remit.
 
-**Carried, not fixed here:** whether `CLAUDE.md` — and `specs/`, still open from Red Team's fifth pass —
+**Carried, not fixed here:** whether `CLAUDE.md` — and `specs/`, still open from Red Team's **fifth** pass ***(citation kept; see `0100` for the canonical sequence, against which some intermediate citations in this chain are off by one)*** —
 join the propagation surfaces. **Both are the Human Lead's**, and the resolver's blind spot is now
 measured rather than argued.
 
