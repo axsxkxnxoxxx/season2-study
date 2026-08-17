@@ -104,7 +104,7 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
       (`0034`); **never drop a user wholesale**.
     - **Do not reintroduce a pre-`τ1` requirement in any form** — withdrawn twice.
 
-- **Step 8, analysis table. GATE, dual implementation. LAUNCHED FOUR TIMES; STILL UNAPPROVED.**
+- **Step 8, analysis table. GATE, dual implementation. APPROVED 2026-08-17 — gate 5 of 5** (`0098`). ***SUPERSEDED: "LAUNCHED FOUR TIMES; STILL UNAPPROVED."*** **Red Team returned PROCEED on its ELEVENTH pass**; the approved builds are `a/2026-08-17-0096` and `b/2026-08-17-r8`, each confirmed by its producing arm. **Eight residuals are OPEN AND PUBLISHED and approval is unconditional with them so.** **Step 8b and Step 9 are UNBLOCKED and NOT LAUNCHED** — do not begin either on the strength of this line.
   ***SUPERSEDED: "NOT LAUNCHED" (`0086`).*** **Both arms have executed against the spec through
   `0085`**, and Red Team has returned three gate reviews — the third a **HOLD** whose B3 is open.
   **Unapproved is not unlaunched**, and this line read as the latter in the file the isolated

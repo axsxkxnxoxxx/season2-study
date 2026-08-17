@@ -1,8 +1,12 @@
-# Step 8 — analysis table. GATE APPROVAL **(DRAFT — UNSIGNED)**
+# Step 8 — analysis table. GATE APPROVAL
 
-> ***THIS IS A DRAFT AND IT IS UNSIGNED.*** **No agent records an approval** (`CLAUDE.md`: *"An agent
-> never records its own approval"*). **Step 8 is NOT approved until the Human Lead signs §7 in writing,
-> in session.** Until then this file is a proposal and nothing downstream of Step 8 may run.
+> ***APPROVED BY THE HUMAN LEAD, 2026-08-17. GATE 5 OF 5 IS CLOSED, AND ALL FIVE GATES ARE NOW
+> APPROVED.*** **The approval is UNCONDITIONAL**, given with the eight §4 residuals **open and
+> published**, and with §4 item 2 — the `logs/` provenance cost — **accepted as recorded, not carried
+> as a correction anyone will close.** **The five limitations in §5 travel to Step 14.**
+>
+> **This file was drafted by the Analytics Engineer and signed only by the Human Lead**, per
+> `CLAUDE.md`: *"An agent never records its own approval."* **§7 carries the sign-off.**
 
 | | |
 | :--- | :--- |
@@ -11,7 +15,7 @@
 | **Approves** | **Human Lead, and only the Human Lead** |
 | **Red Team** | **ELEVEN passes. Ten HOLD, then PROCEED on the eleventh, 2026-08-17** |
 | **Builds under review** | `a/2026-08-17-0096` and `b/2026-08-17-r8`, both **confirmed by their producing arm** |
-| **Status** | **UNSIGNED. Awaiting the Human Lead.** |
+| **Status** | **APPROVED, 2026-08-17, unconditionally. Gate 5 of 5 CLOSED.** |
 
 ---
 
@@ -127,12 +131,25 @@ eight are corrections that need no arm; two are unruled spec choices already dis
 
 ## 7. Human Lead sign-off
 
-> **To approve, the Human Lead states approval in writing, in session, and this file records it here —
-> with the date, and with §4 explicitly accepted.**
+> ***"Step 8 is approved by the Human Lead, 2026-08-17. Gate 5 of 5 is closed."***
+>
+> ***"Approval is unconditional with the eight §4 residuals open and published, and with the `logs/`
+> provenance cost accepted as recorded rather than carried as a correction anyone will close. The five
+> limitations in §5 travel to Step 14."***
 
-- [ ] **Step 8 is approved by the Human Lead, date: ____________**
-- [ ] **The eight residuals in §4 are accepted and carried as a follow-up**
-- [ ] **The limitations in §5 travel to Step 14**
+- [x] **Step 8 is approved by the Human Lead, date: 2026-08-17**
+- [x] **The eight residuals in §4 are OPEN AND PUBLISHED, and approval is unconditional with them so**
+- [x] **§4 item 2 — the `logs/` provenance cost — is ACCEPTED AS RECORDED, not a correction anyone will
+      close.** ***Stated explicitly because a cost logged as a follow-up reads as a defect awaiting a
+      fix, and this one is neither.***
+- [x] **The five limitations in §5 travel to Step 14**
 
-***UNSIGNED. No agent has recorded an approval, and Step 8 remains a gate until this section is completed
-by the Human Lead.*** **Nothing downstream — Step 8b, Step 9 — runs before that.**
+**GATE 5 OF 5 IS CLOSED. ALL FIVE GATES ARE APPROVED** — Step 1 (`0001`), Step 5 (`0021`), Step 6
+(`0026`), Step 7 (`0064`), Step 8 (`0098`).
+
+**What this unblocks:** Step 8b (output schema, Chained) and Step 9 (results). **`CLAUDE.md`'s handoff
+rule still governs** — a chained step returns to the Human Lead before the next one starts, and **no
+agent begins either on the strength of this file.**
+
+**Signed by the Human Lead, 2026-08-17. Drafted by the Analytics Engineer, which recorded no approval of
+its own.**

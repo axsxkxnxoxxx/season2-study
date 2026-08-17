@@ -300,7 +300,7 @@ W is a number of days. It is derived here and used everywhere downstream.
 ## Step 8: Analysis table
 
 **Owner:** Analytics Engineer, dual implementation
-**Mode:** GATE. Requires written approval from the Human Lead.
+**Mode:** GATE. Requires written approval from the Human Lead. ***APPROVED by the Human Lead, 2026-08-17, UNCONDITIONALLY — gate 5 of 5, and ALL FIVE GATES ARE NOW APPROVED*** (`0098`, record at `artifacts/step8-gate-approval.md`). **Red Team returned PROCEED on its ELEVENTH pass.** **The eight residuals in §4 of the record are OPEN AND PUBLISHED and approval is unconditional with them so; the `logs/` provenance cost is ACCEPTED AS RECORDED, not a correction anyone will close; the five §5 limitations travel to Step 14.** **Step 8b and Step 9 are UNBLOCKED and NOT LAUNCHED** — a chained step returns to the Human Lead before the next one starts.
 
 Step 1 §9 hands this step a set of obligations that used to live only in that document. They are written out here, because this is the file the two isolated instances read.
 
