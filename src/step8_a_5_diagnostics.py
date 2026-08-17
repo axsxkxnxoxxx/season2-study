@@ -62,10 +62,54 @@ def main():
         assert cov["rows_with_p_defined_examined"] > 0, (
             "the p_at_bound cells looked at zero rows on " + label + ": an empty result and a "
             "clean result are the same value and only the control knows which it produced")
+        # TWO DIFFERENT FALSE CLASSES SIT ON THIS PAGE, AND THE PREVIOUS DELIVERABLE ASSERTED ONE
+        # EMPTY WHILE DESCRIBING THE OTHER AS NON-EMPTY TWELVE LINES APART, WITHOUT EMITTING
+        # EITHER'S CARDINALITY. Red Team seventh pass, finding 4, against this arm.
+        #
+        #   CLASS 1, THE COEXTENSIVITY GAP: rows where 0082's two superseded MECHANISMS disagree
+        #     -- saturated-not-final plus final-not-saturated. EMPTY, and that emptiness is what
+        #     "the class it called FALSE is empty" means.
+        #   CLASS 2, THE COLUMN'S OWN FALSE VALUE: Started-and-left rows where p did NOT reach its
+        #     bound. This is what "p_at_bound is FALSE on the rest of Started-and-left" means, and
+        #     it is 17,895 on APPLY position 5 -- NOT empty, and never previously emitted.
+        #
+        # Step 8b builds a schema on this column with NO CONVERSION LAYER, so a consumer that
+        # reads "the FALSE class is empty" and provisions for a two-valued column is wrong by
+        # 17,895 rows. Both cardinalities are emitted on all four populations.
+        col_false = int((mask & r["p_defined"] & ~r["p_saturated"]).sum())
+        col_true = int((mask & r["p_defined"] & r["p_saturated"]).sum())
+        gap_false = (int((m1 & r["p_saturated"] & ~r["p_final_ep"]).sum())
+                     + int((m1 & ~r["p_saturated"] & r["p_final_ep"]).sum()))
         out = {"population": label,
                "total_p_equals_1": int(m1.sum()),
                "p_at_bound_TRUE": int((m1 & r["p_saturated"]).sum()),
                "p_equals_1_but_p_at_bound_FALSE": int((m1 & ~r["p_saturated"]).sum()),
+               "THE_TWO_FALSE_CLASSES": {
+                   "class_1_COEXTENSIVITY_GAP_rows": gap_false,
+                   "class_1_what_it_is": "rows where 0082's two superseded MECHANISMS disagree -- "
+                                         "saturated-not-final plus final-not-saturated. This is "
+                                         "the class the sentence 'the FALSE class is empty' names.",
+                   "class_1_is_empty": bool(gap_false == 0),
+                   "class_2_COLUMN_VALUE_FALSE_rows": col_false,
+                   "class_2_what_it_is": "the emitted column's own FALSE value: Started-and-left "
+                                         "rows where p did NOT reach its bound. This is the class "
+                                         "the sentence 'FALSE on the rest of Started-and-left' "
+                                         "names, and it is NOT empty.",
+                   "class_2_is_empty": bool(col_false == 0),
+                   "column_TRUE_rows": col_true,
+                   "column_NULL_rows": int(mask.sum()) - col_true - col_false,
+                   "column_identity": f"{col_true} TRUE + {col_false} FALSE + "
+                                      f"{int(mask.sum()) - col_true - col_false} null = "
+                                      f"{int(mask.sum())}",
+                   "column_identity_holds": bool(
+                       col_true + col_false + (int(mask.sum()) - col_true - col_false)
+                       == int(mask.sum())),
+                   "why_both_are_emitted": "Red Team seventh pass, finding 4: the previous "
+                                           "deliverable asserted class 1 empty and described "
+                                           "class 2 as non-empty twelve lines apart, and emitted "
+                                           "neither cardinality in the markdown. Step 8b builds a "
+                                           "schema on this column with no conversion layer.",
+               },
                "expected_total_by_0085": expected_total,
                "four_cells_sum_to_the_total": bool(sum(cells.values()) == int(m1.sum())),
                "coverage": cov,
@@ -143,10 +187,54 @@ def main():
             "S1_completion_term_binds": int((m & neg & bs).sum()),
             "both_terms_bind": int((m & neg & bb).sum()),
         }
+    # THE 168 CARRIES ITS POPULATION AT THE POINT OF USE AND IS MEASURED ON BOTH POPULATIONS.
+    # decisions/0092, Red Team seventh pass N2. task-sheet.md:486 stated "168 pairs have both
+    # terms binding" with NO POPULATION, and the two arms read it on populations 23,453 apart --
+    # one on the position-5 set (196,654), the other on line 1 (220,107). 168 CANNOT BE CORRECT ON
+    # BOTH. The dual diff reads 168 against 168 as agreement, which is why six passes did not see
+    # it. This block therefore measures the three-way split on EVERY population this step names,
+    # including line 1, so a reader can see which one the spec's integer belongs to instead of
+    # inferring it.
+    _bt_split = {}
+    for _n, _m in (("line_1_S1_completer_population", positions["pos1"]),
+                   ("APPLY_position_5", pos5), ("APPLY_post_liveness", pos6),
+                   ("DERIV_position_5", pos5d), ("DERIV_post_liveness", pos6d)):
+        _tot = int(_m.sum())
+        _f, _s, _b = int((_m & bf).sum()), int((_m & bs).sum()), int((_m & bb).sum())
+        assert _tot > 0, ("the D2 binding split looked at zero rows on " + _n + ": an empty "
+                          "result and a clean result are the same value")
+        _bt_split[_n] = {
+            "population_size": _tot,
+            "S2_finale_binds": _f,
+            "S1_completion_binds": _s,
+            "both_bind": _b,
+            "coverage_identity": f"{_f} + {_s} + {_b} + 0 not asserted = {_tot}",
+            "coverage_identity_holds": bool(_f + _s + _b == _tot),
+            "build": lib.BUILD_TAG,
+        }
+    _bt_split["ruling"] = (
+        "decisions/0092, Red Team seventh pass N2: STATE THE POPULATION AT THE POINT OF USE AND "
+        "MEASURE IT ON BOTH. The spec's 168 is retained for the record and is NOT reproduced as a "
+        "population-free integer here; every cell above names the set it was counted over.")
+    _bt_split["which_population_carries_the_spec_integer_168"] = [
+        k for k, v in _bt_split.items()
+        if isinstance(v, dict) and v.get("both_bind") == 168]
+    _bt_split["reading"] = (
+        "The three-way split is exhaustive on every population because T0 = max(finale, S1 "
+        "completion) and the three cases -- finale strictly greater, S1 strictly greater, equal "
+        "-- partition every completer pair. A TIE IS ITS OWN CATEGORY, NOT A TIEBREAK (0070 "
+        "ruling 5). The counts differ across populations because the later positions remove rows, "
+        "so quoting the integer without its population is what decisions/0092 corrects.")
+    D["D2_negative_lag"]["binding_term_split_BOTH_POPULATIONS_BOTH_POSITIONS"] = _bt_split
     D["D2_negative_lag"]["binding_term_split_of_the_whole_population_APPLY_position_5"] = {
         "S2_finale_binds": int((pos5 & bf).sum()),
         "S1_completion_binds": int((pos5 & bs).sum()),
-        "both_bind": int((pos5 & bb).sum())}
+        "both_bind": int((pos5 & bb).sum()),
+        "population_size": int(pos5.sum()),
+        "population_stated_at_the_point_of_use": "APPLY, position 5 = " + str(int(pos5.sum())),
+        "superseded_framing": "this key survives only so the previous build's figure can be "
+                              "located; the block that governs is "
+                              "binding_term_split_BOTH_POPULATIONS_BOTH_POSITIONS (decisions/0092)"}
     D["D2_negative_lag"]["reading"] = (
         "S2-finale-term negative lags are the normal case for anyone who watched a weekly "
         "season while it aired and are information about the frame's cadence mix. S1-term "
@@ -666,6 +754,59 @@ def main():
     led = led[led.is_data == True].drop_duplicates("slug", keep="last")
     fp = pd.to_datetime(led.first_page_fetched_at, utc=True, errors="coerce")
     lp = pd.to_datetime(led.last_page_fetched_at, utc=True, errors="coerce")
+    # ---- SURFACE STATE, MEASURED ON DISK AT RUN TIME, NEVER ASSERTED FROM MEMORY -----------
+    # This step publishes claims about OTHER surfaces in SS9 (disagreements reported and not
+    # fixed). A claim about a surface is a claim like any other: it can be correct when written
+    # and wrong when read, and this instance has already had one go stale between builds
+    # (SS9 item 10). So every such claim is grounded in a count taken from disk on THIS run, and
+    # the counts are published beside the claims. An empty result and a clean result are the same
+    # value, so each glob reports what it looked at.
+    import glob as _glob
+    _RT = os.path.dirname(SRC) if 'SRC' in dir() else lib.ROOT
+    _POP_FREE_168 = "168 pairs have both terms binding and the binary split has nowhere to put"
+
+    def _count_files_containing(paths, needle):
+        seen, hits = 0, 0
+        for _p in paths:
+            try:
+                with open(_p, encoding="utf-8", errors="replace") as _fh:
+                    _txt = _fh.read()
+            except OSError:
+                continue
+            seen += 1
+            if needle in " ".join(_txt.split()):
+                hits += 1
+        return seen, hits
+
+    _agent_files = sorted(_glob.glob(os.path.join(lib.ROOT, ".claude/agents/analytics-engineer*.md")))
+    _sb_files = sorted(_glob.glob(os.path.join(lib.ROOT, ".claude/agent-memory/second-brain/*.md")))
+    _a_seen, _a_hit = _count_files_containing(_agent_files, _POP_FREE_168)
+    _s_seen, _s_hit = _count_files_containing(_sb_files, "168 pairs have both binding")
+    _ts_seen, _ts_hit = _count_files_containing(
+        [os.path.join(lib.ROOT, "task-sheet.md")], "STATE THE POPULATION AT THE POINT OF USE")
+    assert _a_seen > 0 and _s_seen > 0 and _ts_seen > 0, (
+        "the surface-state check looked at zero files: an empty result and a clean result are "
+        "the same value and only the control knows which it produced")
+    D["surface_state_checked_live_this_run"] = {
+        "why": "SS9 publishes claims about other surfaces. A claim about a surface can be correct "
+               "when written and wrong when read -- this instance already had one go stale "
+               "between builds -- so each is grounded in a count taken from disk on THIS run.",
+        "decisions_0092_files_on_disk": len(
+            _glob.glob(os.path.join(lib.ROOT, "decisions/0092*"))),
+        "decisions_entries_on_disk_total": len(
+            _glob.glob(os.path.join(lib.ROOT, "decisions/0*.md"))),
+        "task_sheet_files_examined": _ts_seen,
+        "task_sheet_carries_the_N2_population_requirement": bool(_ts_hit == 1),
+        "agent_files_examined": _a_seen,
+        "agent_files_carrying_the_population_free_168": _a_hit,
+        "second_brain_files_examined": _s_seen,
+        "second_brain_files_carrying_the_population_free_168": _s_hit,
+        "reading": "0092's N2 edit reached surface 1 and no other. Reported, not edited: the "
+                   "agent files, the decision log and second-brain are not this instance's to "
+                   "amend.",
+        "build": lib.BUILD_TAG,
+    }
+
     D["pull_date_and_D11"] = {
         "pull_date_tau_pull_utc": "2026-08-11T00:00:00Z",
         "source": "decisions/0011; D11 makes it a single global frozen cutoff",
@@ -717,10 +858,34 @@ def main():
                           "objects the bound is actually tested against, since A and A_H are sets "
                           "of distinct episodes and the canonical timestamp is the minimum "
                           "watched_at over the records behind one episode (Step 1 SS2.1/2.2).",
-                "half_open_form_verified": "no .date(), dt.date, normalize() or day-flooring "
-                                           "appears in any step8_a_*.py; every bound is an int64 "
-                                           "second comparison. `date(watched_at) <= T1` appears "
-                                           "nowhere.",
+                # ***CORRECTED, Red Team seventh pass: a claim this arm published about its own
+                # source was FALSE.*** The previous form read "no .date(), dt.date, normalize() or
+                # day-flooring appears in any step8_a_*.py". floor_day() appears THREE TIMES in
+                # step8_a_2_positions.py, and legitimately: [[T0]] is day-floored by Step 1 SS2.4
+                # and the S2 finale date is a date. The deliverable then argued twelve sections
+                # later that "T0 is day-floored, so tau1 and tau2 land on midnight" -- so it
+                # asserted no day-flooring anywhere and depended on day-flooring in the same file.
+                # The true and narrower claim is stated instead.
+                "half_open_form_verified": "NO BOUNDARY TEST uses a date-level form. Every bound "
+                                           "comparison in step8_a_*.py is an int64-second "
+                                           "comparison and `date(watched_at) <= T1` appears "
+                                           "nowhere. No .date(), dt.date or normalize() call "
+                                           "appears anywhere in step8_a_*.py.",
+                "day_flooring_where_it_DOES_appear_and_why_that_is_correct": {
+                    "sites": ["step8_a_2_positions.py floor_day() on the S2 finale date",
+                              "step8_a_2_positions.py floor_day() on the first-pass S1 completion "
+                              "instant, giving s1_completion_date",
+                              "step8_a_2_positions.py floor_day() when parsing the stored Step 5 "
+                              "dates for the cross-check"],
+                    "why": "[[T0]] is DAY-FLOORED BY Step 1 SS2.4 -- the clock start is a date, "
+                          "not an instant -- and W and H are whole days. That is what makes tau1 "
+                          "and tau2 midnight-aligned, which is the fact this whole block turns "
+                          "on. Day-flooring the CLOCK is required; day-flooring a BOUNDARY TEST "
+                          "is forbidden. Only the second is a violation and there are none.",
+                    "correction": "Red Team seventh pass: the previous build published the "
+                                  "blanket form, which is false of this arm's own source and "
+                                  "contradicted this same block's argument.",
+                },
                 # MEASURED, not a literal: this decides which interval separates the two forms,
                 # so a hardcoded True here would assert the very thing the block exists to check.
                 "tau1_and_tau2_are_midnight_aligned_UTC": bool(
@@ -820,14 +985,45 @@ def main():
                     c_ = int((ch & (base_state == f_) & (st_ == t_)).sum())
                     if c_:
                         trans[f"{_NAME[f_]}__to__{_NAME[t_]}"] = c_
+            # CONJUNCT 2 IS RECOMPUTED ON THE COUNTERFACTUAL OUTCOME, NOT HELD AT THE ADOPTED ONE.
+            # Red Team seventh pass, finding 1, against this arm: the previous deliverable did not
+            # say which, and if conjunct 2 were held at the adopted state then 703 -> 703 would be
+            # a TAUTOLOGY establishing nothing. `cont_` below is the COUNTERFACTUAL Continued mask
+            # returned by _state() under this variant's bounds; `r["continued"]` is not used here.
+            # The liveness rule is conjunct 1 AND conjunct 2, and only conjunct 1 -- the silence
+            # test -- reads an insertion clock. Conjunct 2 is an episode-timestamp computation and
+            # it MOVES under this counterfactual, so the invariance of the conjunction is a fact
+            # about this data, not a structural property.
             nl_ = r["silent"] & ~cont_
+            _exc = _m & nl_
+            _exc_adopted = _m & r["not_live"]
             cell[vname] = {
                 "rows_changing_outcome_state": int(ch.sum()),
                 "transitions": trans,
-                "liveness_exclusions_under_this_form": int((_m & nl_).sum()),
-                "liveness_exclusions_adopted": int((_m & r["not_live"]).sum()),
-                "liveness_exclusions_MOVE": int((_m & nl_).sum())
-                                             - int((_m & r["not_live"]).sum()),
+                "conjunct_2_recomputed_on_the_counterfactual_outcome": True,
+                "conjunct_2_expression": "silent & ~cont_, where cont_ is the COUNTERFACTUAL "
+                                         "Continued mask under this variant's bounds",
+                "conjunct_2_rows_that_MOVE_under_this_form": int(
+                    (_m & (cont_ != base_cont)).sum()),
+                "liveness_exclusions_under_this_form": int(_exc.sum()),
+                "liveness_exclusions_adopted": int(_exc_adopted.sum()),
+                "liveness_exclusions_MOVE": int(_exc.sum()) - int(_exc_adopted.sum()),
+                # THE 604/99 SPLIT UNDER THE COUNTERFACTUAL -- not reported at all before.
+                # A total that does not move can still be a different set of rows, and the split
+                # by outcome state is where that would show.
+                "exclusion_split_under_this_form": {
+                    "never_started": int((_exc & (st_ == lib.NEVER)).sum()),
+                    "started_and_left": int((_exc & (st_ == lib.LEFT)).sum()),
+                    "continued": int((_exc & (st_ == lib.CONT)).sum()),
+                },
+                "exclusion_split_adopted": {
+                    "never_started": int((_exc_adopted & r["never"]).sum()),
+                    "started_and_left": int((_exc_adopted & r["left"]).sum()),
+                    "continued": int((_exc_adopted & r["continued"]).sum()),
+                },
+                "the_excluded_ROW_SET_is_identical_not_merely_the_total": bool(
+                    int((_exc ^ _exc_adopted).sum()) == 0),
+                "rows_in_one_exclusion_set_but_not_the_other": int((_exc ^ _exc_adopted).sum()),
             }
         assert cell["rows_examined"] > 0, (
             "the outcome-flip counterfactual looked at zero rows on " + _pname + ": an empty "
@@ -853,7 +1049,106 @@ def main():
         "If every one of the four is 0 the mandate is LOAD-BEARING ON EPISODES BUT NOT ON "
         "OUTCOMES on this data, and that is stated rather than passed silently. A non-zero says "
         "the half-open form decides that many published outcome states.")
+    # ---- THE 'INERT ON LINE 6' WARRANT IS WITHDRAWN, AND THE CLAIM IS RESCOPED --------------
+    # Red Team seventh pass, finding 1, against this arm; recorded at decisions/0091 SS1.
+    flips["WITHDRAWN_WARRANT"] = {
+        "the_withdrawn_sentence": "line 6 does not move under this counterfactual BECAUSE the "
+                                  "silence test reads an insertion clock, not an episode "
+                                  "timestamp",
+        "why_it_is_wrong": "STRUCTURALLY WRONG, not merely unsupported. The liveness rule is "
+                           "conjunct 1 AND conjunct 2, and conjunct 2 is NOT Continued -- an "
+                           "EPISODE-TIMESTAMP computation. A property of conjunct 1 cannot "
+                           "explain the invariance of the conjunction. The figures below show "
+                           "conjunct 2 moving on real rows under this very counterfactual.",
+        "what_replaces_it": "NOTHING STRUCTURAL. The exclusion total is invariant here as a "
+                            "MEASURED FACT ABOUT THIS DATA at W = 108: no pair that the adopted "
+                            "rule excludes is among the rows whose Continued value flips, so the "
+                            "conjunction lands on the same row set. That is a coincidence of this "
+                            "frame and this arm, and Step 13 re-runs the rule across eight arms.",
+        "conjunct_2_was_RECOMPUTED_not_held": True,
+        "why_that_matters": "if conjunct 2 were held at the adopted outcome, 703 -> 703 would be "
+                            "an IDENTITY and would establish nothing. A reader cannot tell a "
+                            "measurement from a tautology unless the deliverable says which, so "
+                            "it says which -- and the expression is quoted at each cell.",
+        "scope_of_the_claim_AS_MEASURED": "W = 108 ONLY, on APPLY = 196,654 and DERIV = 147,370, "
+                                          "position-5 row sets, build " + lib.BUILD_TAG + ". It "
+                                          "is NOT claimed at any other arm and NOT claimed as a "
+                                          "structural property of the rule.",
+        "build": lib.BUILD_TAG,
+    }
+    _mv = {}
+    for _pn in ("APPLY_position_5", "DERIV_position_5"):
+        _mv[_pn] = {
+            v: {"conjunct_2_rows_that_MOVE": flips[_pn][v][
+                    "conjunct_2_rows_that_MOVE_under_this_form"],
+                "liveness_exclusions_MOVE": flips[_pn][v]["liveness_exclusions_MOVE"],
+                "excluded_row_set_identical": flips[_pn][v][
+                    "the_excluded_ROW_SET_is_identical_not_merely_the_total"]}
+            for v in ("tau1_only_date_level", "tau2_only_date_level", "both_bounds_date_level")}
+    flips["CONJUNCT_2_MOVES_WHILE_THE_CONJUNCTION_DOES_NOT"] = {
+        "per_population_per_variant": _mv,
+        "reading": "conjunct 2 moving on a positive number of rows while the exclusion total "
+                   "moves by 0 is exactly why the withdrawn warrant cannot be the explanation: "
+                   "the thing it called invariant is not the thing that is invariant.",
+    }
     boundary["OUTCOME_STATE_FLIPS_the_number_that_settles_B3a"] = flips
+
+    # ---- decisions/0068's STRICTNESS RULING, MEASURED ON ITS OWN OBJECT ---------------------
+    # Red Team seventh pass, finding 2, against this arm. The previous deliverable read "exactly 1
+    # episode falls exactly AT tau1" and concluded that 0068's strictness ruling "changes the
+    # answer for a real row". WRONG OBJECT. The SS5.6a table's unit is a DISTINCT S2 EPISODE BY
+    # CANONICAL watched_at. 0068's strictness ruling is about INSERTION INSTANTS in the SILENCE
+    # TEST -- "a pair is silent iff it has no insertion instant > tau1". Those are two different
+    # axes and the episode count says nothing about the ruling.
+    #
+    # The ruling's OWN quantity is measured here: pairs whose account's last insertion instant
+    # falls EXACTLY AT tau1. Those are the only rows on which strict `>` and non-strict `>=`
+    # can differ, so if the count is 0 the ruling is VACUOUS on this data and that is stated.
+    _li = a.last_inst
+    _strict_silent = _li <= tau1              # adopted: no insertion instant > tau1
+    _nonstrict_silent = _li < tau1            # withdrawn reading: no insertion instant >= tau1
+    _at = _li == tau1
+    strictness = {
+        "ruling": "decisions/0068, restated at task-sheet.md Step 8: the silence test is STRICT. "
+                  "A pair is silent iff it has NO insertion instant > tau1, so an instant falling "
+                  "exactly AT tau1 does not make the account live.",
+        "unit": "PAIRS, keyed on the account's last insertion instant (D11-restricted, "
+                "decisions/0070 ruling 2) -- NOT distinct S2 episodes by watched_at",
+        "WITHDRAWN_CLAIM": "***WITHDRAWN, WRONG OBJECT (Red Team seventh pass, finding 2; "
+                           "decisions/0089 SS2(a) as corrected on the sixth pass).*** The previous "
+                           "build of this arm published: 'exactly 1 episode falls exactly AT tau1, "
+                           "so 0068's strictness ruling changes the answer for a real row rather "
+                           "than for none.' The 1 is a DISTINCT S2 EPISODE by canonical "
+                           "watched_at, which is SS5.6a's unit; the ruling is about INSERTION "
+                           "INSTANTS in the silence test. The episode count is correct and is "
+                           "kept in SS5.6a; the inference drawn from it is withdrawn.",
+        "build": lib.BUILD_TAG,
+    }
+    for _pname, _m in (("APPLY_position_5", pos5), ("DERIV_position_5", pos5d)):
+        _nl_ns = _nonstrict_silent & ~r["continued"]
+        strictness[_pname] = {
+            "rows_examined": int(_m.sum()),
+            "pairs_whose_last_insertion_instant_is_EXACTLY_AT_tau1": int((_m & _at).sum()),
+            "accounts_ditto": int(np.unique(a.pair_user[_m & _at]).size),
+            "silent_under_the_ADOPTED_strict_form": int((_m & _strict_silent).sum()),
+            "silent_under_the_WITHDRAWN_non_strict_form": int((_m & _nonstrict_silent).sum()),
+            "silent_count_MOVES_by": int((_m & _strict_silent).sum())
+                                     - int((_m & _nonstrict_silent).sum()),
+            "liveness_exclusions_ADOPTED": int((_m & r["not_live"]).sum()),
+            "liveness_exclusions_under_the_non_strict_form": int((_m & _nl_ns).sum()),
+            "liveness_exclusions_MOVE": int((_m & r["not_live"]).sum())
+                                        - int((_m & _nl_ns).sum()),
+            "VACUOUS_ON_THIS_DATA": bool(int((_m & _at).sum()) == 0),
+        }
+        assert strictness[_pname]["rows_examined"] > 0, (
+            "the strictness measurement looked at zero rows on " + _pname + ": an empty result "
+            "and a clean result are the same value and only the control knows which it produced")
+    strictness["reading"] = (
+        "IF the exactly-at count is 0 the strictness ruling is VACUOUS ON THIS DATA -- stated as "
+        "a zero, not passed silently. It remains the correct rule and it remains binding on any "
+        "future pull; what is measured here is only whether it decides anything on THIS data, "
+        "which is what the previous build got wrong by answering with a different unit.")
+    boundary["STRICTNESS_RULING_0068_MEASURED_ON_ITS_OWN_OBJECT"] = strictness
     boundary["CORRECTION_TO_THE_PREVIOUS_BUILD"] = (
         "build a/2026-08-16-0088 emitted the separating interval and the EPISODES ADMITTED on it, "
         "and stopped there. decisions/0089 SS2(a) records that as answering B3(a) with the wrong "
@@ -970,7 +1265,19 @@ def main():
                              "the published 220,107 and lists whether D11 moves it as an OPEN "
                              "question; the counterfactual is measured and published rather than "
                              "the site being omitted from the table.",
-                "coverage_unit_count": _sv["records_at_or_after_tau_pull_on_the_S1_side"],
+                # THE EXAMINED CELL IS THE SAME KIND OF QUANTITY AS IN EVERY OTHER ROW.
+                # Red Team seventh pass, finding 5, against this arm: this cell previously held
+                # `records_at_or_after_tau_pull_on_the_S1_side` = 73, which is a WOULD-EXCLUDE
+                # count in an EXAMINED column, and a RECORD count where the walk's unit is a
+                # DISTINCT EPISODE. Three objects sit behind this site and stage 1 now names all
+                # three; the two that belong in this table are below.
+                "coverage_unit": "DISTINCT S1 EPISODES consumed by the first-pass walk",
+                "coverage_unit_count": _sv["episodes_examined_before_D11"],
+                "would_be_excluded_by_D11_at_this_site": _sv[
+                    "episodes_at_or_after_tau_pull_that_D11_would_exclude"],
+                "record_level_object_reported_separately_NOT_the_examined_cell": _sv[
+                    "records_at_or_after_tau_pull_on_the_S1_side"],
+                "three_objects": _sv["THREE_OBJECTS_NAMED_APART"],
                 "excluded_by_D11": _excluded_here,
                 "completers_whose_first_pass_walk_used_a_post_cutoff_record": _used_post_cutoff,
                 "declaration_matches_the_measurement": _consistent,
@@ -2018,6 +2325,104 @@ def main():
     demo_ok = bool(demo) and all(d["holds_against_the_true_value"]
                                  and not d["holds_against_the_perturbed_value"] for d in demo)
 
+    # =====================================================================================
+    # A REAL INDEPENDENCE CONTROL. Red Team seventh pass, finding 3, against this arm;
+    # decisions/0091 SS2 as corrected on the sixth pass.
+    #
+    # THE `+1` PERTURBATION ABOVE DOES NOT TEST INDEPENDENCE. On a same-mask denominator the
+    # clauses sum to N by construction and the stated population reads N + 1, so the identity
+    # fails -- IDENTICALLY, and it would have fired on the very build whose defect it claims to
+    # have fixed. What it demonstrates is that the identity is ARITHMETIC rather than a hardcoded
+    # literal, which the separate literal counter already does. It is KEPT under that label and
+    # is no longer described as demonstrating independence.
+    #
+    # WHAT DISCRIMINATES. The escape the independent source exists to catch is AN INVARIANT RUN
+    # ON A POPULATION OTHER THAN THE ONE IT NAMES. When the clauses are a complementary partition
+    # of a mask, swapping the mask moves the clauses AND the same-mask denominator together, so
+    # the same-mask identity still PASSES on the wrong population. Only a denominator sourced
+    # elsewhere -- keyed on the NAME rather than on the mask -- can fail. So each injected defect
+    # below asserts BOTH directions:
+    #     the SAME-MASK form PASSES  (it cannot detect the defect)
+    #     the INDEPENDENT form FAILS (it does)
+    # An escape aborts the run before a deliverable is written.
+    def _inject(name, what, clause_counts, wrong_mask_size, named_population_size,
+                independent_source, expect_same_mask_passes=True):
+        _sum = int(sum(clause_counts))
+        same_mask_holds = bool(_sum == int(wrong_mask_size))
+        indep_holds = bool(_sum == int(named_population_size))
+        return {
+            "injected_defect": name,
+            "what_it_is": what,
+            "clause_counts": [int(c) for c in clause_counts],
+            "clauses_sum_to": _sum,
+            "same_mask_denominator": int(wrong_mask_size),
+            "SAME_MASK_form_holds_i_e_CANNOT_DETECT_IT": same_mask_holds,
+            "independently_sourced_population_size": int(named_population_size),
+            "independent_source": independent_source,
+            "INDEPENDENT_form_holds": indep_holds,
+            "INDEPENDENT_form_DETECTS_THE_DEFECT": bool(not indep_holds),
+            "discriminates": bool(same_mask_holds == expect_same_mask_passes and not indep_holds),
+        }
+
+    _n5, _n6 = int(pos5.sum()), int(pos6.sum())
+    _n5d, _n6d = int(pos5d.sum()), int(pos6d.sum())
+    injected = [
+        # 1. The outcome partition run on the POST-LIVENESS mask while naming position 5. The
+        #    three clauses are exhaustive on whatever mask they are given, so the same-mask
+        #    denominator moves with them and passes. This is the shape 0080 SS3 describes.
+        _inject(
+            "invariant 1 run on the post-liveness mask while naming the position-5 row set",
+            "the three outcome clauses evaluated on pos6 with the population named as APPLY "
+            "position 5",
+            [int((pos6 & r["never"]).sum()), int((pos6 & r["left"]).sum()),
+             int((pos6 & r["continued"]).sum())],
+            _n6, IND["APPLY_pos5_rows"][0], IND["APPLY_pos5_rows"][1]),
+        # 2. The same on DERIV, because a control applied to one population and not the other is
+        #    the same defect as not applying it (CLAUDE.md).
+        _inject(
+            "invariant 1 run on the DERIV post-liveness mask while naming DERIV position 5",
+            "the three outcome clauses evaluated on pos6d with the population named as DERIV "
+            "position 5",
+            [int((pos6d & r["never"]).sum()), int((pos6d & r["left"]).sum()),
+             int((pos6d & r["continued"]).sum())],
+            _n6d, IND["DERIV_pos5_rows"][0], IND["DERIV_pos5_rows"][1]),
+        # 3. Invariant 6's exact historical mispairing: a POST-liveness numerator against a
+        #    PRE-liveness complement. Here the two clauses come from DIFFERENT masks, so the
+        #    same-mask form does NOT pass either -- and that is stated rather than glossed, since
+        #    the point of the suite is which control catches what.
+        _inject(
+            "invariant 6's 0080 SS3 mispairing: post-liveness S&L against pre-liveness non-S&L",
+            "numerator taken on pos6 and complement on pos5, both named as APPLY position 5",
+            [int((pos6 & r["left"]).sum()), int((pos5 & ~r["left"]).sum())],
+            _n5, IND["APPLY_pos5_rows"][0], IND["APPLY_pos5_rows"][1],
+            expect_same_mask_passes=False),
+        # 4. Invariant 7's account identity run on DERIV accounts while naming APPLY's.
+        _inject(
+            "invariant 7 run on DERIV accounts while naming APPLY's position-5 accounts",
+            "accounts partitioned on the DERIV row set with the population named as APPLY",
+            [int(np.unique(a.pair_user[pos5d]).size)],
+            int(np.unique(a.pair_user[pos5d]).size), IND["APPLY_pos5_accounts"][0],
+            IND["APPLY_pos5_accounts"][1]),
+        # 5. A dropped clause: one position missing from the monotone chain while the chain is
+        #    still named as seven positions.
+        _inject(
+            "invariant 2 covering six positions while naming seven",
+            "the APPLY chain with one position dropped from the coverage count",
+            [len(chain) - 1], len(chain) - 1, IND["positions_APPLY"][0],
+            IND["positions_APPLY"][1]),
+        # 6. The ledger identity with the skipped classes silently omitted.
+        _inject(
+            "invariant 8 with the skipped account classes omitted from the coverage",
+            "the ledger account identity asserting only the accounts that produced pairs",
+            [IND["APPLY_pos5_accounts"][0]], IND["APPLY_pos5_accounts"][0],
+            IND["ledger_accounts"][0], IND["ledger_accounts"][1]),
+    ]
+    injected_ok = bool(injected) and all(d["discriminates"] for d in injected)
+    injected_caught_by_independent = sum(
+        1 for d in injected if d["INDEPENDENT_form_DETECTS_THE_DEFECT"])
+    injected_missed_by_same_mask = sum(
+        1 for d in injected if d["SAME_MASK_form_holds_i_e_CANNOT_DETECT_IT"])
+
     report["coverage_identity_strength"] = {
         "ruling": "Red Team's FIFTH pass, F2, carried into this rerun by decisions/0090 SS3. "
                   "Red Team's fourth pass (decisions/0087 SS4) had already recorded that most "
@@ -2053,13 +2458,53 @@ def main():
         },
         "all_independent_identities_hold_against_their_independent_source": bool(
             all(k[2] for k in kinds if k[0])),
-        "FALSIFIABILITY_DEMONSTRATED_NOT_ASSERTED": {
+        "ARITHMETIC_NOT_A_LITERAL_the_plus_one_perturbation": {
+            "***RELABELLED***": "Red Team seventh pass, finding 3, against this arm; "
+                                "decisions/0091 SS2 as corrected on the sixth pass. The previous "
+                                "build published this block as 'THE MECHANISM IS DEMONSTRATED, "
+                                "NOT ASSERTED' and read it as a demonstration of INDEPENDENCE. "
+                                "IT IS NOT ONE.",
+            "why_it_does_not_test_independence": "on a SAME-MASK denominator the clauses sum to N "
+                                                 "by construction and the stated population reads "
+                                                 "N + 1, so the identity fails IDENTICALLY -- it "
+                                                 "would have passed on the very build whose "
+                                                 "defect it claimed to fix. Perturbing the "
+                                                 "DENOMINATOR cannot separate a denominator "
+                                                 "sourced independently from one sourced from the "
+                                                 "same mask.",
+            "what_it_DOES_show": "that each identity is ARITHMETIC rather than a hardcoded "
+                                 "literal -- which the separate literal counter already shows. It "
+                                 "is kept under that label because it is a real, if narrow, check.",
             "method": "each independent identity is re-evaluated against its population size + 1 "
-                      "and must FAIL. A mechanism claimed to work and never seen to fail is a "
-                      "control asserted to exist.",
+                      "and must FAIL.",
             "identities_demonstrated": len(demo),
             "all_hold_against_the_true_value_and_FAIL_against_the_perturbed_one": demo_ok,
             "per_identity": demo,
+        },
+        "INDEPENDENCE_DEMONSTRATED_injected_wrong_population_defects": {
+            "why_this_exists": "Red Team seventh pass, finding 3. The escape the independent "
+                               "source exists to catch is AN INVARIANT RUN ON A POPULATION OTHER "
+                               "THAN THE ONE IT NAMES. Where the clauses are a complementary "
+                               "partition of a mask, swapping the mask moves the clauses AND the "
+                               "same-mask denominator together, so the same-mask identity still "
+                               "PASSES on the wrong population. Only a denominator keyed on the "
+                               "NAME can fail.",
+            "method": "six defects are injected and each asserts BOTH directions: the SAME-MASK "
+                      "form PASSES (it cannot detect the defect) and the INDEPENDENT form FAILS "
+                      "(it does). Case 3 is the one exception and it is labelled: its two clauses "
+                      "come from different masks, so the same-mask form fails too -- stated "
+                      "rather than glossed, because the point of the suite is which control "
+                      "catches what.",
+            "defects_injected": len(injected),
+            "detected_by_the_INDEPENDENT_form": injected_caught_by_independent,
+            "MISSED_by_the_same_mask_form": injected_missed_by_same_mask,
+            "every_case_discriminates_as_expected": injected_ok,
+            "per_defect": injected,
+            "also_a_real_control_and_it_covers_one_invariant": "invariant 6's "
+                "THE_HOLE_THIS_WOULD_NOW_CATCH reconstructs decisions/0080 SS3's exact mispairing "
+                "-- 19,042 + 177,513 = 196,555 against 196,654, 99 rows in neither -- and the "
+                "identity FAILS on it. That was already here and is retained; it is case 3 above, "
+                "generalised to five more.",
         },
         "note": "the NOT_INDEPENDENT group is bookkeeping and is labelled as such at each "
                 "identity. An unlabelled check that cannot fail reads as one that can -- "
@@ -2068,9 +2513,16 @@ def main():
         "build": lib.BUILD_TAG,
     }
     assert len(kinds) == len(ids), "an identity was emitted without its strength label"
-    assert demo_ok, ("the coverage-identity falsifiability demonstration did not fire: an "
+    assert demo_ok, ("the coverage-identity arithmetic demonstration did not fire: an "
                      "independent identity held against a perturbed population size, or none "
                      "was registered -- a check that looked nowhere must fail, not pass")
+    assert injected_ok, (
+        "the INDEPENDENCE demonstration did not discriminate: an injected wrong-population defect "
+        "either escaped the independently-sourced identity or was caught by the same-mask form "
+        "when it should not have been. An escape must abort before a deliverable is written.")
+    assert len(injected) >= 6 and injected_caught_by_independent == len(injected), (
+        "the injected-defect suite looked at too few cases or failed to detect one -- a control "
+        "that finds nothing because it looked nowhere must fail, not pass")
     assert all(k[2] for k in kinds if k[0]), (
         "an invariant's coverage disagrees with the independently sourced population size")
     assert all(ids) and len(ids) >= 9, "an invariant does not account for every row it names"

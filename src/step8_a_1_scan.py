@@ -347,7 +347,32 @@ def main():
                     "names, and it is the only site where D11 moves an input on this data.",
         },
         "S1_completion_walk": {
-            "unit": "in-frame S1 episode records",
+            # THE EXAMINED CELL HELD A DIFFERENT QUANTITY FROM THE OTHER TWELVE ROWS. Red Team
+            # seventh pass, finding 5, against this arm. Every other site's "examined" column is
+            # the count of units the site CONSUMES before D11; this row published 73, which is the
+            # count of units D11 WOULD EXCLUDE -- and it is a RECORD count while the walk's unit is
+            # a DISTINCT EPISODE. Three distinct objects sit behind this site (decisions/0089 SS1
+            # names them) and they are now named apart, with `examined` the same kind of quantity
+            # as in every other row.
+            "unit": "DISTINCT S1 EPISODES -- the objects the first-pass walk actually consumes. "
+                    "The walk runs over the per-pair CSR of distinct S1 episodes in canonical "
+                    "timestamp order, not over raw records.",
+            "episodes_examined_before_D11": int(s1_num.size),
+            "episodes_at_or_after_tau_pull_that_D11_would_exclude": int(
+                ((d_season == 1) & (d_ts >= TAU_PULL)).sum()),
+            "THREE_OBJECTS_NAMED_APART": {
+                "why": "Red Team seventh pass, finding 5. A single number under a single label "
+                       "here is what put a would-exclude count in an examined column.",
+                "record_level_in_frame_S1_records_at_or_after_tau_pull": n_d11_s1,
+                "distinct_S1_episodes_touched_by_those_records": int(
+                    np.unique(ep_id[(se_o == 1) & (ts_o >= TAU_PULL)]).size),
+                "distinct_S1_episodes_whose_CANONICAL_instant_is_at_or_after_tau_pull": int(
+                    ((d_season == 1) & (d_ts >= TAU_PULL)).sum()),
+                "note": "the third is smaller than the second because an episode's canonical "
+                        "instant is the MINIMUM watched_at over its records, so an episode with "
+                        "one post-cutoff record and one earlier record stays pre-cutoff. Only the "
+                        "third is what D11 would remove from this walk.",
+            },
             "records_at_or_after_tau_pull_on_the_S1_side": n_d11_s1,
             "D11_applied": False,
             "why_not": "decisions/0068 fixes waterfall line 1 at the PUBLISHED S1-completer "

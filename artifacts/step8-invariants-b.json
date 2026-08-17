@@ -3,8 +3,8 @@
   "namespace": "b",
   "mode": "GATE -- proposal only, nothing adopted",
   "provenance": {
-    "build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r5 (RERUN on the spec as amended through decisions/0090; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)",
-    "build_short": "b: position-5 build of 2026-08-16-r5 (spec through 0090)",
+    "build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r6 (RERUN on the spec as amended through decisions/0091 and Red Team's SEVENTH pass; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)",
+    "build_short": "b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7)",
     "rule": "decisions/0078 and 0079 Sec 2 -- every count, every invariant result and every waterfall figure names the PIPELINE it was measured on, not only its population. A count without its provenance can be correct when written and wrong when read",
     "ruled_figures_carry_their_own_build": "position-5 build of 2026-08-13 (both arms, the run decisions/0078 labelled)",
     "run_date": "2026-08-16",
@@ -50,10 +50,10 @@
     "pipeline_sources": {
       "src/step8_b_1_build.py": "3d8dc00059f37c3e",
       "src/step8_b_1b_slugs.py": "5bd032033c4a5f96",
-      "src/step8_b_2_pipeline.py": "04169a4784b29ca4",
-      "src/step8_b_3_d9_invariants.py": "adb482e069030d4f",
-      "src/step8_b_4_artifacts.py": "231d7cf255aac8a4",
-      "src/step8_b_build_id.py": "eb59628a413eee14"
+      "src/step8_b_2_pipeline.py": "488310843745793f",
+      "src/step8_b_3_d9_invariants.py": "5bc57d026a6a93a9",
+      "src/step8_b_4_artifacts.py": "d2fa304b003f2e28",
+      "src/step8_b_build_id.py": "a0cdbf14a64df173"
     }
   },
   "invariant_coverage_rule": {
@@ -140,14 +140,31 @@
       },
       "STRUCK_SENTENCE": "'The run asserts this, so a report that omitted a population could not be written by this pipeline' -- STRUCK by decisions/0088 Sec 2(d), whatever else is ruled. This arm did not publish that sentence, and it is recorded here so the strike is visible on this surface rather than only in the decision log"
     },
-    "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r5 (RERUN on the spec as amended through decisions/0090; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
+    "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r6 (RERUN on the spec as amended through decisions/0091 and Red Team's SEVENTH pass; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
   },
-  "how_to_read_this_report": "SEVEN of the nine assertions CANNOT FAIL ON ANY DATA. Six are pure CODE CHECKS -- the outcome partition, the monotone filter counts, |D| <= L, A subset of A_H, p in (0, 1], and tau2 <= tau_pull at position 5. A seventh, the clock start, is a code check by construction and a genuine cross-check only because the first-pass S1 completion date is recomputed INDEPENDENTLY here. TWO can fail on real data, and both were added by decisions/0076 because before it the set had ZERO: no account dropped wholesale, and no access_denied or skipped account read as empty. 'All invariants passed' is therefore mostly a statement that the code computed what it was told to; it is NOT evidence for the liveness rule or for any published share.",
+  "how_to_read_this_report": "6 of the 9 assertions CANNOT FAIL ON ANY DATA. They are the pure CODE CHECKS -- outcome states are mutually exclusive and sum to the POST-POSITION-7 row set, filter counts decrease monotonically -- CODED AS `>=`, NOT `>`, distinct episodes never exceed season length (|D| <= L), A is a subset of A_H on every row, abandonment point p is in (0, 1] on every Started-and-left row, null elsewhere, no position-5 row has tau2 > tau_pull. 3 CAN fail on data AS SPECIFIED. 2 of those are the genuine DATA CHECKS, both added by decisions/0076 because before it the set had ZERO: no account dropped wholesale, and no access_denied or skipped account read as empty. THE THIRD IS THE CLOCK START, and it is counted here as ABLE TO FAIL rather than as unable: it is a code check BY CONSTRUCTION -- T0 = max() makes all three clauses true of any correct max() -- but AS SPECIFIED (task-sheet.md; decisions/0068) it recomputes the first-pass S1 completion date INDEPENDENTLY, and two implementations can disagree on real records. THAT IS WHAT GIVES IT FORCE, AND A CHECK WITH FORCE IS A CHECK THAT CAN FAIL. ***CORRECTED THIS RUN, Red Team seventh pass, finding 3: this arm's -r4 build published 'SEVEN of the nine assertions CANNOT FAIL ON ANY DATA' and then, in the same sentence, called the seventh a genuine cross-check BECAUSE a value is recomputed independently. Those cannot both hold -- if the recomputation gives it force it can fail on data. The count is now DERIVED FROM THE LABELS rather than typed, so the sentence and the label set cannot diverge again.*** 'All invariants passed' is therefore mostly a statement that the code computed what it was told to; it is NOT evidence for the liveness rule or for any published share.",
   "counts": {
+    "assertions_total": 9,
     "pure_code_checks": 6,
+    "pure_code_check_names": [
+      "outcome states are mutually exclusive and sum to the POST-POSITION-7 row set",
+      "filter counts decrease monotonically -- CODED AS `>=`, NOT `>`",
+      "distinct episodes never exceed season length (|D| <= L)",
+      "A is a subset of A_H on every row",
+      "abandonment point p is in (0, 1] on every Started-and-left row, null elsewhere",
+      "no position-5 row has tau2 > tau_pull"
+    ],
     "code_check_by_construction_and_data_check_as_specified": 1,
     "genuine_data_checks": 2,
-    "assertions_total": 9,
+    "cannot_fail_on_any_data": 6,
+    "can_fail_on_data_as_specified": 3,
+    "can_fail_on_data_as_specified_names": [
+      "clock start is on or after the S2 finale date, on or after the first-pass S1 completion date, and equals one of those two",
+      "NO ACCOUNT IS DROPPED WHOLESALE BY THE PAIR-LEVEL LIVENESS FILTER -- the count of accounts holding BOTH a live and a not-live pair is > 0",
+      "NO access_denied OR SKIPPED ACCOUNT IS READ AS EMPTY -- no account recorded access_denied, over-tolerance or otherwise skipped contributes a pair scored never-started"
+    ],
+    "DERIVED_NOT_TYPED": "every number in this block is computed from the `label` field of the emitted invariants. decisions/0089 Sec 3 and Red Team seventh pass finding 3 both landed on a TYPED count that had drifted from the set it described",
+    "the_clock_start_is_counted_as_ABLE_TO_FAIL": "it is CODE CHECK BY CONSTRUCTION, DATA CHECK AS SPECIFIED. Counting it among the unable-to-fail contradicts the reason it is kept: task-sheet.md requires the first-pass S1 completion date to be RECOMPUTED INDEPENDENTLY, and a disagreement between two implementations on real records is a real finding. Read back rather than recomputed it would degrade to a pure code check -- and then the count would be 7 unable and 2 able",
     "the_set_moved_from_EIGHT_to_NINE_at_0088": "decisions/0088 Sec 1(c) PROMOTES the tau2 <= tau_pull assertion into the published set. It already ran; it was invisible to a reader of the deliverable",
     "the_surface_count_this_arm_reported_last_run_IS_RE_READ_NOT_CARRIED": {
       "r4_claim": "task-sheet.md and this instance's definition file still read 'THE ASSERTION SET NOW HAS EIGHT MEMBERS', and task-sheet.md's labelling bullet carries a third count, 'four pure code checks'",
@@ -350,7 +367,10 @@
           "note": "A is counted over distinct in-E2 S2 episodes whose evidence was D11-filtered at stage 1; the assertion is measured on the episode instants actually stored",
           "distinct_episodes_excluded": 94,
           "pairs_touched": 39,
-          "latest_instant_used_utc": "2026-08-10T23:58:00"
+          "records_counted_at_this_site": 2489729,
+          "latest_instant_used_utc": "2026-08-10T23:58:00",
+          "records_examined_at_this_site": 2489729,
+          "assertion_is_VACUOUS_zero_coverage": false
         },
         {
           "site": "A_H (|A_H| at tau2)",
@@ -361,7 +381,10 @@
           "assertion_holds": true,
           "note": "same evidence array as A, read at a later instant; the exclusion is the same set of records and is stated here rather than left implicit in A's row",
           "distinct_episodes_excluded": 94,
-          "pairs_touched": 39
+          "pairs_touched": 39,
+          "records_counted_at_this_site": 2489729,
+          "records_examined_at_this_site": 2489729,
+          "assertion_is_VACUOUS_zero_coverage": false
         },
         {
           "site": "action_count_s1_watch",
@@ -373,7 +396,9 @@
           "note": "D11 IS APPLIED AT THIS SITE ON THIS BUILD. On r3 the four s1_* sites counted post-cutoff records, because the S1 side is carried past tau_pull so 0068's published line 1 survives -- an exception that has a ruling behind it for the COMPLETION WALK and none here. Asserting per site is what exposed it",
           "records_counted_at_this_site": 2716991,
           "latest_watched_at_counted_utc": "2026-08-10T23:59:00",
-          "site_is_empty": false
+          "site_is_empty": false,
+          "records_examined_at_this_site": 2716991,
+          "assertion_is_VACUOUS_zero_coverage": false
         },
         {
           "site": "action_count_s1_checkin",
@@ -385,7 +410,9 @@
           "note": "D11 IS APPLIED AT THIS SITE ON THIS BUILD. On r3 the four s1_* sites counted post-cutoff records, because the S1 side is carried past tau_pull so 0068's published line 1 survives -- an exception that has a ruling behind it for the COMPLETION WALK and none here. Asserting per site is what exposed it",
           "records_counted_at_this_site": 153245,
           "latest_watched_at_counted_utc": "2026-08-10T21:38:00",
-          "site_is_empty": false
+          "site_is_empty": false,
+          "records_examined_at_this_site": 153245,
+          "assertion_is_VACUOUS_zero_coverage": false
         },
         {
           "site": "action_count_s1_scrobble",
@@ -397,7 +424,9 @@
           "note": "D11 IS APPLIED AT THIS SITE ON THIS BUILD. On r3 the four s1_* sites counted post-cutoff records, because the S1 side is carried past tau_pull so 0068's published line 1 survives -- an exception that has a ruling behind it for the COMPLETION WALK and none here. Asserting per site is what exposed it",
           "records_counted_at_this_site": 383811,
           "latest_watched_at_counted_utc": "2026-08-10T23:03:00",
-          "site_is_empty": false
+          "site_is_empty": false,
+          "records_examined_at_this_site": 383811,
+          "assertion_is_VACUOUS_zero_coverage": false
         },
         {
           "site": "action_count_s1_other",
@@ -409,7 +438,10 @@
           "note": "D11 IS APPLIED AT THIS SITE ON THIS BUILD. On r3 the four s1_* sites counted post-cutoff records, because the S1 side is carried past tau_pull so 0068's published line 1 survives -- an exception that has a ruling behind it for the COMPLETION WALK and none here. Asserting per site is what exposed it",
           "records_counted_at_this_site": 0,
           "latest_watched_at_counted_utc": "NO RECORDS AT THIS SITE",
-          "site_is_empty": true
+          "site_is_empty": true,
+          "records_examined_at_this_site": 0,
+          "assertion_is_VACUOUS_zero_coverage": true,
+          "assertion_holds_READ_AS": "VACUOUS -- this site examined 0 records, so the assertion is true of the empty set and is NOT evidence that D11 is applied here. Labelled rather than passed silently (CLAUDE.md; decisions/0088 Sec 1a). The site is empty because no record in the sweep carries this action type, which is itself the finding"
         },
         {
           "site": "action_count_s2_watch",
@@ -421,7 +453,9 @@
           "note": "the S2 side was already D11-filtered before the action counts were formed",
           "records_counted_at_this_site": 2364902,
           "latest_watched_at_counted_utc": "2026-08-10T23:59:00",
-          "site_is_empty": false
+          "site_is_empty": false,
+          "records_examined_at_this_site": 2364902,
+          "assertion_is_VACUOUS_zero_coverage": false
         },
         {
           "site": "action_count_s2_checkin",
@@ -433,7 +467,9 @@
           "note": "the S2 side was already D11-filtered before the action counts were formed",
           "records_counted_at_this_site": 120989,
           "latest_watched_at_counted_utc": "2026-08-10T23:25:00",
-          "site_is_empty": false
+          "site_is_empty": false,
+          "records_examined_at_this_site": 120989,
+          "assertion_is_VACUOUS_zero_coverage": false
         },
         {
           "site": "action_count_s2_scrobble",
@@ -445,7 +481,9 @@
           "note": "the S2 side was already D11-filtered before the action counts were formed",
           "records_counted_at_this_site": 325599,
           "latest_watched_at_counted_utc": "2026-08-10T23:57:00",
-          "site_is_empty": false
+          "site_is_empty": false,
+          "records_examined_at_this_site": 325599,
+          "assertion_is_VACUOUS_zero_coverage": false
         },
         {
           "site": "action_count_s2_other",
@@ -457,7 +495,10 @@
           "note": "the S2 side was already D11-filtered before the action counts were formed",
           "records_counted_at_this_site": 0,
           "latest_watched_at_counted_utc": "NO RECORDS AT THIS SITE",
-          "site_is_empty": true
+          "site_is_empty": true,
+          "records_examined_at_this_site": 0,
+          "assertion_is_VACUOUS_zero_coverage": true,
+          "assertion_holds_READ_AS": "VACUOUS -- this site examined 0 records, so the assertion is true of the empty set and is NOT evidence that D11 is applied here. Labelled rather than passed silently (CLAUDE.md; decisions/0088 Sec 1a). The site is empty because no record in the sweep carries this action type, which is itself the finding"
         },
         {
           "site": "liveness evidence (per-account maximum insertion instant)",
@@ -468,18 +509,27 @@
           "assertion_holds": true,
           "note": "0070 ruling 2 -- the silence test's evidence is restricted to records dated before tau_pull. Measured to be inert on the exclusion set: 703 and 99 either way",
           "records_used": 27655079,
+          "records_counted_at_this_site": 27656813,
           "exclusions_restricted": 703,
-          "exclusions_unrestricted": 703
+          "exclusions_unrestricted": 703,
+          "records_examined_at_this_site": 27656813,
+          "assertion_is_VACUOUS_zero_coverage": false
         },
         {
           "site": "D9 coverage rows",
           "d11_applied": true,
-          "unit": "S1/S2 episode records, ALL shows in the sweep",
-          "records_excluded_by_D11": null,
-          "assertion": "no record dated at or after tau_pull participates in this computation",
-          "assertion_holds": null,
-          "note": "measured at stage 3, where the D9 coverage pivot is built; the count is filled in processed/step8/b/d9.json and reproduced in the invariant report",
-          "deferred_to": "processed/step8/b/d9.json -> D11_site"
+          "unit": "S1/S2 episode records, ALL shows in the sweep, not only frame shows",
+          "records_excluded_by_D11": 756,
+          "assertion": "no record dated at or after tau_pull participates in the D9 coverage pivot",
+          "assertion_holds": true,
+          "note": "the universe here is WIDER than the in-frame S1/S2 slice the waterfall uses, because a split puts S1 under one show ID and S2 under another and only one of the two need be in the frame",
+          "backfilled_from": "processed/step8/b/d9.json -> D11_site",
+          "records_counted_at_this_site": 12323972,
+          "records_examined_at_this_site": 12323972,
+          "assertion_is_VACUOUS_zero_coverage": false,
+          "records_used": 12323216,
+          "latest_watched_at_used_utc": "2026-08-10T23:59:00",
+          "BACKFILLED_AT_STAGE_3": "computed where the D9 coverage pivot is built and written into the published table here. The -r4 build left this row null in results.json while d9.json carried the number -- an unasserted site inside the table decisions/0088 Sec 1(b) created so that mandates would stop being self-reported"
         },
         {
           "site": "S1 completion walk",
@@ -490,6 +540,7 @@
           "assertion_holds": false,
           "note": "decisions/0068 rules waterfall line 1 at 220,107 AS PUBLISHED, and that value needs the pairs whose first-pass completion rests on a record at or after tau_pull. Whether D11 applies to the S1 completion walk is 0068's own OPEN item, not this instance's choice",
           "records_at_or_after_tau_pull_in_the_input": 73,
+          "records_counted_at_this_site": 2860465,
           "distinct_episodes_they_form": 72,
           "distinct_episodes_whose_CANONICAL_instant_is_post_cutoff": 60,
           "why_the_three_numbers_differ": "73 records collapse to 72 distinct episodes, and 12 of those also carry a pre-cutoff record whose instant is the canonical one -- so only 60 episodes enter the walk with a post-cutoff instant. Three different objects, named",
@@ -499,7 +550,9 @@
             "pairs_that_stop_being_completers": 4,
             "completion_dates_that_move": 0
           },
-          "assertion_reading": "FALSE here is the CORRECT reported state, not a failure. It is the one site where D11 is deliberately not applied, and 0068 records the question as OPEN"
+          "assertion_reading": "FALSE here is the CORRECT reported state, not a failure. It is the one site where D11 is deliberately not applied, and 0068 records the question as OPEN",
+          "records_examined_at_this_site": 2860465,
+          "assertion_is_VACUOUS_zero_coverage": false
         }
       ],
       "sites_counted": 13,
@@ -507,9 +560,24 @@
       "sites_where_D11_is_NOT_applied": [
         "S1 completion walk"
       ],
-      "sites_deferred_to_another_stage": [
-        "D9 coverage rows"
-      ],
+      "sites_deferred_to_another_stage": [],
+      "sites_with_NO_assertion_at_all": [],
+      "THE_EXCLUSION_COLUMN_IS_NOT_SUMMABLE_AND_THE_ROWS_ARE_NOT_DISJOINT": {
+        "why": "`records_excluded_by_D11` is carried in FOUR DIFFERENT UNITS across these rows, and the rows overlap. Adding the column produces a number that counts nothing. Named here because one label over quantities in different units is exactly the defect decisions/0088 Sec 2(b) ruled on, and a table is where it hides best",
+        "units_present": [
+          "S1/S2 episode records, ALL shows in the sweep",
+          "distinct in-E1 S1 episodes at their canonical instant",
+          "in-E S1/S2 records",
+          "in-E2 S2 records",
+          "records of any kind, whole sweep"
+        ],
+        "overlaps": "`A` and `A_H` report the SAME 94 records -- one evidence array read at two instants -- and those same 94 are also the sum of the four `action_count_s2_*` rows. The `liveness evidence` row is records of ANY kind across the WHOLE sweep, a superset. The `D9 coverage rows` row is over ALL shows in the sweep, not only frame shows. The `S1 completion walk` row is in DISTINCT EPISODES at their canonical instant, not records",
+        "the_two_figures_that_DO_sum": "the four action_count_s1_* rows sum to 73 and the four action_count_s2_* rows sum to 94; 73 + 94 = 167, which is in_frame_S1_S2_records_at_or_after_tau_pull. That identity is arithmetic on measured counts and is asserted below",
+        "identity_s1_side": true,
+        "identity_s2_side": true,
+        "identity_total": true
+      },
+      "SITE_NAMES_ARE_THIS_ARMS_OWN_AND_ARE_NOT_A_RULED_VOCABULARY": "decisions/0088 Sec 1(b) NAMES the sites in prose -- A, A_H, the four action_count_s{1,2}_*, the liveness evidence, D9's coverage rows, the S1 walk -- but fixes no key spelling, and it names EIGHT while the four action_count columns are EIGHT sites here, not four, because the spec's own column enumeration (0080) has eight action-count columns. This arm publishes 13 rows with prose site names. decisions/0091 Sec 3 records the other arm using `S1_completion_walk`, an underscored key, so THE TWO TABLES ARE NOT KEY-WISE DIFFABLE even where they agree numerically. Reported, not reconciled: naming is unruled, and 0088 Sec 2(c) requires two differing objects be named as two rather than merged under a shared label",
       "THIS_RUNS_OWN_CHANGE": "YES, and it is reported rather than reconciled. The r3 build computed the eight action counts on `m12`, which carries the S1 side past tau_pull so that decisions/0068's published line 1 of 220,107 survives. That carry-through has a ruling behind it FOR THE COMPLETION WALK and none for the action counts. decisions/0088 Sec 1(b)'s per-site assertion is what made the difference visible: asserted at each site, the four action_count_s1_* sites would have FAILED on r3",
       "pairs_whose_action_counts_moved": {
         "in_the_record_universe": 44,
@@ -521,6 +589,16 @@
           "action_count_s1_scrobble"
         ],
         "no_other_column_moves": "the action counts are read by nothing upstream of themselves -- not by |A|, |A_H|, T0, the outcome assignment or the liveness rule -- so no waterfall line, no outcome share and no invariant moves with them"
+      },
+      "EVERY_SITE_CARRIES_A_BOOLEAN_ASSERTION_AND_AN_EXAMINED_COUNT": {
+        "sites": 13,
+        "sites_with_a_boolean_assertion": 13,
+        "sites_with_an_examined_count": 13,
+        "sites_whose_pass_is_VACUOUS_zero_coverage": [
+          "action_count_s1_other",
+          "action_count_s2_other"
+        ],
+        "why": "CLAUDE.md -- a check that finds nothing because it looked nowhere must FAIL, not pass, and every path that can return 'nothing found' states whether it found nothing or looked at nothing. The examined count was printed at every site on the previous build; what was missing is (i) any assertion at the D9 site and (ii) any marking that a pass on an EMPTY site is vacuous"
       }
     },
     "c_the_promoted_assertion": {
@@ -545,7 +623,7 @@
       "the_bound_is_ATTAINED_not_slack": "rows sit with tau2 EXACTLY at tau_pull, so the assertion is tight rather than comfortably satisfied -- a `>=` form of the same assertion would FAIL on this data. Stated because a passing assertion with slack and a passing assertion at the bound are not the same evidence",
       "passes": true
     },
-    "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r5 (RERUN on the spec as amended through decisions/0090; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
+    "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r6 (RERUN on the spec as amended through decisions/0091 and Red Team's SEVENTH pass; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
   },
   "invariants": [
     {
@@ -722,7 +800,7 @@
         }
       },
       "passes": true,
-      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r5 (RERUN on the spec as amended through decisions/0090; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
+      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r6 (RERUN on the spec as amended through decisions/0091 and Red Team's SEVENTH pass; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
     },
     {
       "invariant": "filter counts decrease monotonically -- CODED AS `>=`, NOT `>`",
@@ -790,7 +868,7 @@
         "identity_holds": true
       },
       "passes": true,
-      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r5 (RERUN on the spec as amended through decisions/0090; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
+      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r6 (RERUN on the spec as amended through decisions/0091 and Red Team's SEVENTH pass; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
     },
     {
       "invariant": "distinct episodes never exceed season length (|D| <= L)",
@@ -827,7 +905,7 @@
         }
       },
       "passes": true,
-      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r5 (RERUN on the spec as amended through decisions/0090; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
+      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r6 (RERUN on the spec as amended through decisions/0091 and Red Team's SEVENTH pass; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
     },
     {
       "invariant": "A is a subset of A_H on every row",
@@ -852,7 +930,7 @@
         "rows_with_tau2_<=_tau1": 0
       },
       "passes": true,
-      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r5 (RERUN on the spec as amended through decisions/0090; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
+      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r6 (RERUN on the spec as amended through decisions/0091 and Red Team's SEVENTH pass; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
     },
     {
       "invariant": "clock start is on or after the S2 finale date, on or after the first-pass S1 completion date, and equals one of those two",
@@ -889,10 +967,26 @@
       },
       "the_equality_clause_cannot_discriminate_on": {
         "rows_where_the_two_terms_are_the_same_date": 168,
+        "POPULATION_OF_THAT_COUNT": "the APPLY position-5 row set, 196,654 rows -- STATED AT THE POINT OF USE (Red Team seventh pass, finding 2, against this arm: the -r4 build published this integer here and the same integer on waterfall LINE 1 in the other deliverable, 23,453 pairs apart, with neither naming its population)",
+        "unit": "rows of the stated population",
+        "on_every_population": {
+          "line1_220107": 168,
+          "position4_201900": 168,
+          "APPLY_position5_196654": 168,
+          "APPLY_position6_post_liveness_195951": 168,
+          "DERIV_position5_147370": 153,
+          "DERIV_position6_post_liveness_147271": 153
+        },
+        "CROSS_CHECK_against_the_pipelines_own_label": {
+          "what": "this count is formed from the INDEPENDENTLY recomputed S1 completion date; the waterfall's D2 section forms it from the pipeline's own `binds` label. Two implementations, one quantity -- so agreement is evidence and not a restatement",
+          "independent_here": 168,
+          "pipeline_label_there": 168,
+          "agree": true
+        },
         "why": "for those rows the invariant cannot tell a first-pass implementation from a last-observed one"
       },
       "passes": true,
-      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r5 (RERUN on the spec as amended through decisions/0090; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
+      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r6 (RERUN on the spec as amended through decisions/0091 and Red Team's SEVENTH pass; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
     },
     {
       "invariant": "abandonment point p is in (0, 1] on every Started-and-left row, null elsewhere",
@@ -927,7 +1021,7 @@
         "non_started_and_left_rows_that_are_NOT_null": 0
       },
       "passes": true,
-      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r5 (RERUN on the spec as amended through decisions/0090; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
+      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r6 (RERUN on the spec as amended through decisions/0091 and Red Team's SEVENTH pass; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
     },
     {
       "invariant": "NO ACCOUNT IS DROPPED WHOLESALE BY THE PAIR-LEVEL LIVENESS FILTER -- the count of accounts holding BOTH a live and a not-live pair is > 0",
@@ -1046,7 +1140,7 @@
       },
       "reading": "the accounts whose pairs are ALL not-live are not a counter-example: they are mostly accounts holding a single pair in the population, for which the two implementations are indistinguishable by construction",
       "passes": true,
-      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r5 (RERUN on the spec as amended through decisions/0090; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
+      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r6 (RERUN on the spec as amended through decisions/0091 and Red Team's SEVENTH pass; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
     },
     {
       "invariant": "NO access_denied OR SKIPPED ACCOUNT IS READ AS EMPTY -- no account recorded access_denied, over-tolerance or otherwise skipped contributes a pair scored never-started",
@@ -1110,7 +1204,7 @@
       },
       "reading": "zero access_denied and zero private_or_absent were recorded in the whole Step 4 pull, so the 403-skip path never fired. The skipped and over-tolerance accounts DO exist -- 287 discarded over tolerance and 38 skipped on the length forecast -- and none of them is parsed, indexed or present in the table. They are ABSENT, not empty, which is what the rule requires",
       "passes": true,
-      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r5 (RERUN on the spec as amended through decisions/0090; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
+      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r6 (RERUN on the spec as amended through decisions/0091 and Red Team's SEVENTH pass; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
     },
     {
       "invariant": "no position-5 row has tau2 > tau_pull",
@@ -1166,12 +1260,13 @@
       },
       "reading": "rows sit with tau2 EXACTLY at tau_pull, so the assertion is tight rather than comfortably satisfied -- a `>=` form of the same assertion would FAIL on this data. Stated because a passing assertion with slack and a passing assertion at the bound are not the same evidence",
       "passes": true,
-      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r5 (RERUN on the spec as amended through decisions/0090; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
+      "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r6 (RERUN on the spec as amended through decisions/0091 and Red Team's SEVENTH pass; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
     }
   ],
   "coverage_count_not_an_invariant": {
     "item": "the set-membership drop rule",
-    "status": "A COVERAGE COUNT, NOT AN INVARIANT (decisions/0074 ruling 3). Step 8's own bullet calls it 'an implementation check, not a data check'. Reported, not asserted -- asserting it would add another pass to a report where six of eight cannot fail on data",
+    "status": "A COVERAGE COUNT, NOT AN INVARIANT (decisions/0074 ruling 3). Step 8's own bullet calls it 'an implementation check, not a data check'. Reported, not asserted -- asserting it would add another pass to a report where 6 of 9 already cannot fail on data",
+    "SUPERSEDED_PHRASING_CORRECTED_THIS_RUN": "this arm's -r4 build wrote 'a report where six of EIGHT cannot fail on data' HERE, in the body of a deliverable whose head states the set is NINE and whose surface check concludes no surface still states the old count. Red Team seventh pass, finding 1. The surface check opened task-sheet.md, this arm's definition file and specs/step8-readback.md -- IT DID NOT OPEN artifacts/, WHICH IS PROPAGATION SURFACE 6 AND IS WHERE THE STRING WAS. The count is now derived from len(inv) and the label field, and a self-check over this arm's own emitted artifacts runs at stage 4",
     "records_examined": 6065610,
     "records_dropped": 0,
     "denominator_readings": {
@@ -1203,7 +1298,7 @@
       "conclusion": "the difference between the readings has ONE cause and it is fully accounted: where D11 is applied. 167 in-frame S1/S2 records are dated at or after tau_pull and they split 94 on the S2 side and 73 on the S1 side -- see decomposition_of_the_full_D11_effect above"
     },
     "denominator_status": "CLOSED at decisions/0083 Sec 1, amending 0074 ruling 4's routing to Step 14. The three readings are one one-parameter family indexed by where D11 applies, and EVERY MEMBER DROPS ZERO RECORDS -- the numerator is 0 three times over, so the difference survives into no result and is not a Step 14 limitation. It publishes as a COVERAGE FIGURE WITH ITS PIPELINE NAMED. What stays open is 0068's own item -- whether D11 applies to the S1 completion walk -- and that is answered there",
-    "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r5 (RERUN on the spec as amended through decisions/0090; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
+    "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r6 (RERUN on the spec as amended through decisions/0091 and Red Team's SEVENTH pass; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
   },
   "population_reconciliation_703_and_99": {
     "this_is_NOT_an_invariant": "it is a POPULATION RECONCILIATION, and the spec's own instruction to suspect the population before the implementation is what makes it one",
@@ -1242,8 +1337,311 @@
       "793_on_APPLY_is_ALT_MATCHED_withdrawn": true
     },
     "reconciles": true,
-    "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r5 (RERUN on the spec as amended through decisions/0090; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
+    "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r6 (RERUN on the spec as amended through decisions/0091 and Red Team's SEVENTH pass; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
   },
   "all_pass": true,
-  "elapsed_s": 5.930728912353516
+  "elapsed_s": 5.895565032958984,
+  "surface_6_self_check_artifacts": {
+    "negative_half": {
+      "rule": "CLAUDE.md -- there are EIGHT propagation surfaces and all eight are checked on every edit. artifacts/ is SURFACE 6: 'deliverables carrying superseded figures are stamped, not left to be read as current'",
+      "why_this_exists": "Red Team seventh pass, finding 1, against THIS ARM: the -r5 invariant report published a superseded assertion-set count IN ITS OWN BODY, inside a document whose head states the correct count and whose surface check concludes that no surface still states the old one. That check opened task-sheet.md, this arm's definition file and specs/step8-readback.md -- IT NEVER OPENED artifacts/. The same run carried a second instance of the same class: 0090's superseded framing sitting below the line that strikes it. A surface check that does not open the surface the defect is on is a check that looked nowhere",
+      "a_hit_is_not_a_defect_until_the_line_is_read": "CLAUDE.md. A string named as SUPERSEDED at the point of use is legitimate and is counted separately; an unqualified occurrence is a live defect. Only UNMARKED occurrences fail this run",
+      "coverage": {
+        "artifacts/step8-waterfall-b.md": {
+          "bytes_read": 101198,
+          "lines_read": 766
+        },
+        "artifacts/step8-waterfall-b.json": {
+          "bytes_read": 153041,
+          "lines_read": 2442
+        },
+        "artifacts/step8-invariants-b.md": {
+          "bytes_read": 57281,
+          "lines_read": 849
+        },
+        "artifacts/step8-invariants-b.json": {
+          "bytes_read": 95673,
+          "lines_read": 1344
+        }
+      },
+      "SUPERSEDED_STRING_REGISTER__strings_searched": "six of eight | of eight cannot fail | ASSERTION SET NOW HAS EIGHT | seven of the nine | SEVEN of the nine | even though strict is ruled | strict is ruled | the ruled key is STRICT | 88 columns | 97.6% | 793 | 1,293 | 95.98% | 91.34%",
+      "strings_searched_count": 14,
+      "NEEDLES_TRIED_AND_WITHDRAWN_each_naming_the_stronger_control": {
+        "f2_in_A_H": {
+          "why_it_fired": "every occurrence in this arm's artifacts is a line EXPLAINING that the column is dropped as derivable -- which the spec requires be stated. The string is supposed to be present",
+          "covered_instead_by": "a set assertion on the emitted table: `assert set(tab.columns) == set(COLUMNS_89)` in src/step8_b_2_pipeline.py, plus the emitted-order check. 0077's own words: 'Matching a count is not matching a set -- assert on the names.' A name assertion is strictly stronger than a substring grep and it runs on the artifact that matters",
+          "verified_live_this_run": "column_set_is_asserted_on_NAMES_not_on_a_count"
+        },
+        "thetwilightzone": {
+          "why_it_fired": "the U3 cluster list is EMITTED ON PURPOSE, beside U1 and U2, so an arm on another universe is diffable without a rerun. 0088 Sec 3 supersedes it as THE ILLUSTRATION, not as a measurement",
+          "covered_instead_by": "an assertion that the PUBLISHED illustration is U1's ranked list and that its universe is named at the point of use -- asserted in stage 4 below. A line-local string test cannot express 'which list is the illustration', which is what 0088 Sec 3 actually rules",
+          "verified_live_this_run": "ruled_illustration_is_U1"
+        }
+      },
+      "withdrawing_a_needle_disarms_the_control_against_it": "CLAUDE.md, exactly. It is done here for two strings and only because the legitimate reading is verified LIVE on this build under the adopted rule, and because each is covered by a SET assertion or a structural assertion that a substring test cannot express. Both replacements are asserted in this run and fail it if they break",
+      "the_numeric_boundary_rule": "a needle beginning with a digit is not counted when it sits inside a longer number. This control caught itself on its first run: the SUPERSEDED needle `793` matched inside `\"retained_pct\": 95.867931...`. It NARROWS THE MATCH RULE and disarms no string",
+      "how_the_register_avoids_failing_its_own_check": "a register of superseded strings necessarily contains every superseded string. It is NOT exempted by line range -- CLAUDE.md forbids a file-level or block-level exemption, because 'a file-level stamp declares a file's STATUS, never its individual values'. Instead every line this register emits carries the token SUPERSEDED, so it is classified by exactly the same rule as every other line. The cost is stated: any line containing a marker word passes, so the control is a marker-word control and not a semantic one",
+      "per_file": {
+        "artifacts/step8-waterfall-b.md": {
+          "bytes_read": 101198,
+          "lines_read": 766,
+          "strings_searched": 14,
+          "strings_with_any_occurrence": 6,
+          "hits": [
+            {
+              "SUPERSEDED_STRING_REGISTER__string": "ASSERTION SET NOW HAS EIGHT",
+              "what_it_is": "the pre-0088 assertion-set count",
+              "replaced_by": "NINE (0088 Sec 1c)",
+              "marked_as_superseded_at_the_point_of_use": 2,
+              "UNMARKED_LIVE_OCCURRENCES": 0,
+              "unmarked_line_numbers": []
+            },
+            {
+              "SUPERSEDED_STRING_REGISTER__string": "SEVEN of the nine",
+              "what_it_is": "the self-contradicting cannot-fail count",
+              "replaced_by": "six cannot fail; three can fail as specified",
+              "marked_as_superseded_at_the_point_of_use": 1,
+              "UNMARKED_LIVE_OCCURRENCES": 0,
+              "unmarked_line_numbers": []
+            },
+            {
+              "SUPERSEDED_STRING_REGISTER__string": "97.6%",
+              "what_it_is": "the position-3 censoring share (0033)",
+              "replaced_by": "97.40% on position 4 (0070 r8)",
+              "marked_as_superseded_at_the_point_of_use": 1,
+              "UNMARKED_LIVE_OCCURRENCES": 0,
+              "unmarked_line_numbers": []
+            },
+            {
+              "SUPERSEDED_STRING_REGISTER__string": "793",
+              "what_it_is": "ALT-MATCHED's withdrawn liveness answer",
+              "replaced_by": "703 on APPLY",
+              "marked_as_superseded_at_the_point_of_use": 1,
+              "UNMARKED_LIVE_OCCURRENCES": 0,
+              "unmarked_line_numbers": []
+            },
+            {
+              "SUPERSEDED_STRING_REGISTER__string": "95.98%",
+              "what_it_is": "D3prime on the uncensored estimation sample (0034)",
+              "replaced_by": "99.53% on Step 8's right-censored APPLY (0075)",
+              "marked_as_superseded_at_the_point_of_use": 1,
+              "UNMARKED_LIVE_OCCURRENCES": 0,
+              "unmarked_line_numbers": []
+            },
+            {
+              "SUPERSEDED_STRING_REGISTER__string": "91.34%",
+              "what_it_is": "D3prime on the uncensored estimation sample (0034)",
+              "replaced_by": "97.73% at W = 213 on APPLY (0075)",
+              "marked_as_superseded_at_the_point_of_use": 1,
+              "UNMARKED_LIVE_OCCURRENCES": 0,
+              "unmarked_line_numbers": []
+            }
+          ],
+          "unmarked_live_occurrences": 0
+        },
+        "artifacts/step8-waterfall-b.json": {
+          "bytes_read": 153041,
+          "lines_read": 2442,
+          "strings_searched": 14,
+          "strings_with_any_occurrence": 2,
+          "hits": [
+            {
+              "SUPERSEDED_STRING_REGISTER__string": "ASSERTION SET NOW HAS EIGHT",
+              "what_it_is": "the pre-0088 assertion-set count",
+              "replaced_by": "NINE (0088 Sec 1c)",
+              "marked_as_superseded_at_the_point_of_use": 2,
+              "UNMARKED_LIVE_OCCURRENCES": 0,
+              "unmarked_line_numbers": []
+            },
+            {
+              "SUPERSEDED_STRING_REGISTER__string": "793",
+              "what_it_is": "ALT-MATCHED's withdrawn liveness answer",
+              "replaced_by": "703 on APPLY",
+              "marked_as_superseded_at_the_point_of_use": 1,
+              "UNMARKED_LIVE_OCCURRENCES": 0,
+              "unmarked_line_numbers": []
+            }
+          ],
+          "unmarked_live_occurrences": 0
+        },
+        "artifacts/step8-invariants-b.md": {
+          "bytes_read": 57281,
+          "lines_read": 849,
+          "strings_searched": 14,
+          "strings_with_any_occurrence": 4,
+          "hits": [
+            {
+              "SUPERSEDED_STRING_REGISTER__string": "ASSERTION SET NOW HAS EIGHT",
+              "what_it_is": "the pre-0088 assertion-set count",
+              "replaced_by": "NINE (0088 Sec 1c)",
+              "marked_as_superseded_at_the_point_of_use": 1,
+              "UNMARKED_LIVE_OCCURRENCES": 0,
+              "unmarked_line_numbers": []
+            },
+            {
+              "SUPERSEDED_STRING_REGISTER__string": "seven of the nine",
+              "what_it_is": "the self-contradicting cannot-fail count",
+              "replaced_by": "six cannot fail; three can fail as specified",
+              "marked_as_superseded_at_the_point_of_use": 1,
+              "UNMARKED_LIVE_OCCURRENCES": 0,
+              "unmarked_line_numbers": []
+            },
+            {
+              "SUPERSEDED_STRING_REGISTER__string": "SEVEN of the nine",
+              "what_it_is": "the self-contradicting cannot-fail count",
+              "replaced_by": "six cannot fail; three can fail as specified",
+              "marked_as_superseded_at_the_point_of_use": 3,
+              "UNMARKED_LIVE_OCCURRENCES": 0,
+              "unmarked_line_numbers": []
+            },
+            {
+              "SUPERSEDED_STRING_REGISTER__string": "793",
+              "what_it_is": "ALT-MATCHED's withdrawn liveness answer",
+              "replaced_by": "703 on APPLY",
+              "marked_as_superseded_at_the_point_of_use": 1,
+              "UNMARKED_LIVE_OCCURRENCES": 0,
+              "unmarked_line_numbers": []
+            }
+          ],
+          "unmarked_live_occurrences": 0
+        },
+        "artifacts/step8-invariants-b.json": {
+          "bytes_read": 95673,
+          "lines_read": 1344,
+          "strings_searched": 14,
+          "strings_with_any_occurrence": 3,
+          "hits": [
+            {
+              "SUPERSEDED_STRING_REGISTER__string": "ASSERTION SET NOW HAS EIGHT",
+              "what_it_is": "the pre-0088 assertion-set count",
+              "replaced_by": "NINE (0088 Sec 1c)",
+              "marked_as_superseded_at_the_point_of_use": 1,
+              "UNMARKED_LIVE_OCCURRENCES": 0,
+              "unmarked_line_numbers": []
+            },
+            {
+              "SUPERSEDED_STRING_REGISTER__string": "SEVEN of the nine",
+              "what_it_is": "the self-contradicting cannot-fail count",
+              "replaced_by": "six cannot fail; three can fail as specified",
+              "marked_as_superseded_at_the_point_of_use": 1,
+              "UNMARKED_LIVE_OCCURRENCES": 0,
+              "unmarked_line_numbers": []
+            },
+            {
+              "SUPERSEDED_STRING_REGISTER__string": "793",
+              "what_it_is": "ALT-MATCHED's withdrawn liveness answer",
+              "replaced_by": "703 on APPLY",
+              "marked_as_superseded_at_the_point_of_use": 1,
+              "UNMARKED_LIVE_OCCURRENCES": 0,
+              "unmarked_line_numbers": []
+            }
+          ],
+          "unmarked_live_occurrences": 0
+        }
+      },
+      "UNMARKED_LIVE_OCCURRENCES_TOTAL": 0,
+      "passes": true,
+      "empty_vs_clean": "this result is CLEAN, not EMPTY: the bytes and lines actually read are stated per file above, and the marked-occurrence counts are non-zero, which proves the needles are findable by this scanner on these files",
+      "THE_CONTROLS_THAT_REPLACE_THE_WITHDRAWN_NEEDLES": {
+        "ruled_illustration_is_U1": {
+          "published_illustration_top_two": [
+            "secondchance",
+            "theisland"
+          ],
+          "expected_under_0088_Sec_3": [
+            "secondchance",
+            "theisland"
+          ],
+          "universe_named_at_the_point_of_use": true,
+          "ranking_basis_named_at_the_point_of_use": true,
+          "holds": true
+        },
+        "column_set_is_asserted_on_NAMES_not_on_a_count": {
+          "exact_match_to_the_enumerated_list": true,
+          "emitted_in_the_enumerated_order": true,
+          "f2_in_A_H_is_absent_from_the_emitted_columns": true,
+          "holds": true
+        }
+      }
+    },
+    "positive_half": {
+      "rule": "CLAUDE.md -- 'And grep the corrected string too, requiring non-zero.' The negative half sees only one of a defect's two shapes: the wrong figure PRESENT. It is blind to the right figure MISSING",
+      "checks": {
+        "NINE": {
+          "occurrences_across_the_emitted_artifacts": 31,
+          "required": "non-zero",
+          "why": "the current assertion-set count (0088 Sec 1c)",
+          "present": true
+        },
+        "196,654": {
+          "occurrences_across_the_emitted_artifacts": 54,
+          "required": "non-zero",
+          "why": "APPLY, the position-5 row set",
+          "present": true
+        },
+        "147,370": {
+          "occurrences_across_the_emitted_artifacts": 24,
+          "required": "non-zero",
+          "why": "DERIV",
+          "present": true
+        },
+        "220,107": {
+          "occurrences_across_the_emitted_artifacts": 42,
+          "required": "non-zero",
+          "why": "waterfall line 1 (0068)",
+          "present": true
+        },
+        "703": {
+          "occurrences_across_the_emitted_artifacts": 48,
+          "required": "non-zero",
+          "why": "the position-6 exclusion count on APPLY",
+          "present": true
+        },
+        "97.40": {
+          "occurrences_across_the_emitted_artifacts": 4,
+          "required": "non-zero",
+          "why": "the right-censoring survival share on the position-4 output (0070 r8)",
+          "present": true
+        },
+        "99.53": {
+          "occurrences_across_the_emitted_artifacts": 3,
+          "required": "non-zero",
+          "why": "D3prime at W = 46 on Step 8's right-censored APPLY (0075)",
+          "present": true
+        },
+        "97.73": {
+          "occurrences_across_the_emitted_artifacts": 2,
+          "required": "non-zero",
+          "why": "D3prime at W = 213 on Step 8's right-censored APPLY (0075)",
+          "present": true
+        },
+        "89": {
+          "occurrences_across_the_emitted_artifacts": 197,
+          "required": "non-zero",
+          "why": "the enumerated column count (0080/0081/0082)",
+          "present": true
+        },
+        "secondchance": {
+          "occurrences_across_the_emitted_artifacts": 13,
+          "required": "non-zero",
+          "why": "U1's largest cluster (0088 Sec 3)",
+          "present": true
+        },
+        "1,355": {
+          "occurrences_across_the_emitted_artifacts": 12,
+          "required": "non-zero",
+          "why": "the silence test alone, APPLY (0085 Sec 5)",
+          "present": true
+        },
+        "652": {
+          "occurrences_across_the_emitted_artifacts": 26,
+          "required": "non-zero",
+          "why": "the NOT-Continued conjunct's spare, APPLY (0081, 0085 Sec 5)",
+          "present": true
+        }
+      },
+      "all_present": true
+    },
+    "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r6 (RERUN on the spec as amended through decisions/0091 and Red Team's SEVENTH pass; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
+  }
 }

@@ -899,6 +899,19 @@ def main() -> None:
                        "schema exists"),
             "names_ruled": 89,
             "names_emitted": int(len(tab.columns)),
+            # 0077's own words: "Matching a count is not matching a set --
+            # assert on the names." The set assertion runs above, but the
+            # DELIVERABLE carried only the two counts, so a reader of the
+            # artifact had a count and no set. The names are emitted here.
+            "names_emitted_LIST": list(tab.columns),
+            "names_ruled_LIST": list(COLUMNS_89),
+            "names_in_emitted_not_in_ruled": sorted(set(tab.columns) - set(COLUMNS_89)),
+            "names_in_ruled_not_in_emitted": sorted(set(COLUMNS_89) - set(tab.columns)),
+            "why_the_lists_are_emitted": (
+                "decisions/0077: 'Matching a count is not matching a set -- assert on the "
+                "names.' The previous build published names_ruled: 89 and names_emitted: 89 and "
+                "no list, so the deliverable asserted a COUNT match while the code asserted a "
+                "SET match. The two are different claims and only one was visible"),
             "exact_match_to_the_enumerated_list": sorted(tab.columns) == sorted(COLUMNS_89),
             "emitted_in_the_enumerated_order": list(tab.columns) == COLUMNS_89,
             "transcribed_from": ("task-sheet.md Step 8's enumeration as it now stands, name by "
@@ -1166,6 +1179,28 @@ def main() -> None:
                "assertion_holds": assertion, "note": reason}
         if extra:
             row.update(extra)
+        # A PASS ON A SITE THAT EXAMINED NOTHING IS NOT A PASS.
+        # CLAUDE.md: "An empty result and a clean result are the same value, and
+        # only the control knows which it produced. A check that finds nothing
+        # because it looked nowhere must FAIL, not pass." decisions/0088 Sec 1(a)
+        # says the same thing about the boundary window: "IF 0, LABEL THE
+        # INVARIANT VACUOUS -- do not let it pass silently."
+        #
+        # The examined count was already printed at every site on the previous
+        # build, which is the half of the rule that was met. THIS is the half
+        # that was not: `assertion_holds: True` read identically at a site with
+        # 2.7M records and at a site with 0.
+        ex = row.get("records_counted_at_this_site")
+        row["records_examined_at_this_site"] = ex
+        if ex == 0:
+            row["assertion_is_VACUOUS_zero_coverage"] = True
+            row["assertion_holds_READ_AS"] = (
+                "VACUOUS -- this site examined 0 records, so the assertion is true of the empty "
+                "set and is NOT evidence that D11 is applied here. Labelled rather than passed "
+                "silently (CLAUDE.md; decisions/0088 Sec 1a). The site is empty because no "
+                "record in the sweep carries this action type, which is itself the finding")
+        elif ex is not None:
+            row["assertion_is_VACUOUS_zero_coverage"] = False
         sites.append(row)
 
     _site("A (|A| at tau1)", True, fp["S2_side"]["records_excluded"], "in-E2 S2 records",
@@ -1174,13 +1209,15 @@ def main() -> None:
           "stage 1; the assertion is measured on the episode instants actually stored",
           {"distinct_episodes_excluded": fp["S2_side"]["distinct_episodes_excluded"],
            "pairs_touched": fp["S2_side"]["distinct_pairs_touched"],
+           "records_counted_at_this_site": int(len(s2_ts)),
            "latest_instant_used_utc": str(np.datetime64(int(s2_ts.max()), "s"))})
     _site("A_H (|A_H| at tau2)", True, fp["S2_side"]["records_excluded"], "in-E2 S2 records",
           bool(int(s2_ts.max()) < TAU_PULL),
           "same evidence array as A, read at a later instant; the exclusion is the same set of "
           "records and is stated here rather than left implicit in A's row",
           {"distinct_episodes_excluded": fp["S2_side"]["distinct_episodes_excluded"],
-           "pairs_touched": fp["S2_side"]["distinct_pairs_touched"]})
+           "pairs_touched": fp["S2_side"]["distinct_pairs_touched"],
+           "records_counted_at_this_site": int(len(s2_ts))})
     for nm in ("s1_watch", "s1_checkin", "s1_scrobble", "s1_other",
                "s2_watch", "s2_checkin", "s2_scrobble", "s2_other"):
         exc = (fp["S1_side"]["by_action"][nm.split("_", 1)[1]] if nm.startswith("s1")
@@ -1204,19 +1241,33 @@ def main() -> None:
           "0070 ruling 2 -- the silence test's evidence is restricted to records dated before "
           "tau_pull. Measured to be inert on the exclusion set: 703 and 99 either way",
           {"records_used": int(R["liveness_inputs"]["records_used"]),
+           "records_counted_at_this_site": int(R["liveness_inputs"]["records_used"])
+           + int(R["liveness_inputs"]["records_excluded_by_the_tau_pull_restriction"]),
            "exclusions_restricted": per_arm["APPLY"]["108"]["liveness_excluded"],
            "exclusions_unrestricted": per_arm["APPLY"]["108"][
                "liveness_excluded_under_unrestricted_evidence"]})
-    _site("D9 coverage rows", True, None, "S1/S2 episode records, ALL shows in the sweep",
-          None,
-          "measured at stage 3, where the D9 coverage pivot is built; the count is filled in "
-          "processed/step8/b/d9.json and reproduced in the invariant report",
-          {"deferred_to": "processed/step8/b/d9.json -> D11_site"})
+    # The D9 row is BACKFILLED AT STAGE 3, where the coverage pivot is built.
+    # decisions/0088 Sec 1(b): "asserted at EACH site, not once and about the
+    # rest." This arm's -r4 build published `records_excluded_by_D11: null` and
+    # `assertion_holds: null` here while counting the site among the 12 where
+    # D11 is applied -- a site listed as asserted and not asserted. The number
+    # existed in d9.json and never reached the published table. The sentinel
+    # below is REPLACED at stage 3 and the replacement is asserted there; if the
+    # backfill does not run, the sentinel is visible rather than a null.
+    _site("D9 coverage rows", True, "PENDING_STAGE_3_BACKFILL",
+          "S1/S2 episode records, ALL shows in the sweep",
+          "PENDING_STAGE_3_BACKFILL",
+          "measured at stage 3, where the D9 coverage pivot is built, and BACKFILLED INTO THIS "
+          "ROW there. The -r4 build left this row null in the published table while d9.json "
+          "carried the number",
+          {"backfilled_from": "processed/step8/b/d9.json -> D11_site",
+           "records_counted_at_this_site": "PENDING_STAGE_3_BACKFILL"})
     _site("S1 completion walk", False, s1site["records_at_or_after_tau_pull_that_this_site_uses"],
           "distinct in-E1 S1 episodes at their canonical instant",
           s1site["assertion_no_record_at_or_after_tau_pull_is_counted"],
           s1site["why_not"],
           {"records_at_or_after_tau_pull_in_the_input": fp["S1_side"]["records_excluded"],
+           "records_counted_at_this_site": s1site["records_examined_by_the_walk"],
            "distinct_episodes_they_form": fp["S1_side"]["distinct_episodes_excluded"],
            "distinct_episodes_whose_CANONICAL_instant_is_post_cutoff":
                s1site["records_at_or_after_tau_pull_that_this_site_uses"],
@@ -1341,8 +1392,53 @@ def main() -> None:
             "sites_counted": len(sites),
             "sites_where_D11_is_applied": sum(1 for s in sites if s["d11_applied"]),
             "sites_where_D11_is_NOT_applied": [s["site"] for s in sites if not s["d11_applied"]],
-            "sites_deferred_to_another_stage": [s["site"] for s in sites
-                                                if s["assertion_holds"] is None],
+            "sites_deferred_to_another_stage": [
+                s["site"] for s in sites
+                if s["assertion_holds"] is None
+                or s["assertion_holds"] == "PENDING_STAGE_3_BACKFILL"],
+            "sites_with_NO_assertion_at_all": [
+                s["site"] for s in sites if s["assertion_holds"] is None],
+            "THE_EXCLUSION_COLUMN_IS_NOT_SUMMABLE_AND_THE_ROWS_ARE_NOT_DISJOINT": {
+                "why": ("`records_excluded_by_D11` is carried in FOUR DIFFERENT UNITS across "
+                        "these rows, and the rows overlap. Adding the column produces a number "
+                        "that counts nothing. Named here because one label over quantities in "
+                        "different units is exactly the defect decisions/0088 Sec 2(b) ruled "
+                        "on, and a table is where it hides best"),
+                "units_present": sorted({s["unit"] for s in sites}),
+                "overlaps": ("`A` and `A_H` report the SAME 94 records -- one evidence array "
+                             "read at two instants -- and those same 94 are also the sum of the "
+                             "four `action_count_s2_*` rows. The `liveness evidence` row is "
+                             "records of ANY kind across the WHOLE sweep, a superset. The `D9 "
+                             "coverage rows` row is over ALL shows in the sweep, not only frame "
+                             "shows. The `S1 completion walk` row is in DISTINCT EPISODES at "
+                             "their canonical instant, not records"),
+                "the_two_figures_that_DO_sum": ("the four action_count_s1_* rows sum to 73 and "
+                                                "the four action_count_s2_* rows sum to 94; "
+                                                "73 + 94 = 167, which is "
+                                                "in_frame_S1_S2_records_at_or_after_tau_pull. "
+                                                "That identity is arithmetic on measured counts "
+                                                "and is asserted below"),
+                "identity_s1_side": (sum(s["records_excluded_by_D11"] for s in sites
+                                         if s["site"].startswith("action_count_s1"))
+                                     == fp["S1_side"]["records_excluded"]),
+                "identity_s2_side": (sum(s["records_excluded_by_D11"] for s in sites
+                                         if s["site"].startswith("action_count_s2"))
+                                     == fp["S2_side"]["records_excluded"]),
+                "identity_total": (sum(s["records_excluded_by_D11"] for s in sites
+                                       if s["site"].startswith("action_count_"))
+                                   == fp["in_frame_S1_S2_records_at_or_after_tau_pull"]),
+            },
+            "SITE_NAMES_ARE_THIS_ARMS_OWN_AND_ARE_NOT_A_RULED_VOCABULARY": (
+                "decisions/0088 Sec 1(b) NAMES the sites in prose -- A, A_H, the four "
+                "action_count_s{1,2}_*, the liveness evidence, D9's coverage rows, the S1 walk "
+                "-- but fixes no key spelling, and it names EIGHT while the four action_count "
+                "columns are EIGHT sites here, not four, because the spec's own column "
+                "enumeration (0080) has eight action-count columns. This arm publishes 13 "
+                "rows with prose site names. decisions/0091 Sec 3 records the other arm using "
+                "`S1_completion_walk`, an underscored key, so THE TWO TABLES ARE NOT KEY-WISE "
+                "DIFFABLE even where they agree numerically. Reported, not reconciled: naming "
+                "is unruled, and 0088 Sec 2(c) requires two differing objects be named as two "
+                "rather than merged under a shared label"),
             "THIS_RUNS_OWN_CHANGE": acs["CHANGED_FROM_THIS_ARMS_PREVIOUS_BUILD"],
             "pairs_whose_action_counts_moved": {
                 "in_the_record_universe":
@@ -1632,10 +1728,13 @@ def main() -> None:
                         np.iinfo(np.int64).max)
     neg = loc_ok & (first_s2 < t0_mid)
     d2 = {}
-    for nm, msk, base in (("position3_220107", line3, line3),
+    for nm, msk, base in (("line1_220107", line1, line1),
+                          ("position3_220107", line3, line3),
                           ("position4_201900", line4, line4),
                           ("APPLY_position5_196654", line5, line5),
-                          ("DERIV_position5_147370", d5, d5)):
+                          ("APPLY_position6_post_liveness_195951", line6, line6),
+                          ("DERIV_position5_147370", d5, d5),
+                          ("DERIV_position6_post_liveness_147271", d6, d6)):
         tot = int(base.sum())
         d2[nm] = {
             "population": nm, "n": tot,
@@ -1644,11 +1743,54 @@ def main() -> None:
             "S2_finale_term_binds": int((msk & neg & (binds == "finale")).sum()),
             "S1_completion_term_binds": int((msk & neg & (binds == "s1")).sum()),
             "BOTH_terms_bind_tie": int((msk & neg & (binds == "tie")).sum()),
+            # 0070 ruling 5's own figure -- ALL pairs whose two max() terms bind,
+            # not only the negative-lag ones. THIS is the 168, and it is measured
+            # on every population rather than published once with none named.
+            "BOTH_terms_bind_tie_ALL_pairs_not_only_negative_lag":
+                int((msk & (binds == "tie")).sum()),
         }
+    _tie_by_pop = {k: v["BOTH_terms_bind_tie_ALL_pairs_not_only_negative_lag"]
+                   for k, v in d2.items()}
     req["D2_negative_lag"] = {
         "split": "THREE categories -- finale binds, S1 completion binds, BOTH bind "
                  "(decisions/0070 ruling 5). A tie is its own category, not a tiebreak",
-        "tie_pairs_in_line1": int((line1 & (binds == "tie")).sum()),
+        "THE_168_MEASURED_ON_EVERY_POPULATION": {
+            "ruling": ("task-sheet.md Step 8, D2 bullet, as amended by Red Team's SEVENTH pass "
+                       "finding N2: 0070 ruling 5 published '168 pairs have both terms binding' "
+                       "WITH NO POPULATION. STATE THE POPULATION AT THE POINT OF USE AND "
+                       "MEASURE IT ON BOTH. This is the standing provenance rule (0047, 0078 "
+                       "Sec 2), not a new requirement"),
+            "by_population": _tie_by_pop,
+            "unit": "user-show PAIRS whose T0 = max(S2 finale, S1 completion) has both terms "
+                    "binding on the same UTC day",
+            "THIS_ARMS_OWN_DEFECT_CORRECTED": (
+                "this arm's -r4 build published the integer 168 in TWO deliverables under TWO "
+                "populations -- `tie_pairs_in_line1` on waterfall line 1 (220,107) in "
+                "step8-waterfall-b.md, and `rows_where_the_two_terms_are_the_same_date` on the "
+                "APPLY position-5 row set (196,654) in step8-invariants-b.md -- with no line "
+                "reconciling them. The populations differ by 23,453 pairs. Reported here rather "
+                "than silently repaired"),
+            "AND_THE_REVIEW_PREMISE_IS_MEASURABLY_FALSE_ON_THIS_DATA": (
+                "the finding as put to this arm is '168 cannot be correct on both'. MEASURED: "
+                "IT IS CORRECT ON BOTH. Every one of the tie pairs survives positions 2 through "
+                "6 on APPLY, so the count is 168 on line 1, 168 at position 3, 168 at position "
+                "4, 168 at position 5 and 168 post-liveness. The two figures agreed because the "
+                "quantity is invariant across the APPLY chain, NOT because either was measured "
+                "wrongly. THE DEFECT IS REAL AND IS THE OTHER HALF OF THE FINDING: neither "
+                "figure NAMED its population, and neither had ever been measured on DERIV -- "
+                "where it is NOT 168. Reported, not reconciled: the arithmetic claim in the "
+                "finding is contradicted by this build, the provenance claim is upheld"),
+            "the_number_that_was_never_measured": (
+                "DERIV. The tie count on DERIV position 5 is emitted in by_population above and "
+                "differs from 168, which is what makes the missing population label load-bearing "
+                "rather than cosmetic"),
+            "invariant_5_reports_the_same_quantity_on_its_own_population": (
+                "step8-invariants-b.md invariant 5's "
+                "`rows_where_the_two_terms_are_the_same_date` is this quantity on the APPLY "
+                "position-5 row set, computed from the INDEPENDENTLY recomputed S1 completion "
+                "date rather than from the pipeline's `binds` label. Agreement between the two "
+                "is therefore a cross-check and not a restatement; it is asserted at stage 3"),
+        },
         "by_population": d2,
         "reading": ("S1-term negative lags are the test of the first-pass choice and should "
                     "be small; S2-finale-term negative lags are the normal case for anyone "

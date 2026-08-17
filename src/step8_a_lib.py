@@ -58,30 +58,63 @@ SRC = os.path.join(ROOT, "src")
 # The stage-file SHA-256 prefixes in build_record() are what identify the code, and they are
 # emitted with every build record. F7 is a carried limitation, not a ruling; this states the
 # convention rather than proposing one.
-BUILD_TAG = "a/2026-08-16-0090"
-BUILD_NAME = ("position-5 build of 2026-08-16, instance `a`, RERUN against decisions/0090 plus "
-              "Red Team fifth-pass F1 and F2, which 0090 SS3 folds into this rerun")
+#
+# THE ENTRY THIS BUILD IS LAUNCHED AGAINST IS `0092`, AND `0092` HAS NO FILE IN decisions/.
+# It is recorded in CLAUDE.md (## Artifact sign-off) and in commit 2f7e674, which also carries
+# its task-sheet.md edit (the N2 population requirement on the 168). The convention below names
+# the DECISION ENTRY, so the tag names 0092; that the entry exists on two surfaces and not in
+# decisions/ is REPORTED as a finding rather than worked around by inventing a different tag.
+BUILD_TAG = "a/2026-08-16-0092"
+BUILD_NAME = ("position-5 build of 2026-08-16, instance `a`, RERUN against decisions/0092 -- the "
+              "artifact sign-off rule and the N2 population requirement on the 168 -- together "
+              "with Red Team's SEVENTH pass, six findings against this arm")
 # The long form lives in build_record()["what_moved_on_this_build"], stated ONCE. BUILD_NAME is
 # quoted at every point of use, so a paragraph there is a paragraph repeated forty times -- and a
 # stamp that buries the figure it stamps is worse than a short one that points at it.
 WHAT_MOVED = (
-    "THREE THINGS MOVE, none of them a population, a rule, a waterfall line, an outcome share, a "
-    "bound endpoint or an invariant result. (1) decisions/0090: D9 PUBLISHES AS A BOUND -- strict "
-    "the FLOOR, loose the CEILING, NEITHER the point estimate -- superseding 0074 ruling 5's "
-    "framing, under which strict was the answer and loose was context. D9's numbers do not move; "
-    "which of them is presented as the answer does. (2) Red Team fifth pass F1 (decisions/0089 "
-    "SS2(a)): this arm's B3(a) answer was stated on the WRONG OBJECT. It found the right interval "
-    "-- [tau, tau + 24h) -- and then reported EPISODES ADMITTED. The number that settles B3(a) is "
-    "how many position-5 rows CHANGE OUTCOME STATE under the forbidden date-level form: four "
-    "numbers, both bounds x both populations. (3) Red Team fifth pass F2: this arm's "
-    "coverage-identity independence proxy was wrong. `len(parts) > 1` admitted identities whose "
-    "clauses are a COMPLEMENTARY PARTITION OF THE SAME MASK the population size is taken from, so "
-    "they cannot fail on any data -- including the one the previous deliverable called 'the "
-    "identity that closes the hole'. The population size is now sourced INDEPENDENTLY of the "
-    "asserted count; the label and the claim are corrected and the mechanism is demonstrated to "
-    "fire. ALSO FIXED: one hardcoded `holds: True` in the per-site D11 table, at the "
-    "S1-completion-walk site. PRIOR BUILDS OF THIS INSTANCE: a/2026-08-16-0088 (what Red Team's "
-    "fifth pass reviewed), a/2026-08-16-0085 (fourth) and the pre-0085 run (third).")
+    "SEVEN THINGS MOVE, none of them a population, a rule, a waterfall line, an outcome share, a "
+    "bound endpoint or an invariant RESULT. Six are Red Team's seventh-pass findings against this "
+    "arm; the seventh is decisions/0092's N2 requirement. "
+    "(1) THE 'INERT ON LINE 6' WARRANT IS WITHDRAWN and the claim is rescoped. The previous "
+    "deliverable said line 6 does not move under the date-level counterfactual 'because the "
+    "silence test reads an insertion clock, not an episode timestamp'. That is a property of "
+    "CONJUNCT 1 and cannot explain the invariance of a CONJUNCTION whose second conjunct is NOT "
+    "Continued -- an episode-timestamp computation that moves on 55 APPLY rows under this very "
+    "counterfactual. WHAT WAS MEASURED IS NOW STATED: conjunct 2 IS recomputed on the "
+    "counterfactual outcome (`silent & ~cont_`, cont_ from the counterfactual state function), so "
+    "703 -> 703 is a measurement and not a tautology -- and the 604/99 SPLIT under every "
+    "counterfactual form is now reported, on both populations, which it was not. The invariance is "
+    "a FACT ABOUT THIS DATA at W = 108, not a structure. "
+    "(2) THE '1 EPISODE AT tau1' ATTRIBUTION IS WITHDRAWN -- WRONG OBJECT. decisions/0068's "
+    "strictness ruling is about INSERTION INSTANTS in the silence test; the 1 is a distinct S2 "
+    "EPISODE by canonical watched_at, which is the unit of the SS5.6a table. The ruling's OWN "
+    "quantity -- accounts whose last insertion instant falls exactly AT tau1 -- is measured here "
+    "for the first time in this arm, on both populations. "
+    "(3) THE `+1` PERTURBATION DOES NOT TEST INDEPENDENCE. On a same-mask denominator the clauses "
+    "sum to N and the stated population reads N + 1, so it fires identically -- it would have "
+    "passed on the very build whose defect it claimed to fix. It is RELABELLED as what it is (the "
+    "identity is arithmetic, not a literal) and a REAL independence control is added: injected "
+    "wrong-population defects, each asserting that the same-mask form PASSES and the "
+    "independently-sourced form FAILS. "
+    "(4) `p_at_bound`'s FALSE CARDINALITY IS EMITTED, on all four populations, and the TWO "
+    "DIFFERENT FALSE CLASSES on that page are named apart: the COEXTENSIVITY-GAP class (0082's "
+    "superseded two-mechanism definition), which is EMPTY, and the COLUMN's own FALSE value "
+    "(Started-and-left below the bound), which is 17,895 on APPLY position 5. "
+    "(5) THE PER-SITE D11 TABLE'S S1_completion_walk 'examined' CELL held a different quantity "
+    "from the other twelve rows -- 73 is a RECORD count of the post-cutoff candidates, not an "
+    "examined count, and the walk's unit is DISTINCT S1 EPISODES. All three objects are now named "
+    "and the examined column is the same kind of quantity in every row. "
+    "(6) D2's 'both bind' COUNT NOW CARRIES ITS POPULATION AT THE POINT OF USE AND IS MEASURED ON "
+    "BOTH POPULATIONS AT BOTH POSITIONS (decisions/0092, N2), and the combined waterfall's DERIV "
+    "line 4 is RELABELLED: it is not a single filter, it is Step 5 lines 1 through 4 and its "
+    "sub-decomposition is emitted. "
+    "(7) A CLAIM THIS ARM PUBLISHED ABOUT ITS OWN SOURCE WAS FALSE: 'no .date(), dt.date, "
+    "normalize() or day-flooring anywhere in step8_a_*.py'. floor_day() appears three times in "
+    "step8_a_2_positions.py, legitimately -- [[T0]] is day-floored by Step 1 SS2.4 and SS5.6a's "
+    "own argument depends on it. The claim is corrected to the true and narrower one: no "
+    "day-flooring in any BOUNDARY TEST. "
+    "PRIOR BUILDS OF THIS INSTANCE: a/2026-08-16-0090 (what Red Team's sixth and seventh passes "
+    "reviewed), a/2026-08-16-0088 (fifth), a/2026-08-16-0085 (fourth), the pre-0085 run (third).")
 STAGE_FILES = ["step8_a_lib.py", "step8_a_1_scan.py", "step8_a_2_positions.py",
                "step8_a_3_table.py", "step8_a_4_arms.py", "step8_a_4b_slugs.py",
                "step8_a_5_diagnostics.py", "step8_a_6_emit.py", "step8_a_run.py"]

@@ -28,6 +28,247 @@ OUT = ROOT / "processed" / "step8" / "b"
 ART = ROOT / "artifacts"
 
 W_ARMS = [38, 46, 77, 91, 107, 108, 150, 213]
+
+# =====================================================================
+# PROPAGATION SURFACE 6 -- artifacts/ -- IS OPENED BY THIS ARM'S OWN RUN.
+#
+# Red Team seventh pass, finding 1, against this arm: the -r4 invariant report
+# carried "a report where six of EIGHT cannot fail on data" IN ITS OWN BODY,
+# 800 lines below a head that states the set is NINE, and 200 lines below a
+# surface check CONCLUDING that no surface still states the old count. That
+# check opened task-sheet.md, this arm's definition file and specs/step8-
+# readback.md. IT DID NOT OPEN artifacts/. CLAUDE.md numbers artifacts/ as
+# propagation surface 6 and says all eight are checked on every edit.
+#
+# The same finding names a second instance of the same class in the same run:
+# "Why the loose count publishes even though STRICT IS RULED" -- 0074 ruling 5's
+# framing, which 0090 supersedes -- sitting 85 lines BELOW the line that strikes
+# exactly that framing.
+#
+# So the run now greps its OWN deliverables. Two rules from CLAUDE.md govern it:
+#   * "A grep hit is not a defect until you read the line." A string named as
+#     superseded AT THE POINT OF USE is legitimate; an unqualified one is not.
+#     So every hit is classified by whether its line carries a supersession
+#     marker, and only UNMARKED hits fail.
+#   * "And grep the corrected string too, requiring non-zero" -- a figure that
+#     was never written returns zero hits on every superseded form of itself.
+#
+# COVERAGE IS PRINTED. An empty result and a clean result are the same value.
+SUPERSEDED_STRINGS = [
+    # (needle, what it is, what replaces it)
+    ("six of eight", "the pre-0088 assertion-set count in prose",
+     "the count derived from len(inv) and the label field"),
+    ("of eight cannot fail", "the pre-0088 assertion-set count in prose",
+     "N of 9, derived"),
+    ("ASSERTION SET NOW HAS EIGHT", "the pre-0088 assertion-set count",
+     "NINE (0088 Sec 1c)"),
+    ("seven of the nine", "the self-contradicting cannot-fail count",
+     "six cannot fail; three can fail as specified"),
+    ("SEVEN of the nine", "the self-contradicting cannot-fail count",
+     "six cannot fail; three can fail as specified"),
+    ("even though strict is ruled", "0074 ruling 5's framing",
+     "0090 -- strict is the floor of a published bound"),
+    ("strict is ruled", "0074 ruling 5's framing",
+     "0090 -- strict is the floor of a published bound"),
+    ("the ruled key is STRICT", "0074 ruling 5's framing", "0090 -- a bound"),
+    ("88 columns", "the pre-0082 column count", "89 names, enumerated"),
+    ("97.6%", "the position-3 censoring share (0033)", "97.40% on position 4 (0070 r8)"),
+    ("793", "ALT-MATCHED's withdrawn liveness answer", "703 on APPLY"),
+    ("1,293", "a deleted liveness threshold (0042)", "the rule is parameter-free"),
+    ("95.98%", "D3prime on the uncensored estimation sample (0034)",
+     "99.53% on Step 8's right-censored APPLY (0075)"),
+    ("91.34%", "D3prime on the uncensored estimation sample (0034)",
+     "97.73% at W = 213 on APPLY (0075)"),
+]
+# TWO NEEDLES WERE TRIED AND WITHDRAWN, AND WITHDRAWING ONE DISARMS THE CONTROL
+# AGAINST IT (CLAUDE.md), so each names the STRONGER control that covers it.
+# CLAUDE.md permits this only when "the legitimate reading is verified live under
+# the adopted rule", and both are verified in this run rather than argued.
+NEEDLES_WITHDRAWN = {
+    "f2_in_A_H": {
+        "why_it_fired": ("every occurrence in this arm's artifacts is a line EXPLAINING that the "
+                         "column is dropped as derivable -- which the spec requires be stated. "
+                         "The string is supposed to be present"),
+        "covered_instead_by": ("a set assertion on the emitted table: "
+                               "`assert set(tab.columns) == set(COLUMNS_89)` in "
+                               "src/step8_b_2_pipeline.py, plus the emitted-order check. "
+                               "0077's own words: 'Matching a count is not matching a set -- "
+                               "assert on the names.' A name assertion is strictly stronger than "
+                               "a substring grep and it runs on the artifact that matters"),
+        "verified_live_this_run": "column_set_is_asserted_on_NAMES_not_on_a_count",
+    },
+    "thetwilightzone": {
+        "why_it_fired": ("the U3 cluster list is EMITTED ON PURPOSE, beside U1 and U2, so an arm "
+                         "on another universe is diffable without a rerun. 0088 Sec 3 supersedes "
+                         "it as THE ILLUSTRATION, not as a measurement"),
+        "covered_instead_by": ("an assertion that the PUBLISHED illustration is U1's ranked list "
+                               "and that its universe is named at the point of use -- asserted in "
+                               "stage 4 below. A line-local string test cannot express 'which "
+                               "list is the illustration', which is what 0088 Sec 3 actually "
+                               "rules"),
+        "verified_live_this_run": "ruled_illustration_is_U1",
+    },
+}
+# A hit is LEGITIMATE if its line names the string as superseded, withdrawn,
+# corrected, struck, or attributes it to a previous build. Anything else is a
+# live occurrence and fails the run.
+MARKERS = ("SUPERSEDED", "supersede", "Supersede", "WITHDRAWN", "withdrawn", "~~",
+           "-r4", "-r5", "r4 build", "r5 build", "r4 claim", "r4_claim", "STRUCK",
+           "struck", "CORRECTED",
+           "Corrected", "corrected", "NO LONGER TRUE", "no longer", "PREVIOUS BUILD",
+           "previous build", "was measured on the wrong", "another universe's answer",
+           "DROPPED", "Dropped", "dropped", "not produced", "NOT an endpoint",
+           "not an endpoint", "deleted", "DELETED", "never produced", "Red Team",
+           "defect", "DEFECT", "REPLACES", "replaces", "former", "pre-", "old ")
+
+# THE SCANNER'S OWN OUTPUT CONTAINS EVERY NEEDLE IT SEARCHES FOR. That is
+# unavoidable -- a register of superseded strings is a list of superseded
+# strings. It is handled by making the register's own lines SELF-MARKING rather
+# than by exempting a block: CLAUDE.md is explicit that "a file-level stamp
+# declares a file's STATUS, never its individual values", and exempting a region
+# by line range is the same move one level down. Every line the register emits
+# carries the word SUPERSEDED, so it is classified by the same rule as every
+# other line and no range is skipped.
+REGISTER_MARK = "SUPERSEDED_STRING_REGISTER"
+
+
+def _count_bounded(line: str, needle: str) -> int:
+    """Count occurrences, with a DIGIT BOUNDARY on numeric needles.
+
+    Found by this control on its own first run: `793` matched inside
+    `"retained_pct": 95.86793198892843`. CLAUDE.md already records the general
+    shape -- "textual grep cannot see the JSONs", which is why the study's
+    numeric control matches numerically at a tolerance. This is the textual
+    half's minimum defence: a numeric needle must not sit inside a longer
+    number. It is a NARROWING OF THE MATCH RULE, not an exemption for any
+    string, so no needle is disarmed by it.
+    """
+    n = line.count(needle)
+    if not n or not needle[0].isdigit():
+        return n
+    kept, start = 0, 0
+    while True:
+        j = line.find(needle, start)
+        if j < 0:
+            return kept
+        before = line[j - 1] if j else ""
+        after = line[j + len(needle)] if j + len(needle) < len(line) else ""
+        if not (before.isdigit() or before == "." or after.isdigit()):
+            kept += 1
+        start = j + 1
+
+
+def surface6_scan(files: dict) -> dict:
+    """Grep this arm's OWN artifacts -- propagation surface 6 -- both halves.
+
+    `files` maps a published path to its full text. Returns per-file hit counts
+    split into MARKED (named as superseded at the point of use, which CLAUDE.md
+    permits) and UNMARKED (a live occurrence, which is the defect).
+    """
+    per_file = {}
+    unmarked_total = 0
+    for path, txt in files.items():
+        lines = txt.split("\n")
+        hits = []
+        for needle, what, replacement in SUPERSEDED_STRINGS:
+            marked = unmarked = 0
+            unmarked_lines = []
+            for i, ln in enumerate(lines):
+                n = _count_bounded(ln, needle)
+                if not n:
+                    continue
+                if any(mk in ln for mk in MARKERS):
+                    marked += n
+                else:
+                    unmarked += n
+                    unmarked_lines.append(i + 1)
+            if marked or unmarked:
+                # the key carries the marker so this row classifies itself
+                hits.append({REGISTER_MARK + "__string": needle,
+                             "what_it_is": what, "replaced_by": replacement,
+                             "marked_as_superseded_at_the_point_of_use": marked,
+                             "UNMARKED_LIVE_OCCURRENCES": unmarked,
+                             "unmarked_line_numbers": unmarked_lines})
+            unmarked_total += unmarked
+        per_file[path] = {
+            "bytes_read": len(txt),
+            "lines_read": len(lines),
+            "strings_searched": len(SUPERSEDED_STRINGS),
+            "strings_with_any_occurrence": len(hits),
+            "hits": hits,
+            "unmarked_live_occurrences": sum(
+                h["UNMARKED_LIVE_OCCURRENCES"] for h in hits),
+        }
+    return {
+        "rule": ("CLAUDE.md -- there are EIGHT propagation surfaces and all eight are checked "
+                 "on every edit. artifacts/ is SURFACE 6: 'deliverables carrying superseded "
+                 "figures are stamped, not left to be read as current'"),
+        "why_this_exists": (
+            "Red Team seventh pass, finding 1, against THIS ARM: the -r5 invariant report "
+            "published a superseded assertion-set count IN ITS OWN BODY, inside a document "
+            "whose head states the correct count and whose surface check concludes that no "
+            "surface still states the old one. That check opened task-sheet.md, this arm's "
+            "definition file and specs/step8-readback.md -- IT NEVER OPENED artifacts/. The "
+            "same run carried a second instance of the same class: 0090's superseded framing "
+            "sitting below the line that strikes it. A surface check that does not open the "
+            "surface the defect is on is a check that looked nowhere"),
+        "a_hit_is_not_a_defect_until_the_line_is_read": (
+            "CLAUDE.md. A string named as SUPERSEDED at the point of use is legitimate and is "
+            "counted separately; an unqualified occurrence is a live defect. Only UNMARKED "
+            "occurrences fail this run"),
+        "coverage": {p: {"bytes_read": v["bytes_read"], "lines_read": v["lines_read"]}
+                     for p, v in per_file.items()},
+        # ONE LINE, so the register classifies itself under the same rule as
+        # every other line rather than being exempted by range.
+        REGISTER_MARK + "__strings_searched":
+            " | ".join(s[0] for s in SUPERSEDED_STRINGS),
+        "strings_searched_count": len(SUPERSEDED_STRINGS),
+        "NEEDLES_TRIED_AND_WITHDRAWN_each_naming_the_stronger_control": NEEDLES_WITHDRAWN,
+        "withdrawing_a_needle_disarms_the_control_against_it": (
+            "CLAUDE.md, exactly. It is done here for two strings and only because the legitimate "
+            "reading is verified LIVE on this build under the adopted rule, and because each is "
+            "covered by a SET assertion or a structural assertion that a substring test cannot "
+            "express. Both replacements are asserted in this run and fail it if they break"),
+        "the_numeric_boundary_rule": (
+            "a needle beginning with a digit is not counted when it sits inside a longer number. "
+            "This control caught itself on its first run: the SUPERSEDED needle `793` matched "
+            "inside `\"retained_pct\": 95.867931...`. It NARROWS THE MATCH RULE and disarms no "
+            "string"),
+        "how_the_register_avoids_failing_its_own_check": (
+            "a register of superseded strings necessarily contains every superseded string. It "
+            "is NOT exempted by line range -- CLAUDE.md forbids a file-level or block-level "
+            "exemption, because 'a file-level stamp declares a file's STATUS, never its "
+            "individual values'. Instead every line this register emits carries the token "
+            "SUPERSEDED, so it is classified by exactly the same rule as every other line. The "
+            "cost is stated: any line containing a marker word passes, so the control is a "
+            "marker-word control and not a semantic one"),
+        "per_file": per_file,
+        "UNMARKED_LIVE_OCCURRENCES_TOTAL": unmarked_total,
+        "passes": unmarked_total == 0,
+        "empty_vs_clean": (
+            "this result is CLEAN, not EMPTY: the bytes and lines actually read are stated per "
+            "file above, and the marked-occurrence counts are non-zero, which proves the "
+            "needles are findable by this scanner on these files"),
+    }
+
+
+def surface6_positive(files: dict, required: list) -> dict:
+    """The POSITIVE half. CLAUDE.md, added by this agent's own predecessor run:
+    "a figure that was never written returns zero hits on every superseded form
+    of itself", so the negative grep passes clean on a file that never said the
+    right thing either. Every corrected string must be PRESENT."""
+    out = {}
+    for needle, why in required:
+        n = sum(txt.count(needle) for txt in files.values())
+        out[needle] = {"occurrences_across_the_emitted_artifacts": n,
+                       "required": "non-zero", "why": why, "present": n > 0}
+    return {
+        "rule": ("CLAUDE.md -- 'And grep the corrected string too, requiring non-zero.' The "
+                 "negative half sees only one of a defect's two shapes: the wrong figure "
+                 "PRESENT. It is blind to the right figure MISSING"),
+        "checks": out,
+        "all_present": all(v["present"] for v in out.values()),
+    }
 GATE = ("**Step 8 is a GATE and this document is a PROPOSAL.** Nothing here is adopted. "
         "This instance does not adopt its own proposal, does not begin Step 8b or Step 9, "
         "and records no approval — that is the Human Lead's alone. Zero API calls; every "
@@ -48,43 +289,68 @@ def rerun_note(R: dict, D9: dict, I: dict) -> str:
     ng = I["invariant_coverage_rule"]["AUDIT_can_each_identity_actually_fail"][
         "THE_FAILURE_IS_EXECUTED_NOT_DESCRIBED"]
     wf = {w["position"]: w for w in R["waterfall_APPLY"]}
+    t168 = R["required_counts"]["D2_negative_lag"]["THE_168_MEASURED_ON_EVERY_POPULATION"][
+        "by_population"]
+    lb = I["counts"]
     return (
         "**This is a RERUN ordered by the Human Lead**, on `task-sheet.md` Step 8 as it now "
-        "stands — the spec as amended through **`decisions/0090`**. **It is a rerun, not an "
-        "amendment: everything below is rebuilt from the stored data by the same pipeline that "
-        "writes the table, and no previous output was patched.** Against this arm's last "
-        "deliverables (the 2026-08-16 `-r4` run, spec through `0088`), **three things change and "
-        "two of them are corrections to this arm's own work.** "
-        "**(1) `0090` — D9 PUBLISHES AS A BOUND** (§10): strict is the floor, loose the ceiling, "
-        "**neither is the point estimate**, on every quantity with both forms — complementary "
-        f"pairs `{pf['complementary_signature_pairs']['BOUND']}`, half (a) "
+        "stands — the spec as amended through **`decisions/0091`** and Red Team's **SEVENTH** "
+        "pass. **It is a rerun, not an amendment: everything below is rebuilt from the stored "
+        "data by the same pipeline that writes the table, and no previous output was patched** "
+        "(`0092`'s standing rule as given to this instance — a deliverable is corrected by "
+        "rerunning the arm that produced it). Against this arm's last deliverables (the "
+        "2026-08-16 `-r5` run, spec through `0090`), **four things change and all four are "
+        "corrections to this arm's own work.** "
+        "**(1) THE SURFACE CHECK NOW OPENS `artifacts/`, WHICH IS PROPAGATION SURFACE 6** "
+        "(`step8-invariants-b.md` §16). `-r5`'s invariant report carried *\"a report where six "
+        "of EIGHT cannot fail on data\"* **in its own body**, inside a document whose head "
+        "states the set is NINE and whose surface check concludes that no surface still states "
+        "the old count — **because that check opened `task-sheet.md`, this arm's definition "
+        "file and `specs/step8-readback.md`, and never opened `artifacts/`.** The run now greps "
+        "its own four deliverables, splits every hit into *named as superseded at the point of "
+        "use* against *live*, prints its byte coverage, and **fails the run on a live one.** "
+        "**(2) THE SAME CLASS, SECOND INSTANCE: `0090`'s superseded framing sat BELOW the line "
+        "that strikes it** (§10). `-r5` rendered *\"Why the loose count publishes EVEN THOUGH "
+        "STRICT IS RULED\"* — `0074` ruling 5's framing — 85 lines under §10's strike of exactly "
+        "that framing. Corrected at the point of use. "
+        "**(3) THE `both bind` COUNT NOW NAMES ITS POPULATION AND IS MEASURED ON BOTH** (§7a). "
+        "`-r5` published the integer **168** in two deliverables under two populations 23,453 "
+        "pairs apart and reconciled them nowhere. **Measured on every population here: "
+        f"{t168['line1_220107']} on line 1 and {t168['APPLY_position5_196654']} on APPLY "
+        f"position 5 — both correct, the quantity is invariant across the APPLY chain — and "
+        f"{t168['DERIV_position5_147370']} on DERIV, which had never been measured.** So the "
+        "review's arithmetic premise is contradicted by this build and its provenance premise "
+        "is upheld; **reported, not reconciled.** "
+        "**(4) THE LABELLING SENTENCE NO LONGER CONTRADICTS ITSELF** "
+        "(`step8-invariants-b.md`). `-r5` said *\"SEVEN of the nine assertions CANNOT FAIL ON "
+        "ANY DATA\"* and then called one of the seven a genuine cross-check **because** a value "
+        "is recomputed independently — which is what gives it force, and a check with force can "
+        f"fail. **{lb['cannot_fail_on_any_data']} of {lb['assertions_total']} cannot fail on any "
+        f"data; {lb['can_fail_on_data_as_specified']} can, as specified.** Every count in that "
+        "paragraph is now **derived from the `label` field** rather than typed. "
+        "**Two smaller repairs, both found by re-reading this arm's own output:** the per-site "
+        "D11 table's **D9 row carried `null` for both its exclusion count and its assertion** "
+        "while the site was counted among the twelve where D11 is applied — **backfilled and "
+        "asserted at the site** (§14a(b)) — and the column-set block published **two counts and "
+        "no list**, asserting a count match where the code asserts a set match; **the names are "
+        "emitted.** "
+        "**(5) Carried from `-r5`, re-executed not restated:** `0090`'s D9 **bound** — "
+        f"complementary pairs `{pf['complementary_signature_pairs']['BOUND']}`, half (a) "
         f"`{pf['half_a_APPLY_position5']['BOUND']}`, half (b) "
-        f"`{pf['half_b_present_in_the_position3_drop_set']['BOUND']}`. **No D9 count moves; what "
-        "moves is which of them is presented as the answer**, and `-r4` presented strict as the "
-        "ruled key. "
-        "**(2) B3(a) WAS MEASURED ON THE WRONG SET AND THE VERDICT REVERSES** (§14a). `0089` "
-        "§2(a) corrects `0088` §1(a): `τ1` and `τ2` are midnight-aligned, so `[τ − 24h, τ)` is "
-        "where the half-open and date-level forms **agree**; the separating interval is "
-        "**`[τ, τ + 24h)`**, and `-r4` did not emit it. Measured on the right set, the verdict "
-        f"is **`{vs}`**, not `OCCUPIED_INERT`: the forbidden `date(watched_at) <= T1` form moves "
+        f"`{pf['half_b_present_in_the_position3_drop_set']['BOUND']}`, **neither endpoint the "
+        "point estimate**; and B3(a)'s reversed verdict on the separating interval "
+        f"`[τ, τ + 24h)` — **`{vs}`**, "
         f"**{fn['APPLY_position5_both_bounds_relaxed']} APPLY rows** and "
-        f"**{fn['DERIV_position5_both_bounds_relaxed']} DERIV rows** into a different outcome "
-        f"state (`τ1` alone {fn['APPLY_position5_tau1_relaxed']} / "
-        f"{fn['DERIV_position5_tau1_relaxed']}, `τ2` alone "
-        f"{fn['APPLY_position5_tau2_relaxed']} / {fn['DERIV_position5_tau2_relaxed']}). **The "
-        "mandate is load-bearing on the RESULT.** **No figure of this build moves** — the "
-        "forbidden form is computed as a counterfactual and nowhere else. "
-        "**(3) THE NEGATIVE CONTROL IS EXECUTED, NOT DESCRIBED** (`step8-invariants-b.md`). "
-        "`-r4` published a *sentence* about the failure its rebuilt coverage apparatus would "
-        f"catch; **replaced by {ng['cases_run']} injected defects run through the same "
-        f"functions and the same aggregate — {ng['cases_caught']} of "
-        f"{ng['cases_whose_control_is_checkable']} checkable cases caught, asserted, with the "
-        "one that passes by design named.** "
-        "**Nothing else moves.** Line 1 is "
+        f"**{fn['DERIV_position5_both_bounds_relaxed']} DERIV rows** change outcome state under "
+        "the forbidden `date(watched_at) <= T1` form (`τ1` alone "
+        f"{fn['APPLY_position5_tau1_relaxed']} / {fn['DERIV_position5_tau1_relaxed']}, `τ2` "
+        f"alone {fn['APPLY_position5_tau2_relaxed']} / {fn['DERIV_position5_tau2_relaxed']}); "
+        f"and the executed negative control — **{ng['cases_run']} injected defects, "
+        f"{ng['cases_caught']} of {ng['cases_whose_control_is_checkable']} checkable cases "
+        "caught, asserted, with the one that passes by design named.** "
+        "**No population moves and no waterfall line moves.** Line 1 is "
         f"**{wf[1]['retained_pairs']:,}**, APPLY is **{wf[5]['retained_pairs']:,}**, DERIV is "
         "**147,370**, position 6 removes **703** and **99**, and the column set is **89**. "
-        "`0088`'s three rulings — the per-site D11 table, the U1 clustering universe, the named "
-        "coverage objects — and everything before them are **re-executed rather than carried**. "
         "This overwrites the previous `-b` deliverables.")
 PROV = (f"**Provenance — `{BUILD}`.** Every count, every waterfall figure and every invariant "
         "result below was measured on that build (`0078`, `0079` §2). Where a figure is quoted "
@@ -574,22 +840,44 @@ def main() -> None:
     A("")
     A(MEAS)
     A("")
-    A("A tie is its own category, not a tiebreak (`0070` ruling 5). **"
-      f"{q['D2_negative_lag']['tie_pairs_in_line1']} pairs in line 1 have both terms of the "
-      "`max()` binding on the same date**; of those, "
-      f"{q['D2_negative_lag']['by_population']['position3_220107']['BOTH_terms_bind_tie']} "
-      "also carry a negative lag.")
+    t168 = q["D2_negative_lag"]["THE_168_MEASURED_ON_EVERY_POPULATION"]
+    A("A tie is its own category, not a tiebreak (`0070` ruling 5).")
+    A("")
+    A("### 7a. The `both bind` count, **measured on every population** — `0070` ruling 5's 168")
+    A("")
+    A(f"**Unit: {t168['unit']}.**")
+    A("")
+    A("| Population | n | **pairs where BOTH terms bind** |")
+    A("| :--- | ---: | ---: |")
+    for k, v in q["D2_negative_lag"]["by_population"].items():
+        A(f"| `{k}` | {v['n']:,} | **"
+          f"{v['BOTH_terms_bind_tie_ALL_pairs_not_only_negative_lag']:,}** |")
+    A("")
+    A("**This arm's own defect, corrected rather than patched.** "
+      f"{cap1(t168['THIS_ARMS_OWN_DEFECT_CORRECTED'])}.")
+    A("")
+    A("**And the review premise is measurably false on this data — reported, not reconciled.** "
+      f"{cap1(t168['AND_THE_REVIEW_PREMISE_IS_MEASURABLY_FALSE_ON_THIS_DATA'])}.")
+    A("")
+    A(f"**{t168['invariant_5_reports_the_same_quantity_on_its_own_population']}.**")
+    A("")
+    A("### 7b. Negative-lag pairs, split three ways")
     A("")
     A("| Population | n | Negative lag | share | S2 finale binds | S1 completion binds | "
       "BOTH bind |")
     A("| :--- | ---: | ---: | ---: | ---: | ---: | ---: |")
     for k, v in q["D2_negative_lag"]["by_population"].items():
-        A(f"| {k} | {v['n']:,} | {v['negative_lag_pairs']:,} | {v['share_pct']:.2f}% | "
+        A(f"| `{k}` | {v['n']:,} | {v['negative_lag_pairs']:,} | {v['share_pct']:.2f}% | "
           f"{v['S2_finale_term_binds']:,} | {v['S1_completion_term_binds']:,} | "
           f"{v['BOTH_terms_bind_tie']:,} |")
     A("")
-    A("**The population is not stated in the spec at the point of use**, so all four are "
-      "reported and each is labelled. S1-term negative lags are the actual test of the "
+    A("**The `BOTH bind` column here is the NEGATIVE-LAG subset and is a different quantity "
+      "from §7a's** — same predicate, intersected with `first S2 record < T0`. Both are "
+      "emitted because `0070` ruling 5's 168 is §7a's, and reading it off this table gives a "
+      "smaller number under the same words.")
+    A("")
+    A("**Every population the spec could mean is reported and each is labelled** (`0047`, "
+      "`0078` §2). S1-term negative lags are the actual test of the "
       "first-pass choice and should be small; S2-finale-term negative lags are the normal "
       "case for anyone who watched a weekly season while it was airing, and their size is "
       "information about the frame's cadence mix rather than about data quality.")
@@ -898,7 +1186,13 @@ def main() -> None:
       "are unchanged at **0** and **75**. What the ruling fixes is **which clusters are "
       "illustrated**, which is the evidence for the loose key's only warrant.")
     A("")
-    A(f"**Why the loose count publishes even though strict is ruled:** {nf['consequence']}.")
+    A(f"**Why the interval publishes rather than a point estimate:** {nf['consequence']}. "
+      "**Neither endpoint is the answer** (`0090`): strict is the **floor**, loose is the "
+      "**ceiling**. ***Corrected this run (Red Team seventh pass, finding 1, second half): "
+      "`-r5` rendered this line as \"Why the loose count publishes EVEN THOUGH STRICT IS "
+      "RULED\" — `0074` ruling 5's framing, which `0090` supersedes — and it sat "
+      "well below the line in §10 that strikes exactly that framing. Same file, same class of "
+      "defect as the assertion-set count: the replacement above, the superseded text below.***")
     A("")
     A(f"Direction: {D9['direction']}.")
     A("")
@@ -1097,33 +1391,71 @@ def main() -> None:
     A("### (b) The per-site D11 table — **asserted at each site, not once and about the rest**")
     A("")
     ps = b3["b_per_site_D11_table"]
+    _vac = ps["EVERY_SITE_CARRIES_A_BOOLEAN_ASSERTION_AND_AN_EXAMINED_COUNT"][
+        "sites_whose_pass_is_VACUOUS_zero_coverage"]
     A(f"{cap1(ps['what_it_measures'])}. **{ps['sites_counted']} sites; D11 applied at "
-      f"{ps['sites_where_D11_is_applied']}.**")
+      f"{ps['sites_where_D11_is_applied']}"
+      + (f", of which {len(_vac)} examined ZERO records and their passes are VACUOUS"
+         if _vac else "") + ".**")
     A("")
-    A("| Site | D11 applied | Records excluded | Unit | Assertion holds | Note |")
-    A("| :--- | :---: | ---: | :--- | :---: | :--- |")
+    A("| Site | D11 applied | **Records EXAMINED** | Records excluded | Unit | Assertion holds |")
+    A("| :--- | :---: | ---: | ---: | :--- | :--- |")
     for s in ps["sites"]:
-        s = dict(s)
-        # the D9 site is measured at stage 3, where the coverage pivot is built;
-        # it is FILLED IN here from d9.json rather than left as a dash, so no row
-        # of this table reads as unmeasured.
-        if s["records_excluded_by_D11"] is None and s["site"].startswith("D9"):
-            s["records_excluded_by_D11"] = ds["records_excluded_by_D11"]
-            s["assertion_holds"] = ds["assertion_holds"]
-            s["note"] = (f"{ds['records_used']:,} records used of "
-                         f"{ds['records_in_the_sites_input_universe']:,}; measured at stage 3 "
-                         "where the coverage pivot is built — see §10z")
+        # NO RENDER-TIME PATCH. The -r5 build filled the D9 row HERE, in the
+        # renderer, from d9.json -- so the .md showed a number and the published
+        # .json showed `null`, two definitions of one row with only one visible
+        # to a JSON reader. The backfill now happens in the PIPELINE, at stage 3,
+        # and this renderer reads whatever the table holds.
         exc = "—" if s["records_excluded_by_D11"] is None else f"{s['records_excluded_by_D11']:,}"
-        ah = "—" if s["assertion_holds"] is None else ("**yes**" if s["assertion_holds"]
-                                                      else "**NO — by design, see below**")
+        _exam = s.get("records_examined_at_this_site")
+        exm = "**— NONE STATED**" if not isinstance(_exam, int) else f"{_exam:,}"
+        if s.get("assertion_is_VACUOUS_zero_coverage"):
+            ah = "**VACUOUS — 0 examined**"
+        elif s["assertion_holds"] is None:
+            ah = "**— NOT ASSERTED**"
+        elif s["assertion_holds"]:
+            ah = "**yes**"
+        else:
+            ah = "**NO — by design, see below**"
         nm = s["site"].replace("|", "\\|")
-        A(f"| `{nm}` | {'yes' if s['d11_applied'] else '**no**'} | {exc} | "
-          f"{s['unit'].replace('|', chr(92) + '|')} | {ah} | {s['note'][:150]} |")
+        A(f"| `{nm}` | {'yes' if s['d11_applied'] else '**no**'} | {exm} | {exc} | "
+          f"{s['unit'].replace('|', chr(92) + '|')} | {ah} |")
     A("")
-    A("**Every row of that table is measured.** No site reports a dash: the D9 row is filled "
-      "from the stage where its pivot is built. **A site that reported nothing because nothing "
-      "was looked at would be indistinguishable from a site that looked and found zero**, which "
-      "is the failure this study's own standing rule exists to prevent.")
+    ev = ps["EVERY_SITE_CARRIES_A_BOOLEAN_ASSERTION_AND_AN_EXAMINED_COUNT"]
+    A(f"**Every row carries a boolean assertion and an examined count** — "
+      f"{ev['sites_with_a_boolean_assertion']} of {ev['sites']} and "
+      f"{ev['sites_with_an_examined_count']} of {ev['sites']}. "
+      f"**{cap1(ev['why'])}.**")
+    A("")
+    A("***Corrected this run.*** **The `D9 coverage rows` row published `null` for BOTH its "
+      "exclusion count and its assertion in `-r5`'s `results.json`**, while the site was counted "
+      "among the twelve where D11 is applied — **a row listed as asserted and carrying no "
+      "assertion.** The number was in `d9.json` the whole time, and the `.md` filled it *in the "
+      "renderer*, so the two halves of one deliverable disagreed and only the JSON reader could "
+      "see it. **The backfill is now a pipeline step (stage 3), asserted at the site**, and the "
+      "renderer patches nothing.")
+    A("")
+    if ev["sites_whose_pass_is_VACUOUS_zero_coverage"]:
+        A("***And a pass on an empty site is now labelled VACUOUS rather than printed as a "
+          "pass.*** " + ", ".join(f"`{x}`" for x in ev["sites_whose_pass_is_VACUOUS_zero_coverage"])
+          + " examined **0** records, so their assertions are true of the empty set and are **not "
+          "evidence that D11 is applied there**. The examined count was printed on the previous "
+          "build — that half of the rule was met — but `assertion_holds: true` read identically "
+          "at a site with 2.7 million records and at a site with none. **A check that finds "
+          "nothing because it looked nowhere must fail, not pass** (`CLAUDE.md`; `0088` §1(a) "
+          "says the same of the boundary window).")
+        A("")
+    ns = ps["THE_EXCLUSION_COLUMN_IS_NOT_SUMMABLE_AND_THE_ROWS_ARE_NOT_DISJOINT"]
+    A(f"**The `Records excluded` column is NOT summable and its rows are NOT disjoint.** "
+      f"{cap1(ns['why'])}. **Units present:** "
+      + "; ".join(f"*{u}*" for u in ns["units_present"]) + f". **Overlaps:** {ns['overlaps']}.")
+    A("")
+    A(f"**The two figures that DO sum, asserted:** {ns['the_two_figures_that_DO_sum']} — "
+      f"S1 side **{ns['identity_s1_side']}**, S2 side **{ns['identity_s2_side']}**, total "
+      f"**{ns['identity_total']}**.")
+    A("")
+    A(f"**Site names are this arm's own and are not a ruled vocabulary — reported, not "
+      f"reconciled.** {ps['SITE_NAMES_ARE_THIS_ARMS_OWN_AND_ARE_NOT_A_RULED_VOCABULARY']}.")
     A("")
     A("**The one site where D11 is not applied is the S1 completion walk**, and the `no` there "
       "is the **correct reported state, not a failure**: `0068` rules waterfall line 1 at "
@@ -1527,12 +1859,10 @@ def main() -> None:
     A("---")
     A("")
     A(GATE)
-    (ART / "step8-waterfall-b.md").write_text("\n".join(L) + "\n")
 
     # ==================================================================
     # INVARIANTS
     # ==================================================================
-    (ART / "step8-invariants-b.json").write_text(json.dumps(I, indent=2, default=str))
     M: list[str] = []
     B = M.append
     B("# Step 8 — invariant report (instance `b`)")
@@ -1630,10 +1960,21 @@ def main() -> None:
           f"{pop.replace('|', chr(92) + '|')} | {cs} | "
           f"**{'PASS' if iv['passes'] else 'FAIL'}** |")
     B("")
-    B(f"**All invariants pass: {I['all_pass']}.** For seven of the nine that statement says the "
+    _lb = I["counts"]
+    B(f"**All invariants pass: {I['all_pass']}.** For **{_lb['cannot_fail_on_any_data']} of the "
+      f"{_lb['assertions_total']}** — the pure code checks — that statement says only that the "
       "code computed what it was told to. It is **not** evidence for the liveness rule, for "
-      "the outcome definition, or for any published share. **The two that could have failed "
-      "are §7 and §8, and what they found is reported in full below rather than as a tick.**")
+      "the outcome definition, or for any published share. "
+      f"**{_lb['can_fail_on_data_as_specified']} could have failed on data as specified: "
+      "§7 and §8, the two DATA CHECKS, and §5, the clock start** — which is a code check by "
+      "construction but **recomputes the first-pass S1 completion date INDEPENDENTLY**, and two "
+      "implementations can disagree on real records. **What they found is reported in full "
+      "below rather than as a tick.** ***Corrected this run (Red Team seventh pass, finding 3): "
+      "`-r5` published \"for seven of the nine\" here and, in the invariant report's own head, "
+      "\"SEVEN of the nine assertions CANNOT FAIL ON ANY DATA\" followed by a clause calling one "
+      "of the seven a genuine cross-check BECAUSE a value is independently recomputed. Those "
+      "cannot both hold. Every number in this paragraph is now DERIVED FROM THE `label` FIELD "
+      "of the emitted invariants, not typed.***")
     B("")
     au = cr["AUDIT_can_each_identity_actually_fail"]
     B("### Can these identities actually fail? — **audited, because most of them could not**")
@@ -1824,10 +2165,168 @@ def main() -> None:
       "implementation one; the population was in fact re-derived through positions 1–5 and "
       "reproduces 196,654 and 147,370 exactly.")
     B("")
+
+    # ==================================================================
+    # PROPAGATION SURFACE 6 -- THIS ARM GREPS ITS OWN DELIVERABLES.
+    # Scanned BEFORE the write, on the assembled text of all four files; the
+    # section this produces is then appended, and the whole thing is RE-SCANNED
+    # OFF DISK below, so the report's own text is covered too.
+    # ==================================================================
+    PRE = {"artifacts/step8-waterfall-b.md": "\n".join(L),
+           "artifacts/step8-waterfall-b.json": json.dumps(wj, indent=2, default=str),
+           "artifacts/step8-invariants-b.md": "\n".join(M),
+           "artifacts/step8-invariants-b.json": json.dumps(I, indent=2, default=str)}
+    POSITIVE_REQUIRED = [
+        ("NINE", "the current assertion-set count (0088 Sec 1c)"),
+        ("196,654", "APPLY, the position-5 row set"),
+        ("147,370", "DERIV"),
+        ("220,107", "waterfall line 1 (0068)"),
+        ("703", "the position-6 exclusion count on APPLY"),
+        ("97.40", "the right-censoring survival share on the position-4 output (0070 r8)"),
+        ("99.53", "D3prime at W = 46 on Step 8's right-censored APPLY (0075)"),
+        ("97.73", "D3prime at W = 213 on Step 8's right-censored APPLY (0075)"),
+        ("89", "the enumerated column count (0080/0081/0082)"),
+        ("secondchance", "U1's largest cluster (0088 Sec 3)"),
+        ("1,355", "the silence test alone, APPLY (0085 Sec 5)"),
+        ("652", "the NOT-Continued conjunct's spare, APPLY (0081, 0085 Sec 5)"),
+    ]
+    # The two replacements the withdrawn needles point at, ASSERTED HERE so the
+    # withdrawal is covered by a live control rather than by a sentence.
+    _nf = D9["normalisation_finding"]
+    _ill = list(_nf["largest_loose_clusters"].keys())
+    _repl = {
+        "ruled_illustration_is_U1": {
+            "published_illustration_top_two": _ill[:2],
+            "expected_under_0088_Sec_3": ["secondchance", "theisland"],
+            "universe_named_at_the_point_of_use": "U1" in _nf[
+                "THE_UNIVERSE_THIS_LIST_IS_MEASURED_OVER"],
+            "ranking_basis_named_at_the_point_of_use": "DISTINCT STRICT KEYS MERGED" in _nf[
+                "THE_UNIVERSE_THIS_LIST_IS_MEASURED_OVER"],
+            "holds": (_ill[:2] == ["secondchance", "theisland"]
+                      and "U1" in _nf["THE_UNIVERSE_THIS_LIST_IS_MEASURED_OVER"]
+                      and "DISTINCT STRICT KEYS MERGED" in _nf[
+                          "THE_UNIVERSE_THIS_LIST_IS_MEASURED_OVER"]),
+        },
+        "column_set_is_asserted_on_NAMES_not_on_a_count": {
+            "exact_match_to_the_enumerated_list": R["analysis_table"][
+                "column_set_is_ENUMERATED"]["exact_match_to_the_enumerated_list"],
+            "emitted_in_the_enumerated_order": R["analysis_table"][
+                "column_set_is_ENUMERATED"]["emitted_in_the_enumerated_order"],
+            "f2_in_A_H_is_absent_from_the_emitted_columns": "f2_in_A_H" not in R[
+                "analysis_table"]["column_set_is_ENUMERATED"]["names_emitted_LIST"],
+            "holds": (R["analysis_table"]["column_set_is_ENUMERATED"][
+                "exact_match_to_the_enumerated_list"]
+                and "f2_in_A_H" not in R["analysis_table"][
+                    "column_set_is_ENUMERATED"]["names_emitted_LIST"]),
+        },
+    }
+    assert _repl["ruled_illustration_is_U1"]["holds"], (
+        "the published D9 illustration is not U1's ranked list, or its universe/basis is "
+        "unnamed -- the control that replaces the withdrawn `thetwilightzone` needle")
+    assert _repl["column_set_is_asserted_on_NAMES_not_on_a_count"]["holds"], (
+        "the emitted column set does not match the 89 enumerated names -- the control that "
+        "replaces the withdrawn `f2_in_A_H` needle")
+
+    scan = surface6_scan(PRE)
+    scan["THE_CONTROLS_THAT_REPLACE_THE_WITHDRAWN_NEEDLES"] = _repl
+    posi = surface6_positive(PRE, POSITIVE_REQUIRED)
+    I["surface_6_self_check_artifacts"] = {"negative_half": scan, "positive_half": posi,
+                                           "measured_on_build": BUILD}
+    B("---")
+    B("")
+    B("## 16. Propagation surface 6 — **this run greps its own deliverables**")
+    B("")
+    B(MEAS)
+    B("")
+    B(f"**{cap1(scan['why_this_exists'])}.**")
+    B("")
+    B(f"**{cap1(scan['rule'])}.** {cap1(scan['a_hit_is_not_a_defect_until_the_line_is_read'])}.")
+    B("")
+    B("| File | bytes | lines | strings searched | strings with any hit | **unmarked live "
+      "occurrences** |")
+    B("| :--- | ---: | ---: | ---: | ---: | ---: |")
+    for p, v in scan["per_file"].items():
+        B(f"| `{p}` | {v['bytes_read']:,} | {v['lines_read']:,} | {v['strings_searched']} | "
+          f"{v['strings_with_any_occurrence']} | **{v['unmarked_live_occurrences']}** |")
+    B("")
+    B(f"**Unmarked live occurrences across all four files: "
+      f"{scan['UNMARKED_LIVE_OCCURRENCES_TOTAL']}. Passes: {scan['passes']}.**")
+    B("")
+    B(f"**This is a CLEAN result, not an EMPTY one.** {cap1(scan['empty_vs_clean'])}.")
+    B("")
+    B("**Hits, per string, split MARKED against UNMARKED** — a string named as superseded at "
+      "the point of use is legitimate and is what the study's own rules require:")
+    B("")
+    B("| SUPERSEDED string | file | what it is | marked at the point of use | **unmarked** |")
+    B("| :--- | :--- | :--- | ---: | ---: |")
+    for p, v in scan["per_file"].items():
+        for h in v["hits"]:
+            B(f"| SUPERSEDED — `{h[REGISTER_MARK + '__string']}` | "
+              f"`{p.split('/')[-1]}` | {h['what_it_is']} | "
+              f"{h['marked_as_superseded_at_the_point_of_use']} | "
+              f"**{h['UNMARKED_LIVE_OCCURRENCES']}** |")
+    B("")
+    B("**Two needles were tried and WITHDRAWN, and withdrawing one disarms the control against "
+      "it** (`CLAUDE.md`). Each names the stronger control that covers it, and **both "
+      "replacements are asserted in this run and fail it if they break:**")
+    B("")
+    B("| Withdrawn needle | why it fired | covered instead by | holds |")
+    B("| :--- | :--- | :--- | :--- |")
+    for nd, v in scan["NEEDLES_TRIED_AND_WITHDRAWN_each_naming_the_stronger_control"].items():
+        _h = _repl[v["verified_live_this_run"]]["holds"]
+        B(f"| SUPERSEDED — `{nd}` | {v['why_it_fired']} | {v['covered_instead_by']} | "
+          f"**{_h}** |")
+    B("")
+    B(f"**And a numeric-boundary rule, which this control found on itself.** "
+      f"{cap1(scan['the_numeric_boundary_rule'])}.")
+    B("")
+    B(f"**How the register avoids exempting itself.** "
+      f"{cap1(scan['how_the_register_avoids_failing_its_own_check'])}.")
+    B("")
+    B(f"**The positive half.** {cap1(posi['rule'])}. **All present: "
+      f"{posi['all_present']}.**")
+    B("")
+    B("| Corrected string | occurrences | why it must be present |")
+    B("| :--- | ---: | :--- |")
+    for needle, v in posi["checks"].items():
+        B(f"| `{needle}` | {v['occurrences_across_the_emitted_artifacts']:,} | {v['why']} |")
+    B("")
+    B("**What this check does NOT do.** It is a *string* control. It cannot see a **withdrawn "
+      "argument built from correct statistics** — `CLAUDE.md`'s third blindness class — and it "
+      "does not walk numeric leaves inside JSON at a tolerance, which is `src/check_surfaces.py`'s "
+      "job across all eight surfaces. **It closes exactly one hole: this arm's own deliverables "
+      "were never opened by this arm's own surface check.**")
+    B("")
     B("---")
     B("")
     B(GATE)
+
+    (ART / "step8-waterfall-b.md").write_text("\n".join(L) + "\n")
+    (ART / "step8-waterfall-b.json").write_text(json.dumps(wj, indent=2, default=str))
+    (ART / "step8-invariants-b.json").write_text(json.dumps(I, indent=2, default=str))
     (ART / "step8-invariants-b.md").write_text("\n".join(M) + "\n")
+
+    # RE-SCAN OFF DISK. Read-back alone is not verification (CLAUDE.md); this is
+    # the grep half, and it now covers the self-check section's own text, which
+    # the pre-write pass could not.
+    POST = {p: (ART / p.split("/")[-1]).read_text() for p in PRE}
+    rescan = surface6_scan(POST)
+    print(f"  surface 6 re-scan off disk: "
+          f"{sum(v['bytes_read'] for v in rescan['per_file'].values()):,} bytes, "
+          f"{rescan['UNMARKED_LIVE_OCCURRENCES_TOTAL']} unmarked live occurrences")
+    for p, v in rescan["per_file"].items():
+        if v["unmarked_live_occurrences"]:
+            for h in v["hits"]:
+                if h["UNMARKED_LIVE_OCCURRENCES"]:
+                    print(f"    {p}: {h[REGISTER_MARK + '__string']!r} unmarked at lines "
+                          f"{h['unmarked_line_numbers']}")
+    assert rescan["passes"], (
+        "a superseded string is live and unqualified in this arm's own emitted artifacts -- "
+        "propagation surface 6, the surface the -r4 build's surface check never opened")
+    repos = surface6_positive(POST, POSITIVE_REQUIRED)
+    assert repos["all_present"], (
+        "a corrected string is ABSENT from the emitted artifacts -- the negative grep passes "
+        "clean on a file that never said the right thing (CLAUDE.md)")
     print("wrote 4 artifacts")
 
 

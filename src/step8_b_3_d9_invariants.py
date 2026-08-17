@@ -723,6 +723,85 @@ def main() -> None:
     (OUT / "d9.json").write_text(json.dumps(D9, indent=2))
     print(f"D9 done ({time.time()-t:.0f}s)", flush=True)
 
+    # ------------------------------------------------------------------
+    # BACKFILL THE D9 ROW OF THE PER-SITE D11 TABLE.
+    #
+    # decisions/0088 Sec 1(b): D11 is "asserted at EACH site, not once and about
+    # the rest". This arm's -r4 build published `records_excluded_by_D11: null`
+    # and `assertion_holds: null` on the `D9 coverage rows` row of the PUBLISHED
+    # table while counting that site among the 12 where D11 is applied -- a row
+    # simultaneously listed as asserted and carrying no assertion. The number
+    # was sitting in d9.json the whole time and never reached the table.
+    #
+    # Stage 2 cannot compute it (the coverage pivot is built here), so stage 2
+    # writes a visible sentinel and this block replaces it. The assertion is
+    # made HERE, at the site, and the replacement is asserted rather than
+    # assumed -- if the sentinel survives, the run stops.
+    _ds = D9["D11_site"]
+    _tab_b3 = R["B3_the_two_unasserted_mandates"]["b_per_site_D11_table"]
+    _hit = [s for s in _tab_b3["sites"] if s["site"] == "D9 coverage rows"]
+    assert len(_hit) == 1, "the D9 row is not where the backfill expects it"
+    _row = _hit[0]
+    # Idempotent: stage 3 rewrites results.json, so a stage-3-only re-run sees
+    # its own backfill rather than stage 2's sentinel. Either state is accepted,
+    # but an already-filled row must carry EXACTLY what this run measures --
+    # otherwise it is a stale value from an earlier build and the run stops.
+    assert (_row["records_excluded_by_D11"] == "PENDING_STAGE_3_BACKFILL"
+            or _row["records_excluded_by_D11"] == _ds["records_excluded_by_D11"]), (
+        "the D9 row carries a value that is neither stage 2's sentinel nor this run's "
+        f"measurement ({_ds['records_excluded_by_D11']}) -- a stale backfill from an "
+        "earlier build")
+    _row.update({
+        "records_excluded_by_D11": _ds["records_excluded_by_D11"],
+        "records_counted_at_this_site": _ds["records_in_the_sites_input_universe"],
+        "records_examined_at_this_site": _ds["records_in_the_sites_input_universe"],
+        "records_used": _ds["records_used"],
+        "unit": _ds["unit"],
+        "assertion": _ds["assertion"],
+        "assertion_holds": _ds["assertion_holds"],
+        "assertion_is_VACUOUS_zero_coverage": (
+            _ds["records_in_the_sites_input_universe"] == 0),
+        "latest_watched_at_used_utc": _ds["latest_watched_at_used_utc"],
+        "note": _ds["note"],
+        "BACKFILLED_AT_STAGE_3": (
+            "computed where the D9 coverage pivot is built and written into the published table "
+            "here. The -r4 build left this row null in results.json while d9.json carried the "
+            "number -- an unasserted site inside the table decisions/0088 Sec 1(b) created so "
+            "that mandates would stop being self-reported"),
+    })
+    assert isinstance(_row["assertion_holds"], bool) and _row["assertion_holds"], (
+        "the D9 site's D11 assertion does not hold, or is not a boolean")
+    assert _row["records_examined_at_this_site"] > 0, (
+        "the D9 site examined nothing -- a pass here would be a check that looked nowhere")
+    _tab_b3["sites_deferred_to_another_stage"] = [
+        s["site"] for s in _tab_b3["sites"]
+        if s["assertion_holds"] is None or s["assertion_holds"] == "PENDING_STAGE_3_BACKFILL"]
+    _tab_b3["sites_with_NO_assertion_at_all"] = [
+        s["site"] for s in _tab_b3["sites"] if s["assertion_holds"] is None]
+    _tab_b3["EVERY_SITE_CARRIES_A_BOOLEAN_ASSERTION_AND_AN_EXAMINED_COUNT"] = {
+        "sites": len(_tab_b3["sites"]),
+        "sites_with_a_boolean_assertion": sum(
+            1 for s in _tab_b3["sites"] if isinstance(s["assertion_holds"], bool)),
+        "sites_with_an_examined_count": sum(
+            1 for s in _tab_b3["sites"]
+            if isinstance(s.get("records_examined_at_this_site"), int)),
+        "sites_whose_pass_is_VACUOUS_zero_coverage": [
+            s["site"] for s in _tab_b3["sites"]
+            if s.get("assertion_is_VACUOUS_zero_coverage")],
+        "why": ("CLAUDE.md -- a check that finds nothing because it looked nowhere must FAIL, "
+                "not pass, and every path that can return 'nothing found' states whether it "
+                "found nothing or looked at nothing. The examined count was printed at every "
+                "site on the previous build; what was missing is (i) any assertion at the D9 "
+                "site and (ii) any marking that a pass on an EMPTY site is vacuous"),
+    }
+    assert _tab_b3["EVERY_SITE_CARRIES_A_BOOLEAN_ASSERTION_AND_AN_EXAMINED_COUNT"][
+        "sites_with_a_boolean_assertion"] == len(_tab_b3["sites"]), (
+        "a site in the per-site D11 table carries no boolean assertion")
+    assert _tab_b3["EVERY_SITE_CARRIES_A_BOOLEAN_ASSERTION_AND_AN_EXAMINED_COUNT"][
+        "sites_with_an_examined_count"] == len(_tab_b3["sites"]), (
+        "a site in the per-site D11 table carries no examined count")
+    (OUT / "results.json").write_text(json.dumps(R, indent=2, default=str))
+
     # =========================== INVARIANTS ==============================
     inv: list[dict] = []
     line5, line6 = m["line5"], m["line6"]
@@ -1077,6 +1156,36 @@ def main() -> None:
         },
         "the_equality_clause_cannot_discriminate_on": {
             "rows_where_the_two_terms_are_the_same_date": int((sel & tie).sum()),
+            "POPULATION_OF_THAT_COUNT": ("the APPLY position-5 row set, "
+                                         f"{int(sel.sum()):,} rows -- STATED AT THE POINT OF USE "
+                                         "(Red Team seventh pass, finding 2, against this arm: "
+                                         "the -r4 build published this integer here and the same "
+                                         "integer on waterfall LINE 1 in the other deliverable, "
+                                         "23,453 pairs apart, with neither naming its "
+                                         "population)"),
+            "unit": "rows of the stated population",
+            "on_every_population": {
+                nm: int((msk & tie).sum())
+                for nm, msk in (("line1_220107", m["line1"]),
+                                ("position4_201900", m["line4"]),
+                                ("APPLY_position5_196654", line5),
+                                ("APPLY_position6_post_liveness_195951", m["line6"]),
+                                ("DERIV_position5_147370", m["deriv5"]),
+                                ("DERIV_position6_post_liveness_147271", m["deriv6"]))},
+            "CROSS_CHECK_against_the_pipelines_own_label": {
+                "what": ("this count is formed from the INDEPENDENTLY recomputed S1 completion "
+                         "date; the waterfall's D2 section forms it from the pipeline's own "
+                         "`binds` label. Two implementations, one quantity -- so agreement is "
+                         "evidence and not a restatement"),
+                "independent_here": int((sel & tie).sum()),
+                "pipeline_label_there": int(R["required_counts"]["D2_negative_lag"][
+                    "THE_168_MEASURED_ON_EVERY_POPULATION"]["by_population"][
+                    "APPLY_position5_196654"]),
+                "agree": bool(int((sel & tie).sum()) == int(
+                    R["required_counts"]["D2_negative_lag"][
+                        "THE_168_MEASURED_ON_EVERY_POPULATION"]["by_population"][
+                        "APPLY_position5_196654"])),
+            },
             "why": ("for those rows the invariant cannot tell a first-pass implementation "
                     "from a last-observed one"),
         },
@@ -1400,12 +1509,22 @@ def main() -> None:
                            and recon["APPLY"]["measured_accounts"] == 216
                            and recon["DERIV"]["measured_accounts"] == 73)
 
+    _n_pure = sum(1 for i in inv if i["label"] == "CODE CHECK")
     coverage = {
         "item": "the set-membership drop rule",
         "status": ("A COVERAGE COUNT, NOT AN INVARIANT (decisions/0074 ruling 3). Step 8's own "
                    "bullet calls it 'an implementation check, not a data check'. Reported, not "
-                   "asserted -- asserting it would add another pass to a report where six of "
-                   "eight cannot fail on data"),
+                   f"asserted -- asserting it would add another pass to a report where "
+                   f"{_n_pure} of {len(inv)} already cannot fail on data"),
+        "SUPERSEDED_PHRASING_CORRECTED_THIS_RUN": (
+            "this arm's -r5 build wrote 'a report where six of EIGHT cannot fail on data' HERE, "
+            "in the body of a deliverable whose head states the set is NINE and whose surface "
+            "check concludes no surface still states the old count. Red Team seventh pass, "
+            "finding 1. The surface check opened task-sheet.md, this arm's definition file and "
+            "specs/step8-readback.md -- IT DID NOT OPEN artifacts/, WHICH IS PROPAGATION "
+            "SURFACE 6 AND IS WHERE THE STRING WAS. The count is now derived from len(inv) and "
+            "the label field, and a self-check over this arm's own emitted artifacts runs at "
+            "stage 4"),
         "records_examined": st1["drop_rule"]["records_examined"],
         "records_dropped": st1["drop_rule"]["records_dropped"],
         "denominator_readings": st1["drop_rule"]["denominator_note"],
@@ -1631,26 +1750,77 @@ def main() -> None:
         "c_surface_claims_this_arm_published_last_run_RE_READ"][
         "item_5_the_assertion_set_count_on_the_spec_surfaces"]
 
+    # ------------------------------------------------------------------
+    # THE LABEL COUNTS ARE DERIVED FROM THE LABELS, NOT TYPED.
+    #
+    # Red Team seventh pass, finding 3, against THIS arm: the -r4 prose said
+    # "SEVEN of the nine assertions CANNOT FAIL ON ANY DATA" and then described
+    # one of the seven as a genuine cross-check BECAUSE a value is recomputed
+    # independently. If the recomputation gives it force, it can fail on data --
+    # the sentence contradicted itself. It contradicted the `counts` block two
+    # lines below it as well, which already said 6 / 1 / 2.
+    #
+    # The fix is structural rather than textual: every count below is computed
+    # from the `label` field of the invariants actually emitted, and the prose
+    # interpolates those numbers. A relabelled or added invariant moves the
+    # sentence with it. A TYPED count is exactly what went wrong.
+    _pure = [i for i in inv if i["label"] == "CODE CHECK"]
+    _bycon = [i for i in inv if i["label"].startswith("CODE CHECK BY CONSTRUCTION")]
+    _data = [i for i in inv if i["label"] == "DATA CHECK"]
+    assert len(_pure) + len(_bycon) + len(_data) == len(inv), (
+        "an invariant carries a label this block does not classify -- the count would be "
+        "wrong and silent, which is the defect being corrected")
+    _LB = {
+        "assertions_total": len(inv),
+        "pure_code_checks": len(_pure),
+        "pure_code_check_names": [i["invariant"] for i in _pure],
+        "code_check_by_construction_and_data_check_as_specified": len(_bycon),
+        "genuine_data_checks": len(_data),
+        "cannot_fail_on_any_data": len(_pure),
+        "can_fail_on_data_as_specified": len(_bycon) + len(_data),
+        "can_fail_on_data_as_specified_names": [i["invariant"] for i in _bycon + _data],
+        "DERIVED_NOT_TYPED": (
+            "every number in this block is computed from the `label` field of the emitted "
+            "invariants. decisions/0089 Sec 3 and Red Team seventh pass finding 3 both landed "
+            "on a TYPED count that had drifted from the set it described"),
+        "the_clock_start_is_counted_as_ABLE_TO_FAIL": (
+            "it is CODE CHECK BY CONSTRUCTION, DATA CHECK AS SPECIFIED. Counting it among the "
+            "unable-to-fail contradicts the reason it is kept: task-sheet.md requires the "
+            "first-pass S1 completion date to be RECOMPUTED INDEPENDENTLY, and a disagreement "
+            "between two implementations on real records is a real finding. Read back rather "
+            "than recomputed it would degrade to a pure code check -- and then the count would "
+            f"be {len(_pure) + len(_bycon)} unable and {len(_data)} able"),
+    }
+
     out = {
         "instance": "analytics-engineer-b", "namespace": "b",
         "mode": "GATE -- proposal only, nothing adopted",
         "provenance": provenance_block(),
         "invariant_coverage_rule": cov_rule,
         "how_to_read_this_report": (
-            "SEVEN of the nine assertions CANNOT FAIL ON ANY DATA. Six are pure CODE CHECKS -- "
-            "the outcome partition, the monotone filter counts, |D| <= L, A subset of A_H, "
-            "p in (0, 1], and tau2 <= tau_pull at position 5. A seventh, the clock start, is a "
-            "code check by construction and a genuine cross-check only because the first-pass "
-            "S1 completion date is recomputed INDEPENDENTLY here. TWO can fail on real data, "
-            "and both were added by decisions/0076 because before it the set had ZERO: no "
-            "account dropped wholesale, and no access_denied or skipped account read as empty. "
+            f"{_LB['pure_code_checks']} of the {_LB['assertions_total']} assertions CANNOT FAIL "
+            "ON ANY DATA. They are the pure CODE CHECKS -- "
+            + ", ".join(_LB["pure_code_check_names"]) + ". "
+            f"{_LB['can_fail_on_data_as_specified']} CAN fail on data AS SPECIFIED. "
+            f"{_LB['genuine_data_checks']} of those are the genuine DATA CHECKS, both added by "
+            "decisions/0076 because before it the set had ZERO: no account dropped wholesale, "
+            "and no access_denied or skipped account read as empty. THE THIRD IS THE CLOCK "
+            "START, and it is counted here as ABLE TO FAIL rather than as unable: it is a code "
+            "check BY CONSTRUCTION -- T0 = max() makes all three clauses true of any correct "
+            "max() -- but AS SPECIFIED (task-sheet.md; decisions/0068) it recomputes the "
+            "first-pass S1 completion date INDEPENDENTLY, and two implementations can disagree "
+            "on real records. THAT IS WHAT GIVES IT FORCE, AND A CHECK WITH FORCE IS A CHECK "
+            "THAT CAN FAIL. "
+            "***CORRECTED THIS RUN, Red Team seventh pass, finding 3: this arm's -r5 build "
+            "published 'SEVEN of the nine assertions CANNOT FAIL ON ANY DATA' and then, in the "
+            "same sentence, called the seventh a genuine cross-check BECAUSE a value is "
+            "recomputed independently. Those cannot both hold -- if the recomputation gives it "
+            "force it can fail on data. The count is now DERIVED FROM THE LABELS rather than "
+            "typed, so the sentence and the label set cannot diverge again.*** "
             "'All invariants passed' is therefore mostly a statement that the code computed "
             "what it was told to; it is NOT evidence for the liveness rule or for any "
             "published share."),
-        "counts": {"pure_code_checks": 6,
-                   "code_check_by_construction_and_data_check_as_specified": 1,
-                   "genuine_data_checks": 2,
-                   "assertions_total": 9,
+        "counts": {**_LB,
                    "the_set_moved_from_EIGHT_to_NINE_at_0088": (
                        "decisions/0088 Sec 1(c) PROMOTES the tau2 <= tau_pull assertion into "
                        "the published set. It already ran; it was invisible to a reader of the "

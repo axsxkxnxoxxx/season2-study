@@ -2,9 +2,9 @@
 
 **Step 8 is a GATE and this document is a PROPOSAL.** Nothing here is adopted. This instance does not adopt its own proposal, does not begin Step 8b or Step 9, and records no approval — that is the Human Lead's alone. Zero API calls; every figure is computed from data already on disk.
 
-**This is a RERUN ordered by the Human Lead**, on `task-sheet.md` Step 8 as it now stands — the spec as amended through **`decisions/0090`**. **It is a rerun, not an amendment: everything below is rebuilt from the stored data by the same pipeline that writes the table, and no previous output was patched.** Against this arm's last deliverables (the 2026-08-16 `-r4` run, spec through `0088`), **three things change and two of them are corrections to this arm's own work.** **(1) `0090` — D9 PUBLISHES AS A BOUND** (§10): strict is the floor, loose the ceiling, **neither is the point estimate**, on every quantity with both forms — complementary pairs `[0, 75]`, half (a) `[0, 6]`, half (b) `[0, 27]`. **No D9 count moves; what moves is which of them is presented as the answer**, and `-r4` presented strict as the ruled key. **(2) B3(a) WAS MEASURED ON THE WRONG SET AND THE VERDICT REVERSES** (§14a). `0089` §2(a) corrects `0088` §1(a): `τ1` and `τ2` are midnight-aligned, so `[τ − 24h, τ)` is where the half-open and date-level forms **agree**; the separating interval is **`[τ, τ + 24h)`**, and `-r4` did not emit it. Measured on the right set, the verdict is **`OUTCOME_DECIDING`**, not `OCCUPIED_INERT`: the forbidden `date(watched_at) <= T1` form moves **71 APPLY rows** and **59 DERIV rows** into a different outcome state (`τ1` alone 52 / 45, `τ2` alone 19 / 14). **The mandate is load-bearing on the RESULT.** **No figure of this build moves** — the forbidden form is computed as a counterfactual and nowhere else. **(3) THE NEGATIVE CONTROL IS EXECUTED, NOT DESCRIBED** (`step8-invariants-b.md`). `-r4` published a *sentence* about the failure its rebuilt coverage apparatus would catch; **replaced by 6 injected defects run through the same functions and the same aggregate — 5 of 5 checkable cases caught, asserted, with the one that passes by design named.** **Nothing else moves.** Line 1 is **220,107**, APPLY is **196,654**, DERIV is **147,370**, position 6 removes **703** and **99**, and the column set is **89**. `0088`'s three rulings — the per-site D11 table, the U1 clustering universe, the named coverage objects — and everything before them are **re-executed rather than carried**. This overwrites the previous `-b` deliverables.
+**This is a RERUN ordered by the Human Lead**, on `task-sheet.md` Step 8 as it now stands — the spec as amended through **`decisions/0091`** and Red Team's **SEVENTH** pass. **It is a rerun, not an amendment: everything below is rebuilt from the stored data by the same pipeline that writes the table, and no previous output was patched** (`0092`'s standing rule as given to this instance — a deliverable is corrected by rerunning the arm that produced it). Against this arm's last deliverables (the 2026-08-16 `-r5` run, spec through `0090`), **four things change and all four are corrections to this arm's own work.** **(1) THE SURFACE CHECK NOW OPENS `artifacts/`, WHICH IS PROPAGATION SURFACE 6** (`step8-invariants-b.md` §16). `-r5`'s invariant report carried *"a report where six of EIGHT cannot fail on data"* **in its own body**, inside a document whose head states the set is NINE and whose surface check concludes that no surface still states the old count — **because that check opened `task-sheet.md`, this arm's definition file and `specs/step8-readback.md`, and never opened `artifacts/`.** The run now greps its own four deliverables, splits every hit into *named as superseded at the point of use* against *live*, prints its byte coverage, and **fails the run on a live one.** **(2) THE SAME CLASS, SECOND INSTANCE: `0090`'s superseded framing sat BELOW the line that strikes it** (§10). `-r5` rendered *"Why the loose count publishes EVEN THOUGH STRICT IS RULED"* — `0074` ruling 5's framing — 85 lines under §10's strike of exactly that framing. Corrected at the point of use. **(3) THE `both bind` COUNT NOW NAMES ITS POPULATION AND IS MEASURED ON BOTH** (§7a). `-r5` published the integer **168** in two deliverables under two populations 23,453 pairs apart and reconciled them nowhere. **Measured on every population here: 168 on line 1 and 168 on APPLY position 5 — both correct, the quantity is invariant across the APPLY chain — and 153 on DERIV, which had never been measured.** So the review's arithmetic premise is contradicted by this build and its provenance premise is upheld; **reported, not reconciled.** **(4) THE LABELLING SENTENCE NO LONGER CONTRADICTS ITSELF** (`step8-invariants-b.md`). `-r5` said *"SEVEN of the nine assertions CANNOT FAIL ON ANY DATA"* and then called one of the seven a genuine cross-check **because** a value is recomputed independently — which is what gives it force, and a check with force can fail. **6 of 9 cannot fail on any data; 3 can, as specified.** Every count in that paragraph is now **derived from the `label` field** rather than typed. **Two smaller repairs, both found by re-reading this arm's own output:** the per-site D11 table's **D9 row carried `null` for both its exclusion count and its assertion** while the site was counted among the twelve where D11 is applied — **backfilled and asserted at the site** (§14a(b)) — and the column-set block published **two counts and no list**, asserting a count match where the code asserts a set match; **the names are emitted.** **(5) Carried from `-r5`, re-executed not restated:** `0090`'s D9 **bound** — complementary pairs `[0, 75]`, half (a) `[0, 6]`, half (b) `[0, 27]`, **neither endpoint the point estimate**; and B3(a)'s reversed verdict on the separating interval `[τ, τ + 24h)` — **`OUTCOME_DECIDING`**, **71 APPLY rows** and **59 DERIV rows** change outcome state under the forbidden `date(watched_at) <= T1` form (`τ1` alone 52 / 45, `τ2` alone 19 / 14); and the executed negative control — **6 injected defects, 5 of 5 checkable cases caught, asserted, with the one that passes by design named.** **No population moves and no waterfall line moves.** Line 1 is **220,107**, APPLY is **196,654**, DERIV is **147,370**, position 6 removes **703** and **99**, and the column set is **89**. This overwrites the previous `-b` deliverables.
 
-**Provenance — `analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r5 (RERUN on the spec as amended through decisions/0090; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)`.** Every count, every waterfall figure and every invariant result below was measured on that build (`0078`, `0079` §2). Where a figure is quoted from a ruling, the ruling's own build is named instead: `position-5 build of 2026-08-13 (both arms, the run decisions/0078 labelled)`. **A count without its provenance can be correct when written and wrong when read.**
+**Provenance — `analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r6 (RERUN on the spec as amended through decisions/0091 and Red Team's SEVENTH pass; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)`.** Every count, every waterfall figure and every invariant result below was measured on that build (`0078`, `0079` §2). Where a figure is quoted from a ruling, the ruling's own build is named instead: `position-5 build of 2026-08-13 (both arms, the run decisions/0078 labelled)`. **A count without its provenance can be correct when written and wrong when read.**
 
 **Every figure below states its population.** There are two and they differ by construction: **APPLY = 196,654** (waterfall line 1 less D10 — the position-5 output, and what position 6 filters) and **DERIV = 147,370** (Step 5 line 4 less D10, which requires S2 evidence). Step 8 produces both (`decisions/0070` ruling 1).
 
@@ -25,7 +25,7 @@
 
 ## 1. The filter order, the four inert positions, and the side output
 
-*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
+*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
 
 Applied in **exactly** this order (`decisions/0029`). The final row set commutes; the per-filter sample size does not, which is the whole reason the order is mandated.
 
@@ -54,7 +54,7 @@ Applied in **exactly** this order (`decisions/0029`). The final row set commutes
 
 ### The position-3 drop set
 
-*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
+*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
 
 Written by this pipeline run to `processed/step8/b/position3_drop_set.csv.gz` (`0079` §1). Under `0068` line 1 *is* the S1-completer population, so position 3 removes **0 from the waterfall** — which is why `0075` ruling 2 as first written named an empty set, and why `0077` restated it. The set is **the pair universe less the completers: 58,345 pairs — position-3 rule, position-5 build of 2026-08-13** as ruled (`0078`), **reproduced on this build** — carrying each pair's distinct-episode counts and the show's threshold, which is what half (b) reads. It is **not** the set-membership drop rule, which is a different rule, deletes **0 records**, and is counted in records rather than pairs.
 
@@ -71,7 +71,7 @@ The 278,452 figure is one of the four readings `0068` surveyed before ruling on 
 
 ## 2. Waterfall — APPLY
 
-*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
+*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
 
 | # | Filter | Inert | Retained pairs | Removed | Users | Shows |
 | :-- | :--- | :--- | ---: | ---: | ---: | ---: |
@@ -91,7 +91,7 @@ The 278,452 figure is one of the four readings `0068` surveyed before ruling on 
 
 ## 3. Waterfall — DERIV
 
-*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
+*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
 
 | # | Filter | Inert | Retained pairs | Removed |
 | :-- | :--- | :--- | ---: | ---: |
@@ -107,7 +107,7 @@ The 278,452 figure is one of the four readings `0068` surveyed before ruling on 
 
 ## 4. Position 6 — liveness, and the population reconciliation
 
-*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
+*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
 
 The rule is **ALT-BROAD** (`0048`, restored `0054`, **approved `0064`**): a pair is **NOT LIVE iff BOTH** the account shows no insertion instant after that pair's `tau1` **AND** the pair is **NOT Continued**. **"After" is STRICT** — silent iff no insertion instant `> tau1` (`0068`). **The evidence is restricted to records dated before `tau_pull`** (`0070` ruling 2). The stored play-`id` isotonic calibration at `processed/step5/calibration.npz` is **read and never refitted** (`0029`).
 
@@ -133,7 +133,7 @@ The last row is the measurement of `0070` ruling 2 rather than an assumption: **
 
 ## 5. Right-censoring, as two lines
 
-*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
+*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
 
 Censored population: **the POSITION-4 output, 201,900 (the mandated order)**.
 
@@ -147,7 +147,7 @@ Both removals fall on recent S1 completers — people who found an old show late
 
 ### Retained pairs per air period after right-censoring, every `W` arm
 
-*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
+*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
 
 **Measured on the position-4 output (201,900), which is what the mandated order censors** (`0070` ruling 8). `0033`'s 97.6 / 98.0 / 97.5 / 96.0 and 89.7% were computed on the **position-3** output; the order was set at `0029` on the ground that censoring is objective and independent of behaviour, and **changing a filter order to preserve a published percentage would be backwards.**
 
@@ -166,7 +166,7 @@ Both removals fall on recent S1 completers — people who found an old show late
 
 ## 6. Drop counts — per show and per outcome
 
-*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
+*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
 
 **This is a COVERAGE COUNT, not an invariant** (`0074` ruling 3). Records examined and records dropped are reported; nothing is asserted.
 
@@ -183,7 +183,7 @@ The drop count is a property of the filter, so it measures against **what entere
 
 ### The denominator — CLOSED, published as a coverage figure, all three readings with their pipelines named
 
-*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
+*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
 
 **`0083` §1 CLOSES this and amends `0074` ruling 4's routing to Step 14.** `0074` had published **6,065,704 against 6,065,610** as *reported, not reconciled*, on the ground that neither figure is wrong on its face. **That ground was right and the routing was wrong: there was never a conflict to reconcile.** The readings are points on a **one-parameter family indexed by where D11 applies**, the parameter is `0068`'s own open item, and **every member of the family drops zero records** — so the numerator is 0 three times over, the difference survives into no result, and a Step 14 limitation is an uncertainty that *does* survive into one. **`0074`'s "publish both, not one" stands and is strengthened to three.**
 
@@ -209,22 +209,49 @@ The drop count is a property of the filter, so it measures against **what entere
 
 ## 7. D2 — negative-lag report, split THREE ways
 
-*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
+*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
 
-A tie is its own category, not a tiebreak (`0070` ruling 5). **168 pairs in line 1 have both terms of the `max()` binding on the same date**; of those, 7 also carry a negative lag.
+A tie is its own category, not a tiebreak (`0070` ruling 5).
+
+### 7a. The `both bind` count, **measured on every population** — `0070` ruling 5's 168
+
+**Unit: user-show PAIRS whose T0 = max(S2 finale, S1 completion) has both terms binding on the same UTC day.**
+
+| Population | n | **pairs where BOTH terms bind** |
+| :--- | ---: | ---: |
+| `line1_220107` | 220,107 | **168** |
+| `position3_220107` | 220,107 | **168** |
+| `position4_201900` | 201,900 | **168** |
+| `APPLY_position5_196654` | 196,654 | **168** |
+| `APPLY_position6_post_liveness_195951` | 195,951 | **168** |
+| `DERIV_position5_147370` | 147,370 | **153** |
+| `DERIV_position6_post_liveness_147271` | 147,271 | **153** |
+
+**This arm's own defect, corrected rather than patched.** This arm's -r4 build published the integer 168 in TWO deliverables under TWO populations -- `tie_pairs_in_line1` on waterfall line 1 (220,107) in step8-waterfall-b.md, and `rows_where_the_two_terms_are_the_same_date` on the APPLY position-5 row set (196,654) in step8-invariants-b.md -- with no line reconciling them. The populations differ by 23,453 pairs. Reported here rather than silently repaired.
+
+**And the review premise is measurably false on this data — reported, not reconciled.** The finding as put to this arm is '168 cannot be correct on both'. MEASURED: IT IS CORRECT ON BOTH. Every one of the tie pairs survives positions 2 through 6 on APPLY, so the count is 168 on line 1, 168 at position 3, 168 at position 4, 168 at position 5 and 168 post-liveness. The two figures agreed because the quantity is invariant across the APPLY chain, NOT because either was measured wrongly. THE DEFECT IS REAL AND IS THE OTHER HALF OF THE FINDING: neither figure NAMED its population, and neither had ever been measured on DERIV -- where it is NOT 168. Reported, not reconciled: the arithmetic claim in the finding is contradicted by this build, the provenance claim is upheld.
+
+**step8-invariants-b.md invariant 5's `rows_where_the_two_terms_are_the_same_date` is this quantity on the APPLY position-5 row set, computed from the INDEPENDENTLY recomputed S1 completion date rather than from the pipeline's `binds` label. Agreement between the two is therefore a cross-check and not a restatement; it is asserted at stage 3.**
+
+### 7b. Negative-lag pairs, split three ways
 
 | Population | n | Negative lag | share | S2 finale binds | S1 completion binds | BOTH bind |
 | :--- | ---: | ---: | ---: | ---: | ---: | ---: |
-| position3_220107 | 220,107 | 64,321 | 29.22% | 58,584 | 5,730 | 7 |
-| position4_201900 | 201,900 | 49,708 | 24.62% | 44,177 | 5,524 | 7 |
-| APPLY_position5_196654 | 196,654 | 49,403 | 25.12% | 44,177 | 5,219 | 7 |
-| DERIV_position5_147370 | 147,370 | 47,500 | 32.23% | 43,249 | 4,244 | 7 |
+| `line1_220107` | 220,107 | 64,321 | 29.22% | 58,584 | 5,730 | 7 |
+| `position3_220107` | 220,107 | 64,321 | 29.22% | 58,584 | 5,730 | 7 |
+| `position4_201900` | 201,900 | 49,708 | 24.62% | 44,177 | 5,524 | 7 |
+| `APPLY_position5_196654` | 196,654 | 49,403 | 25.12% | 44,177 | 5,219 | 7 |
+| `APPLY_position6_post_liveness_195951` | 195,951 | 49,356 | 25.19% | 44,135 | 5,214 | 7 |
+| `DERIV_position5_147370` | 147,370 | 47,500 | 32.23% | 43,249 | 4,244 | 7 |
+| `DERIV_position6_post_liveness_147271` | 147,271 | 47,453 | 32.22% | 43,207 | 4,239 | 7 |
 
-**The population is not stated in the spec at the point of use**, so all four are reported and each is labelled. S1-term negative lags are the actual test of the first-pass choice and should be small; S2-finale-term negative lags are the normal case for anyone who watched a weekly season while it was airing, and their size is information about the frame's cadence mix rather than about data quality.
+**The `BOTH bind` column here is the NEGATIVE-LAG subset and is a different quantity from §7a's** — same predicate, intersected with `first S2 record < T0`. Both are emitted because `0070` ruling 5's 168 is §7a's, and reading it off this table gives a smaller number under the same words.
+
+**Every population the spec could mean is reported and each is labelled** (`0047`, `0078` §2). S1-term negative lags are the actual test of the first-pass choice and should be small; S2-finale-term negative lags are the normal case for anyone who watched a weekly season while it was airing, and their size is information about the frame's cadence mix rather than about data quality.
 
 ## 8. D3′ — resumption rate, every `W` arm, each denominator its own
 
-*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
+*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
 
 Of pairs scored **Started and left at `tau2`** whose `⟦T0⟧ + (W + 2H) × 24h ≤ tau_pull`, the share completing within `[tau2, tau2 + H)`. **Each arm's denominator is its own and each population's is its own** (`0069` item 5).
 
@@ -267,7 +294,7 @@ Of pairs scored **Started and left at `tau2`** whose `⟦T0⟧ + (W + 2H) × 24h
 
 ## 9. D8 — never-started post-window diagnostic
 
-*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
+*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
 
 Measured over `[tau1, tau1 + H) = [tau1, tau2)` — **not to the pull date**. Direction: **DOWN** on the headline.
 
@@ -282,7 +309,7 @@ Measured over `[tau1, tau1 + H) = [tau1, tau2)` — **not to the pull date**. Di
 
 ## 10. D9 — split-artifact counts, both halves, **both keys**
 
-*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
+*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
 
 Signature: one show ID carrying S1 and not S2 for that user, another carrying S2 and not S1, and the two slugs normalise to the same title key. **IMPERFECT -- Step 1 D9 states the count is a LOWER BOUND**
 
@@ -292,7 +319,7 @@ Candidate `(user, show)` pairs examined across the whole sweep: **726,103** — 
 
 ### 10z. The D9 coverage quantities — **named as separate objects, at the point of use**
 
-*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
+*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
 
 **`0088` §2.** Decisions/0088 Sec 2 -- one name over two quantities is not a divergence, and reconciling would collapse two real objects into one. Each quantity below states what it counts and over what. **747,478 and 726,103 are different objects and both correct**: undeduplicated user-show **season-coverage rows** against distinct candidate `(user, show)` **pairs** — a user-show carrying two seasons contributes **two rows and one pair**. **One name over two quantities is not a divergence, and reconciling would collapse two real objects into one.** This arm publishes **`distinct_candidate_user_show_PAIRS`** and states what each quantity counts.
 
@@ -396,13 +423,13 @@ Every one of the 27 loose-key B-side pairs is accounted for inside the drop set 
 
 **No count moves with the ruling.** D9's **search** already ran on the whole sweep in this arm — 726,103 candidate pairs — so the strict and loose complementary-pair counts are unchanged at **0** and **75**. What the ruling fixes is **which clusters are illustrated**, which is the evidence for the loose key's only warrant.
 
-**Why the loose count publishes even though strict is ruled:** The loose count BOUNDS HOW WRONG STRICT COULD BE, and the error runs OPPOSITE to D9's own lower-bound caveat: D9 warns that its count misses splits, while the loose key catches non-splits. Both directions are live and neither number is a measured split rate.
+**Why the interval publishes rather than a point estimate:** The loose count BOUNDS HOW WRONG STRICT COULD BE, and the error runs OPPOSITE to D9's own lower-bound caveat: D9 warns that its count misses splits, while the loose key catches non-splits. Both directions are live and neither number is a measured split rate. **Neither endpoint is the answer** (`0090`): strict is the **floor**, loose is the **ceiling**. ***Corrected this run (Red Team seventh pass, finding 1, second half): `-r4` rendered this line as "Why the loose count publishes EVEN THOUGH STRICT IS RULED" — `0074` ruling 5's framing, which `0090` supersedes — and it sat well below the line in §10 that strikes exactly that framing. Same file, same class of defect as the assertion-set count: the replacement above, the superseded text below.***
 
 Direction: half (a) INFLATES Never started; half (b) removes a pair that should have been in the population. Step 9 bounds D9 and publishes it ALONGSIDE, never folded in.
 
 ## 11. D4 — S3 without S2
 
-*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
+*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
 
 Pairs scored Never started that carry S3-or-later episode records on that show and **no S2 episode record at all**. Emitted here because Step 8 holds the episode-level evidence and Step 9 does not (`0070` ruling 7). Direction: **inflates** Never started; Step 9 bounds it and publishes it **alongside**, never folded in.
 
@@ -417,7 +444,7 @@ Pairs scored Never started that carry S3-or-later episode records on that show a
 
 ## 12. D12 — per-bucket show and pair counts, all five buckets
 
-*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
+*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
 
 | Bucket | Shows | Pairs, position 4 | Pairs, APPLY position 5 | Pairs, DERIV position 5 |
 | :--- | ---: | ---: | ---: | ---: |
@@ -431,7 +458,7 @@ Pairs scored Never started that carry S3-or-later episode records on that show a
 
 ## 13. Metadata-disagreement counts
 
-*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
+*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
 
 | Flag | Shows | Pairs at position 4 |
 | :--- | ---: | ---: |
@@ -446,7 +473,7 @@ Direction, named as required: a listed-but-unaired S2 episode raises L2, which t
 
 ## 14. `pull_date`, fetch window, and discarded records
 
-*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
+*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
 
 - `pull_date` = **2026-08-11**, `tau_pull` = **2026-08-11T00:00:00Z**
 - Earliest per-user fetch: **2026-08-11T05:01:26.447766+00:00**
@@ -463,7 +490,7 @@ The discarded tail is about one day of activity for early-fetched users and abou
 
 ## 14a. B3 — the two unasserted mandates, **measured, not self-reported**
 
-*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
+*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
 
 **`0088` §1.** Decisions/0088 Sec 1 -- MEASURE BOTH. The mandates are THE HALF-OPEN UTC-INSTANT FORM and D11-AS-GLOBAL-CUTOFF, not invariants 7 and 8. Both arms' compliance is TRUE and was independently confirmed; what was missing is any measurement of whether either is LOAD-BEARING on this data. **The ground:** the unstated version of exactly this scope produced Step 7's 792-against-791, where one arm applied the restriction and the other did not.
 
@@ -507,25 +534,35 @@ Rows changing OUTCOME STATE under the forbidden date-level form, both bounds x b
 
 ### (b) The per-site D11 table — **asserted at each site, not once and about the rest**
 
-Records excluded by D11 at EACH site separately, asserted at each site rather than once and about the rest. **13 sites; D11 applied at 12.**
+Records excluded by D11 at EACH site separately, asserted at each site rather than once and about the rest. **13 sites; D11 applied at 12, of which 2 examined ZERO records and their passes are VACUOUS.**
 
-| Site | D11 applied | Records excluded | Unit | Assertion holds | Note |
-| :--- | :---: | ---: | :--- | :---: | :--- |
-| `A (\|A\| at tau1)` | yes | 94 | in-E2 S2 records | **yes** | A is counted over distinct in-E2 S2 episodes whose evidence was D11-filtered at stage 1; the assertion is measured on the episode instants actually st |
-| `A_H (\|A_H\| at tau2)` | yes | 94 | in-E2 S2 records | **yes** | same evidence array as A, read at a later instant; the exclusion is the same set of records and is stated here rather than left implicit in A's row |
-| `action_count_s1_watch` | yes | 49 | in-E S1/S2 records | **yes** | D11 IS APPLIED AT THIS SITE ON THIS BUILD. On r3 the four s1_* sites counted post-cutoff records, because the S1 side is carried past tau_pull so 0068 |
-| `action_count_s1_checkin` | yes | 1 | in-E S1/S2 records | **yes** | D11 IS APPLIED AT THIS SITE ON THIS BUILD. On r3 the four s1_* sites counted post-cutoff records, because the S1 side is carried past tau_pull so 0068 |
-| `action_count_s1_scrobble` | yes | 23 | in-E S1/S2 records | **yes** | D11 IS APPLIED AT THIS SITE ON THIS BUILD. On r3 the four s1_* sites counted post-cutoff records, because the S1 side is carried past tau_pull so 0068 |
-| `action_count_s1_other` | yes | 0 | in-E S1/S2 records | **yes** | D11 IS APPLIED AT THIS SITE ON THIS BUILD. On r3 the four s1_* sites counted post-cutoff records, because the S1 side is carried past tau_pull so 0068 |
-| `action_count_s2_watch` | yes | 52 | in-E S1/S2 records | **yes** | the S2 side was already D11-filtered before the action counts were formed |
-| `action_count_s2_checkin` | yes | 4 | in-E S1/S2 records | **yes** | the S2 side was already D11-filtered before the action counts were formed |
-| `action_count_s2_scrobble` | yes | 38 | in-E S1/S2 records | **yes** | the S2 side was already D11-filtered before the action counts were formed |
-| `action_count_s2_other` | yes | 0 | in-E S1/S2 records | **yes** | the S2 side was already D11-filtered before the action counts were formed |
-| `liveness evidence (per-account maximum insertion instant)` | yes | 1,734 | records of any kind, whole sweep | **yes** | 0070 ruling 2 -- the silence test's evidence is restricted to records dated before tau_pull. Measured to be inert on the exclusion set: 703 and 99 eit |
-| `D9 coverage rows` | yes | 756 | S1/S2 episode records, ALL shows in the sweep | **yes** | 12,323,216 records used of 12,323,972; measured at stage 3 where the coverage pivot is built — see §10z |
-| `S1 completion walk` | **no** | 60 | distinct in-E1 S1 episodes at their canonical instant | **NO — by design, see below** | decisions/0068 rules waterfall line 1 at 220,107 AS PUBLISHED, and that value needs the pairs whose first-pass completion rests on a record at or afte |
+| Site | D11 applied | **Records EXAMINED** | Records excluded | Unit | Assertion holds |
+| :--- | :---: | ---: | ---: | :--- | :--- |
+| `A (\|A\| at tau1)` | yes | 2,489,729 | 94 | in-E2 S2 records | **yes** |
+| `A_H (\|A_H\| at tau2)` | yes | 2,489,729 | 94 | in-E2 S2 records | **yes** |
+| `action_count_s1_watch` | yes | 2,716,991 | 49 | in-E S1/S2 records | **yes** |
+| `action_count_s1_checkin` | yes | 153,245 | 1 | in-E S1/S2 records | **yes** |
+| `action_count_s1_scrobble` | yes | 383,811 | 23 | in-E S1/S2 records | **yes** |
+| `action_count_s1_other` | yes | 0 | 0 | in-E S1/S2 records | **VACUOUS — 0 examined** |
+| `action_count_s2_watch` | yes | 2,364,902 | 52 | in-E S1/S2 records | **yes** |
+| `action_count_s2_checkin` | yes | 120,989 | 4 | in-E S1/S2 records | **yes** |
+| `action_count_s2_scrobble` | yes | 325,599 | 38 | in-E S1/S2 records | **yes** |
+| `action_count_s2_other` | yes | 0 | 0 | in-E S1/S2 records | **VACUOUS — 0 examined** |
+| `liveness evidence (per-account maximum insertion instant)` | yes | 27,656,813 | 1,734 | records of any kind, whole sweep | **yes** |
+| `D9 coverage rows` | yes | 12,323,972 | 756 | S1/S2 episode records, ALL shows in the sweep, not only frame shows | **yes** |
+| `S1 completion walk` | **no** | 2,860,465 | 60 | distinct in-E1 S1 episodes at their canonical instant | **NO — by design, see below** |
 
-**Every row of that table is measured.** No site reports a dash: the D9 row is filled from the stage where its pivot is built. **A site that reported nothing because nothing was looked at would be indistinguishable from a site that looked and found zero**, which is the failure this study's own standing rule exists to prevent.
+**Every row carries a boolean assertion and an examined count** — 13 of 13 and 13 of 13. **CLAUDE.md -- a check that finds nothing because it looked nowhere must FAIL, not pass, and every path that can return 'nothing found' states whether it found nothing or looked at nothing. The examined count was printed at every site on the previous build; what was missing is (i) any assertion at the D9 site and (ii) any marking that a pass on an EMPTY site is vacuous.**
+
+***Corrected this run.*** **The `D9 coverage rows` row published `null` for BOTH its exclusion count and its assertion in `-r5`'s `results.json`**, while the site was counted among the twelve where D11 is applied — **a row listed as asserted and carrying no assertion.** The number was in `d9.json` the whole time, and the `.md` filled it *in the renderer*, so the two halves of one deliverable disagreed and only the JSON reader could see it. **The backfill is now a pipeline step (stage 3), asserted at the site**, and the renderer patches nothing.
+
+***And a pass on an empty site is now labelled VACUOUS rather than printed as a pass.*** `action_count_s1_other`, `action_count_s2_other` examined **0** records, so their assertions are true of the empty set and are **not evidence that D11 is applied there**. The examined count was printed on the previous build — that half of the rule was met — but `assertion_holds: true` read identically at a site with 2.7 million records and at a site with none. **A check that finds nothing because it looked nowhere must fail, not pass** (`CLAUDE.md`; `0088` §1(a) says the same of the boundary window).
+
+**The `Records excluded` column is NOT summable and its rows are NOT disjoint.** `records_excluded_by_D11` is carried in FOUR DIFFERENT UNITS across these rows, and the rows overlap. Adding the column produces a number that counts nothing. Named here because one label over quantities in different units is exactly the defect decisions/0088 Sec 2(b) ruled on, and a table is where it hides best. **Units present:** *S1/S2 episode records, ALL shows in the sweep*; *distinct in-E1 S1 episodes at their canonical instant*; *in-E S1/S2 records*; *in-E2 S2 records*; *records of any kind, whole sweep*. **Overlaps:** `A` and `A_H` report the SAME 94 records -- one evidence array read at two instants -- and those same 94 are also the sum of the four `action_count_s2_*` rows. The `liveness evidence` row is records of ANY kind across the WHOLE sweep, a superset. The `D9 coverage rows` row is over ALL shows in the sweep, not only frame shows. The `S1 completion walk` row is in DISTINCT EPISODES at their canonical instant, not records.
+
+**The two figures that DO sum, asserted:** the four action_count_s1_* rows sum to 73 and the four action_count_s2_* rows sum to 94; 73 + 94 = 167, which is in_frame_S1_S2_records_at_or_after_tau_pull. That identity is arithmetic on measured counts and is asserted below — S1 side **True**, S2 side **True**, total **True**.
+
+**Site names are this arm's own and are not a ruled vocabulary — reported, not reconciled.** decisions/0088 Sec 1(b) NAMES the sites in prose -- A, A_H, the four action_count_s{1,2}_*, the liveness evidence, D9's coverage rows, the S1 walk -- but fixes no key spelling, and it names EIGHT while the four action_count columns are EIGHT sites here, not four, because the spec's own column enumeration (0080) has eight action-count columns. This arm publishes 13 rows with prose site names. decisions/0091 Sec 3 records the other arm using `S1_completion_walk`, an underscored key, so THE TWO TABLES ARE NOT KEY-WISE DIFFABLE even where they agree numerically. Reported, not reconciled: naming is unruled, and 0088 Sec 2(c) requires two differing objects be named as two rather than merged under a shared label.
 
 **The one site where D11 is not applied is the S1 completion walk**, and the `no` there is the **correct reported state, not a failure**: `0068` rules waterfall line 1 at **220,107 as published**, that value needs the pairs whose first-pass completion rests on a post-cutoff record, and whether D11 applies to the walk is `0068`'s own **open** item. Three different objects sit behind it and are named separately — **73 records**, **72 distinct episodes**, **60 episodes whose *canonical* instant is post-cutoff**.
 
@@ -544,7 +581,7 @@ Records excluded by D11 at EACH site separately, asserted at each site rather th
 
 ## 15. Outcome states, channel pairs, and the scope qualifier
 
-*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
+*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
 
 | Population | Position | Never started | Continued | Started and left | Total |
 | :--- | :--- | ---: | ---: | ---: | ---: |
@@ -563,7 +600,7 @@ Records excluded by D11 at EACH site separately, asserted at each site rather th
 
 ## 16. Discovery channel — every unit, each with its consumer
 
-*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
+*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
 
 **Two boolean columns, not one categorical** (`0070` ruling 3). **Publish the overlap in every unit, each with its consumer named** (`0079` §3) — **picking one leaves another consumer holding a wrong-unit figure.** `0070` ruling 3 said *"324 users"* and named no population, which is the shape that has recurred through this entire chain, in the ruling written to fix a different unlabelled figure.
 
@@ -580,7 +617,7 @@ Records excluded by D11 at EACH site separately, asserted at each site rather th
 
 ## 17. The column set — 89 enumerated names
 
-*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
+*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
 
 **`0080` §1 enumerates the column set rather than counting it, `0081` extends it to 88 and `0082` to 89.** This instance emits **89**, exact-match to the enumerated list: **True**, and in the enumerated order. The full list is in `artifacts/step8-waterfall-b.json` → `analysis_table.column_names`. **Converged is not specified**, and Step 8b's schema is built on this vocabulary, so it is fixed before the schema exists.
 
@@ -605,13 +642,13 @@ Records excluded by D11 at EACH site separately, asserted at each site rather th
 
 **Reported per surface, not as a total** — task-sheet.md now states NO count of the assertion set in this phrasing, and the definition file states NINE. NO SURFACE CONTRADICTS ANOTHER, which is what the r4 claim said they did. Reported per surface rather than as a total, because a total of zero EIGHTs is also what two silent files would give.
 
-**Coverage, so a zero is a zero found and not a file unopened** (`CLAUDE.md`): `specs/step8-readback.md` **4,342** bytes, `task-sheet.md` **143,073**, this arm's definition file **49,661**. **The negative grep for 'EIGHT MEMBERS' passes clean on a file that never said nine. Both halves are measured here: EIGHT must be 0 AND NINE must be non-zero.**
+**Coverage, so a zero is a zero found and not a file unopened** (`CLAUDE.md`): `specs/step8-readback.md` **4,342** bytes, `task-sheet.md` **143,808**, this arm's definition file **50,837**. **The negative grep for 'EIGHT MEMBERS' passes clean on a file that never said nine. Both halves are measured here: EIGHT must be 0 AND NINE must be non-zero.**
 
 **`silent_at_tau1` is the column that was worth restoring, and the reason is not symmetry.** It is **not recoverable from `live` and `outcome` on Continued rows** — `live` is true for every Continued pair *regardless of silence*, because the rule's second conjunct is `NOT Continued`. Without it, **the Continued-and-silent count cannot be recomputed from Step 8's table**; §20 below reports that count as an aggregate as well, so the figure survives independently of the column.
 
 ## 18. `p_at_bound` — it marks WHETHER `p` reached its bound, not WHY
 
-*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
+*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
 
 **`0083` §2 restates the column and this instance emits the restated form.** `p_at_bound` is **TRUE where `p` reached its bound**, **null where `p` is null**. **It does not say why, because on the adopted form there is only one why.**
 
@@ -663,13 +700,13 @@ Records excluded by D11 at EACH site separately, asserted at each site rather th
 
 ## 19. `action` — counts by type, never a row-level column
 
-*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
+*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
 
 `action` is record-level and the row is a pair, so a single value per row would assert one action per pair, which is false (`0070` ruling 4). The table carries eight count columns — `action_count_s1_watch`, `_s1_checkin`, `_s1_scrobble`, `_s1_other` and the four S2 equivalents — over the pair's in-`E` records. **The S1/S2 split is fixed by `0080`'s enumeration**, which names all eight. Step 1 already ruled that check-ins count as watching alongside `scrobble` and `watch`, because `action` is a property of the logging client rather than of the viewing, so it is **not an outcome variable**. Step 13's arm reads the counts: check-in-only iff its `checkin` count is positive and `scrobble` and `watch` are zero.
 
 ## 20. Continued-and-silent — the count `silent_at_tau1` exists to preserve
 
-*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
+*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
 
 **Emitted as an aggregate as well as a column**, so the figure survives independently of either. `live` is TRUE for every Continued pair **regardless of silence**, because the liveness rule's second conjunct is `NOT Continued` — so this count is what the second conjunct is worth, and it is **the size of the outcome-conditioning at waterfall line 6**: the pairs the conjunct **saves** from exclusion.
 
@@ -695,7 +732,7 @@ Coverage: both populations, every position-5 row of each; neither cell is an emp
 
 ## 21. Where two faithful instances could still differ — plus what `0083`, `0085` and `0088` closed, and the one gap `0088` opened
 
-*Measured on: b: position-5 build of 2026-08-16-r5 (spec through 0090).*
+*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
 
 **Three kinds of item are in this list and each says which it is.** *(a)* **Genuinely open** at the spec level — reported, never reconciled here. *(b)* **CLOSED** by `decisions/0083`, `0085` or `0088`, kept in the list because a previous build published them as live and **a closure that silently disappears from the report is indistinguishable from an item that was never raised**; each states what closed it and what was **re-measured rather than quoted**. *(c)* **NEWLY OPEN** — item 2, the **tie-break** `0088` §3 left unspecified inside the very ruling that fixed the ranking basis. **`0085` §7's B3 is no longer carried: `0088` §1 rules it and this arm has implemented all three parts** (§14a). **Items 1, 2 and 4 are reported, not reconciled**, which is the standing rule for the dual run.
 

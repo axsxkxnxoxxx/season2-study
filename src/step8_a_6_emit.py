@@ -120,12 +120,16 @@ def main():
       "position 6 filters; **DERIV** = Step 5 waterfall line 4 less D10 = **147,370**, which "
       "requires S2 evidence. Step 8 produces both (`decisions/0070` ruling 1).")
     A("")
-    A("> **RERUN AGAINST `decisions/0088`, ordered by the Human Lead — a rerun, not an "
+    A("> **RERUN AGAINST `decisions/0092`, ordered by the Human Lead — a rerun, not an "
       "amendment.** This replaces the previous `-a` deliverable **in full**; the previous output "
       "was **not patched** and nothing in it is read or carried. **Everything below is "
-      "regenerated from one pipeline run** — no figure is typed by hand. **THREE builds now exist "
-      "on 2026-08-16** — the one Red Team's third pass reviewed, the `-0085` rerun its fourth "
-      "pass reviewed, and this one — so they are **tagged apart**, and every figure names which.")
+      "regenerated from one pipeline run** — no figure is typed by hand. **This is `0092`'s own "
+      "rule applied to `0092`'s own rerun**: *a deliverable is corrected by rerunning the arm that "
+      "produced it, never by hand-editing the file*, and **that holds especially where the change "
+      "is labelling only and no figure moves** — which describes most of what follows. **FIVE "
+      "builds of this arm now exist on 2026-08-16**, so they are **tagged apart** and every figure "
+      "names which; the previous one, `a/2026-08-16-0090`, is what Red Team's sixth and seventh "
+      "passes reviewed.")
     A("")
     A("> **The spec this run executes, and what moved since the last one that completed.** "
       "**(1)** Every count, every invariant result and every waterfall figure **carries the build "
@@ -144,25 +148,63 @@ def main():
       "CLOSED** (`0083` §1): all three readings publish, each naming the pipeline that produces "
       "it — see §5.1.")
     A("")
-    A("> **THREE THINGS THIS ARM EMITS DIFFERENTLY FROM ITS LAST RUN — one ruling and two defects "
-      "in this arm's own deliverable.** **(1) `decisions/0090`: D9 PUBLISHES AS A BOUND** — strict "
-      "the **FLOOR**, loose the **CEILING**, **neither the point estimate** — ***superseding "
-      "`0074` ruling 5's framing, under which strict was the answer and loose was context.*** The "
-      "bound applies to **every D9 quantity with both forms**: complementary pairs, half (a), "
-      "half (b). **D9's numbers do not change; which of them is presented as the answer does** — "
-      "§5.5. **(2) Red Team fifth pass, F1** (`0089` §2(a)): this arm's B3(a) answer was **stated "
-      "on the wrong object**. It found the right interval — `[τ, τ + 24h)` — and then reported "
-      "**episodes ADMITTED**. The number that settles B3(a) is **how many position-5 rows change "
-      "OUTCOME STATE** under the forbidden date-level form, **four numbers, both bounds × both "
-      "populations** — §5.6a. **(3) Red Team fifth pass, F2**: this arm's **coverage-identity "
-      "independence proxy was wrong.** `len(parts) > 1` admitted identities whose clauses are a "
-      "**complementary partition of the same mask the population size is taken from**, so they "
-      "**cannot fail on any data** — ***including the one this arm's deliverable called \"the "
-      "identity that closes the hole\".*** The population size is now **sourced independently of "
-      "the asserted count**, the label and the claim are corrected, and the mechanism is "
-      "**demonstrated to fire** — see the invariant report. **Also fixed: one hardcoded "
-      "`\"holds\": True` in the per-site D11 table** (the S1-completion-walk site), now computed "
-      "from two measured quantities — §5.6b.")
+    A("> **SEVEN THINGS THIS ARM EMITS DIFFERENTLY FROM ITS LAST RUN. SIX ARE RED TEAM'S "
+      "SEVENTH-PASS FINDINGS AGAINST THIS ARM; ONE IS `decisions/0092`'s N2 REQUIREMENT. Each was "
+      "verified against this arm's own code before it was accepted, and each is stated as a "
+      "defect in this arm's deliverable rather than as an improvement.**")
+    A(">")
+    A("> **(1) THE \"INERT ON LINE 6\" WARRANT IS WITHDRAWN — IT IS STRUCTURALLY WRONG.** The "
+      "previous build said line 6 does not move under the date-level counterfactual *\"because the "
+      "silence test reads an insertion clock, not an episode timestamp\"*. That is a property of "
+      "**conjunct 1**, and the liveness rule is conjunct 1 **AND** conjunct 2 — and conjunct 2 is "
+      "`NOT Continued`, an **episode-timestamp computation that moves on 55 APPLY rows under this "
+      "very counterfactual**. **A property of one conjunct cannot explain the invariance of the "
+      "conjunction.** And the deliverable did not say whether conjunct 2 was **recomputed** on the "
+      "counterfactual outcome or **held** at the adopted one — ***if held, `703 → 703` is a "
+      "tautology.*** **IT WAS RECOMPUTED**, the expression is now quoted at each cell, **the "
+      "604/99 split under every counterfactual form is reported on both populations for the first "
+      "time**, and the claim is rescoped to what was measured: `W = 108` only — §5.6a.")
+    A(">")
+    A("> **(2) THE \"1 EPISODE AT `τ1`\" ATTRIBUTION IS WITHDRAWN — WRONG OBJECT.** `0068`'s "
+      "strictness ruling is about **insertion instants in the silence test**; §5.6a's unit is a "
+      "**distinct S2 episode by canonical `watched_at`**. **The ruling's own quantity is measured "
+      "here for the first time in this arm and it is 0 on both populations — the ruling is "
+      "VACUOUS on this data**, and the previous build published that it was load-bearing — §5.6a.")
+    A(">")
+    A("> **(3) THE `+1` PERTURBATION DOES NOT TEST INDEPENDENCE.** On a same-mask denominator the "
+      "clauses sum to `N` and the stated population reads `N + 1`, so it fires **identically** — "
+      "***it would have passed on the very build whose defect it claimed to have fixed.*** It is "
+      "**relabelled** as what it does show (the identity is arithmetic, not a literal) and a "
+      "**real independence control is added**: six injected wrong-population defects, each "
+      "asserting that the **same-mask form PASSES** and the **independently-sourced form FAILS** "
+      "— **5 of the 6 are invisible to the same-mask form** — see the invariant report.")
+    A(">")
+    A("> **(4) `p_at_bound`'s FALSE CARDINALITY IS EMITTED, AND THE TWO FALSE CLASSES ARE NAMED "
+      "APART.** ***Two sentences twelve lines apart in the previous §3.1 contradicted each other "
+      "on the plain reading*** — one asserting the FALSE class **empty**, the other describing "
+      "`p_at_bound` as **FALSE on the rest of Started-and-left**. **They are two different "
+      "classes** and neither cardinality was emitted. **Step 8b builds a schema on this column "
+      "with no conversion layer** — §3.1.")
+    A(">")
+    A("> **(5) THE PER-SITE D11 TABLE'S `S1_completion_walk` EXAMINED CELL HELD A DIFFERENT "
+      "QUANTITY FROM THE OTHER TWELVE ROWS** — 73 is a **would-exclude** count of **records**, in "
+      "an **examined** column, where the walk's unit is a **distinct episode**. ***This is the row "
+      "where the previous build had just corrected a hardcoded literal*** — §5.6b.")
+    A(">")
+    A("> **(6) D2's \"both bind\" COUNT NOW CARRIES ITS POPULATION AND IS MEASURED ON BOTH** "
+      "(`0092`, N2), **and the combined waterfall's DERIV line 4 is relabelled** — it is **not a "
+      "single filter** — §1, §5.2.")
+    A(">")
+    A("> **(7) A CLAIM THIS ARM PUBLISHED ABOUT ITS OWN SOURCE WAS FALSE.** *\"No `.date()`, "
+      "`dt.date`, `normalize()` or day-flooring anywhere in `step8_a_*.py`\"* — **`floor_day()` "
+      "appears three times in `step8_a_2_positions.py`**, legitimately, and **§5.6a's own argument "
+      "depends on it**. The deliverable asserted no day-flooring anywhere and reasoned from "
+      "day-flooring twelve sections later. **Corrected to the true and narrower claim** — §5.6a.")
+    A(">")
+    A("> **CARRIED, UNCHANGED: `decisions/0090`, D9 PUBLISHES AS A BOUND** — strict the **FLOOR**, "
+      "loose the **CEILING**, **neither the point estimate** — ***superseding `0074` ruling 5's "
+      "framing.*** **D9's numbers do not change; which of them is presented as the answer does** — "
+      "§5.5.")
     A("")
     A("> **CARRIED FROM `decisions/0088` AND UNCHANGED THIS RUN.** "
       "**(B3, §1 — the item that blocked the gate on Red Team's third AND fourth passes.)** The "
@@ -182,12 +224,13 @@ def main():
       "***this arm previously clustered the coverage-pivot subset***, so **the cluster list "
       "moves** — §5.5.")
     A("")
-    A("> **NO POPULATION, NO RULE, NO BOUND ENDPOINT AND NO WATERFALL LINE MOVES ON THIS RERUN, "
-      "and every ruled D9 count reproduces** — strict 0, loose 75, third key 76, half (a) 0 and "
-      "6, half (b) 0 and 27. **`0090` changes the FRAMING of those numbers, not the numbers.** "
-      "**No invariant result changes either**: the independence correction changes what the "
-      "coverage apparatus is CLAIMED to prove, and every identity still holds — now against a "
-      "denominator that could have disagreed.")
+    A("> **NO POPULATION, NO RULE, NO BOUND ENDPOINT, NO WATERFALL LINE AND NO OUTCOME SHARE "
+      "MOVES ON THIS RERUN, and every ruled D9 count reproduces** — strict 0, loose 75, third key "
+      "76, half (a) 0 and 6, half (b) 0 and 27. **No invariant RESULT changes either.** **What "
+      "moves is what this arm CLAIMS and what it EMITS**: three published claims are withdrawn as "
+      "wrong, one control is demoted and replaced, and four quantities that were never emitted "
+      "now are. ***That is the whole of the change, and it is stated plainly because a rerun whose "
+      "figures do not move is exactly the case where a reader assumes nothing happened.***")
     A("")
     A("> Carried forward and unchanged: the table is the position-5 row set with `live` and "
       "`outcome` as columns (`0074`/1); both D9 keys are as defined by `0076`/3; the "
@@ -251,7 +294,8 @@ def main():
          wd["position_2_L2_eq_1_excluded"]),
         ("3", "S1 completion rule", wa["position_3_S1_completion_rule"],
          wd["position_3_S1_completion_rule"]),
-        ("4", "contamination exclusion (Step 5)", wa["position_4_contamination"],
+        ("4", "contamination exclusion (Step 5) — **DIFFERENT DEPTH ON THE TWO POPULATIONS, see "
+              "below**", wa["position_4_contamination"],
          wd["position_4_contamination_DERIV_depth"]),
         ("5", "right-censoring", wa["position_5_right_censoring"],
          wd["position_5_right_censoring"]),
@@ -316,11 +360,41 @@ def main():
       f"{pos['independent_S1_completion_check']['completers_only_in_the_published_table']} only "
       "the published table), and the completion **date** agrees on "
       f"{pos['independent_S1_completion_check']['s1_completion_date_mismatches']} mismatches.")
-    A("- **Position 4 is a different depth on the two populations.** APPLY takes Step 5 waterfall "
-      "line 1; DERIV takes line 4, which additionally requires S2 evidence, an uncontaminated "
-      "`T0` and a completing record that is not post-dated. The Step 5 waterfall was rebuilt from "
-      "the stored per-pair flags and asserted equal to the published "
-      f"{pos['step5_waterfall_published']} before use.")
+    A("")
+    A("**DERIV's line 4 IS NOT A SINGLE FILTER, and the table above must not be read as though it "
+      "were.** Red Team seventh pass, finding 6, against this arm: the row is labelled "
+      "*contamination exclusion (Step 5)* on both columns, and **DERIV's removal of "
+      f"{n(wd['position_3_S1_completion_rule'] - wd['position_4_contamination_DERIV_depth'])} is "
+      "the whole of Step 5 waterfall lines 1 through 4**, not one rule firing harder. **APPLY "
+      "takes Step 5 line 1; DERIV takes line 4, which is where the population is DEFINED** — "
+      "DERIV requires S2 evidence, and that requirement lives inside this position. The "
+      "sub-decomposition, so no reader has to infer it:")
+    A("")
+    w5 = pos["step5_waterfall_rebuilt"]
+    _l1 = wa["position_3_S1_completion_rule"]
+    A("| Step 5 line | What it removes | Retained | Removed | In APPLY's line 4? | In DERIV's? |")
+    A("| :--- | :--- | ---: | ---: | :--- | :--- |")
+    A(f"| — | entering (position 3) | {n(_l1)} | — | — | — |")
+    A(f"| **1** | the all-airdate and 1,542 classes | {n(w5[0])} | {n(_l1 - w5[0])} | **yes — "
+      f"this is APPLY's line 4** | yes |")
+    A(f"| **2** | pairs with NO S2 evidence | {n(w5[1])} | {n(w5[0] - w5[1])} | no | **yes — this "
+      "is what DEFINES DERIV** |")
+    A(f"| **3** | contaminated `T0` | {n(w5[2])} | {n(w5[1] - w5[2])} | no | yes |")
+    A(f"| **4** | post-dated completing record | {n(w5[3])} | {n(w5[2] - w5[3])} | no | **yes — "
+      "this is DERIV's line 4** |")
+    A("")
+    A(bt("every figure in this table"))
+    A("")
+    A(f"**So DERIV's line-4 removal of "
+      f"{n(_l1 - w5[3])} decomposes as {n(_l1 - w5[0])} contamination (the same rule APPLY "
+      f"applies) + {n(w5[0] - w5[1])} no-S2-evidence + {n(w5[1] - w5[2])} contaminated `T0` + "
+      f"{n(w5[2] - w5[3])} post-dated.** The Step 5 waterfall was rebuilt from the stored per-pair "
+      f"flags and **asserted** equal to the published {pos['step5_waterfall_published']} before "
+      "use, so this decomposition is not a reading of Step 5's deliverable — it is recomputed and "
+      "checked against it.")
+    A("")
+    A("**The DERIV column of the main table is therefore a DEPTH, not a second run of the same "
+      "filter.** Both columns are correct; the single label over them was not.")
     A("- **Positions 6 and 7 are ANNOTATIONS on the table, not deletions from it.** The analysis "
       "table is the **position-5 row set** and carries `live` and `outcome` as columns "
       "(`decisions/0074` ruling 1), so lines 6 and 7 above report what the liveness rule and the "
@@ -472,13 +546,35 @@ def main():
     sp2_shows_gap, sp2_shows = fe["shows_where_max_E2_differs_from_L2"], fe["shows_in_frame"]
     A("### 3.1 `p_at_bound` — WHETHER `p` reached its bound, and the `p = 1.0` totals")
     A("")
+    A("> ***TWO DIFFERENT `FALSE` CLASSES SIT ON THIS PAGE, AND THE PREVIOUS BUILD OF THIS ARM "
+      "ASSERTED ONE OF THEM EMPTY WHILE DESCRIBING THE OTHER AS NON-EMPTY TWELVE LINES APART, "
+      "EMITTING NEITHER CARDINALITY.*** Red Team seventh pass, finding 4. **On the plain reading "
+      "the two sentences contradict each other.** They do not in fact, because they name "
+      "different objects — **and that is precisely the defect**, since nothing on the page said "
+      "so. **Both are named and both cardinalities are emitted below, on all four populations.** "
+      "**Step 8b defines the schema Steps 9–13 write into with NO CONVERSION LAYER**, so a "
+      "consumer that reads *\"the FALSE class is empty\"* and provisions a two-valued column is "
+      "wrong by **17,895 rows** on APPLY position 5.")
+    A("")
+    A("| | **CLASS 1 — the COEXTENSIVITY GAP** | **CLASS 2 — the COLUMN's own `FALSE` value** |")
+    A("| :--- | :--- | :--- |")
+    A("| What it is | rows where `0082`'s two superseded **mechanisms** disagree: "
+      "saturated-not-final **plus** final-not-saturated | Started-and-left rows where **`p` did "
+      "not reach its bound** |")
+    A("| The sentence that names it | *\"the class `0082` called FALSE is **empty**\"* | "
+      "*\"`p_at_bound` is FALSE on the rest of Started-and-left\"* |")
+    A("| Is it empty? | **YES — 0 on all four populations** | **NO — 17,895 on APPLY position "
+      "5** |")
+    A("| What a `FALSE` row here would mean | one of the three construction links has broken | "
+      "nothing at all — it is the ordinary case |")
+    A("")
     A("**`p_at_bound` marks WHETHER `p` reached its bound, NOT WHY** — Human Lead ruling, "
       "2026-08-16 (`decisions/0083` §2), restating `0082`. **`TRUE` where `p` is at its bound, "
-      "null where `p` is null.** `0082`'s definition **by two mechanisms** is **superseded**: the "
-      "two clauses are **coextensive** — on a chain of three links of which the first two are "
-      "construction and the third, `max(E2) = F2`, is MEASURED (`0085` §4) — so the class it "
-      "called `FALSE` is "
-      "**empty** and on the adopted rank form there is only one why. **The column is kept** — "
+      "`FALSE` on the remaining Started-and-left rows, null where `p` is null.** `0082`'s "
+      "definition **by two mechanisms** is **superseded**: the two clauses are **coextensive** — "
+      "on a chain of three links of which the first two are construction and the third, "
+      "`max(E2) = F2`, is MEASURED (`0085` §4) — so **CLASS 1** is **empty** and on the adopted "
+      "rank form there is only one why. **The column is kept** — "
       "Step 10 publishes the abandonment distribution off `abandonment_point_p` and needs the "
       "spike **labelled**, and **an emptiness asserted in prose and never emitted cannot be "
       "checked.**")
@@ -517,7 +613,40 @@ def main():
       "of rows the cells were computed over is what says which this is.")
     A("")
     A("**The `p = 1.0` figures are TOTALS, not a sum of two classes**, and the `TRUE` count "
-      "equals the total on all four populations because the `FALSE` class is empty.")
+      "equals the total on all four populations because **CLASS 1** is empty.")
+    A("")
+    A("#### The emitted column's own cardinalities — `TRUE`, `FALSE`, null")
+    A("")
+    A("**This is what a Step 8b schema has to provision for**, and it appeared nowhere in the "
+      "previous deliverable.")
+    A("")
+    A("| Population | rows | `p_at_bound` **TRUE** | `p_at_bound` **FALSE** | **null** | identity |")
+    A("| :--- | ---: | ---: | ---: | ---: | :--- |")
+    for k, lab in (("APPLY_position_5", "APPLY, position 5"),
+                   ("APPLY_position_7_post_liveness", "APPLY, post-liveness"),
+                   ("DERIV_position_5", "DERIV, position 5"),
+                   ("DERIV_position_7_post_liveness", "DERIV, post-liveness")):
+        tf = sp[k]["THE_TWO_FALSE_CLASSES"]
+        tot = (tf["column_TRUE_rows"] + tf["class_2_COLUMN_VALUE_FALSE_rows"]
+               + tf["column_NULL_rows"])
+        A(f"| {lab} | {n(tot)} | {n(tf['column_TRUE_rows'])} | "
+          f"**{n(tf['class_2_COLUMN_VALUE_FALSE_rows'])}** | {n(tf['column_NULL_rows'])} | "
+          f"`{tf['column_identity']}` — holds: {tf['column_identity_holds']} |")
+    A("")
+    A(bt("every figure in this table"))
+    A("")
+    _gapz = all(sp[k]["THE_TWO_FALSE_CLASSES"]["class_1_COEXTENSIVITY_GAP_rows"] == 0
+                for k in ("APPLY_position_5", "APPLY_position_7_post_liveness",
+                          "DERIV_position_5", "DERIV_position_7_post_liveness"))
+    A(f"**CLASS 1 is 0 on all four populations: {_gapz}.** **CLASS 2 is not zero anywhere** — it "
+      "is the ordinary Started-and-left row that left before the finale, and it is the large "
+      "majority of them. **The two numbers on one page, under one word, with only one of them "
+      "ever emitted, is what finding 4 is about.**")
+    A("")
+    A("*One thing worth noting rather than leaving to be spotted: the null counts on DERIV "
+      "position 5 and DERIV post-liveness are **identical**. That is not a copy — DERIV's 99 "
+      "liveness exclusions are **all started-and-left**, so every row the filter removes has `p` "
+      "defined and none of them was null.*")
     A("")
     ct = sp["cross_tab_APPLY_position_5"]
     lk3 = sp["link_3_max_E2_equals_F2_MEASURED_NOT_ASSUMED"]
@@ -549,11 +678,14 @@ def main():
       "is DATA and could be false on another frame; the coextensivity above would still hold.** "
       "Stated separately so a construction argument is not read as a frame accident.")
     A("")
-    A("**Why the column is still worth emitting.** The `FALSE` class is empty because of links 1 "
+    A("**Why the column is still worth emitting.** **CLASS 1** is empty because of links 1 "
       "and 2, **both `W`-invariant**, and link 3, **a frame property that does not move across "
-      "Step 13's grid** — so it stays empty at every arm. **A `FALSE` row anywhere means one of "
-      "the THREE has broken**, and that is a thing worth catching. `p_at_bound` is `TRUE` exactly "
-      "on the `p = 1.0` rows, `FALSE` on the rest of Started-and-left, and null elsewhere.")
+      "Step 13's grid** — so it stays empty at every arm. **A CLASS 1 row anywhere means one of "
+      "the THREE has broken**, and that is a thing worth catching. **The emitted column itself is "
+      "three-valued**: `TRUE` exactly on the `p = 1.0` rows, `FALSE` on the remaining "
+      "Started-and-left rows — **17,895 of them on APPLY position 5, not zero** — and null "
+      "elsewhere. ***The sentence above and this one used to sit twelve lines apart with the same "
+      "word doing both jobs.***")
     A("")
     A("---")
     A("")
@@ -815,11 +947,42 @@ def main():
     A("")
     A(bt("every figure in this table"))
     A("")
-    btsplit = diag["D2_negative_lag"]["binding_term_split_of_the_whole_population_APPLY_position_5"]
-    A(f"**A tie is its own category, not a tiebreak** (`0070` ruling 5). Over the whole "
-      f"position-5 APPLY population the binding term is the S2 finale on {n(btsplit['S2_finale_binds'])} "
-      f"pairs, the S1 completion on {n(btsplit['S1_completion_binds'])}, and **both on "
-      f"{n(btsplit['both_bind'])}** — the case a binary split has nowhere to put.")
+    A("#### The `max()` binding term, split three ways — ON EVERY POPULATION THIS STEP NAMES")
+    A("")
+    A("**`decisions/0092`, Red Team seventh pass, N2.** `task-sheet.md` stated ***\"168 pairs have "
+      "both terms binding\"* with NO POPULATION**, and the two arms read it on populations "
+      "**23,453 pairs apart** — one on the position-5 set, the other on line 1. **The spec now "
+      "requires the population at the point of use and measurement on both**, so no integer below "
+      "appears without the set it was counted over.")
+    A("")
+    bs_ = diag["D2_negative_lag"]["binding_term_split_BOTH_POPULATIONS_BOTH_POSITIONS"]
+    A("| Population | pairs | S2 finale binds | S1 completion binds | **both bind** | identity |")
+    A("| :--- | ---: | ---: | ---: | ---: | :--- |")
+    for k, lab in (("line_1_S1_completer_population", "line 1 — S1-completer population"),
+                   ("APPLY_position_5", "APPLY, position 5"),
+                   ("APPLY_post_liveness", "APPLY, post-liveness"),
+                   ("DERIV_position_5", "DERIV, position 5"),
+                   ("DERIV_post_liveness", "DERIV, post-liveness")):
+        v = bs_[k]
+        A(f"| {lab} | {n(v['population_size'])} | {n(v['S2_finale_binds'])} | "
+          f"{n(v['S1_completion_binds'])} | **{n(v['both_bind'])}** | "
+          f"`{v['coverage_identity']}` — holds: {v['coverage_identity_holds']} |")
+    A("")
+    A(bt("every figure in this table"))
+    A("")
+    _c168 = bs_["which_population_carries_the_spec_integer_168"]
+    A("**A TIE IS ITS OWN CATEGORY, NOT A TIEBREAK** (`0070` ruling 5). The three cases — finale "
+      "strictly later, S1 completion strictly later, **equal** — partition every completer pair, "
+      "so the identity holds on every row of the table.")
+    A("")
+    A(f"***AND THE MEASUREMENT ANSWERS `0092`'s PREMISE, WHICH IS WHY IT WAS WORTH MAKING.*** "
+      f"`0092` reasoned that *\"168 cannot be correct on both\"*. **On APPLY it is correct on "
+      f"all three readings** — line 1, position 5 and post-liveness all give **168** "
+      f"(`{', '.join(_c168)}`) — because **no both-bind pair is removed by positions 4, 5 or 6 on "
+      f"APPLY**. So the two arms' readings, 23,453 pairs apart, **would both have produced 168 "
+      f"and the disagreement was never visible in that integer.** **Where it IS visible is "
+      f"DERIV, which measures {n(bs_['DERIV_position_5']['both_bind'])} — and no entry records "
+      f"that number, because nothing had measured it.** **Reported, not reconciled.**")
     A("")
     A("S2-finale-term negative lags are the normal case for anyone who watched a weekly season "
       "while it aired and are information about the frame's cadence mix. **S1-term negative lags "
@@ -1165,10 +1328,24 @@ def main():
       "the third and fourth passes.** The two unasserted mandates are **the half-open UTC-instant "
       "form** and **D11-as-global-cutoff** — *not* invariants 7 and 8, which were already "
       "measured, published and labelled DATA CHECK. **This arm's compliance is TRUE and was "
-      "independently confirmed** — no `.date()`, `dt.date`, `normalize()` or day-flooring "
-      "anywhere in `step8_a_*.py`, instants int64 seconds throughout. ***That is not what was "
+      "independently confirmed** — **NO BOUNDARY TEST uses a date-level form**, every bound "
+      "comparison in `step8_a_*.py` is an int64-second comparison, and `date(watched_at) <= T1` "
+      "appears nowhere. ***That is not what was "
       "missing: nothing measured whether either mandate is LOAD-BEARING on this data, and an "
       "unmeasured pass is indistinguishable from a check that looked nowhere.***")
+    A("")
+    A("> ***A CLAIM THIS ARM PUBLISHED ABOUT ITS OWN SOURCE WAS FALSE, AND IT IS CORRECTED "
+      "HERE.*** Red Team seventh pass. The previous build wrote *\"no `.date()`, `dt.date`, "
+      "`normalize()` **or day-flooring** anywhere in `step8_a_*.py`\"*. **`floor_day()` appears "
+      "three times in `step8_a_2_positions.py`** — on the S2 finale date, on the first-pass S1 "
+      "completion instant, and when parsing the stored Step 5 dates for the cross-check. **All "
+      "three are correct and required**: `⟦T0⟧` is **day-floored by Step 1 §2.4**, the clock start "
+      "is a date and not an instant, and **the very next paragraph of this section reasons from "
+      "it**. So the deliverable asserted there was no day-flooring anywhere and then depended on "
+      "day-flooring one paragraph later. **The distinction the mandate actually draws: "
+      "day-flooring the CLOCK is required; day-flooring a BOUNDARY TEST is forbidden. Only the "
+      "second would be a violation and there are none.** No `.date()`, `dt.date` or `normalize()` "
+      "call appears anywhere in `step8_a_*.py`; that half of the claim was true and is kept.")
     A("")
     A("**One thing the ruling does not say, and it decides the answer.** `T0` is day-floored and "
       "`W` and `H` are whole days, so **`τ1` and `τ2` land exactly on midnight UTC** — asserted "
@@ -1215,12 +1392,52 @@ def main():
       "position 6 — **and no arithmetic connects them.** This report states it because a repeated "
       "integer in a document this size gets read as a shared quantity.")
     A("")
-    A("**And the ruling's own second quantity is NOT zero:** exactly "
-      f"**{n(bw['APPLY_position_5']['tau1']['episodes_EXACTLY_AT_the_bound'])} episode falls "
-      f"exactly AT `τ1`** on APPLY (and "
-      f"{n(bw['DERIV_position_5']['tau1']['episodes_EXACTLY_AT_the_bound'])} on DERIV), so "
-      "**`0068`'s strictness ruling — an instant *at* the bound is not *after* it — changes the "
-      "answer for a real row rather than for none.**")
+    A("**The ruling's own second quantity, on this section's unit:** exactly "
+      f"**{n(bw['APPLY_position_5']['tau1']['episodes_EXACTLY_AT_the_bound'])} distinct S2 episode "
+      f"falls exactly AT `τ1`** on APPLY (and "
+      f"{n(bw['DERIV_position_5']['tau1']['episodes_EXACTLY_AT_the_bound'])} on DERIV).")
+    A("")
+    st = bw["STRICTNESS_RULING_0068_MEASURED_ON_ITS_OWN_OBJECT"]
+    A("> ***WITHDRAWN — WRONG OBJECT.*** Red Team seventh pass, finding 2, against this arm. The "
+      "previous build continued that sentence with *\"so `0068`'s strictness ruling changes the "
+      "answer for a real row rather than for none\"*. **That inference is false and it is "
+      "withdrawn.** ***`0068`'s strictness ruling is about INSERTION INSTANTS in the silence "
+      "test*** — *\"a pair is silent iff it has no insertion instant `> τ1`\"* — **and the unit of "
+      "the table above is a DISTINCT S2 EPISODE BY CANONICAL `watched_at`. Two different axes.** "
+      "The episode count is correct and is kept; **what was drawn from it was not.** The ruling's "
+      "own quantity is measured immediately below, for the first time in this arm.")
+    A("")
+    A("#### `decisions/0068`'s strictness ruling, measured on ITS OWN object")
+    A("")
+    A("**The only rows on which strict `>` and non-strict `>=` can differ are pairs whose "
+      "account's last insertion instant falls EXACTLY at `τ1`.** That is the ruling's quantity, "
+      "and it is what says whether the ruling decides anything on this data.")
+    A("")
+    A("| Population | rows examined | pairs with last insertion instant **exactly at `τ1`** | "
+      "accounts | silent, adopted (strict) | silent, non-strict | liveness exclusions, adopted | "
+      "…non-strict | verdict |")
+    A("| :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | :--- |")
+    for popk, poplab in (("APPLY_position_5", "APPLY, position 5"),
+                         ("DERIV_position_5", "DERIV, position 5")):
+        c = st[popk]
+        A(f"| {poplab} | {n(c['rows_examined'])} | "
+          f"**{n(c['pairs_whose_last_insertion_instant_is_EXACTLY_AT_tau1'])}** | "
+          f"{n(c['accounts_ditto'])} | {n(c['silent_under_the_ADOPTED_strict_form'])} | "
+          f"{n(c['silent_under_the_WITHDRAWN_non_strict_form'])} | "
+          f"{n(c['liveness_exclusions_ADOPTED'])} | "
+          f"{n(c['liveness_exclusions_under_the_non_strict_form'])} | "
+          f"{'**VACUOUS ON THIS DATA**' if c['VACUOUS_ON_THIS_DATA'] else 'load-bearing'} |")
+    A("")
+    A(bt("every figure in this table"))
+    A("")
+    if st["APPLY_position_5"]["VACUOUS_ON_THIS_DATA"]:
+        A("***RESULT: `0068`'s STRICTNESS RULING IS VACUOUS ON THIS DATA — 0 pairs on both "
+          "populations.*** **Stated as a zero, not passed silently.** The rule remains correct and "
+          "remains binding on any future pull; **what is measured here is whether it decides "
+          "anything on THIS data, and it does not.** ***The previous build of this arm published "
+          "that it was load-bearing, on a different unit's number.***")
+    else:
+        A("**RESULT: the strictness ruling is LOAD-BEARING on this data**, on its own unit.")
     A("")
     fl = bw["OUTCOME_STATE_FLIPS_the_number_that_settles_B3a"]
     f4 = fl["THE_FOUR_NUMBERS"]
@@ -1281,12 +1498,68 @@ def main():
           + f" — and the `τ2` mandate holds **{n(_t2a['rows_changing_outcome_state'])} rows** in "
             "**started-and-left** that it would move to Continued. **Both directions run against "
             "the study's own estimand**: the forbidden form would understate never-started and "
-            "understate abandonment. **The liveness exclusion count does not move at all** "
-            f"({n(_t1a['liveness_exclusions_adopted'])} on APPLY under every form measured "
-            "here), because the silence test reads an insertion clock rather than an episode "
-            "timestamp — **so the mandate is load-bearing on OUTCOMES and inert on LINE 6**, and "
-            "those two facts had been reported as one.")
+            "understate abandonment.")
         A("")
+    ww = fl["WITHDRAWN_WARRANT"]
+    A("#### Line 6 under the counterfactual — the warrant is WITHDRAWN and the claim is rescoped")
+    A("")
+    A("> ***WITHDRAWN, STRUCTURALLY WRONG.*** Red Team seventh pass, finding 1, against this arm; "
+      "recorded at `decisions/0091` §1. The previous build wrote: **\"the liveness exclusion count "
+      "does not move at all, BECAUSE the silence test reads an insertion clock rather than an "
+      "episode timestamp — so the mandate is load-bearing on OUTCOMES and inert on LINE 6.\"** "
+      "**The liveness rule is conjunct 1 AND conjunct 2**, and **conjunct 2 is `NOT Continued`, an "
+      "episode-timestamp computation**. **A property of conjunct 1 cannot explain the invariance "
+      "of the conjunction**, and conjunct 2 demonstrably moves under this very counterfactual.")
+    A("")
+    A("**AND IT WAS NOT ESTABLISHED THAT THE 703 HAD BEEN MEASURED AT ALL.** The previous "
+      "deliverable did not say whether conjunct 2 was **recomputed on the counterfactual outcome** "
+      "or **held at the adopted one** — ***and if held, `703 → 703` is a tautology that "
+      "establishes nothing.*** **A reader cannot tell a measurement from an identity unless the "
+      "deliverable says which.**")
+    A("")
+    A("**IT WAS RECOMPUTED. The expression is "
+      f"`{fl['APPLY_position_5']['tau1_only_date_level']['conjunct_2_expression']}`** — `cont_` is the "
+      "counterfactual Continued mask returned by the counterfactual state function under that "
+      "variant's bounds, and the adopted `continued` mask is not used in it. **That is now stated "
+      "at every cell of the table below, not inferred.**")
+    A("")
+    A("| Population | Bound varied | conjunct 2 rows that **MOVE** | exclusions, this form | "
+      "exclusions, adopted | **never-started** | **started-and-left** | excluded ROW SET "
+      "identical? |")
+    A("| :--- | :--- | ---: | ---: | ---: | ---: | ---: | :--- |")
+    for popk, poplab in (("APPLY_position_5", "APPLY, position 5"),
+                         ("DERIV_position_5", "DERIV, position 5")):
+        for vk, vlab in (("tau1_only_date_level", "`τ1` only"),
+                         ("tau2_only_date_level", "`τ2` only"),
+                         ("both_bounds_date_level", "both")):
+            c = fl[popk][vk]
+            sp_ = c["exclusion_split_under_this_form"]
+            A(f"| {poplab} | {vlab} | **{n(c['conjunct_2_rows_that_MOVE_under_this_form'])}** | "
+              f"{n(c['liveness_exclusions_under_this_form'])} | "
+              f"{n(c['liveness_exclusions_adopted'])} | {n(sp_['never_started'])} | "
+              f"{n(sp_['started_and_left'])} | "
+              f"{c['the_excluded_ROW_SET_is_identical_not_merely_the_total']} "
+              f"*(symmetric difference {n(c['rows_in_one_exclusion_set_but_not_the_other'])})* |")
+    A("")
+    A(bt("every figure in this table"))
+    A("")
+    A("**THE 604/99 SPLIT UNDER THE COUNTERFACTUAL IS REPORTED HERE FOR THE FIRST TIME.** "
+      "`decisions/0091` §1 records that it *\"is not reported at all\"*; it is the column pair "
+      "above. **And the measurement goes further than the total: the excluded ROW SET is "
+      "identical, not merely its cardinality** — symmetric difference **0** on every variant and "
+      "both populations. **A total that does not move can still be a different set of rows, and "
+      "that is what the symmetric difference rules out.**")
+    A("")
+    A("**WHAT REPLACES THE WITHDRAWN WARRANT: NOTHING STRUCTURAL.** The exclusion total is "
+      "invariant here as a **measured fact about this data at `W = 108`** — **no pair the adopted "
+      "rule excludes is among the rows whose Continued value flips**, which is exactly what the "
+      "symmetric difference of **0** establishes, so the conjunction lands on the same row set. "
+      "**That is a property of this frame at this arm, not of the rule.**")
+    A("")
+    A(f"**SCOPE OF THE CLAIM, AS MEASURED: {ww['scope_of_the_claim_AS_MEASURED']}** "
+      "**Step 13 re-runs the rule across eight arms**, and nothing here says what it will find "
+      "there.")
+    A("")
     A("> **This is a COUNTERFACTUAL.** `date(watched_at) <= T1` still appears nowhere in the "
       "implementation, and nothing this pipeline emits changes. The counterfactual state "
       "function is asserted to reproduce the adopted outcome exactly on the half-open form "
@@ -1302,18 +1575,57 @@ def main():
       "assertion about the rest.** **Ground, as ruled: the unstated version of exactly this scope "
       "produced Step 7's 792-against-791.**")
     A("")
-    A("| Site | Unit | examined | **excluded by D11** | D11 applied? | assertion |")
-    A("| :--- | :--- | ---: | ---: | :--- | :--- |")
+    A("> ***THE `examined` CELL AT ONE SITE HELD A DIFFERENT QUANTITY FROM THE OTHER TWELVE, AND "
+      "IT IS FIXED HERE.*** Red Team seventh pass, finding 5, against this arm. **Every other "
+      "row's `examined` is the count of units the site CONSUMES before D11. "
+      "`S1_completion_walk` published `73` — which is a **would-exclude** count, not an examined "
+      "count, and a **record** count where the walk's unit is a **distinct episode**.** ***It is "
+      "the same row in which the previous build had just replaced a hardcoded `\"holds\": True`***, "
+      "so the row was corrected once and left holding a second defect. **Three distinct objects "
+      "sit behind that site and all three are now named** — see below the table.")
+    A("")
+    A("| Site | Unit | examined | **excluded by D11** | *would exclude if applied* | D11 "
+      "applied? | assertion |")
+    A("| :--- | :--- | ---: | ---: | ---: | :--- | :--- |")
     for x in ps["assertions"]:
         sv = ps["sites"][x["site"]]
         flag = "**PASS**" if x["holds"] else "**FAIL**"
         if x["LOOKED_AT_ZERO_UNITS"]:
             flag += " *(looked at ZERO units — holds trivially)*"
-        A(f"| `{x['site']}` | {sv['unit']} | {n(x['coverage_unit_count'])} | "
-          f"**{n(x['excluded_by_D11'])}** | {'yes' if x['D11_applied'] else '**NO — declared**'} | "
+        _wd = x.get("would_be_excluded_by_D11_at_this_site")
+        A(f"| `{x['site']}` | {sv['unit'].split(' -- ')[0]} | "
+          f"{n(x['coverage_unit_count'])} | "
+          f"**{n(x['excluded_by_D11'])}** | {'—' if _wd is None else n(_wd)} | "
+          f"{'yes' if x['D11_applied'] else '**NO — declared**'} | "
           f"{flag} |")
     A("")
     A(bt("every figure in this table"))
+    A("")
+    A("**Every `examined` cell above is now the same kind of quantity: units the site consumes "
+      "before D11.** The *would exclude if applied* column is populated only where the site does "
+      "not apply D11, and it is what the previous build had put in the `examined` column.")
+    A("")
+    _s1w = ps["sites"]["S1_completion_walk"]["THREE_OBJECTS_NAMED_APART"]
+    A("**The three objects behind `S1_completion_walk`, which one number under one label had been "
+      "standing for:**")
+    A("")
+    A("| Object | Count |")
+    A("| :--- | ---: |")
+    A("| in-frame **S1 RECORDS** at or after `τ_pull` "
+      f"| {n(_s1w['record_level_in_frame_S1_records_at_or_after_tau_pull'])} |")
+    A("| **distinct S1 EPISODES touched** by those records "
+      f"| {n(_s1w['distinct_S1_episodes_touched_by_those_records'])} |")
+    A("| **distinct S1 EPISODES whose CANONICAL instant** is at or after `τ_pull` — *the only one "
+      f"D11 would remove from this walk* | **{n(_s1w['distinct_S1_episodes_whose_CANONICAL_instant_is_at_or_after_tau_pull'])}** |")
+    A("| **distinct S1 EPISODES the walk EXAMINES** — *the `examined` cell* "
+      f"| {n(ps['sites']['S1_completion_walk']['episodes_examined_before_D11'])} |")
+    A("")
+    A(bt("every figure in this table"))
+    A("")
+    A(f"**The third is smaller than the second because an episode's canonical instant is the "
+      "MINIMUM `watched_at` over its records**, so an episode with one post-cutoff record and one "
+      "earlier record stays pre-cutoff. **`decisions/0089` §1 names these three objects; this arm "
+      "measures them independently and agrees on all three.**")
     A("")
     A(f"**{ps['sites_total']} sites; D11 is applied at {ps['sites_where_D11_IS_applied']} and "
       f"NOT applied at {ps['sites_where_D11_is_NOT_applied_and_say_so']}, which says so rather "
@@ -1782,12 +2094,15 @@ def main():
       "UNCHANGED and is the live item: `specs/` is not one of `CLAUDE.md`'s eight propagation "
       "surfaces, so no control looks at it**, and `0089` §4 item 2 **carries the ninth-surface "
       "question to the Human Lead.** **Reported, not edited.**")
-    A("18. **NEW, and it is this instance's own defect, folded into this rerun rather than "
-      "reported: the B3(a) answer and the coverage-identity independence claim.** Both are "
-      "described at the head of this file and at §5.6a and in the invariant report. **Neither "
-      "needed a ruling** (`0090` §3) and **neither moves a published figure.** They are recorded "
-      "here because a rerun that fixes its own defects silently leaves the diff unable to tell a "
-      "fix from a drift.")
+    A("18. **THIS INSTANCE'S OWN DEFECTS, folded into this rerun rather than reported — SIX of "
+      "them this time, all from Red Team's seventh pass.** The withdrawn line-6 warrant and the "
+      "unstated conjunct-2 recomputation (§5.6a), the wrong-object strictness attribution "
+      "(§5.6a), the `+1` perturbation's independence claim (invariant report), `p_at_bound`'s "
+      "two `FALSE` classes (§3.1), the `S1_completion_walk` examined cell (§5.6b), and the false "
+      "*no day-flooring* claim about this arm's own source (§5.6a). **None needed a ruling and "
+      "none moves a published figure.** They are recorded here because **a rerun that fixes its "
+      "own defects silently leaves the diff unable to tell a fix from a drift** — and because "
+      "***three of the six are claims this arm published as established and that were not.***")
     A("19. **NEW: `decisions/0090`'s own reading is flagged by the ruling itself.** `0090` §2 "
       "records that the ruling says *\"applied to this half\"*, **singular**, and that it is "
       "**implemented as applying to EVERY D9 quantity with both forms** — complementary pairs, "
@@ -1796,6 +2111,50 @@ def main():
       "implements the broad reading**, as the entry directs. ***If a single half was meant, it "
       "narrows and this arm's §5.5 table is what would change.*** **Reported at the point of "
       "use.**")
+    A(f"20. **NEW, AND IT IS THE ENTRY THIS RUN WAS LAUNCHED AGAINST: `0092` HAS NO FILE IN "
+      f"`decisions/`.** **Verified on disk this run: "
+      f"{diag['surface_state_checked_live_this_run']['decisions_0092_files_on_disk']} files match "
+      "`decisions/0092*`.** The ruling exists in **`CLAUDE.md` (`## Artifact sign-off`)** and in "
+      "**commit `2f7e674`**, which also carries its `task-sheet.md` edit. **`CLAUDE.md`'s own "
+      "propagation rule is that a ruling lands in `decisions/` AND in every file an agent reads**, "
+      "and *\"recorded only in `decisions/` is not recorded\"* — **this is the mirror case, "
+      "recorded everywhere except `decisions/`.** **Reported, not created: an agent does not write "
+      "the decision log.** *(This instance's build tag names `0092` regardless, because the "
+      "provenance convention keys on the entry the run was launched against; the tag would "
+      "otherwise name nothing.)*")
+    _ss = diag["surface_state_checked_live_this_run"]
+    A(f"21. **NEW: `0092`'s N2 EDIT REACHED SURFACE 1 AND NO OTHER.** **Verified on disk this "
+      f"run.** `task-sheet.md` now carries the population requirement on the 168. **Surfaces 4 "
+      f"and 5 — both `analytics-engineer` files — still read *\"168 pairs have both terms binding "
+      f"and the binary split has nowhere to put them\"* with NO POPULATION** "
+      f"({_ss['agent_files_carrying_the_population_free_168']} of 2 files), **and surface 7 "
+      f"(`second-brain/glossary-terms-and-thresholds.md`) carries it too** "
+      f"({_ss['second_brain_files_carrying_the_population_free_168']} file). ***That is "
+      f"`0092`'s own defect, in the entry written to fix an unlabelled figure*** — **the shape "
+      "`0070` ruling 3 already hit once (\"324 users\" with no population, in the ruling written "
+      "to fix a different unlabelled figure), and `0077` recorded it as *the shape that has "
+      "recurred through this entire chain*.** **Reported, not edited: the agent files and the "
+      "decision log are not this instance's to amend.**")
+    A(f"22. **NEW, AND IT ANSWERS `0092`'s PREMISE RATHER THAN CONFIRMING IT.** `0092` reasoned "
+      f"that *\"168 cannot be correct on both\"* readings. **Measured here on every population "
+      f"this step names: 168 is correct on line 1 (220,107), on APPLY position 5 (196,654) AND "
+      f"on APPLY post-liveness (195,951)** — no both-bind pair is removed by positions 4, 5 or 6 "
+      f"on APPLY. **So the two arms' readings, 23,453 pairs apart, would both have produced 168, "
+      f"and the disagreement was never visible in that integer.** **Where it IS visible is DERIV, "
+      f"which measures "
+      f"{n(diag['D2_negative_lag']['binding_term_split_BOTH_POPULATIONS_BOTH_POSITIONS']['DERIV_position_5']['both_bind'])} "
+      "— and no entry records that number, because nothing had measured it.** §5.2. **REPORTED, "
+      "NOT RECONCILED.**")
+    A("23. **NEW: a claim this arm published about ITS OWN SOURCE was false, and it is the "
+      "category `CLAUDE.md` calls a control asserted to exist.** *\"No `.date()`, `dt.date`, "
+      "`normalize()` **or day-flooring** anywhere in `step8_a_*.py`\"* — **`floor_day()` appears "
+      "three times in `step8_a_2_positions.py`.** **The three uses are correct and required** "
+      "(`⟦T0⟧` is day-floored by Step 1 §2.4) **and §5.6a's own argument depends on them**, so "
+      "the deliverable denied and relied on the same fact in one file. ***The same sentence "
+      "appears in `task-sheet.md`'s `0088` §1 bullet, about BOTH arms*** — *\"no `.date()`, "
+      "`dt.date`, `normalize()` or day-flooring anywhere in `step8_*.py`, instants int64 seconds "
+      "throughout.\"* **It is false of this arm and this arm cannot speak for the other.** "
+      "**Corrected here at the point of use; reported for `task-sheet.md`, not edited.**")
     A("")
     A("---")
     A("")
@@ -1814,9 +2173,15 @@ def main():
       "**W = 108 days** · **H = 91 days** · **Zero API calls** · **Counts only**")
     B("")
     wcf = inv["what_can_actually_fail"]
-    B("> **RERUN AGAINST `decisions/0088`, ordered by the Human Lead — a rerun, not an "
+    B("> **RERUN AGAINST `decisions/0092`, ordered by the Human Lead — a rerun, not an "
       "amendment.** The previous `-a` invariant report was **not patched**; nothing in it is read "
-      "or carried. **Every result below is produced by one pipeline run.** ***`0088` §1(c) ADDS "
+      "or carried, which is `0092`'s own rule: *a deliverable is corrected by rerunning the arm "
+      "that produced it.* **Every result below is produced by one pipeline run.** ***NO INVARIANT "
+      "RESULT MOVES ON THIS RERUN.*** What moves is the **coverage apparatus's claim about "
+      "itself**: Red Team's seventh pass, finding 3, established that this arm's `+1` perturbation "
+      "**does not test independence** and would have passed on the build whose defect it claimed "
+      "to have fixed. It is **relabelled** and a **real independence control** is added below. "
+      "***`0088` §1(c) ADDS "
       "AN INVARIANT — the set is NINE, not eight.*** It promotes the `τ2 ≤ τ_pull` assertion, "
       "which **already ran in this arm's stage 3 and sat outside the published set**, into the "
       "deliverable, labelled **CODE CHECK**. ***It makes the falsifiability ratio worse, not "
@@ -1955,15 +2320,63 @@ def main():
     B("")
     B(bt("every count in this table"))
     B("")
-    dm = cis["FALSIFIABILITY_DEMONSTRATED_NOT_ASSERTED"]
-    B("**AND THE MECHANISM IS DEMONSTRATED, NOT ASSERTED.** *A mechanism claimed to work and "
-      "never seen to fail is a control asserted to exist* — which is the sentence `0088` §2(d) "
-      f"struck. Each of the **{dm['identities_demonstrated']}** independent identities is "
-      "re-evaluated against **its population size + 1** and must report FAIL. "
-      f"**All hold against the true value and fail against the perturbed one: "
-      f"{dm['all_hold_against_the_true_value_and_FAIL_against_the_perturbed_one']}.** The run "
-      "**asserts** this, and asserts that the registry is non-empty, so a demonstration that "
-      "looked nowhere fails rather than passes.")
+    dm = cis["ARITHMETIC_NOT_A_LITERAL_the_plus_one_perturbation"]
+    B("#### The `+1` perturbation — ***RELABELLED. IT DOES NOT TEST INDEPENDENCE.***")
+    B("")
+    B("> ***OVERSTATED, AND CORRECTED HERE.*** Red Team seventh pass, finding 3, against this arm; "
+      "recorded at `decisions/0091` §2. The previous build published this block under **\"AND THE "
+      "MECHANISM IS DEMONSTRATED, NOT ASSERTED\"** and read it as a demonstration of "
+      "**independence**. ***It is not one.*** **On a same-mask denominator the clauses sum to `N` "
+      "by construction and the stated population reads `N + 1`, so the identity fails — "
+      "IDENTICALLY. It would have passed on the very build whose defect it claims to have "
+      "fixed.** Perturbing the **denominator** cannot separate a denominator sourced "
+      "independently from one sourced from the same mask.")
+    B("")
+    B(f"**What it DOES show, and it is kept under that label:** that each identity is "
+      f"**arithmetic rather than a hardcoded literal**. Each of the "
+      f"**{dm['identities_demonstrated']}** independent identities is re-evaluated against **its "
+      f"population size + 1** and must report FAIL. **All hold against the true value and fail "
+      f"against the perturbed one: "
+      f"{dm['all_hold_against_the_true_value_and_FAIL_against_the_perturbed_one']}.** *The "
+      "separate literal counter already shows the same thing, which is why this is a narrow check "
+      "and not the one that matters.*")
+    B("")
+    ij = cis["INDEPENDENCE_DEMONSTRATED_injected_wrong_population_defects"]
+    B("#### The control that DOES test independence — injected wrong-population defects")
+    B("")
+    B("**The escape the independent source exists to catch is AN INVARIANT RUN ON A POPULATION "
+      "OTHER THAN THE ONE IT NAMES.** Where an identity's clauses are a complementary partition "
+      "of a mask, **swapping the mask moves the clauses AND the same-mask denominator together**, "
+      "so the same-mask identity still **PASSES** on the wrong population. **Only a denominator "
+      "keyed on the NAME rather than on the mask can fail.** So each defect below asserts **both "
+      "directions**.")
+    B("")
+    B("| # | Injected defect | clauses sum to | same-mask denominator | **same-mask form: can it "
+      "detect it?** | independent source | **independent form: does it detect it?** |")
+    B("| ---: | :--- | ---: | ---: | :--- | ---: | :--- |")
+    for _i, _d in enumerate(ij["per_defect"], 1):
+        B(f"| {_i} | {_d['injected_defect']} | {n(_d['clauses_sum_to'])} | "
+          f"{n(_d['same_mask_denominator'])} | "
+          f"{'**NO — it passes**' if _d['SAME_MASK_form_holds_i_e_CANNOT_DETECT_IT'] else 'yes'} | "
+          f"{n(_d['independently_sourced_population_size'])} | "
+          f"{'**YES**' if _d['INDEPENDENT_form_DETECTS_THE_DEFECT'] else '**NO — ESCAPED**'} |")
+    B("")
+    B(bt("every figure in this table"))
+    B("")
+    B(f"**{ij['defects_injected']} defects injected; "
+      f"{ij['detected_by_the_INDEPENDENT_form']} detected by the independently-sourced identity; "
+      f"{ij['MISSED_by_the_same_mask_form']} of them INVISIBLE to the same-mask form.** "
+      f"**Every case discriminates as expected: {ij['every_case_discriminates_as_expected']}**, "
+      "and **the run asserts it**, so an escape aborts before a deliverable is written. "
+      "***Case 3 is the labelled exception***: its two clauses come from different masks, so the "
+      "same-mask form fails on it too — stated rather than glossed, **because the point of the "
+      "suite is which control catches what**.")
+    B("")
+    B("**Case 3 is also the control this arm already had, and `0091` §2 credits it as real:** "
+      "invariant 6's `THE_HOLE_THIS_WOULD_NOW_CATCH` reconstructs `0080` §3's exact mispairing — "
+      "**19,042 + 177,513 = 196,555 against 196,654, 99 rows in neither** — and the identity "
+      "**fails**. **What was missing is that it covered ONE invariant.** The five other cases "
+      "extend it, and they are the ones the same-mask form cannot see.")
     B("")
     B("| Identity shape | What it can detect |")
     B("| :--- | :--- |")
