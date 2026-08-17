@@ -120,16 +120,27 @@ def main():
       "position 6 filters; **DERIV** = Step 5 waterfall line 4 less D10 = **147,370**, which "
       "requires S2 evidence. Step 8 produces both (`decisions/0070` ruling 1).")
     A("")
-    A("> **RERUN AGAINST `decisions/0092`, ordered by the Human Lead — a rerun, not an "
+    A("> **RERUN AGAINST `decisions/0093`, ordered by the Human Lead — a rerun, not an "
       "amendment.** This replaces the previous `-a` deliverable **in full**; the previous output "
       "was **not patched** and nothing in it is read or carried. **Everything below is "
-      "regenerated from one pipeline run** — no figure is typed by hand. **This is `0092`'s own "
-      "rule applied to `0092`'s own rerun**: *a deliverable is corrected by rerunning the arm that "
-      "produced it, never by hand-editing the file*, and **that holds especially where the change "
-      "is labelling only and no figure moves** — which describes most of what follows. **FIVE "
-      "builds of this arm now exist on 2026-08-16**, so they are **tagged apart** and every figure "
-      "names which; the previous one, `a/2026-08-16-0090`, is what Red Team's sixth and seventh "
-      "passes reviewed.")
+      "regenerated from one pipeline run** — no figure is typed by hand. **`0093` IS THE RULE "
+      "THIS RERUN EXISTS TO SATISFY: a ruling is not closed until the ARTIFACTS carry it**, "
+      "because an arm rewrites its deliverable **only on a run**, so a ruling can be recorded, "
+      "propagated to every spec surface and passing every control **while this file still "
+      "publishes the superseded text**. **`0092`'s sign-off rule is the same mechanism from the "
+      "other end** — a deliverable is corrected by rerunning the arm that produced it, never by "
+      "hand-editing the file — **and that holds especially where the change is labelling only and "
+      "no figure moves**, which describes everything that follows. **SIX builds of this arm now "
+      "exist on 2026-08-16**, so they are **tagged apart** and every figure names which; the "
+      "previous one, `a/2026-08-16-0092`, is what Red Team's **eighth** pass reviewed.")
+    A("")
+    A("> **WHERE `0093` LANDS IN THIS FILE, STATED AS THAT RULING REQUIRES.** **Surfaces reached "
+      "by this run: 6** (`artifacts/`, this file and the invariant report) **and 8** "
+      "(`processed/step8/a/`). **Surfaces 1, 2–5 and 7 are not this instance's to amend** and are "
+      "**reported on, not edited** — §9, where every claim about a surface is now **derived from "
+      "a count taken off disk on this run** rather than from a fixed sentence. ***That change is "
+      "itself item (A) below: the previous build published a hardcoded reading beside live "
+      "counts, and this rerun contradicts it.***")
     A("")
     A("> **The spec this run executes, and what moved since the last one that completed.** "
       "**(1)** Every count, every invariant result and every waterfall figure **carries the build "
@@ -148,10 +159,60 @@ def main():
       "CLOSED** (`0083` §1): all three readings publish, each naming the pipeline that produces "
       "it — see §5.1.")
     A("")
-    A("> **SEVEN THINGS THIS ARM EMITS DIFFERENTLY FROM ITS LAST RUN. SIX ARE RED TEAM'S "
-      "SEVENTH-PASS FINDINGS AGAINST THIS ARM; ONE IS `decisions/0092`'s N2 REQUIREMENT. Each was "
-      "verified against this arm's own code before it was accepted, and each is stated as a "
-      "defect in this arm's deliverable rather than as an improvement.**")
+    _ssx = diag["surface_state_checked_live_this_run"]
+    _monx = diag["B3a_boundary_window_half_open_form"][
+        "OUTCOME_STATE_FLIPS_the_number_that_settles_B3a"]["MONOTONICITY_OF_THE_RELAXATION"]
+    _fdx = inv["what_can_actually_fail"]["ARM_AGAINST_ARM_DIVERGENCE_ON_THE_HEADLINE_SHAPE"]
+    A("> **THREE THINGS THIS ARM EMITS DIFFERENTLY FROM ITS LAST RUN. ALL THREE ARE RED TEAM'S "
+      "EIGHTH-PASS MINOR ITEMS AGAINST THIS ARM, and Red Team's eighth pass CLOSED EVERY BLOCKER "
+      "AGAINST THIS ARM AND FOUND NO ARITHMETIC DEFECT IN IT.** Each was **verified against this "
+      "arm's own code before it was accepted**, and each is stated as a **defect in this arm's "
+      "deliverable** rather than as an improvement. ***All three are about TEXT THIS ARM "
+      "PUBLISHED, not about what it computed: no population, no rule, no waterfall line, no "
+      "outcome share, no bound endpoint, no invariant result and no measured count moves.***")
+    A(">")
+    A(f"> **(A) A HARDCODED CONCLUSION STRING SAT BESIDE LIVE COUNTS — and this rerun contradicts "
+      f"it, which is `0093`'s mechanism exactly.** The previous build measured four surfaces on "
+      f"disk at run time and then published a **fixed sentence**: *\"`0092`'s N2 edit reached "
+      f"surface 1 and no other.\"* **Measured on disk this run: the population-free 168 is now on "
+      f"{_ssx['agent_files_carrying_the_population_free_168']} of "
+      f"{_ssx['agent_files_examined']} `analytics-engineer` files and "
+      f"{_ssx['second_brain_files_carrying_the_population_free_168']} of "
+      f"{_ssx['second_brain_files_examined']} `second-brain` files, and `decisions/0092` matches "
+      f"{_ssx['decisions_0092_files_on_disk']} file(s).** **The reading is now DERIVED from the "
+      f"counts, per surface, with BOTH halves** — the superseded needle **and** the corrected one, "
+      "because *a figure that was never written returns zero hits on every superseded form of "
+      "itself.* **§9 items 20 and 21 are regenerated from those counts and now read CLOSED.**")
+    A(">")
+    A(f"> **(B) THE FALSIFIABILITY HEADLINE IS AN ARM-AGAINST-ARM DIVERGENCE AND NEITHER ARM HAD "
+      f"FLAGGED IT. REPORTED, NOT RECONCILED.** This arm publishes a **THREE-WAY** split over the "
+      f"nine labels — "
+      f"**{_fdx['this_arm_split_derived_from_its_own_labels']['CODE CHECK']} + "
+      f"{_fdx['this_arm_split_derived_from_its_own_labels']['CODE CHECK BY CONSTRUCTION, DATA CHECK AS SPECIFIED']} + "
+      f"{_fdx['this_arm_split_derived_from_its_own_labels']['DATA CHECK']}**, derived from its own "
+      "label strings — and **the spec's own sentence is three-way**. **The other arm publishes a "
+      "TWO-WAY split over the SAME nine labels.** **Every per-check label reconciles; what "
+      "differs is how many classes the headline collapses them into**, and a two-way headline "
+      "folds the code-check-by-construction member into one side without saying which. **This arm "
+      "did NOT read the other arm's output** — the fact is carried from Red Team's eighth pass. "
+      "See the invariant report.")
+    A(">")
+    A(f"> **(C) THE SYMMETRIC-DIFFERENCE-0 WARRANT WAS ONE NOTCH STRONGER THAN THE MONOTONICITY "
+      f"ALLOWS. The measurement is right and unchanged; the sentence is WITHDRAWN.** The previous "
+      f"build wrote *\"a total that does not move can still be a different set of rows, and that "
+      f"is what the symmetric difference rules out.\"* **True of an arbitrary perturbation, false "
+      f"of this one**: the date-level counterfactual **relaxes** both bounds, so `A` and `A_H` "
+      f"only **gain** episodes and **all three Continued conjuncts are monotone in them**, so the "
+      f"exclusion set can only **shrink** — **a row can leave it and none can enter it** — and an "
+      f"unchanged **total** already forces an identical **set**. **The monotonicity is now "
+      f"MEASURED, not argued** "
+      f"(`ALL_THREE_CLAUSES_HOLD_ON_BOTH_POPULATIONS` = "
+      f"**{_monx['ALL_THREE_CLAUSES_HOLD_ON_BOTH_POPULATIONS']}**), and the symmetric difference "
+      "is labelled as **confirming the arithmetic**, not as independent evidence — §5.6a.")
+    A(">")
+    A("> **PRIOR BUILD `a/2026-08-16-0092` MOVED SEVEN THINGS.** They are restated below rather "
+      "than dropped, because **a build record that drops what an earlier build corrected cannot "
+      "tell a fix from a drift.** ***None of the seven moves again on this run.***")
     A(">")
     A("> **(1) THE \"INERT ON LINE 6\" WARRANT IS WITHDRAWN — IT IS STRUCTURALLY WRONG.** The "
       "previous build said line 6 does not move under the date-level counterfactual *\"because the "
@@ -1539,7 +1600,9 @@ def main():
               f"{n(c['liveness_exclusions_adopted'])} | {n(sp_['never_started'])} | "
               f"{n(sp_['started_and_left'])} | "
               f"{c['the_excluded_ROW_SET_is_identical_not_merely_the_total']} "
-              f"*(symmetric difference {n(c['rows_in_one_exclusion_set_but_not_the_other'])})* |")
+              f"*(symdiff {n(c['rows_in_one_exclusion_set_but_not_the_other'])}; "
+              f"cf∖adopted {n(c['rows_excluded_by_the_COUNTERFACTUAL_but_not_by_the_ADOPTED_rule'])}, "
+              f"adopted∖cf {n(c['rows_excluded_by_the_ADOPTED_rule_but_not_by_the_COUNTERFACTUAL'])})* |")
     A("")
     A(bt("every figure in this table"))
     A("")
@@ -1547,14 +1610,59 @@ def main():
       "`decisions/0091` §1 records that it *\"is not reported at all\"*; it is the column pair "
       "above. **And the measurement goes further than the total: the excluded ROW SET is "
       "identical, not merely its cardinality** — symmetric difference **0** on every variant and "
-      "both populations. **A total that does not move can still be a different set of rows, and "
-      "that is what the symmetric difference rules out.**")
+      "both populations.")
     A("")
-    A("**WHAT REPLACES THE WITHDRAWN WARRANT: NOTHING STRUCTURAL.** The exclusion total is "
-      "invariant here as a **measured fact about this data at `W = 108`** — **no pair the adopted "
-      "rule excludes is among the rows whose Continued value flips**, which is exactly what the "
-      "symmetric difference of **0** establishes, so the conjunction lands on the same row set. "
-      "**That is a property of this frame at this arm, not of the rule.**")
+    mon = _monx
+    A("#### The symmetric difference — the measurement stands, a SECOND warrant is WITHDRAWN")
+    A("")
+    A("> ***WITHDRAWN, ONE NOTCH TOO STRONG.*** Red Team eighth pass, item (C), against this arm. "
+      "The previous build wrote: **\"A total that does not move can still be a different set of "
+      "rows, and that is what the symmetric difference rules out.\"** **True of an arbitrary "
+      "perturbation. FALSE of this one** — and every statistic it sat beside is correct, which is "
+      "`CLAUDE.md`'s **third blindness class**: a withdrawn ARGUMENT built from correct "
+      "statistics, which no numeric control can see.")
+    A("")
+    A("**Why it cannot hold here.** The date-level form **RELAXES** both bounds, so per row "
+      "`|A|` and `|A_H|` can only **grow**. **All three Continued conjuncts are monotone "
+      "non-decreasing in them** — `|A| ≥ 1` in `|A|`; `|A_H| ≥ ⌈0.90·L2⌉` in `|A_H|`; and "
+      "`m_H = F2` because set membership bounds `m_H ≤ F2`, so it can only **reach** `F2` and "
+      "never leave it. **So `Continued` only turns ON, `NOT Continued` only turns OFF, and the "
+      "exclusion set `silent ∧ ¬Continued` can only SHRINK.** **A row can LEAVE the exclusion set "
+      "and none can ENTER it**, so **an unchanged TOTAL already forces an identical SET.** The "
+      "symmetric difference of **0** therefore **confirms the arithmetic**; it is not an "
+      "independent fact about the two sets.")
+    A("")
+    A("**MEASURED, NOT ARGUED — every clause of that reasoning is a count on this build.**")
+    A("")
+    A("| Population | rows examined | `\\|A\\|` decreased | `\\|A_H\\|` decreased | `m_H` "
+      "decreased | rows with `m_H > F2` | Continued turned OFF (τ1 / τ2 / both) |")
+    A("| :--- | ---: | ---: | ---: | ---: | ---: | :--- |")
+    for popk, poplab in (("APPLY_position_5", "APPLY, position 5"),
+                         ("DERIV_position_5", "DERIV, position 5")):
+        c = mon[popk]
+        offs = " / ".join(
+            n(c[v]["rows_where_Continued_turned_OFF_which_monotonicity_forbids"])
+            for v in ("tau1_only_date_level", "tau2_only_date_level", "both_bounds_date_level"))
+        A(f"| {poplab} | {n(c['rows_examined'])} | "
+          f"{n(c['rows_where_kA_decreased_under_the_relaxed_bound'])} | "
+          f"{n(c['rows_where_kAH_decreased_under_the_relaxed_bound'])} | "
+          f"{n(c['rows_where_mH_decreased_under_the_relaxed_bound'])} | "
+          f"{n(c['rows_where_mH_exceeds_F2_which_would_break_the_third_conjuncts_monotonicity'])} "
+          f"| {offs} |")
+    A("")
+    A(f"**Every clause holds on both populations: "
+      f"`{mon['ALL_THREE_CLAUSES_HOLD_ON_BOTH_POPULATIONS']}`.** And the subset direction is "
+      "emitted per variant beside the symmetric difference — "
+      "`rows_excluded_by_the_COUNTERFACTUAL_but_not_by_the_ADOPTED_rule` is **0** everywhere, "
+      "which is the direction monotonicity forbids from being anything else. " + bt(
+        "every figure in this table"))
+    A("")
+    A("**WHAT REPLACES THE WITHDRAWN WARRANT: NOTHING STRUCTURAL, AND LESS THAN BEFORE.** The "
+      "exclusion total is invariant here as a **measured fact about this data at `W = 108`** — "
+      "**no pair the adopted rule excludes is among the rows whose Continued value flips.** "
+      "**Under the monotonicity above that statement and \"the total does not move\" are the same "
+      "fact, not two**, and the previous build presented them as two. **It remains a property of "
+      "this frame at this arm, not of the rule.**")
     A("")
     A(f"**SCOPE OF THE CLAIM, AS MEASURED: {ww['scope_of_the_claim_AS_MEASURED']}** "
       "**Step 13 re-runs the rule across eight arms**, and nothing here says what it will find "
@@ -2094,15 +2202,19 @@ def main():
       "UNCHANGED and is the live item: `specs/` is not one of `CLAUDE.md`'s eight propagation "
       "surfaces, so no control looks at it**, and `0089` §4 item 2 **carries the ninth-surface "
       "question to the Human Lead.** **Reported, not edited.**")
-    A("18. **THIS INSTANCE'S OWN DEFECTS, folded into this rerun rather than reported — SIX of "
-      "them this time, all from Red Team's seventh pass.** The withdrawn line-6 warrant and the "
-      "unstated conjunct-2 recomputation (§5.6a), the wrong-object strictness attribution "
-      "(§5.6a), the `+1` perturbation's independence claim (invariant report), `p_at_bound`'s "
-      "two `FALSE` classes (§3.1), the `S1_completion_walk` examined cell (§5.6b), and the false "
-      "*no day-flooring* claim about this arm's own source (§5.6a). **None needed a ruling and "
-      "none moves a published figure.** They are recorded here because **a rerun that fixes its "
-      "own defects silently leaves the diff unable to tell a fix from a drift** — and because "
-      "***three of the six are claims this arm published as established and that were not.***")
+    A("18. **THIS INSTANCE'S OWN DEFECTS, folded into a rerun rather than reported — THREE this "
+      "run, from Red Team's EIGHTH pass, on top of the SIX folded in on the previous one.** "
+      "**This run:** the **hardcoded surface-state conclusion** (items 20–21 below), the "
+      "**unflagged falsifiability-headline divergence** (item 24), and the **over-strong "
+      "symmetric-difference warrant** (§5.6a). **Previous run, from the seventh pass:** the "
+      "withdrawn line-6 warrant and the unstated conjunct-2 recomputation (§5.6a), the "
+      "wrong-object strictness attribution (§5.6a), the `+1` perturbation's independence claim "
+      "(invariant report), `p_at_bound`'s two `FALSE` classes (§3.1), the `S1_completion_walk` "
+      "examined cell (§5.6b), and the false *no day-flooring* claim about this arm's own source "
+      "(§5.6a). **None needed a ruling and none moves a published figure.** They are recorded "
+      "here because **a rerun that fixes its own defects silently leaves the diff unable to tell "
+      "a fix from a drift** — and because ***all three of this run's are claims this arm "
+      "published as established and that were not.***")
     A("19. **NEW: `decisions/0090`'s own reading is flagged by the ruling itself.** `0090` §2 "
       "records that the ruling says *\"applied to this half\"*, **singular**, and that it is "
       "**implemented as applying to EVERY D9 quantity with both forms** — complementary pairs, "
@@ -2111,30 +2223,41 @@ def main():
       "implements the broad reading**, as the entry directs. ***If a single half was meant, it "
       "narrows and this arm's §5.5 table is what would change.*** **Reported at the point of "
       "use.**")
-    A(f"20. **NEW, AND IT IS THE ENTRY THIS RUN WAS LAUNCHED AGAINST: `0092` HAS NO FILE IN "
-      f"`decisions/`.** **Verified on disk this run: "
-      f"{diag['surface_state_checked_live_this_run']['decisions_0092_files_on_disk']} files match "
-      "`decisions/0092*`.** The ruling exists in **`CLAUDE.md` (`## Artifact sign-off`)** and in "
-      "**commit `2f7e674`**, which also carries its `task-sheet.md` edit. **`CLAUDE.md`'s own "
-      "propagation rule is that a ruling lands in `decisions/` AND in every file an agent reads**, "
-      "and *\"recorded only in `decisions/` is not recorded\"* — **this is the mirror case, "
-      "recorded everywhere except `decisions/`.** **Reported, not created: an agent does not write "
-      "the decision log.** *(This instance's build tag names `0092` regardless, because the "
-      "provenance convention keys on the entry the run was launched against; the tag would "
-      "otherwise name nothing.)*")
     _ss = diag["surface_state_checked_live_this_run"]
-    A(f"21. **NEW: `0092`'s N2 EDIT REACHED SURFACE 1 AND NO OTHER.** **Verified on disk this "
-      f"run.** `task-sheet.md` now carries the population requirement on the 168. **Surfaces 4 "
-      f"and 5 — both `analytics-engineer` files — still read *\"168 pairs have both terms binding "
-      f"and the binary split has nowhere to put them\"* with NO POPULATION** "
-      f"({_ss['agent_files_carrying_the_population_free_168']} of 2 files), **and surface 7 "
-      f"(`second-brain/glossary-terms-and-thresholds.md`) carries it too** "
-      f"({_ss['second_brain_files_carrying_the_population_free_168']} file). ***That is "
-      f"`0092`'s own defect, in the entry written to fix an unlabelled figure*** — **the shape "
-      "`0070` ruling 3 already hit once (\"324 users\" with no population, in the ruling written "
-      "to fix a different unlabelled figure), and `0077` recorded it as *the shape that has "
-      "recurred through this entire chain*.** **Reported, not edited: the agent files and the "
-      "decision log are not this instance's to amend.**")
+    _n92 = _ss["decisions_0092_files_on_disk"]
+    A(f"20. **~~`0092` HAS NO FILE IN `decisions/`.~~ "
+      f"{'CLOSED — VERIFIED ON DISK THIS RUN.' if _n92 > 0 else 'STILL OPEN — VERIFIED ON DISK THIS RUN.'}** "
+      f"The previous `-a` build reported the entry as existing in **`CLAUDE.md`** and in a commit "
+      f"but **not in the decision log**, which is *\"recorded only in `decisions/` is not "
+      f"recorded\"* inverted. **Measured this run: {_n92} file(s) match `decisions/0092*`** "
+      f"against {_ss['decisions_entries_on_disk_total']} entries on disk, and "
+      f"{_ss['decisions_0093_files_on_disk']} match `decisions/0093*`. "
+      f"{'**The entry now exists and `0092` §2 records the omission as its own finding.**' if _n92 > 0 else '**The gap stands.**'} "
+      "***THIS ITEM IS THE REASON `0093` EXISTS, SEEN FROM INSIDE AN ARM: the previous build "
+      "published this as a fixed sentence beside a live count, and a rerun was always going to "
+      "contradict it.*** **The reading is now derived from the count, not typed.**")
+    _reach = ", ".join(_ss["surfaces_reached"]) or "NONE"
+    _nreach = ", ".join(_ss["surfaces_not_reached"]) or "NONE"
+    A(f"21. **~~`0092`'s N2 EDIT REACHED SURFACE 1 AND NO OTHER.~~ "
+      f"{'CLOSED — VERIFIED ON DISK THIS RUN.' if not _ss['surfaces_not_reached'] else 'PARTLY OPEN — VERIFIED ON DISK THIS RUN.'}** "
+      f"**Surfaces reached: {_reach}. Surfaces not reached: {_nreach}.** **Both halves of the "
+      f"control were run, per `CLAUDE.md`** — the negative needle *\"168 pairs have both terms "
+      f"binding and the binary split has nowhere to put…\"* and the positive needle "
+      f"*\"DERIV IS 153\"*, **because a figure that was never written returns zero hits on every "
+      f"superseded form of itself.** Measured: `task-sheet.md` "
+      f"{_ss['task_sheet_files_examined']} file examined, "
+      f"{_ss['per_surface'][0]['files_carrying_the_superseded_population_free_168']} superseded / "
+      f"{_ss['per_surface'][0]['files_carrying_the_correction_DERIV_IS_153']} corrected; "
+      f"`analytics-engineer*` {_ss['agent_files_examined']} examined, "
+      f"{_ss['agent_files_carrying_the_population_free_168']} superseded / "
+      f"{_ss['per_surface'][1]['files_carrying_the_correction_DERIV_IS_153']} corrected; "
+      f"`second-brain/*` {_ss['second_brain_files_examined']} examined, "
+      f"{_ss['second_brain_files_carrying_the_population_free_168']} superseded / "
+      f"{_ss['per_surface'][2]['files_carrying_the_correction_DERIV_IS_153']} corrected. "
+      "***The previous build's reading was true when written and is not now*** — **`0092` §5 "
+      "deferred surfaces 4–5 deliberately while the other arm was mid-run, and `0093` §5 records "
+      "them as landed.** **Reported, not edited: the agent files, the decision log and "
+      "`second-brain` are not this instance's to amend.**")
     A(f"22. **NEW, AND IT ANSWERS `0092`'s PREMISE RATHER THAN CONFIRMING IT.** `0092` reasoned "
       f"that *\"168 cannot be correct on both\"* readings. **Measured here on every population "
       f"this step names: 168 is correct on line 1 (220,107), on APPLY position 5 (196,654) AND "
@@ -2155,6 +2278,26 @@ def main():
       "`dt.date`, `normalize()` or day-flooring anywhere in `step8_*.py`, instants int64 seconds "
       "throughout.\"* **It is false of this arm and this arm cannot speak for the other.** "
       "**Corrected here at the point of use; reported for `task-sheet.md`, not edited.**")
+    _fd = inv["what_can_actually_fail"]["ARM_AGAINST_ARM_DIVERGENCE_ON_THE_HEADLINE_SHAPE"]
+    _fs = _fd["this_arm_split_derived_from_its_own_labels"]
+    A(f"24. **NEW, AND IT IS AN ARM-AGAINST-ARM DIVERGENCE THAT NEITHER ARM HAD FLAGGED. "
+      f"REPORTED, NOT RECONCILED.** **The falsifiability headline over the SAME nine invariant "
+      f"labels has two shapes.** **This arm publishes a THREE-WAY split — "
+      f"{_fs['CODE CHECK']} pure `CODE CHECK` + "
+      f"{_fs['CODE CHECK BY CONSTRUCTION, DATA CHECK AS SPECIFIED']} "
+      f"`CODE CHECK BY CONSTRUCTION, DATA CHECK AS SPECIFIED` + {_fs['DATA CHECK']} `DATA CHECK`** "
+      f"— **derived from its own label strings, never typed**, and matching the spec's own "
+      f"sentence *\"SIX pure code checks, one code-by-construction with force only as specified, "
+      f"and TWO that can fail on real data.\"* **The other arm publishes a TWO-WAY split.** "
+      "**Every per-check label reconciles; what differs is HOW MANY CLASSES THE HEADLINE "
+      "COLLAPSES THEM INTO** — and **a two-way headline folds the code-check-by-construction "
+      "member into one side without saying which**, so two readers get two different counts of "
+      "what can fail. ***The dual diff cannot see it: it compares figures, and both headlines sit "
+      "over an identical label set.*** **This arm did NOT read the other arm's output** — the "
+      "other arm's shape is carried from **Red Team's eighth pass**, relayed in this run's launch "
+      "instruction. ***Reading agreement into two different headlines over one label set is what "
+      "this item exists to stop.*** **Not reconciled: this arm does not change its headline to "
+      "match and does not assert the other's is wrong.**")
     A("")
     A("---")
     A("")
@@ -2173,12 +2316,20 @@ def main():
       "**W = 108 days** · **H = 91 days** · **Zero API calls** · **Counts only**")
     B("")
     wcf = inv["what_can_actually_fail"]
-    B("> **RERUN AGAINST `decisions/0092`, ordered by the Human Lead — a rerun, not an "
+    B("> **RERUN AGAINST `decisions/0093`, ordered by the Human Lead — a rerun, not an "
       "amendment.** The previous `-a` invariant report was **not patched**; nothing in it is read "
-      "or carried, which is `0092`'s own rule: *a deliverable is corrected by rerunning the arm "
-      "that produced it.* **Every result below is produced by one pipeline run.** ***NO INVARIANT "
-      "RESULT MOVES ON THIS RERUN.*** What moves is the **coverage apparatus's claim about "
-      "itself**: Red Team's seventh pass, finding 3, established that this arm's `+1` perturbation "
+      "or carried, which is `0092`'s rule and **`0093`'s reason**: *a deliverable is corrected by "
+      "rerunning the arm that produced it*, and therefore **a ruling is not closed until the "
+      "artifacts carry it.** **Every result below is produced by one pipeline run.** ***NO "
+      "INVARIANT RESULT MOVES ON THIS RERUN, AND NO COUNT MOVES.*** **One thing in this report "
+      "changes: the falsifiability headline is now flagged as an ARM-AGAINST-ARM DIVERGENCE** — "
+      "**this arm's split is THREE-WAY and the other arm's is TWO-WAY over the same nine "
+      "labels**, **neither arm had flagged it**, and it is **reported, not reconciled**. See the "
+      "block below the result line.")
+    B("")
+    B("> **CARRIED FROM THE PREVIOUS BUILD, UNCHANGED.** What moved there was the **coverage "
+      "apparatus's claim about itself**: Red Team's seventh pass, finding 3, established that "
+      "this arm's `+1` perturbation "
       "**does not test independence** and would have passed on the build whose defect it claimed "
       "to have fixed. It is **relabelled** and a **real independence control** is added below. "
       "***`0088` §1(c) ADDS "
@@ -2216,6 +2367,32 @@ def main():
       f"{wcf['checks_that_can_fail_on_real_data']} CAN FAIL ON REAL DATA** (DATA CHECK). The 703 "
       "line is **not an invariant** and is reported separately below as a population "
       "reconciliation.")
+    B("")
+    fd = wcf["ARM_AGAINST_ARM_DIVERGENCE_ON_THE_HEADLINE_SHAPE"]
+    fs = fd["this_arm_split_derived_from_its_own_labels"]
+    B("> ***THAT RESULT LINE IS ITSELF A DIVERGENCE. REPORTED, NOT RECONCILED.*** Red Team's "
+      "eighth pass, item (B) against this arm. **The nine labels are the same in both arms and "
+      "every per-check label reconciles.** **What differs is the SHAPE OF THE HEADLINE OVER "
+      f"THEM**: this arm publishes a **THREE-WAY** split — **{fs['CODE CHECK']} + "
+      f"{fs['CODE CHECK BY CONSTRUCTION, DATA CHECK AS SPECIFIED']} + {fs['DATA CHECK']}**, "
+      "**derived from the label strings in the table below and never typed** — and **the other "
+      "arm publishes a TWO-WAY split.**")
+    B(">")
+    B("> **Why it matters rather than being a wording preference.** **A two-way headline has to "
+      "fold the code-check-by-construction member into one side, and which side is stated "
+      "nowhere.** Folded upward it reads as **seven checks that cannot fail**; folded downward as "
+      "**three that can**. **The sentence a reader takes away is the headline**, so one label set "
+      "yields two different answers to *what could this report have caught?* **The spec's own "
+      "sentence is three-way** — *\"SIX pure code checks, one code-by-construction with force "
+      "only as specified, and TWO that can fail on real data\"* — and this arm's headline is that "
+      "sentence's shape, **which is a reason and not a proof that the other arm is wrong.**")
+    B(">")
+    B("> ***THE DUAL DIFF CANNOT SEE THIS.*** It compares figures, and **both headlines sit over "
+      "an identical label set with identical per-check results**, so **neither arm flagged it "
+      "through eight passes.** **This arm did NOT read the other arm's output**; the other arm's "
+      "shape is carried from **Red Team's eighth pass**, relayed in this run's launch "
+      "instruction. **Not reconciled — this arm does not change its headline to match, and does "
+      "not assert the other's is wrong. The Human Lead diffs.**")
     B("")
     B("**THIS SET IS NINE.** ~~*The set is eight.*~~ ***SUPERSEDED by `decisions/0088` §1(c)***, "
       "which **PROMOTES a ninth check into the published set** — the `τ2 ≤ τ_pull` assertion that "

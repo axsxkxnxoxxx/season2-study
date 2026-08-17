@@ -1179,45 +1179,93 @@ def main() -> None:
                "assertion_holds": assertion, "note": reason}
         if extra:
             row.update(extra)
-        # A PASS ON A SITE THAT EXAMINED NOTHING IS NOT A PASS.
+        # ================================================================
+        # TWO QUANTITIES, NOT ONE. Red Team eighth pass, F3, against THIS ARM.
+        #
+        # The previous build carried a single `records_examined_at_this_site`
+        # column that was POST-EXCLUSION at A, A_H and the eight action_count_*
+        # sites and PRE-EXCLUSION at the liveness and D9 sites -- one label over
+        # two objects, which is exactly the defect decisions/0088 Sec 2(b) ruled
+        # on one level up. And the vacuity test keyed on it, so
+        # A SITE WHOSE ENTIRE INPUT UNIVERSE WAS POST-CUTOFF WOULD REPORT
+        # `examined = 0` AND BE LABELLED VACUOUS -- "this site examined 0
+        # records" -- HAVING EXAMINED AND EXCLUDED EVERYTHING. The label would
+        # have read as "D11 had nothing to do here" at the one site where D11
+        # did the most.
+        #
+        # So every row now carries BOTH, each in the site's own unit:
+        #   records_in_the_INPUT_UNIVERSE_before_D11  -- what entered
+        #   records_COUNTED_after_D11                 -- what the site used
+        # and the three states are distinguished:
+        #   EMPTY_INPUT      before == 0  -> VACUOUS, the assertion looked nowhere
+        #   FULLY_EXCLUDED   before > 0, after == 0 -> NOT vacuous; D11 removed all
+        #   OCCUPIED         after > 0
+        #
         # CLAUDE.md: "An empty result and a clean result are the same value, and
         # only the control knows which it produced. A check that finds nothing
-        # because it looked nowhere must FAIL, not pass." decisions/0088 Sec 1(a)
-        # says the same thing about the boundary window: "IF 0, LABEL THE
-        # INVARIANT VACUOUS -- do not let it pass silently."
-        #
-        # The examined count was already printed at every site on the previous
-        # build, which is the half of the rule that was met. THIS is the half
-        # that was not: `assertion_holds: True` read identically at a site with
-        # 2.7M records and at a site with 0.
-        ex = row.get("records_counted_at_this_site")
-        row["records_examined_at_this_site"] = ex
-        if ex == 0:
+        # because it looked nowhere must FAIL, not pass."
+        pre = row.get("records_in_the_INPUT_UNIVERSE_before_D11")
+        post = row.get("records_COUNTED_after_D11")
+        row["records_in_the_INPUT_UNIVERSE_before_D11"] = pre
+        row["records_COUNTED_after_D11"] = post
+        # kept under its old name so nothing downstream silently reads a null,
+        # but it now names WHICH quantity it is rather than holding either
+        row["records_examined_at_this_site"] = pre
+        row["records_examined_at_this_site_IS"] = (
+            "the INPUT UNIVERSE before D11, in this site's own unit. On the previous build this "
+            "one column held the post-exclusion count at some sites and the pre-exclusion count "
+            "at others (Red Team eighth pass, F3)")
+        if isinstance(pre, int) and pre == 0:
+            row["coverage_state"] = "EMPTY_INPUT"
             row["assertion_is_VACUOUS_zero_coverage"] = True
             row["assertion_holds_READ_AS"] = (
-                "VACUOUS -- this site examined 0 records, so the assertion is true of the empty "
-                "set and is NOT evidence that D11 is applied here. Labelled rather than passed "
-                "silently (CLAUDE.md; decisions/0088 Sec 1a). The site is empty because no "
-                "record in the sweep carries this action type, which is itself the finding")
-        elif ex is not None:
+                "VACUOUS -- NOTHING ENTERED this site, so the assertion is true of the empty set "
+                "and is NOT evidence that D11 is applied here. Labelled rather than passed "
+                "silently (CLAUDE.md; decisions/0088 Sec 1a)")
+        elif isinstance(pre, int) and isinstance(post, int) and post == 0:
+            row["coverage_state"] = "FULLY_EXCLUDED"
+            row["assertion_is_VACUOUS_zero_coverage"] = False
+            row["assertion_holds_READ_AS"] = (
+                "NOT VACUOUS. This site's ENTIRE input universe was at or after tau_pull and D11 "
+                "removed all of it. The previous build's single column would have printed 0 here "
+                "and labelled the site VACUOUS -- 'examined 0 records' -- when D11 did the most "
+                "work of any site in the table. That inversion is Red Team's F3")
+        elif isinstance(pre, int):
+            row["coverage_state"] = "OCCUPIED"
             row["assertion_is_VACUOUS_zero_coverage"] = False
         sites.append(row)
 
+    _epu = fp["EPISODE_UNIT_INPUT_UNIVERSE_for_the_A_and_A_H_sites"]["S2"]
+    _a_extra = {
+        "distinct_episodes_excluded": fp["S2_side"]["distinct_episodes_excluded"],
+        "pairs_touched": fp["S2_side"]["distinct_pairs_touched"],
+        # F3: both quantities, IN THIS SITE'S UNIT (distinct in-E2 episodes),
+        # not in records. `before` is NOT `after + records_excluded` -- an
+        # episode with one post-cutoff and one pre-cutoff record survives -- so
+        # it is measured at stage 1 rather than derived here.
+        "records_in_the_INPUT_UNIVERSE_before_D11":
+            _epu["distinct_in_E_episodes_BEFORE_D11"],
+        "records_COUNTED_after_D11": int(len(s2_ts)),
+        "episodes_D11_REMOVES_ENTIRELY": _epu["distinct_in_E_episodes_D11_REMOVES_ENTIRELY"],
+        "the_two_columns_are_in_EPISODES_the_exclusion_column_is_in_RECORDS": (
+            "stated at the point of use: `records_excluded_by_D11` on this row is "
+            f"{fp['S2_side']['records_excluded']} RECORDS, while the input universe and the "
+            "counted figure are DISTINCT IN-E2 EPISODES. before - after = "
+            f"{_epu['distinct_in_E_episodes_D11_REMOVES_ENTIRELY']} episodes, which is the "
+            "episode-unit loss and is smaller because an episode carrying a surviving "
+            "pre-cutoff record stays"),
+    }
     _site("A (|A| at tau1)", True, fp["S2_side"]["records_excluded"], "in-E2 S2 records",
           bool(int(s2_ts.max()) < TAU_PULL),
           "A is counted over distinct in-E2 S2 episodes whose evidence was D11-filtered at "
           "stage 1; the assertion is measured on the episode instants actually stored",
-          {"distinct_episodes_excluded": fp["S2_side"]["distinct_episodes_excluded"],
-           "pairs_touched": fp["S2_side"]["distinct_pairs_touched"],
-           "records_counted_at_this_site": int(len(s2_ts)),
+          {**_a_extra,
            "latest_instant_used_utc": str(np.datetime64(int(s2_ts.max()), "s"))})
     _site("A_H (|A_H| at tau2)", True, fp["S2_side"]["records_excluded"], "in-E2 S2 records",
           bool(int(s2_ts.max()) < TAU_PULL),
           "same evidence array as A, read at a later instant; the exclusion is the same set of "
           "records and is stated here rather than left implicit in A's row",
-          {"distinct_episodes_excluded": fp["S2_side"]["distinct_episodes_excluded"],
-           "pairs_touched": fp["S2_side"]["distinct_pairs_touched"],
-           "records_counted_at_this_site": int(len(s2_ts))})
+          dict(_a_extra))
     for nm in ("s1_watch", "s1_checkin", "s1_scrobble", "s1_other",
                "s2_watch", "s2_checkin", "s2_scrobble", "s2_other"):
         exc = (fp["S1_side"]["by_action"][nm.split("_", 1)[1]] if nm.startswith("s1")
@@ -1230,9 +1278,37 @@ def main() -> None:
                "COMPLETION WALK and none here. Asserting per site is what exposed it"
                if nm.startswith("s1") else
                "the S2 side was already D11-filtered before the action counts were formed"),
-              {"records_counted_at_this_site": acs["records_used_per_site"][nm],
+              {"records_in_the_INPUT_UNIVERSE_before_D11":
+                   acs["records_in_the_input_universe_per_site_BEFORE_D11"][nm],
+               "records_COUNTED_after_D11": acs["records_used_per_site"][nm],
                "latest_watched_at_counted_utc": acs["latest_watched_at_counted_per_site_utc"][nm],
-               "site_is_empty": nm in acs["sites_with_no_records_at_all"]})
+               "site_input_universe_is_empty":
+                   nm in acs["sites_with_no_records_in_the_INPUT_UNIVERSE"],
+               "site_counted_nothing_but_its_input_was_NOT_empty":
+                   nm in acs["sites_whose_ENTIRE_input_universe_is_post_cutoff"],
+               # WHERE THE EXCLUSION PHYSICALLY HAPPENS differs by season, and
+               # the two columns are measured so that the row reads the same
+               # either way. On the S2 side the records are dropped UPSTREAM,
+               # by stage 1's `m12` mask; on the S1 side they survive that mask
+               # (0068 carries the S1 side past tau_pull for the COMPLETION
+               # WALK) and are dropped here. Both input universes are measured
+               # on `m12_pre`, BEFORE the mask, so `before - after` equals this
+               # site's exclusion in both cases and neither row silently
+               # reports an already-filtered number as "before D11".
+               "where_the_exclusion_physically_happens": (
+                   "UPSTREAM, at stage 1's m12 mask -- the input universe here is measured on "
+                   "m12_pre so the site's own before/after still bracket it"
+                   if nm.startswith("s2") else
+                   "AT THIS SITE. The S1 side survives the m12 mask by 0068's line-1 exception, "
+                   "which is for the COMPLETION WALK and nothing else, so the exclusion is "
+                   "performed and visible here"),
+               "this_is_the_defect_the_two_columns_prevent": (
+                   "measuring the input universe on the POST-mask array would have reported an "
+                   "already-post-exclusion number under the label 'before D11' -- on the S2 side "
+                   "only, since the S1 side is unmasked there. One label, two quantities, "
+                   "one level down from the F3 finding itself. The identity "
+                   "before - after = excluded is asserted at all eight sites and is what "
+                   "catches it")})
     _site("liveness evidence (per-account maximum insertion instant)", True,
           int(R["liveness_inputs"]["records_excluded_by_the_tau_pull_restriction"]),
           "records of any kind, whole sweep",
@@ -1241,8 +1317,10 @@ def main() -> None:
           "0070 ruling 2 -- the silence test's evidence is restricted to records dated before "
           "tau_pull. Measured to be inert on the exclusion set: 703 and 99 either way",
           {"records_used": int(R["liveness_inputs"]["records_used"]),
-           "records_counted_at_this_site": int(R["liveness_inputs"]["records_used"])
-           + int(R["liveness_inputs"]["records_excluded_by_the_tau_pull_restriction"]),
+           "records_in_the_INPUT_UNIVERSE_before_D11":
+               int(R["liveness_inputs"]["records_used"])
+               + int(R["liveness_inputs"]["records_excluded_by_the_tau_pull_restriction"]),
+           "records_COUNTED_after_D11": int(R["liveness_inputs"]["records_used"]),
            "exclusions_restricted": per_arm["APPLY"]["108"]["liveness_excluded"],
            "exclusions_unrestricted": per_arm["APPLY"]["108"][
                "liveness_excluded_under_unrestricted_evidence"]})
@@ -1261,13 +1339,21 @@ def main() -> None:
           "ROW there. The -r4 build left this row null in the published table while d9.json "
           "carried the number",
           {"backfilled_from": "processed/step8/b/d9.json -> D11_site",
-           "records_counted_at_this_site": "PENDING_STAGE_3_BACKFILL"})
+           "records_in_the_INPUT_UNIVERSE_before_D11": "PENDING_STAGE_3_BACKFILL",
+           "records_COUNTED_after_D11": "PENDING_STAGE_3_BACKFILL"})
     _site("S1 completion walk", False, s1site["records_at_or_after_tau_pull_that_this_site_uses"],
           "distinct in-E1 S1 episodes at their canonical instant",
           s1site["assertion_no_record_at_or_after_tau_pull_is_counted"],
           s1site["why_not"],
           {"records_at_or_after_tau_pull_in_the_input": fp["S1_side"]["records_excluded"],
-           "records_counted_at_this_site": s1site["records_examined_by_the_walk"],
+           # D11 is NOT applied here, so the input universe and the counted
+           # figure are THE SAME NUMBER -- and that identity is the site's
+           # finding, not an accident of the column. Both are stated so the row
+           # is read under the same rule as every other row (F3).
+           "records_in_the_INPUT_UNIVERSE_before_D11":
+               s1site["records_examined_by_the_walk"],
+           "records_COUNTED_after_D11": s1site["records_examined_by_the_walk"],
+           "before_equals_after_BECAUSE_D11_IS_NOT_APPLIED_HERE": True,
            "distinct_episodes_they_form": fp["S1_side"]["distinct_episodes_excluded"],
            "distinct_episodes_whose_CANONICAL_instant_is_post_cutoff":
                s1site["records_at_or_after_tau_pull_that_this_site_uses"],
@@ -1388,6 +1474,33 @@ def main() -> None:
         "b_per_site_D11_table": {
             "what_it_measures": ("records excluded by D11 at EACH site separately, asserted at "
                                  "each site rather than once and about the rest"),
+            "THE_EXAMINED_COLUMN_HELD_TWO_QUANTITIES_AND_NOW_HOLDS_TWO_COLUMNS": {
+                "finding": ("Red Team eighth pass, F3, against this arm. The single "
+                            "`records_examined_at_this_site` column was POST-exclusion at A, "
+                            "A_H and the eight action_count_* sites and PRE-exclusion at the "
+                            "liveness and D9 sites -- one label over two objects, which is the "
+                            "defect decisions/0088 Sec 2(b) ruled on one level up"),
+                "why_it_was_load_bearing_and_not_cosmetic": (
+                    "THE VACUITY TEST KEYED ON THAT COLUMN. A site whose ENTIRE input universe "
+                    "was at or after tau_pull would have reported `examined = 0` and been "
+                    "labelled VACUOUS -- 'this site examined 0 records' -- having examined and "
+                    "excluded everything. The label would have read as 'D11 had nothing to do "
+                    "here' at the site where D11 did the most. The inversion runs in the "
+                    "direction of a false pass"),
+                "the_fix": ("every row carries `records_in_the_INPUT_UNIVERSE_before_D11` and "
+                            "`records_COUNTED_after_D11`, each in the site's own unit, and the "
+                            "coverage state is one of EMPTY_INPUT (vacuous), FULLY_EXCLUDED "
+                            "(not vacuous -- D11 removed everything) or OCCUPIED. Vacuity keys "
+                            "on the INPUT UNIVERSE"),
+                "units_are_not_uniform_and_that_is_stated_per_row": (
+                    "A and A_H are in DISTINCT IN-E2 EPISODES, so their two columns are in "
+                    "episodes while `records_excluded_by_D11` on the same row is in RECORDS. "
+                    "`before` is NOT `after + excluded` there, and the episode-unit universe is "
+                    "measured at stage 1 rather than derived"),
+                "the_S1_walk_row_has_before_EQUAL_TO_after": (
+                    "D11 is deliberately not applied there (decisions/0068's open item), so the "
+                    "identity is the site's finding rather than a column artifact"),
+            },
             "sites": sites,
             "sites_counted": len(sites),
             "sites_where_D11_is_applied": sum(1 for s in sites if s["d11_applied"]),
@@ -1427,6 +1540,27 @@ def main() -> None:
                 "identity_total": (sum(s["records_excluded_by_D11"] for s in sites
                                        if s["site"].startswith("action_count_"))
                                    == fp["in_frame_S1_S2_records_at_or_after_tau_pull"]),
+                # F3's own identity, asserted: at the eight action_count sites
+                # the two new columns are in the SAME unit as the exclusion
+                # column, so before - after must equal it exactly. This is what
+                # makes the pre/post pair a measurement rather than a relabel,
+                # and it is the check that catches the input universe being
+                # measured on an already-filtered array.
+                "identity_before_minus_after_equals_excluded_at_the_8_action_sites": all(
+                    (s["records_in_the_INPUT_UNIVERSE_before_D11"]
+                     - s["records_COUNTED_after_D11"]) == s["records_excluded_by_D11"]
+                    for s in sites if s["site"].startswith("action_count_")),
+                "per_site_before_after_excluded": {
+                    s["site"]: [s["records_in_the_INPUT_UNIVERSE_before_D11"],
+                                s["records_COUNTED_after_D11"],
+                                s["records_excluded_by_D11"]]
+                    for s in sites if s["site"].startswith("action_count_")},
+                "where_the_identity_does_NOT_hold_and_why": (
+                    "A and A_H -- their two columns are in DISTINCT IN-E2 EPISODES and the "
+                    "exclusion column is in RECORDS, so 82 episodes are removed entirely by 94 "
+                    "records; an episode carrying a surviving pre-cutoff record stays. And the "
+                    "S1 completion walk, where D11 is not applied at all, so before = after "
+                    "while the exclusion column reports what WOULD be removed"),
             },
             "SITE_NAMES_ARE_THIS_ARMS_OWN_AND_ARE_NOT_A_RULED_VOCABULARY": (
                 "decisions/0088 Sec 1(b) NAMES the sites in prose -- A, A_H, the four "

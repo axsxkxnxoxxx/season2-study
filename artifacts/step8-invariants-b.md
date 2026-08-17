@@ -2,9 +2,9 @@
 
 **Step 8 is a GATE and this document is a PROPOSAL.** Nothing here is adopted. This instance does not adopt its own proposal, does not begin Step 8b or Step 9, and records no approval — that is the Human Lead's alone. Zero API calls; every figure is computed from data already on disk.
 
-**This is a RERUN ordered by the Human Lead**, on `task-sheet.md` Step 8 as it now stands — the spec as amended through **`decisions/0091`** and Red Team's **SEVENTH** pass. **It is a rerun, not an amendment: everything below is rebuilt from the stored data by the same pipeline that writes the table, and no previous output was patched** (`0092`'s standing rule as given to this instance — a deliverable is corrected by rerunning the arm that produced it). Against this arm's last deliverables (the 2026-08-16 `-r5` run, spec through `0090`), **four things change and all four are corrections to this arm's own work.** **(1) THE SURFACE CHECK NOW OPENS `artifacts/`, WHICH IS PROPAGATION SURFACE 6** (`step8-invariants-b.md` §16). `-r5`'s invariant report carried *"a report where six of EIGHT cannot fail on data"* **in its own body**, inside a document whose head states the set is NINE and whose surface check concludes that no surface still states the old count — **because that check opened `task-sheet.md`, this arm's definition file and `specs/step8-readback.md`, and never opened `artifacts/`.** The run now greps its own four deliverables, splits every hit into *named as superseded at the point of use* against *live*, prints its byte coverage, and **fails the run on a live one.** **(2) THE SAME CLASS, SECOND INSTANCE: `0090`'s superseded framing sat BELOW the line that strikes it** (§10). `-r5` rendered *"Why the loose count publishes EVEN THOUGH STRICT IS RULED"* — `0074` ruling 5's framing — 85 lines under §10's strike of exactly that framing. Corrected at the point of use. **(3) THE `both bind` COUNT NOW NAMES ITS POPULATION AND IS MEASURED ON BOTH** (§7a). `-r5` published the integer **168** in two deliverables under two populations 23,453 pairs apart and reconciled them nowhere. **Measured on every population here: 168 on line 1 and 168 on APPLY position 5 — both correct, the quantity is invariant across the APPLY chain — and 153 on DERIV, which had never been measured.** So the review's arithmetic premise is contradicted by this build and its provenance premise is upheld; **reported, not reconciled.** **(4) THE LABELLING SENTENCE NO LONGER CONTRADICTS ITSELF** (`step8-invariants-b.md`). `-r5` said *"SEVEN of the nine assertions CANNOT FAIL ON ANY DATA"* and then called one of the seven a genuine cross-check **because** a value is recomputed independently — which is what gives it force, and a check with force can fail. **6 of 9 cannot fail on any data; 3 can, as specified.** Every count in that paragraph is now **derived from the `label` field** rather than typed. **Two smaller repairs, both found by re-reading this arm's own output:** the per-site D11 table's **D9 row carried `null` for both its exclusion count and its assertion** while the site was counted among the twelve where D11 is applied — **backfilled and asserted at the site** (§14a(b)) — and the column-set block published **two counts and no list**, asserting a count match where the code asserts a set match; **the names are emitted.** **(5) Carried from `-r5`, re-executed not restated:** `0090`'s D9 **bound** — complementary pairs `[0, 75]`, half (a) `[0, 6]`, half (b) `[0, 27]`, **neither endpoint the point estimate**; and B3(a)'s reversed verdict on the separating interval `[τ, τ + 24h)` — **`OUTCOME_DECIDING`**, **71 APPLY rows** and **59 DERIV rows** change outcome state under the forbidden `date(watched_at) <= T1` form (`τ1` alone 52 / 45, `τ2` alone 19 / 14); and the executed negative control — **6 injected defects, 5 of 5 checkable cases caught, asserted, with the one that passes by design named.** **No population moves and no waterfall line moves.** Line 1 is **220,107**, APPLY is **196,654**, DERIV is **147,370**, position 6 removes **703** and **99**, and the column set is **89**. This overwrites the previous `-b` deliverables.
+**This is a RERUN ordered by the Human Lead**, on `task-sheet.md` Step 8 as it now stands — the spec as amended through **`decisions/0093`** and Red Team's **EIGHTH** pass. **It is a rerun, not an amendment: everything below is rebuilt from the stored data by the same pipeline that writes the table, and no previous output was patched** (`0092` — a deliverable is corrected by rerunning the arm that produced it). **`0093` IS WHY THIS RUN EXISTS AND THIS ARM IS WHAT OCCASIONED IT:** *a ruling recorded in `decisions/` and propagated to the spec is NOT closed; it is closed when the ARTIFACTS carry it* — and the arms only rewrite their deliverables **on a run**, so `0089` §2(b) sat recorded, propagated and passing every control for two entries while **this arm's deliverables went on publishing the text it corrected.** **Red Team's eighth pass found NO ARITHMETIC DEFECT in this arm. All three of its findings are in machinery this arm emitted, and all three are corrected here.** **(1) F1 — THE `747,478` CHARACTERISATION** (§10z). `-r6` republished `0088` §2(b)'s axis — *747,478 as undeduplicated season-coverage **rows*** — **which `0089` §2(b) had corrected two entries earlier to distinct `(user, show)` **pairs***, and **this arm's own table six lines below contradicted it**, giving **1,007,729** for that label. Corrected at the point of use, with `0093` §3(c)'s relation stated: **747,478 distinct pairs less the 21,376 S3-only is 726,102 against this arm's 726,103** — the one-pair divergence both arms already report. **Reported, not reconciled.** **(2) F2 — THE SURFACE-6 CONTROL COULD NOT SEE THE STRING CLASS IT WAS BUILT FOR** (§16). Its matching was **case-sensitive** and its needle was the lower-case `six of eight`, while the string present in this arm's deliverables — **three times** — is `six of EIGHT`. **The one needle written against the very defect that motivated the control returned zero, and zero was published as clean.** Three repairs: matching is **case-insensitive**, and the claim is now **executed** by a sentinel test rather than asserted; the needles moved into **`src/step7_register.py`, the ONE register**, which `CLAUDE.md` requires and which `-r6` duplicated in a second hand-maintained copy; and **the gate now runs on the final bytes BEFORE the write** — `-r6` wrote all four artifacts to propagation surface 6 and asserted afterwards, so the check could report a live superseded string but not prevent it reaching the surface. **(3) F3 — THE PER-SITE D11 `examined` COLUMN HELD TWO QUANTITIES** (§14a(b)): post-exclusion at `A`, `A_H` and the eight `action_count_*` sites, pre-exclusion at the liveness and D9 sites. **The vacuity test keyed on it**, so a site whose entire input was post-cutoff would have reported `examined = 0` and been labelled **VACUOUS** — *"this site examined 0 records"* — **having examined and excluded everything.** Every row now carries **input universe before D11** and **counted after D11**, each in the site's own unit, and vacuity keys on the input universe. **Carried from `-r6`, re-executed not restated:** `0090`'s D9 **bound** — complementary pairs `[0, 75]`, half (a) `[0, 6]`, half (b) `[0, 27]`, **neither endpoint the point estimate**; and B3(a)'s reversed verdict on the separating interval `[τ, τ + 24h)` — **`OUTCOME_DECIDING`**, **71 APPLY rows** and **59 DERIV rows** change outcome state under the forbidden `date(watched_at) <= T1` form (`τ1` alone 52 / 45, `τ2` alone 19 / 14); and the executed negative control — **6 injected defects, 5 of 5 checkable cases caught, asserted, with the one that passes by design named.** **No population moves, no waterfall line moves and no published figure moves.** Line 1 is **220,107**, APPLY is **196,654**, DERIV is **147,370**, position 6 removes **703** and **99**, and the column set is **89**. **The `both bind` split, measured on every population as `0092` §3 requires:** 168 on line 1, 168 on APPLY position 5 — invariant across the APPLY chain — and 153 on DERIV. **The assertion set: 6 of 9 cannot fail on any data, 3 can as specified**, every count derived from the `label` field rather than typed. **This overwrites the previous `-b` deliverables, which is the only way `0093` closes.**
 
-**Provenance — `analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r6 (RERUN on the spec as amended through decisions/0091 and Red Team's SEVENTH pass; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)`.** Every count, every waterfall figure and every invariant result below was measured on that build (`0078`, `0079` §2). Where a figure is quoted from a ruling, the ruling's own build is named instead: `position-5 build of 2026-08-13 (both arms, the run decisions/0078 labelled)`. **A count without its provenance can be correct when written and wrong when read.**
+**Provenance — `analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r7 (RERUN on the spec as amended through decisions/0093 and Red Team's EIGHTH pass; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)`.** Every count, every waterfall figure and every invariant result below was measured on that build (`0078`, `0079` §2). Where a figure is quoted from a ruling, the ruling's own build is named instead: `position-5 build of 2026-08-13 (both arms, the run decisions/0078 labelled)`. **A count without its provenance can be correct when written and wrong when read.**
 
 ## How to read this report
 
@@ -74,7 +74,7 @@ Counts: **6 pure code checks**, **1 that is a code check by construction and a g
 
 ## 1. outcome states are mutually exclusive and sum to the POST-POSITION-7 row set
 
-*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
+*Measured on: b: position-5 build of 2026-08-16-r7 (spec through 0093 + Red Team 8).*
 
 **Label: CODE CHECK.** Step 1 Sec 7's partition A = empty / (A non-empty and C_H) / (A non-empty and not C_H) is proved exhaustive and disjoint, so this can only catch an assignment coded wrongly -- e.g. dropping the |A| >= 1 conjunct from Continued, which would put a day-150 starter completing by day 190 in two states at once.
 
@@ -262,7 +262,7 @@ Counts: **6 pure code checks**, **1 that is a code check by construction and a g
 
 ## 2. filter counts decrease monotonically -- CODED AS `>=`, NOT `>`
 
-*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
+*Measured on: b: position-5 build of 2026-08-16-r7 (spec through 0093 + Red Team 8).*
 
 **Label: CODE CHECK.** filters only remove rows, so this fails only on an implementation that ADDS them -- a duplicating join, most likely.
 
@@ -319,7 +319,7 @@ Counts: **6 pure code checks**, **1 that is a code check by construction and a g
 
 ## 3. distinct episodes never exceed season length (|D| <= L)
 
-*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
+*Measured on: b: position-5 build of 2026-08-16-r7 (spec through 0093 + Red Team 8).*
 
 **Label: CODE CHECK.** Step 8's own set-membership drop rule already establishes |D| <= L by construction -- an episode whose number is not in the season's listed set E is dropped, so D is a subset of E. It fails only if an implementation filtered by the numeric RANGE 1..F instead of by membership in E.
 
@@ -368,7 +368,7 @@ Counts: **6 pure code checks**, **1 that is a code check by construction and a g
 
 ## 4. A is a subset of A_H on every row
 
-*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
+*Measured on: b: position-5 build of 2026-08-16-r7 (spec through 0093 + Red Team 8).*
 
 **Label: CODE CHECK.** true by construction since tau1 < tau2 and both sets are prefixes of the same instant-ordered episode list; it can only catch the two sets being computed from different evidence, or tau2 computed below tau1.
 
@@ -405,7 +405,7 @@ Counts: **6 pure code checks**, **1 that is a code check by construction and a g
 
 ## 5. clock start is on or after the S2 finale date, on or after the first-pass S1 completion date, and equals one of those two
 
-*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
+*Measured on: b: position-5 build of 2026-08-16-r7 (spec through 0093 + Red Team 8).*
 
 **Label: CODE CHECK BY CONSTRUCTION, DATA CHECK AS SPECIFIED.** the first-pass S1 completion date is RECOMPUTED here by a second, independent implementation -- a literal per-pair walk over the records, not the vectorised rank computation the pipeline uses, and not read back from any stored value. Read back rather than recomputed it degrades to a code check and proves nothing, because T0 = max() makes all three clauses true of any correct max().
 
@@ -483,7 +483,7 @@ Counts: **6 pure code checks**, **1 that is a code check by construction and a g
 
 ## 6. abandonment point p is in (0, 1] on every Started-and-left row, null elsewhere
 
-*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
+*Measured on: b: position-5 build of 2026-08-16-r7 (spec through 0093 + Red Team 8).*
 
 **Label: CODE CHECK.** Started-and-left requires |A| >= 1, so m_H exists; and set membership makes A_H a subset of E2, so the rank numerator |{e in E2 : e <= m_H}| lies in [1, L2]. NO data configuration puts p outside (0, 1]. It fails only on the withdrawn raw-ratio form p = m_H / L2, which can exceed 1 where S2 numbering has a gap.
 
@@ -532,7 +532,7 @@ Form: `p = |{e in E2 : e <= m_H}| / L2, rank form, read on A_H (0034)`.
 
 ## 7. NO ACCOUNT IS DROPPED WHOLESALE BY THE PAIR-LEVEL LIVENESS FILTER -- the count of accounts holding BOTH a live and a not-live pair is > 0
 
-*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
+*Measured on: b: position-5 build of 2026-08-16-r7 (spec through 0093 + Red Team 8).*
 
 **Label: DATA CHECK.** 703 pairs from 216 accounts is consistent with a pair-level AND an account-level implementation, and nothing in the exclusion set distinguishes them. An account-level filter would make this count exactly ZERO. CLAUDE.md and Step 7: 'One account can be live for one show and not another. Never drop a user wholesale.' This can fail on real data.
 
@@ -664,7 +664,7 @@ Form: `p = |{e in E2 : e <= m_H}| / L2, rank form, read on A_H (0034)`.
 
 ## 8. NO access_denied OR SKIPPED ACCOUNT IS READ AS EMPTY -- no account recorded access_denied, over-tolerance or otherwise skipped contributes a pair scored never-started
 
-*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
+*Measured on: b: position-5 build of 2026-08-16-r7 (spec through 0093 + Red Team 8).*
 
 **Label: DATA CHECK.** CLAUDE.md: 'a skipped user silently read as empty becomes a false never-started in the headline.' A join that treats an absent history as an empty one produces exactly this, and it FAILS IN THE DIRECTION OF THE RESULT, which is the worst direction available. Rule and evidence at artifacts/step0-access-and-setup.md Sec 7.
 
@@ -741,7 +741,7 @@ Form: `p = |{e in E2 : e <= m_H}| / L2, rank form, read on A_H (0034)`.
 
 ## 9. no position-5 row has tau2 > tau_pull
 
-*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
+*Measured on: b: position-5 build of 2026-08-16-r7 (spec through 0093 + Red Team 8).*
 
 **Label: CODE CHECK.** D10 defines position 5 as [T0] + (max(W, 91) + H) x 24h <= tau_pull, and at W = 108 that expression IS tau2. It can only catch tau2 or the right-censoring bound computed wrongly -- for instance H dropped from the censoring term while tau2 kept it.
 
@@ -809,7 +809,7 @@ Form: `p = |{e in E2 : e <= m_H}| / L2, rank form, read on A_H (0034)`.
 
 ## What the two data checks actually found
 
-*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
+*Measured on: b: position-5 build of 2026-08-16-r7 (spec through 0093 + Red Team 8).*
 
 **Wholesale dropping.** On APPLY, **215 of the 216 accounts that supply a liveness exclusion also keep at least one live pair**; on DERIV, **72 of 73**. An account-level filter would make both numbers exactly zero, so this discriminates between the two implementations, which the 703-from-216 figure alone does not. The single account whose pairs are all not-live holds exactly one pair in the population, where the two implementations are indistinguishable by construction.
 
@@ -825,7 +825,7 @@ Form: `p = |{e in E2 : e <= m_H}| / L2, rank form, read on A_H (0034)`.
 
 ## Reported and NOT asserted (1) — the set-membership drop rule
 
-*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
+*Measured on: b: position-5 build of 2026-08-16-r7 (spec through 0093 + Red Team 8).*
 
 A COVERAGE COUNT, NOT AN INVARIANT (decisions/0074 ruling 3). Step 8's own bullet calls it 'an implementation check, not a data check'. Reported, not asserted -- asserting it would add another pass to a report where 6 of 9 already cannot fail on data.
 
@@ -836,7 +836,7 @@ A COVERAGE COUNT, NOT AN INVARIANT (decisions/0074 ruling 3). Step 8's own bulle
 
 ## Reported and NOT asserted (2) — the 703 expectation
 
-*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
+*Measured on: b: position-5 build of 2026-08-16-r7 (spec through 0093 + Red Team 8).*
 
 It is a POPULATION RECONCILIATION, and the spec's own instruction to suspect the population before the implementation is what makes it one.
 
@@ -851,49 +851,75 @@ It is a POPULATION RECONCILIATION, and the spec's own instruction to suspect the
 
 ## 16. Propagation surface 6 — **this run greps its own deliverables**
 
-*Measured on: b: position-5 build of 2026-08-16-r6 (spec through 0091 + Red Team 7).*
+*Measured on: b: position-5 build of 2026-08-16-r7 (spec through 0093 + Red Team 8).*
 
 **Red Team seventh pass, finding 1, against THIS ARM: the -r5 invariant report published a superseded assertion-set count IN ITS OWN BODY, inside a document whose head states the correct count and whose surface check concludes that no surface still states the old one. That check opened task-sheet.md, this arm's definition file and specs/step8-readback.md -- IT NEVER OPENED artifacts/. The same run carried a second instance of the same class: 0090's superseded framing sitting below the line that strikes it. A surface check that does not open the surface the defect is on is a check that looked nowhere.**
 
 **CLAUDE.md -- there are EIGHT propagation surfaces and all eight are checked on every edit. artifacts/ is SURFACE 6: 'deliverables carrying superseded figures are stamped, not left to be read as current'.** CLAUDE.md. A string named as SUPERSEDED at the point of use is legitimate and is counted separately; an unqualified occurrence is a live defect. Only UNMARKED occurrences fail this run.
 
-| File | bytes | lines | strings searched | strings with any hit | **unmarked live occurrences** |
-| :--- | ---: | ---: | ---: | ---: | ---: |
-| `artifacts/step8-waterfall-b.md` | 101,198 | 766 | 14 | 6 | **0** |
-| `artifacts/step8-waterfall-b.json` | 153,041 | 2,442 | 14 | 2 | **0** |
-| `artifacts/step8-invariants-b.md` | 57,281 | 849 | 14 | 4 | **0** |
-| `artifacts/step8-invariants-b.json` | 95,673 | 1,344 | 14 | 3 | **0** |
+***THREE CORRECTIONS TO THIS CONTROL THIS RUN — Red Team's eighth pass, F2, all against this arm.***
+
+**(i) THE MATCHING WAS CASE-SENSITIVE AND COULD NOT SEE ITS OWN FOUNDING STRING.** The -r6 matcher was `str.count`, which is CASE-SENSITIVE, against the lower-case needle `six of eight`. The string actually present in this arm's deliverables is `six of EIGHT`, three times. THE ONE NEEDLE WRITTEN AGAINST THE DEFECT THAT MOTIVATED THIS CONTROL COULD NOT SEE IT, and its hits table carried no row for it. Red Team eighth pass, F2. **It is now case-insensitive, needles and markers both**, and the claim is no longer asserted — it is **executed**: every one of the **14** needles is planted in a line of inverted case and must be found. **All findable: True.** **9 of 14 would be MISSED by the `-r6` case-sensitive matcher on that test.** On the founding line itself — *"a report where six of EIGHT cannot fail on data"* — this matcher finds **1** and `-r6`'s found **0**, and published that zero as a clean result.
+
+**(ii) THERE WERE TWO REGISTERS.** The -r6 build kept a SECOND hand-maintained register inside this module. CLAUDE.md requires ONE, in src/step7_register.py, imported by every script that checks -- the rule exists because two copies diverged by an entry after a single use and neither held the values that were wrong. Red Team eighth pass, F2. **The needles now live in `src/step7_register.py` and this module defines 0 of its own.** CLAUDE.md -- one register, imported by every script that checks. This module defines no needles of its own; it imports them, so a second hand-maintained copy cannot drift from the first.
+
+**(iii) THE ASSERTION FIRED AFTER THE WRITE.** `-r6` wrote all four artifacts to disk and asserted afterwards — so a failure left the superseded text **on propagation surface 6**, and the check could report the defect but not prevent it. **The gate now runs on the final assembled bytes IN MEMORY, before any write**, and the bytes on disk are then verified by hash to be the bytes that passed it. **Read-back plus grep**, with the hash as the read-back half.
+
+| File | bytes | lines | needles searched | rows emitted | with ≥1 hit | **with ZERO hits** | **unmarked live** |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `artifacts/step8-waterfall-b.md` | 107,507 | 782 | 14 | 14 | 9 | 5 | **0** |
+| `artifacts/step8-waterfall-b.json` | 155,424 | 2,452 | 14 | 14 | 2 | 12 | **0** |
+| `artifacts/step8-invariants-b.md` | 57,647 | 849 | 14 | 14 | 4 | 10 | **0** |
+| `artifacts/step8-invariants-b.json` | 110,548 | 1,487 | 14 | 14 | 5 | 9 | **0** |
 
 **Unmarked live occurrences across all four files: 0. Passes: True.**
 
-**This is a CLEAN result, not an EMPTY one.** This result is CLEAN, not EMPTY: the bytes and lines actually read are stated per file above, and the marked-occurrence counts are non-zero, which proves the needles are findable by this scanner on these files.
+**This is a CLEAN result, not an EMPTY one.** This result is CLEAN, not EMPTY, and the evidence is the SENTINEL TEST rather than an incidental non-zero count: every needle is run against a synthetic line containing it in an inverted case and must be found. The -r6 build claimed 'the marked-occurrence counts are non-zero, which proves the needles are findable' -- that is a claim about SOME needles and it was FALSE OF THE ONE THAT MATTERED. Bytes and lines actually read are stated per file, and every needle carries a row even when its count is zero.
 
-**Hits, per string, split MARKED against UNMARKED** — a string named as superseded at the point of use is legitimate and is what the study's own rules require:
+**Every needle carries a row, including a ZERO row.** `-r6` omitted a needle with no matches, so *"the needle found nothing"* and *"the needle is not in the table"* looked identical — which is `CLAUDE.md`'s empty-against-clean rule at the row level, and is how a needle that could not match anything showed as an absence rather than a zero. **Aggregated over the four files; the per-file split is in the JSON half:**
 
-| SUPERSEDED string | file | what it is | marked at the point of use | **unmarked** |
+| SUPERSEDED string | what it is | replaced by | marked at the point of use | **unmarked** |
 | :--- | :--- | :--- | ---: | ---: |
-| SUPERSEDED — `ASSERTION SET NOW HAS EIGHT` | `step8-waterfall-b.md` | the pre-0088 assertion-set count | 2 | **0** |
-| SUPERSEDED — `SEVEN of the nine` | `step8-waterfall-b.md` | the self-contradicting cannot-fail count | 1 | **0** |
-| SUPERSEDED — `97.6%` | `step8-waterfall-b.md` | the position-3 censoring share (0033) | 1 | **0** |
-| SUPERSEDED — `793` | `step8-waterfall-b.md` | ALT-MATCHED's withdrawn liveness answer | 1 | **0** |
-| SUPERSEDED — `95.98%` | `step8-waterfall-b.md` | D3prime on the uncensored estimation sample (0034) | 1 | **0** |
-| SUPERSEDED — `91.34%` | `step8-waterfall-b.md` | D3prime on the uncensored estimation sample (0034) | 1 | **0** |
-| SUPERSEDED — `ASSERTION SET NOW HAS EIGHT` | `step8-waterfall-b.json` | the pre-0088 assertion-set count | 2 | **0** |
-| SUPERSEDED — `793` | `step8-waterfall-b.json` | ALT-MATCHED's withdrawn liveness answer | 1 | **0** |
-| SUPERSEDED — `ASSERTION SET NOW HAS EIGHT` | `step8-invariants-b.md` | the pre-0088 assertion-set count | 1 | **0** |
-| SUPERSEDED — `seven of the nine` | `step8-invariants-b.md` | the self-contradicting cannot-fail count | 1 | **0** |
-| SUPERSEDED — `SEVEN of the nine` | `step8-invariants-b.md` | the self-contradicting cannot-fail count | 3 | **0** |
-| SUPERSEDED — `793` | `step8-invariants-b.md` | ALT-MATCHED's withdrawn liveness answer | 1 | **0** |
-| SUPERSEDED — `ASSERTION SET NOW HAS EIGHT` | `step8-invariants-b.json` | the pre-0088 assertion-set count | 1 | **0** |
-| SUPERSEDED — `SEVEN of the nine` | `step8-invariants-b.json` | the self-contradicting cannot-fail count | 1 | **0** |
-| SUPERSEDED — `793` | `step8-invariants-b.json` | ALT-MATCHED's withdrawn liveness answer | 1 | **0** |
+| SUPERSEDED — `six of eight` | the pre-0088 assertion-set count in prose | the count derived from len(inv) and the label field | 5 | **0** |
+| SUPERSEDED — `of eight cannot fail` | the pre-0088 assertion-set count in prose | N of 9, derived | 1 | **0** |
+| SUPERSEDED — `assertion set now has eight` | the pre-0088 assertion-set count | NINE (0088 Sec 1c) | 6 | **0** |
+| SUPERSEDED — `seven of the nine` | the self-contradicting cannot-fail count | six cannot fail; three can fail as specified | 4 | **0** |
+| SUPERSEDED — `even though strict is ruled` | 0074 ruling 5's framing | 0090 -- strict is the floor of a published bound | 1 | **0** |
+| SUPERSEDED — `strict is ruled` | 0074 ruling 5's framing | 0090 -- strict is the floor of a published bound | 1 | **0** |
+| SUPERSEDED — `the ruled key is strict` | 0074 ruling 5's framing | 0090 -- a bound | 0 | **0** |
+| SUPERSEDED — `88 columns` | the pre-0082 column count | 89 names, enumerated | 0 | **0** |
+| SUPERSEDED — `97.6%` | the position-3 censoring share (0033) | 97.40% on position 4 (0070 r8) | 1 | **0** |
+| SUPERSEDED — `793` | ALT-MATCHED's withdrawn liveness answer | 703 on APPLY | 4 | **0** |
+| SUPERSEDED — `1,293` | a deleted liveness threshold (0042) | the rule is parameter-free | 0 | **0** |
+| SUPERSEDED — `95.98%` | D3prime on the uncensored estimation sample (0034) | 99.53% on Step 8's right-censored APPLY (0075) | 1 | **0** |
+| SUPERSEDED — `91.34%` | D3prime on the uncensored estimation sample (0034) | 97.73% at W = 213 on APPLY (0075) | 1 | **0** |
+| SUPERSEDED — `747,478 and 726,103 are different objects` | 0088 Sec 2(b)'s characterisation, corrected by 0089 Sec 2(b) | 747,478 is DISTINCT (user, show) PAIRS; the axis was wrong, not the conclusion | 1 | **0** |
 
 **Two needles were tried and WITHDRAWN, and withdrawing one disarms the control against it** (`CLAUDE.md`). Each names the stronger control that covers it, and **both replacements are asserted in this run and fail it if they break:**
 
 | Withdrawn needle | why it fired | covered instead by | holds |
 | :--- | :--- | :--- | :--- |
-| SUPERSEDED — `f2_in_A_H` | every occurrence in this arm's artifacts is a line EXPLAINING that the column is dropped as derivable -- which the spec requires be stated. The string is supposed to be present | a set assertion on the emitted table: `assert set(tab.columns) == set(COLUMNS_89)` in src/step8_b_2_pipeline.py, plus the emitted-order check. 0077's own words: 'Matching a count is not matching a set -- assert on the names.' A name assertion is strictly stronger than a substring grep and it runs on the artifact that matters | **True** |
-| SUPERSEDED — `thetwilightzone` | the U3 cluster list is EMITTED ON PURPOSE, beside U1 and U2, so an arm on another universe is diffable without a rerun. 0088 Sec 3 supersedes it as THE ILLUSTRATION, not as a measurement | an assertion that the PUBLISHED illustration is U1's ranked list and that its universe is named at the point of use -- asserted in stage 4 below. A line-local string test cannot express 'which list is the illustration', which is what 0088 Sec 3 actually rules | **True** |
+| SUPERSEDED — `f2_in_A_H` | every occurrence in Step 8's artifacts is a line EXPLAINING that the column is dropped as derivable -- which the spec requires be stated. The string is supposed to be present | a SET assertion on the emitted table: `assert set(tab.columns) == set(COLUMNS_89)`, plus the emitted-order check. 0077's own words: 'Matching a count is not matching a set -- assert on the names.' A name assertion is strictly stronger than a substring grep | **True** |
+| SUPERSEDED — `thetwilightzone` | the U3 cluster list is EMITTED ON PURPOSE, beside U1 and U2, so an arm on another universe is diffable without a rerun. 0088 Sec 3 supersedes it as THE ILLUSTRATION, not as a measurement | an assertion that the PUBLISHED illustration is U1's ranked list and that its universe and ranking basis are named at the point of use. A line-local string test cannot express 'which list is the illustration', which is what 0088 Sec 3 rules | **True** |
+
+**The gate is EXECUTED, not asserted.** `CLAUDE.md`: *a control asserted to exist is not a control.* `-r6`'s surface check reported clean on a file set containing the very string it was built for, and nothing in the deliverable distinguished that from a real pass. **4 synthetic cases are run through the gate and 4 behave as required (True):**
+
+| Case | planted | required | unmarked hits | caught | as required | would `-r6` have caught it |
+| :--- | :--- | :--- | ---: | :---: | :---: | :---: |
+| `A_unmarked_superseded_string_lower_case` | an unmarked needle, lower case | CAUGHT | 1 | True | **True** | True |
+| `B_unmarked_superseded_string_MIXED_case_the_r6_blind_spot` | the same needle in MIXED case — the `-r6` blind spot | CAUGHT | 2 | True | **True** | False |
+| `C_the_SAME_string_named_as_superseded_at_the_point_of_use` | the same string struck and named superseded at the point of use | NOT_CAUGHT -- legitimate under CLAUDE.md | 0 | False | **True** | False |
+| `D_a_clean_line` | a clean line | NOT_CAUGHT | 0 | False | **True** | False |
+
+**Case B is the exact string Red Team reports three times in this arm's -r6 deliverables. This matcher catches it; the -r6 matcher's own column in this table records whether it would have.**
+
+**And one control a substring needle cannot express.** The `747,478` defect Red Team's eighth pass F1 found is an **attribution** — *"it is a season-coverage ROW count"* — which survives rewording, markdown emphasis inside the sentence, and reordering. **A needle for one phrasing sits at zero forever while the claim returns in another.** So the rule is line-local:
+
+| Control | rule | lines examined | conforming | **failing** | passes |
+| :--- | :--- | ---: | ---: | ---: | :--- |
+| `747478_is_a_PAIR_count_not_a_ROW_count` | every line mentioning 747,478 must be marked as superseded, or must characterise it as distinct (user, show) PAIRS. A line calling it season-coverage ROWS, or mentioning it with no characterisation at all, fails | 10 | 10 | **0** | **True** |
+
+**Coverage is printed and a control that examined nothing FAILS.** 10 lines mention the 747,478 distinct-pairs figure across the four artifacts, and each was read. A control that examined none of them reports zero coverage and FAILS rather than passing (CLAUDE.md).
 
 **And a numeric-boundary rule, which this control found on itself.** A needle beginning with a digit is not counted when it sits inside a longer number. This control caught itself on its first run: the SUPERSEDED needle `793` matched inside `"retained_pct": 95.867931...`. It NARROWS THE MATCH RULE and disarms no string.
 
@@ -903,7 +929,7 @@ It is a POPULATION RECONCILIATION, and the spec's own instruction to suspect the
 
 | Corrected string | occurrences | why it must be present |
 | :--- | ---: | :--- |
-| `NINE` | 31 | the current assertion-set count (0088 Sec 1c) |
+| `NINE` | 29 | the current assertion-set count (0088 Sec 1c) |
 | `196,654` | 54 | APPLY, the position-5 row set |
 | `147,370` | 24 | DERIV |
 | `220,107` | 42 | waterfall line 1 (0068) |
@@ -911,7 +937,7 @@ It is a POPULATION RECONCILIATION, and the spec's own instruction to suspect the
 | `97.40` | 4 | the right-censoring survival share on the position-4 output (0070 r8) |
 | `99.53` | 3 | D3prime at W = 46 on Step 8's right-censored APPLY (0075) |
 | `97.73` | 2 | D3prime at W = 213 on Step 8's right-censored APPLY (0075) |
-| `89` | 195 | the enumerated column count (0080/0081/0082) |
+| `89` | 215 | the enumerated column count (0080/0081/0082) |
 | `secondchance` | 13 | U1's largest cluster (0088 Sec 3) |
 | `1,355` | 12 | the silence test alone, APPLY (0085 Sec 5) |
 | `652` | 26 | the NOT-Continued conjunct's spare, APPLY (0081, 0085 Sec 5) |

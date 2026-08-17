@@ -761,12 +761,30 @@ def main():
     # (SS9 item 10). So every such claim is grounded in a count taken from disk on THIS run, and
     # the counts are published beside the claims. An empty result and a clean result are the same
     # value, so each glob reports what it looked at.
+    #
+    # RED TEAM EIGHTH PASS, ITEM (A), AGAINST THIS ARM -- AND IT IS decisions/0093's OWN MECHANISM
+    # SEEN FROM INSIDE AN ARM. The previous build measured these surfaces live and then published
+    # a HARDCODED CONCLUSION beside the counts: "0092's N2 edit reached surface 1 and no other."
+    # A rerun can contradict a fixed sentence, and this one does -- the agent files and
+    # second-brain now carry the correction and decisions/0092 now has a file. So the READING IS
+    # DERIVED FROM THE MEASUREMENT, per surface, and no sentence about a surface is typed by hand.
+    #
+    # BOTH HALVES, per CLAUDE.md: the NEGATIVE needle (the superseded population-free form, which
+    # must be absent) AND the POSITIVE needle (the corrected form, which must be present). A
+    # figure that was never written returns zero hits on every superseded form of itself, so the
+    # negative half alone cannot tell "fixed" from "never said".
     import glob as _glob
     _RT = os.path.dirname(SRC) if 'SRC' in dir() else lib.ROOT
     _POP_FREE_168 = "168 pairs have both terms binding and the binary split has nowhere to put"
+    _CORRECTED_168 = "deriv is 153"     # matched case-insensitively on normalised whitespace
 
-    def _count_files_containing(paths, needle):
-        seen, hits = 0, 0
+    def _scan_files(paths, neg_needle, pos_needle):
+        """Returns (files seen, files carrying the superseded form, files carrying the correction).
+
+        Coverage is returned, never assumed: an empty result and a clean result are the same
+        value, and only the control knows which it produced.
+        """
+        seen, neg, pos = 0, 0, 0
         for _p in paths:
             try:
                 with open(_p, encoding="utf-8", errors="replace") as _fh:
@@ -774,36 +792,82 @@ def main():
             except OSError:
                 continue
             seen += 1
-            if needle in " ".join(_txt.split()):
-                hits += 1
-        return seen, hits
+            _norm = " ".join(_txt.split())
+            if neg_needle and neg_needle.lower() in _norm.lower():
+                neg += 1
+            if pos_needle and pos_needle.lower() in _norm.lower():
+                pos += 1
+        return seen, neg, pos
 
     _agent_files = sorted(_glob.glob(os.path.join(lib.ROOT, ".claude/agents/analytics-engineer*.md")))
     _sb_files = sorted(_glob.glob(os.path.join(lib.ROOT, ".claude/agent-memory/second-brain/*.md")))
-    _a_seen, _a_hit = _count_files_containing(_agent_files, _POP_FREE_168)
-    _s_seen, _s_hit = _count_files_containing(_sb_files, "168 pairs have both binding")
-    _ts_seen, _ts_hit = _count_files_containing(
-        [os.path.join(lib.ROOT, "task-sheet.md")], "STATE THE POPULATION AT THE POINT OF USE")
+    _ts_file = [os.path.join(lib.ROOT, "task-sheet.md")]
+    _a_seen, _a_hit, _a_pos = _scan_files(_agent_files, _POP_FREE_168, _CORRECTED_168)
+    _s_seen, _s_hit, _s_pos = _scan_files(_sb_files, _POP_FREE_168, _CORRECTED_168)
+    _ts_seen, _ts_hit, _ts_pos = _scan_files(_ts_file, _POP_FREE_168, _CORRECTED_168)
     assert _a_seen > 0 and _s_seen > 0 and _ts_seen > 0, (
         "the surface-state check looked at zero files: an empty result and a clean result are "
         "the same value and only the control knows which it produced")
+    _n0092 = len(_glob.glob(os.path.join(lib.ROOT, "decisions/0092*")))
+
+    # Per surface, as CLAUDE.md numbers them. `reached` is DERIVED: the superseded form is gone
+    # AND the correction is present on at least one file of that surface.
+    _surf = [
+        {"surface": 1, "name": "task-sheet.md",
+         "files_examined": _ts_seen, "files_carrying_the_superseded_population_free_168": _ts_hit,
+         "files_carrying_the_correction_DERIV_IS_153": _ts_pos},
+        {"surface": "4 and 5", "name": ".claude/agents/analytics-engineer*.md",
+         "files_examined": _a_seen, "files_carrying_the_superseded_population_free_168": _a_hit,
+         "files_carrying_the_correction_DERIV_IS_153": _a_pos},
+        {"surface": 7, "name": ".claude/agent-memory/second-brain/*.md",
+         "files_examined": _s_seen, "files_carrying_the_superseded_population_free_168": _s_hit,
+         "files_carrying_the_correction_DERIV_IS_153": _s_pos},
+    ]
+    for _x in _surf:
+        _x["reached"] = bool(_x["files_carrying_the_superseded_population_free_168"] == 0
+                             and _x["files_carrying_the_correction_DERIV_IS_153"] > 0)
+    _reached = [str(x["surface"]) for x in _surf if x["reached"]]
+    _not = [str(x["surface"]) for x in _surf if not x["reached"]]
+    _reading = (
+        "DERIVED FROM THE COUNTS ABOVE ON THIS RUN, not carried from a prior build. "
+        "decisions/0092's N2 correction (the population on the both-bind 168) is present and the "
+        "population-free form is absent on surface(s) " + (", ".join(_reached) or "NONE") + "; "
+        "it is NOT yet on surface(s) " + (", ".join(_not) or "NONE") + ". "
+        "decisions/0092 itself matches " + str(_n0092) + " file(s) in decisions/, so the previous "
+        "build's finding that the entry existed on two surfaces and not in the decision log "
+        + ("is CLOSED." if _n0092 > 0 else "STANDS.") + " "
+        "Reported, not edited: the agent files, the decision log and second-brain are not this "
+        "instance's to amend. THE PREVIOUS BUILD PUBLISHED A FIXED SENTENCE HERE and this rerun "
+        "would have contradicted it -- which is decisions/0093's mechanism exactly: a ruling can "
+        "be recorded, propagated and passing every control while an artifact still publishes the "
+        "superseded reading, because an artifact only changes on a run.")
     D["surface_state_checked_live_this_run"] = {
-        "why": "SS9 publishes claims about other surfaces. A claim about a surface can be correct "
-               "when written and wrong when read -- this instance already had one go stale "
-               "between builds -- so each is grounded in a count taken from disk on THIS run.",
-        "decisions_0092_files_on_disk": len(
-            _glob.glob(os.path.join(lib.ROOT, "decisions/0092*"))),
+        "why": "SS9 publishes claims about other surfaces. A claim about a surface is a claim like "
+               "any other: it can be correct when written and wrong when read. Red Team's eighth "
+               "pass found this arm publishing a HARDCODED conclusion beside these live counts, so "
+               "the reading below is DERIVED from them.",
+        "ruling": "decisions/0093 -- a ruling is not closed until the ARTIFACTS carry it.",
+        "decisions_0092_files_on_disk": _n0092,
+        "decisions_0093_files_on_disk": len(
+            _glob.glob(os.path.join(lib.ROOT, "decisions/0093*"))),
         "decisions_entries_on_disk_total": len(
             _glob.glob(os.path.join(lib.ROOT, "decisions/0*.md"))),
+        "negative_needle": _POP_FREE_168,
+        "positive_needle": _CORRECTED_168,
+        "both_halves_why": "a figure that was never written returns zero hits on every superseded "
+                           "form of itself, so the negative half alone cannot distinguish FIXED "
+                           "from NEVER SAID.",
+        "per_surface": _surf,
+        "surfaces_reached": _reached,
+        "surfaces_not_reached": _not,
+        # kept under their previous key names so a diff against the prior build lines up
         "task_sheet_files_examined": _ts_seen,
-        "task_sheet_carries_the_N2_population_requirement": bool(_ts_hit == 1),
+        "task_sheet_carries_the_N2_population_requirement": bool(_ts_pos > 0),
         "agent_files_examined": _a_seen,
         "agent_files_carrying_the_population_free_168": _a_hit,
         "second_brain_files_examined": _s_seen,
         "second_brain_files_carrying_the_population_free_168": _s_hit,
-        "reading": "0092's N2 edit reached surface 1 and no other. Reported, not edited: the "
-                   "agent files, the decision log and second-brain are not this instance's to "
-                   "amend.",
+        "reading": _reading,
         "build": lib.BUILD_TAG,
     }
 
@@ -1024,6 +1088,24 @@ def main():
                 "the_excluded_ROW_SET_is_identical_not_merely_the_total": bool(
                     int((_exc ^ _exc_adopted).sum()) == 0),
                 "rows_in_one_exclusion_set_but_not_the_other": int((_exc ^ _exc_adopted).sum()),
+                # RED TEAM EIGHTH PASS, ITEM (C), AGAINST THIS ARM. The symmetric difference is
+                # the RIGHT measurement and it is unchanged. What was wrong is the WARRANT the
+                # previous build put on it: "a total that does not move can still be a different
+                # set of rows, and that is what the symmetric difference rules out." Under THIS
+                # counterfactual it cannot. The date-level form RELAXES both bounds, so A and A_H
+                # only GAIN episodes; all three Continued conjuncts are monotone in them; so
+                # NOT Continued only shrinks, the exclusion set only shrinks, and a row can LEAVE
+                # the exclusion set but never ENTER it. An unchanged TOTAL therefore already
+                # forces set equality, and the symmetric difference CONFIRMS THE ARITHMETIC
+                # rather than adding an independent fact. The two directions are emitted
+                # separately so the subset relation is measured, not argued.
+                "rows_excluded_by_the_COUNTERFACTUAL_but_not_by_the_ADOPTED_rule": int(
+                    (_exc & ~_exc_adopted).sum()),
+                "rows_excluded_by_the_ADOPTED_rule_but_not_by_the_COUNTERFACTUAL": int(
+                    (_exc_adopted & ~_exc).sum()),
+                "counterfactual_exclusion_set_is_a_SUBSET_of_the_adopted_set": bool(
+                    int((_exc & ~_exc_adopted).sum()) == 0),
+                "symmetric_difference_is_FORCED_by_monotonicity_given_an_unchanged_total": True,
             }
         assert cell["rows_examined"] > 0, (
             "the outcome-flip counterfactual looked at zero rows on " + _pname + ": an empty "
@@ -1045,6 +1127,84 @@ def main():
     }
     flips["VACUOUS_ON_THIS_BUILD"] = all(
         v == 0 for k, v in flips["THE_FOUR_NUMBERS"].items() if k != "reading")
+    # ---- (C) THE MONOTONICITY THE SYMMETRIC DIFFERENCE RESTS ON, MEASURED ------------------
+    # Red Team eighth pass, item (C), against this arm. The previous build wrote: "a total that
+    # does not move can still be a different set of rows, and that is what the symmetric
+    # difference rules out." TRUE IN GENERAL, FALSE HERE -- and a warrant that is one notch
+    # stronger than what the structure allows is the shape CLAUDE.md's third blindness class
+    # names, because every statistic in it is correct.
+    #
+    # The date-level form RELAXES both bounds. So, per row:
+    #   kA_dl  >= kA        A only gains episodes
+    #   kAH_dl >= kAH       A_H only gains episodes
+    #   mH_dl  >= mH        max over a superset
+    # and every Continued conjunct is monotone NON-DECREASING in those:
+    #   (kA >= 1)          monotone in kA
+    #   (kAH >= need2)     monotone in kAH
+    #   (mH == F2)         monotone because set membership bounds mH <= F2, so it can only reach
+    #                      F2 and never leave it
+    # Therefore Continued only turns ON, NOT Continued only turns OFF, and the exclusion set
+    # `silent & ~cont` only SHRINKS. A row can LEAVE the exclusion set; none can ENTER it. Given
+    # an unchanged TOTAL that already forces set equality, so the symmetric difference CONFIRMS
+    # THE ARITHMETIC and is not an independent fact. Every clause above is measured below rather
+    # than asserted -- including mH <= F2, which is what makes the third conjunct monotone.
+    _mono = {"ruling": "Red Team eighth pass, item (C) against this arm. The measurement stands; "
+                       "the WARRANT on it is corrected. Emitted so the subset relation is a "
+                       "count, not an argument.",
+             "unit": "position-5 rows, both populations pooled at the array level and reported "
+                     "per population below",
+             "build": lib.BUILD_TAG}
+    for _pname, _m in (("APPLY_position_5", pos5), ("DERIV_position_5", pos5d)):
+        _cells = {
+            "rows_examined": int(_m.sum()),
+            "rows_where_kA_decreased_under_the_relaxed_bound": int(
+                (_m & (kA_dl < r["kA"])).sum()),
+            "rows_where_kAH_decreased_under_the_relaxed_bound": int(
+                (_m & (kAH_dl < r["kAH"])).sum()),
+            "rows_where_mH_decreased_under_the_relaxed_bound": int(
+                (_m & (mH_dl < r["mH"])).sum()),
+            "rows_where_mH_exceeds_F2_which_would_break_the_third_conjuncts_monotonicity": int(
+                (_m & (r["mH"] > a.F2)).sum()),
+        }
+        _cells["A_and_A_H_only_GAIN_episodes"] = bool(
+            _cells["rows_where_kA_decreased_under_the_relaxed_bound"] == 0
+            and _cells["rows_where_kAH_decreased_under_the_relaxed_bound"] == 0
+            and _cells["rows_where_mH_decreased_under_the_relaxed_bound"] == 0)
+        for vname, (st_, cont_) in variants.items():
+            _cells[vname] = {
+                "rows_where_Continued_turned_ON": int((_m & cont_ & ~base_cont).sum()),
+                "rows_where_Continued_turned_OFF_which_monotonicity_forbids": int(
+                    (_m & base_cont & ~cont_).sum()),
+                "Continued_is_MONOTONE_under_this_relaxation": bool(
+                    int((_m & base_cont & ~cont_).sum()) == 0),
+            }
+        assert _cells["rows_examined"] > 0, (
+            "the monotonicity check looked at zero rows on " + _pname + ": an empty result and a "
+            "clean result are the same value and only the control knows which it produced")
+        _mono[_pname] = _cells
+    _mono["ALL_THREE_CLAUSES_HOLD_ON_BOTH_POPULATIONS"] = all(
+        _mono[p]["A_and_A_H_only_GAIN_episodes"]
+        and _mono[p]["rows_where_mH_exceeds_F2_which_would_break_the_third_conjuncts_"
+                     "monotonicity"] == 0
+        and all(_mono[p][v]["Continued_is_MONOTONE_under_this_relaxation"] for v in variants)
+        for p in ("APPLY_position_5", "DERIV_position_5"))
+    _mono["consequence"] = (
+        "Because the relaxation only ADDS episodes and every Continued conjunct is monotone in "
+        "them, the counterfactual exclusion set is a SUBSET of the adopted one on every variant "
+        "and both populations. A row can LEAVE the exclusion set and none can ENTER it, so an "
+        "unchanged TOTAL already forces an identical SET. The symmetric difference of 0 is "
+        "therefore a CONFIRMATION OF THE ARITHMETIC, not independent evidence that the sets "
+        "coincide -- which is what the previous build's sentence claimed for it.")
+    _mono["WITHDRAWN_SENTENCE"] = (
+        "a total that does not move can still be a different set of rows, and that is what the "
+        "symmetric difference rules out")
+    _mono["why_the_withdrawal_matters"] = (
+        "the sentence is TRUE OF AN ARBITRARY PERTURBATION and FALSE OF THIS ONE, and every "
+        "figure it sat beside is correct -- CLAUDE.md's third blindness class, a withdrawn "
+        "ARGUMENT built from correct statistics, which no numeric control can see. The still-true "
+        "statistics that are no longer load-bearing: symmetric difference 0 on every variant and "
+        "both populations, and the 55 APPLY rows on which conjunct 2 moves.")
+    flips["MONOTONICITY_OF_THE_RELAXATION"] = _mono
     flips["reading"] = (
         "If every one of the four is 0 the mandate is LOAD-BEARING ON EPISODES BUT NOT ON "
         "OUTCOMES on this data, and that is stated rather than passed silently. A non-zero says "
@@ -1074,6 +1234,22 @@ def main():
                                           "position-5 row sets, build " + lib.BUILD_TAG + ". It "
                                           "is NOT claimed at any other arm and NOT claimed as a "
                                           "structural property of the rule.",
+        "A_SECOND_WARRANT_IS_WITHDRAWN_ON_THIS_BUILD": {
+            "the_withdrawn_sentence": "a total that does not move can still be a different set of "
+                                      "rows, and that is what the symmetric difference rules out",
+            "why_it_is_wrong": "one notch stronger than the structure allows. The date-level form "
+                               "RELAXES both bounds, so A and A_H only gain episodes and all "
+                               "three Continued conjuncts are monotone in them; the exclusion set "
+                               "can only SHRINK, so an unchanged TOTAL already forces an "
+                               "identical SET. The sentence is true of an arbitrary perturbation "
+                               "and false of this one.",
+            "what_replaces_it": "the symmetric difference of 0 CONFIRMS THE ARITHMETIC and is not "
+                                "independent evidence. The subset direction and every "
+                                "monotonicity clause are MEASURED -- see "
+                                "MONOTONICITY_OF_THE_RELAXATION -- rather than argued.",
+            "the_measurement_is_unchanged": True,
+            "source": "Red Team eighth pass, item (C) against this arm",
+        },
         "build": lib.BUILD_TAG,
     }
     _mv = {}
@@ -2273,7 +2449,52 @@ def main():
                                                                 "guarantee; this one adds "
                                                                 "VISIBILITY, not power.",
                   "SUPERSEDED_the_assertion_set_has_EIGHT_members": "superseded by decisions/0088 "
-                                                                    "SS1(c); the set is NINE"},
+                                                                    "SS1(c); the set is NINE",
+                  # ---- (B) THE HEADLINE ITSELF IS AN ARM-AGAINST-ARM DIVERGENCE --------------
+                  # Red Team eighth pass, item (B) against this arm. Reported, NOT reconciled
+                  # (CLAUDE.md: "Any divergence is either a bug or an ambiguity in the spec.
+                  # Report it. Do not reconcile it."). This arm does not read the other arm's
+                  # output; the fact that the other arm publishes a TWO-WAY split is carried from
+                  # Red Team's pass, and the SHAPE of this arm's split is derived from its own
+                  # label strings immediately above, never typed.
+                  "ARM_AGAINST_ARM_DIVERGENCE_ON_THE_HEADLINE_SHAPE": {
+                      "status": "REPORTED, NOT RECONCILED",
+                      "source_of_the_other_arm_s_shape": "Red Team's eighth pass, relayed in this "
+                                                         "run's launch instruction. This arm did "
+                                                         "NOT read the other arm's output folder "
+                                                         "and does not know its counts.",
+                      "this_arm_publishes": "a THREE-WAY split over the nine labels",
+                      "this_arm_split_derived_from_its_own_labels": {
+                          "CODE CHECK": sum(1 for i in inv if i["label"] == "CODE CHECK"),
+                          "CODE CHECK BY CONSTRUCTION, DATA CHECK AS SPECIFIED":
+                              sum(1 for i in inv if i["label"].startswith("CODE CHECK BY")),
+                          "DATA CHECK": sum(1 for i in inv if i["label"] == "DATA CHECK")},
+                      "the_other_arm_publishes": "a TWO-WAY split over the SAME nine labels",
+                      "why_this_is_a_divergence_and_not_a_disagreement_about_a_number":
+                          "the nine labels are identical and every per-check label reconciles. "
+                          "What differs is HOW MANY CLASSES THE HEADLINE COLLAPSES THEM INTO, and "
+                          "the spec fixes the label vocabulary at three -- CODE CHECK, CODE CHECK "
+                          "BY CONSTRUCTION/DATA CHECK AS SPECIFIED, DATA CHECK -- while the "
+                          "sentence a reader takes away is the headline. A two-way headline folds "
+                          "the code-check-by-construction member into one side or the other, and "
+                          "which side is not stated anywhere, so two readers get two different "
+                          "counts of what can fail.",
+                      "the_spec_s_own_sentence_is_three_way":
+                          "task-sheet.md and both analytics-engineer files read 'THE ASSERTION "
+                          "SET NOW HAS NINE MEMBERS: SIX pure code checks, one "
+                          "code-by-construction with force only as specified, and TWO that can "
+                          "fail on real data.' This arm's headline is that sentence's shape.",
+                      "why_neither_arm_flagged_it": "the dual diff compares FIGURES, and 6 + 1 + 2 "
+                                                    "and a two-way collapse of the same nine "
+                                                    "labels contain the same per-check labels. "
+                                                    "The divergence is in the presentation the "
+                                                    "diff does not read -- and reading agreement "
+                                                    "into two different headlines over one label "
+                                                    "set is what this entry stops.",
+                      "not_reconciled": "this arm does not change its headline to match, and does "
+                                        "not assert the other arm's is wrong. The Human Lead "
+                                        "diffs.",
+                      "build": lib.BUILD_TAG}},
               "all_passed": all(i["passed"] for i in inv)}
 
     # the coverage identity is itself checked, on every stated population of every invariant

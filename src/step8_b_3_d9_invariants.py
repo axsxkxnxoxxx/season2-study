@@ -450,13 +450,63 @@ def d9(m: dict, frame: pd.DataFrame, st1: dict) -> dict:
         "sides": {"A_side_S1_not_S2": int(len(a_side)), "B_side_S2_not_S1": int(len(b_side)),
                   "both_seasons": int(len(both_side))},
         # decisions/0088 Sec 2(b) -- NAME WHAT EACH COVERAGE FIGURE COUNTS, AT THE
-        # POINT OF USE. 747,478 and 726,103 are DIFFERENT OBJECTS and both correct:
-        # a user-show carrying two seasons contributes TWO ROWS AND ONE PAIR.
-        # Reconciling them would collapse two real quantities into one.
+        # POINT OF USE.
+        #
+        # ***CORRECTED THIS RUN. decisions/0089 Sec 2(b) corrected 0088 Sec 2(b)'s
+        # AXIS, and this arm went on republishing the superseded characterisation
+        # for two entries -- Red Team eighth pass, F1, and the occasion of
+        # decisions/0093.*** 0088 Sec 2(b) called 747,478 "undeduplicated
+        # season-coverage rows". IT IS NOT. 0089 Sec 2(b): "It is distinct
+        # (user, show) pairs", and the label had been taken from the previous
+        # artifact's own mislabelled key. So 747,478 and 726,103 are TWO ARMS'
+        # VALUES OF THE SAME KIND OF OBJECT measured over different universes --
+        # NOT a pair count against a row count.
+        #
+        # This arm's own row count is 1,007,729 and its own pair count 726,103,
+        # and the -r6 build asserted the superseded characterisation in prose
+        # while its own table six lines below gave 1,007,729 for that label. The
+        # ruling was in decisions/ and in the spec and not in this emitter, which
+        # is exactly what 0093 was written about.
         "COVERAGE_QUANTITIES_EACH_NAMED": {
             "ruling": ("decisions/0088 Sec 2 -- one name over two quantities is not a "
                        "divergence, and reconciling would collapse two real objects into one. "
                        "Each quantity below states what it counts and over what"),
+            "THE_747478_CHARACTERISATION_WAS_CORRECTED_BY_0089_Sec_2b": {
+                "SUPERSEDED_characterisation": ("decisions/0088 Sec 2(b) -- '747,478 is "
+                                                "undeduplicated user-show SEASON-COVERAGE ROWS, "
+                                                "726,103 is distinct candidate (user, show) "
+                                                "PAIRS'. THE AXIS IS WRONG"),
+                "the_correction": ("decisions/0089 Sec 2(b) -- 747,478 IS DISTINCT (user, show) "
+                                   "PAIRS. The other arm's undeduplicated row count is a "
+                                   "different number again. 0088's label was taken from the "
+                                   "previous artifact's own `user_show_coverage_rows_"
+                                   "undeduplicated` key, which was itself part of what F2 "
+                                   "flagged as mislabelled. The RULING's conclusion is "
+                                   "unaffected and is implemented; only the axis it named was "
+                                   "wrong"),
+                "so_the_two_figures_are_the_SAME_KIND_of_object": (
+                    "two arms' distinct (user, show) pair counts over DIFFERENT UNIVERSES, not "
+                    "a row count against a pair count. They are still two objects and still are "
+                    "not reconciled -- but the reason is the universe, not the unit"),
+                "the_relation_decisions_0093_Sec_3c_publishes": (
+                    "747,478 distinct pairs LESS 21,376 S3-only pairs = 726,102, against this "
+                    "arm's 726,103. That is the ONE-PAIR divergence both arms already report "
+                    "(decisions/0089 Sec 3: the S1-only class differs by 1, 435,642 against "
+                    "435,643, while the other two classes agree exactly). REPORTED, NOT "
+                    "RECONCILED"),
+                "where_these_numbers_come_from": (
+                    "decisions/0088, 0089 and 0093 -- spec surfaces this instance is required to "
+                    "read. NOT from the other arm's output folder, which this instance does not "
+                    "open"),
+                "THIS_ARMS_OWN_VALUES_ARE_BELOW_AND_ARE_MEASURED_HERE": (
+                    "pair count and season-coverage row count, each named for what it counts"),
+                "why_this_is_recorded_rather_than_silently_fixed": (
+                    "decisions/0093 -- a ruling is not closed until the ARTIFACTS carry it. 0089 "
+                    "Sec 2(b) was recorded, propagated to task-sheet.md and both agent files, "
+                    "and passed every control while this arm's deliverables went on publishing "
+                    "the superseded characterisation, because an arm's deliverables only change "
+                    "on a RUN. This run is where it closes"),
+            },
             "THIS_ARM_PUBLISHES_AS_ITS_HEADLINE": "distinct_candidate_user_show_PAIRS",
             "distinct_candidate_user_show_PAIRS": {
                 "value": int(len(cov)),
@@ -469,10 +519,17 @@ def d9(m: dict, frame: pd.DataFrame, st1: dict) -> dict:
                 "value": int(len(a_side) + len(b_side) + 2 * len(both_side)),
                 "counts": ("(user, show, season) rows over the same universe -- a user-show "
                            "carrying both seasons contributes TWO rows and ONE pair"),
-                "why_emitted": ("0088 Sec 2(b) names this as a DIFFERENT OBJECT from the pair "
-                                "count, both correct. It is measured here so this arm's own "
-                                "value of the object exists and is not inferred from the "
-                                "other's"),
+                "why_emitted": ("0088 Sec 2(b) names the season-coverage row count as a "
+                                "DIFFERENT OBJECT from the pair count, both correct. It is "
+                                "measured here so this arm's own value of the object exists and "
+                                "is not inferred from the other's"),
+                "IT_IS_NOT_THE_747478_FIGURE": ("decisions/0089 Sec 2(b) -- 747,478 is a PAIR "
+                                                "count, not a row count. This arm's row count is "
+                                                "its own object and stands beside the pair count "
+                                                "above; the -r6 build wrote 747,478 into this "
+                                                "object's characterisation and its own table "
+                                                "contradicted it six lines below (Red Team "
+                                                "eighth pass, F1)"),
                 "NOT_COMPARABLE_WITHOUT_ITS_MASK": ("this value is over the D11-filtered S1/S2 "
                                                     "episode records only; a season-coverage "
                                                     "row count taken over all seasons, or "
@@ -751,16 +808,24 @@ def main() -> None:
         "the D9 row carries a value that is neither stage 2's sentinel nor this run's "
         f"measurement ({_ds['records_excluded_by_D11']}) -- a stale backfill from an "
         "earlier build")
+    _d9_pre = int(_ds["records_in_the_sites_input_universe"])
+    _d9_post = int(_ds["records_used"])
     _row.update({
         "records_excluded_by_D11": _ds["records_excluded_by_D11"],
-        "records_counted_at_this_site": _ds["records_in_the_sites_input_universe"],
-        "records_examined_at_this_site": _ds["records_in_the_sites_input_universe"],
-        "records_used": _ds["records_used"],
+        # F3 -- both quantities, named. This site was one of the two carrying
+        # the PRE-exclusion count in the old single `examined` column.
+        "records_in_the_INPUT_UNIVERSE_before_D11": _d9_pre,
+        "records_COUNTED_after_D11": _d9_post,
+        "records_examined_at_this_site": _d9_pre,
+        "records_examined_at_this_site_IS": (
+            "the INPUT UNIVERSE before D11, in this site's own unit (Red Team eighth pass, F3)"),
+        "records_used": _d9_post,
         "unit": _ds["unit"],
         "assertion": _ds["assertion"],
         "assertion_holds": _ds["assertion_holds"],
-        "assertion_is_VACUOUS_zero_coverage": (
-            _ds["records_in_the_sites_input_universe"] == 0),
+        "coverage_state": ("EMPTY_INPUT" if _d9_pre == 0
+                           else "FULLY_EXCLUDED" if _d9_post == 0 else "OCCUPIED"),
+        "assertion_is_VACUOUS_zero_coverage": _d9_pre == 0,
         "latest_watched_at_used_utc": _ds["latest_watched_at_used_utc"],
         "note": _ds["note"],
         "BACKFILLED_AT_STAGE_3": (
@@ -771,8 +836,8 @@ def main() -> None:
     })
     assert isinstance(_row["assertion_holds"], bool) and _row["assertion_holds"], (
         "the D9 site's D11 assertion does not hold, or is not a boolean")
-    assert _row["records_examined_at_this_site"] > 0, (
-        "the D9 site examined nothing -- a pass here would be a check that looked nowhere")
+    assert _row["records_in_the_INPUT_UNIVERSE_before_D11"] > 0, (
+        "nothing ENTERED the D9 site -- a pass here would be a check that looked nowhere")
     _tab_b3["sites_deferred_to_another_stage"] = [
         s["site"] for s in _tab_b3["sites"]
         if s["assertion_holds"] is None or s["assertion_holds"] == "PENDING_STAGE_3_BACKFILL"]
@@ -782,24 +847,49 @@ def main() -> None:
         "sites": len(_tab_b3["sites"]),
         "sites_with_a_boolean_assertion": sum(
             1 for s in _tab_b3["sites"] if isinstance(s["assertion_holds"], bool)),
+        # F3: BOTH columns are required at every site now, not one.
+        "sites_with_an_INPUT_UNIVERSE_count": sum(
+            1 for s in _tab_b3["sites"]
+            if isinstance(s.get("records_in_the_INPUT_UNIVERSE_before_D11"), int)),
+        "sites_with_a_COUNTED_after_D11_count": sum(
+            1 for s in _tab_b3["sites"]
+            if isinstance(s.get("records_COUNTED_after_D11"), int)),
         "sites_with_an_examined_count": sum(
             1 for s in _tab_b3["sites"]
             if isinstance(s.get("records_examined_at_this_site"), int)),
+        "coverage_states": {st: [s["site"] for s in _tab_b3["sites"]
+                                 if s.get("coverage_state") == st]
+                            for st in ("EMPTY_INPUT", "FULLY_EXCLUDED", "OCCUPIED")},
         "sites_whose_pass_is_VACUOUS_zero_coverage": [
             s["site"] for s in _tab_b3["sites"]
             if s.get("assertion_is_VACUOUS_zero_coverage")],
+        "sites_FULLY_EXCLUDED_which_are_NOT_vacuous": [
+            s["site"] for s in _tab_b3["sites"]
+            if s.get("coverage_state") == "FULLY_EXCLUDED"],
         "why": ("CLAUDE.md -- a check that finds nothing because it looked nowhere must FAIL, "
                 "not pass, and every path that can return 'nothing found' states whether it "
-                "found nothing or looked at nothing. The examined count was printed at every "
-                "site on the previous build; what was missing is (i) any assertion at the D9 "
-                "site and (ii) any marking that a pass on an EMPTY site is vacuous"),
+                "found nothing or looked at nothing. THE PREVIOUS BUILD MET HALF OF THIS AND "
+                "INVERTED THE OTHER HALF: a count was printed at every site, but it was the "
+                "POST-exclusion count at some sites and the PRE-exclusion count at others, and "
+                "vacuity keyed on it -- so a site whose entire input was post-cutoff would have "
+                "read as VACUOUS having excluded everything (Red Team eighth pass, F3)"),
+        "VACUITY_NOW_KEYS_ON_THE_INPUT_UNIVERSE": True,
     }
-    assert _tab_b3["EVERY_SITE_CARRIES_A_BOOLEAN_ASSERTION_AND_AN_EXAMINED_COUNT"][
-        "sites_with_a_boolean_assertion"] == len(_tab_b3["sites"]), (
+    _ev = _tab_b3["EVERY_SITE_CARRIES_A_BOOLEAN_ASSERTION_AND_AN_EXAMINED_COUNT"]
+    assert _ev["sites_with_a_boolean_assertion"] == len(_tab_b3["sites"]), (
         "a site in the per-site D11 table carries no boolean assertion")
-    assert _tab_b3["EVERY_SITE_CARRIES_A_BOOLEAN_ASSERTION_AND_AN_EXAMINED_COUNT"][
-        "sites_with_an_examined_count"] == len(_tab_b3["sites"]), (
-        "a site in the per-site D11 table carries no examined count")
+    assert _ev["sites_with_an_INPUT_UNIVERSE_count"] == len(_tab_b3["sites"]), (
+        "a site in the per-site D11 table carries no INPUT UNIVERSE count -- the pre-exclusion "
+        "quantity the vacuity test keys on")
+    assert _ev["sites_with_a_COUNTED_after_D11_count"] == len(_tab_b3["sites"]), (
+        "a site in the per-site D11 table carries no post-D11 counted quantity")
+    assert sum(len(v) for v in _ev["coverage_states"].values()) == len(_tab_b3["sites"]), (
+        "a site in the per-site D11 table carries no coverage state")
+    assert _tab_b3["THE_EXCLUSION_COLUMN_IS_NOT_SUMMABLE_AND_THE_ROWS_ARE_NOT_DISJOINT"][
+        "identity_before_minus_after_equals_excluded_at_the_8_action_sites"], (
+        "at an action_count site, INPUT UNIVERSE - COUNTED does not equal the exclusion count -- "
+        "the input universe is being measured on an already-filtered array, which is the F3 "
+        "defect one level down")
     (OUT / "results.json").write_text(json.dumps(R, indent=2, default=str))
 
     # =========================== INVARIANTS ==============================

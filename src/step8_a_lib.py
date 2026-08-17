@@ -59,22 +59,55 @@ SRC = os.path.join(ROOT, "src")
 # emitted with every build record. F7 is a carried limitation, not a ruling; this states the
 # convention rather than proposing one.
 #
-# THE ENTRY THIS BUILD IS LAUNCHED AGAINST IS `0092`, AND `0092` HAS NO FILE IN decisions/.
-# It is recorded in CLAUDE.md (## Artifact sign-off) and in commit 2f7e674, which also carries
-# its task-sheet.md edit (the N2 population requirement on the 168). The convention below names
-# the DECISION ENTRY, so the tag names 0092; that the entry exists on two surfaces and not in
-# decisions/ is REPORTED as a finding rather than worked around by inventing a different tag.
-BUILD_TAG = "a/2026-08-16-0092"
-BUILD_NAME = ("position-5 build of 2026-08-16, instance `a`, RERUN against decisions/0092 -- the "
-              "artifact sign-off rule and the N2 population requirement on the 168 -- together "
-              "with Red Team's SEVENTH pass, six findings against this arm")
+# THE ENTRY THIS BUILD IS LAUNCHED AGAINST IS `0093` -- a ruling is not closed until the ARTIFACTS
+# carry it. The previous build of this arm was tagged 0092 and reported, as a finding, that 0092
+# had NO FILE in decisions/. THAT FINDING IS NOW CLOSED: the entry exists. It is not asserted
+# closed from memory -- the surface-state block in step8_a_5_diagnostics.py counts the files on
+# disk on THIS run and the deliverable's reading is DERIVED from that count, which is exactly the
+# defect 0093 was written against: a claim about a surface that was true when written, published
+# by a rerun that could have contradicted it.
+BUILD_TAG = "a/2026-08-16-0093"
+BUILD_NAME = ("position-5 build of 2026-08-16, instance `a`, RERUN against decisions/0093 -- a "
+              "ruling is not closed until the artifacts carry it -- together with Red Team's "
+              "EIGHTH pass, which closed every blocker against this arm and left three minor "
+              "items, all three against this arm's own text rather than its arithmetic")
 # The long form lives in build_record()["what_moved_on_this_build"], stated ONCE. BUILD_NAME is
 # quoted at every point of use, so a paragraph there is a paragraph repeated forty times -- and a
 # stamp that buries the figure it stamps is worse than a short one that points at it.
 WHAT_MOVED = (
-    "SEVEN THINGS MOVE, none of them a population, a rule, a waterfall line, an outcome share, a "
-    "bound endpoint or an invariant RESULT. Six are Red Team's seventh-pass findings against this "
-    "arm; the seventh is decisions/0092's N2 requirement. "
+    "THREE THINGS MOVE, none of them a population, a rule, a waterfall line, an outcome share, a "
+    "bound endpoint, an invariant RESULT or any measured count. All three are Red Team's "
+    "eighth-pass minor items against this arm, and all three are about TEXT THIS ARM PUBLISHED "
+    "rather than about what it computed. "
+    "(A) A HARDCODED CONCLUSION STRING SAT BESIDE LIVE COUNTS. The surface-state block measured "
+    "four surfaces on disk at run time and then published a fixed sentence -- '0092's N2 edit "
+    "reached surface 1 and no other' -- which a rerun can contradict and DID: the agent files and "
+    "second-brain now carry the correction, and decisions/0092 now has a file. The READING IS NOW "
+    "DERIVED FROM THE MEASUREMENT, per-surface, with both the stale form and the corrected form "
+    "counted on every surface (CLAUDE.md's negative AND positive halves). SS9 items 20 and 21 are "
+    "regenerated from those counts and now report CLOSED. THIS IS decisions/0093's OWN MECHANISM "
+    "SEEN FROM INSIDE AN ARM: the ruling was recorded, propagated and passing every control while "
+    "this arm's artifact still published the superseded reading, because an artifact only changes "
+    "on a run. "
+    "(B) THE FALSIFIABILITY HEADLINE IS AN ARM-AGAINST-ARM DIVERGENCE AND NEITHER ARM FLAGGED IT. "
+    "This arm publishes a THREE-WAY split over the nine labels -- 6 pure CODE CHECK + 1 CODE CHECK "
+    "BY CONSTRUCTION/DATA CHECK AS SPECIFIED + 2 DATA CHECK -- derived from the label strings, and "
+    "the spec's own sentence is three-way. The other arm publishes a TWO-WAY split over the same "
+    "nine labels. REPORTED AS A DIVERGENCE, NOT RECONCILED, and this arm does not read the other "
+    "arm's output: the fact is carried from Red Team's eighth pass. "
+    "(C) THE SYMMETRIC-DIFFERENCE-0 WARRANT WAS ONE NOTCH STRONGER THAN THE MONOTONICITY ALLOWS. "
+    "The measurement is right and unchanged; the sentence 'a total that does not move can still be "
+    "a different set of rows, and that is what the symmetric difference rules out' is WITHDRAWN. "
+    "The date-level counterfactual RELAXES both bounds, so A and A_H only gain episodes; all three "
+    "Continued conjuncts are monotone in them; so the counterfactual exclusion set is a SUBSET of "
+    "the adopted one and an unchanged TOTAL already forces set equality. The subset direction and "
+    "each conjunct's monotonicity are now MEASURED and emitted rather than argued, and the "
+    "symmetric difference is labelled as CONFIRMING THE ARITHMETIC, not as independent evidence. "
+    "PRIOR BUILD a/2026-08-16-0092 MOVED SEVEN THINGS, none of them a population, a rule, a "
+    "waterfall line, an outcome share, a bound endpoint or an invariant RESULT. Six were Red "
+    "Team's seventh-pass findings against this arm; the seventh was decisions/0092's N2 "
+    "requirement. They are retained here because a build record that drops what an earlier build "
+    "corrected cannot tell a fix from a drift. "
     "(1) THE 'INERT ON LINE 6' WARRANT IS WITHDRAWN and the claim is rescoped. The previous "
     "deliverable said line 6 does not move under the date-level counterfactual 'because the "
     "silence test reads an insertion clock, not an episode timestamp'. That is a property of "
@@ -113,8 +146,9 @@ WHAT_MOVED = (
     "step8_a_2_positions.py, legitimately -- [[T0]] is day-floored by Step 1 SS2.4 and SS5.6a's "
     "own argument depends on it. The claim is corrected to the true and narrower one: no "
     "day-flooring in any BOUNDARY TEST. "
-    "PRIOR BUILDS OF THIS INSTANCE: a/2026-08-16-0090 (what Red Team's sixth and seventh passes "
-    "reviewed), a/2026-08-16-0088 (fifth), a/2026-08-16-0085 (fourth), the pre-0085 run (third).")
+    "PRIOR BUILDS OF THIS INSTANCE: a/2026-08-16-0092 (what Red Team's EIGHTH pass reviewed), "
+    "a/2026-08-16-0090 (sixth and seventh), a/2026-08-16-0088 (fifth), a/2026-08-16-0085 "
+    "(fourth), the pre-0085 run (third).")
 STAGE_FILES = ["step8_a_lib.py", "step8_a_1_scan.py", "step8_a_2_positions.py",
                "step8_a_3_table.py", "step8_a_4_arms.py", "step8_a_4b_slugs.py",
                "step8_a_5_diagnostics.py", "step8_a_6_emit.py", "step8_a_run.py"]
@@ -166,7 +200,7 @@ def build_record():
                    "processed/step2/frame.csv": _sha(os.path.join(ROOT, "processed/step2/frame.csv")),
                    "processed/step4/pull_ledger.jsonl": _sha(
                        os.path.join(ROOT, "processed/step4/pull_ledger.jsonl"))},
-        "spec_read": "task-sheet.md Step 8 as it stands, plus decisions/0066-0090",
+        "spec_read": "task-sheet.md Step 8 as it stands, plus decisions/0066-0093",
         "relation_to_the_2026_08_13_build": "this build reproduces the figures decisions/0078 and "
                                             "0079 restate on the position-5 build of 2026-08-13 "
                                             "(58,345 pairs; 324 of 5,694; 178 of 2,549; 703/99). "

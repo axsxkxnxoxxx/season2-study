@@ -271,6 +271,52 @@ def main() -> None:
                                        ("scrobble", 2), ("other", -1))},
         }
 
+    # ---- THE INPUT UNIVERSE, PER SITE, IN THE SITE'S OWN UNIT ---------------
+    # Red Team eighth pass, F3, against THIS ARM: the per-site table's single
+    # `examined` column held TWO DIFFERENT QUANTITIES -- post-exclusion at A,
+    # A_H and the eight action_count_* sites, pre-exclusion at the liveness and
+    # D9 sites. The vacuity test keys on that count, so A SITE WHOSE ENTIRE
+    # INPUT WAS POST-CUTOFF would report `examined = 0` and be labelled VACUOUS
+    # -- "this site examined 0 records" -- having examined and excluded
+    # everything. That is the opposite of the finding.
+    #
+    # So both quantities are measured here, IN THE SITE'S OWN UNIT, and the
+    # table below carries them as two columns:
+    #   BEFORE_D11 -- what entered the site. Vacuity keys on THIS.
+    #   AFTER_D11  -- what the site counted.
+    # A and A_H count DISTINCT IN-E EPISODES at their canonical instant, not
+    # records, so `BEFORE = AFTER + records_excluded` is FALSE for them: an
+    # episode with one post-cutoff and one pre-cutoff record survives. The
+    # episode-unit universe is therefore measured directly rather than derived.
+    _pu = r_user[m12_pre].astype(np.int64)
+    _ps = show_idx[m12_pre].astype(np.int64)
+    _pse = r_season[m12_pre].astype(np.int64)
+    _pn = r_number[m12_pre].astype(np.int64)
+    _pdrop = d11_drop[m12_pre]
+    _pbad = (_pn < 0) | (_pn >= 4096)
+    _pcode = np.where(_pbad, -1,
+                      (show_ids[_ps] << 20) | (_pse << 12) | np.clip(_pn, 0, 4095))
+    _pinE = np.isin(_pcode, valid_codes) & ~_pbad
+    _pep = (_pu * n_shows + _ps) * 8192 + _pse * 4096 + np.clip(_pn, 0, 4095)
+    # per-site slot on the PRE-D11 array, for the eight action_count_* sites
+    _pact = r_action[m12_pre].astype(np.int64)
+    _pre_slot = np.where(_pinE, (_pse - 1) * 4 + np.where(_pact < 0, 3, _pact), -1)
+    _pre_drop = _pdrop
+
+    def _ep_universe(season: int) -> dict:
+        m = _pinE & (_pse == season)
+        before = int(len(np.unique(_pep[m])))
+        after = int(len(np.unique(_pep[m & ~_pdrop])))
+        return {
+            "distinct_in_E_episodes_BEFORE_D11": before,
+            "distinct_in_E_episodes_AFTER_D11": after,
+            "distinct_in_E_episodes_D11_REMOVES_ENTIRELY": before - after,
+            "why_this_is_not_records_excluded": (
+                "an episode carrying both a post-cutoff and a pre-cutoff record survives D11, "
+                "so the episode-unit loss is smaller than the record-unit exclusion and the "
+                "two are not derivable from each other. Measured, not derived"),
+        }
+
     prov["D11_record_level_footprint"] = {
         "rule": ("decisions/0088 Sec 1(b) -- the per-site D11 table. This block is the "
                  "RECORD-LEVEL input each site's row is computed from; the assembled table, "
@@ -280,6 +326,15 @@ def main() -> None:
         "S2_side": _side(2),
         "records_in_the_whole_sweep_at_or_after_tau_pull":
             int(d11_drop.sum()),
+        "in_frame_S1_S2_records_BEFORE_D11": int(m12_pre.sum()),
+        "EPISODE_UNIT_INPUT_UNIVERSE_for_the_A_and_A_H_sites": {
+            "why": ("Red Team eighth pass F3 -- the per-site `examined` column mixed pre- and "
+                    "post-exclusion quantities, and the vacuity test keys on it. A and A_H are "
+                    "in DISTINCT IN-E EPISODES, so their input universe is measured in that "
+                    "unit here rather than inferred from a record count"),
+            "S1": _ep_universe(1),
+            "S2": _ep_universe(2),
+        },
         "coverage": (f"{int(m12_pre.sum()):,} in-frame S1/S2 episode records were tested "
                      f"against tau_pull; {int(_dsel.sum())} are at or after it. This is a "
                      "measured count on an examined population, not an empty look"),
@@ -341,6 +396,33 @@ def main() -> None:
             _slotname[k]: int(((~pre_cutoff) & (_slot_all == k)).sum()) for k in range(8)},
         "records_used_per_site": {
             _slotname[k]: int((pre_cutoff & (_slot_all == k)).sum()) for k in range(8)},
+        # Red Team eighth pass F3. The site's INPUT UNIVERSE, measured in the
+        # site's own unit -- not `used + excluded` inferred in prose. Vacuity
+        # keys on THIS, so that a site whose whole input was post-cutoff reads
+        # as FULLY EXCLUDED rather than as "examined nothing".
+        #
+        # MEASURED ON `m12_pre`, NOT ON THE POST-MASK ARRAY. The S2 side is
+        # already D11-filtered by the `m12` mask above, so counting the input
+        # universe on the post-mask array would report a number that is ALREADY
+        # POST-EXCLUSION and label it "before D11" -- reintroducing the exact
+        # two-quantities-one-label defect this block exists to fix, one level
+        # down. The S1 side is deliberately NOT filtered there (0068's line-1
+        # exception), so only the S2 side would have been wrong, which is how
+        # it would have gone unnoticed.
+        "records_in_the_input_universe_per_site_BEFORE_D11": {
+            _slotname[k]: int((_pre_slot == k).sum()) for k in range(8)},
+        "records_in_the_input_universe_per_site_AFTER_D11": {
+            _slotname[k]: int(((_pre_slot == k) & ~_pre_drop).sum()) for k in range(8)},
+        "input_universe_is_measured_on": (
+            "m12_pre & in_E -- in-frame S1/S2 episode records in the season's listed set, BEFORE "
+            "the D11 mask. `records_used_per_site` is measured on the post-mask array, so on the "
+            "S2 side the two differ by exactly the upstream exclusion and on the S1 side they "
+            "differ by this site's own"),
+        "sites_with_no_records_in_the_INPUT_UNIVERSE": [
+            _slotname[k] for k in range(8) if not (_pre_slot == k).any()],
+        "sites_whose_ENTIRE_input_universe_is_post_cutoff": [
+            _slotname[k] for k in range(8)
+            if (_pre_slot == k).any() and not ((_pre_slot == k) & ~_pre_drop).any()],
         "pairs_whose_action_counts_move_because_D11_is_now_applied_here":
             int(len(np.unique(pair_code[~pre_cutoff]))),
         # The per-site assertion is MEASURED, not inferred from the mask that

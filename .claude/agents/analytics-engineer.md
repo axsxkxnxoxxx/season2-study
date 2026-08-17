@@ -246,7 +246,7 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
           that survived the frame filters** — a frame-restricted universe finds only splits where **both
           sides made the cut**, and **a bound computed on a narrow slice bounds very little.**
           ***RECORDED WITH IT: D9's SEARCH ALREADY RUNS ON THE WHOLE SWEEP IN BOTH ARMS*** (726,103
-          candidate `(user, show)` pairs; 747,478 season-coverage rows), **so this does NOT widen what D9
+          candidate `(user, show)` pairs; 747,478 **distinct `(user, show)` pairs**) ***CORRECTED `0089` §2(b), propagated 2026-08-16 (`0094`): 747,478 IS DISTINCT `(user, show)` PAIRS. ~~undeduplicated season-coverage rows~~ — that axis was `0088` §2's and is WRONG. Arm A's undeduplicated row count is 1,217,122; arm B's own row object is 1,007,729 over a different mask. The relation that DOES hold: 747,478 − 21,376 S3-only = 726,102 against arm B's 726,103, the one-pair divergence both arms report.***, **so this does NOT widen what D9
           finds and the strict/loose counts are unchanged.** **It fixes WHICH CLUSTERS ARE ILLUSTRATED** —
           the evidence for the loose key's only warrant — **and makes both arms' `U1` ONE defined object**
           instead of two sets 62 apart under a shared label. **RANK BY DISTINCT STRICT KEYS MERGED** (how

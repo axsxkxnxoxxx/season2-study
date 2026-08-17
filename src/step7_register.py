@@ -137,6 +137,14 @@ DECLARE_JSON_PATH = r"_DERIVED|_scope|superseded_strings|SUPERSEDED_computed_und
 # So the register now holds phrases as well as values. Each is a fragment of a claim that has
 # been withdrawn; every occurrence outside a strikethrough or a withdrawal note is a defect.
 WITHDRAWN_PHRASES = {
+    "can still be a different set of rows": (
+        "arm a's symmetric-difference-0 warrant, published as strictly stronger than the "
+        "unchanged exclusion total. FALSE on this counterfactual: the perturbation is "
+        "monotone, so an unchanged total already forces set equality. Withdrawn 0094 SS2"),
+    "reached surface 1 and no other": (
+        "arm a's hardcoded propagation reading, published beside live counts that a rerun "
+        "can contradict -- and did. Now derived per surface with both halves. Withdrawn 0094 SS1"),
+
     "which is the proof": (
         "cited the never-started ratio (a 0.2813, b 0.27211) as proof that reconciling the "
         "started-and-left conventions was wrong. FALSE: 0.2813 is 0.307138/1.092, arm b's "
@@ -165,6 +173,21 @@ WITHDRAWN_PHRASES = {
 # name the statistics that remain TRUE but are no longer load-bearing, so a later reader can
 # recognise the argument by what it claims.
 GROUNDS_WITHDRAWN = {
+    "0094 SS2": {
+        "argument": "arm a's symmetric-difference-0 published as strictly stronger evidence than "
+                    "the unchanged exclusion total -- 'a total that does not move can still be a "
+                    "different set of rows, and that is what the symmetric difference rules out'",
+        "still_true": [0, 703, 99, 55, 45],
+        "why_not_load_bearing": "TRUE of an arbitrary perturbation, FALSE of this one. Relaxing "
+                                "either bound only ADDS episodes to A and A_H, and both Continued "
+                                "conjuncts are monotone in A_H, so a row can only LEAVE the "
+                                "exclusion set and never enter it -- measured: |A| decreased on 0 "
+                                "rows, |A_H| on 0, m_H on 0, m_H > F2 on 0, Continued turned off on "
+                                "0. An unchanged total therefore ALREADY forces set equality. The "
+                                "symmetric difference confirms the arithmetic; it is not "
+                                "independent evidence. Withdrawn 0094 SS2, Red Team eighth pass F8",
+    },
+
     "0055 SS2": {
         "argument": "the widened S&L floor is warranted because the 90 channel pairs had "
                     "full opportunity to produce evidence (p5 margin 1.7 days, minimum 0.13)",
@@ -186,6 +209,165 @@ GROUNDS_WITHDRAWN = {
                                 "argument; citing them as p = 1.0 TOTALS is correct",
     },
 }
+
+# ============================================================================
+# SUPERSEDED STRING NEEDLES -- the TEXTUAL half, for propagation SURFACE 6.
+#
+# Added 2026-08-16 by analytics-engineer-b, on Red Team's eighth pass, F2.
+#
+# THIS EXISTS HERE AND NOT IN AN ARM'S SCRIPT BECAUSE CLAUDE.md SAYS SO:
+# "One register, in src/step7_register.py, imported by every script that
+# checks. Two hand-maintained copies diverged by an entry after a single use,
+# and neither held the values that were wrong."
+# The -r6 build of step8_b_4_artifacts.py held a SECOND hand-maintained
+# register of exactly this kind in its own module, which is the arrangement
+# that rule was written against. It now imports these.
+#
+# AND THE MATCHING IS CASE-INSENSITIVE, which is the defect that occasioned
+# the move. The -r6 register's needle was the lower-case `six of eight`; the
+# string actually present in that arm's deliverables, three times, is
+# `six of EIGHT`. The one needle written against the very defect that
+# motivated the control could not see it, and its hits table showed no row
+# for that needle at all -- indistinguishable from a clean pass.
+#
+# Each row is (needle, what it is, what replaces it).
+SUPERSEDED_STRINGS = [
+    ("six of eight", "the pre-0088 assertion-set count in prose",
+     "the count derived from len(inv) and the label field"),
+    ("of eight cannot fail", "the pre-0088 assertion-set count in prose",
+     "N of 9, derived"),
+    ("assertion set now has eight", "the pre-0088 assertion-set count",
+     "NINE (0088 Sec 1c)"),
+    ("seven of the nine", "the self-contradicting cannot-fail count",
+     "six cannot fail; three can fail as specified"),
+    ("even though strict is ruled", "0074 ruling 5's framing",
+     "0090 -- strict is the floor of a published bound"),
+    ("strict is ruled", "0074 ruling 5's framing",
+     "0090 -- strict is the floor of a published bound"),
+    ("the ruled key is strict", "0074 ruling 5's framing", "0090 -- a bound"),
+    ("88 columns", "the pre-0082 column count", "89 names, enumerated"),
+    ("97.6%", "the position-3 censoring share (0033)", "97.40% on position 4 (0070 r8)"),
+    ("793", "ALT-MATCHED's withdrawn liveness answer", "703 on APPLY"),
+    ("1,293", "a deleted liveness threshold (0042)", "the rule is parameter-free"),
+    ("95.98%", "D3prime on the uncensored estimation sample (0034)",
+     "99.53% on Step 8's right-censored APPLY (0075)"),
+    ("91.34%", "D3prime on the uncensored estimation sample (0034)",
+     "97.73% at W = 213 on APPLY (0075)"),
+    # Red Team eighth pass, F1 -- 0089 Sec 2(b) corrected 0088 Sec 2(b)'s AXIS,
+    # and one arm republished the superseded characterisation for two entries
+    # while its own table contradicted it six lines below. 747,478 is a PAIR
+    # count, not a season-coverage ROW count.
+    ("747,478 and 726,103 are different objects",
+     "0088 Sec 2(b)'s characterisation, corrected by 0089 Sec 2(b)",
+     "747,478 is DISTINCT (user, show) PAIRS; the axis was wrong, not the conclusion"),
+]
+# A SUBSTRING NEEDLE CANNOT EXPRESS THE 747,478 DEFECT ON ITS OWN.
+# The superseded claim is an ATTRIBUTION -- "747,478 is a season-coverage ROW
+# count" -- and it survives any rewording, any markdown emphasis inside the
+# sentence, and any reordering. A needle for one phrasing would sit at zero
+# forever while the claim reappeared in another. So the substring needle above
+# covers the exact -r6 sentence, and the ATTRIBUTION is covered by a line-local
+# co-occurrence control asserted by the importing script:
+#
+#   every line containing `747,478` must EITHER be marked as superseded OR
+#   characterise the figure as PAIRS -- never as rows.
+#
+# Named here so the register states what covers the defect, per CLAUDE.md's
+# rule that a withdrawn or unexpressible needle names the stronger control.
+SURFACE6_LINE_LOCAL_CONTROLS = {
+    "747478_is_a_PAIR_count_not_a_ROW_count": {
+        "rule": ("every line mentioning 747,478 must be marked as superseded, or must "
+                 "characterise it as distinct (user, show) PAIRS. A line calling it "
+                 "season-coverage ROWS, or mentioning it with no characterisation at all, "
+                 "fails"),
+        "ruling": "decisions/0089 Sec 2(b), correcting 0088 Sec 2(b)'s axis",
+        "why_not_a_needle": ("the defect is an ATTRIBUTION, not a phrasing. A substring needle "
+                             "covers one wording and sits at zero while the claim returns in "
+                             "another"),
+        "needle": "747,478",
+        "must_contain_one_of": ("pair", "pairs"),
+        "must_not_contain": ("season-coverage row", "season coverage row", "coverage rows"),
+    },
+}
+
+# Needles TRIED AND WITHDRAWN. CLAUDE.md: "Registering a string as a false
+# positive disarms the control against it. Do it only when the legitimate
+# reading is verified live under the ADOPTED rule, and withdraw the row the
+# moment it stops being." So each names the STRONGER control that covers it,
+# and the importing script asserts that control live rather than citing it.
+NEEDLES_WITHDRAWN = {
+    "f2_in_A_H": {
+        "why_it_fired": ("every occurrence in Step 8's artifacts is a line EXPLAINING that the "
+                         "column is dropped as derivable -- which the spec requires be stated. "
+                         "The string is supposed to be present"),
+        "covered_instead_by": ("a SET assertion on the emitted table: "
+                               "`assert set(tab.columns) == set(COLUMNS_89)`, plus the "
+                               "emitted-order check. 0077's own words: 'Matching a count is not "
+                               "matching a set -- assert on the names.' A name assertion is "
+                               "strictly stronger than a substring grep"),
+        "verified_live_this_run": "column_set_is_asserted_on_NAMES_not_on_a_count",
+    },
+    "thetwilightzone": {
+        "why_it_fired": ("the U3 cluster list is EMITTED ON PURPOSE, beside U1 and U2, so an arm "
+                         "on another universe is diffable without a rerun. 0088 Sec 3 supersedes "
+                         "it as THE ILLUSTRATION, not as a measurement"),
+        "covered_instead_by": ("an assertion that the PUBLISHED illustration is U1's ranked list "
+                               "and that its universe and ranking basis are named at the point "
+                               "of use. A line-local string test cannot express 'which list is "
+                               "the illustration', which is what 0088 Sec 3 rules"),
+        "verified_live_this_run": "ruled_illustration_is_U1",
+    },
+}
+
+# A hit is LEGITIMATE if its line names the string as superseded, withdrawn,
+# corrected, struck, or attributes it to a previous build -- CLAUDE.md's "a grep
+# hit is not a defect until you read the line", and "except where a string is
+# explicitly named as superseded at the point of use".
+#
+# COMPARED CASE-INSENSITIVELY, like the needles. The marker list previously held
+# both cases of several words for that reason; the duplicates are gone because
+# the comparison, not the list, is what handles case.
+SURFACE6_MARKERS = (
+    "superseded", "supersede", "withdrawn", "~~", "-r4", "-r5", "-r6",
+    "r4 build", "r5 build", "r6 build", "r4 claim", "r4_claim", "struck",
+    "corrected", "no longer true", "no longer", "previous build",
+    "was measured on the wrong", "another universe's answer", "dropped",
+    "not produced", "not an endpoint", "deleted", "never produced", "red team",
+    "defect", "replaces", "former", "pre-", "old ", "this arm's own defect",
+)
+
+
+def surface6_needle_count(line, needle):
+    """Count occurrences of `needle` in `line`, CASE-INSENSITIVELY, with a digit
+    boundary on numeric needles.
+
+    The digit boundary was found by this control on its own first run: `793`
+    matched inside `"retained_pct": 95.86793198892843`. CLAUDE.md records the
+    general shape -- textual grep cannot see the JSONs, which is why the study's
+    numeric control matches numerically at a tolerance. This is the textual
+    half's minimum defence. It NARROWS THE MATCH RULE and disarms no string.
+    """
+    low, nd = line.lower(), needle.lower()
+    n = low.count(nd)
+    if not n or not nd[0].isdigit():
+        return n
+    kept, start = 0, 0
+    while True:
+        j = low.find(nd, start)
+        if j < 0:
+            return kept
+        before = low[j - 1] if j else ""
+        after = low[j + len(nd)] if j + len(nd) < len(low) else ""
+        if not (before.isdigit() or before == "." or after.isdigit()):
+            kept += 1
+        start = j + 1
+
+
+def surface6_line_is_marked(line):
+    """True if the line names its own string as superseded, case-insensitively."""
+    low = line.lower()
+    return any(mk in low for mk in SURFACE6_MARKERS)
+
 
 # KNOWN LIMIT, recorded 2026-08-13 (0060), found by Red Team on review 13.
 # Both controls walk NUMERIC LEAVES only. A superseded figure written inside a JSON STRING

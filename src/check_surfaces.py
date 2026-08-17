@@ -218,7 +218,12 @@ def scan_phrases():
                             start = k + 1
                             a_, b_ = linemap[k], linemap[min(k + len(phrase), len(linemap) - 1)]
                             ctx = "\n".join(vlines[max(0, a_ - 1 - CONTEXT):b_ + CONTEXT])
-                            if not STRUCK.search(ctx):
+                            # 0094: the marker may live in the JSON KEY rather than in the value.
+                            # A field named `..._WITHDRAWN_SENTENCE` or `WITHDRAWN_CLAIM` IS the
+                            # point-of-use marker CLAUDE.md requires -- structure, not prose. The
+                            # .md branch has no analogue because a line has no key. Found when the
+                            # phrase half fired on an arm's own correctly-marked withdrawal note.
+                            if not STRUCK.search(ctx) and not STRUCK.search(p):
                                 hits.append((surface, f, p, phrase, why,
                                              " ".join(vlines[a_ - 1:b_]).strip()[:110]))
                 continue

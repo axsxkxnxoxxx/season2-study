@@ -651,7 +651,7 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
       might be, and a bound computed on a narrow slice bounds very little.**
       ***RECORDED WITH THE RULING, because it changes what the ruling buys: D9's SEARCH ALREADY RUNS ON
       THE WHOLE SWEEP IN BOTH ARMS*** — 726,103 candidate `(user, show)` pairs examined across the
-      sweep, 747,478 season-coverage rows. **So this ruling does NOT widen what D9 finds; the strict and
+      sweep, 747,478 **distinct `(user, show)` pairs**. ***CORRECTED `0089` §2(b), propagated 2026-08-16 (`0094`): 747,478 IS DISTINCT `(user, show)` PAIRS. ~~undeduplicated season-coverage rows~~ — that axis was `0088` §2's and is WRONG. Arm A's undeduplicated row count is 1,217,122; arm B's own row object is 1,007,729 over a different mask. The relation that DOES hold: 747,478 − 21,376 S3-only = 726,102 against arm B's 726,103, the one-pair divergence both arms report.*** **So this ruling does NOT widen what D9 finds; the strict and
       loose counts are unchanged by it.** **It fixes WHICH CLUSTERS ARE ILLUSTRATED**, which is the
       evidence for the loose key's only warrant, and it **makes the two arms' `U1` one defined object**
       rather than two sets 62 apart under a shared label.
@@ -704,8 +704,8 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
       **mislabelled `distinct_show_ids_in_the_sweep`**; its *"0 carry no slug"* clause is therefore
       computed against the wrong base. **Correct the label to what it counts.**
       **(b) NAME WHAT EACH COVERAGE FIGURE COUNTS, AT THE POINT OF USE.** **747,478 and 726,103 ARE
-      DIFFERENT OBJECTS AND ARE BOTH CORRECT**: 747,478 is **undeduplicated user-show SEASON-COVERAGE
-      ROWS**, 726,103 is **distinct candidate `(user, show)` PAIRS**. A user-show carrying two seasons
+      DIFFERENT OBJECTS AND ARE BOTH CORRECT**: 747,478 is ~~**undeduplicated user-show SEASON-COVERAGE
+      ROWS**~~ ***CORRECTED `0089` §2(b), propagated 2026-08-16 (`0094`): 747,478 IS DISTINCT `(user, show)` PAIRS. ~~undeduplicated season-coverage rows~~ — that axis was `0088` §2's and is WRONG. Arm A's undeduplicated row count is 1,217,122; arm B's own row object is 1,007,729 over a different mask. The relation that DOES hold: 747,478 − 21,376 S3-only = 726,102 against arm B's 726,103, the one-pair divergence both arms report.*** 726,103 is **distinct candidate `(user, show)` PAIRS**. A user-show carrying two seasons
       contributes **two rows and one pair**. **THIS IS ONE NAME OVER TWO QUANTITIES, NOT A DIVERGENCE**
       — and **reconciling would collapse two real objects into one**, which the standing rule forbids.
       **Each arm states which it publishes and what it counts.**
