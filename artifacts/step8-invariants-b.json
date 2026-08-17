@@ -51,8 +51,8 @@
       "src/step8_b_1_build.py": "3d8dc00059f37c3e",
       "src/step8_b_1b_slugs.py": "5bd032033c4a5f96",
       "src/step8_b_2_pipeline.py": "488310843745793f",
-      "src/step8_b_3_d9_invariants.py": "5bc57d026a6a93a9",
-      "src/step8_b_4_artifacts.py": "d2fa304b003f2e28",
+      "src/step8_b_3_d9_invariants.py": "557f9ce27d2fa731",
+      "src/step8_b_4_artifacts.py": "ffc192537c9d1eda",
       "src/step8_b_build_id.py": "a0cdbf14a64df173"
     }
   },
@@ -142,7 +142,7 @@
     },
     "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r6 (RERUN on the spec as amended through decisions/0091 and Red Team's SEVENTH pass; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
   },
-  "how_to_read_this_report": "6 of the 9 assertions CANNOT FAIL ON ANY DATA. They are the pure CODE CHECKS -- outcome states are mutually exclusive and sum to the POST-POSITION-7 row set, filter counts decrease monotonically -- CODED AS `>=`, NOT `>`, distinct episodes never exceed season length (|D| <= L), A is a subset of A_H on every row, abandonment point p is in (0, 1] on every Started-and-left row, null elsewhere, no position-5 row has tau2 > tau_pull. 3 CAN fail on data AS SPECIFIED. 2 of those are the genuine DATA CHECKS, both added by decisions/0076 because before it the set had ZERO: no account dropped wholesale, and no access_denied or skipped account read as empty. THE THIRD IS THE CLOCK START, and it is counted here as ABLE TO FAIL rather than as unable: it is a code check BY CONSTRUCTION -- T0 = max() makes all three clauses true of any correct max() -- but AS SPECIFIED (task-sheet.md; decisions/0068) it recomputes the first-pass S1 completion date INDEPENDENTLY, and two implementations can disagree on real records. THAT IS WHAT GIVES IT FORCE, AND A CHECK WITH FORCE IS A CHECK THAT CAN FAIL. ***CORRECTED THIS RUN, Red Team seventh pass, finding 3: this arm's -r4 build published 'SEVEN of the nine assertions CANNOT FAIL ON ANY DATA' and then, in the same sentence, called the seventh a genuine cross-check BECAUSE a value is recomputed independently. Those cannot both hold -- if the recomputation gives it force it can fail on data. The count is now DERIVED FROM THE LABELS rather than typed, so the sentence and the label set cannot diverge again.*** 'All invariants passed' is therefore mostly a statement that the code computed what it was told to; it is NOT evidence for the liveness rule or for any published share.",
+  "how_to_read_this_report": "6 of the 9 assertions CANNOT FAIL ON ANY DATA. They are the pure CODE CHECKS -- outcome states are mutually exclusive and sum to the POST-POSITION-7 row set, filter counts decrease monotonically -- CODED AS `>=`, NOT `>`, distinct episodes never exceed season length (|D| <= L), A is a subset of A_H on every row, abandonment point p is in (0, 1] on every Started-and-left row, null elsewhere, no position-5 row has tau2 > tau_pull. 3 CAN fail on data AS SPECIFIED. 2 of those are the genuine DATA CHECKS, both added by decisions/0076 because before it the set had ZERO: no account dropped wholesale, and no access_denied or skipped account read as empty. THE THIRD IS THE CLOCK START, and it is counted here as ABLE TO FAIL rather than as unable: it is a code check BY CONSTRUCTION -- T0 = max() makes all three clauses true of any correct max() -- but AS SPECIFIED (task-sheet.md; decisions/0068) it recomputes the first-pass S1 completion date INDEPENDENTLY, and two implementations can disagree on real records. THAT IS WHAT GIVES IT FORCE, AND A CHECK WITH FORCE IS A CHECK THAT CAN FAIL. ***CORRECTED THIS RUN, Red Team seventh pass, finding 3: this arm's -r5 build published 'SEVEN of the nine assertions CANNOT FAIL ON ANY DATA' and then, in the same sentence, called the seventh a genuine cross-check BECAUSE a value is recomputed independently. Those cannot both hold -- if the recomputation gives it force it can fail on data. The count is now DERIVED FROM THE LABELS rather than typed, so the sentence and the label set cannot diverge again.*** 'All invariants passed' is therefore mostly a statement that the code computed what it was told to; it is NOT evidence for the liveness rule or for any published share.",
   "counts": {
     "assertions_total": 9,
     "pure_code_checks": 6,
@@ -1266,7 +1266,7 @@
   "coverage_count_not_an_invariant": {
     "item": "the set-membership drop rule",
     "status": "A COVERAGE COUNT, NOT AN INVARIANT (decisions/0074 ruling 3). Step 8's own bullet calls it 'an implementation check, not a data check'. Reported, not asserted -- asserting it would add another pass to a report where 6 of 9 already cannot fail on data",
-    "SUPERSEDED_PHRASING_CORRECTED_THIS_RUN": "this arm's -r4 build wrote 'a report where six of EIGHT cannot fail on data' HERE, in the body of a deliverable whose head states the set is NINE and whose surface check concludes no surface still states the old count. Red Team seventh pass, finding 1. The surface check opened task-sheet.md, this arm's definition file and specs/step8-readback.md -- IT DID NOT OPEN artifacts/, WHICH IS PROPAGATION SURFACE 6 AND IS WHERE THE STRING WAS. The count is now derived from len(inv) and the label field, and a self-check over this arm's own emitted artifacts runs at stage 4",
+    "SUPERSEDED_PHRASING_CORRECTED_THIS_RUN": "this arm's -r5 build wrote 'a report where six of EIGHT cannot fail on data' HERE, in the body of a deliverable whose head states the set is NINE and whose surface check concludes no surface still states the old count. Red Team seventh pass, finding 1. The surface check opened task-sheet.md, this arm's definition file and specs/step8-readback.md -- IT DID NOT OPEN artifacts/, WHICH IS PROPAGATION SURFACE 6 AND IS WHERE THE STRING WAS. The count is now derived from len(inv) and the label field, and a self-check over this arm's own emitted artifacts runs at stage 4",
     "records_examined": 6065610,
     "records_dropped": 0,
     "denominator_readings": {
@@ -1340,7 +1340,7 @@
     "measured_on_build": "analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r6 (RERUN on the spec as amended through decisions/0091 and Red Team's SEVENTH pass; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, 89 columns)"
   },
   "all_pass": true,
-  "elapsed_s": 5.895565032958984,
+  "elapsed_s": 5.846315145492554,
   "surface_6_self_check_artifacts": {
     "negative_half": {
       "rule": "CLAUDE.md -- there are EIGHT propagation surfaces and all eight are checked on every edit. artifacts/ is SURFACE 6: 'deliverables carrying superseded figures are stamped, not left to be read as current'",
@@ -1616,7 +1616,7 @@
           "present": true
         },
         "89": {
-          "occurrences_across_the_emitted_artifacts": 197,
+          "occurrences_across_the_emitted_artifacts": 195,
           "required": "non-zero",
           "why": "the enumerated column count (0080/0081/0082)",
           "present": true
