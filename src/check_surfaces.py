@@ -275,6 +275,39 @@ def _selftest_phrase_matcher():
 _selftest_phrase_matcher()
 
 
+# Decision numbers are 0001-9999 and every entry to date begins with 0. A bare four-digit
+# backticked token is NOT a citation -- `2206` and `2329` are counts in an arm deliverable,
+# and the first version of this resolver flagged both. Anchored to the leading zero.
+CITE = re.compile(r"`(0\d{3})`")
+
+
+def scan_citations():
+    """Every decision citation on the eight surfaces must resolve to a file in decisions/.
+
+    0094 SS4. 0092's entry did not exist while it was cited; 0092 SS2 recorded that no control
+    could see it -- "check_surfaces.py checks the eight surfaces for wrong and withdrawn
+    content; it does not check that a cited entry exists" -- and left the gap open. 0094's
+    entry then did not exist either, cited 8 times. Second occurrence in three entries.
+
+    A gap recorded and left open is a gap that recurs.
+    """
+    have = {f.name[:4] for f in Path("decisions").glob("[0-9][0-9][0-9][0-9]*.md")}
+    seen, missing = {}, {}
+    for surface, files in SURFACES.items():
+        for f in files:
+            if f.endswith((".gz", ".npz", ".npy")):
+                continue
+            try:
+                text = Path(f).read_text()
+            except (UnicodeDecodeError, OSError):
+                continue
+            for n in set(CITE.findall(text)):
+                seen.setdefault(n, set()).add(f)
+                if n not in have:
+                    missing.setdefault(n, set()).add(f)
+    return have, seen, missing
+
+
 def scan():
     neg, pos, pos_in, allowed, legit_seen = [], {v: set() for v in ADOPTED}, set(), set(), set()
     for surface, files in SURFACES.items():
@@ -380,6 +413,19 @@ if __name__ == "__main__":
         print(f"        {text}")
     print()
 
+    have_d, seen_d, missing_d = scan_citations()
+    print("CITATION RESOLVER -- every `NNNN` cited on the eight surfaces resolves to decisions/ (0094):")
+    print(f"  coverage: {len(seen_d)} distinct entries cited across the surfaces; "
+          f"{len(have_d)} entry files on disk")
+    assert seen_d, "CITATION RESOLVER FOUND NO CITATIONS -- a resolver that resolves nothing is not clean"
+    if missing_d:
+        for n in sorted(missing_d):
+            print(f"  MISSING decisions/{n}* -- cited in {len(missing_d[n])} file(s): "
+                  f"{sorted(missing_d[n])[:3]}")
+    else:
+        print("  none unresolved")
+    print()
+
     print("POSITIVE HALF -- adopted values, surfaces that own them:")
     missing = []
     for a, want in ADOPTED.items():
@@ -426,7 +472,7 @@ if __name__ == "__main__":
                 mark = "  UNUSED: exempts nothing that occurs"
         print(f"  {v}: {why}{mark}")
 
-    if neg or missing or miss_in or phrase_hits or READ_FAILURES or legit_conflicts:
+    if neg or missing or miss_in or phrase_hits or READ_FAILURES or legit_conflicts or missing_d:
         print("\nFAIL")
         sys.exit(1)
     print("\nPASS -- all halves, all EIGHT surfaces.")
