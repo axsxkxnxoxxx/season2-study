@@ -162,6 +162,23 @@ A skipped user is **not** a user with no history. It is recorded as `access_deni
 
 **The Client ID** lives in .env and is loaded at runtime. It is never written into a code file, a log, or an artifact.
 
+## Artifact sign-off
+
+**No artifact is trusted without its producing arm's sign-off.** Human Lead ruling, 2026-08-16 (`0092`).
+**A deliverable is corrected by RERUNNING the arm that produced it, never by hand-editing the file.**
+Hand-editing puts **unsigned text into a signed deliverable**, and `artifacts/` is what Red Team reads,
+what Step 9 consumes, and propagation surface 6.
+
+**This holds even when the change is labelling only and no figure moves** — *especially* then, because
+that is exactly when hand-editing looks harmless. **The producing arm is the only party that can
+attest the text matches what its pipeline computed**; an editor who did not run the pipeline is
+asserting agreement rather than establishing it, which is the shape this study has spent eleven entries
+on.
+
+**It is the `## Derived figures` rule one level up:** derived figures are regenerated, not patched, and
+**deliverables are rerun, not patched.** The scripts already refuse to hand-patch a number; this refuses
+to hand-patch a sentence.
+
 ## Where things live
 
 | Folder | Contents | Git |
