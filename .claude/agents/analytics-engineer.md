@@ -179,8 +179,9 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
           than of the viewing** — so it is not an outcome variable. Counts support Step 13's arm without
           asserting one action per pair.
         - **5. D2's `max()` split is THREE categories, not two:** finale binds, S1 completion binds,
-          **both bind**. **168 pairs have both terms binding on APPLY** — ***AND THE COUNT IS NOT POPULATION-INVARIANT*** (`0092` §3, both arms, 2026-08-16). **APPLY is 168 at line 1, position 4, position 5 AND post-liveness** — all 168 tie pairs survive the chain — ***but DERIV IS 153***, and no entry recorded that before this rerun. ~~168 cannot be correct on both populations~~ — **that premise is WITHDRAWN; the two arms' differing readings would both have given 168, and the agreement was INVARIANCE.** **STATE THE POPULATION AT THE POINT OF USE AND MEASURE ON BOTH.** **The dual diff reads 168 against 168 as agreement.** Retained for the record: 168 and the binary split has nowhere to put
-          them.** A tie is its own category, not a tiebreak.
+          **both bind**. **168 pairs have both terms binding on APPLY** — ***AND THE COUNT IS NOT POPULATION-INVARIANT*** (`0092` §3, both arms, 2026-08-16). **APPLY is 168 at line 1, position 4, position 5 AND post-liveness** — all 168 tie pairs survive the chain — ***but DERIV IS 153***, and no entry recorded that before this rerun. ~~168 cannot be correct on both populations~~ — **that premise is WITHDRAWN; the two arms' differing readings would both have given 168, and the agreement was INVARIANCE.** **STATE THE POPULATION AT THE POINT OF USE AND MEASURE ON BOTH.** **The dual diff reads 168 against 168 as agreement.** **And the binary split has nowhere to put the
+          tied pairs** — an instance would have to choose a side, and two instances could choose
+          differently. A tie is its own category, not a tiebreak.
         - **6. Drop-count denominator is position 5 = 33,373**, with the **post-liveness 32,769 reported
           alongside**. The drop count is a property of the filter, so it measures against **what entered
           it**; the difference is exactly the 604 never-started liveness exclusions and is itself
