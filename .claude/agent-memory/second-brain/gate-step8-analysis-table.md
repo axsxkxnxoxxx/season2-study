@@ -1,14 +1,14 @@
 ---
 name: gate-step8-analysis-table
-description: The Step 8 analysis-table gate — the LAST of the five and NOT APPROVED. Eight Red Team passes, every one a HOLD; what each found, what closed it, and the findings that falsified the review's or the ruling's own premise. Current through decisions/0094, 2026-08-16
+description: The Step 8 analysis-table gate — APPROVED 2026-08-17 (0098), gate 5 of 5, all five gates now closed. Eleven Red Team passes, ten HOLD then PROCEED; what each found, the eight published residuals, the five limitations travelling to Step 14, and the findings that falsified the review's or the ruling's own premise. Current through decisions/0098
 metadata:
   type: project
 ---
 
-# Step 8 — the analysis table. **THE LAST GATE, AND IT IS NOT APPROVED.**
+# Step 8 — the analysis table. ***GATE APPROVED, `0098`, 2026-08-17. GATE 5 OF 5.***
 
 **Launched `0072`, 2026-08-13, as the dual pair `analytics-engineer` / `-b`. Ruled on across
-`0066`–`0094`. Eight Red Team passes. Every one a HOLD.**
+`0066`–`0098`. ELEVEN Red Team passes: ten HOLD, then PROCEED on the eleventh, 2026-08-17.**
 
 **Why:** the gate arc is the thing the Step 18 decision log is for. The analysis will show the
 numbers; this shows the judgement, including the several occasions on which a ruling or a review
@@ -22,8 +22,17 @@ measured. Where this file and those differ, **they govern** — and this file ha
 
 ## The state, in one block
 
-- **NOT APPROVED. Nothing in `0066`–`0094` is adopted as a Step 8 result**; every entry from `0073`
-  on says so in its status line.
+- ***APPROVED, UNCONDITIONALLY, by the Human Lead, 2026-08-17.*** Record:
+  **`artifacts/step8-gate-approval.md`**, **drafted by the Analytics Engineer and signed only by the
+  Human Lead** — *"an agent never records its own approval."* **Builds approved: `a/2026-08-17-0096`
+  and `b/2026-08-17-r8`, both confirmed by their producing arm.**
+  *(Superseded, and it was this file's opening until 2026-08-17: ~~"NOT APPROVED. Nothing in
+  `0066`–`0094` is adopted as a Step 8 result."~~ True through `0097`.)*
+- ***ALL FIVE GATES ARE NOW APPROVED*** — Step 1 (`0001`), Step 5 (`0021`), Step 6 (`0026`), Step 7
+  (`0064`), Step 8 (`0098`). **Step 8b and Step 9 are UNBLOCKED and NOT LAUNCHED.**
+- **Approval is unconditional WITH eight residuals open and published**, and **§4 item 2 — the `logs/`
+  provenance cost — is ACCEPTED AS RECORDED, not a correction anyone will close.** **Five limitations
+  travel to Step 14.** Both lists are in [[glossary-terms-and-thresholds]] and are not duplicated here.
 - **Grain: the POSITION-5 row set** — 196,654 rows on APPLY with `live` and `outcome` as **columns**,
   plus DERIV 147,370 and the D4 count. Not position 7 (`0074` §1).
 - **89 enumerated column names.** The count has been 87, 88, 89 and 90; **90 was the union of the two
@@ -35,10 +44,13 @@ measured. Where this file and those differ, **they govern** — and this file ha
   waterfall as a `0`.
 - **After the eighth pass, arm a has no blockers left** — three minor items, all against its text
   rather than its arithmetic. **Arm b carried three.**
+- ***THE ARITHMETIC STOPPED MOVING AT THE SEVENTH PASS.*** No pass from the eighth on found an
+  arithmetic defect in either arm; the last three each **re-derived it independently and reproduced it
+  to the row.** Red Team's eleventh-pass words: ***"The analysis table is right."***
 
 ---
 
-## The eight Red Team passes
+## The eleven Red Team passes
 
 ### Pass 1 — `0076`. The label correction that INVERTED the finding
 
@@ -180,6 +192,119 @@ stronger than the monotonicity allows.
 > set with identical per-check results, **so neither arm flagged it through eight passes.**
 > **Reported, not reconciled. The Human Lead diffs.**
 
+### Pass 9 — `0095`. HOLD on three, **and NO ARITHMETIC DEFECT IN EITHER ARM**
+
+**Every cross-arm figure agreed to the row.** The three findings were all in the control apparatus or
+in the launch process.
+
+| | Finding | What closed it |
+| :-- | :--- | :--- |
+| **F5** | **The citation resolver saw only BACKTICKED citations.** Arm b writes predominantly un-backticked — `decisions/0089 Sec 2(b)` — so **~37% of one file's citations were invisible**, and ***the founding defect would have been missed entirely in that form.*** *"Prints its coverage count"* was satisfied **to the letter while the count was blind to the class it could not see** | Anchored to citation **FORMS** after a first widening (`\b0\d{3}\b`) proved too broad and matched data. **Probed**: two un-backticked citations to nonexistent entries both caught, exit 1, file restored byte-identical |
+| **F3** | **The needle register was exercised on 4 files of ONE surface** — ~4 of ~40 on surface 6, **none of 1–5, 7 or 8.** That arm's scan **opens with *"a surface check that does not open the surface the defect is on is a check that looked nowhere"* and then opened four files.** **Occupied, not hypothetical: a registered needle was live in the other arm's deliverable** — and **neither arm can fix this under isolation** | Folded into `check_surfaces.py` across all eight surfaces: **255 files, 7.0M characters** |
+| **F4** | **The exemption window was measured in LINES.** `CONTEXT = 2` is ±200 characters on a hard-wrapped file and **±several thousand** on the arms' deliverables, where **137 lines exceed 400 characters.** ***The `.md` branch was NOT WRONG WHEN WRITTEN — the unit changed underneath it*** when the arms began emitting paragraph-per-line | Measured in **characters** |
+
+> ***THE ROOT OF F1 WAS THE CHAIN'S OWN, AND IT IS STRUCTURAL — this is `0095`'s rule.*** A Red Team
+> eighth-pass characterisation of **arm b's** falsifiability headline was **relayed into arm a's launch
+> instruction.** Arm a published it as an **arm-against-arm divergence** — while arm b's current build
+> published **the same 6 + 1 + 2 split.** **Arm a's claim was false, and under isolation it had no
+> admissible way to check what it was told.** Full ruling in [[glossary-terms-and-thresholds]]
+> §THE TWO ISOLATION RULINGS.
+>
+> ***THE NEEDLE SCAN RETURNS 441 CANDIDATES AND IS WIRED REPORT-ONLY, LABELLED "NOT YET A CONTROL."***
+> Repo-wide, short needles like `793` and `97.6%` match **legitimate historical records.** *"Failing on
+> 441 unread lines would block the gate on lines nobody has read; **narrowing until it passes is how a
+> control gets disarmed. Neither was done.**"* **That is residual 8.**
+>
+> ***THE MISSING-ENTRY DEFECT, THIRD OCCURRENCE.*** `0092`, `0094` and **`0095` itself** were each
+> cited before they existed; this one in **10 files**, including `CLAUDE.md` and a commit message.
+> **`0094`'s resolver could not catch it because `CLAUDE.md` is not a propagation surface** — *the
+> citation that would have caught it earliest was in the one file the control does not read.* **Caught
+> anyway one build later, because `artifacts/` IS surface 6** and arm a's build provenance names the
+> entry. ***And arm a did not remove the citation to make the control green*** — *"that is narrowing
+> until it passes"* — **it reported `EXIT 1` with the cause named and left it for the Human Lead.**
+
+### Pass 10 — `0096`. HOLD, **and it named the GENERATOR**
+
+**This is the pass that made approval possible, and it did it by diagnosing rather than listing.**
+
+> **Arm a's waterfall was 826 lines of which roughly 120 was measurement.** The rest was build history
+> and claims about other surfaces — ***"review retires roughly three per pass; the build adds roughly
+> the same number."*** **Two of this pass's three blockers were REGENERATIONS of defects the ninth pass
+> had closed.** Red Team called the position **a plateau with an identifiable generator**, and said the
+> class **would not exhaust under the deliverable scope then in force but would exhaust immediately
+> under a narrower one.**
+
+**Worse than stale, on the tenth pass:** arm a's deliverable told its reader `check_surfaces.py`
+**exits 1** when it exits **0**. **True when the arm measured it; false by the time it was read.**
+***And arm a's behaviour was correct throughout.*** **The defect is that a control's exit status was
+publishable in a permanent deliverable at all.**
+
+**`0096` RULING 1 removed the CATEGORY rather than the instances:** a deliverable asserts only what its
+own arm measured. **`0096` RULING 2** answered the pass's F1 — which correctly found that `0095`
+plugged one route and left another open — **in the direction it could not choose for itself**:
+`decisions/` **may** carry cross-arm content, deliberately, and the arms are now told so.
+***That withdraws part of `0095` §1.***
+
+### Pass 11 — `0097`, then `0098`. ***PROCEED***
+
+**F1: the two `artifacts/step8-readback-{a,b}.md` files state FOUR things that are false today** —
+`processed/` not being a surface (it is **8 of EIGHT**), `adopted_rule.json`'s revision-3 figures,
+*"Step 7 NOT approved"* (**approved at `0064`**), and Step 0's superseded 403 rule. ***No control can
+see any of them*** — the **third blindness class** — and **eleven passes did not catch them.** The
+eleventh found them **only because `0096` §1 drew a line these files sit outside.**
+
+- **They are stamped AND allowlisted by name with a reason** (`0097`). **Both, because a stamp declares
+  a file's STATUS and does not exempt it.**
+- **Hand-stamping them is not a `0092` breach:** `0092` forbids hand-**correcting a deliverable's
+  content**; **declaring a non-pipeline file non-operative is not that** — and **Red Team disputed the
+  claim that these files were stranded between `0092` and `0096`, and it was right**: both already
+  carried a hand-added `0086` status stamp, **so the precedent existed inside the files themselves.**
+- ***`0096` §1's boundary was one notch too narrow.*** It was scoped to *"a **gate deliverable**"*, and
+  `artifacts/` holds two files that are not. **Red Team's own framing, adopted:** *"the ruling was
+  correct and its boundary was one notch too narrow"* — **a different diagnosis from the plateau it
+  reported at the tenth pass.**
+- **Neither arm ran for `0097` and neither arm's four deliverables were edited.**
+
+---
+
+## The approval — `0098`, and what it turned on
+
+**`0098` / `artifacts/step8-gate-approval.md`. Approved by the Human Lead, 2026-08-17,
+UNCONDITIONALLY. Gate 5 of 5. No agent recorded an approval.**
+
+**What is approved:** the **position-5 row set, 196,654 rows × the 89 enumerated columns on APPLY**,
+with **DERIV (147,370) flagged in it** and `live` and `outcome` carried as columns · **the waterfall on
+both populations, reproduced independently by both arms to the row** · **nine invariants, all passing,
+each naming its population and satisfying its coverage identity.**
+
+**The distinction that carried it — and it is the same shape as `0064`'s:**
+
+> ***Reviews 1–7 CONTESTED SUBSTANCE AND CHANGED WHAT IS MEASURED*** — the filter order, the invariant
+> set's falsifiability, the coverage identities, D9's keys and universe, `p_at_bound`'s meaning, D11's
+> scope, and the half-open boundary form.
+>
+> ***Reviews 8–11 FOUND ALMOST NOTHING IN THE ARITHMETIC AND A GREAT DEAL IN THE PROSE.***
+> **`0096` removed the category rather than the instances, and the eleventh pass returned PROCEED with
+> no live defect of that class inside the four gate deliverables.**
+
+**Two measurements changed a published answer during the sequence and survive in the result:** the
+**half-open UTC-instant form is OUTCOME-DECIDING** (71 APPLY / 59 DERIV rows change outcome state, 36
+never-started → Continued) and **`0068`'s strictness ruling is VACUOUS on this data** (0 pairs, 0
+accounts, both populations, both arms).
+
+**What both arms reproduce independently, per the approval §3:** the four outcome rows on both
+populations · `p_at_bound` **1,246 / 1,230 / 1,072 / 1,056** with **all four emptiness cells 0** and
+**FALSE 17,895 / 17,812 / 15,771 / 15,688** · **D2's 168 on APPLY and 153 on DERIV** · the position-3
+drop set of **58,345** · channel overlap in all four units · **D3′ 99.53% → 97.73%** · the eight-arm
+exclusion series and its started-and-left component · the boundary window and its flips · **D9 as a
+bound, `[0, 75]`, `[0, 6]`, `[0, 27]`** · **2,874 ledger accounts** · **invariant 9's 20 and 17 rows
+exactly at `τ_pull`.** **The 89-name column set is SET-EQUAL across the arms.**
+
+**Why approval is defensible now, in the approval's own terms:** *"Every blocker from the sixth pass
+onward was a claim about what a check establishes, or text about a surface the arm does not own —
+never a number."* **Six of the eight residuals are corrections that need no arm; two are unruled spec
+choices already disclosed by both arms.**
+
 ---
 
 ## The findings that falsified the review's or the ruling's OWN premise
@@ -210,7 +335,22 @@ countermeasure the Human Lead asked for.
 
 ---
 
-## The three rules this block put into `CLAUDE.md`
+## The FIVE rules this block put into `CLAUDE.md`
+
+*(This heading said THREE until 2026-08-17. `0095` and `0096` ruling 1 added two more, and **`0096`
+ruling 2 withdrew part of `0095` §1** — rules 4 and 5 must be read together. Full text in
+[[glossary-terms-and-thresholds]] §THE TWO ISOLATION RULINGS.)*
+
+4. **A cross-arm characterisation never enters a launch instruction** (`0095`). **A launch instruction
+   is a way for an arm to see the other arm's work, and it is worse than reading the folder, because
+   the receiving arm is structurally forbidden from re-measuring what it was told.**
+5. **A deliverable asserts only what its own arm measured** (`0096` r1) — **the provenance rule applied
+   to STATEMENTS rather than FIGURES** — with **`decisions/` explicitly permitted to carry cross-arm
+   content** (`0096` r2), because **a ruling has to cite its own evidence**, and because the isolation
+   rule exists **to stop the arms copying each other's IMPLEMENTATION, not to keep a ruled number out
+   of reach.**
+
+### The first three
 
 1. **Artifact sign-off** (`0092`). *No artifact is trusted without its producing arm's sign-off; a
    deliverable is corrected by **rerunning** the arm, never by hand-editing.* **It is the derived-figures
@@ -232,12 +372,30 @@ countermeasure the Human Lead asked for.
 
 ---
 
-## What is still open at the gate
+## What is still open AFTER the gate
+
+> ***THE APPROVAL IS UNCONDITIONAL AND THESE ARE OPEN AND PUBLISHED. Approval was given IN VIEW of
+> them, not around them.*** **None of them touches a filter position, a population, a waterfall line,
+> an outcome count, an invariant result or a bound endpoint.**
+>
+> ***AND ONE OF THE EIGHT IS NOT AN OPEN ITEM AT ALL: residual 2, the `logs/` provenance cost, is
+> ACCEPTED AS RECORDED.*** **Do not file it as awaiting a fix.** The Human Lead's reason: **build
+> history and control results now live in `logs/`, which is git-ignored and on no propagation surface,
+> so the public artifact set is no longer self-auditing on provenance** — *"the knowing price of `0096`
+> §1"* — and *"a cost logged as a correction reads as a defect awaiting a fix, and this one is
+> neither."* **One such log already over-claims its own coverage** (`surfaces_not_reached: []` while
+> four were never scanned).
 
 | Item | Whose |
 | :--- | :--- |
-| **The D9 tie-break.** `secondchance` (8) and `theisland` (7) are unique; **six keys tie at 6** and the arms publish different third places, both correct under their own rule. **`0088` §3 named `maigret`; neither arm picked it.** *A spec gap inside the ruling that closed a spec gap* | **Human Lead.** Red Team's position: publish all six and retire *"third-largest"* |
-| **Whether `specs/` becomes a NINTH propagation surface.** It holds the written specs handed to isolated instances, **nothing checks it**, and it carried *"Step 8 has not launched"* through four occurrences | **Human Lead.** Red Team's position: adopt it |
+| **Two files in `artifacts/` state four expired things** — the read-backs, stamped and allowlisted (`0097`), **invisible to every control** | Residual 1. **Closed by the stamp as far as it can be closed**; the *class* has no control |
+| **Neither arm identifies the spec revision it validated against.** Arm a does not fingerprint `task-sheet.md` at all while asserting its 89-name conformance was read off it at run time — **that referent is unrecoverable** | Residual 3 |
+| **Three cross-arm coverage divergences under identical labels** — distinct S2 episodes 2,135,938 / 2,023,274; D9 pivot show-IDs 46,366 / 45,014; per-site D11 at `A`/`A_H`. **All denominators** | Residual 4. **Resolvable only by reading each arm's mask** |
+| **Six of nine invariants cannot fail on any data** — the gate rests on **two data checks and one cross-check with force** | Residual 5. **Both arms publish the 6 + 1 + 2 split and say so plainly** |
+| **Two unruled spec choices, both disclosed** — set-membership denominators 6,065,704 / 6,065,610 and different D9 half-(b) grains | Residual 6 |
+| **439 unread needle candidates**, deliberately neither failed nor narrowed | Residual 8. **Red Team's proposal, carried not ruled: scope the register per needle to the file set it was authored for and FAIL on that scope, reporting repo-wide without failing** — *"not narrowing, because the authored scope IS the original scope"* |
+| **Whether `specs/` AND `CLAUDE.md` become propagation surfaces** | **Human Lead, unruled.** Red Team's position on `specs/`: adopt it. **`CLAUDE.md`'s absence is now measured rather than argued** — it is why the third missing-entry occurrence was invisible to the resolver |
+| **The D9 tie-break.** `secondchance` (8) and `theisland` (7) are unique; **six keys tie at 6** and the arms publish different third places, both correct under their own rule. **`0088` §3 named `maigret`; neither arm picked it.** *A spec gap inside the ruling that closed a spec gap* | **Residual 7. Human Lead.** Red Team's position: publish all six and retire *"third-largest"*. ***AND THE SUPERSEDED NAMING IS STILL LIVE ON SURFACES 1, 4 AND 5*** — see K1 in [[open-items-and-contradictions]] |
 | **The one-pair D9 divergence** — `435,642` against `435,643` on the S1-only class, the other two classes agreeing exactly | Reported, not reconciled |
 | **`0090` §2's flagged reading** of *"this half"* — implemented as **every** D9 quantity with both forms | Both arms say so at the point of use; narrows if a single half was meant |
 | **F7 — the falsifiability headline shape**, three-way against two-way over an identical nine-label set | Reported, not reconciled. **The dual diff cannot see it** |

@@ -207,7 +207,14 @@ GROUNDS_WITHDRAWN = {
                                 "separates nothing on any data the adopted rank form admits. "
                                 "Citing the totals as separation evidence is the withdrawn "
                                 "argument; citing them as p = 1.0 TOTALS is correct",
-    },
+        "CAUTION_TWO_FALSE_CLASSES": (
+            "0099, found by second-brain. The phrase 'the FALSE class is empty' is SAFE only "
+            "for CLASS 1, the coextensivity gap, which is 0 on all four populations. CLASS 2 is "
+            "the COLUMN's own FALSE value and is 17,895 / 17,812 / 15,771 / 15,688. Step 8b is "
+            "unblocked and is exactly the consumer: a reader who takes the unqualified sentence "
+            "and provisions a two-valued column is wrong by 17,895 rows on APPLY position 5. "
+            "Never restate this sentence without naming which class."),
+},
 }
 
 # ============================================================================

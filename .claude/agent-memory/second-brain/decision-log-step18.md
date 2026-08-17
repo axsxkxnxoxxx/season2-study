@@ -1,6 +1,6 @@
 ---
 name: decision-log-step18
-description: Coverage map of the decision log of record in decisions/ (0001-0094, through the Step 8 gate block, gate NOT approved), which judgments still have no file, and assembled five-field text pending handoff to the Human Lead
+description: Coverage map of the decision log of record in decisions/ (0001-0098, through the STEP 8 GATE APPROVAL of 2026-08-17 — all five gates closed), which judgments still have no file, and assembled five-field text pending handoff to the Human Lead
 metadata:
   type: project
 ---
@@ -27,7 +27,13 @@ log shows the judgment."*
 > here **and** grep the other **seven** surfaces — **there are EIGHT, not seven**; `processed/` was
 > added as surface 8 at `0074`. Read-back alone is not verification.
 
-## Coverage as of 2026-08-16 — `0001`–`0094`
+## Coverage as of 2026-08-17 — `0001`–`0098`. ***ALL FIVE GATE ENTRIES NOW EXIST***
+
+> **The five gate entries are `0001` (Step 1, amended by `0034`), `0021` (Step 5), `0026` (Step 6),
+> `0064` (Step 7) and `0098` (Step 8).** ***The set is complete: there is no longer a gate entry
+> waiting to be written.*** **`0021` set the bar and `0098` meets it in a different way** — `0021`
+> records the rulings made *inside* a gate; **`0098` records what ELEVEN reviews established and what
+> was approved anyway, in view of eight open residuals.**
 
 | Files | Cover | Five-field completeness |
 | :--- | :--- | :--- |
@@ -135,8 +141,12 @@ the ANALYSIS stopped moving at `0055` and the RECORD took nine more entries to b
 5. **`0057` §7's counting rule must survive into the write-up: `#1`–`#18` is a surfaces-1–5 count and
    reads as a total without it.**
 
-**Gate checklist:** **Steps 1 (amended and re-approved), 5, 6 and 7 closed. FOUR of five. Step 8 is the
-only gate left and it MAY NOW LAUNCH.** **Step 7 was approved twice, reopened twice, and approved a
+**Gate checklist, 2026-08-17: ALL FIVE CLOSED.** Step 1 (`0001`, amended and re-approved at `0034`) ·
+Step 5 (`0021`) · Step 6 (`0026`) · Step 7 (`0064`) · **Step 8 (`0098`).** **Step 8b and Step 9 are
+UNBLOCKED and NOT LAUNCHED.** *(Superseded, and it was this file's line until 2026-08-17:
+~~"FOUR of five. Step 8 is the only gate left and it MAY NOW LAUNCH."~~)*
+
+**Step 7 was approved twice, reopened twice, and approved a
 third and final time at `0064` — fifteen Red Team reviews, fifteen HOLDs, nine dual runs, zero API
 calls.** **The Step 5 gate (`0021`, gate 2 of 5) was amended by `0053` and the amendment reverted by
 `0054` the same day; it stands as approved.**
@@ -215,7 +225,7 @@ See [[gate-step6-window-w]].
 
 ---
 
-## `0065`–`0094` — the Step 8 block. **Thirty entries, EIGHT Red Team passes, all HOLD, gate NOT APPROVED**
+## `0065`–`0098` — the Step 8 block. **Thirty-four entries, ELEVEN Red Team passes, ten HOLD then PROCEED, GATE APPROVED**
 
 **Read [[gate-step8-analysis-table]] first.** As with Step 7, each entry is correct about what it
 decided and **only the sequence shows what happened.**
@@ -231,6 +241,10 @@ decided and **only the sequence shows what happened.**
 | **`0088`–`0089`** | **B3 measured; two objects reported separately; the D9 universe is U1** — and **all three rulings named the wrong referent** | **Full, and `0088` §4 is the entry Step 18 should quote on the pattern:** the countermeasure worked on two of three, and **on the third the substance and the label pointed opposite ways with equal force, so it was put back to the Human Lead rather than inferred.** `0089` §1 is the payoff: **B3's per-site assertion found a real bug on the first run** |
 | **`0090`–`0091`** | **D9 publishes as a BOUND** — strict FLOOR, loose CEILING, **neither is the point estimate**; **the half-open mandate is OUTCOME-DECIDING**, 71 APPLY / 59 DERIV | Full. `0090` §1 is a ruling derived entirely from a **prior ruling's own stated reason, carried one step further** — *"a quantity published because it bounds another IS an endpoint, not a footnote"* |
 | **`0092`–`0094`** | **Artifact sign-off**; **a ruling is not closed until the artifacts carry it**; **the citation resolver** | **Full, and all three are self-implicating.** `0092` records that **its own entry did not exist**; `0093` records that **`0092`'s premise was false** and names the cause the evidence supports; `0094` records the **second missing-entry occurrence in three entries** and builds the control |
+| **`0095`** | **A cross-arm characterisation never enters a launch instruction**; three control fixes; **the THIRD missing-entry occurrence** | **Full, and its "why this one" field is a mechanism rather than a preference:** *"a launch instruction is a way for an arm to see the other arm's work, and it is **worse than reading the folder**, because the receiving arm is **structurally forbidden from re-measuring** what it was told."* **Its "where a reviewer disagreed" field runs the other way for once** — Red Team found the defect, and **the entry records the chain's own act as the root.** Also the model for handling a control that fails outside your remit: **arm a reported `EXIT 1` with the cause named rather than removing the citation, and said why** — *"that is narrowing until it passes"* |
+| **`0096`** | **A deliverable asserts only what its own arm measured**; ***`decisions/` MAY carry cross-arm content, withdrawing part of `0095` §1*** | ***Full, and it is the entry that made approval possible.*** **It removed a CATEGORY rather than instances**, on a diagnosis Red Team supplied: **826 lines of which ~120 was measurement, review retiring three per pass while the build added three.** **Ruling 2 is the log's clearest case of a rule being NARROWED BY ITS OWN AUTHOR one entry later**, and the reason is worth lifting: **forbidding cross-arm content in `decisions/` would mean a ruling cannot cite its own evidence.** It also states what a rule is FOR rather than only what it forbids |
+| **`0097`** | Both read-backs **stamped AND allowlisted by name**; four expired statements named | **Full, and it is short because the judgment is narrow:** **a stamp declares STATUS and does not exempt** — so both mechanisms, not one. **Records Red Team disputing the entry's own framing and being right**, and adopts Red Team's diagnosis over its own: *"the ruling was correct and its boundary was one notch too narrow"* |
+| ***`0098`*** | ***STEP 8 GATE APPROVED — gate 5 of 5, unconditional, eight residuals published, five limitations to Step 14*** | ***Full.*** **Its §2 is `0064` §3's distinction on a second gate and it is falsifiable**: passes 1–7 changed what is measured; **passes 8–11 found almost nothing in the arithmetic.** **§3 does the thing `0064` established — approval IN VIEW of the residuals, not around them** — and **§3 item 2 goes further than `0064` did: it names a residual that is NOT a follow-up and says why**, *"a cost logged as a correction reads as a defect awaiting a fix, and this one is neither."* **No agent recorded an approval** |
 
 ### What Step 18 should take from the Step 8 block, beyond the entries
 
@@ -257,6 +271,28 @@ decided and **only the sequence shows what happened.**
 5. **B3 is the argument FOR expensive process, made by the process.** *"A per-site assertion found in
    one run what 'D11 is applied to every computation' had asserted in prose across five builds and two
    gate reviews."*
+6. ***THE LAST FOUR PASSES ARE A DIFFERENT STORY FROM THE FIRST SEVEN AND STEP 18 SHOULD TELL IT AS
+   ONE.*** The arithmetic stopped moving at the seventh pass and **four more reviews ran.** The tenth
+   named why: **a deliverable of which ~120 of 826 lines was measurement, with review retiring roughly
+   three expiry-dated assertions per pass and the build adding roughly three** — **a plateau with an
+   identifiable generator.** ***Two of that pass's three blockers were REGENERATIONS of defects the
+   ninth had closed.*** **`0096` removed the category; the eleventh pass returned PROCEED.**
+   **The judgment on display is diagnosing a generator rather than clearing a queue**, and it is the
+   same move `0058` made when it replaced hand-patching with regeneration — *"eleven entries of one
+   error class is a method that cannot converge."*
+7. ***A RULE WAS NARROWED BY ITS OWN AUTHOR ONE ENTRY AFTER BEING WRITTEN, AND THE RECORD IS BETTER
+   FOR IT.*** `0095` §1 forbade cross-arm content from reaching an arm by three named routes; `0096`
+   ruling 2 **withdrew one of the three**, because **a ruling has to cite its own evidence.** *(Pair
+   them in the write-up. Alone, either reads as contradicting the other.)*
+8. **The cross-arm relay is the block's sharpest process finding and it was the chain's own act.**
+   **A characterisation of arm b was relayed into arm a's launch instruction, and arm a published a
+   divergence that did not exist** — *"a measurement with an expiry date its holder cannot check."*
+   ***A fabricated divergence in a gate deliverable is worse than a missed one: it pre-empts the one
+   authority permitted to make cross-arm statements.***
+9. **Approval with residuals is now a PRACTICE, not a one-off** — `0064` established it, `0098`
+   repeats it, and `0098` adds the refinement worth keeping: ***one residual was booked as a COST
+   ACCEPTED rather than an item to close.*** **The log now distinguishes three states, not two:
+   fixed, open, and knowingly paid for.**
 
 ---
 
@@ -353,7 +389,12 @@ ambiguity**. **This is the precedent [[open-items-and-contradictions]] X1 turns 
 2b. ~~**The Step 7 gate itself, when it closes.**~~ **CLOSED as `0064`, 2026-08-13.** It inherited
    `0048` §9's open item — **`0021` licenses one direction of a biconditional and the converse is
    asserted, not justified** — and that is now **residual item 1**, a Step 14 limitation published with
-   the result rather than a blocker. **The remaining gate entry to write is Step 8's.**
+   the result rather than a blocker. ~~**The remaining gate entry to write is Step 8's.**~~
+   ***WRITTEN — `0098`, 2026-08-17. NO GATE ENTRY REMAINS.***
+2c. **Step 8's own residuals do not need entries** — they publish inside
+   `artifacts/step8-gate-approval.md` §4. **The two that would need a RULING if anyone wanted them
+   closed are the D9 rank-3 tie-break and whether `specs/` and `CLAUDE.md` become propagation
+   surfaces.** **Neither blocks anything and both are the Human Lead's.**
 3. **The gap hypothesis**, if and when it is assigned an owner (README items 3 and 8).
 4. **Ratification of `0005`–`0008`**, which are the only Open entries in the log.
 5. **Whether to resume the Step 4 pull or sample the pool down** (README items 11 and 19). Every

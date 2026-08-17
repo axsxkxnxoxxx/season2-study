@@ -11,8 +11,10 @@ metadata:
 >
 > **Record: `artifacts/step7-gate-approval.md`.** The rule is **ALT-BROAD**. **The approval is
 > UNCONDITIONAL** — the nine-item §4 residual is **open and published, not resolved**, and the Human
-> Lead **confirmed that framing rather than accepting it as the drafter's**. **Step 8 may launch, and
-> Step 8 is the remaining gate.**
+> Lead **confirmed that framing rather than accepting it as the drafter's**. ~~**Step 8 may launch, and
+> Step 8 is the remaining gate.**~~ ***SUPERSEDED 2026-08-17: Step 8 was APPROVED at `0098` and ALL
+> FIVE GATES ARE NOW CLOSED.*** **`0064` is the precedent `0098` follows** — approval **unconditional,
+> with the residual open and published, in view of it rather than around it.**
 >
 > **Two things the approval deliberately does NOT do.** It does not rule on **where the unspecified
 > bootstrap blocks** — *"blocking Step 9, not Step 8"* is **Red Team's recommendation from its twelfth

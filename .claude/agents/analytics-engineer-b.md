@@ -254,7 +254,7 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
           on its own** — ranking by distinct show IDs displaces `maigret` with `blackout`. **Name the basis
           at the point of use.** **The former example — Twilight Zone / Traitors / Manhunt — was U3 and is
           SUPERSEDED as the illustration**; under U1 it is `secondchance` (8), `theisland` (7),
-          `maigret` (6). **Those three names are not wrong, they are another universe's answer.**
+          ~~`maigret` (6)~~ ***— WITHDRAWN. `0089` §2(c): "THE THIRD PLACE IS NOT DETERMINED AND THIS ENTRY SHOULD NOT HAVE NAMED ONE." There is a SIX-WAY TIE at 6 — `blackout`, `hunted`, `maigret`, `missing`, `thefamily`, `yourhonor` — and which appears third is the TIE-BREAK, which no rule specifies. NEITHER ARM PICKED `maigret`. Marked at the point of use 2026-08-17 (`0099`), found by `second-brain`: this line contradicted its own file 65 lines lower, and both copies being identical meant the dual diff could not see it. Published residual 7 of the gate approval.*** **The names are not wrong, they are another universe's answer.**
     - **YOUR DELIVERABLE ASSERTS ONLY WHAT YOU MEASURED** (`0096` r1, Human Lead ruling 2026-08-17).
           **Your figures, your inputs, your limits — and nothing else.** **NOT the state of other steps or
           gates, NOT the other arm, NOT the shared controls, NOT the study as a whole.** **You cannot know

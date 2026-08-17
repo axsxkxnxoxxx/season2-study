@@ -1,6 +1,6 @@
 ---
 name: withdrawn-claims-register
-description: The study's own error log — claims asserted and later withdrawn or corrected, organised by failure mode, covering Steps 1 through 8 including the liveness gate's twelve-entry cascade and the Step 8 block's withdrawal of several Human Lead rulings' premises; modes A-I, with mode I the withdrawn-GROUND class that no control sees; current through decisions/0094, 2026-08-16
+description: The study's own error log — claims asserted and later withdrawn or corrected, organised by failure mode, covering Steps 1 through 8 including the liveness gate's twelve-entry cascade and the Step 8 block's withdrawal of several Human Lead rulings' premises and of one CLAUDE.md rule by another; modes A-I, with mode I the withdrawn-GROUND class that no control sees; current through decisions/0098 and the Step 8 gate approval, 2026-08-17
 metadata:
   type: project
 ---
@@ -58,6 +58,29 @@ is the mode that survives a review: an entry claiming a check was run reads exac
 files and nine entries** before `0055` §2's instance was found. **A checker for it would be a prose
 checker.** What stands in for one is the obligation above.
 
+### Mode I candidates from `0089`–`0091` that are **NOT** in `GROUNDS_WITHDRAWN` — read off the source 2026-08-17
+
+> ***I am NOT extending the table above with these.*** `src/step7_register.py` is the machine half and
+> **the source governs**; a human half listing five where the source holds three is the two-registers
+> defect `0059` B3 forbids, committed by me. **Listed as candidates, for the Human Lead.**
+
+| Entry | The GROUND withdrawn | **Still TRUE, no longer load-bearing** |
+| :--- | :--- | :--- |
+| **`0091` §1** | *"line 6 does not move at all — 703 on APPLY and 99 on DERIV under every form — **because the silence test reads an insertion clock, not an episode timestamp**"* | **703 · 99 · 55 · 45.** **The warrant is structurally wrong** — conjunct 2 is `NOT Continued`, an **episode-timestamp** computation that moves on 55 APPLY rows under this very counterfactual — **and it is not established the 703 was measured at all** |
+| **`0089` §2(a)** | *"exactly 1 episode falls AT `τ1`, **so `0068`'s strictness ruling moves a real row in `\|A\|`**"* | **1** — *"exactly 1 episode falls at `τ1`"* is **established, both arms, both populations.** **What is withdrawn is its use**: `0068`'s strictness is about **INSERTION instants**, a different axis, and the ruling's own quantity measures **0** |
+
+**Both are the recurring shape — *right in substance about a number, wrong about the object it names* —
+and both leave a true statistic behind with no superseded value for the numeric half to match.**
+*(`GROUNDS_WITHDRAWN["0094 SS2"]`'s `still_true` list is `[0, 703, 99, 55, 45]` — **the same figures**,
+under a different argument. One statistic, two withdrawn grounds, one registered.)*
+
+> **AND A SMALL ONE IN THE SOURCE ITSELF, reported not fixed:** `GROUNDS_WITHDRAWN["0083 SS2"]`'s
+> `why_not_load_bearing` says ***"The FALSE class is empty by construction."*** **In context it means
+> CLASS 1, the coextensivity gap.** **Out of context it is the sentence
+> `artifacts/step8-waterfall-a.md` §3.1 warns is wrong by 17,895 rows.** **`src/` is not mine to
+> edit** — see K2 in [[open-items-and-contradictions]], where the same sentence was **live in this
+> memory** until 2026-08-17.
+
 ## Mode H — the instances, and there are ten in nine entries
 
 **`0049`'s header** asserted a five-file propagation pass that did not happen (`0050` opens by saying
@@ -83,6 +106,29 @@ why it belongs in the taxonomy rather than in the narrative.
 JSON-string gap down as *"not a defect today."* **It was already a defect on the day it was recorded** —
 B8 was live in a `.json` string under `_DERIVED` and in `.md` prose carrying no numbers, in all four
 operative deliverables (`0061`). **Recording a gap as harmless is not the same as checking whether it is.**
+
+---
+
+## `0095`–`0098` — the last stretch. **A `CLAUDE.md` rule withdrawn by another, and a divergence that never existed**
+
+### The withdrawals
+
+| What was withdrawn | Where | Note |
+| :--- | :--- | :--- |
+| ***A `CLAUDE.md` RULE, BY ANOTHER `CLAUDE.md` RULE.*** `0095` §1 forbade cross-arm content reaching an arm *"not from a Red Team pass, **not from a decision entry**, not from a prior run's report."* **The DECISION-ENTRY exclusion is withdrawn** | `0095` §1, withdrawn `0096` r2 | **The ground, as given: a ruling has to record what each arm found in order to explain why it was ruled — forbidding cross-arm content in `decisions/` would mean A RULING CANNOT CITE ITS OWN EVIDENCE.** ***And the withdrawal names what the isolation rule is FOR***, which the earlier form did not: **to stop the arms copying each other's IMPLEMENTATION**, not to keep a ruled number out of reach. **The launch-instruction half stands, unchanged.** ***Record the two together or the pair reads as a contradiction*** |
+| **Arm a's published arm-against-arm falsifiability divergence** — a two-way/three-way split against arm b | `0095` §1 | ***THE DIVERGENCE DID NOT EXIST.*** Arm b's current build published **the same 6 + 1 + 2 split** and named which side the third member falls on. **The claim came from a Red Team characterisation RELAYED INTO ARM A'S LAUNCH INSTRUCTION**, and **under isolation arm a had no admissible way to check what it was told.** ***A fabricated divergence in a gate deliverable is worse than a missed one: it pre-empts the one authority permitted to make cross-arm statements — the Human Lead's diff.*** **Arm a struck the claim entirely and did not replace it**, which is correct — any corrected characterisation breaches the same rule |
+| ***"`check_surfaces.py` EXITS 1"*** — in a permanent deliverable, when it exits 0 | `0096` §1 | **True when the arm measured it; false by the time it was read.** ***Arm a's behaviour was correct throughout*** — it reported the failure with its cause named rather than removing a citation to go green. ***The defect is that a control's exit status was publishable in a permanent deliverable at all*** |
+| **Four statements in `artifacts/step8-readback-{a,b}.md`** — *"`processed/` is not one of the SEVEN surfaces"*, `adopted_rule.json`'s **215,258 / 4,849**, *"Step 7 NOT approved; seven HOLDs"*, *"Step 0 still carries the superseded 403 rule"* | `0097` §1 | **All four were TRUE on 2026-08-14 and are false now.** ***No control can see any of them*** — the **third blindness class.** **Eleven passes did not catch them**; the eleventh found them only because `0096` §1 drew a line these files sit outside. **Named in a stamp rather than corrected, because these files have NO PRODUCING PIPELINE and `0092` corrects a deliverable by rerunning its arm** |
+| **The claim that the read-backs were *"stranded between `0092` and `0096`"*** | `0097` §2 | **Red Team disputed it and was right:** both files **already carried a hand-added `0086` status stamp**, *"so the precedent for a hand-applied status stamp on these exact files existed in the files."* **`0092` forbids hand-CORRECTING a deliverable's content; declaring a non-pipeline file non-operative is not that** |
+| **`0096` §1's SCOPE** — *"a **gate deliverable**"* | narrowed by `0097` §3 | ***One notch too narrow.*** `artifacts/` holds two files that are not gate deliverables, **and the expiry-dated-assertion class survived in exactly those two.** Red Team's own framing, adopted: *"the ruling was correct and its boundary was one notch too narrow"* — **a different diagnosis from the plateau it reported one pass earlier** |
+
+### The one thing in this stretch that is NOT a withdrawal and must not be filed as one
+
+> ***Gate residual 2 — the `logs/` provenance cost — is ACCEPTED AS RECORDED.*** Build history and
+> control results now live in `logs/`, git-ignored and on no propagation surface, so **the public
+> artifact set is no longer self-auditing on provenance.** **That is the knowing price of `0096` §1**,
+> and the Human Lead stated why it is not a follow-up: ***"a cost logged as a correction reads as a
+> defect awaiting a fix, and this one is neither."***
 
 ---
 

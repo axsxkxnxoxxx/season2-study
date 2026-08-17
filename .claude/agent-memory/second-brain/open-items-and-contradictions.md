@@ -1,17 +1,122 @@
 ---
 name: open-items-and-contradictions
-description: Live register of open items and cross-step contradictions in the Season 2 study, each with its two conflicting sources named — fourth pass 2026-08-16 through decisions/0094 and the Step 8 gate block, with R1-R9 new (including an unrecorded seventh Red Team pass and a trap-table register that lives only in this memory)
+description: Live register of open items and cross-step contradictions in the Season 2 study, each with its two conflicting sources named — fifth pass 2026-08-17 through decisions/0098 and the STEP 8 GATE APPROVAL, with K1-K6 new (including a superseded D9 cluster naming still live on three spec surfaces and a hazardous sentence this memory itself carried)
 metadata:
   type: project
 ---
 
-# Open items and contradictions — fourth pass, through `0094`, 2026-08-16
+# Open items and contradictions — fifth pass, through `0098`, 2026-08-17
+
+> ***ALL FIVE GATES ARE NOW APPROVED*** (Step 8 at `0098`, 2026-08-17). **Nothing in this register
+> blocks anything.** The approval is **unconditional with eight residuals open and published**, and
+> ***residual 2 — the `logs/` provenance cost — is ACCEPTED AS RECORDED and is NOT an open item.***
+> **It does not appear below and must not be added.**
 
 ---
 
-## NEW — surfaced 2026-08-16 by the catch-up pass over `0065`–`0094`
+## NEW — surfaced 2026-08-17 by the catch-up pass over `0095`–`0098` and the gate approval
+
+> **LABEL NOTE: this pass uses `K1`–`K6`.** `R`, `T`, `U`, `V`, `W`, `X`, `Y`, `Z`, `N` and `O` are all
+> taken further down this file. **A register that reuses its own labels cannot be cited.**
+
+### K1. **`0089` §2(c) withdrew `maigret` as D9's third-largest cluster. THREE SPEC SURFACES STILL NAME IT, and one of them contradicts itself 65 lines later**
+
+- **`task-sheet.md:663–665`** (surface 1): *"under U1 the largest clusters are `secondchance` (8),
+  `theisland` (7), **`maigret` (6)**. The three names are not wrong; they are a different universe's
+  answer."* **`.claude/agents/analytics-engineer.md:256–257` and `-b` carry the same sentence**
+  (surfaces 4–5). **No tie marker at any of the three.**
+- **`decisions/0089` §2(c):** ***"THE THIRD PLACE IS NOT DETERMINED AND THIS ENTRY SHOULD NOT HAVE
+  NAMED ONE."*** ~~`maigret` (6)~~ — **there is a SIX-WAY TIE at 6**, and **neither arm picked
+  `maigret`.** **`artifacts/step8-gate-approval.md` §4 residual 7** publishes the tie as unruled and
+  occupied.
+- **And the same agent file says both things:** **line 321** reads *"under U1 the largest clusters are
+  `secondchance` (8) and `theisland` (7), **with a six-way tie at 6 whose ordering is unruled**"* —
+  **65 lines below the sentence naming `maigret` third.**
+
+**The two things that conflict are `task-sheet.md:664` / `analytics-engineer{,-b}.md:257` and `0089`
+§2(c) + `analytics-engineer{,-b}.md:321`.** ***This is the exact shape `CLAUDE.md` names — an adopted
+statement and its superseded predecessor live in the same file, each declaring the other wrong, and
+identical in both copies so the dual diff cannot see it.*** **The withdrawal reached `decisions/` and
+the arms' own deliverables — both arms list all six — and stopped short of the spec surfaces.**
+***Reported, not fixed: surfaces 1, 4 and 5 are not mine.*** **Nothing published is wrong** — the
+tie-break is a residual the gate was approved with — **but a future instance reading the spec will
+name a third place the ruling says is not determined.**
+
+### K2. **This memory carried the exact sentence arm a's deliverable names as a hazard. CORRECTED HERE, logged because it is surface 7**
+
+- **`glossary-terms-and-thresholds.md`, until 2026-08-17:** *"**The FALSE class is EMPTY**: both arms
+  measured 1,246 / 0 / 0 / 0 …"* — **unqualified, in three places.**
+- **`artifacts/step8-waterfall-a.md` §3.1:** ***"TWO DIFFERENT `FALSE` CLASSES SIT ON THIS PAGE."***
+  **CLASS 1**, the coextensivity gap, **is 0 on all four populations**; **CLASS 2, the column's own
+  `FALSE` value, is 17,895 on APPLY position 5.** The arm states the consequence in terms:
+  ***"Step 8b defines the schema Steps 9–13 write into with NO CONVERSION LAYER, so a consumer that
+  reads 'the FALSE class is empty' and provisions a two-valued column is wrong by 17,895 rows."***
+
+**Corrected in all three places and given a trap-table row.** **Logged rather than fixed silently
+because Step 8b is UNBLOCKED and NOT LAUNCHED**, and **this memory is the kind of file a schema author
+reaches for.** **The two things that conflict were my own glossary and the arm's own deliverable — and
+the arm governs.** *(Mode G's shape, caught before it reached a ruling this time.)*
+
+### K3. **`441` and `439` needle candidates, and no file says whether two were triaged**
+
+- **`0095` §3:** *"The needle scan returns **441** candidate hits and is wired REPORT-ONLY, labelled
+  NOT YET A CONTROL."*
+- **`0096` §3 and `artifacts/step8-gate-approval.md` §4 residual 8:** *"the **439** untriaged needle
+  candidates"* / *"**439** unread needle candidates."*
+
+**Two entries apart, same object, two numbers, and no entry states the relation.** **Low consequence —
+the register is report-only by design and neither number is a defect count** — but **residual 8 is
+published with the gate**, and a Step 18 reader cannot tell 441 − 2 triaged from two counts of one
+thing. **The two things that conflict are `0095` §3 and `0096` §3.**
+
+### K4. **R6 closed by REMOVAL, not by correction — and the removal is residual 2**
+
+- **R6, below:** `artifacts/step8-waterfall-a.json:2007` published
+  `"decisions_entries_on_disk_total": 93` while `decisions/` held 94, *"closes on the next rerun."*
+- **After the `0096` rerun the key is GONE.** **No citation-resolver coverage count, no
+  `surfaces_not_reached`, no control exit status appears anywhere in `artifacts/`** — `0096` ruling 1
+  excludes them, and the arm now points at **`logs/step8_a_run.json`**, which is **git-ignored and on
+  no propagation surface.**
+
+**So R6 is closed and the mechanism that closed it is exactly what the approval books as residual 2 —
+*"the public artifact set is no longer self-auditing on provenance … the knowing price of `0096`
+§1."*** ***This is not a defect and must not be filed as one.*** **Recorded because a future reader
+finding R6 marked closed should know it was closed by the removal of the count, not by the count
+becoming right.**
+
+### K5. **R1–R9 are carried in the log, unruled, and the gate closed over them**
+
+- **`0096` §3, *"Carried, not ruled here"*:** the D9 tie-break; `specs/` and `CLAUDE.md` as candidate
+  surfaces; the 439 needle candidates; **and *"`second-brain`'s R1–R9."***
+- **`0098` approves the gate** and lists eight residuals, **of which R8's two items are residual 7 and
+  a carried surface question.** **R2, R3, R4, R5, R7 and R9 are named nowhere in the approval.**
+
+**Not a contradiction — a scope difference, recorded so it is not read as either.** **The register was
+seen and carried; it was not dispositioned.** **Whether any of R2–R9 needs a ruling now that the gate
+is closed is the Human Lead's call.**
+
+### K6. **The pass-count TOTALS now agree while R2's intermediate offset was never reconciled**
+
+- **`0098` and `artifacts/step8-gate-approval.md`:** ***ELEVEN passes, ten HOLD then PROCEED*** —
+  **`decisions/` and `artifacts/` agree on the total and on the eleventh.**
+- **R2, below, is unchanged:** `0091` §2 calls the `+1`-perturbation finding *"Red Team **sixth** pass,
+  F3"* and `artifacts/step8-invariants-a.md:9` calls it *"Red Team's **seventh** pass, finding 3"*,
+  **and `0092` is the seventh-pass entry that names no pass at all.**
+
+**So a Step 18 reader reconstructing the sequence gets the right total and a wrong map of the middle.**
+**The two things that conflict are still `0091` §2 and `step8-invariants-a.md:9`.** **Low consequence
+for any figure; the review sequence IS the artifact.** **Not mine to resolve.**
+
+---
+
+## The `0065`–`0094` pass — R1–R9. **Re-checked 2026-08-17 against the gate approval**
 
 **None of these is a disposition. Each names its two conflicting sources and stops.**
+
+> **STATUS, 2026-08-17.** **R1 corrected. R6 CLOSED — by removal, see K4.** **R8's first item is now
+> published as gate residual 7 and its second is carried alongside `CLAUDE.md` at `0095` §4.**
+> **R2, R3, R4, R5, R7 and R9 are unchanged and open.** ***All nine are named in `0096` §3 as carried
+> and not ruled*** — see **K5**.
 
 > **LABEL NOTE: this pass uses `R1`–`R9`. `W1`–`W5` are TAKEN** by the 2026-08-12 pass further down
 > this file (the agent-definition findings, closed by `0035`). **A register that reuses its own labels
@@ -113,6 +218,11 @@ coverage count published under a build tag naming an entry the count could not s
 provenance class `0078` §2 exists for. **Closes on the next rerun; recorded so it is not read as a
 gap in `decisions/`.**
 
+> ***CLOSED 2026-08-17 — BUT BY REMOVAL, NOT BY CORRECTION.*** After the `0096` rerun **the key is
+> gone**; `0096` ruling 1 excludes control results from deliverables and the arm points at
+> `logs/step8_a_run.json`. **See K4** — the mechanism that closed this is the gate's own **residual 2**,
+> which is **accepted as recorded and is not a defect.**
+
 ### R7. The Mode H letter now names two different failure modes
 
 - **`withdrawn-claims-register.md`, since 2026-08-13:** **Mode H = an asserted action or property that
@@ -133,6 +243,12 @@ letters.** See [[withdrawn-claims-register]].
   occurrences. Red Team's position: adopt it.
 
 **Both are `0089` §4. Neither blocks per Red Team. Both are unruled.**
+
+> **STATUS 2026-08-17.** **The tie-break is now published as gate residual 7** — the gate closed over
+> it, unconditionally. **The surface question has GROWN: `0095` §4 adds `CLAUDE.md` beside `specs/`**,
+> after the third missing-entry occurrence was invisible to the citation resolver **because
+> `CLAUDE.md` is not one of the eight surfaces the resolver scans.** ***And the tie-break's superseded
+> naming is still live on surfaces 1, 4 and 5 — see K1.***
 
 ### R9. `0091` §1's residual is answered by one arm and not the other
 
@@ -249,7 +365,7 @@ Lead can rule without re-reading the corpus.
 **How to apply:** re-check each entry against the files before raising it. Several close by
 ordinary progress rather than by a decision.
 
-**The decision log of record is `decisions/`** — `README.md` plus `0001`–`0064`. Where a decision
+**The decision log of record is `decisions/`** — `README.md` plus `0001`–`0098`. Where a decision
 file and this memory differ, `decisions/` governs on who decided what and when; the deliverable it
 approves governs on substance. I never edit `decisions/` — I report.
 

@@ -661,7 +661,7 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
       `blackout`. **Name the basis at the point of use; a list without it is not reproducible.**
       **`task-sheet.md`'s own former illustration — The Twilight Zone, The Traitors, Manhunt — was U3**
       and is **SUPERSEDED as the example**; under U1 the largest clusters are `secondchance` (8),
-      `theisland` (7), `maigret` (6). **The three names are not wrong; they are a different universe's
+      `theisland` (7), ~~`maigret` (6)~~ ***— WITHDRAWN. `0089` §2(c): "THE THIRD PLACE IS NOT DETERMINED AND THIS ENTRY SHOULD NOT HAVE NAMED ONE." There is a SIX-WAY TIE at 6 — `blackout`, `hunted`, `maigret`, `missing`, `thefamily`, `yourhonor` — and which appears third is the TIE-BREAK, which no rule specifies. NEITHER ARM PICKED `maigret`. Marked at the point of use 2026-08-17 (`0099`), found by `second-brain`: this line contradicted its own file 65 lines lower, and both copies being identical meant the dual diff could not see it. Published residual 7 of the gate approval.*** **The names are not wrong; they are a different universe's
       answer**, which is the whole reason this needed ruling.
 - [ ] **A GATE DELIVERABLE ASSERTS ONLY WHAT ITS OWN ARM MEASURED.** Human Lead ruling, 2026-08-17
       (`0096` ruling 1). **Its figures, its inputs, its limits — and nothing else.** ***It does NOT
