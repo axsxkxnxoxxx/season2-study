@@ -385,6 +385,17 @@ JSON_STRING_FIELDS_ARE_NOT_NUMERICALLY_CHECKED = True
 
 # ----------------------------------------------------- wholly superseded, one line each
 WHOLLY_SUPERSEDED_FILES = {
+    # 0097, Red Team eleventh pass F1. Historical read-backs of 2026-08-14 with NO producing
+    # pipeline, so 0092 cannot correct them by rerunning an arm. FOUR statements in them expired:
+    # seven-vs-eight propagation surfaces, adopted_rule.json's pre-0074 figures, Step 7's
+    # pre-approval header, and Step 0's pre-amendment 403 rule. Stale STATEMENTS built from
+    # once-true readings -- the third blindness class, invisible to every numeric and phrase half,
+    # which is why eleven passes did not catch them. Named here because CLAUDE.md requires a
+    # wholly superseded file be exempted BY NAME with a reason; the head stamp declares status and
+    # does not exempt.
+    "step8-readback-a": "historical read-back of 2026-08-14; four statements expired, named in its stamp (0097)",
+    "step8-readback-b": "historical read-back of 2026-08-14; four statements expired, named in its stamp (0097)",
+
     "step7-liveness-mm-a": "the REVERTED ALT-MATCHED rule (0052, reverted 0054); retained as its record",
     "step7-liveness-mm-b": "the REVERTED ALT-MATCHED rule; retained as its record",
     "step7-liveness-alt-a": "the ALT rule, superseded by ALT-BROAD (0048)",

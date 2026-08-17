@@ -9,6 +9,30 @@
 > **This stamp names what is superseded and restates no adopted figure** (`CLAUDE.md`:
 > stamps are negative only).
 
+> **STATUS STAMP EXTENDED, 2026-08-17 (`0097`), on Red Team's ELEVENTH pass.** ***FOUR STATEMENTS IN
+> THIS FILE HAVE EXPIRED.*** They were true observations when written on 2026-08-14 and are **false
+> today**, and **no control can see them** — they are stale *statements* built from once-true
+> readings, `CLAUDE.md`'s **third blindness class**, which is why eleven Red Team passes did not
+> catch them. **Named here rather than corrected, because this file has no producing pipeline and
+> `0092` corrects a deliverable by rerunning its arm:**
+>
+> - ~~*"`processed/` is not one of `CLAUDE.md`'s SEVEN propagation surfaces"*~~ — **`CLAUDE.md` names
+>   EIGHT, and `processed/` IS surface 8.**
+> - ~~*"`processed/step5/adopted_rule.json` publishes `analysis_population: 215,258`, `removed:
+>   4,849`"*~~ — **that file now carries a `_SUPERSEDED_FIGURES_CORRECTED_2026_08_13` block and the
+>   approved revision-6 figures; both arms measure 18,207 / 201,900 of 220,107 against it.**
+> - ~~*"`task-sheet.md` Step 7 header: NOT approved; seven Red Team HOLDs"*~~ — **Step 7 was APPROVED
+>   2026-08-13 (`0064`).**
+> - ~~*"`task-sheet.md` Step 0 still carries the superseded 403 rule"*~~ — **Step 0 carries the
+>   classified rule with the old form struck.**
+>
+> **This file is WHOLLY SUPERSEDED and is now exempted BY NAME in `src/step7_register.py`** — a head
+> stamp alone does not exempt a file (`CLAUDE.md`: that rule once exempted 19 `.md` and 16 `.json`
+> files including both operative deliverables, and a wrong ratio survived a passing check inside
+> one). **Nothing here is operative.** The spec is `task-sheet.md` Step 8; the deliverables are
+> `artifacts/step8-{waterfall,invariants}-{a,b}`. **Negative only: this stamp restates no adopted
+> figure.**
+
 **This is not Step 8.** Step 8 is a gate, it is unapproved, and it has not launched. **Nothing was
 built, no row was filtered, nothing was written to `processed/`, zero API calls.** What follows is the
 specification *as I read it*, plus what I could not read unambiguously.
