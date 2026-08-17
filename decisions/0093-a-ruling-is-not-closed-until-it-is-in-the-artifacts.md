@@ -38,7 +38,7 @@ sections.** The ruling was in `decisions/`, in the spec, and not in the arm's em
 Red Team's eighth pass names none; no artifact contains one. **The only `30` matched in either artifact
 is a substring of `1,230`**, the `p = 1.0` post-liveness count. ***Third occurrence of a `30` cited with
 no referent*** — the earlier two were *"the withdrawn `0 = 75 = 30` identity"*, and D9's numbers are
-0, 75, 76, 6, 27 and 153.
+0, 75, 76, 6 and 27. ***CORRECTED 2026-08-16 by `second-brain`: this sentence listed `153` among them. `153` is D2's DERIV both-bind tie count — `step8-waterfall-a.json:1311,1320` — and there is no D9 `153`. An entry written to correct a referent carried a referent error of its own.***
 
 **(b) *"D4's withdrawn word in both artifacts."*** **Zero withdrawn, superseded or struck wording appears
 anywhere near D4 in either artifact** — measured on the current build, both files. **Second occurrence.**

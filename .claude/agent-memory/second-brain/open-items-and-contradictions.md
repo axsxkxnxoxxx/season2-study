@@ -1,11 +1,150 @@
 ---
 name: open-items-and-contradictions
-description: Live register of open items and cross-step contradictions in the Season 2 study, each with its two conflicting sources named — re-verified 2026-08-13 after decisions/0055-0064 and the Step 7 gate approval, with V7 closed as an error of mine that reached a ruling and T1-T4 new
+description: Live register of open items and cross-step contradictions in the Season 2 study, each with its two conflicting sources named — fourth pass 2026-08-16 through decisions/0094 and the Step 8 gate block, with R1-R9 new (including an unrecorded seventh Red Team pass and a trap-table register that lives only in this memory)
 metadata:
   type: project
 ---
 
-# Open items and contradictions — re-verified 2026-08-13 (third pass, through `0064`)
+# Open items and contradictions — fourth pass, through `0094`, 2026-08-16
+
+---
+
+## NEW — surfaced 2026-08-16 by the catch-up pass over `0065`–`0094`
+
+**None of these is a disposition. Each names its two conflicting sources and stops.**
+
+> **LABEL NOTE: this pass uses `R1`–`R9`. `W1`–`W5` are TAKEN** by the 2026-08-12 pass further down
+> this file (the agent-definition findings, closed by `0035`). **A register that reuses its own labels
+> cannot be cited.**
+
+### R1. My own glossary forbade two figures the Step 8 spec MANDATES. **CORRECTED HERE, logged because it is surface 7**
+
+- **`glossary-terms-and-thresholds.md`, until 2026-08-16:** *"Superseded counts, never to be restated
+  as current: **PF-LIMIT's 751 (DERIV) and 1,355 (APPLY)**."*
+- **`0085` §5, and `task-sheet.md` / both `analytics-engineer` files carrying it:** *"**703 is not the
+  marginal cost of the silence test.** The silence test alone excludes **1,355** on APPLY; the
+  `NOT Continued` conjunct spares **652**; `1,355 − 652 = 703`. **Both arms now publish both, on both
+  populations, with the identity stated.**"* Measured in both arms at `0086` §4; DERIV is
+  `751 − 652 = 99`.
+
+**Both statements are about the same arithmetic.** PF-LIMIT **the rule** is superseded; **the count**
+is conjunct 1 alone, and it is now a required line-6 decomposition. **A memory row reading *"never
+restate"* against a spec clause reading *"both arms publish both"* is precisely the shape that produced
+the wrong ruling at `0051` §2.** **Corrected in the glossary and given a trap-table row.**
+
+### R2. **`decisions/` and `artifacts/` NUMBER THE RED TEAM PASSES ONE APART, and the same finding carries two numbers**
+
+> **This entry was drafted wrong and is corrected here rather than deleted.** My first draft read
+> *"the seventh pass has no record anywhere."* **False** — `seventh pass` occurs **74 times across 18
+> files**, including `src/`, both arms' artifacts and `task-sheet.md`. **I had grepped `*.md` in
+> `decisions/` and generalised from it.** This is exactly the class the register exists to catch, and
+> it is [[feedback-verify-against-files]] applied to my own draft.
+
+**The real contradiction, and it is checkable in two lines:**
+
+- **`decisions/0091` §2:** *"OVERSTATED FOR ARM A. Corrected 2026-08-16, **Red Team sixth pass, F3**"*
+  — the `+1` perturbation that *"fires identically on a same-mask denominator, so it would have passed
+  on the very build whose defect it claims to have fixed."*
+- **`artifacts/step8-invariants-a.md:9`:** *"**Red Team's seventh pass, finding 3**, established that
+  this arm's `+1` perturbation does not test independence and would have passed on the build whose
+  defect it claimed to have fixed."*
+
+**One finding. Two pass numbers.** And the same offset appears at the other end:
+**`artifacts/step8-waterfall-a.md:375`** attributes **N2** to *"`decisions/0092`, **Red Team seventh
+pass**"* — while **`0092` itself names no pass at all**, and `0093` then calls the next one *"the
+**eighth** pass."*
+
+**So `0092` IS the seventh-pass entry and does not say so**, the sixth pass's findings live only as
+in-place amendments inside `0089` and `0091`, and **`decisions/` and `artifacts/` are off by one on
+which pass found the `+1` item.** **The two things that conflict are `0091` §2 and
+`step8-invariants-a.md:9`.** **Low consequence for any figure; high consequence for a Step 18 reader
+reconstructing the review sequence, which is the artifact.** Not mine to resolve.
+
+### R3. The Step 8 trap-table figures exist in ONE hand-maintained place, and that place is this memory
+
+- **`CLAUDE.md`:** *"The register of known false positives is maintained in
+  `.claude/agent-memory/second-brain/glossary-terms-and-thresholds.md`; the decision entry that adds or
+  withdraws a row cites it."* And, separately: ***"One register, in `src/step7_register.py`, imported by
+  every script that checks. Two hand-maintained copies diverged by an entry after a single use."***
+- **`src/step7_register.py`** holds `LEGITIMATE`, `SUPERSEDED`, `SUPERSEDED_IN`, `ADOPTED`,
+  `DECLARE_SCOPED` — **all Step 7 values.** Its Step 8 coverage is **textual only**:
+  `SUPERSEDED_STRINGS` and `SURFACE6_LINE_LOCAL_CONTROLS`. **`168`, `153`, `75`, `76`, `46,428`,
+  `726,102`, `1,246`, `71`, `20` and the second readings of `703` and `604` are NUMERIC entries with no
+  numeric register.**
+
+**So the Step 8 half of the trap table is a second hand-maintained register in exactly the sense `0059`
+B3 forbids** — and it is the one a control cannot import. **The two things that conflict are
+`CLAUDE.md`'s two rules about where the register lives.** **Raised, not resolved.**
+
+### R4. A line-local control on `747,478` passes only off an incidental word
+
+- **`src/step7_register.py`,** `SURFACE6_LINE_LOCAL_CONTROLS["747478_is_a_PAIR_count_not_a_ROW_count"]`:
+  *"every line mentioning 747,478 must be marked as superseded, **or must characterise it as distinct
+  `(user, show)` PAIRS.**"* — plus the needle `"747,478 and 726,103 are different objects"`.
+- **`artifacts/step8-waterfall-a.md:434`** carries **that exact needle** and **contains no `pair`**. It
+  is exempted because `SURFACE6_MARKERS` matches the word **`defect`** in the line's unrelated closing
+  sentence, *"One name over two quantities is the defect."*
+
+**The line is legitimate — the table three lines below gives the correct axis.** **What is not
+legitimate is the route by which it passes.** **This is the "passing only by accident" shape `0094` §3
+found twice**, in the same control family. **Not mine to fix.**
+
+### R5. `0093` lists `153` among D9's numbers; every measured `153` in the current build is D2's
+
+- **`0093` §3(a):** *"D9's numbers are **0, 75, 76, 6, 27 and 153**."*
+- **Both arms' current builds:** `153` is **D2's `max()` BOTH-BIND tie count on DERIV** —
+  `step8-waterfall-a.json:1311` and `:1320`, `step8-waterfall-b.json:761–762`, at 147,370 and 147,271.
+  **D9's published quantities are `[0, 75]`, `[0, 6]`, `[0, 27]`, the third key's `76` and `28`, and
+  the universe sizes.** **I find no D9 `153` in any current artifact.**
+
+**Low consequence — it sits in an aside arguing a different point — but it is a figure attributed to
+the wrong diagnostic in the log of record**, and `153` is exactly the figure `0092` §3 had just
+established as the one nobody had recorded. **The two things that conflict are `0093` §3(a)'s list and
+both arms' D9 blocks.**
+
+### R6. A published artifact's citation-resolver coverage is one entry short of `decisions/`
+
+- **`artifacts/step8-waterfall-a.json:2007`:** `"decisions_entries_on_disk_total": 93`, in build
+  **`a/2026-08-16-0094`**.
+- **`decisions/` holds 94 entries**, `0001`–`0094`, none missing.
+
+**Consistent with `0094` §4** — the entry did not exist when the arm ran. **It is nonetheless a
+coverage count published under a build tag naming an entry the count could not see**, which is the
+provenance class `0078` §2 exists for. **Closes on the next rerun; recorded so it is not read as a
+gap in `decisions/`.**
+
+### R7. The Mode H letter now names two different failure modes
+
+- **`withdrawn-claims-register.md`, since 2026-08-13:** **Mode H = an asserted action or property that
+  was never taken or never held.** Ten instances in nine entries, cited by letter in three memory files.
+- **The Human Lead's briefing, 2026-08-16:** *"**Mode H** matters here: where an entry withdrew a
+  **ground** rather than a figure."*
+
+**I added the ground-withdrawal class as Mode I rather than renumber H.** **The Human Lead names the
+letters.** See [[withdrawn-claims-register]].
+
+### R8. Two items carried for the Human Lead at the Step 8 gate and still open
+
+- **The D9 tie-break** — six keys tie at 6, the arms publish different third places, both correct under
+  their own rule, and **`0088` §3 named a seventh answer neither arm produced.** Red Team's position:
+  publish all six and retire *"third-largest."*
+- **Whether `specs/` becomes a NINTH propagation surface.** It holds the written specs handed to
+  isolated instances, **nothing checks it**, and it carried *"Step 8 has not launched"* through **four**
+  occurrences. Red Team's position: adopt it.
+
+**Both are `0089` §4. Neither blocks per Red Team. Both are unruled.**
+
+### R9. `0091` §1's residual is answered by one arm and not the other
+
+- **Arm a, build `a/2026-08-16-0094`** (`step8-waterfall-a.json`): states at each cell whether conjunct
+  2 was recomputed on the counterfactual outcome — *"if conjunct 2 were held at the adopted outcome,
+  `703 → 703` would be an IDENTITY and would establish nothing. A reader cannot tell a measurement from
+  a tautology unless the deliverable says which, so it says which."*
+- **`0091` §1:** *"**Arm B does not report the liveness count under the counterfactual, so there is no
+  second arm to settle it.**"*
+
+**One arm has closed it; the pair has not.** **A single-arm answer is not a dual result**, and the
+604/99 split under the counterfactual **is still reported nowhere.**
 
 ---
 
@@ -157,7 +296,8 @@ be restated against seven surfaces is the Human Lead's call, not mine.**
 
 ## The `0035`–`0050` pass — V1–V11. Most were actioned by `0051`. Re-checked 2026-08-13.
 
-**Context for all of these: the propagation surface has now failed TWENTY-ONE times.** **`#1`–`#18` is a
+**Context for all of these: the propagation surface has now failed TWENTY-TWO times** *(21 through
+`0064`; **`#22` is `0084`**, in the Step 8 block)*. **`#1`–`#18` is a
 SURFACES-1–5 count and must never be published as a total** (`0057` §7); **#19 and #20 are on surface 6,
 #21 is on surface 7 — this memory.** **Both halves of every dual pair have carried each defect
 identically**, so the dual-implementation diff cannot catch this class at all. Full arc in

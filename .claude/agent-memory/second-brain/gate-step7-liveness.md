@@ -1,6 +1,6 @@
 ---
 name: gate-step7-liveness
-description: The Step 7 liveness gate as a narrative — five rules in succession (632d, 1293d, PF-LIMIT, ALT, ALT-BROAD) plus the ALT-MATCHED adopt-and-revert, fifteen Red Team HOLDs split 1-8 rule / 9-15 record, twenty-one propagation failures, the warrant that selected the rule, and the self-correction cascade; APPROVED at decisions/0064
+description: The Step 7 liveness gate as a narrative — five rules in succession (632d, 1293d, PF-LIMIT, ALT, ALT-BROAD) plus the ALT-MATCHED adopt-and-revert, fifteen Red Team HOLDs split 1-8 rule / 9-15 record, the propagation-failure series (now 22, and the surface count is 8 not 7), the warrant that selected the rule, and the self-correction cascade; APPROVED at decisions/0064
 metadata:
   type: project
 ---
@@ -277,7 +277,13 @@ from 1,355 pairs to 703. **It does not justify it.**
 
 ---
 
-## Twenty-one propagation failures, and the controls they produced
+## Twenty-**two** propagation failures, and the controls they produced
+
+> **UPDATED 2026-08-16. The count is 22, not 21** — `#22` is `0084`, in the Step 8 block: `0083` §2's
+> withdrawal reached a table row 71 lines below the bullet it needed to reach, and **the phrase control
+> could not see it because the withdrawn sentence wrapped across a line break.** **And the surface
+> count is EIGHT, not seven** — `processed/` was added at `0074`. Every *"seven surfaces"* below is
+> stale by one and is left in place only where it is quoting a document as it stood.
 
 > **`#1`–`#18` ARE A SURFACES-1–5 COUNT AND MUST NEVER BE PUBLISHED AS A TOTAL** (`0057` §7). Surfaces 6
 > and 7 were added **after** the count was fixed, and their failure rate was *"unmeasured, not zero."*

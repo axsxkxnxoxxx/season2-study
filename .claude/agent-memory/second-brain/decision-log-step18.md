@@ -1,6 +1,6 @@
 ---
 name: decision-log-step18
-description: Coverage map of the decision log of record in decisions/ (0001-0064, through the Step 7 gate approval), which judgments still have no file, and assembled five-field text pending handoff to the Human Lead
+description: Coverage map of the decision log of record in decisions/ (0001-0094, through the Step 8 gate block, gate NOT approved), which judgments still have no file, and assembled five-field text pending handoff to the Human Lead
 metadata:
   type: project
 ---
@@ -24,9 +24,10 @@ log shows the judgment."*
 
 > **This file is propagation surface 7** (`CLAUDE.md` §Propagation). **A stale entry here has already
 > been fed back into a ruling** — see `0051` §2 and [[withdrawn-claims-register]] mode G. Correct it
-> here **and** grep the other six surfaces; read-back alone is not verification.
+> here **and** grep the other **seven** surfaces — **there are EIGHT, not seven**; `processed/` was
+> added as surface 8 at `0074`. Read-back alone is not verification.
 
-## Coverage as of 2026-08-13 — `0001`–`0064`
+## Coverage as of 2026-08-16 — `0001`–`0094`
 
 | Files | Cover | Five-field completeness |
 | :--- | :--- | :--- |
@@ -160,7 +161,8 @@ continuity, and the log is the Human Lead's.
    each corrected its predecessor and each introduced a defect doing it. Instance A's line from
    inside `0045` — *"the seventh instance, inside the entry correcting the sixth"* — is the honest
    summary, and `0046` §0 names the cause as motivated number-selection rather than inattention.
-3. **Six standing controls came out of TWENTY-ONE propagation failures**, each written after the same
+3. **Six standing controls came out of TWENTY-TWO propagation failures** *(the count was 21 through
+   `0064`; `#22` is `0084`)*, each written after the same
    failure recurred somewhere new: item 46's five-file surface; `0046` §0's population rule; `0049` §6's
    launch-snapshot practice; `CLAUDE.md` §Propagation's **seven** surfaces with read-back **plus grep**;
    `0055` §3's **positive** counterpart (grep the corrected string, require non-zero); and `0058`–`0062`'s
@@ -210,6 +212,51 @@ words and produced different answers — 61 days apart, then one day apart. **Ne
 visible in a single run and the first was not visible in the spec.** That is a defensible answer to
 "why did you run everything twice," and it is worth more in the write-up than the value of `W`.
 See [[gate-step6-window-w]].
+
+---
+
+## `0065`–`0094` — the Step 8 block. **Thirty entries, EIGHT Red Team passes, all HOLD, gate NOT APPROVED**
+
+**Read [[gate-step8-analysis-table]] first.** As with Step 7, each entry is correct about what it
+decided and **only the sequence shows what happened.**
+
+| Files | Cover | Five-field completeness |
+| :--- | :--- | :--- |
+| `0065`–`0067` | Dates corrected; the **third blindness class** named; Step 8b's output schema propagated; `0064` propagated | Full. `0065` §3 is where the **obligation to name the still-true statistics** behind a withdrawn ground was created — the human half of `GROUNDS_WITHDRAWN` |
+| `0068` | **Waterfall line 1 = 220,107.** Four defensible bases sat on disk and **lines 1, 2 and 3 all moved with the choice** | Full. Its "alternatives" field is unusually literal — four numbers, each defensible, **no instance chooses a base** |
+| `0069`–`0074` | Seven spec gaps; **eight Step 8 rulings**; the `data-scientist` pass; rule scope in all three places; the comparator; **six rulings and the eighth surface** | Full. **`0074` §1's ground is the one to lift:** *"downstream CONSUMES, it does not REBUILD — a reconstruction that agrees today is still a second definition tomorrow,"* **invisible to the dual diff because both arms would rebuild the same way** |
+| `0075`–`0082` | The `W` arm grid; **`p` is a CODE CHECK**; column names; provenance; inert positions; **columns enumerated**; `silent_at_tau1` restored; `p_at_bound` + **generated files as checks** | Full. **`0076` is the model of a correction that inverts its own finding** — five of six unfalsifiable with **zero** pure data checks — and `0080` §3's coverage identity is the control that a 99-row hole had already defeated |
+| `0083`–`0084` | Denominator **closed** (never a divergence — a one-parameter family); `p_at_bound` restated as **WHETHER not WHY**; **propagation failure #22** and the **wrapped-phrase blindness** | Full. `0083` §1 is the best *"this is not a Step 14 limitation"* argument in the log: **a limitation is an uncertainty that survives into a result, and this one touches none** |
+| **`0085`–`0087`** | Red Team's third and fourth HOLDs: D9 universes, the DERIV `p_at_bound` cells, **B3 carried**, the **inverted surface numbering** in three entries, and **`0086` §1's reconciliation claim RESTRICTED** | **Full, and `0085` §1 is the first entry to check a directed item BEFORE acting** and report the figures with their file and line. **Two of the four directed items had no referent.** `0087` §2's *"my own parenthetical compounded it"* is the honest form |
+| **`0088`–`0089`** | **B3 measured; two objects reported separately; the D9 universe is U1** — and **all three rulings named the wrong referent** | **Full, and `0088` §4 is the entry Step 18 should quote on the pattern:** the countermeasure worked on two of three, and **on the third the substance and the label pointed opposite ways with equal force, so it was put back to the Human Lead rather than inferred.** `0089` §1 is the payoff: **B3's per-site assertion found a real bug on the first run** |
+| **`0090`–`0091`** | **D9 publishes as a BOUND** — strict FLOOR, loose CEILING, **neither is the point estimate**; **the half-open mandate is OUTCOME-DECIDING**, 71 APPLY / 59 DERIV | Full. `0090` §1 is a ruling derived entirely from a **prior ruling's own stated reason, carried one step further** — *"a quantity published because it bounds another IS an endpoint, not a footnote"* |
+| **`0092`–`0094`** | **Artifact sign-off**; **a ruling is not closed until the artifacts carry it**; **the citation resolver** | **Full, and all three are self-implicating.** `0092` records that **its own entry did not exist**; `0093` records that **`0092`'s premise was false** and names the cause the evidence supports; `0094` records the **second missing-entry occurrence in three entries** and builds the control |
+
+### What Step 18 should take from the Step 8 block, beyond the entries
+
+1. **Three rules were added to `CLAUDE.md`, and every one came from a failure in the record-keeping,
+   not in the measurement.** Sign-off, closure-on-artifacts, and citation resolution. **None of them is
+   about the data.**
+2. **The premise-falsification table in [[gate-step8-analysis-table]] is the single most Step-18-shaped
+   thing in this block.** Ten cases where a ruling or a directed item was **right in substance and
+   wrong about the object it named**, each caught by measuring before acting. **`0092` §3 (N2) is the
+   cleanest**: the ruling's premise was *"168 cannot be correct on both"*, the measurement was that
+   **168 is correct on all three APPLY readings and DERIV is 153**, and **the requirement survived and
+   was strengthened.** *A ruling can be worth keeping after its reason is destroyed, and the log should
+   say which reason it now rests on.*
+3. **Nearly every defect in this block was found by a READING AGENT, not a control** — including
+   several **inside the control apparatus**: 8 of 13 coverage identities that cannot fail, an
+   independence proxy that admitted all four families, three hardcoded `True` literals, a needle whose
+   own case-sensitivity blinded it to the one string it was written for, and two decision entries cited
+   before they existed. **Step 18 should say this plainly rather than presenting the controls as what
+   worked.**
+4. **The dual diff's blind spot got a second demonstration.** F7 — the two arms publish **differently
+   shaped headlines over an identical nine-label set**, three-way against two-way, and **neither arm
+   flagged it through eight passes** because every figure and every label matches. **Reported, not
+   reconciled.**
+5. **B3 is the argument FOR expensive process, made by the process.** *"A per-site assertion found in
+   one run what 'D11 is applied to every computation' had asserted in prose across five builds and two
+   gate reviews."*
 
 ---
 

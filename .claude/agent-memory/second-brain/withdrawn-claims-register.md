@@ -1,6 +1,6 @@
 ---
 name: withdrawn-claims-register
-description: The study's own error log — claims asserted and later withdrawn or corrected, organised by failure mode, covering Steps 1 through 7 including the liveness gate's twelve-entry self-correction cascade, mode F, mode G (a stale memory fed back into a ruling) and mode H (an asserted action never taken); current through decisions/0064
+description: The study's own error log — claims asserted and later withdrawn or corrected, organised by failure mode, covering Steps 1 through 8 including the liveness gate's twelve-entry cascade and the Step 8 block's withdrawal of several Human Lead rulings' premises; modes A-I, with mode I the withdrawn-GROUND class that no control sees; current through decisions/0094, 2026-08-16
 metadata:
   type: project
 ---
@@ -9,9 +9,11 @@ metadata:
 
 **Why this file exists:** every claim below was asserted confidently, survived at least one review,
 and was later found false. The value is not the list — it is the **taxonomy**, because the same seven
-failure modes keep recurring and each one is checkable in advance.
+failure modes keep recurring and each one is checkable in advance. *(The taxonomy now runs to **nine
+modes, A–I**; the sentence formerly said seven.)*
 
-**How to apply:** when reviewing any gate artifact, run all seven checks below. They are cheap and
+**How to apply:** when reviewing any gate artifact, run all **NINE** checks below (A–I; there is no
+mode letter between D and F). They are cheap and
 they have all caught something. **Mode H is the one to run on `0055`–`0063` and on Step 8**, because it
 is the mode that survives a review: an entry claiming a check was run reads exactly like one where it was.
 
@@ -26,6 +28,35 @@ is the mode that survives a review: an entry claiming a check was run reads exac
 | **F** | **A figure measured on one population or configuration, quoted as if measured on another.** **Added 2026-08-13. It is the study's most frequent single error** — at least nine instances, seven of them inside the Step 7 block, and it is what `0046` §0's standing rule exists to stop | **Name the population at the point of use, every time.** For an interval endpoint, name the population it is computed on **and** the estimand it bounds, and check they are the same population (`0047` §3). Mode C is its ancestor — C is a *cost* against a dead baseline, F is *any* figure against the wrong population |
 | **G** | **A stale or wrong record fed back into a ruling and adopted without being checked against the producer.** **NEW, added 2026-08-13.** Distinct from F: F is a figure quoted against the wrong population; **G is a figure a SECONDARY record says is wrong, believed over the primary output that produced it** | **Check the producer, not the summary.** Grep the arms' JSON for the key before recording any figure as unreconstructible, wrong, or unpopulated. **A figure that an independent reviewer has cleared and that you cannot reproduce is first a claim about your reconstruction.** And: **a sum that reconciles is not a split that reconciles** — check every component against a second route, not the total |
 | **H** | **AN ASSERTED ACTION OR PROPERTY THAT WAS NEVER TAKEN OR NEVER HELD** — an entry saying an edit was made, a check was run, or a control has a property, when it did not. **NEW, added 2026-08-13, and it is the dominant mode of `0055`–`0063`.** *This is my classification of a pattern the entries name individually; it is not a Human Lead ruling.* Distinct from A: A over-reasons from real definitions; **H states a fact about the world that a single look would refute** | **Make the claim assert itself, or do not make it.** `0060` B5's fix is the model — four `assert _dead not in MARK.pattern` lines run at import, *"so this claim cannot go stale silently again."* And: **an empty result and a clean result are the same value.** Every check that can return "nothing found" must say whether it found nothing **or looked at nothing** (`0062`) |
+
+| **I** | **A WITHDRAWN GROUND BUILT FROM CORRECT STATISTICS** — `CLAUDE.md`'s **THIRD BLINDNESS CLASS**, and **no control sees it.** The argument is withdrawn; the numbers in it stay true. **So there is no superseded figure for the numeric half to match, and the argument is usually paraphrased rather than quoted, so there is no phrase for the phrase half to match.** **NEW, added 2026-08-16** | **Name the statistics that remain TRUE but are no longer load-bearing**, at the point the ground is withdrawn. **The register's obligation, `0065` §3.** `GROUNDS_WITHDRAWN` in `src/step7_register.py` is the machine half; this section is the human half and **must not diverge from it** |
+
+> ***NAMING COLLISION, SURFACED NOT RESOLVED, 2026-08-16.*** **This register has defined *Mode H* since
+> 2026-08-13 as *an asserted action or property that was never taken or never held*.** **The Human
+> Lead's briefing of 2026-08-16 uses *"Mode H"* for the ground-withdrawal class** — *"where an entry
+> withdrew a ground rather than a figure."* **Those are two different modes and both are live in this
+> stretch.** I have added the ground-withdrawal class as **Mode I** rather than renumber H, because
+> **H's ten instances are cited by letter in three other memory files and in the Step 18 material.**
+> **The two things that conflict are this file's Mode H definition and the briefing's use of the same
+> letter. The Human Lead names the letters.**
+
+## Mode I — withdrawn GROUNDS. **`GROUNDS_WITHDRAWN` holds THREE, not two**
+
+> **DIVERGENCE FROM THE BRIEFING, reported per the instruction.** The briefing states
+> *"`GROUNDS_WITHDRAWN` in `src/step7_register.py` now holds **two** such entries."* **It holds
+> THREE** — keys `"0094 SS2"`, `"0055 SS2"` and `"0083 SS2"`, read off
+> `src/step7_register.py` on 2026-08-16. **The source governs.** *(The third, `0083 SS2`, was added at
+> `0083` and is the `p_at_bound` one.)*
+
+| Entry | The argument withdrawn | **Still TRUE, no longer load-bearing** | Why it is not load-bearing |
+| :--- | :--- | :--- | :--- |
+| **`0055` §2** | the widened S&L floor is warranted because the 90 channel pairs had full opportunity to produce evidence — ***"p5 margin 1.7 days, minimum 0.13"*** | **1.7 · 0.13 · 1.6552 · 44.5272 · 44.5** | **Cherry-picked the tail.** The same 90 have **median 44.5**. **A floor is a worst case; admissibility sets the endpoint and plausibility does not enter.** *"The correct ground carries NO margin statistic at all"* |
+| **`0083` §2** | `p_at_bound` decomposes the `p = 1.0` spike, evidenced by the **1,246 / 1,230** totals *"splitting"* into two classes | **1,246 · 1,230** *(and DERIV's **1,072 · 1,056**)* | **Both are correct counts and both arms reproduce them, but they are ONE CLASS COUNTED TWICE, not two summed.** The FALSE class is **empty by construction**. **Citing them as separation evidence is the withdrawn argument; citing them as `p = 1.0` TOTALS is correct** |
+| **`0094` §2** | arm a's **symmetric-difference-0** warrant, published as strictly stronger evidence than the unchanged exclusion total — *"a total that does not move can still be a different set of rows, and that is what the symmetric difference rules out"* | **0 · 703 · 99 · 55 · 45** | **TRUE of an arbitrary perturbation, FALSE of this one.** Relaxing either bound only **adds** episodes to `A` and `A_H`, and both Continued conjuncts are **monotone in `A_H`**, so a row can only **leave** the exclusion set. **An unchanged total ALREADY forces set equality.** The symmetric difference **confirms the arithmetic; it is not independent evidence.** Red Team eighth pass, F8 |
+
+**The class was named by a reading agent, not by a control, and it survived in THIS memory across three
+files and nine entries** before `0055` §2's instance was found. **A checker for it would be a prose
+checker.** What stands in for one is the obligation above.
 
 ## Mode H — the instances, and there are ten in nine entries
 
@@ -52,6 +83,68 @@ why it belongs in the taxonomy rather than in the narrative.
 JSON-string gap down as *"not a defect today."* **It was already a defect on the day it was recorded** —
 B8 was live in a `.json` string under `_DERIVED` and in `.md` prose carrying no numbers, in all four
 operative deliverables (`0061`). **Recording a gap as harmless is not the same as checking whether it is.**
+
+---
+
+## The Step 8 block, `0066`–`0094` — **a great many withdrawals, and several are the Human Lead's own rulings**
+
+**The distinguishing feature of this block: almost every withdrawal is of the CHAIN'S OWN TEXT, and
+almost every one was found by a READING AGENT rather than by a control** — including several inside the
+control apparatus itself.
+
+### Withdrawn RULINGS and ruling premises — Mode A / Mode B / Mode F
+
+| What was withdrawn | Where | Note |
+| :--- | :--- | :--- |
+| ***"the two arms read 168 on populations 23,453 apart … 168 cannot be correct on both"*** | `0092` §3 | **The premise fails.** 168 is correct on **all three** APPLY readings; **DERIV measures 153**, and no entry recorded that. **The requirement survives and is strengthened.** *(This is a Human Lead ruling's premise, measured false by an instance)* |
+| **`0092`'s cause** — that deliverables were being **hand-patched** | `0093` §4 | ***Neither arm hand-patched anything.*** *"`0092`'s sign-off rule has not been violated by either arm at any point. It remains untested, which is the correct state for a rule whose case has not arisen"* — **and a rule adopted against a misdiagnosed cause protects nothing** |
+| **B3's referent** — *"the two are invariants 7 and 8"* | `0088` §1 | **They are not.** 7 and 8 were already measured, published and praised. *"The reasoning describes a state that does not exist."* **Substance unaffected** |
+| **F2's axis** — *"show IDs against frame IDs"* | `0088` §2 | Neither is a show-ID count; neither is frame-restricted |
+| **The D9 universe named as "U3"** | `0088` §3 | **The reasoning identified U1 four separate ways and the letter contradicted all four.** Put back to the Human Lead rather than inferred |
+| **`maigret` as D9's third-largest cluster** | `0088` §3, struck `0089` §2(c) | **A SIX-WAY TIE at 6.** *"A spec gap inside the ruling that closed a spec gap."* **Both arms reported it independently and neither picked the name the entry gave** |
+| **The boundary window `[τ1 − 24h, τ1)`** | `0088` §1(a), corrected `0089` §2(a) | **It is the interval on which the two forms AGREE** |
+| ***"the 30-pair bound"*** and ***"D4's withdrawn word"*** | `0093` §3 | **Two directed items with NO REFERENT.** *Third* occurrence of a `30` with no referent — **the only `30` in either artifact is a substring of `1,230`** — and *second* of the D4 one |
+| **`0074` ruling 5's framing** — *"use the STRICT key and report the loose count alongside"*, under which **strict was the answer** | superseded `0090` | **D9 publishes as a BOUND: strict is the FLOOR, loose is the CEILING, NEITHER is the point estimate.** Needles: `strict is ruled`, `even though strict is ruled`, `the ruled key is strict` |
+
+### Withdrawn MEASUREMENTS and verdicts — Mode F / Mode H
+
+| What was withdrawn | Where | Note |
+| :--- | :--- | :--- |
+| **`OCCUPIED_INERT`** as B3(a)'s verdict | `0089` §2(a), reversed `0091` §1 | ***Not merely unsupported — FALSE.*** Computed on **1 row of the 311**. Correct: **`OUTCOME_DECIDING`, 71 APPLY / 59 DERIV**, 36 of them **never-started → Continued** |
+| ***"Both arms emitted both intervals rather than only the one ruled"*** | `0089` §2(a), corrected fifth pass | **FALSE of arm b**, which emitted the ruled window and the single instant at `τ1` and nothing else |
+| ***"so `0068`'s strictness ruling moves a real row in `\|A\|`"*** | `0089` §2(a), withdrawn sixth pass | **WRONG OBJECT.** `0068`'s strictness is about **insertion instants**; the 1 is a distinct S2 episode by `watched_at`. Measured on the ruling's own quantity: **0 on 196,654, both populations** — ***the strictness ruling is VACUOUS on this data, and one arm publishes that it is load-bearing*** |
+| ***"line 6 does not move at all … because the silence test reads an insertion clock, not an episode timestamp"*** | `0091` §1, withdrawn sixth pass | **Structurally wrong** — conjunct 2 is `NOT Continued`, an **episode-timestamp** computation moving on **55 APPLY rows** under this very counterfactual. **And it is not established the 703 was measured at all**: if conjunct 2 was held at the adopted outcome, `703 → 703` is a **tautology** |
+| ***"all 15 identities re-run against `population + 1` and must FAIL"*** as a demonstration of **independence** | `0091` §2, corrected sixth pass | **Overstated for arm a.** A `+1` perturbation **fires identically on a same-mask denominator**, so it would have passed on the very build whose defect it claims to have fixed. **Arm b's IS a real control** — 6 injected defects, and **case 4 is the one that actually tests independence** |
+| ***"every D9 count still reconciles across both arms"*** | `0086` §1, **RESTRICTED** `0087` §2 | **Five ruled counts reconcile; three coverage counts do not.** *"Restricted, not deleted"* |
+| ***"U1 — 46,366 arm A / 46,428 arm B"*** as an arm-against-arm difference | `0086` §1, corrected `0087` §2 / `0089` §3 | **Both numbers are recoverable from arm A alone.** *"It was never the arm-against-arm comparison it read as"* — **62 apart WITHIN one arm** |
+| ***"747,478 … undeduplicated user-show SEASON-COVERAGE ROWS"*** | `0088` §2, corrected `0089` §2(b) | **Distinct `(user, show)` PAIRS.** Arm a's row count is **1,217,122**; arm b's is **1,007,729** over a different mask. **The label was taken from the previous artifact's own key — which was itself part of what F2 flagged as mislabelled** |
+
+### Withdrawn CONTROLS — a control asserted to exist
+
+- ***"The run asserts this, so a report that omitted a population could not be written by this
+  pipeline."*** **STRUCK whatever else is ruled** (`0087` §4, `0088` §2). **8 of 13 coverage identities
+  are `cover(unit, pop, N, N)`** where the population size and the asserted count are **the same
+  expression**. Arm b additionally hardcoded `identity_holds: True` at three invariants and chained
+  `.get(…, .get(…, True))` so **an invariant with no coverage key contributed a pass.**
+- ***`real = len(parts) > 1`*** as an independence proxy — **admitted all four identity families**,
+  each a complementary partition of the mask the population size is taken from, **including the one the
+  deliverable called *"the identity that closes the hole."***
+- **Three hardcoded literals published as results**, one of them `"holds": True` **inside the per-site
+  D11 table `0088` §1(b) created precisely so mandates would stop being self-reported** (`0091` §3).
+  **`0087` §4 found hardcoded `True` in one arm; it reappeared in the other arm's brand-new table one
+  entry later.**
+- ***"reached surface 1 and no other"*** — arm a's **hardcoded** propagation reading, published beside
+  live counts a rerun could contradict, **and did.** `WITHDRAWN_PHRASES`, `0094` §2.
+
+### The two claims withdrawn from `CLAUDE.md` itself in the wider block
+
+- **`LIVE_ELSEWHERE`** — *"a value still live somewhere cannot enter the superseded list, because the
+  list is generated."* ***Withdrawn: the mechanism never fired.*** The filter compared against a list
+  that never contained the values in question, **so it was a no-op.** *"A control asserted to exist is
+  not a control, and this one was found by reading the code rather than the claim."*
+- **The claim that `0092` §2's defect was controlled.** It was not, and **`0094` was cited 8 times with
+  no file — the second occurrence in three entries.** *"A gap recorded and left open is a gap that
+  recurs."* **Now controlled by the citation resolver.**
 
 ---
 
