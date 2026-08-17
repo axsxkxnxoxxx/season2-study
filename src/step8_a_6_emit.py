@@ -120,27 +120,45 @@ def main():
       "position 6 filters; **DERIV** = Step 5 waterfall line 4 less D10 = **147,370**, which "
       "requires S2 evidence. Step 8 produces both (`decisions/0070` ruling 1).")
     A("")
-    A("> **RERUN AGAINST `decisions/0093`, ordered by the Human Lead — a rerun, not an "
+    A("> **RERUN AGAINST `decisions/0094`, ordered by the Human Lead — a rerun, not an "
       "amendment.** This replaces the previous `-a` deliverable **in full**; the previous output "
       "was **not patched** and nothing in it is read or carried. **Everything below is "
-      "regenerated from one pipeline run** — no figure is typed by hand. **`0093` IS THE RULE "
-      "THIS RERUN EXISTS TO SATISFY: a ruling is not closed until the ARTIFACTS carry it**, "
-      "because an arm rewrites its deliverable **only on a run**, so a ruling can be recorded, "
-      "propagated to every spec surface and passing every control **while this file still "
-      "publishes the superseded text**. **`0092`'s sign-off rule is the same mechanism from the "
-      "other end** — a deliverable is corrected by rerunning the arm that produced it, never by "
-      "hand-editing the file — **and that holds especially where the change is labelling only and "
-      "no figure moves**, which describes everything that follows. **SIX builds of this arm now "
-      "exist on 2026-08-16**, so they are **tagged apart** and every figure names which; the "
-      "previous one, `a/2026-08-16-0092`, is what Red Team's **eighth** pass reviewed.")
+      "regenerated from one pipeline run** — no figure is typed by hand. **`0094` REGISTERED TWO "
+      "SENTENCES OF THIS ARM'S EARLIER BUILDS AS WITHDRAWN CLAIMS, on this arm's own "
+      "recommendation, and `src/check_surfaces.py`'s phrase half then FAILED on this file**: the "
+      "correction narrative below **quotes** one of them — legitimate, and the only way to state "
+      "what was wrong — but it carried **no marker the control recognises within its window at "
+      "that point of use**. ***The marker is added in the EMITTER and it states a fact: the "
+      "sentence IS WITHDRAWN.*** **The control was NOT edited** — weakening its marker pattern, or "
+      "exempting this file, would disarm it against the one string it was built to catch. "
+      "**`0093` REMAINS THE RULE EVERY RERUN OF THIS ARM SATISFIES: a ruling is not closed until "
+      "the ARTIFACTS carry it**, because an arm rewrites its deliverable **only on a run**, so a "
+      "ruling can be recorded, propagated to every spec surface and passing every control **while "
+      "this file still publishes the superseded text**. **`0092`'s sign-off rule is the same "
+      "mechanism from the other end** — a deliverable is corrected by rerunning the arm that "
+      "produced it, never by hand-editing the file — **and that holds especially where the change "
+      "is labelling only and no figure moves**, which describes this build entirely. **SEVEN "
+      "builds of this arm now exist on 2026-08-16**, so they are **tagged apart** and every figure "
+      "names which; the previous one is `a/2026-08-16-0093`, and `a/2026-08-16-0092` before it is "
+      "what Red Team's **eighth** pass reviewed.")
     A("")
     A("> **WHERE `0093` LANDS IN THIS FILE, STATED AS THAT RULING REQUIRES.** **Surfaces reached "
       "by this run: 6** (`artifacts/`, this file and the invariant report) **and 8** "
       "(`processed/step8/a/`). **Surfaces 1, 2–5 and 7 are not this instance's to amend** and are "
       "**reported on, not edited** — §9, where every claim about a surface is now **derived from "
-      "a count taken off disk on this run** rather than from a fixed sentence. ***That change is "
-      "itself item (A) below: the previous build published a hardcoded reading beside live "
-      "counts, and this rerun contradicts it.***")
+      "a count taken off disk on this run** rather than from a fixed sentence. ***That change was "
+      "made by build `a/2026-08-16-0093` and is retained here: it is item (A) below, against "
+      "build `a/2026-08-16-0092`, which published a hardcoded reading beside live counts.*** "
+      "**`0094` lands on the same two surfaces and on nothing else** — it is the marker at the "
+      "point of use in item (A), emitted here and in `processed/step8/a/`.")
+    A("")
+    A("> **A CARRIED AMBIGUITY, STATED RATHER THAN SILENTLY INHERITED.** Sentences below that say "
+      "***the previous build*** were written by whichever build made the correction they describe, "
+      "so each refers to **the build before THAT one** — not uniformly to `a/2026-08-16-0093`. "
+      "**Where the referent is load-bearing the build is named.** **No such sentence is about "
+      "`a/2026-08-16-0094`**, which moved one marker and no figure. *This is a defect in this "
+      "arm's own text, reported and not repaired on this narrow rerun: a phrase whose referent "
+      "moves with the build is the same shape as a figure without its provenance.*")
     A("")
     A("> **The spec this run executes, and what moved since the last one that completed.** "
       "**(1)** Every count, every invariant result and every waterfall figure **carries the build "
@@ -163,18 +181,35 @@ def main():
     _monx = diag["B3a_boundary_window_half_open_form"][
         "OUTCOME_STATE_FLIPS_the_number_that_settles_B3a"]["MONOTONICITY_OF_THE_RELAXATION"]
     _fdx = inv["what_can_actually_fail"]["ARM_AGAINST_ARM_DIVERGENCE_ON_THE_HEADLINE_SHAPE"]
-    A("> **THREE THINGS THIS ARM EMITS DIFFERENTLY FROM ITS LAST RUN. ALL THREE ARE RED TEAM'S "
-      "EIGHTH-PASS MINOR ITEMS AGAINST THIS ARM, and Red Team's eighth pass CLOSED EVERY BLOCKER "
-      "AGAINST THIS ARM AND FOUND NO ARITHMETIC DEFECT IN IT.** Each was **verified against this "
-      "arm's own code before it was accepted**, and each is stated as a **defect in this arm's "
-      "deliverable** rather than as an improvement. ***All three are about TEXT THIS ARM "
-      "PUBLISHED, not about what it computed: no population, no rule, no waterfall line, no "
-      "outcome share, no bound endpoint, no invariant result and no measured count moves.***")
+    A("> **ONE THING THIS ARM EMITS DIFFERENTLY FROM ITS LAST RUN, AND IT IS A MARKER, NOT A "
+      "FIGURE.** **(0) THE WITHDRAWN SENTENCE QUOTED IN ITEM (A) BELOW IS NOW MARKED AS WITHDRAWN "
+      "AT ITS POINT OF USE.** `decisions/0094` registered two sentences of this arm's earlier "
+      "builds as **withdrawn claims**, and `src/check_surfaces.py`'s phrase half then **failed on "
+      "this file**: item (A) **quotes** one of them inside the narrative that corrects it — which "
+      "is legitimate and is how a correction is stated — while describing it only as a *fixed "
+      "sentence* now *derived*, **words the control's marker set does not contain**. ***The marker "
+      "is generated by the emitter, and it states a fact rather than satisfying a pattern: the "
+      "sentence IS withdrawn, registered at `0094` §1.*** **The control was not weakened and this "
+      "file was not exempted**, because either would disarm it against the string it was built to "
+      "catch — and **the artifact was not hand-edited**, because a deliverable is corrected by "
+      "rerunning the arm (`0092`) and a claim emitted by a script is withdrawn in the script "
+      "(`CLAUDE.md`). ***No population, no rule, no waterfall line, no outcome share, no bound "
+      "endpoint, no invariant result and no measured count moves on this build.***")
     A(">")
-    A(f"> **(A) A HARDCODED CONCLUSION STRING SAT BESIDE LIVE COUNTS — and this rerun contradicts "
-      f"it, which is `0093`'s mechanism exactly.** The previous build measured four surfaces on "
-      f"disk at run time and then published a **fixed sentence**: *\"`0092`'s N2 edit reached "
-      f"surface 1 and no other.\"* **Measured on disk this run: the population-free 168 is now on "
+    A("> **THE THREE THINGS BUILD `a/2026-08-16-0093` EMITTED DIFFERENTLY. ALL THREE ARE RED "
+      "TEAM'S EIGHTH-PASS MINOR ITEMS AGAINST THIS ARM, and Red Team's eighth pass CLOSED EVERY "
+      "BLOCKER AGAINST THIS ARM AND FOUND NO ARITHMETIC DEFECT IN IT.** Each was **verified "
+      "against this arm's own code before it was accepted**, and each is stated as a **defect in "
+      "this arm's deliverable** rather than as an improvement. ***All three are about TEXT THIS "
+      "ARM PUBLISHED, not about what it computed: no population, no rule, no waterfall line, no "
+      "outcome share, no bound endpoint, no invariant result and no measured count moved.***")
+    A(">")
+    A(f"> **(A) A HARDCODED CONCLUSION STRING SAT BESIDE LIVE COUNTS — and a rerun contradicts "
+      f"it, which is `0093`'s mechanism exactly.** Build `a/2026-08-16-0092` measured four "
+      f"surfaces on disk at run time and then published a **fixed sentence** — ***WITHDRAWN at "
+      f"`0094` §1 and registered as a withdrawn claim in `src/step7_register.py`; struck here and "
+      f"quoted only as the defect being corrected*** — ~~*\"`0092`'s N2 edit reached "
+      f"surface 1 and no other.\"*~~ **Measured on disk this run: the population-free 168 is now on "
       f"{_ssx['agent_files_carrying_the_population_free_168']} of "
       f"{_ssx['agent_files_examined']} `analytics-engineer` files and "
       f"{_ssx['second_brain_files_carrying_the_population_free_168']} of "
@@ -619,10 +654,12 @@ def main():
     A("")
     A("| | **CLASS 1 — the COEXTENSIVITY GAP** | **CLASS 2 — the COLUMN's own `FALSE` value** |")
     A("| :--- | :--- | :--- |")
-    A("| What it is | rows where `0082`'s two superseded **mechanisms** disagree: "
-      "saturated-not-final **plus** final-not-saturated | Started-and-left rows where **`p` did "
-      "not reach its bound** |")
-    A("| The sentence that names it | *\"the class `0082` called FALSE is **empty**\"* | "
+    A("| What it is | rows where `0082`'s two **mechanisms** disagree: "
+      "saturated-not-final **plus** final-not-saturated — **that two-mechanism definition is "
+      "SUPERSEDED and the motive behind it is WITHDRAWN (`0083` §2)** | Started-and-left rows "
+      "where **`p` did not reach its bound** |")
+    A("| The sentence that names it — **both quoted from superseded/withdrawn text, neither "
+      "asserted here** | *\"the class `0082` called FALSE is **empty**\"* | "
       "*\"`p_at_bound` is FALSE on the rest of Started-and-left\"* |")
     A("| Is it empty? | **YES — 0 on all four populations** | **NO — 17,895 on APPLY position "
       "5** |")
@@ -1037,7 +1074,9 @@ def main():
       "so the identity holds on every row of the table.")
     A("")
     A(f"***AND THE MEASUREMENT ANSWERS `0092`'s PREMISE, WHICH IS WHY IT WAS WORTH MAKING.*** "
-      f"`0092` reasoned that *\"168 cannot be correct on both\"*. **On APPLY it is correct on "
+      f"`0092` reasoned that ~~*\"168 cannot be correct on both\"*~~ — **a premise `0092` itself "
+      f"then WITHDREW, struck here and quoted only as what the measurement answers**. **On APPLY "
+      f"it is correct on "
       f"all three readings** — line 1, position 5 and post-liveness all give **168** "
       f"(`{', '.join(_c168)}`) — because **no both-bind pair is removed by positions 4, 5 or 6 on "
       f"APPLY**. So the two arms' readings, 23,453 pairs apart, **would both have produced 168 "
@@ -1099,8 +1138,9 @@ def main():
     A("Detection is imperfect and **every count here is a lower bound**.")
     A("")
     A("**D9 PUBLISHES AS A BOUND. STRICT IS THE FLOOR, LOOSE IS THE CEILING, AND NEITHER IS THE "
-      "POINT ESTIMATE.** Human Lead ruling, `decisions/0090`. ***This SUPERSEDES `0074` ruling "
-      "5's framing — \"use the strict key and report the loose count alongside\" — under which "
+      "POINT ESTIMATE.** Human Lead ruling, `decisions/0090`. ***`0074` ruling 5's framing is "
+      "SUPERSEDED by it and is struck here, quoted only as what no longer governs — "
+      "~~\"use the strict key and report the loose count alongside\"~~ — under which "
       "STRICT WAS THE ANSWER and loose was context. Neither endpoint may be quoted as \"D9's "
       "result\".***")
     A("")
@@ -1171,8 +1211,9 @@ def main():
     A(bt("every figure in this table"))
     A("")
     A(f"**THE FIGURE THIS ARM PUBLISHES AS `747,478` IS B — distinct `(user, show)` PAIRS, not "
-      f"season-coverage rows.** **`decisions/0088` §2 had characterised it as \"undeduplicated "
-      f"user-show SEASON-COVERAGE ROWS\"; `decisions/0089` §2(b) CORRECTS that** — it is distinct "
+      f"season-coverage rows.** **`decisions/0088` §2 had characterised it as ~~\"undeduplicated "
+      f"user-show SEASON-COVERAGE ROWS\"~~ — struck, because `decisions/0089` §2(b) CORRECTS "
+      f"that** — it is distinct "
       f"`(user, show)` pairs, and this arm's undeduplicated row count is "
       f"{n(cov9['A_undeduplicated_user_show_SEASON_COVERAGE_ROWS'])}, which `0089` §2(b) states. "
       "***`0089` also records why the wrong label was picked up: it was taken from this arm's own "
@@ -2259,7 +2300,9 @@ def main():
       "them as landed.** **Reported, not edited: the agent files, the decision log and "
       "`second-brain` are not this instance's to amend.**")
     A(f"22. **NEW, AND IT ANSWERS `0092`'s PREMISE RATHER THAN CONFIRMING IT.** `0092` reasoned "
-      f"that *\"168 cannot be correct on both\"* readings. **Measured here on every population "
+      f"that ~~*\"168 cannot be correct on both\"*~~ readings — **that premise is WITHDRAWN by "
+      f"`0092` itself and is struck here, quoted only as what the measurement answers**. "
+      f"**Measured here on every population "
       f"this step names: 168 is correct on line 1 (220,107), on APPLY position 5 (196,654) AND "
       f"on APPLY post-liveness (195,951)** — no both-bind pair is removed by positions 4, 5 or 6 "
       f"on APPLY. **So the two arms' readings, 23,453 pairs apart, would both have produced 168, "
@@ -2316,13 +2359,18 @@ def main():
       "**W = 108 days** · **H = 91 days** · **Zero API calls** · **Counts only**")
     B("")
     wcf = inv["what_can_actually_fail"]
-    B("> **RERUN AGAINST `decisions/0093`, ordered by the Human Lead — a rerun, not an "
+    B("> **RERUN AGAINST `decisions/0094`, ordered by the Human Lead — a rerun, not an "
       "amendment.** The previous `-a` invariant report was **not patched**; nothing in it is read "
       "or carried, which is `0092`'s rule and **`0093`'s reason**: *a deliverable is corrected by "
       "rerunning the arm that produced it*, and therefore **a ruling is not closed until the "
       "artifacts carry it.** **Every result below is produced by one pipeline run.** ***NO "
-      "INVARIANT RESULT MOVES ON THIS RERUN, AND NO COUNT MOVES.*** **One thing in this report "
-      "changes: the falsifiability headline is now flagged as an ARM-AGAINST-ARM DIVERGENCE** — "
+      "INVARIANT RESULT MOVES ON THIS RERUN, NO COUNT MOVES, AND NOTHING IN THIS REPORT CHANGES "
+      "AT ALL.*** **The `0094` rerun is a MARKER on the waterfall deliverable** — a sentence "
+      "`0094` registered as **withdrawn** is quoted there inside the narrative that corrects it, "
+      "and it now carries a marker at that point of use. **Nothing here quotes it.**")
+    B("")
+    B("> **CARRIED FROM BUILD `a/2026-08-16-0093`, UNCHANGED.** **One thing in this report changed "
+      "there: the falsifiability headline is flagged as an ARM-AGAINST-ARM DIVERGENCE** — "
       "**this arm's split is THREE-WAY and the other arm's is TWO-WAY over the same nine "
       "labels**, **neither arm had flagged it**, and it is **reported, not reconciled**. See the "
       "block below the result line.")

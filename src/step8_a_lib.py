@@ -59,29 +59,60 @@ SRC = os.path.join(ROOT, "src")
 # emitted with every build record. F7 is a carried limitation, not a ruling; this states the
 # convention rather than proposing one.
 #
-# THE ENTRY THIS BUILD IS LAUNCHED AGAINST IS `0093` -- a ruling is not closed until the ARTIFACTS
-# carry it. The previous build of this arm was tagged 0092 and reported, as a finding, that 0092
-# had NO FILE in decisions/. THAT FINDING IS NOW CLOSED: the entry exists. It is not asserted
-# closed from memory -- the surface-state block in step8_a_5_diagnostics.py counts the files on
-# disk on THIS run and the deliverable's reading is DERIVED from that count, which is exactly the
-# defect 0093 was written against: a claim about a surface that was true when written, published
-# by a rerun that could have contradicted it.
-BUILD_TAG = "a/2026-08-16-0093"
-BUILD_NAME = ("position-5 build of 2026-08-16, instance `a`, RERUN against decisions/0093 -- a "
-              "ruling is not closed until the artifacts carry it -- together with Red Team's "
-              "EIGHTH pass, which closed every blocker against this arm and left three minor "
-              "items, all three against this arm's own text rather than its arithmetic")
+# THE ENTRY THIS BUILD IS LAUNCHED AGAINST IS `0094` -- the entry that REGISTERED, as withdrawn
+# claims, two sentences this arm's earlier builds published. src/check_surfaces.py's PHRASE half
+# then failed on artifacts/step8-waterfall-a.md: the deliverable quotes one of those sentences
+# inside its own correction narrative, which is legitimate, but the narrative carried no marker
+# the control recognises WITHIN ITS WINDOW at that point of use. The marker is added IN THE
+# EMITTER, because a deliverable is corrected by rerunning the arm that produced it (0092) and
+# because a claim emitted by a script is withdrawn in the script (CLAUDE.md).
+#
+# THE TAG MOVES 0093 -> 0094 EVEN THOUGH NO FIGURE MOVES. Two artifact versions under one build
+# tag is the ambiguity the provenance rule exists to prevent, and the stage-file SHA-256 prefixes
+# in build_record() differ from the 0093 build by construction, since this run edits stage files.
+#
+# The 0093 build's own launch reason, retained: a ruling is not closed until the ARTIFACTS carry
+# it. The build before it was tagged 0092 and reported, as a finding, that 0092 had NO FILE in
+# decisions/. THAT FINDING IS CLOSED: the entry exists. It is not asserted closed from memory --
+# the surface-state block in step8_a_5_diagnostics.py counts the files on disk on THIS run and the
+# deliverable's reading is DERIVED from that count, which is exactly the defect 0093 was written
+# against: a claim about a surface that was true when written, published by a rerun that could
+# have contradicted it.
+BUILD_TAG = "a/2026-08-16-0094"
+BUILD_NAME = ("position-5 build of 2026-08-16, instance `a`, RERUN against decisions/0094 -- the "
+              "withdrawn sentence this arm quotes in its own correction narrative is now marked "
+              "as withdrawn AT THE POINT OF USE, in the emitter -- on top of the 0093 build, "
+              "which carried Red Team's EIGHTH pass, the pass that closed every blocker against "
+              "this arm and left three minor items, all three against this arm's text rather "
+              "than its arithmetic")
 # The long form lives in build_record()["what_moved_on_this_build"], stated ONCE. BUILD_NAME is
 # quoted at every point of use, so a paragraph there is a paragraph repeated forty times -- and a
 # stamp that buries the figure it stamps is worse than a short one that points at it.
 WHAT_MOVED = (
-    "THREE THINGS MOVE, none of them a population, a rule, a waterfall line, an outcome share, a "
-    "bound endpoint, an invariant RESULT or any measured count. All three are Red Team's "
-    "eighth-pass minor items against this arm, and all three are about TEXT THIS ARM PUBLISHED "
-    "rather than about what it computed. "
+    "ONE THING MOVES ON THIS BUILD AND IT IS A MARKER, NOT A FIGURE. No population, rule, "
+    "waterfall line, outcome share, bound endpoint, invariant RESULT or measured count moves. "
+    "(0) THE WITHDRAWN SENTENCE THIS ARM QUOTES IN ITS OWN CORRECTION NARRATIVE IS NOW MARKED AS "
+    "WITHDRAWN AT THE POINT OF USE. decisions/0094 registered two sentences of this arm's earlier "
+    "builds as WITHDRAWN CLAIMS, on this arm's own recommendation. The narrative that corrects "
+    "them quotes one of them -- which is legitimate, and is how a correction is stated -- but it "
+    "described the sentence as 'fixed' and 'now derived' and carried no marker src/"
+    "check_surfaces.py's phrase half recognises within its window, so the control FAILED on "
+    "artifacts/step8-waterfall-a.md at the quoting line. The marker is added HERE, in the "
+    "emitter and in this record, not by hand in the artifact: a deliverable is corrected by "
+    "rerunning the arm that produced it (0092), and a claim emitted by a script is withdrawn in "
+    "the script (CLAUDE.md). THE MARKER STATES A FACT -- the sentence IS withdrawn -- so this is "
+    "not a wording change made to satisfy a control. The control itself was NOT edited: "
+    "weakening its STRUCK pattern or exempting this file would disarm it against the one string "
+    "it was built to catch. "
+    "PRIOR BUILD a/2026-08-16-0093 MOVED THREE THINGS, none of them a population, a rule, a "
+    "waterfall line, an outcome share, a bound endpoint, an invariant RESULT or any measured "
+    "count. All three were Red Team's eighth-pass minor items against this arm, and all three "
+    "were about TEXT THIS ARM PUBLISHED rather than about what it computed. "
     "(A) A HARDCODED CONCLUSION STRING SAT BESIDE LIVE COUNTS. The surface-state block measured "
-    "four surfaces on disk at run time and then published a fixed sentence -- '0092's N2 edit "
-    "reached surface 1 and no other' -- which a rerun can contradict and DID: the agent files and "
+    "four surfaces on disk at run time and then published a fixed sentence -- WITHDRAWN at "
+    "0094 SS1 and registered as a withdrawn claim, quoted here only as the defect being "
+    "corrected: '0092's N2 edit reached surface 1 and no other' -- which a rerun can contradict "
+    "and DID: the agent files and "
     "second-brain now carry the correction, and decisions/0092 now has a file. The READING IS NOW "
     "DERIVED FROM THE MEASUREMENT, per-surface, with both the stale form and the corrected form "
     "counted on every surface (CLAUDE.md's negative AND positive halves). SS9 items 20 and 21 are "
@@ -146,7 +177,8 @@ WHAT_MOVED = (
     "step8_a_2_positions.py, legitimately -- [[T0]] is day-floored by Step 1 SS2.4 and SS5.6a's "
     "own argument depends on it. The claim is corrected to the true and narrower one: no "
     "day-flooring in any BOUNDARY TEST. "
-    "PRIOR BUILDS OF THIS INSTANCE: a/2026-08-16-0092 (what Red Team's EIGHTH pass reviewed), "
+    "PRIOR BUILDS OF THIS INSTANCE: a/2026-08-16-0093 (the build immediately before this one), "
+    "a/2026-08-16-0092 (what Red Team's EIGHTH pass reviewed), "
     "a/2026-08-16-0090 (sixth and seventh), a/2026-08-16-0088 (fifth), a/2026-08-16-0085 "
     "(fourth), the pre-0085 run (third).")
 STAGE_FILES = ["step8_a_lib.py", "step8_a_1_scan.py", "step8_a_2_positions.py",
@@ -200,7 +232,7 @@ def build_record():
                    "processed/step2/frame.csv": _sha(os.path.join(ROOT, "processed/step2/frame.csv")),
                    "processed/step4/pull_ledger.jsonl": _sha(
                        os.path.join(ROOT, "processed/step4/pull_ledger.jsonl"))},
-        "spec_read": "task-sheet.md Step 8 as it stands, plus decisions/0066-0093",
+        "spec_read": "task-sheet.md Step 8 as it stands, plus decisions/0066-0094",
         "relation_to_the_2026_08_13_build": "this build reproduces the figures decisions/0078 and "
                                             "0079 restate on the position-5 build of 2026-08-13 "
                                             "(58,345 pairs; 324 of 5,694; 178 of 2,549; 703/99). "
