@@ -162,6 +162,31 @@ A skipped user is **not** a user with no history. It is recorded as `access_deni
 
 **The Client ID** lives in .env and is loaded at runtime. It is never written into a code file, a log, or an artifact.
 
+## A ruling is not closed until it is in the artifacts
+
+**A ruling recorded in `decisions/` and propagated to the spec is NOT closed. It is closed when the
+ARTIFACTS carry it.** Human Lead ruling, 2026-08-16 (`0093`).
+
+**The mechanism, and it is structural rather than a lapse: the arms only rewrite their deliverables on a
+RUN.** So every ruling lands in `decisions/`, reaches `task-sheet.md` and the agent files the same hour,
+and **both arms go on publishing the superseded text until the next rerun** — during which the ruling is
+recorded as done, the propagation control passes on all eight surfaces, and `artifacts/` still says the
+old thing. **Every ruling since `0084` has passed through that window.**
+
+**This is why `artifacts/` is surface 6 and why the sign-off rule above exists.** The two rules are one
+mechanism seen from both ends: **a deliverable is corrected only by rerunning its arm**, so **a ruling is
+closed only after that rerun has happened.**
+
+**Consequences, and none of them is optional:**
+
+- **A decision entry does not say "closed" while the artifacts still carry the superseded text.** It says
+  what is propagated and what is **pending a rerun**, and names which.
+- **A propagation report states which surfaces are reached AND which await a run.** *"Surfaces 1, 4–5
+  reached; 6 and 8 pending both arms"* is the honest form. **A propagation report that lists six surfaces
+  and omits that two carry stale text is the defect this rule exists to stop.**
+- **Never edit an artifact to close this gap** — that is the sign-off rule, and it is how the gap becomes
+  unsigned text instead of stale text.
+
 ## Artifact sign-off
 
 **No artifact is trusted without its producing arm's sign-off.** Human Lead ruling, 2026-08-16 (`0092`).
