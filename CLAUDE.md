@@ -42,6 +42,27 @@ Neither instance sees the other's work, asks about it, or reads its output folde
 
 Any divergence is either a bug or an ambiguity in the spec. Report it. Do not reconcile it.
 
+## Cross-arm characterisations never enter a launch instruction
+
+**`## Dual implementation` says neither instance sees the other's work. A LAUNCH INSTRUCTION IS A WAY
+FOR IT TO SEE IT.** Recorded 2026-08-16 (`0095`), found by Red Team's ninth pass.
+
+**Relaying one arm's shape into the other arm's prompt routes around the isolation rule** — and it is
+worse than reading the folder, because **the receiving arm is structurally FORBIDDEN from re-measuring
+what it was told.** A relayed characterisation is **a measurement with an expiry date that its holder
+cannot check**, so it can only go stale. **It went stale in one build**: arm a published a two-way/
+three-way falsifiability divergence against arm b, sourced from a Red Team pass relayed in its prompt,
+while arm b's current build published **the same 6 + 1 + 2 split** and named exactly which side the
+third fell on.
+
+**A fabricated divergence in a gate deliverable is worse than a missed one**: it pre-empts the one
+authority permitted to make cross-arm statements — **the Human Lead's diff.**
+
+**So: an arm's launch instruction states the SPEC and the arm's OWN defects. It never states what the
+other arm does, publishes, splits, names or reports** — not from a Red Team pass, not from a decision
+entry, not from a prior run's report. **Where a Red Team finding is inherently comparative, the finding
+goes to the Human Lead and only the non-comparative half reaches the arm.**
+
 ## Propagation
 
 A ruling lands in `decisions/` **and** in every file an agent reads. Recorded only in `decisions/` is not recorded.

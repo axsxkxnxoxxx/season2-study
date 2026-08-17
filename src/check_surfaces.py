@@ -56,6 +56,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from step7_register import (SUPERSEDED, SUPERSEDED_IN, ADOPTED, ADOPTED_IN, LEGITIMATE,
                             DECLARE_SCOPED, DECLARE_JSON_PATH, SUCCESSOR,
                             WITHDRAWN_PHRASES,
+                            SUPERSEDED_STRINGS, SURFACE6_MARKERS, SURFACE6_LINE_LOCAL_CONTROLS,
                             file_is_wholly_superseded, processed_is_working_output, scoped)
 
 TOL = 5e-5
@@ -278,7 +279,12 @@ _selftest_phrase_matcher()
 # Decision numbers are 0001-9999 and every entry to date begins with 0. A bare four-digit
 # backticked token is NOT a citation -- `2206` and `2329` are counts in an arm deliverable,
 # and the first version of this resolver flagged both. Anchored to the leading zero.
-CITE = re.compile(r"`(0\d{3})`")
+# 0095, Red Team ninth pass F5: the backtick-only form saw ~63% of citations. Arm b writes
+# predominantly as `decisions/0089 Sec 2(b)` or bare `0088 Sec 3`, and the founding defect --
+# 0092 and 0094 cited before their entries existed -- would have been missed entirely in that
+# form. "Prints its coverage count" was satisfied to the letter while the count was blind to
+# the class it could not see. Leading-zero anchor kept: 2206 and 2329 are counts, not entries.
+CITE = re.compile(r"decisions/(0\d{3})|`(0\d{3})`|\b(0\d{3})\s*(?:\u00a7|SS\d|Sec\b|ruling\b)")
 
 
 def scan_citations():
@@ -301,11 +307,62 @@ def scan_citations():
                 text = Path(f).read_text()
             except (UnicodeDecodeError, OSError):
                 continue
-            for n in set(CITE.findall(text)):
+            found = {g for m in CITE.findall(text) for g in (m if isinstance(m, tuple) else (m,)) if g}
+            for n in found:
                 seen.setdefault(n, set()).add(f)
                 if n not in have:
                     missing.setdefault(n, set()).add(f)
     return have, seen, missing
+
+
+MARKER_RE = re.compile("|".join(re.escape(m) for m in SURFACE6_MARKERS), re.I)
+CHAR_WINDOW = 240   # 0095 F4: the exemption window is measured in CHARACTERS, not lines.
+#                     CONTEXT=2 lines is +/-200 chars on a hard-wrapped file and +/-several
+#                     THOUSAND on the arms' deliverables, where 137 lines exceed 400 chars and
+#                     single paragraphs run to thousands. Same defect the JSON branch was fixed
+#                     for; the .md branch was not wrong when written -- the unit changed
+#                     underneath it when the arms began emitting paragraph-per-line.
+
+
+def scan_superseded_strings():
+    """The needle register, across ALL EIGHT surfaces -- not four files of one.
+
+    0095 F3. SUPERSEDED_STRINGS and SURFACE6_LINE_LOCAL_CONTROLS were exercised only by
+    src/step8_b_4_artifacts.py over its own four artifacts: ~4 of ~40 files on surface 6, and
+    none of surfaces 1-5, 7 or 8. Arm b's own scan opens with "a surface check that does not
+    open the surface the defect is on is a check that looked nowhere" and then opened four
+    files. Occupied, not hypothetical: a registered needle was live in arm a's deliverable.
+
+    Neither arm can do this under isolation -- an arm may not read the other's output, and
+    surfaces 1-5 are not an arm's to police. It belongs in the shared control.
+    """
+    hits, cov = [], dict(files=0, needles=len(SUPERSEDED_STRINGS), chars=0, skipped=0)
+    for surface, files in SURFACES.items():
+        for f in files:
+            if f.endswith((".gz", ".npz", ".npy")):
+                cov["skipped"] += 1
+                continue
+            try:
+                text = Path(f).read_text()
+            except (UnicodeDecodeError, OSError):
+                cov["skipped"] += 1
+                continue
+            cov["files"] += 1
+            cov["chars"] += len(text)
+            low = text.lower()
+            for needle, why, replacement in SUPERSEDED_STRINGS:
+                start = 0
+                while True:
+                    k = low.find(needle.lower(), start)
+                    if k < 0:
+                        break
+                    start = k + 1
+                    a = max(0, k - CHAR_WINDOW)
+                    b = min(len(text), k + len(needle) + CHAR_WINDOW)
+                    if not MARKER_RE.search(text[a:b]):
+                        line = text.count("\n", 0, k) + 1
+                        hits.append((surface, f, line, needle, why, replacement))
+    return hits, cov
 
 
 def scan():
@@ -411,6 +468,25 @@ if __name__ == "__main__":
         print(f"  [{surface}] {f} {where}: {phrase!r}")
         print(f"        {why}")
         print(f"        {text}")
+    print()
+
+    ss_hits, ss_cov = scan_superseded_strings()
+    print("NEEDLE REGISTER ACROSS ALL EIGHT SURFACES -- 0095 F3. *** REPORT ONLY: NOT YET A CONTROL ***")
+    print(f"  coverage: {ss_cov['needles']} needles x {ss_cov['files']} files "
+          f"({ss_cov['chars']:,} chars, +/-{CHAR_WINDOW}-char marker window); {ss_cov['skipped']} skipped")
+    assert ss_cov["files"] > 0 and ss_cov["chars"] > 0, "NEEDLE SCAN LOOKED NOWHERE"
+    print(f"  candidate hits: {len(ss_hits)} -- TRIAGE OUTSTANDING, UNREAD, and this scan"
+          f" DELIBERATELY DOES NOT FAIL THE RUN.")
+    print("  The register was authored for ONE arm's four artifacts. Repo-wide, short needles"
+          " ('793', '97.6%', '88 columns') match legitimate HISTORICAL records -- `CLAUDE.md`:"
+          " a grep hit is not a defect until you read the line.")
+    print("  Failing on unread hits would block the gate on lines nobody has read; narrowing"
+          " until it passes is how a control gets disarmed. Neither was done. The triage is an"
+          " open item for the Human Lead.")
+    for s, f, ln, needle, why, repl in ss_hits[:8]:
+        print(f"    [{s}] {f}:{ln}  {needle!r}  ({why})")
+    if len(ss_hits) > 8:
+        print(f"    ... and {len(ss_hits) - 8} more")
     print()
 
     have_d, seen_d, missing_d = scan_citations()
