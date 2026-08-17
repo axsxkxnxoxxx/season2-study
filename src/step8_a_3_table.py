@@ -113,9 +113,11 @@ def spec_columns_from_disk():
                             "TIME -- not the hand transcription in this file",
                   "names_parsed": len(found), "distinct_names_parsed": len(uniq),
                   "matches_the_transcription_in_this_file": sorted(uniq) == sorted(SPEC_COLUMNS),
-                  "closes": "Red Team fourth pass F6 (decisions/0087 SS5), carried as a "
-                            "limitation: the code asserted against a transcription and never "
-                            "opened the spec"}
+                  "why_it_is_read_from_disk": "a hand transcription is a second copy of the "
+                                              "enumeration and a propagation change to the spec "
+                                              "would not reach it; the dual diff cannot catch a "
+                                              "propagation failure, so only a check that opens "
+                                              "the spec file can"}
 
 
 SPEC_COLUMNS_ON_DISK, SPEC_COLUMNS_SOURCE = spec_columns_from_disk()

@@ -45,176 +45,35 @@ SRC = os.path.join(ROOT, "src")
 #
 # The tag below is what appears at each point of use; this record is the one full definition.
 # ---------------------------------------------------------------------------------------------
-# THREE BUILDS NOW EXIST ON 2026-08-16 -- the run Red Team's third pass reviewed, the rerun
-# against decisions/0085 that its fourth pass reviewed, and THIS rerun against decisions/0088.
-# A shared tag would make every figure ambiguous between them, which is the exact failure the
-# provenance rule exists to prevent, so the tag carries the entry it was run against.
+# THE BUILD-TAG FORMAT IS STATED, because the convention is otherwise unstated free text and the
+# Human Lead's diff cannot key on it. This instance's format is
+# `<instance>/<UTC run date>-<decision entry the run was launched against>`. It is NOT the git
+# commit: the worktree is dirty at launch by construction, since the stage files are edited for
+# the entry the run implements, so the commit does not identify the code. The stage-file SHA-256
+# prefixes in build_record() are what identify the code, and they are emitted with every build
+# record.
 #
-# THE BUILD-TAG FORMAT IS STATED, because Red Team's fourth pass (0087 F5-F9, item F7) recorded
-# that the convention is unstated free text and the Human Lead's diff cannot key on it. This
-# instance's format is `<instance>/<UTC run date>-<decision entry the run was launched against>`.
-# It is NOT the git commit: the worktree is dirty at launch by construction, since the stage
-# files are edited for the entry the run implements, so the commit does not identify the code.
-# The stage-file SHA-256 prefixes in build_record() are what identify the code, and they are
-# emitted with every build record. F7 is a carried limitation, not a ruling; this states the
-# convention rather than proposing one.
+# THE TAG MOVES EVEN WHEN NO MEASURED FIGURE MOVES. Two artifact versions under one build tag is
+# the ambiguity the provenance rule exists to prevent, and the stage-file SHA-256 prefixes in
+# build_record() differ from the preceding build by construction.
 #
-# THE ENTRY THIS BUILD IS LAUNCHED AGAINST IS `0095` -- the entry recording that a CROSS-ARM
-# CHARACTERISATION reached this arm through its own LAUNCH INSTRUCTION, and that this arm then
-# published it as an arm-against-arm divergence. CLAUDE.md's new section, "Cross-arm
-# characterisations never enter a launch instruction": a launch instruction is a way for one arm
-# to see the other's work, and it is WORSE than reading the folder, because the receiving arm is
-# structurally FORBIDDEN from re-measuring what it was told. The claim is STRUCK IN FULL here and
-# is NOT replaced with a corrected characterisation.
-#
-# THE TAG MOVES 0094 -> 0095 EVEN THOUGH NO MEASURED FIGURE MOVES. Two artifact versions under
-# one build tag is the ambiguity the provenance rule exists to prevent, and the stage-file
-# SHA-256 prefixes in build_record() differ from the 0094 build by construction.
-#
-# AND THE PHRASE "the previous build" IS GONE FROM THE DELIVERABLES. Build a/2026-08-16-0094
-# DISCLOSED that the phrase's referent moves with whichever build made the correction it
-# describes, and then kept the phrase. At least two occurrences had become literally false as
-# published -- items 10, 11 and 15 of the residual list describe builds a/2026-08-16-0088 while
-# the naive reading points at a/2026-08-16-0093. A disclosed ambiguity is still an ambiguity; the
-# build tag is emitted instead, per decisions/0078-0079, and each referent was established by
-# reading this arm's own artifact history rather than by recollection.
-#
-# The 0094 build's own launch reason, retained: decisions/0094 registered as withdrawn two
-# sentences this arm's earlier builds published, and the narrative quoting one of them carried no
-# marker the phrase control recognises within its window. The marker is emitted, not hand-added.
-# The 0093 build's, retained: a ruling is not closed until the ARTIFACTS carry it.
-BUILD_TAG = "a/2026-08-17-0095"
-BUILD_NAME = ("position-5 build of 2026-08-17, instance `a`, RERUN against decisions/0095 and "
-              "CLAUDE.md's section 'Cross-arm characterisations never enter a launch "
-              "instruction' -- a cross-arm claim this arm could not have known is STRUCK IN "
-              "FULL, a registered superseded string is marked AT ITS POINT OF USE rather than "
-              "twelve lines below it, and the phrase 'the previous build' is replaced by the "
-              "build tag it refers to -- on top of the 0094 build")
+# BUILD-HISTORY NARRATION IS NOT EMITTED (decisions/0096 ruling 1, CLAUDE.md "A deliverable
+# asserts only what its own arm measured"): a stamp and a pointer to the run record replace a
+# chronicle of what earlier builds got wrong. WHAT_MOVED is that stamp and is deliberately short.
+BUILD_TAG = "a/2026-08-17-0096"
+BUILD_NAME = ("position-5 build of 2026-08-17, instance `a`, run against decisions/0096")
 # The long form lives in build_record()["what_moved_on_this_build"], stated ONCE. BUILD_NAME is
 # quoted at every point of use, so a paragraph there is a paragraph repeated forty times -- and a
 # stamp that buries the figure it stamps is worse than a short one that points at it.
 WHAT_MOVED = (
-    "THREE THINGS MOVE ON THIS BUILD AND NONE OF THEM IS A FIGURE. No population, rule, "
-    "waterfall line, outcome share, bound endpoint, invariant RESULT or measured count moves. "
-    "(0a) A CROSS-ARM CLAIM IS STRUCK IN FULL, AND SO IS EVERYTHING THAT RESTED ON IT. Builds "
-    "a/2026-08-16-0093 and a/2026-08-16-0094 published, in the waterfall SS0(B), in the SS9 "
-    "residual list at item 24 and in the invariant report, an assertion about the SHAPE OF THE "
-    "OTHER ARM'S falsifiability headline, and a divergence drawn from it. THIS ARM CANNOT KNOW "
-    "THAT. Its stated source was a Red Team characterisation RELAYED IN THIS ARM'S LAUNCH "
-    "INSTRUCTION, and CLAUDE.md now records (decisions/0095) that a launch instruction is a way "
-    "for one arm to see the other's work -- WORSE than reading the folder, because the receiving "
-    "arm is structurally FORBIDDEN from re-measuring what it was told, so a relayed "
-    "characterisation is a measurement with an expiry date its holder cannot check. IT IS NOT "
-    "REPLACED WITH A CORRECTED CHARACTERISATION: there is no admissible way for this arm to know "
-    "the other arm's shape, and a fabricated divergence in a gate deliverable is worse than a "
-    "missed one, because it pre-empts the Human Lead's diff -- the one authority permitted to "
-    "make a cross-arm statement. What remains is this arm's own 6 + 1 + 2 split, derived from its "
-    "own label strings, and its reasoning. Struck in the EMITTER, because a claim emitted by a "
-    "script is withdrawn in the script (CLAUDE.md) and a deliverable is corrected by rerunning "
-    "the arm that produced it (0092). "
-    "(0b) A REGISTERED SUPERSEDED STRING IS MARKED AT ITS POINT OF USE. The waterfall's SS5.5 "
-    "coverage paragraph stated the sentence registered in src/step7_register.py's "
-    "SUPERSEDED_STRINGS -- 0088 SS2(b)'s characterisation, whose AXIS decisions/0089 SS2(b) "
-    "corrected two entries later -- UNQUALIFIED, attributed to 0088, with this file's own "
-    "correction sitting TWELVE LINES BELOW IT, and pairing this arm's 747,478 with a figure this "
-    "arm does not measure while its own table three lines down gave the figure it does. That is "
-    "superseded text sitting ABOVE its replacement, the shape 0067, 0076, 0083 SS3a, 0089 SS3 and "
-    "0091 each fixed elsewhere. The conclusion still governs and is applied; the axis is marked "
-    "SUPERSEDED where the reader meets it, the registered sentence is not restated, and the "
-    "figure that is not this arm's is named as the decision log's. The register and the control "
-    "were NOT edited -- both are shared, and narrowing a control until it passes is how a control "
-    "gets disarmed. "
-    "(0c) THE PHRASE 'THE PREVIOUS BUILD' IS REPLACED BY THE BUILD TAG IT REFERS TO. Build "
-    "a/2026-08-16-0094 DISCLOSED that the phrase's referent moves with whichever build made the "
-    "correction it describes, and then kept the phrase. At least two occurrences had become "
-    "literally false as published: residual items 10, 11 and 15 describe build a/2026-08-16-0088 "
-    "while the naive reading points at a/2026-08-16-0093. A disclosed ambiguity is still an "
-    "ambiguity, and a phrase whose referent moves with the build is the same shape as a figure "
-    "without its provenance (0078, 0079). Each referent was established by reading this arm's own "
-    "artifact history, not from recollection. "
-    "PRIOR BUILD a/2026-08-16-0094 MOVED ONE MARKER AND NO FIGURE: decisions/0094 registered as "
-    "WITHDRAWN CLAIMS two sentences of this arm's earlier builds, on this arm's own "
-    "recommendation, and the narrative that corrects one of them carried no marker the phrase "
-    "control recognises within its window. The marker was emitted, not hand-added. "
-    "PRIOR BUILD a/2026-08-16-0093 MOVED THREE THINGS, none of them a population, a rule, a "
-    "waterfall line, an outcome share, a bound endpoint, an invariant RESULT or any measured "
-    "count. All three were Red Team's eighth-pass minor items against this arm, and all three "
-    "were about TEXT THIS ARM PUBLISHED rather than about what it computed. "
-    "(A) A HARDCODED CONCLUSION STRING SAT BESIDE LIVE COUNTS. The surface-state block measured "
-    "four surfaces on disk at run time and then published a fixed sentence -- WITHDRAWN at "
-    "0094 SS1 and registered as a withdrawn claim, quoted here only as the defect being "
-    "corrected: '0092's N2 edit reached surface 1 and no other' -- which a rerun can contradict "
-    "and DID: the agent files and "
-    "second-brain now carry the correction, and decisions/0092 now has a file. The READING IS NOW "
-    "DERIVED FROM THE MEASUREMENT, per-surface, with both the stale form and the corrected form "
-    "counted on every surface (CLAUDE.md's negative AND positive halves). SS9 items 20 and 21 are "
-    "regenerated from those counts and now report CLOSED. THIS IS decisions/0093's OWN MECHANISM "
-    "SEEN FROM INSIDE AN ARM: the ruling was recorded, propagated and passing every control while "
-    "this arm's artifact still published the superseded reading, because an artifact only changes "
-    "on a run. "
-    "(B) THE FALSIFIABILITY HEADLINE WAS PUBLISHED AS AN ARM-AGAINST-ARM DIVERGENCE. THAT CLAIM "
-    "IS STRUCK IN FULL BY BUILD a/2026-08-17-0095 -- see item (0a) above -- and is retained here "
-    "only as the record of what build a/2026-08-16-0093 changed. What survives it is this arm's "
-    "own THREE-WAY split over the nine labels, 6 pure CODE CHECK + 1 CODE CHECK BY "
-    "CONSTRUCTION/DATA CHECK AS SPECIFIED + 2 DATA CHECK, derived from the label strings and "
-    "never typed. "
-    "(C) THE SYMMETRIC-DIFFERENCE-0 WARRANT WAS ONE NOTCH STRONGER THAN THE MONOTONICITY ALLOWS. "
-    "The measurement is right and unchanged; the sentence 'a total that does not move can still be "
-    "a different set of rows, and that is what the symmetric difference rules out' is WITHDRAWN. "
-    "The date-level counterfactual RELAXES both bounds, so A and A_H only gain episodes; all three "
-    "Continued conjuncts are monotone in them; so the counterfactual exclusion set is a SUBSET of "
-    "the adopted one and an unchanged TOTAL already forces set equality. The subset direction and "
-    "each conjunct's monotonicity are now MEASURED and emitted rather than argued, and the "
-    "symmetric difference is labelled as CONFIRMING THE ARITHMETIC, not as independent evidence. "
-    "PRIOR BUILD a/2026-08-16-0092 MOVED SEVEN THINGS, none of them a population, a rule, a "
-    "waterfall line, an outcome share, a bound endpoint or an invariant RESULT. Six were Red "
-    "Team's seventh-pass findings against this arm; the seventh was decisions/0092's N2 "
-    "requirement. They are retained here because a build record that drops what an earlier build "
-    "corrected cannot tell a fix from a drift. "
-    "(1) THE 'INERT ON LINE 6' WARRANT IS WITHDRAWN and the claim is rescoped. Build "
-    "a/2026-08-16-0090 said line 6 does not move under the date-level counterfactual 'because the "
-    "silence test reads an insertion clock, not an episode timestamp'. That is a property of "
-    "CONJUNCT 1 and cannot explain the invariance of a CONJUNCTION whose second conjunct is NOT "
-    "Continued -- an episode-timestamp computation that moves on 55 APPLY rows under this very "
-    "counterfactual. WHAT WAS MEASURED IS NOW STATED: conjunct 2 IS recomputed on the "
-    "counterfactual outcome (`silent & ~cont_`, cont_ from the counterfactual state function), so "
-    "703 -> 703 is a measurement and not a tautology -- and the 604/99 SPLIT under every "
-    "counterfactual form is now reported, on both populations, which it was not. The invariance is "
-    "a FACT ABOUT THIS DATA at W = 108, not a structure. "
-    "(2) THE '1 EPISODE AT tau1' ATTRIBUTION IS WITHDRAWN -- WRONG OBJECT. decisions/0068's "
-    "strictness ruling is about INSERTION INSTANTS in the silence test; the 1 is a distinct S2 "
-    "EPISODE by canonical watched_at, which is the unit of the SS5.6a table. The ruling's OWN "
-    "quantity -- accounts whose last insertion instant falls exactly AT tau1 -- is measured here "
-    "for the first time in this arm, on both populations. "
-    "(3) THE `+1` PERTURBATION DOES NOT TEST INDEPENDENCE. On a same-mask denominator the clauses "
-    "sum to N and the stated population reads N + 1, so it fires identically -- it would have "
-    "passed on the very build whose defect it claimed to fix. It is RELABELLED as what it is (the "
-    "identity is arithmetic, not a literal) and a REAL independence control is added: injected "
-    "wrong-population defects, each asserting that the same-mask form PASSES and the "
-    "independently-sourced form FAILS. "
-    "(4) `p_at_bound`'s FALSE CARDINALITY IS EMITTED, on all four populations, and the TWO "
-    "DIFFERENT FALSE CLASSES on that page are named apart: the COEXTENSIVITY-GAP class (0082's "
-    "superseded two-mechanism definition), which is EMPTY, and the COLUMN's own FALSE value "
-    "(Started-and-left below the bound), which is 17,895 on APPLY position 5. "
-    "(5) THE PER-SITE D11 TABLE'S S1_completion_walk 'examined' CELL held a different quantity "
-    "from the other twelve rows -- 73 is a RECORD count of the post-cutoff candidates, not an "
-    "examined count, and the walk's unit is DISTINCT S1 EPISODES. All three objects are now named "
-    "and the examined column is the same kind of quantity in every row. "
-    "(6) D2's 'both bind' COUNT NOW CARRIES ITS POPULATION AT THE POINT OF USE AND IS MEASURED ON "
-    "BOTH POPULATIONS AT BOTH POSITIONS (decisions/0092, N2), and the combined waterfall's DERIV "
-    "line 4 is RELABELLED: it is not a single filter, it is Step 5 lines 1 through 4 and its "
-    "sub-decomposition is emitted. "
-    "(7) A CLAIM THIS ARM PUBLISHED ABOUT ITS OWN SOURCE WAS FALSE: 'no .date(), dt.date, "
-    "normalize() or day-flooring anywhere in step8_a_*.py'. floor_day() appears three times in "
-    "step8_a_2_positions.py, legitimately -- [[T0]] is day-floored by Step 1 SS2.4 and SS5.6a's "
-    "own argument depends on it. The claim is corrected to the true and narrower one: no "
-    "day-flooring in any BOUNDARY TEST. "
-    "PRIOR BUILDS OF THIS INSTANCE, newest first, WITH THE RED TEAM PASS EACH ONE'S ARTIFACTS "
-    "WERE REVIEWED BY -- this list is what resolves every build reference in the deliverables, "
-    "and it is the reason the phrase 'the previous build' is no longer emitted: "
-    "a/2026-08-16-0094 (the build immediately before this one; reviewed by the NINTH pass), "
-    "a/2026-08-16-0093, a/2026-08-16-0092 (EIGHTH pass), a/2026-08-16-0090 (sixth and seventh), "
-    "a/2026-08-16-0088 (fifth), a/2026-08-16-0085 (fourth), the pre-0085 run (third).")
+    "SCOPE CHANGE, NOT A FIGURE CHANGE. This build is run against decisions/0096 ruling 1: a "
+    "deliverable asserts its own figures, its own inputs and its own limits, and nothing else -- "
+    "not the state of other steps or gates, not the other arm, not the shared controls, not the "
+    "study as a whole. What that removes from this arm's deliverables: build-history narration, "
+    "claims about the disk state of surfaces this arm does not own, and control exit statuses. "
+    "No population, rule, waterfall line, outcome share, bound endpoint, invariant RESULT or "
+    "measured count is changed by that removal; anything that did move is reported to the Human "
+    "Lead. The per-stage run record for this build is logs/step8_a_run.json.")
 STAGE_FILES = ["step8_a_lib.py", "step8_a_1_scan.py", "step8_a_2_positions.py",
                "step8_a_3_table.py", "step8_a_4_arms.py", "step8_a_4b_slugs.py",
                "step8_a_5_diagnostics.py", "step8_a_6_emit.py", "step8_a_run.py"]
@@ -266,7 +125,8 @@ def build_record():
                    "processed/step2/frame.csv": _sha(os.path.join(ROOT, "processed/step2/frame.csv")),
                    "processed/step4/pull_ledger.jsonl": _sha(
                        os.path.join(ROOT, "processed/step4/pull_ledger.jsonl"))},
-        "spec_read": "task-sheet.md Step 8 as it stands, plus decisions/0066-0094 and CLAUDE.md's section 'Cross-arm characterisations never enter a launch instruction'. NOTE, REPORTED NOT ACTED ON: decisions/0095 is cited in CLAUDE.md and HAS NO FILE in decisions/ on this run -- see the surface-state block.",
+        "spec_read": "task-sheet.md Step 8 as it stands, the analytics-engineer definition file, "
+                     "decisions/0066-0096 and CLAUDE.md.",
         "relation_to_the_2026_08_13_build": "this build reproduces the figures decisions/0078 and "
                                             "0079 restate on the position-5 build of 2026-08-13 "
                                             "(58,345 pairs; 324 of 5,694; 178 of 2,549; 703/99). "

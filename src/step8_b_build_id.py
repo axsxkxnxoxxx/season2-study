@@ -23,19 +23,27 @@ from pathlib import Path
 
 ROOT = Path("/Users/alyanashantel/Documents/season2-study")
 
-RUN_DATE = "2026-08-16"
+RUN_DATE = "2026-08-17"
 
-BUILD = ("analytics-engineer-b / Step 8 position-5 build of 2026-08-16-r7 "
-         "(RERUN on the spec as amended through decisions/0093 and Red Team's "
-         "EIGHTH pass; W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated "
-         "filter order 1-7, 89 columns)")
+BUILD = ("analytics-engineer-b / Step 8 position-5 build of 2026-08-17-r8 "
+         "(W = 108, tau_pull = 2026-08-11T00:00:00Z, mandated filter order 1-7, "
+         "89 columns; deliverable scope per decisions/0096 ruling 1). The spec "
+         "and data files this build read are fingerprinted in provenance.inputs")
 
-BUILD_SHORT = "b: position-5 build of 2026-08-16-r7 (spec through 0093 + Red Team 8)"
+BUILD_SHORT = "b: position-5 build of 2026-08-17-r8"
 
 # The ruled figures carry the build they were RULED on, which is not this one.
-RULED_BUILD = "position-5 build of 2026-08-13 (both arms, the run decisions/0078 labelled)"
+RULED_BUILD = "position-5 build of 2026-08-13 -- the provenance decisions/0078 attaches to the ruled figures"
 
 INPUTS = [
+    # THE SPEC SURFACES THIS BUILD READ, fingerprinted rather than described.
+    # decisions/0096 ruling 1 excludes claims about the disk STATE of files this
+    # arm does not own; an INPUT FINGERPRINT is not such a claim -- it is this
+    # build's own provenance, which the same ruling still requires, and it is
+    # what lets a reader see WHICH spec produced these figures without this
+    # deliverable asserting anything about that file's contents.
+    "task-sheet.md",
+    ".claude/agents/analytics-engineer-b.md",
     "processed/step2/frame.csv",
     "processed/step5/full_scan.npz",
     "processed/step5/pair_revision5.csv",

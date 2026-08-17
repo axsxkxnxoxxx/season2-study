@@ -5,25 +5,25 @@
   "W_days": 108,
   "H_days": 91,
   "build": {
-    "build_tag": "a/2026-08-17-0095",
-    "build_name": "position-5 build of 2026-08-17, instance `a`, RERUN against decisions/0095 and CLAUDE.md's section 'Cross-arm characterisations never enter a launch instruction' -- a cross-arm claim this arm could not have known is STRUCK IN FULL, a registered superseded string is marked AT ITS POINT OF USE rather than twelve lines below it, and the phrase 'the previous build' is replaced by the build tag it refers to -- on top of the 0094 build",
-    "what_moved_on_this_build": "THREE THINGS MOVE ON THIS BUILD AND NONE OF THEM IS A FIGURE. No population, rule, waterfall line, outcome share, bound endpoint, invariant RESULT or measured count moves. (0a) A CROSS-ARM CLAIM IS STRUCK IN FULL, AND SO IS EVERYTHING THAT RESTED ON IT. Builds a/2026-08-16-0093 and a/2026-08-16-0094 published, in the waterfall SS0(B), in the SS9 residual list at item 24 and in the invariant report, an assertion about the SHAPE OF THE OTHER ARM'S falsifiability headline, and a divergence drawn from it. THIS ARM CANNOT KNOW THAT. Its stated source was a Red Team characterisation RELAYED IN THIS ARM'S LAUNCH INSTRUCTION, and CLAUDE.md now records (decisions/0095) that a launch instruction is a way for one arm to see the other's work -- WORSE than reading the folder, because the receiving arm is structurally FORBIDDEN from re-measuring what it was told, so a relayed characterisation is a measurement with an expiry date its holder cannot check. IT IS NOT REPLACED WITH A CORRECTED CHARACTERISATION: there is no admissible way for this arm to know the other arm's shape, and a fabricated divergence in a gate deliverable is worse than a missed one, because it pre-empts the Human Lead's diff -- the one authority permitted to make a cross-arm statement. What remains is this arm's own 6 + 1 + 2 split, derived from its own label strings, and its reasoning. Struck in the EMITTER, because a claim emitted by a script is withdrawn in the script (CLAUDE.md) and a deliverable is corrected by rerunning the arm that produced it (0092). (0b) A REGISTERED SUPERSEDED STRING IS MARKED AT ITS POINT OF USE. The waterfall's SS5.5 coverage paragraph stated the sentence registered in src/step7_register.py's SUPERSEDED_STRINGS -- 0088 SS2(b)'s characterisation, whose AXIS decisions/0089 SS2(b) corrected two entries later -- UNQUALIFIED, attributed to 0088, with this file's own correction sitting TWELVE LINES BELOW IT, and pairing this arm's 747,478 with a figure this arm does not measure while its own table three lines down gave the figure it does. That is superseded text sitting ABOVE its replacement, the shape 0067, 0076, 0083 SS3a, 0089 SS3 and 0091 each fixed elsewhere. The conclusion still governs and is applied; the axis is marked SUPERSEDED where the reader meets it, the registered sentence is not restated, and the figure that is not this arm's is named as the decision log's. The register and the control were NOT edited -- both are shared, and narrowing a control until it passes is how a control gets disarmed. (0c) THE PHRASE 'THE PREVIOUS BUILD' IS REPLACED BY THE BUILD TAG IT REFERS TO. Build a/2026-08-16-0094 DISCLOSED that the phrase's referent moves with whichever build made the correction it describes, and then kept the phrase. At least two occurrences had become literally false as published: residual items 10, 11 and 15 describe build a/2026-08-16-0088 while the naive reading points at a/2026-08-16-0093. A disclosed ambiguity is still an ambiguity, and a phrase whose referent moves with the build is the same shape as a figure without its provenance (0078, 0079). Each referent was established by reading this arm's own artifact history, not from recollection. PRIOR BUILD a/2026-08-16-0094 MOVED ONE MARKER AND NO FIGURE: decisions/0094 registered as WITHDRAWN CLAIMS two sentences of this arm's earlier builds, on this arm's own recommendation, and the narrative that corrects one of them carried no marker the phrase control recognises within its window. The marker was emitted, not hand-added. PRIOR BUILD a/2026-08-16-0093 MOVED THREE THINGS, none of them a population, a rule, a waterfall line, an outcome share, a bound endpoint, an invariant RESULT or any measured count. All three were Red Team's eighth-pass minor items against this arm, and all three were about TEXT THIS ARM PUBLISHED rather than about what it computed. (A) A HARDCODED CONCLUSION STRING SAT BESIDE LIVE COUNTS. The surface-state block measured four surfaces on disk at run time and then published a fixed sentence -- WITHDRAWN at 0094 SS1 and registered as a withdrawn claim, quoted here only as the defect being corrected: '0092's N2 edit reached surface 1 and no other' -- which a rerun can contradict and DID: the agent files and second-brain now carry the correction, and decisions/0092 now has a file. The READING IS NOW DERIVED FROM THE MEASUREMENT, per-surface, with both the stale form and the corrected form counted on every surface (CLAUDE.md's negative AND positive halves). SS9 items 20 and 21 are regenerated from those counts and now report CLOSED. THIS IS decisions/0093's OWN MECHANISM SEEN FROM INSIDE AN ARM: the ruling was recorded, propagated and passing every control while this arm's artifact still published the superseded reading, because an artifact only changes on a run. (B) THE FALSIFIABILITY HEADLINE WAS PUBLISHED AS AN ARM-AGAINST-ARM DIVERGENCE. THAT CLAIM IS STRUCK IN FULL BY BUILD a/2026-08-17-0095 -- see item (0a) above -- and is retained here only as the record of what build a/2026-08-16-0093 changed. What survives it is this arm's own THREE-WAY split over the nine labels, 6 pure CODE CHECK + 1 CODE CHECK BY CONSTRUCTION/DATA CHECK AS SPECIFIED + 2 DATA CHECK, derived from the label strings and never typed. (C) THE SYMMETRIC-DIFFERENCE-0 WARRANT WAS ONE NOTCH STRONGER THAN THE MONOTONICITY ALLOWS. The measurement is right and unchanged; the sentence 'a total that does not move can still be a different set of rows, and that is what the symmetric difference rules out' is WITHDRAWN. The date-level counterfactual RELAXES both bounds, so A and A_H only gain episodes; all three Continued conjuncts are monotone in them; so the counterfactual exclusion set is a SUBSET of the adopted one and an unchanged TOTAL already forces set equality. The subset direction and each conjunct's monotonicity are now MEASURED and emitted rather than argued, and the symmetric difference is labelled as CONFIRMING THE ARITHMETIC, not as independent evidence. PRIOR BUILD a/2026-08-16-0092 MOVED SEVEN THINGS, none of them a population, a rule, a waterfall line, an outcome share, a bound endpoint or an invariant RESULT. Six were Red Team's seventh-pass findings against this arm; the seventh was decisions/0092's N2 requirement. They are retained here because a build record that drops what an earlier build corrected cannot tell a fix from a drift. (1) THE 'INERT ON LINE 6' WARRANT IS WITHDRAWN and the claim is rescoped. Build a/2026-08-16-0090 said line 6 does not move under the date-level counterfactual 'because the silence test reads an insertion clock, not an episode timestamp'. That is a property of CONJUNCT 1 and cannot explain the invariance of a CONJUNCTION whose second conjunct is NOT Continued -- an episode-timestamp computation that moves on 55 APPLY rows under this very counterfactual. WHAT WAS MEASURED IS NOW STATED: conjunct 2 IS recomputed on the counterfactual outcome (`silent & ~cont_`, cont_ from the counterfactual state function), so 703 -> 703 is a measurement and not a tautology -- and the 604/99 SPLIT under every counterfactual form is now reported, on both populations, which it was not. The invariance is a FACT ABOUT THIS DATA at W = 108, not a structure. (2) THE '1 EPISODE AT tau1' ATTRIBUTION IS WITHDRAWN -- WRONG OBJECT. decisions/0068's strictness ruling is about INSERTION INSTANTS in the silence test; the 1 is a distinct S2 EPISODE by canonical watched_at, which is the unit of the SS5.6a table. The ruling's OWN quantity -- accounts whose last insertion instant falls exactly AT tau1 -- is measured here for the first time in this arm, on both populations. (3) THE `+1` PERTURBATION DOES NOT TEST INDEPENDENCE. On a same-mask denominator the clauses sum to N and the stated population reads N + 1, so it fires identically -- it would have passed on the very build whose defect it claimed to fix. It is RELABELLED as what it is (the identity is arithmetic, not a literal) and a REAL independence control is added: injected wrong-population defects, each asserting that the same-mask form PASSES and the independently-sourced form FAILS. (4) `p_at_bound`'s FALSE CARDINALITY IS EMITTED, on all four populations, and the TWO DIFFERENT FALSE CLASSES on that page are named apart: the COEXTENSIVITY-GAP class (0082's superseded two-mechanism definition), which is EMPTY, and the COLUMN's own FALSE value (Started-and-left below the bound), which is 17,895 on APPLY position 5. (5) THE PER-SITE D11 TABLE'S S1_completion_walk 'examined' CELL held a different quantity from the other twelve rows -- 73 is a RECORD count of the post-cutoff candidates, not an examined count, and the walk's unit is DISTINCT S1 EPISODES. All three objects are now named and the examined column is the same kind of quantity in every row. (6) D2's 'both bind' COUNT NOW CARRIES ITS POPULATION AT THE POINT OF USE AND IS MEASURED ON BOTH POPULATIONS AT BOTH POSITIONS (decisions/0092, N2), and the combined waterfall's DERIV line 4 is RELABELLED: it is not a single filter, it is Step 5 lines 1 through 4 and its sub-decomposition is emitted. (7) A CLAIM THIS ARM PUBLISHED ABOUT ITS OWN SOURCE WAS FALSE: 'no .date(), dt.date, normalize() or day-flooring anywhere in step8_a_*.py'. floor_day() appears three times in step8_a_2_positions.py, legitimately -- [[T0]] is day-floored by Step 1 SS2.4 and SS5.6a's own argument depends on it. The claim is corrected to the true and narrower one: no day-flooring in any BOUNDARY TEST. PRIOR BUILDS OF THIS INSTANCE, newest first, WITH THE RED TEAM PASS EACH ONE'S ARTIFACTS WERE REVIEWED BY -- this list is what resolves every build reference in the deliverables, and it is the reason the phrase 'the previous build' is no longer emitted: a/2026-08-16-0094 (the build immediately before this one; reviewed by the NINTH pass), a/2026-08-16-0093, a/2026-08-16-0092 (EIGHTH pass), a/2026-08-16-0090 (sixth and seventh), a/2026-08-16-0088 (fifth), a/2026-08-16-0085 (fourth), the pre-0085 run (third).",
+    "build_tag": "a/2026-08-17-0096",
+    "build_name": "position-5 build of 2026-08-17, instance `a`, run against decisions/0096",
+    "what_moved_on_this_build": "SCOPE CHANGE, NOT A FIGURE CHANGE. This build is run against decisions/0096 ruling 1: a deliverable asserts its own figures, its own inputs and its own limits, and nothing else -- not the state of other steps or gates, not the other arm, not the shared controls, not the study as a whole. What that removes from this arm's deliverables: build-history narration, claims about the disk state of surfaces this arm does not own, and control exit statuses. No population, rule, waterfall line, outcome share, bound endpoint, invariant RESULT or measured count is changed by that removal; anything that did move is reported to the Human Lead. The per-stage run record for this build is logs/step8_a_run.json.",
     "instance": "a",
     "run_date_utc": "2026-08-17",
     "why_this_exists": "decisions/0079 (B6), extending decisions/0078: every count, every invariant result and every waterfall figure names the pipeline it was measured on, not only its population. Partial application is worse than none.",
     "pipeline": "src/step8_a_run.py, one run, stages 1 -> 6 in order",
     "stage_files_sha256_12": {
-      "step8_a_lib.py": "6dc0bc726f5f",
+      "step8_a_lib.py": "1fcabc70c6d6",
       "step8_a_1_scan.py": "d880debf714a",
       "step8_a_2_positions.py": "9f08ac985c8c",
-      "step8_a_3_table.py": "c7ecfd8cf3f2",
+      "step8_a_3_table.py": "543897dabdca",
       "step8_a_4_arms.py": "3d533b88a113",
       "step8_a_4b_slugs.py": "4495f8069adb",
-      "step8_a_5_diagnostics.py": "c6c9182cef07",
-      "step8_a_6_emit.py": "84a57153d2e9",
+      "step8_a_5_diagnostics.py": "63d75b0142a9",
+      "step8_a_6_emit.py": "8d8fc7be7e39",
       "step8_a_run.py": "1e858e7bfa89"
     },
-    "git_head_short": "0479ffb",
+    "git_head_short": "dbd492f",
     "git_worktree_dirty_at_launch": true,
     "parameters": {
       "W_days": 108,
@@ -49,10 +49,10 @@
       "processed/step2/frame.csv": "128844b09fc2",
       "processed/step4/pull_ledger.jsonl": "2c47f4537ac6"
     },
-    "spec_read": "task-sheet.md Step 8 as it stands, plus decisions/0066-0094 and CLAUDE.md's section 'Cross-arm characterisations never enter a launch instruction'. NOTE, REPORTED NOT ACTED ON: decisions/0095 is cited in CLAUDE.md and HAS NO FILE in decisions/ on this run -- see the surface-state block.",
+    "spec_read": "task-sheet.md Step 8 as it stands, the analytics-engineer definition file, decisions/0066-0096 and CLAUDE.md.",
     "relation_to_the_2026_08_13_build": "this build reproduces the figures decisions/0078 and 0079 restate on the position-5 build of 2026-08-13 (58,345 pairs; 324 of 5,694; 178 of 2,549; 703/99). Where a figure agrees, that is measured here and stated, not carried."
   },
-  "provenance_note": "EVERY INVARIANT RESULT IN THIS FILE WAS MEASURED ON BUILD a/2026-08-17-0095 (decisions/0079 B6).",
+  "provenance_note": "EVERY INVARIANT RESULT IN THIS FILE WAS MEASURED ON BUILD a/2026-08-17-0096 (decisions/0079 B6).",
   "coverage_identities": {
     "outcome states are mutually exclusive and sum to the post-position-7 row set": [
       {
@@ -142,7 +142,7 @@
           "identity_against_the_independent_source_holds": true,
           "identity_CAN_FAIL_ON_ANY_DATA": true,
           "what_it_can_detect": "AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/analysis_table.csv.gz, rows with live = True, so the clauses and the denominator are not the same expression and the identity can fail.",
-          "build": "a/2026-08-17-0095",
+          "build": "a/2026-08-17-0096",
           "asserted_clause_counts": [
             32769,
             19042,
@@ -172,7 +172,7 @@
           "identity_against_the_independent_source_holds": true,
           "identity_CAN_FAIL_ON_ANY_DATA": true,
           "what_it_can_detect": "AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/analysis_table.csv.gz, rows -- the EMITTED DELIVERABLE, written by stage 3, so the clauses and the denominator are not the same expression and the identity can fail.",
-          "build": "a/2026-08-17-0095",
+          "build": "a/2026-08-17-0096",
           "asserted_clause_counts": [
             33373,
             19141,
@@ -202,7 +202,7 @@
           "identity_against_the_independent_source_holds": true,
           "identity_CAN_FAIL_ON_ANY_DATA": true,
           "what_it_can_detect": "AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/analysis_table.csv.gz, rows with in_deriv and live, so the clauses and the denominator are not the same expression and the identity can fail.",
-          "build": "a/2026-08-17-0095",
+          "build": "a/2026-08-17-0096",
           "asserted_clause_counts": [
             9145,
             16744,
@@ -232,7 +232,7 @@
           "identity_against_the_independent_source_holds": true,
           "identity_CAN_FAIL_ON_ANY_DATA": true,
           "what_it_can_detect": "AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/analysis_table.csv.gz, rows with in_deriv = True, so the clauses and the denominator are not the same expression and the identity can fail.",
-          "build": "a/2026-08-17-0095",
+          "build": "a/2026-08-17-0096",
           "asserted_clause_counts": [
             9145,
             16843,
@@ -252,7 +252,7 @@
       "identity_holds_against_the_INDEPENDENT_source_on_every_stated_population": true,
       "populations_whose_identity_was_checked": 4,
       "passed": true,
-      "build": "a/2026-08-17-0095"
+      "build": "a/2026-08-17-0096"
     },
     {
       "name": "filter counts decrease monotonically, coded >= and not >",
@@ -293,7 +293,7 @@
         "identity_against_the_independent_source_holds": true,
         "identity_CAN_FAIL_ON_ANY_DATA": true,
         "what_it_can_detect": "AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/positions.json waterfall_APPLY (positions 1-5, stage 2) plus positions 6 and 7 from outcomes.json (stage 3), so the clauses and the denominator are not the same expression and the identity can fail.",
-        "build": "a/2026-08-17-0095"
+        "build": "a/2026-08-17-0096"
       },
       "coverage_DERIV": {
         "population": "DERIV's seven filter positions",
@@ -310,7 +310,7 @@
         "identity_against_the_independent_source_holds": true,
         "identity_CAN_FAIL_ON_ANY_DATA": true,
         "what_it_can_detect": "AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/positions.json waterfall_DERIV (positions 1-5, stage 2) plus positions 6 and 7 from outcomes.json (stage 3), so the clauses and the denominator are not the same expression and the identity can fail.",
-        "build": "a/2026-08-17-0095"
+        "build": "a/2026-08-17-0096"
       },
       "chain_APPLY_agrees_with_positions_json_and_outcomes_json": true,
       "chain_DERIV_agrees_with_positions_json_and_outcomes_json": true,
@@ -327,7 +327,7 @@
       ],
       "inert_positions_labelled_not_silent": "positions 1, 2, 3 and 7 remove 0 BY CONSTRUCTION and are labelled inert with the reason in the waterfall deliverable (decisions/0079 SS4). An unlabelled always-zero filter reads as evidence the rule FOUND NOTHING when it is evidence the rule CANNOT FIRE.",
       "passed": true,
-      "build": "a/2026-08-17-0095"
+      "build": "a/2026-08-17-0096"
     },
     {
       "name": "distinct episodes never exceed season length",
@@ -350,7 +350,7 @@
         "identity_against_the_independent_source_holds": true,
         "identity_CAN_FAIL_ON_ANY_DATA": true,
         "what_it_can_detect": "AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/scan_summary.json, written by stage 1, so the clauses and the denominator are not the same expression and the identity can fail.",
-        "build": "a/2026-08-17-0095",
+        "build": "a/2026-08-17-0096",
         "records_examined": 6065704,
         "records_dropped_by_the_rule": 0,
         "seasons_asserted": [
@@ -364,7 +364,7 @@
       "max_D2_minus_L2": 0,
       "max_AH_minus_L2": 0,
       "passed": true,
-      "build": "a/2026-08-17-0095"
+      "build": "a/2026-08-17-0096"
     },
     {
       "name": "A is a subset of A_H on every row",
@@ -387,13 +387,13 @@
         "identity_against_the_independent_source_holds": true,
         "identity_CAN_FAIL_ON_ANY_DATA": true,
         "what_it_can_detect": "AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/analysis_table.csv.gz, rows -- the EMITTED DELIVERABLE, written by stage 3, so the clauses and the denominator are not the same expression and the identity can fail.",
-        "build": "a/2026-08-17-0095"
+        "build": "a/2026-08-17-0096"
       },
       "rows_where_A_exceeds_A_H": 0,
       "rows_where_max_A_exceeds_max_A_H": 0,
       "also_holds_on_the_post_position_7_row_set": true,
       "passed": true,
-      "build": "a/2026-08-17-0095"
+      "build": "a/2026-08-17-0096"
     },
     {
       "name": "clock start is on or after the S2 finale date, on or after the first-pass S1 completion date, and equal to one of the two",
@@ -417,7 +417,7 @@
         "identity_against_the_independent_source_holds": true,
         "identity_CAN_FAIL_ON_ANY_DATA": true,
         "what_it_can_detect": "AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/analysis_table.csv.gz, rows -- the EMITTED DELIVERABLE, written by stage 3, so the clauses and the denominator are not the same expression and the identity can fail.",
-        "build": "a/2026-08-17-0095",
+        "build": "a/2026-08-17-0096",
         "independent_recomputation_covers_pairs": 278452,
         "read_back_from_the_pipeline": false
       },
@@ -442,13 +442,13 @@
       },
       "tie_break_note": "Step 1 SS2.2 breaks exactly-equal timestamps by episode number then smallest event id. The recomputation applies that tiebreak; the agreement counts above are reported rather than a choice being made about whether a tiebreak difference would count as a failure.",
       "passed": true,
-      "build": "a/2026-08-17-0095"
+      "build": "a/2026-08-17-0096"
     },
     {
       "name": "p lies in (0, 1] on every Started-and-left row and is null everywhere else",
       "label": "CODE CHECK",
       "why": "SPECIFIED by decisions/0074 ruling 2; LABEL CORRECTED from DATA CHECK to CODE CHECK by decisions/0076 on both instances' own proof. Started-and-left requires |A| >= 1, so max(A_H) exists; set membership bounds the rank numerator in [1, L2]. NO data configuration puts p outside (0, 1]. It fails only on the withdrawn raw-ratio form max(A_H)/L2, which can exceed 1 where S2 numbering has a gap. It is kept because Step 10 publishes p -- but it proves the code, not the rule.",
-      "population": "ALL Started-and-left rows AT POSITION 5, null on the rest, and the two clauses must sum to 196,654 EXACTLY (decisions/0080 SS3). The dual run had one arm assert p on 19,042 rows -- the POST-LIVENESS Started-and-left count -- against a PRE-LIVENESS denominator of 177,513 non-S&L rows, leaving 99 rows covered by neither clause, exactly the started-and-left liveness exclusions. Do not take the numerator post-liveness and the denominator pre-liveness. ***CORRECTED ON THIS BUILD (Red Team fifth pass, F2): build a/2026-08-16-0088 called this two-clause sum 'THE IDENTITY THAT CLOSES THE HOLE'. IT DOES NOT CLOSE IT. The clauses are `M & left` and `M & ~left` -- a set and its complement within the same mask M -- so they sum to M.sum() for EVERY M, including a mask that is not the population named, which is the defect. What closes the hole is the denominator coming from somewhere else: it is now read from the EMITTED analysis table, so a numerator taken post-liveness against a pre-liveness denominator FAILS.***",
+      "population": "ALL Started-and-left rows AT POSITION 5, null on the rest, and the two clauses must sum to 196,654 EXACTLY (decisions/0080 SS3). The dual run had one arm assert p on 19,042 rows -- the POST-LIVENESS Started-and-left count -- against a PRE-LIVENESS denominator of 177,513 non-S&L rows, leaving 99 rows covered by neither clause, exactly the started-and-left liveness exclusions. Do not take the numerator post-liveness and the denominator pre-liveness. THE TWO-CLAUSE SUM ALONE DOES NOT CLOSE THAT HOLE: the clauses are `M & left` and `M & ~left` -- a set and its complement within the same mask M -- so they sum to M.sum() for EVERY M, including a mask that is not the population named, which is the defect. What closes it is the denominator coming from somewhere else: it is read from the EMITTED analysis table, so a numerator taken post-liveness against a pre-liveness denominator FAILS.",
       "coverage_rows": 19141,
       "coverage": {
         "population": "APPLY, position 5 -- the analysis table's row set",
@@ -465,7 +465,7 @@
         "identity_against_the_independent_source_holds": true,
         "identity_CAN_FAIL_ON_ANY_DATA": true,
         "what_it_can_detect": "AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/analysis_table.csv.gz, rows -- the EMITTED DELIVERABLE, written by stage 3, so the clauses and the denominator are not the same expression and the identity can fail.",
-        "build": "a/2026-08-17-0095",
+        "build": "a/2026-08-17-0096",
         "asserted_clause_counts": [
           19141,
           177513
@@ -480,7 +480,7 @@
           "independent_population_size": 196654,
           "rows_covered_by_neither_clause": 99,
           "would_the_identity_FAIL": true,
-          "note": "measured on this build, not asserted: the exact mispairing decisions/0080 SS3 describes is reconstructed and the identity is evaluated on it. Under build a/2026-08-16-0088's same-mask denominator this pairing could not be detected at all."
+          "note": "measured on this build, not asserted: the exact mispairing decisions/0080 SS3 describes is reconstructed and the identity is evaluated on it. Under a same-mask denominator this pairing could not be detected at all."
         }
       },
       "min": 0.038461538461538464,
@@ -488,7 +488,7 @@
       "nulls_among_started_and_left": 0,
       "non_null_outside_started_and_left": 0,
       "passed": true,
-      "build": "a/2026-08-17-0095"
+      "build": "a/2026-08-17-0096"
     },
     {
       "name": "no account is dropped wholesale by the pair-level liveness filter",
@@ -511,7 +511,7 @@
           "identity_against_the_independent_source_holds": true,
           "identity_CAN_FAIL_ON_ANY_DATA": true,
           "what_it_can_detect": "AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/analysis_table.csv.gz, distinct user_idx, so the clauses and the denominator are not the same expression and the identity can fail.",
-          "build": "a/2026-08-17-0095",
+          "build": "a/2026-08-17-0096",
           "asserted_clause_counts": [
             2206,
             215,
@@ -541,7 +541,7 @@
           "identity_against_the_independent_source_holds": true,
           "identity_CAN_FAIL_ON_ANY_DATA": true,
           "what_it_can_detect": "AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/analysis_table.csv.gz, distinct user_idx on in_deriv rows, so the clauses and the denominator are not the same expression and the identity can fail.",
-          "build": "a/2026-08-17-0095",
+          "build": "a/2026-08-17-0096",
           "asserted_clause_counts": [
             2329,
             72,
@@ -565,7 +565,7 @@
       "reading": "accounts in the last line held exactly one position-5 pair unless the count above is non-zero; for a single-pair account 'wholesale' and 'pair-level' are indistinguishable and no inference is available either way.",
       "assertion": "accounts_holding_BOTH_a_live_and_a_not_live_pair > 0, ON BOTH POPULATIONS",
       "passed": true,
-      "build": "a/2026-08-17-0095"
+      "build": "a/2026-08-17-0096"
     },
     {
       "name": "no access_denied or otherwise skipped account is read as empty",
@@ -587,7 +587,7 @@
         "identity_against_the_independent_source_holds": true,
         "identity_CAN_FAIL_ON_ANY_DATA": true,
         "what_it_can_detect": "AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step4/pull_ledger.jsonl, distinct `slug` counted by a line-by-line json.loads pass rather than by pandas.read_json, so the clauses and the denominator are not the same expression and the identity can fail.",
-        "build": "a/2026-08-17-0095",
+        "build": "a/2026-08-17-0096",
         "accounts_whose_final_state_is_complete": 2549,
         "accounts_whose_final_state_is_a_skip_class": 325,
         "accounts_whose_final_state_is_neither": 0,
@@ -631,7 +631,7 @@
       },
       "assertion": "no account whose final ledger state is a skip class, and no account that was skipped and never yielded data, contributes a pair scored never-started",
       "passed": true,
-      "build": "a/2026-08-17-0095"
+      "build": "a/2026-08-17-0096"
     },
     {
       "name": "no retained row's outcome window extends past tau_pull: tau2 <= tau_pull on every position-5 row",
@@ -655,7 +655,7 @@
           "identity_against_the_independent_source_holds": true,
           "identity_CAN_FAIL_ON_ANY_DATA": true,
           "what_it_can_detect": "AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/analysis_table.csv.gz, rows -- the EMITTED DELIVERABLE, written by stage 3, so the clauses and the denominator are not the same expression and the identity can fail.",
-          "build": "a/2026-08-17-0095",
+          "build": "a/2026-08-17-0096",
           "asserted_clause_counts": [
             196654,
             0
@@ -683,7 +683,7 @@
           "identity_against_the_independent_source_holds": true,
           "identity_CAN_FAIL_ON_ANY_DATA": true,
           "what_it_can_detect": "AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES -- the 99-row hole decisions/0080 SS3 was written for. The population size comes from processed/step8/a/analysis_table.csv.gz, rows with in_deriv = True, so the clauses and the denominator are not the same expression and the identity can fail.",
-          "build": "a/2026-08-17-0095",
+          "build": "a/2026-08-17-0096",
           "asserted_clause_counts": [
             147370,
             0
@@ -699,7 +699,7 @@
       },
       "coverage_rows": 196654,
       "passed": true,
-      "build": "a/2026-08-17-0095"
+      "build": "a/2026-08-17-0096"
     }
   ],
   "population_reconciliation": {
@@ -729,14 +729,14 @@
       "ALT_MATCHED_793_on_APPLY": false
     },
     "reconciles": true,
-    "build": "a/2026-08-17-0095"
+    "build": "a/2026-08-17-0096"
   },
   "set_membership_is_a_coverage_count_not_an_invariant": {
     "ruling": "decisions/0074 ruling 3",
     "records_examined": 6065704,
     "records_dropped": 0,
     "distinct_season_number_dropped": 0,
-    "note": "reported, not asserted. The records-examined denominator is published unreconciled against the other arm's; see the waterfall report."
+    "note": "reported, not asserted. The records-examined denominator publishes as three readings, each naming the pipeline that produces it; see the waterfall report."
   },
   "label_counts": {
     "CODE CHECK": 6,
@@ -760,22 +760,16 @@
       "shape": "THREE-WAY",
       "derived_never_typed": "each class is a count over the label strings of the nine checks in the table, computed on this run.",
       "why_three_way": "the spec fixes the label vocabulary at three -- CODE CHECK; CODE CHECK BY CONSTRUCTION, DATA CHECK AS SPECIFIED; DATA CHECK -- and the spec's own sentence has that shape: 'THE ASSERTION SET NOW HAS NINE MEMBERS: SIX pure code checks, one code-by-construction with force only as specified, and TWO that can fail on real data.' Collapsing the middle member into either outer class changes the answer to 'what could this report have caught?' -- upward it reads as seven that cannot fail, downward as three that can -- so the middle class is published as its own.",
-      "WITHDRAWN_SENTENCE_a_cross_arm_divergence_claim_STRUCK_IN_FULL": {
-        "what_is_struck": "an assertion about the SHAPE OF THE OTHER ARM'S HEADLINE, and every sentence resting on it, published by builds a/2026-08-16-0093 and a/2026-08-16-0094 in this report, in the waterfall deliverable's SS0 and in its SS9 residual list.",
-        "why_it_is_struck": "this arm did not read and may not read the other arm's output. The claim's stated source was a Red Team characterisation RELAYED IN A LAUNCH INSTRUCTION, which CLAUDE.md now records (decisions/0095) as routing around the isolation rule -- and worse than reading the folder, because the receiving arm is forbidden from re-measuring what it was told, so a relayed characterisation is a measurement with an expiry date its holder cannot check.",
-        "not_replaced_with_a_corrected_version": "deliberately. There is no admissible way for this arm to know the other arm's shape, and stating one is what the isolation rule forbids. A fabricated divergence in a gate deliverable is worse than a missed one: it pre-empts the Human Lead's diff, which is the only authority permitted to make a cross-arm statement.",
-        "what_this_arm_publishes_instead": "its own 6 + 1 + 2 split and the reason for it, and nothing about any other arm.",
-        "the_labels_themselves_are_unchanged": "no label, no per-check result and no count moves. This is a removal of a claim, not a change to a measurement."
-      },
-      "build": "a/2026-08-17-0095"
+      "THIS_ARM_MAKES_NO_STATEMENT_ABOUT_ANY_OTHER_ARM": "a cross-arm statement belongs to the Human Lead's diff. This arm did not read and may not read the other arm's output, so it publishes its own split and the reason for it, and nothing else (decisions/0096 ruling 1).",
+      "build": "a/2026-08-17-0096"
     }
   },
   "all_passed": true,
   "coverage_identity_checks_run": 15,
   "all_coverage_identities_hold": true,
   "coverage_identity_strength": {
-    "ruling": "Red Team's FIFTH pass, F2, carried into this rerun by decisions/0090 SS3. Red Team's fourth pass (decisions/0087 SS4) had already recorded that most identities have the population size and the asserted count as one expression; the sentence it required struck either way is struck by decisions/0088 SS2(d).",
-    "CORRECTION_ON_THIS_BUILD": "build a/2026-08-16-0088 classified an identity as REAL ARITHMETIC on the test `parts is not None and len(parts) > 1`. THAT TEST WAS WRONG. Every multi-clause identity in that build had clauses forming a COMPLEMENTARY PARTITION OF THE SAME MASK the population size was taken from, so each summed to the population for ANY mask and NONE of them could fail on any data -- including invariant 6's, which that deliverable called 'the identity that closes the hole'. It closed nothing. THE LABEL AND THE CLAIM ARE BOTH CORRECTED, and the population size is now sourced independently of the asserted count, which is what the hole actually needs.",
+    "ruling": "decisions/0090 SS3 and decisions/0087 SS4, which record that most identities have the population size and the asserted count as ONE EXPRESSION; the sentence claiming otherwise is struck by decisions/0088 SS2(d).",
+    "WHY_A_MULTI_CLAUSE_TEST_IS_NOT_ENOUGH": "a test of the form `len(parts) > 1` admits an identity that cannot fail on any data: clauses forming a COMPLEMENTARY PARTITION OF THE SAME MASK the population size was taken from sum to the population for ANY mask. What the 99-row hole needs is the population size sourced INDEPENDENTLY of the asserted count, which is what the tiers below record.",
     "identities_total": 15,
     "identities_that_CAN_FAIL_population_size_sourced_INDEPENDENTLY": 15,
     "identities_that_CANNOT_FAIL_population_size_and_asserted_count_are_one_expression": 0,
@@ -792,8 +786,8 @@
     },
     "all_independent_identities_hold_against_their_independent_source": true,
     "ARITHMETIC_NOT_A_LITERAL_the_plus_one_perturbation": {
-      "***RELABELLED***": "Red Team seventh pass, finding 3, against this arm; decisions/0091 SS2 as corrected on the sixth pass. Build a/2026-08-16-0090 published this block as 'THE MECHANISM IS DEMONSTRATED, NOT ASSERTED' and read it as a demonstration of INDEPENDENCE. IT IS NOT ONE.",
-      "why_it_does_not_test_independence": "on a SAME-MASK denominator the clauses sum to N by construction and the stated population reads N + 1, so the identity fails IDENTICALLY -- it would have passed on the very build whose defect it claimed to fix. Perturbing the DENOMINATOR cannot separate a denominator sourced independently from one sourced from the same mask.",
+      "NOT_A_DEMONSTRATION_OF_INDEPENDENCE": "decisions/0091 SS2. This block does NOT demonstrate independence and is not published as though it did.",
+      "why_it_does_not_test_independence": "on a SAME-MASK denominator the clauses sum to N by construction and the stated population reads N + 1, so the identity fails IDENTICALLY whether or not the denominator was sourced independently. Perturbing the DENOMINATOR cannot separate the two cases.",
       "what_it_DOES_show": "that each identity is ARITHMETIC rather than a hardcoded literal -- which the separate literal counter already shows. It is kept under that label because it is a real, if narrow, check.",
       "method": "each independent identity is re-evaluated against its population size + 1 and must FAIL.",
       "identities_demonstrated": 15,
@@ -922,7 +916,7 @@
       ]
     },
     "INDEPENDENCE_DEMONSTRATED_injected_wrong_population_defects": {
-      "why_this_exists": "Red Team seventh pass, finding 3. The escape the independent source exists to catch is AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES. Where the clauses are a complementary partition of a mask, swapping the mask moves the clauses AND the same-mask denominator together, so the same-mask identity still PASSES on the wrong population. Only a denominator keyed on the NAME can fail.",
+      "why_this_exists": "decisions/0091 SS2. The escape the independent source exists to catch is AN INVARIANT RUN ON A POPULATION OTHER THAN THE ONE IT NAMES. Where the clauses are a complementary partition of a mask, swapping the mask moves the clauses AND the same-mask denominator together, so the same-mask identity still PASSES on the wrong population. Only a denominator keyed on the NAME can fail.",
       "method": "six defects are injected and each asserts BOTH directions: the SAME-MASK form PASSES (it cannot detect the defect) and the INDEPENDENT form FAILS (it does). Case 3 is the one exception and it is labelled: its two clauses come from different masks, so the same-mask form fails too -- stated rather than glossed, because the point of the suite is which control catches what.",
       "defects_injected": 6,
       "detected_by_the_INDEPENDENT_form": 6,
@@ -1028,6 +1022,6 @@
       "also_a_real_control_and_it_covers_one_invariant": "invariant 6's THE_HOLE_THIS_WOULD_NOW_CATCH reconstructs decisions/0080 SS3's exact mispairing -- 19,042 + 177,513 = 196,555 against 196,654, 99 rows in neither -- and the identity FAILS on it. That was already here and is retained; it is case 3 above, generalised to five more."
     },
     "note": "the NOT_INDEPENDENT group is bookkeeping and is labelled as such at each identity. An unlabelled check that cannot fail reads as one that can -- decisions/0069's rule, applied to the coverage apparatus rather than to the invariants.",
-    "build": "a/2026-08-17-0095"
+    "build": "a/2026-08-17-0096"
   }
 }

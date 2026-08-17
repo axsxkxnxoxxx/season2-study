@@ -89,189 +89,41 @@ STEP5_WATERFALL = [201_900, 178_165, 155_131, 152_126, 128_099]
 R: dict = {}
 
 
-def _surface_claims(ts: str, ag: str) -> dict:
-    """RE-READ, off disk, the two claims about OTHER FILES' STATE this arm
-    published on its previous build. Both were true when written and decisions/0089
-    Sec 3 acted on both. A claim about a surface is a measurement with an expiry
-    date; carried as prose it reports a defect that no longer exists.
+def _column_set_conformance() -> dict:
+    """Does THIS ARM's emitted column set match the 89-name enumeration in the
+    spec this build read?
 
-    COVERAGE IS PRINTED. A path that can return "nothing found" must say whether it
-    found nothing or looked at nothing (CLAUDE.md), so every probe below reports
-    the bytes it read.
-    """
-    spec_p = ROOT / "specs" / "step8-readback.md"
-    spec_txt = spec_p.read_text() if spec_p.exists() else ""
-    # The string, and whether a STATUS STAMP now qualifies it. An unqualified
-    # occurrence and a stamped one are DIFFERENT FINDINGS, so the occurrences are
-    # split by whether they sit INSIDE the stamp block (where the stamp is
-    # quoting the string in order to supersede it) or in the file body.
-    # The stamp block is the leading markdown blockquote; it is located rather
-    # than assumed, and its absence is reported as an absence.
-    lines = spec_txt.split("\n")
-    q = [i for i, l in enumerate(lines) if l.startswith(">")]
-    stamp_lo, stamp_hi = (min(q), max(q)) if q else (-1, -1)
-    stamp_txt = "\n".join(lines[stamp_lo:stamp_hi + 1]) if q else ""
-    body_txt = "\n".join(lines[:max(stamp_lo, 0)] + lines[stamp_hi + 1:]) if q else spec_txt
-    occ = spec_txt.lower().count("has not launched")
-    occ_in_stamp = stamp_txt.lower().count("has not launched")
-    occ_in_body = body_txt.lower().count("has not launched")
-    body_occ_lines = [i for i, l in enumerate(lines)
-                      if "has not launched" in l.lower() and not l.startswith(">")]
-    stamped = bool(q and "STATUS STAMP" in stamp_txt and "SUPERSEDED" in stamp_txt
-                   and all(i > stamp_hi for i in body_occ_lines))
-    eight = ts.count("ASSERTION SET NOW HAS EIGHT") + ag.count("ASSERTION SET NOW HAS EIGHT")
-    nine = ts.count("ASSERTION SET NOW HAS NINE") + ag.count("ASSERTION SET NOW HAS NINE")
-    fourpure = ts.count("four pure code checks")
-    # a struck occurrence is not a live one: the task-sheet marks it SUPERSEDED
-    # at the point of use, which the spec's own rules permit.
-    fourpure_struck = ts.count("SUPERSEDED — \"The count is four pure code checks")
-    return {
-        "why_re_read": ("these are claims about the STATE OF OTHER FILES. They were true when "
-                        "this arm published them on 2026-08-16-r4 and decisions/0089 Sec 3 acted "
-                        "on both. Re-read live here; a surface claim carried as prose is a "
-                        "measurement with an expiry date"),
-        "coverage": {"specs/step8-readback.md_bytes_read": len(spec_txt),
-                     "task-sheet.md_bytes_read": len(ts),
-                     "agent_file_bytes_read": len(ag),
-                     "note": ("a zero occurrence count below means the string was looked for and "
-                              "not found, on a file whose byte count is stated -- not that "
-                              "nothing was looked at")},
-        "item_4_specs_step8_readback_has_not_launched": {
-            "r4_claim": ("`specs/step8-readback.md` STILL SAYS STEP 8 'HAS NOT LAUNCHED', ON "
-                         "THIS READ -- reported, not edited, because specs/ is not one of the "
-                         "eight propagation surfaces"),
-            "file_exists": bool(spec_p.exists()),
-            "occurrences_of_the_string_now": occ,
-            "of_those_inside_the_status_stamp_block_quoting_it_to_supersede_it": occ_in_stamp,
-            "of_those_in_the_file_BODY_still_asserting_it": occ_in_body,
-            "a_status_stamp_now_precedes_and_supersedes_it": stamped,
-            "why_the_split": ("an occurrence inside a stamp that supersedes the string and an "
-                              "unqualified occurrence in the body are DIFFERENT FINDINGS. The "
-                              "r4 claim counted neither -- it said the string was live. It is "
-                              "live in the body AND stamped at the head, and 0089 Sec 3's stamp "
-                              "is negative only, so the body sentence is deliberately not edited"),
-            "status_now": ("CLOSED AS A DEFECT, STANDING AS A QUESTION. decisions/0089 Sec 3 "
-                           "stamped the file, and the stamp precedes every body occurrence and "
-                           "marks the string SUPERSEDED. The r4 claim -- that the string sits "
-                           "there unqualified -- is NO LONGER TRUE and is not republished. The "
-                           "body sentence itself is deliberately unedited, because the stamp is "
-                           "NEGATIVE ONLY. What remains open is not the string but whether "
-                           "specs/ becomes a NINTH propagation surface, which 0089 Sec 4 "
-                           "carries for the Human Lead"
-                           if stamped else
-                           "STILL LIVE AND UNSTAMPED -- republished"),
-        },
-        "item_5_the_assertion_set_count_on_the_spec_surfaces": {
-            "r4_claim": ("task-sheet.md and this instance's definition file still read 'THE "
-                         "ASSERTION SET NOW HAS EIGHT MEMBERS', and task-sheet.md's labelling "
-                         "bullet carries a third count, 'four pure code checks'"),
-            "occurrences_of_EIGHT_across_the_two_surfaces": eight,
-            "occurrences_of_NINE_across_the_two_surfaces": nine,
-            "per_surface": {
-                "task-sheet.md": {"EIGHT": ts.count("ASSERTION SET NOW HAS EIGHT"),
-                                  "NINE": ts.count("ASSERTION SET NOW HAS NINE")},
-                "agent_definition_file": {"EIGHT": ag.count("ASSERTION SET NOW HAS EIGHT"),
-                                          "NINE": ag.count("ASSERTION SET NOW HAS NINE")},
-                "reading": ("task-sheet.md now states NO count of the assertion set in this "
-                            "phrasing, and the definition file states NINE. NO SURFACE "
-                            "CONTRADICTS ANOTHER, which is what the r4 claim said they did. "
-                            "Reported per surface rather than as a total, because a total of "
-                            "zero EIGHTs is also what two silent files would give"),
-            },
-            "task_sheet_four_pure_code_checks_occurrences": fourpure,
-            "task_sheet_four_pure_code_checks_marked_SUPERSEDED_at_the_point_of_use":
-                bool(fourpure_struck),
-            "status_now": ("CLOSED. decisions/0089 Sec 3 acted on both halves and struck the "
-                           "'four pure code checks' sentence at the point of use. NO SURFACE "
-                           "NOW STATES EIGHT. The r4 claim is NO LONGER TRUE and is not "
-                           "republished. This arm publishes NINE and no surface contradicts it"
-                           if eight == 0 and nine > 0 and (fourpure == 0 or fourpure_struck)
-                           else "STILL LIVE -- republished"),
-            "note_on_the_positive_half": ("the negative grep for 'EIGHT MEMBERS' passes clean on "
-                                          "a file that never said nine. Both halves are measured "
-                                          "here: EIGHT must be 0 AND NINE must be non-zero"),
-        },
-    }
+    This is a conformance check on THIS ARM's OWN OUTPUT against THIS ARM's OWN
+    INPUT, which decisions/0096 ruling 1 still requires: an arm publishes its own
+    figures, its own inputs and its own divergences from the spec.
 
-
-def _spec_residuals() -> dict:
-    """decisions/0083 Sec 3 fixed two residuals INSTANCE A reported and could not
-    edit. This arm reported the first of them on its own previous build. They are
-    RE-MEASURED here against the live spec surfaces rather than assumed fixed --
-    a correction quoted from a ruling and not re-read is the shape this chain
-    keeps failing on.
-
-    Read-only on the two surfaces an isolated Step 8 instance actually reads:
-    task-sheet.md and its own definition file. It does not read the other arm's.
+    It is NOT a report on the disk state of task-sheet.md. No occurrence count,
+    byte count or string-presence claim about that file is emitted; the only
+    thing published is whether this pipeline's column set equals the set the spec
+    enumerates. The spec file's identity is carried by the input fingerprint in
+    the provenance block, so the reader can see WHICH spec was read without this
+    deliverable asserting anything about its contents.
     """
     ts = (ROOT / "task-sheet.md").read_text()
-    ag = (ROOT / ".claude" / "agents" / "analytics-engineer-b.md").read_text()
     i = ts.index("THE COLUMN SET IS ENUMERATED, NOT COUNTED")
     j = ts.index("THE TABLE IS THE POSITION-5 ROW SET", i)
-    seg_ts = ts[i:j]
-    k = ag.index("THE COLUMN SET IS ENUMERATED")
-    l = ag.index("POSITION 3's DROP SET IS THE 58,345", k)
-    seg_ag = ag[k:l]
-
-    def enumerated(seg: str) -> list[str]:
-        a = seg.index("`abandonment_point_p`")
-        b = seg.index("`user_idx`") + len("`user_idx`")
-        return sorted(set(re.findall(r"`([A-Za-z0-9_]+)`", seg[a:b])))
-
-    ts_names, ag_names = enumerated(seg_ts), enumerated(seg_ag)
+    seg = ts[i:j]
+    a = seg.index("`abandonment_point_p`")
+    b = seg.index("`user_idx`") + len("`user_idx`")
+    spec_names = sorted(set(re.findall(r"`([A-Za-z0-9_]+)`", seg[a:b])))
     return {
-        "why_re_measured": ("decisions/0083 Sec 3 records both as corrected on all three "
-                            "surfaces. A correction READ BACK is verified; a correction QUOTED "
-                            "is not. Both are re-read here, off disk, on this build"),
-        "a_the_stale_88_inside_the_strike_through": {
-            "reported_by": ("instance A, artifacts/step8-waterfall-a.md Sec 8; this arm "
-                            "reported the same shape on its previous build"),
-            "was": ("the strike-through withdrawing 0077's '89 columns' said it was replaced "
-                    "by the '88-name ENUMERATION', while the enumeration directly above it "
-                    "carries 89 names"),
-            "task_sheet_strike_through_now_says_89":
-                bool("89-NAME ENUMERATION" in seg_ts),
-            "agent_file_strike_through_now_says_89":
-                bool("89-NAME ENUMERATION" in seg_ag),
-            "status": ("CLOSED at decisions/0083 Sec 3a -- verified live on both surfaces this "
-                       "instance reads, not quoted from the entry"),
-        },
-        "b_f2_in_A_H_in_0077s_adopted_name_table": {
-            "was": ("the adopted-name table lists f2_in_A_H among the ADOPTED names while a "
-                    "bullet in the same section drops it as derivable"),
-            "task_sheet_marks_it_dropped_at_the_point_of_use":
-                bool("f2_in_A_H` IS NOT AN EMITTED" in seg_ts),
-            "agent_file_marks_it_dropped_at_the_point_of_use":
-                bool("f2_in_A_H` IS NOT AN EMITTED" in seg_ag),
-            "the_spelling_ruling_survives_it":
-                bool("`AH` is not the spec's spelling" in seg_ts
-                     or "the spec writes `A_H`, not `AH`" in seg_ag),
-            "status": ("CLOSED at decisions/0083 Sec 3b -- marked at the point of use rather "
-                       "than deleted, so 0077's SPELLING ruling (A_H not AH, which governs n_A, "
-                       "n_A_H and max_episode_in_A_H) is not lost with the column"),
-        },
-        # ---------------------------------------------------------------
-        # THE SURFACE CLAIMS THIS ARM PUBLISHED LAST RUN ARE RE-READ, NOT
-        # CARRIED. Items 4 and 5 of the r4 divergence list were TYPED
-        # assertions about the state of other files -- "specs/step8-readback.md
-        # STILL SAYS ... ON THIS READ" and "task-sheet.md and this instance's
-        # definition file still read EIGHT MEMBERS". decisions/0089 Sec 3 fixed
-        # both. A claim about another file's state is a MEASUREMENT with an
-        # expiry date, and a deliverable that carries it as prose reports a
-        # defect that no longer exists. Measured live here so the divergence
-        # list states the current reading rather than the previous one.
-        # ---------------------------------------------------------------
-        "c_surface_claims_this_arm_published_last_run_RE_READ": _surface_claims(ts, ag),
-        "enumeration_checked_AS_A_SET_not_by_counting": {
-            "task_sheet_names": len(ts_names),
-            "agent_file_names": len(ag_names),
-            "code_names": len(COLUMNS_89),
-            "task_sheet_equals_code": sorted(ts_names) == sorted(COLUMNS_89),
-            "agent_file_equals_code": sorted(ag_names) == sorted(COLUMNS_89),
-            "task_sheet_equals_agent_file": sorted(ts_names) == sorted(ag_names),
-            "why": ("decisions/0083 Sec 3 verifies the three surfaces' name sets as SETS, off "
-                    "disk, not by counting. Matching a count is not matching a set"),
-        },
+        "what_this_is": ("a conformance check of THIS ARM's emitted column set against the "
+                         "enumeration in the spec this build read. decisions/0077: matching a "
+                         "count is not matching a set, so it is asserted on the NAMES"),
+        "what_this_is_NOT": ("a report on another file's disk state. decisions/0096 ruling 1 -- "
+                             "an arm does not publish the state of surfaces it does not own. The "
+                             "spec file read by this build is identified by the input "
+                             "fingerprint in the provenance block"),
+        "names_the_spec_enumerates": len(spec_names),
+        "names_this_pipeline_emits": len(COLUMNS_89),
+        "emitted_set_equals_the_spec_enumeration": sorted(spec_names) == sorted(COLUMNS_89),
+        "names_in_the_spec_and_not_emitted": [n for n in spec_names if n not in set(COLUMNS_89)],
+        "names_emitted_and_not_in_the_spec": [n for n in COLUMNS_89 if n not in set(spec_names)],
     }
 
 
@@ -414,9 +266,11 @@ def main() -> None:
     R["step5_waterfall_reasserted"] = {
         "measured": s5_counts, "expected": STEP5_WATERFALL,
         "adopted_rule_json_cross_check": {
-            "surface": ("processed/ is the eighth propagation surface (0074 ruling 6); "
-                        "processed/step5/adopted_rule.json carried revision-3 figures and was "
-                        "corrected. It is READ here and cross-checked, not worked around"),
+            "why_cross_checked": ("decisions/0074 ruling 6 makes processed/ a propagation "
+                                 "surface. processed/step5/adopted_rule.json is an INPUT to "
+                                 "this build: it is READ and cross-checked against this build's "
+                                 "own measurement, component by component, rather than worked "
+                                 "around or taken on trust"),
             "file_says_removed": ar6["removed"], "file_says_retained": ar6["retained"],
             "file_says_of_total": ar6["of_total"],
             "measured_removed": int((line3 & contam_excl).sum()),
@@ -639,7 +493,7 @@ def main() -> None:
                                              "disproportionately likely to roll straight on"),
                "retained_users": int(len(np.unique(u_idx[line5]))),
                "retained_shows": int(len(np.unique(s_idx[line5])))})
-    wf.append({"position": 6, "filter": "liveness (ALT-BROAD, approved 0064)",
+    wf.append({"position": 6, "filter": "liveness (ALT-BROAD; decisions/0048, restored 0054, 0064)",
                "INERT": False,
                "retained_pairs": int(line6.sum()),
                "removed_pairs": int((line5 & ~line6).sum()),
@@ -893,10 +747,9 @@ def main() -> None:
         "column_set_is_ENUMERATED": {
             "ruling": ("decisions/0080 Sec 1 -- THE COLUMN SET IS ENUMERATED, NOT COUNTED, "
                        "replacing 0077 Sec 3's count. EXTENDED TO 88 BY 0081 (silent_at_tau1 "
-                       "restored) AND TO 89 BY 0082 (p_at_bound added). The arms converged on "
-                       "the 87 names at the previous run but CONVERGED IS NOT SPECIFIED, and "
-                       "Step 8b's schema is built on this vocabulary, so it is fixed before the "
-                       "schema exists"),
+                       "restored) AND TO 89 BY 0082 (p_at_bound added). CONVERGED IS NOT "
+                       "SPECIFIED, and Step 8b's schema is built on this vocabulary, so it is "
+                       "fixed before the schema exists"),
             "names_ruled": 89,
             "names_emitted": int(len(tab.columns)),
             # 0077's own words: "Matching a count is not matching a set --
@@ -909,27 +762,14 @@ def main() -> None:
             "names_in_ruled_not_in_emitted": sorted(set(COLUMNS_89) - set(tab.columns)),
             "why_the_lists_are_emitted": (
                 "decisions/0077: 'Matching a count is not matching a set -- assert on the "
-                "names.' The previous build published names_ruled: 89 and names_emitted: 89 and "
-                "no list, so the deliverable asserted a COUNT match while the code asserted a "
-                "SET match. The two are different claims and only one was visible"),
+                "names.' Publishing two counts and no list makes the deliverable assert a COUNT "
+                "match while the code asserts a SET match -- two different claims, only one of "
+                "them visible. The lists are emitted so the reader checks the set"),
             "exact_match_to_the_enumerated_list": sorted(tab.columns) == sorted(COLUMNS_89),
             "emitted_in_the_enumerated_order": list(tab.columns) == COLUMNS_89,
-            "transcribed_from": ("task-sheet.md Step 8's enumeration as it now stands, name by "
-                                 "name; the same list appears in this instance's own definition "
-                                 "file and the two were checked against each other"),
-            "changed_from_this_arms_previous_run": {
-                "added": [], "dropped": [],
-                "why": ("the column SET does not move at 0083. This arm's previous build "
-                        "(2026-08-16 clean run, spec through 0082) already emitted these 89 "
-                        "names. What 0083 Sec 2 changes is what p_at_bound MEANS -- WHETHER p "
-                        "reached its bound, not WHY -- which restates the column's definition "
-                        "and MOVES NO VALUE, because the WHETHER form and 0082's rank-saturation "
-                        "clause select the identical rows. The two 0083 Sec 3 residuals are spec "
-                        "corrections on surfaces this instance reads, not column changes"),
-                "the_87_is_two_builds_back": ("the 87-name build predates 0081 and 0082; it is "
-                                              "named here so the 87 is not later read as this "
-                                              "arm's current answer"),
-            },
+            "transcribed_from": ("task-sheet.md Step 8's enumeration as this build read it, name "
+                                 "by name. The file read is identified by the input fingerprint "
+                                 "in the provenance block"),
             "the_two_free_drops_stand": {
                 "f2_in_A_H": "DERIVABLE as (max_episode_in_A_H == s2_F)",
                 "max_episode_in_A": "read by nothing downstream",
@@ -939,7 +779,7 @@ def main() -> None:
                 ["in_population_APPLY", "n_rec_s1_watch", "tau1_utc", "tau2_utc",
                  "max_episode_in_AH", "T0_binding_term", "action", "discovery_channel",
                  "f2_in_A_H", "max_episode_in_A"]},
-            "residuals_this_arm_reported_last_run_RE_MEASURED": _spec_residuals(),
+            "conformance_to_the_spec_enumeration": _column_set_conformance(),
         },
     }
 
@@ -1049,9 +889,11 @@ def main() -> None:
                 "episodes_examined": int(nAH[pmask].sum()),
                 "note_on_the_two_ruled_cells": (
                     "the [tau - 24h, tau) counts and the exactly-at counts are the cells "
-                    "decisions/0088 Sec 1(a) named and are kept; the exactly-at cells are the "
-                    "FIRST INSTANT of the separating interval, not the whole of it, and this "
-                    "arm's previous build reported its verdict off them alone"),
+                    "decisions/0088 Sec 1(a) named and are kept. They are NOT the set on which "
+                    "the two forms differ: [tau - 24h, tau) is where they AGREE, and the "
+                    "exactly-at cell is the FIRST INSTANT of the separating interval, not the "
+                    "whole of it (decisions/0089 Sec 2a). The verdict is taken off the "
+                    "separating interval"),
             },
             "RAW_RECORDS_the_ruling's_own_word": {
                 "unit": "in-E2 S2 episode RECORDS surviving D11, undeduplicated",
@@ -1113,12 +955,12 @@ def main() -> None:
                 int((pmask & (sep2 > 0)).sum()),
             "rows_with_an_S2_episode_exactly_at_tau1": int((pmask & (at1 > 0)).sum()),
             "rows_with_an_S2_episode_exactly_at_tau2": int((pmask & (at2 > 0)).sum()),
-            "WHAT_THE_PREVIOUS_BUILD_MEASURED": (
-                "this arm's r4 build computed its verdict from the rows exactly AT tau1 only -- "
-                "1 row of the separating interval -- and reported no outcome state differing. "
-                "decisions/0089 Sec 2(a) records that as a claim about the set on which the "
-                "forms differ, computed on the wrong set. The verdict below is recomputed on "
-                "the separating interval and the previous one is superseded"),
+            "WHICH_SET_THE_VERDICT_IS_TAKEN_OFF": (
+                "the SEPARATING interval [tau, tau + 24h) at both bounds -- the only rows on "
+                "which the half-open and date-level forms can disagree (decisions/0089 Sec 2a). "
+                "A verdict taken off the exactly-at cell alone would rest on the interval's "
+                "first instant, and a verdict taken off [tau - 24h, tau) would rest on the "
+                "interval where the two forms AGREE"),
             "reading": ("under the half-open form an instant in [tau, tau + 24h) is OUTSIDE the "
                         "set; under the date-level form it is INSIDE. At tau1 that turns a "
                         "never-started row with such an episode into a started one; at tau2 it "
@@ -1157,10 +999,6 @@ def main() -> None:
                         "neighbour is the misreading")))
         _bp["VERDICT_STATE"] = ("VACUOUS" if _on == 0
                                 else "OUTCOME_DECIDING" if _dec > 0 else "OCCUPIED_INERT")
-        _bp["VERDICT_SUPERSEDES"] = (
-            "this arm's r4 verdict, which was computed on [tau - 24h, tau) and the single "
-            "instant at tau -- the interval on which the two forms AGREE plus its first "
-            "separating point (decisions/0089 Sec 2a)")
 
     # ---- (b) the per-site D11 table -------------------------------------
     fp = st1["D11_record_level_footprint"]
@@ -1212,9 +1050,8 @@ def main() -> None:
         # but it now names WHICH quantity it is rather than holding either
         row["records_examined_at_this_site"] = pre
         row["records_examined_at_this_site_IS"] = (
-            "the INPUT UNIVERSE before D11, in this site's own unit. On the previous build this "
-            "one column held the post-exclusion count at some sites and the pre-exclusion count "
-            "at others (Red Team eighth pass, F3)")
+            "the INPUT UNIVERSE before D11, in this site's own unit -- ONE quantity under this "
+            "label at every site, never post-exclusion at some and pre-exclusion at others")
         if isinstance(pre, int) and pre == 0:
             row["coverage_state"] = "EMPTY_INPUT"
             row["assertion_is_VACUOUS_zero_coverage"] = True
@@ -1227,9 +1064,10 @@ def main() -> None:
             row["assertion_is_VACUOUS_zero_coverage"] = False
             row["assertion_holds_READ_AS"] = (
                 "NOT VACUOUS. This site's ENTIRE input universe was at or after tau_pull and D11 "
-                "removed all of it. The previous build's single column would have printed 0 here "
-                "and labelled the site VACUOUS -- 'examined 0 records' -- when D11 did the most "
-                "work of any site in the table. That inversion is Red Team's F3")
+                "removed all of it. A vacuity test keyed on a POST-exclusion count would print 0 "
+                "here and label the site VACUOUS -- 'examined 0 records' -- at the site where "
+                "D11 did the most work. That inversion runs in the direction of a false pass, "
+                "which is why vacuity keys on the INPUT UNIVERSE")
         elif isinstance(pre, int):
             row["coverage_state"] = "OCCUPIED"
             row["assertion_is_VACUOUS_zero_coverage"] = False
@@ -1336,8 +1174,8 @@ def main() -> None:
           "S1/S2 episode records, ALL shows in the sweep",
           "PENDING_STAGE_3_BACKFILL",
           "measured at stage 3, where the D9 coverage pivot is built, and BACKFILLED INTO THIS "
-          "ROW there. The -r4 build left this row null in the published table while d9.json "
-          "carried the number",
+          "ROW there. The sentinel is visible rather than null if the backfill does not run, so "
+          "an unasserted site cannot read as an asserted one",
           {"backfilled_from": "processed/step8/b/d9.json -> D11_site",
            "records_in_the_INPUT_UNIVERSE_before_D11": "PENDING_STAGE_3_BACKFILL",
            "records_COUNTED_after_D11": "PENDING_STAGE_3_BACKFILL"})
@@ -1411,11 +1249,13 @@ def main() -> None:
 
     R["B3_the_two_unasserted_mandates"] = {
         "ruling": ("decisions/0088 Sec 1 -- MEASURE BOTH. The mandates are THE HALF-OPEN "
-                   "UTC-INSTANT FORM and D11-AS-GLOBAL-CUTOFF, not invariants 7 and 8. Both "
-                   "arms' compliance is TRUE and was independently confirmed; what was missing "
-                   "is any measurement of whether either is LOAD-BEARING on this data"),
-        "ground": ("the unstated version of exactly this scope produced Step 7's 792-against-"
-                   "791, where one arm applied the restriction and the other did not"),
+                   "UTC-INSTANT FORM and D11-AS-GLOBAL-CUTOFF, not invariants 7 and 8. A "
+                   "SELF-REPORT OF COMPLIANCE IS NOT A MEASUREMENT of whether either mandate is "
+                   "LOAD-BEARING on this data, and an unmeasured pass is indistinguishable from "
+                   "a check that looked nowhere"),
+        "ground": ("decisions/0088 Sec 1: the unstated version of exactly this scope produced "
+                   "the reported-not-reconciled split at Step 7, where the restriction was "
+                   "applied under one reading and not under the other"),
         "a_boundary_window": {
             "what_it_measures": ("the rows on which the half-open form and a date-level form "
                                  "DIFFER -- S2 evidence in the SEPARATING interval [tau, tau + "
@@ -1423,13 +1263,12 @@ def main() -> None:
                                  "OUTCOME STATE when the forbidden form is actually applied. The "
                                  "cells decisions/0088 Sec 1(a) named, [tau - 24h, tau) and "
                                  "exactly-at-tau, are reported alongside"),
-            "THE_INTERVAL_WAS_CORRECTED": (
+            "WHICH_INTERVAL_SEPARATES_THE_TWO_FORMS": (
                 "decisions/0089 Sec 2(a). 0088 Sec 1(a) named [tau - 24h, tau). T0 is "
                 "day-floored, so tau1 and tau2 are MIDNIGHT-ALIGNED and `date(ts) < date(tau)` "
                 "is identical to `ts < tau` below the boundary -- THAT WINDOW IS WHERE THE TWO "
-                "FORMS AGREE. The separating interval is [tau, tau + 24h). This arm's r4 build "
-                "emitted the ruled window and the single instant exactly at tau and nothing "
-                "else, and took its verdict off 1 row of the separating interval"),
+                "FORMS AGREE. The SEPARATING interval is [tau, tau + 24h), and the verdict is "
+                "taken off that. Both are emitted"),
             "compliance_self_report": ("no .date(), dt.date, normalize() or day-flooring "
                                        "anywhere in this arm's step8_b_*.py; instants are int64 "
                                        "seconds throughout. THAT IS THE SELF-REPORT AND IT IS "
@@ -1474,13 +1313,12 @@ def main() -> None:
         "b_per_site_D11_table": {
             "what_it_measures": ("records excluded by D11 at EACH site separately, asserted at "
                                  "each site rather than once and about the rest"),
-            "THE_EXAMINED_COLUMN_HELD_TWO_QUANTITIES_AND_NOW_HOLDS_TWO_COLUMNS": {
-                "finding": ("Red Team eighth pass, F3, against this arm. The single "
-                            "`records_examined_at_this_site` column was POST-exclusion at A, "
-                            "A_H and the eight action_count_* sites and PRE-exclusion at the "
-                            "liveness and D9 sites -- one label over two objects, which is the "
-                            "defect decisions/0088 Sec 2(b) ruled on one level up"),
-                "why_it_was_load_bearing_and_not_cosmetic": (
+            "TWO COLUMNS, NOT ONE, AND VACUITY KEYS ON THE PRE-EXCLUSION ONE": {
+                "the_hazard": ("a single `records_examined_at_this_site` column can only hold "
+                               "ONE of the two quantities, and the sites do not agree on which: "
+                               "one label over two objects, which is the defect decisions/0088 "
+                               "Sec 2(b) rules on one level up"),
+                "why_it_is_load_bearing_and_not_cosmetic": (
                     "THE VACUITY TEST KEYED ON THAT COLUMN. A site whose ENTIRE input universe "
                     "was at or after tau_pull would have reported `examined = 0` and been "
                     "labelled VACUOUS -- 'this site examined 0 records' -- having examined and "
@@ -1567,13 +1405,12 @@ def main() -> None:
                 "action_count_s{1,2}_*, the liveness evidence, D9's coverage rows, the S1 walk "
                 "-- but fixes no key spelling, and it names EIGHT while the four action_count "
                 "columns are EIGHT sites here, not four, because the spec's own column "
-                "enumeration (0080) has eight action-count columns. This arm publishes 13 "
-                "rows with prose site names. decisions/0091 Sec 3 records the other arm using "
-                "`S1_completion_walk`, an underscored key, so THE TWO TABLES ARE NOT KEY-WISE "
-                "DIFFABLE even where they agree numerically. Reported, not reconciled: naming "
-                "is unruled, and 0088 Sec 2(c) requires two differing objects be named as two "
-                "rather than merged under a shared label"),
-            "THIS_RUNS_OWN_CHANGE": acs["CHANGED_FROM_THIS_ARMS_PREVIOUS_BUILD"],
+                "enumeration (0080) has eight action-count columns. This arm publishes 13 rows "
+                "with prose site names, listed in full so a table keyed differently is "
+                "comparable row by row. THE KEY SPELLING IS AN UNRULED SPEC GAP and is reported "
+                "as one"),
+            "D11_IS_APPLIED_AT_ALL_EIGHT_ACTION_SITES":
+                acs["D11_IS_APPLIED_AT_ALL_EIGHT_ACTION_SITES"],
             "pairs_whose_action_counts_moved": {
                 "in_the_record_universe":
                     acs["pairs_whose_action_counts_move_because_D11_is_now_applied_here"],
@@ -1687,7 +1524,7 @@ def main() -> None:
     shows_max_e2_ne_l2 = int(np.sum(max_e2 != l2_vals))
     shows_l2_ne_len_e2 = int(np.sum(l2_vals != len_e2))
     third_link = {
-        "ruling": ("decisions/0085 Sec 4, Red Team P4 -- the coextensivity chain is "
+        "ruling": ("decisions/0085 Sec 4 -- the coextensivity chain is "
                    "numerator = L2 <=> m_H = max(E2) <=> m_H = F2, and ONLY THE FIRST LINK "
                    "IS CONSTRUCTION. The second holds only because the finale is the "
                    "highest-numbered listed episode, which the s2_aired_lt_listed case can "
@@ -1736,21 +1573,18 @@ def main() -> None:
                                   "the_chain_has_THREE_links_only_two_are_construction"),
         "the_chain_has_THREE_links_only_two_are_construction": third_link,
         "totals_not_a_split": ("decisions/0083 Sec 2 -- the p = 1.0 counts are reported AS "
-                               "TOTALS. 1,246 and 1,230 are correct counts and both arms "
-                               "reproduce them, but they are ONE CLASS COUNTED TWICE, NOT TWO "
-                               "CLASSES SUMMED. Citing them as evidence that the column "
-                               "separates anything is a WITHDRAWN ARGUMENT (CLAUDE.md, third "
-                               "blindness class; registered at src/step7_register.py "
-                               "GROUNDS_WITHDRAWN['0083 SS2'])"),
+                               "TOTALS. They are correct counts, but they are ONE CLASS COUNTED "
+                               "TWICE, NOT TWO CLASSES SUMMED. Citing them as evidence that the "
+                               "column separates anything is a WITHDRAWN ARGUMENT (CLAUDE.md, "
+                               "third blindness class)"),
         "expected_totals_from_the_ruling": {"position5_APPLY": 1246,
                                             "post_liveness_APPLY": 1230},
         "expected_emptiness_cells_from_the_ruling_BOTH_POPULATIONS": {
-            "source": ("decisions/0085 Sec 3, Red Team blocker B2 -- the emptiness is emitted "
-                       "on BOTH populations at BOTH positions, four cells each. This is "
-                       "CLAUDE.md's standing both-populations rule, not a new requirement. "
-                       "One arm emitted APPLY only and 1,056 appeared nowhere in its "
-                       "deliverable, while the whole ground for keeping the column is that an "
-                       "emptiness asserted in prose and never emitted cannot be checked"),
+            "source": ("decisions/0085 Sec 3 -- the emptiness is emitted on BOTH populations "
+                       "at BOTH positions, four cells each. This is CLAUDE.md's standing "
+                       "both-populations rule, not a new requirement, and the whole ground for "
+                       "keeping the column is that an emptiness asserted in prose and never "
+                       "emitted cannot be checked"),
             "APPLY_position5": "1,246 / 0 / 0 / 0",
             "APPLY_post_liveness": "1,230 / 0 / 0 / 0",
             "DERIV_position5": "1,072 / 0 / 0 / 0",
@@ -1814,10 +1648,9 @@ def main() -> None:
             "silence_test_alone_APPLY": 1355,
             "NOT_Continued_conjunct_spares_APPLY": 652,
             "line_6_exclusions_APPLY": 703,
-            "ruling": ("decisions/0085 Sec 5, Red Team third pass -- 703 IS NOT THE MARGINAL "
-                       "COST OF THE SILENCE TEST. The silence test alone excludes 1,355 on "
-                       "APPLY and the NOT Continued conjunct spares 652, so 1,355 - 652 = 703. "
-                       "One arm published 652 and not 1,355. Derivable, so not a defect -- but "
+            "ruling": ("decisions/0085 Sec 5 -- 703 IS NOT THE MARGINAL COST OF THE SILENCE "
+                       "TEST. The silence test alone excludes 1,355 on APPLY and the NOT "
+                       "Continued conjunct spares 652, so 1,355 - 652 = 703. Derivable, but "
                        "1,355 is the figure that makes line 6 readable as a marginal cost, and "
                        "a reader holding only 652 cannot recover it without knowing to add. "
                        "BOTH publish, on BOTH populations, WITH THE IDENTITY STATED"),
@@ -1889,31 +1722,22 @@ def main() -> None:
         "split": "THREE categories -- finale binds, S1 completion binds, BOTH bind "
                  "(decisions/0070 ruling 5). A tie is its own category, not a tiebreak",
         "THE_168_MEASURED_ON_EVERY_POPULATION": {
-            "ruling": ("task-sheet.md Step 8, D2 bullet, as amended by Red Team's SEVENTH pass "
-                       "finding N2: 0070 ruling 5 published '168 pairs have both terms binding' "
-                       "WITH NO POPULATION. STATE THE POPULATION AT THE POINT OF USE AND "
-                       "MEASURE IT ON BOTH. This is the standing provenance rule (0047, 0078 "
-                       "Sec 2), not a new requirement"),
+            "ruling": ("task-sheet.md Step 8's D2 bullet and decisions/0092 Sec 3: 0070 ruling "
+                       "5 published '168 pairs have both terms binding' WITH NO POPULATION, and "
+                       "THE COUNT IS NOT POPULATION-INVARIANT. STATE THE POPULATION AT THE "
+                       "POINT OF USE AND MEASURE IT ON BOTH. This is the standing provenance "
+                       "rule (0047, 0078 Sec 2), not a new requirement"),
             "by_population": _tie_by_pop,
             "unit": "user-show PAIRS whose T0 = max(S2 finale, S1 completion) has both terms "
                     "binding on the same UTC day",
-            "THIS_ARMS_OWN_DEFECT_CORRECTED": (
-                "this arm's -r4 build published the integer 168 in TWO deliverables under TWO "
-                "populations -- `tie_pairs_in_line1` on waterfall line 1 (220,107) in "
-                "step8-waterfall-b.md, and `rows_where_the_two_terms_are_the_same_date` on the "
-                "APPLY position-5 row set (196,654) in step8-invariants-b.md -- with no line "
-                "reconciling them. The populations differ by 23,453 pairs. Reported here rather "
-                "than silently repaired"),
-            "AND_THE_REVIEW_PREMISE_IS_MEASURABLY_FALSE_ON_THIS_DATA": (
-                "the finding as put to this arm is '168 cannot be correct on both'. MEASURED: "
-                "IT IS CORRECT ON BOTH. Every one of the tie pairs survives positions 2 through "
-                "6 on APPLY, so the count is 168 on line 1, 168 at position 3, 168 at position "
-                "4, 168 at position 5 and 168 post-liveness. The two figures agreed because the "
-                "quantity is invariant across the APPLY chain, NOT because either was measured "
-                "wrongly. THE DEFECT IS REAL AND IS THE OTHER HALF OF THE FINDING: neither "
-                "figure NAMED its population, and neither had ever been measured on DERIV -- "
-                "where it is NOT 168. Reported, not reconciled: the arithmetic claim in the "
-                "finding is contradicted by this build, the provenance claim is upheld"),
+            "WHY_THE_POPULATION_LABEL_IS_LOAD_BEARING_HERE": (
+                "MEASURED ON THIS BUILD: every one of the tie pairs survives positions 2 "
+                "through 6 on APPLY, so the count is 168 at line 1, at position 3, at position "
+                "4, at position 5 and post-liveness -- INVARIANT ACROSS THE APPLY CHAIN. It is "
+                "NOT invariant across populations: on DERIV it is not 168. So an unlabelled "
+                "APPLY figure looks like agreement no matter which APPLY reading produced it, "
+                "while the population that would disagree was never measured. That is why the "
+                "label carries the weight rather than the number"),
             "the_number_that_was_never_measured": (
                 "DERIV. The tie count on DERIV position 5 is emitted in by_population above and "
                 "differs from 168, which is what makes the missing population label load-bearing "

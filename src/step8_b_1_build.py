@@ -195,13 +195,12 @@ def main() -> None:
                 "records_D11_discards_on_the_S2_side": int((m12_pre & d11_drop
                                                             & (r_season == 2)).sum()),
                 "total": int((m12_pre & d11_drop).sum()),
-                "why_it_matters": ("decisions/0074 ruling 4 published the gap between the two "
-                                   "arms as 94 records and routed it to Step 14 as reported-"
-                                   "not-reconciled. The 94 is the S2-SIDE component alone. "
-                                   "D11 applied everywhere moves the figure by the TOTAL, so "
-                                   "the three readings are separated by two different "
-                                   "quantities and the two-figure framing understates the "
-                                   "spread"),
+                "why_it_matters": ("decisions/0074 ruling 4 named 94 records as the whole of "
+                                   "the denominator gap; decisions/0083 Sec 1 closes it. The 94 "
+                                   "is the S2-SIDE component ALONE. D11 applied everywhere "
+                                   "moves the figure by the TOTAL, so the three readings are "
+                                   "separated by two different quantities and a two-figure "
+                                   "framing understates the spread"),
             },
             "what_decides_it": ("the denominator is a CONSEQUENCE of one choice and not an "
                                 "independent question: whether D11 is applied to the S1 "
@@ -220,12 +219,11 @@ def main() -> None:
                               "one touches none. It publishes as a COVERAGE FIGURE WITH ITS "
                               "PIPELINE NAMED, and 0074's 'publish both, not one' stands and is "
                               "STRENGTHENED TO THREE"),
-            "which_reading_each_arm_published": ("decisions/0083 Sec 1 -- instance A published "
-                                                 "READING_A and instance B published READING_B, "
-                                                 "each naming its pipeline. This instance is B "
-                                                 "and publishes READING_B; all three are stated "
-                                                 "here so no reading is later read as a "
-                                                 "divergence"),
+            "which_reading_THIS_instance_publishes": ("READING_B, with its pipeline named. All "
+                                                      "three readings are stated here, each "
+                                                      "with the pipeline it belongs to, so no "
+                                                      "reading is later read as a divergence "
+                                                      "(decisions/0083 Sec 1)"),
             "what_remains_open_and_it_is_NOT_this": ("whether D11 applies to the S1 COMPLETION "
                                                      "WALK is decisions/0068's own open item. "
                                                      "READING_C moves line 1 to 220,103 because "
@@ -328,10 +326,9 @@ def main() -> None:
             int(d11_drop.sum()),
         "in_frame_S1_S2_records_BEFORE_D11": int(m12_pre.sum()),
         "EPISODE_UNIT_INPUT_UNIVERSE_for_the_A_and_A_H_sites": {
-            "why": ("Red Team eighth pass F3 -- the per-site `examined` column mixed pre- and "
-                    "post-exclusion quantities, and the vacuity test keys on it. A and A_H are "
-                    "in DISTINCT IN-E EPISODES, so their input universe is measured in that "
-                    "unit here rather than inferred from a record count"),
+            "why": ("the per-site vacuity test keys on the PRE-exclusion input universe, and A "
+                    "and A_H are in DISTINCT IN-E EPISODES -- so their input universe is "
+                    "measured in that unit here rather than inferred from a record count"),
             "S1": _ep_universe(1),
             "S2": _ep_universe(2),
         },
@@ -442,13 +439,13 @@ def main() -> None:
                                        "than as a silent pass: `other` is empty on both "
                                        "seasons because every action value in the sweep is "
                                        "watch, checkin or scrobble"),
-        "CHANGED_FROM_THIS_ARMS_PREVIOUS_BUILD": (
-            "YES, and it is reported rather than reconciled. The r3 build computed the eight "
-            "action counts on `m12`, which carries the S1 side past tau_pull so that "
-            "decisions/0068's published line 1 of 220,107 survives. That carry-through has a "
-            "ruling behind it FOR THE COMPLETION WALK and none for the action counts. "
-            "decisions/0088 Sec 1(b)'s per-site assertion is what made the difference visible: "
-            "asserted at each site, the four action_count_s1_* sites would have FAILED on r3"),
+        "D11_IS_APPLIED_AT_ALL_EIGHT_ACTION_SITES": (
+            "decisions/0088 Sec 1(b) requires D11 asserted AT EACH SITE, not once and about the "
+            "rest. The S1-side carry-through past tau_pull has a ruling behind it FOR THE "
+            "COMPLETION WALK ONLY -- decisions/0068's published line 1 of 220,107 needs it -- "
+            "and nothing exempts the action counts, so D11 is applied to all eight. The action "
+            "counts are read by nothing upstream of themselves, so no waterfall line, outcome "
+            "share or invariant depends on this"),
     }
 
     # ---- distinct episodes: canonical timestamp = MIN watched_at -----------
@@ -613,11 +610,11 @@ def main() -> None:
                              "0 RECORDS, and whose unit is records rather than pairs"),
         "ruled_count_58345": int(drop3.sum()) == 58_345,
         "ruled_figure_and_its_own_provenance": ("58,345 pairs -- POSITION-3 RULE, POSITION-5 "
-                                                "BUILD OF 2026-08-13, reproduced independently "
-                                                "by both arms (decisions/0078 Sec 2). This "
-                                                "build reproduces it again; the ruled figure "
-                                                "keeps the build it was ruled on and this "
-                                                "measurement carries this one"),
+                                                "BUILD OF 2026-08-13, the provenance "
+                                                "decisions/0078 Sec 2 attaches to the ruled "
+                                                "figure. This build reproduces it; the ruled "
+                                                "figure keeps the build it was ruled on and "
+                                                "this measurement carries this one"),
         "deliverable": ("decisions/0079 Sec 1 -- a DELIVERABLE PRODUCED BY THE PIPELINE, named "
                         "in the deliverable list and written by the same run that writes the "
                         "table. Not a helper script's side file: D9 half (b) cannot be computed "

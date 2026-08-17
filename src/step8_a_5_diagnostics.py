@@ -104,11 +104,11 @@ def main():
                    "column_identity_holds": bool(
                        col_true + col_false + (int(mask.sum()) - col_true - col_false)
                        == int(mask.sum())),
-                   "why_both_are_emitted": "Red Team seventh pass, finding 4: build "
-                                           "a/2026-08-16-0090 asserted class 1 empty and described "
-                                           "class 2 as non-empty twelve lines apart, and emitted "
-                                           "neither cardinality in the markdown. Step 8b builds a "
-                                           "schema on this column with no conversion layer.",
+                   "why_both_are_emitted": "the two FALSE classes are different objects and "
+                                           "asserting one empty while describing the other as "
+                                           "non-empty is unreadable unless both cardinalities are "
+                                           "emitted. Step 8b builds a schema on this column with "
+                                           "no conversion layer.",
                },
                "expected_total_by_0085": expected_total,
                "four_cells_sum_to_the_total": bool(sum(cells.values()) == int(m1.sum())),
@@ -213,9 +213,9 @@ def main():
             "build": lib.BUILD_TAG,
         }
     _bt_split["ruling"] = (
-        "decisions/0092, Red Team seventh pass N2: STATE THE POPULATION AT THE POINT OF USE AND "
-        "MEASURE IT ON BOTH. The spec's 168 is retained for the record and is NOT reproduced as a "
-        "population-free integer here; every cell above names the set it was counted over.")
+        "decisions/0092 N2: STATE THE POPULATION AT THE POINT OF USE AND MEASURE IT ON BOTH. The "
+        "spec's 168 is retained for the record and is NOT reproduced as a population-free integer "
+        "here; every cell above names the set it was counted over.")
     _bt_split["which_population_carries_the_spec_integer_168"] = [
         k for k, v in _bt_split.items()
         if isinstance(v, dict) and v.get("both_bind") == 168]
@@ -232,8 +232,8 @@ def main():
         "both_bind": int((pos5 & bb).sum()),
         "population_size": int(pos5.sum()),
         "population_stated_at_the_point_of_use": "APPLY, position 5 = " + str(int(pos5.sum())),
-        "superseded_framing": "this key survives only so build a/2026-08-16-0090's figure can be "
-                              "located; the block that governs is "
+        "superseded_framing": "this key is the single-population form and is NOT the governing "
+                              "one; the block that governs is "
                               "binding_term_split_BOTH_POPULATIONS_BOTH_POSITIONS (decisions/0092)"}
     D["D2_negative_lag"]["reading"] = (
         "S2-finale-term negative lags are the normal case for anyone who watched a weekly "
@@ -528,19 +528,18 @@ def main():
         "one_row_per_show_id_tie_break": "lexicographically first slug per show ID. Stated rather "
                                          "than implicit; the sensitivity is measured, not assumed.",
         "clusters_with_more_than_one_strict_key_under_the_LAST_slug_instead": alt_clusters,
-        "THE_UNIVERSE_THIS_ARM_USED_ON_ITS_PREVIOUS_BUILD_AND_NO_LONGER_USES": {
-            "what_it_was": "the distinct show IDs appearing in a D9 COVERAGE ROW -- i.e. reaching "
-                           "the pivot through a dated, pre-tau_pull, season >= 1 episode record",
+        "THE_D9_COVERAGE_PIVOT_a_NARROWER_universe_NOT_used_for_clustering": {
+            "what_it_is": "the distinct show IDs appearing in a D9 COVERAGE ROW -- i.e. reaching "
+                          "the pivot through a dated, pre-tau_pull, season >= 1 episode record",
             "size": pivot_show_ids,
             "relation_to_U1": "a SUBSET of U1. A show reaching the sweep only through a record "
                               "D11 discards, an undated record, a specials-only record or a "
                               "non-episode record is in U1 and not in the pivot.",
             "U1_minus_this": int(uni.shape[0] - pivot_show_ids),
-            "why_it_is_published": "decisions/0087 SS2 caught this count published under the label "
-                                   "`distinct_show_ids_in_the_sweep`, which is NOT what it counts, "
-                                   "and 0088 SS2(a) requires the label corrected to what it counts. "
-                                   "Both are real objects; one label over two was the defect.",
-            "build_it_was_published_on": "a/2026-08-16-0085",
+            "why_it_is_published": "decisions/0088 SS2(a) requires each coverage quantity "
+                                   "labelled by what it counts. This one is NOT "
+                                   "`distinct_show_ids_in_the_sweep`, which is U1; both are real "
+                                   "objects and one label over two is the defect.",
         },
         "candidate_universes_NOT_used_here_sized_for_comparison": {
             "U2_the_1138_frame_shows": int(frame.shape[0]),
@@ -702,8 +701,8 @@ def main():
         "position_3_drop_set_input": dropset_meta,
         "FLOOR_strict_key": {
             "label": "FLOOR of the bound (decisions/0090). NOT the point estimate and NOT 'D9's "
-                     "result'. ***SUPERSEDES the key name `ADOPTED_strict_key`, used on builds "
-                     "through a/2026-08-16-0088 under 0074 ruling 5's framing.***",
+                     "result'. ***SUPERSEDES the key name `ADOPTED_strict_key`, which belonged to "
+                     "0074 ruling 5's framing.***",
             "complementary_signature_id_pairs": st["complementary_signature_id_pairs"],
             "half_a_fabricated_never_started_row": {
                 "population": "APPLY, position 7 (post-liveness), scored Never started",
@@ -729,9 +728,8 @@ def main():
         },
         "CEILING_loose_key": {
             "label": "CEILING of the bound (decisions/0090). NOT the point estimate. ***SUPERSEDES "
-                     "the key name `REPORTED_ALONGSIDE_loose_key`, used on builds through "
-                     "a/2026-08-16-0088, under which strict was the answer and this was "
-                     "context.***",
+                     "the key name `REPORTED_ALONGSIDE_loose_key`, under which strict was the "
+                     "answer and this was context.***",
             "complementary_signature_id_pairs": lo["complementary_signature_id_pairs"],
             "half_a_APPLY_position_7": lo[
                 "half_a_never_started_carrying_the_signature_APPLY_position_7"],
@@ -754,9 +752,9 @@ def main():
                 "half_a_never_started_carrying_the_signature_APPLY_position_7"],
             "half_b": by_key["third_key_trailing_digit_groups_NOT_RULED"][
                 "half_b_S1_failing_pairs_carrying_the_signature"],
-            "note": "this instance used this key on its previous run and published 76 "
-                    "complementary pairs against the other arm's 75. decisions/0076 records that "
-                    "divergence as REPORTED, NOT RECONCILED.",
+            "note": "NEITHER RULED KEY. It reduces `the-100` to `the`. decisions/0076 SS3 "
+                    "defines the two ruled keys and records a 76-against-75 divergence as "
+                    "REPORTED, NOT RECONCILED.",
         },
         "merges_counted_with_the_same_query_and_reported_separately": {
             "strict_key": st["merges_user_show_rows_where_one_ID_carries_both_seasons_and_a_same_"
@@ -865,20 +863,12 @@ def main():
                     + ("every entry CLAUDE.md cites resolves to a file in decisions/."
                        if not _unresolved else
                        "CLAUDE.md cites " + ", ".join(_unresolved) + " and no file in decisions/ "
-                       "matches. This is the THIRD occurrence of the missing-entry defect, after "
-                       "0092 SS2 and 0094 SS4. The citation resolver 0094 built could NOT see it "
-                       "while the citation lived only in CLAUDE.md, which is not one of the eight "
-                       "propagation surfaces it scans. THIS DELIVERABLE BRINGS IT INTO COVERAGE: "
-                       "artifacts/ IS surface 6 and this build's provenance names the entry it "
-                       "was launched against, so the resolver now reports MISSING decisions/0095* "
-                       "and src/check_surfaces.py EXITS 1. The cause of that failure is the "
-                       "absent entry, not this deliverable; every other half of that control "
-                       "passes. Removing the citation would make the control green and the gap "
-                       "invisible again, which is CLAUDE.md's 'narrowing until it passes is how a "
-                       "control gets disarmed'.")),
+                       "matches. Reported to the Human Lead; not published in artifacts/, because "
+                       "the disk state of a surface this arm does not own is not this arm's "
+                       "measurement (decisions/0096 ruling 1).")),
         "status": "REPORTED, NOT ACTED ON -- writing a decision entry is not this instance's to do,"
                   " and neither src/check_surfaces.py nor src/step7_register.py was edited: both "
-                  "are shared and were changed this hour.",
+                  "are shared, and narrowing a shared control from inside one arm disarms it.",
         "build": lib.BUILD_TAG,
     }
 
@@ -905,22 +895,18 @@ def main():
         "decisions/0092's N2 correction (the population on the both-bind 168) is present and the "
         "population-free form is absent on surface(s) " + (", ".join(_reached) or "NONE") + "; "
         "it is NOT yet on surface(s) " + (", ".join(_not) or "NONE") + ". "
-        "decisions/0092 itself matches " + str(_n0092) + " file(s) in decisions/, so build "
-        "a/2026-08-16-0092's finding that the entry existed on two surfaces and not in the decision "
-        "log "
-        + ("is CLOSED." if _n0092 > 0 else "STANDS.") + " "
-        "Reported, not edited: the agent files, the decision log and second-brain are not this "
-        "instance's to amend. BUILD a/2026-08-16-0092 PUBLISHED A FIXED SENTENCE HERE and the "
-        "0093 rerun "
-        "would have contradicted it -- which is decisions/0093's mechanism exactly: a ruling can "
-        "be recorded, propagated and passing every control while an artifact still publishes the "
-        "superseded reading, because an artifact only changes on a run.")
-    D["surface_state_checked_live_this_run"] = {
-        "why": "SS9 publishes claims about other surfaces. A claim about a surface is a claim like "
-               "any other: it can be correct when written and wrong when read. Red Team's eighth "
-               "pass found this arm publishing a HARDCODED conclusion beside these live counts, so "
-               "the reading below is DERIVED from them.",
-        "ruling": "decisions/0093 -- a ruling is not closed until the ARTIFACTS carry it.",
+        "decisions/0092 itself matches " + str(_n0092) + " file(s) in decisions/. "
+        "REPORTED TO THE HUMAN LEAD, NOT EDITED and NOT PUBLISHED: the agent files, the decision "
+        "log and second-brain are not this instance's to amend, and their disk state is not this "
+        "arm's measurement (decisions/0096 ruling 1).")
+    _surface_observations = {
+        "why": "A claim about a surface is a claim like any other: it can be correct when written "
+               "and wrong when read. Under decisions/0096 ruling 1 these observations do NOT go "
+               "into artifacts/; they are reported to the Human Lead and logged here, with the "
+               "reading DERIVED from the counts rather than fixed in text.",
+        "ruling": "decisions/0096 ruling 1 -- a deliverable asserts only what its own arm "
+                  "measured. decisions/0093 -- a ruling is not closed until the ARTIFACTS carry "
+                  "it, which is why the measurement is still taken.",
         "decisions_0092_files_on_disk": _n0092,
         "decisions_0093_files_on_disk": len(
             _glob.glob(os.path.join(lib.ROOT, "decisions/0093*"))),
@@ -945,6 +931,16 @@ def main():
         "reading": _reading,
         "build": lib.BUILD_TAG,
     }
+    # decisions/0096 ruling 1: an arm's deliverable asserts only what IT measured. The state of a
+    # surface this arm does not own is NOT this arm's measurement -- it is correct when written and
+    # can be wrong when read -- so it goes to logs/ and to the Human Lead, never to artifacts/.
+    os.makedirs(os.path.join(ROOT, "logs"), exist_ok=True)
+    with open(os.path.join(ROOT, "logs/step8_a_surface_observations.json"), "w") as fh:
+        json.dump({"NOT_A_DELIVERABLE": "observations about surfaces this arm does not own. "
+                                        "decisions/0096 ruling 1 keeps these out of artifacts/; "
+                                        "they are reported to the Human Lead.",
+                   "build": lib.BUILD_TAG,
+                   "observations": _surface_observations}, fh, indent=2)
 
     D["pull_date_and_D11"] = {
         "pull_date_tau_pull_utc": "2026-08-11T00:00:00Z",
@@ -1021,9 +1017,10 @@ def main():
                           "and tau2 midnight-aligned, which is the fact this whole block turns "
                           "on. Day-flooring the CLOCK is required; day-flooring a BOUNDARY TEST "
                           "is forbidden. Only the second is a violation and there are none.",
-                    "correction": "Red Team seventh pass: build a/2026-08-16-0090 published the "
-                                  "blanket form, which is false of this arm's own source and "
-                                  "contradicted this same block's argument.",
+                    "scope_of_the_claim": "the claim is about BOUNDARY TESTS. The blanket form "
+                                          "-- 'no day-flooring anywhere' -- would be FALSE of "
+                                          "this arm's own source and would contradict this "
+                                          "block's own argument.",
                 },
                 # MEASURED, not a literal: this decides which interval separates the two forms,
                 # so a hardcoded True here would assert the very thing the block exists to check.
@@ -1101,11 +1098,10 @@ def main():
     }
     _NAME = {lib.NEVER: "never_started", lib.LEFT: "started_and_left", lib.CONT: "continued"}
 
-    flips = {"ruling": "decisions/0089 SS2(a), Red Team fifth pass F1. THE NUMBER THAT SETTLES "
-                       "B3(a) is how many POSITION-5 ROWS CHANGE OUTCOME STATE under the "
-                       "forbidden date-level form -- four numbers, both bounds x both "
-                       "populations -- NOT how many episodes the form admits. Build "
-                       "a/2026-08-16-0088 emitted episodes admitted and is corrected here.",
+    flips = {"ruling": "decisions/0089 SS2(a). THE NUMBER THAT SETTLES B3(a) is how many "
+                       "POSITION-5 ROWS CHANGE OUTCOME STATE under the forbidden date-level form "
+                       "-- four numbers, both bounds x both populations -- NOT how many episodes "
+                       "the form admits.",
              "forbidden_form": "date(watched_at) <= date(tau), which on midnight-aligned bounds "
                                "admits the whole of [tau, tau + 24h). It appears NOWHERE in the "
                                "implementation; this is a counterfactual measured on the adopted "
@@ -1224,9 +1220,8 @@ def main():
     # an unchanged TOTAL that already forces set equality, so the symmetric difference CONFIRMS
     # THE ARITHMETIC and is not an independent fact. Every clause above is measured below rather
     # than asserted -- including mH <= F2, which is what makes the third conjunct monotone.
-    _mono = {"ruling": "Red Team eighth pass, item (C) against this arm. The measurement stands; "
-                       "the WARRANT on it is corrected. Emitted so the subset relation is a "
-                       "count, not an argument.",
+    _mono = {"ruling": "the subset relation is emitted as a COUNT rather than argued, so no "
+                       "warrant rests on the symmetric difference being independent evidence.",
              "unit": "position-5 rows, both populations pooled at the array level and reported "
                      "per population below",
              "build": lib.BUILD_TAG}
@@ -1270,7 +1265,7 @@ def main():
         "and both populations. A row can LEAVE the exclusion set and none can ENTER it, so an "
         "unchanged TOTAL already forces an identical SET. The symmetric difference of 0 is "
         "therefore a CONFIRMATION OF THE ARITHMETIC, not independent evidence that the sets "
-        "coincide -- which is what build a/2026-08-16-0092's sentence claimed for it.")
+        "coincide.")
     _mono["WITHDRAWN_SENTENCE"] = (
         "a total that does not move can still be a different set of rows, and that is what the "
         "symmetric difference rules out")
@@ -1310,7 +1305,7 @@ def main():
                                           "position-5 row sets, build " + lib.BUILD_TAG + ". It "
                                           "is NOT claimed at any other arm and NOT claimed as a "
                                           "structural property of the rule.",
-        "A_SECOND_WARRANT_IS_WITHDRAWN_ON_THIS_BUILD": {
+        "A_SECOND_WITHDRAWN_WARRANT": {
             "the_withdrawn_sentence": "a total that does not move can still be a different set of "
                                       "rows, and that is what the symmetric difference rules out",
             "why_it_is_wrong": "one notch stronger than the structure allows. The date-level form "
@@ -1324,7 +1319,6 @@ def main():
                                 "monotonicity clause are MEASURED -- see "
                                 "MONOTONICITY_OF_THE_RELAXATION -- rather than argued.",
             "the_measurement_is_unchanged": True,
-            "source": "Red Team eighth pass, item (C) against this arm",
         },
         "build": lib.BUILD_TAG,
     }
@@ -1366,14 +1360,12 @@ def main():
                   "exactly AT tau1 does not make the account live.",
         "unit": "PAIRS, keyed on the account's last insertion instant (D11-restricted, "
                 "decisions/0070 ruling 2) -- NOT distinct S2 episodes by watched_at",
-        "WITHDRAWN_CLAIM": "***WITHDRAWN, WRONG OBJECT (Red Team seventh pass, finding 2; "
-                           "decisions/0089 SS2(a) as corrected on the sixth pass).*** Build "
-                           "a/2026-08-16-0090 published: 'exactly 1 episode falls exactly AT tau1, "
-                           "so 0068's strictness ruling changes the answer for a real row rather "
-                           "than for none.' The 1 is a DISTINCT S2 EPISODE by canonical "
-                           "watched_at, which is SS5.6a's unit; the ruling is about INSERTION "
-                           "INSTANTS in the silence test. The episode count is correct and is "
-                           "kept in SS5.6a; the inference drawn from it is withdrawn.",
+        "WHY_THIS_IS_MEASURED_SEPARATELY": "the episode count in SS5.6a is a DISTINCT S2 "
+                                           "EPISODE by canonical watched_at; 0068's ruling is "
+                                           "about INSERTION INSTANTS in the silence test. Two "
+                                           "different axes, so nothing about the ruling can be "
+                                           "inferred from that count and it is measured here on "
+                                           "its own object.",
         "build": lib.BUILD_TAG,
     }
     for _pname, _m in (("APPLY_position_5", pos5), ("DERIV_position_5", pos5d)):
@@ -1399,13 +1391,12 @@ def main():
         "IF the exactly-at count is 0 the strictness ruling is VACUOUS ON THIS DATA -- stated as "
         "a zero, not passed silently. It remains the correct rule and it remains binding on any "
         "future pull; what is measured here is only whether it decides anything on THIS data, "
-        "which is what build a/2026-08-16-0090 got wrong by answering with a different unit.")
+        "on its own unit.")
     boundary["STRICTNESS_RULING_0068_MEASURED_ON_ITS_OWN_OBJECT"] = strictness
-    boundary["CORRECTION_TO_THE_PREVIOUS_BUILD"] = (
-        "build a/2026-08-16-0088 emitted the separating interval and the EPISODES ADMITTED on it, "
-        "and stopped there. decisions/0089 SS2(a) records that as answering B3(a) with the wrong "
-        "object: 'Arm A reports episodes ADMITTED, not outcomes.' The episode counts are correct "
-        "and are kept; the outcome-state block above is what settles the question.")
+    boundary["WHICH_BLOCK_SETTLES_B3a"] = (
+        "the separating interval and the EPISODES ADMITTED on it are NOT the object B3(a) turns "
+        "on (decisions/0089 SS2(a): 'episodes ADMITTED, not outcomes'). The episode counts are "
+        "correct and are kept; the OUTCOME-STATE block is what settles the question.")
     D["B3a_boundary_window_half_open_form"] = boundary
 
     # ---- 7b. B3(b): THE PER-SITE D11 TABLE, ASSERTED AT EACH SITE ---------------------------
@@ -1537,9 +1528,8 @@ def main():
                     "pairs_that_stop_being_completers_under_D11"],
                 "completion_dates_that_would_move": cf[
                     "completers_whose_completion_date_moves_under_D11"],
-                "MEASURED_NOT_A_LITERAL": "build a/2026-08-16-0088 published `holds: True` here "
-                                          "as a hardcoded literal; it is computed from the two "
-                                          "measured quantities above on this build.",
+                "MEASURED_NOT_A_LITERAL": "`holds` here is COMPUTED from the two measured "
+                                          "quantities above, never a hardcoded literal.",
                 "holds": bool(_consistent and _excluded_here == 0)})
     # A CHECK THAT FINDS NOTHING BECAUSE IT LOOKED NOWHERE MUST NOT READ AS A PASS (CLAUDE.md).
     # Two of the thirteen sites -- action_count_s1_other and action_count_s2_other -- examine
@@ -2161,15 +2151,13 @@ def main():
                       "count -- against a PRE-LIVENESS denominator of 177,513 non-S&L rows, "
                       "leaving 99 rows covered by neither clause, exactly the started-and-left "
                       "liveness exclusions. Do not take the numerator post-liveness and the "
-                      "denominator pre-liveness. ***CORRECTED ON THIS BUILD (Red Team fifth pass, "
-                      "F2): build a/2026-08-16-0088 called this two-clause sum 'THE IDENTITY "
-                      "THAT CLOSES THE HOLE'. IT DOES NOT CLOSE IT. The clauses are `M & left` "
-                      "and `M & ~left` -- a set and its complement within the same mask M -- so "
-                      "they sum to M.sum() for EVERY M, including a mask that is not the "
-                      "population named, which is the defect. What closes the hole is the "
-                      "denominator coming from somewhere else: it is now read from the EMITTED "
-                      "analysis table, so a numerator taken post-liveness against a pre-liveness "
-                      "denominator FAILS.***",
+                      "denominator pre-liveness. THE TWO-CLAUSE SUM ALONE DOES NOT CLOSE THAT "
+                      "HOLE: the clauses are `M & left` and `M & ~left` -- a set and its "
+                      "complement within the same mask M -- so they sum to M.sum() for EVERY M, "
+                      "including a mask that is not the population named, which is the defect. "
+                      "What closes it is the denominator coming from somewhere else: it is read "
+                      "from the EMITTED analysis table, so a numerator taken post-liveness "
+                      "against a pre-liveness denominator FAILS.",
         "coverage_rows": int((pos5 & r["left"]).sum()),
         "coverage": cover("rows", "APPLY, position 5 -- the analysis table's row set",
                           int(pos5.sum()), None, indep=IND["APPLY_pos5_rows"],
@@ -2198,8 +2186,8 @@ def main():
                                      "note": "measured on this build, not asserted: the exact "
                                              "mispairing decisions/0080 SS3 describes is "
                                              "reconstructed and the identity is evaluated on it. "
-                                             "Under build a/2026-08-16-0088's same-mask denominator "
-                                             "this pairing could not be detected at all."}},
+                                             "Under a same-mask denominator this pairing could "
+                                             "not be detected at all."}},
                           parts=[int((pos5 & r["left"]).sum()), int((pos5 & ~r["left"]).sum())],
                           n_not=0,
                           clause_note="YES -- `M & left` and `M & ~left` are a set and its "
@@ -2496,8 +2484,9 @@ def main():
                   "records_dropped": scan_sum["dropped_by_set_membership_records"],
                   "distinct_season_number_dropped": scan_sum[
                       "dropped_by_set_membership_distinct_season_number"],
-                  "note": "reported, not asserted. The records-examined denominator is published "
-                          "unreconciled against the other arm's; see the waterfall report."},
+                  "note": "reported, not asserted. The records-examined denominator publishes "
+                          "as three readings, each naming the pipeline that produces it; see the "
+                          "waterfall report."},
               "label_counts": {"CODE CHECK": sum(1 for i in inv if i["label"] == "CODE CHECK"),
                                "CODE CHECK BY CONSTRUCTION, DATA CHECK AS SPECIFIED":
                                    sum(1 for i in inv if i["label"].startswith("CODE CHECK BY")),
@@ -2559,43 +2548,10 @@ def main():
                                        "caught?' -- upward it reads as seven that cannot fail, "
                                        "downward as three that can -- so the middle class is "
                                        "published as its own.",
-                      "WITHDRAWN_SENTENCE_a_cross_arm_divergence_claim_STRUCK_IN_FULL": {
-                          "what_is_struck": "an assertion about the SHAPE OF THE OTHER ARM'S "
-                                            "HEADLINE, and every sentence resting on it, "
-                                            "published by builds a/2026-08-16-0093 and "
-                                            "a/2026-08-16-0094 in this report, in the waterfall "
-                                            "deliverable's SS0 and in its SS9 residual list.",
-                          "why_it_is_struck": "this arm did not read and may not read the other "
-                                              "arm's output. The claim's stated source was a Red "
-                                              "Team characterisation RELAYED IN A LAUNCH "
-                                              "INSTRUCTION, which CLAUDE.md now records "
-                                              "(decisions/0095) as routing around the isolation "
-                                              "rule -- and worse than reading the folder, because "
-                                              "the receiving arm is forbidden from re-measuring "
-                                              "what it was told, so a relayed characterisation is "
-                                              "a measurement with an expiry date its holder "
-                                              "cannot check.",
-                          "not_replaced_with_a_corrected_version": "deliberately. There is no "
-                                                                   "admissible way for this arm "
-                                                                   "to know the other arm's "
-                                                                   "shape, and stating one is "
-                                                                   "what the isolation rule "
-                                                                   "forbids. A fabricated "
-                                                                   "divergence in a gate "
-                                                                   "deliverable is worse than a "
-                                                                   "missed one: it pre-empts the "
-                                                                   "Human Lead's diff, which is "
-                                                                   "the only authority permitted "
-                                                                   "to make a cross-arm "
-                                                                   "statement.",
-                          "what_this_arm_publishes_instead": "its own 6 + 1 + 2 split and the "
-                                                             "reason for it, and nothing about "
-                                                             "any other arm.",
-                          "the_labels_themselves_are_unchanged": "no label, no per-check result "
-                                                                 "and no count moves. This is a "
-                                                                 "removal of a claim, not a "
-                                                                 "change to a measurement.",
-                      },
+                      "THIS_ARM_MAKES_NO_STATEMENT_ABOUT_ANY_OTHER_ARM": "a cross-arm "
+                          "statement belongs to the Human Lead's diff. This arm did not read and "
+                          "may not read the other arm's output, so it publishes its own split "
+                          "and the reason for it, and nothing else (decisions/0096 ruling 1).",
                       "build": lib.BUILD_TAG}},
               "all_passed": all(i["passed"] for i in inv)}
 
@@ -2747,21 +2703,17 @@ def main():
         1 for d in injected if d["SAME_MASK_form_holds_i_e_CANNOT_DETECT_IT"])
 
     report["coverage_identity_strength"] = {
-        "ruling": "Red Team's FIFTH pass, F2, carried into this rerun by decisions/0090 SS3. "
-                  "Red Team's fourth pass (decisions/0087 SS4) had already recorded that most "
-                  "identities have the population size and the asserted count as one expression; "
-                  "the sentence it required struck either way is struck by decisions/0088 SS2(d).",
-        "CORRECTION_ON_THIS_BUILD": "build a/2026-08-16-0088 classified an identity as REAL "
-                                    "ARITHMETIC on the test `parts is not None and len(parts) > "
-                                    "1`. THAT TEST WAS WRONG. Every multi-clause identity in that "
-                                    "build had clauses forming a COMPLEMENTARY PARTITION OF THE "
-                                    "SAME MASK the population size was taken from, so each summed "
-                                    "to the population for ANY mask and NONE of them could fail "
-                                    "on any data -- including invariant 6's, which that "
-                                    "deliverable called 'the identity that closes the hole'. It "
-                                    "closed nothing. THE LABEL AND THE CLAIM ARE BOTH CORRECTED, "
-                                    "and the population size is now sourced independently of the "
-                                    "asserted count, which is what the hole actually needs.",
+        "ruling": "decisions/0090 SS3 and decisions/0087 SS4, which record that most identities "
+                  "have the population size and the asserted count as ONE EXPRESSION; the "
+                  "sentence claiming otherwise is struck by decisions/0088 SS2(d).",
+        "WHY_A_MULTI_CLAUSE_TEST_IS_NOT_ENOUGH": "a test of the form `len(parts) > 1` admits an "
+                                                 "identity that cannot fail on any data: clauses "
+                                                 "forming a COMPLEMENTARY PARTITION OF THE SAME "
+                                                 "MASK the population size was taken from sum to "
+                                                 "the population for ANY mask. What the 99-row "
+                                                 "hole needs is the population size sourced "
+                                                 "INDEPENDENTLY of the asserted count, which is "
+                                                 "what the tiers below record.",
         "identities_total": len(kinds),
         "identities_that_CAN_FAIL_population_size_sourced_INDEPENDENTLY": int(n_can),
         "identities_that_CANNOT_FAIL_population_size_and_asserted_count_are_one_expression": int(
@@ -2782,20 +2734,15 @@ def main():
         "all_independent_identities_hold_against_their_independent_source": bool(
             all(k[2] for k in kinds if k[0])),
         "ARITHMETIC_NOT_A_LITERAL_the_plus_one_perturbation": {
-            "***RELABELLED***": "Red Team seventh pass, finding 3, against this arm; "
-                                "decisions/0091 SS2 as corrected on the sixth pass. Build "
-                                "a/2026-08-16-0090 published this block as 'THE MECHANISM IS "
-                                "DEMONSTRATED, "
-                                "NOT ASSERTED' and read it as a demonstration of INDEPENDENCE. "
-                                "IT IS NOT ONE.",
+            "NOT_A_DEMONSTRATION_OF_INDEPENDENCE": "decisions/0091 SS2. This block does NOT "
+                                                   "demonstrate independence and is not "
+                                                   "published as though it did.",
             "why_it_does_not_test_independence": "on a SAME-MASK denominator the clauses sum to N "
                                                  "by construction and the stated population reads "
-                                                 "N + 1, so the identity fails IDENTICALLY -- it "
-                                                 "would have passed on the very build whose "
-                                                 "defect it claimed to fix. Perturbing the "
-                                                 "DENOMINATOR cannot separate a denominator "
-                                                 "sourced independently from one sourced from the "
-                                                 "same mask.",
+                                                 "N + 1, so the identity fails IDENTICALLY "
+                                                 "whether or not the denominator was sourced "
+                                                 "independently. Perturbing the DENOMINATOR "
+                                                 "cannot separate the two cases.",
             "what_it_DOES_show": "that each identity is ARITHMETIC rather than a hardcoded "
                                  "literal -- which the separate literal counter already shows. It "
                                  "is kept under that label because it is a real, if narrow, check.",
@@ -2806,7 +2753,7 @@ def main():
             "per_identity": demo,
         },
         "INDEPENDENCE_DEMONSTRATED_injected_wrong_population_defects": {
-            "why_this_exists": "Red Team seventh pass, finding 3. The escape the independent "
+            "why_this_exists": "decisions/0091 SS2. The escape the independent "
                                "source exists to catch is AN INVARIANT RUN ON A POPULATION OTHER "
                                "THAN THE ONE IT NAMES. Where the clauses are a complementary "
                                "partition of a mask, swapping the mask moves the clauses AND the "

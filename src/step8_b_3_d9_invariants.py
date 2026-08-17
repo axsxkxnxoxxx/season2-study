@@ -235,24 +235,23 @@ def d9(m: dict, frame: pd.DataFrame, st1: dict) -> dict:
     frame_ids_sorted = sorted(frame_ids)
     clustering = {
         "ruling": ("decisions/0088 Sec 3 -- THE D9 CLUSTERING UNIVERSE IS U1, ALL SLUGGED SWEEP "
-                   "SHOW IDs, RANKED BY DISTINCT STRICT KEYS MERGED. It closes the gap "
-                   "0085 Sec 2 (Red Team B1) opened and 0086 Sec 1 located: the two arms "
-                   "published DISJOINT cluster lists on IDENTICAL counts, sharing no member, "
-                   "with maxima 8 against 10, while every count around them reconciled -- a "
-                   "difference in WHICH SET OF SHOWS IS CLUSTERED, which the spec never said"),
-        "status": ("RULED. 0085 left it REPORTED-NOT-RECONCILED and 0088 Sec 3 rules it: BOTH "
-                   "ARMS CLUSTER THE SAME OBJECT. All three candidate universes are still "
-                   "measured and labelled here, so an arm on another universe stays diffable "
-                   "without a rerun, but the PUBLISHED list is U1"),
+                   "SHOW IDs, RANKED BY DISTINCT STRICT KEYS MERGED. The ground given there: "
+                   "the artifact D9 hunts is a history splitting across two metadata entries, "
+                   "and that can occur ANYWHERE in a history, not only among shows that survived "
+                   "the frame filters -- a frame-restricted universe finds only splits where "
+                   "BOTH sides made the cut, and a bound computed on a narrow slice bounds very "
+                   "little"),
+        "status": ("RULED at decisions/0088 Sec 3. All three candidate universes are measured "
+                   "and labelled here so the published list is unambiguous, but the PUBLISHED "
+                   "list is U1"),
         "PUBLISHED_UNIVERSE": "U1_all_sweep_show_ids_carrying_a_slug",
-        "CHANGED_FROM_THIS_ARMS_PREVIOUS_BUILD": (
-            "the r3 build published U3, the D9 candidate complementary pairs, on the "
-            "ground that the loose key's warrant concerns exactly the pairs the two keys "
-            "disagree about. 0088 Sec 3 rules otherwise and gives the reason: the artifact D9 "
+        "WHY_U1_AND_NOT_A_NARROWER_UNIVERSE": (
+            "decisions/0088 Sec 3: the artifact D9 "
             "hunts is a history splitting across two metadata entries, and THAT CAN OCCUR "
             "ANYWHERE IN A HISTORY, not only among shows that survived the frame filters -- a "
             "narrow universe finds only splits where both sides made the cut, and a bound "
-            "computed on a narrow slice bounds very little. NO COUNT MOVES WITH IT: the "
+            "computed on a narrow slice bounds very little. NO COUNT MOVES WITH THE UNIVERSE "
+            "CHOICE ON THIS BUILD: the "
             "strict and loose complementary-pair counts are unchanged, because D9's SEARCH "
             "already ran on the whole sweep in this arm. What moves is which clusters are "
             "ILLUSTRATED"),
@@ -295,29 +294,28 @@ def d9(m: dict, frame: pd.DataFrame, st1: dict) -> dict:
                      f"{len(slugged_ids):,} slugged sweep show IDs, {len(frame_ids_sorted):,} "
                      f"frame shows, {len(sig_loose):,} candidate complementary pairs"),
         "WHAT_NAMING_THE_UNIVERSE_LOCATES": {
-            "finding": ("BOTH cluster lists decisions/0085 Sec 2 quotes are reproduced by THIS "
-                        "SINGLE BUILD, from two different universes. U1 (all slugged sweep "
-                        "show IDs), on the RULED basis of distinct strict keys merged, gives "
-                        "secondchance 8 and theisland 7 -- both unique at their counts -- with "
-                        "a maximum of 8, and a SIX-WAY TIE at 6 that contains maigret; U3 (the "
-                        "D9 candidate complementary pairs) gives thetwilightzone 10, "
-                        "thetraitors 7, manhunt 5 with a maximum of 10. Those are the two "
-                        "quoted lists and the two quoted maxima, with the one qualification "
-                        "that 0088's third U1 name sits inside a tie the ruling does not break "
-                        "-- see THE_TIE_BREAK_IS_NOT_RULED"),
-            "what_it_means": ("the divergence was located ON THE UNIVERSE AXIS and not in the "
-                              "counting -- consistent with 0085's own observation that every "
-                              "count around the lists reconciled. Neither arm miscounted, and "
-                              "0088 Sec 3 then ruled the universe so both arms cluster one "
-                              "defined object"),
+            "finding": ("THE UNIVERSE, NOT THE COUNTING, DECIDES THE CLUSTER LIST -- measured "
+                        "on this build by clustering all three candidate universes with the "
+                        "same key and the same ranking basis. U1 (all slugged sweep show IDs), "
+                        "on the RULED basis of distinct strict keys merged, gives secondchance "
+                        "8 and theisland 7 -- both unique at their counts -- with a maximum of "
+                        "8, and a SIX-WAY TIE at 6 that contains maigret; U3 (the D9 candidate "
+                        "complementary pairs) gives thetwilightzone 10, thetraitors 7, manhunt "
+                        "5 with a maximum of 10. Same data, same key, different universe, "
+                        "disjoint lists and different maxima -- which is why 0088 Sec 3 rules "
+                        "the universe rather than leaving it to the instance"),
+            "what_it_means": ("a cluster list is not reproducible from a count. The universe "
+                              "and the ranking basis are BOTH required at the point of use, and "
+                              "0088 Sec 3 fixes both. The one residual is the TIE-BREAK -- see "
+                              "THE_TIE_BREAK_IS_NOT_RULED"),
             "and_the_basis_matters_too": ("0088 Sec 3 also rules the RANKING BASIS, because it "
                                           "reorders the list on its own: U1 ranked by distinct "
                                           "SHOW IDS instead of distinct STRICT KEYS displaces "
                                           "maigret with blackout. Both rankings are emitted "
                                           "under each show-ID universe"),
-            "quoted_lists_source": ("decisions/0085 Sec 2, 0088 Sec 3 and task-sheet.md Step 8's "
-                                    "D9 bullet -- spec surfaces this instance is required to "
-                                    "read. No other arm's output folder was read"),
+            "the_ruled_illustration_source": ("decisions/0088 Sec 3 and task-sheet.md Step 8's "
+                                              "D9 bullet -- spec surfaces this instance reads. "
+                                              "No other arm's output folder was opened"),
             "reproduced_U1_max": None,      # filled below, measured not typed
             "reproduced_U3_max": None,
         },
@@ -434,8 +432,7 @@ def d9(m: dict, frame: pd.DataFrame, st1: dict) -> dict:
                 "ceiling (0090, 0076, 0078 Sec 3)"),
             "NO_COUNT_MOVES_WITH_THIS_RULING": ("0090 Sec 4 -- D9's own numbers do not change. "
                                                 "What changes is which of them is presented as "
-                                                "the answer, and this arm's r4 build presented "
-                                                "strict as the ruled key"),
+                                                "the answer: neither endpoint is"),
             "bounds": {
                 "complementary_signature_pairs": _bound(
                     "complementary signature pairs", len(sig_strict), len(sig_loose),
@@ -477,27 +474,21 @@ def d9(m: dict, frame: pd.DataFrame, st1: dict) -> dict:
                                                 "726,103 is distinct candidate (user, show) "
                                                 "PAIRS'. THE AXIS IS WRONG"),
                 "the_correction": ("decisions/0089 Sec 2(b) -- 747,478 IS DISTINCT (user, show) "
-                                   "PAIRS. The other arm's undeduplicated row count is a "
-                                   "different number again. 0088's label was taken from the "
-                                   "previous artifact's own `user_show_coverage_rows_"
-                                   "undeduplicated` key, which was itself part of what F2 "
-                                   "flagged as mislabelled. The RULING's conclusion is "
-                                   "unaffected and is implemented; only the axis it named was "
-                                   "wrong"),
-                "so_the_two_figures_are_the_SAME_KIND_of_object": (
-                    "two arms' distinct (user, show) pair counts over DIFFERENT UNIVERSES, not "
-                    "a row count against a pair count. They are still two objects and still are "
-                    "not reconciled -- but the reason is the universe, not the unit"),
+                                   "PAIRS, not a season-coverage row count. The RULING's "
+                                   "conclusion is unaffected and is implemented here; only the "
+                                   "axis it named was wrong. Cited from decisions/ as a spec "
+                                   "input under 0096 ruling 2"),
                 "the_relation_decisions_0093_Sec_3c_publishes": (
-                    "747,478 distinct pairs LESS 21,376 S3-only pairs = 726,102, against this "
-                    "arm's 726,103. That is the ONE-PAIR divergence both arms already report "
-                    "(decisions/0089 Sec 3: the S1-only class differs by 1, 435,642 against "
-                    "435,643, while the other two classes agree exactly). REPORTED, NOT "
-                    "RECONCILED"),
-                "where_these_numbers_come_from": (
-                    "decisions/0088, 0089 and 0093 -- spec surfaces this instance is required to "
-                    "read. NOT from the other arm's output folder, which this instance does not "
-                    "open"),
+                    "747,478 distinct pairs LESS 21,376 S3-only pairs = 726,102. THIS ARM "
+                    "MEASURES 726,103 candidate pairs, so the two differ by one. The 747,478 "
+                    "and the 21,376 are figures RULED IN decisions/0089 Sec 2(b) and 0093 Sec "
+                    "3(c) and are cited from there as spec inputs (decisions/0096 ruling 2); "
+                    "only the 726,103 is this arm's own measurement. REPORTED, NOT RECONCILED"),
+                "where_the_cited_numbers_come_from": (
+                    "decisions/0089 and 0093 -- spec surfaces this instance reads, cited as "
+                    "sources under decisions/0096 ruling 2. NOT from any other output folder, "
+                    "which this instance does not open, and NOT treated as something this arm "
+                    "measured"),
                 "THIS_ARMS_OWN_VALUES_ARE_BELOW_AND_ARE_MEASURED_HERE": (
                     "pair count and season-coverage row count, each named for what it counts"),
                 "why_this_is_recorded_rather_than_silently_fixed": (
@@ -526,10 +517,7 @@ def d9(m: dict, frame: pd.DataFrame, st1: dict) -> dict:
                 "IT_IS_NOT_THE_747478_FIGURE": ("decisions/0089 Sec 2(b) -- 747,478 is a PAIR "
                                                 "count, not a row count. This arm's row count is "
                                                 "its own object and stands beside the pair count "
-                                                "above; the -r6 build wrote 747,478 into this "
-                                                "object's characterisation and its own table "
-                                                "contradicted it six lines below (Red Team "
-                                                "eighth pass, F1)"),
+                                                "above"),
                 "NOT_COMPARABLE_WITHOUT_ITS_MASK": ("this value is over the D11-filtered S1/S2 "
                                                     "episode records only; a season-coverage "
                                                     "row count taken over all seasons, or "
@@ -553,11 +541,10 @@ def d9(m: dict, frame: pd.DataFrame, st1: dict) -> dict:
                 "of_which_the_slug_string_is_empty":
                     int(sum(1 for v in slugs.values() if not str(v).strip())),
                 "source_file": "processed/step8/b/show_slugs.json",
-                "NAMED_AS_AN_OBJECT": ("0088 Sec 2(c) -- the two arms' slugged-ID sets stood 62 "
-                                       "apart while both were called U1. A shared label over "
-                                       "two sets is the defect; the sets themselves may both be "
-                                       "right. This is THIS arm's set, with its construction "
-                                       "named"),
+                "NAMED_AS_AN_OBJECT": ("0088 Sec 2(c) -- a shared label over two differently "
+                                       "constructed sets is the defect; the sets themselves may "
+                                       "both be right. This is THIS arm's set, with its "
+                                       "construction named at the point of use"),
             },
         },
         "D11_site": d11_site,
@@ -595,12 +582,11 @@ def d9(m: dict, frame: pd.DataFrame, st1: dict) -> dict:
                 "RANKED BY DISTINCT STRICT KEYS MERGED. Both are ruled by decisions/0088 Sec 3 "
                 "and named here at the point of use; the two other candidate universes are "
                 "measured alongside under clustering_universes"),
-            "THE_LIST_THIS_REPLACES": (
-                "the r3 build published U3's list -- thetwilightzone 10, thetraitors 7, "
-                "manhunt 5 -- which is also task-sheet.md's former illustration. SUPERSEDED as "
-                "the example by 0088 Sec 3. Those names are not wrong; they are another "
-                "universe's answer, and both lists are still emitted side by side in the "
-                "universe table"),
+            "THE_SUPERSEDED_ILLUSTRATION": (
+                "task-sheet.md's former illustration -- thetwilightzone, thetraitors, manhunt "
+                "-- is U3's answer and is SUPERSEDED as the example by 0088 Sec 3. Those names "
+                "are not wrong; they are another universe's answer, and all three universes' "
+                "lists are emitted side by side in the universe table"),
             "clustering_universes": clustering,
             "consequence": ("The loose count BOUNDS HOW WRONG STRICT COULD BE, and the error "
                             "runs OPPOSITE to D9's own lower-bound caveat: D9 warns that its "
@@ -818,7 +804,7 @@ def main() -> None:
         "records_COUNTED_after_D11": _d9_post,
         "records_examined_at_this_site": _d9_pre,
         "records_examined_at_this_site_IS": (
-            "the INPUT UNIVERSE before D11, in this site's own unit (Red Team eighth pass, F3)"),
+            "the INPUT UNIVERSE before D11, in this site's own unit"),
         "records_used": _d9_post,
         "unit": _ds["unit"],
         "assertion": _ds["assertion"],
@@ -830,9 +816,8 @@ def main() -> None:
         "note": _ds["note"],
         "BACKFILLED_AT_STAGE_3": (
             "computed where the D9 coverage pivot is built and written into the published table "
-            "here. The -r4 build left this row null in results.json while d9.json carried the "
-            "number -- an unasserted site inside the table decisions/0088 Sec 1(b) created so "
-            "that mandates would stop being self-reported"),
+            "here, in the pipeline rather than in the renderer, so the .md and the .json halves "
+            "cannot disagree about it"),
     })
     assert isinstance(_row["assertion_holds"], bool) and _row["assertion_holds"], (
         "the D9 site's D11 assertion does not hold, or is not a boolean")
@@ -868,11 +853,12 @@ def main() -> None:
             if s.get("coverage_state") == "FULLY_EXCLUDED"],
         "why": ("CLAUDE.md -- a check that finds nothing because it looked nowhere must FAIL, "
                 "not pass, and every path that can return 'nothing found' states whether it "
-                "found nothing or looked at nothing. THE PREVIOUS BUILD MET HALF OF THIS AND "
-                "INVERTED THE OTHER HALF: a count was printed at every site, but it was the "
-                "POST-exclusion count at some sites and the PRE-exclusion count at others, and "
-                "vacuity keyed on it -- so a site whose entire input was post-cutoff would have "
-                "read as VACUOUS having excluded everything (Red Team eighth pass, F3)"),
+                "found nothing or looked at nothing. VACUITY MUST KEY ON THE PRE-EXCLUSION "
+                "INPUT UNIVERSE, not on a post-exclusion count: a site whose entire input was "
+                "post-cutoff would otherwise report zero and read as VACUOUS having examined "
+                "and excluded everything -- an inversion running in the direction of a false "
+                "pass. Both quantities are therefore carried at every site, each in the site's "
+                "own unit"),
         "VACUITY_NOW_KEYS_ON_THE_INPUT_UNIVERSE": True,
     }
     _ev = _tab_b3["EVERY_SITE_CARRIES_A_BOOLEAN_ASSERTION_AND_AN_EXAMINED_COUNT"]
@@ -1247,12 +1233,10 @@ def main() -> None:
         "the_equality_clause_cannot_discriminate_on": {
             "rows_where_the_two_terms_are_the_same_date": int((sel & tie).sum()),
             "POPULATION_OF_THAT_COUNT": ("the APPLY position-5 row set, "
-                                         f"{int(sel.sum()):,} rows -- STATED AT THE POINT OF USE "
-                                         "(Red Team seventh pass, finding 2, against this arm: "
-                                         "the -r4 build published this integer here and the same "
-                                         "integer on waterfall LINE 1 in the other deliverable, "
-                                         "23,453 pairs apart, with neither naming its "
-                                         "population)"),
+                                         f"{int(sel.sum()):,} rows -- STATED AT THE POINT OF USE, "
+                                         "because this quantity is NOT population-invariant "
+                                         "(decisions/0092 Sec 3) and it is emitted on every "
+                                         "population below"),
             "unit": "rows of the stated population",
             "on_every_population": {
                 nm: int((msk & tie).sum())
@@ -1318,16 +1302,15 @@ def main() -> None:
                   rows_asserted_null_clause=int(len(elsewhere)),
                   rows_asserted_note=("the two clauses are asserted on disjoint row sets and "
                                       "their sizes are measured separately; the sum is compared "
-                                      "against the EMITTED table's row count, which is where "
-                                      "the r3 gap would have shown")),
+                                      "against the EMITTED table's row count, which is where a "
+                                      "population mismatch would show")),
             **{
-            "corrected_this_run": ("this arm's previous run asserted the range clause on the "
-                                   "POST-LIVENESS 19,042 while the null clause ran on the "
-                                   "position-5 177,513 -- 196,555 against a 196,654-row table, "
-                                   "with 99 rows covered by NEITHER clause. Those 99 are "
-                                   "exactly the started-and-left liveness exclusions. That gap "
-                                   "is what decisions/0080 Sec 3 was written on, and it is "
-                                   "closed here"),
+            "why_the_numerator_and_the_null_clause_MUST_share_a_population": (
+                "decisions/0080 Sec 3. Asserting the range clause on the POST-LIVENESS "
+                "Started-and-left rows while the null clause runs on the position-5 remainder "
+                "leaves the started-and-left liveness exclusions covered by NEITHER clause, and "
+                "the two printed counts still look right. Both clauses run on position 5 here "
+                "and the identity is asserted"),
             "started_and_left_rows_post_liveness_for_reference": int((line6 & sal).sum()),
         }),
         "checked": {"rows_examined": int(len(psel)), "min": float(np.nanmin(psel)),
@@ -1606,15 +1589,10 @@ def main() -> None:
                    "bullet calls it 'an implementation check, not a data check'. Reported, not "
                    f"asserted -- asserting it would add another pass to a report where "
                    f"{_n_pure} of {len(inv)} already cannot fail on data"),
-        "SUPERSEDED_PHRASING_CORRECTED_THIS_RUN": (
-            "this arm's -r5 build wrote 'a report where six of EIGHT cannot fail on data' HERE, "
-            "in the body of a deliverable whose head states the set is NINE and whose surface "
-            "check concludes no surface still states the old count. Red Team seventh pass, "
-            "finding 1. The surface check opened task-sheet.md, this arm's definition file and "
-            "specs/step8-readback.md -- IT DID NOT OPEN artifacts/, WHICH IS PROPAGATION "
-            "SURFACE 6 AND IS WHERE THE STRING WAS. The count is now derived from len(inv) and "
-            "the label field, and a self-check over this arm's own emitted artifacts runs at "
-            "stage 4"),
+        "the_two_counts_in_that_sentence_are_DERIVED": (
+            "both are computed from len(inv) and the `label` field of the invariants actually "
+            "emitted by this run, not typed, so the sentence cannot drift from the set it "
+            "describes"),
         "records_examined": st1["drop_rule"]["records_examined"],
         "records_dropped": st1["drop_rule"]["records_dropped"],
         "denominator_readings": st1["drop_rule"]["denominator_note"],
@@ -1656,9 +1634,10 @@ def main() -> None:
                      int(line6.sum()), 0, True)
     _neg_cases.append({
         "case": "invariant asserted on the post-liveness row set while naming position 5",
-        "the_real_defect_it_reproduces": ("this arm's r3 build asserted p on 19,042 post-liveness "
-                                          "rows with a position-5 non-S&L clause of 177,513, "
-                                          "summing to 196,555 against a 196,654-row table"),
+        "the_defect_class_it_reproduces": ("decisions/0080: an invariant whose asserted rows "
+                                           "come from one population and whose complement clause "
+                                           "comes from another, so the two do not sum to the "
+                                           "population named and rows are covered by neither"),
         "identity_arithmetic": _bad_pop["identity_arithmetic"],
         "cover_ok_returned": cover_ok(_bad_pop),
         "expected": False,
@@ -1669,10 +1648,10 @@ def main() -> None:
     #    which the chained .get(..., True) default turned into a pass.
     _neg_cases.append({
         "case": "invariant carrying no coverage key at all",
-        "the_real_defect_it_reproduces": ("the r3 aggregate chained .get(..., .get(..., True)), "
-                                          "so an invariant with no coverage key CONTRIBUTED A "
-                                          "PASS -- a control that could not see the thing it was "
-                                          "built to see"),
+        "the_defect_class_it_reproduces": ("an aggregate that chains .get(..., .get(..., True)) "
+                                           "lets an invariant with no coverage key CONTRIBUTE A "
+                                           "PASS -- a control that cannot see the thing it was "
+                                           "built to see. There is no default here"),
         "cover_ok_returned": cover_ok({}),
         "expected": False,
         "control_caught_it": cover_ok({}) is False,
@@ -1681,8 +1660,8 @@ def main() -> None:
     # 3. a hardcoded literal identity -- what invariants 2, 4 and 7 carried on r3.
     _neg_cases.append({
         "case": "identity_holds hardcoded True with no arithmetic behind it",
-        "the_real_defect_it_reproduces": ("the r3 build HARDCODED identity_holds: True at "
-                                          "invariants 2, 4 and 7"),
+        "the_defect_class_it_reproduces": ("a coverage identity written as a literal True with "
+                                           "no arithmetic behind it"),
         "cover_ok_returned": cover_ok({"identity_holds": True}),
         "expected": True,
         "note": ("cover_ok CANNOT catch this one -- a literal True is indistinguishable from a "
@@ -1700,10 +1679,11 @@ def main() -> None:
                        "both sides are the same expression -- 0088 Sec 2(d)")
     _neg_cases.append({
         "case": "identity whose population size and asserted count are the SAME expression",
-        "the_real_defect_it_reproduces": ("decisions/0088 Sec 2(d): 8 of 13 coverage identities "
-                                          "in one arm were cover(unit, pop, N, N), so they could "
-                                          "not detect an invariant run on a population other "
-                                          "than the one named"),
+        "the_defect_class_it_reproduces": ("decisions/0088 Sec 2(d): a coverage identity of the "
+                                           "form cover(unit, pop, N, N) -- population size and "
+                                           "asserted count the SAME expression -- cannot detect "
+                                           "an invariant run on a population other than the one "
+                                           "named"),
         "identity_arithmetic": _same_expr["identity_arithmetic"],
         "cover_ok_returned": cover_ok(_same_expr),
         "expected": True,
@@ -1743,10 +1723,10 @@ def main() -> None:
     _checkable = [c for c in _neg_cases if c["control_caught_it"] is not None]
     neg = {
         "why_this_block_exists": (
-            "this arm's r4 build published `what_a_failure_would_look_like` -- a DESCRIPTION of "
-            "the failure the apparatus would catch -- and decisions/0089 Sec 1 recorded it as "
-            "'demonstrating failing'. It was not demonstrated. CLAUDE.md: a control asserted to "
-            "exist is not a control. The failures are EXECUTED here"),
+            "CLAUDE.md -- a control asserted to exist is not a control, and an empty result and "
+            "a clean result are the same value. A DESCRIPTION of the failure this apparatus "
+            "would catch proves nothing, so each failure is INJECTED AND EXECUTED here and what "
+            "is recorded is what the control DID"),
         "run_through": ("the SAME cover(), cover_ok() and _independent_identity() the published "
                         "invariants go through, and for the aggregate, the same expression the "
                         "published `identity_holds_on_every_invariant` uses. Not a "
@@ -1783,13 +1763,13 @@ def main() -> None:
         "why": ("an invariant that passes on one population and was never run on another READS "
                 "AS A PASS ON BOTH, and a passing invariant whose coverage the instance chose "
                 "is a code check on the instance's choice"),
-        "the_gap_this_arm_had": ("this arm's previous run asserted p on 19,042 rows "
-                                 "(post-liveness) with a non-S&L clause on 177,513 "
-                                 "(position-5), summing to 196,555 against a 196,654-row "
-                                 "table. 99 rows -- exactly the started-and-left liveness "
-                                 "exclusions -- were covered by NEITHER clause, and the report "
-                                 "did not disclose it. Closed this run: 19,141 + 177,513 = "
-                                 "196,654"),
+        "the_hazard_this_identity_closes": ("taking an invariant's asserted rows from one "
+                                            "population and its complement clause from another "
+                                            "-- p on the post-liveness Started-and-left rows "
+                                            "with a non-S&L clause on position 5 -- leaves rows "
+                                            "covered by NEITHER clause while every printed "
+                                            "number looks right. On this build the identity is "
+                                            "19,141 + 177,513 = 196,654 (decisions/0080)"),
         # NO DEFAULT. An invariant without a coverage identity FAILS this
         # aggregate; it does not inherit a pass.
         "invariants_carrying_a_coverage_identity": sum(1 for i in inv if cover_ok(i["coverage"])),
@@ -1799,20 +1779,21 @@ def main() -> None:
         "identity_holds_on_every_invariant": bool(
             len(inv) > 0 and all(cover_ok(i.get("coverage", {})) for i in inv)),
         "how_the_aggregate_is_computed": (
-            "every invariant must CARRY coverage.identity_holds and it must be True. The r3 "
-            "build chained .get(..., .get(..., .get(..., True))), so an invariant with no "
-            "coverage key contributed a PASS -- a control that could not see the thing it was "
-            "built to see. There is no default here"),
+            "every invariant must CARRY coverage.identity_holds and it must be True. THERE IS "
+            "NO DEFAULT: an aggregate that chains .get(..., .get(..., .get(..., True))) lets an "
+            "invariant with no coverage key contribute a PASS, which is a control that cannot "
+            "see the thing it was built to see"),
         "AUDIT_can_each_identity_actually_fail": {
             "why_this_block_exists": (
                 "decisions/0088 Sec 2(d) strikes 'a report that omitted a population could not "
                 "be written by this pipeline' as A CONTROL ASSERTED TO EXIST, on the ground "
-                "that most coverage identities have the population size and the asserted count "
-                "as THE SAME EXPRESSION. That was true in this arm too, and worse: three "
-                "identities were HARDCODED literals. Rebuilt this run so each identity compares "
-                "a count measured from the invariant's own arrays against a population size "
-                "sourced from a DIFFERENT FILE -- the emitted analysis table, the Step 4 "
-                "ledger, stage 1's own pair count, or the mandated 7-position order"),
+                "that a coverage identity whose population size and asserted count are THE SAME "
+                "EXPRESSION cannot detect an invariant run on the wrong population. On this "
+                "build each identity compares a count measured from the invariant's own arrays "
+                "against a population size sourced from a DIFFERENT FILE -- the emitted "
+                "analysis table, the Step 4 ledger, stage 1's own pair count, or the mandated "
+                "7-position order -- and the number of identities that are bare literals is "
+                "counted and reported"),
             "identities_whose_two_sides_are_independent_expressions": sum(
                 1 for i in inv if _independent_identity(i)),
             "identities_that_are_literals": sum(
@@ -1831,14 +1812,6 @@ def main() -> None:
         },
         "measured_on_build": BUILD,
     }
-
-    # the r4 build TYPED a claim about task-sheet.md's and this arm's definition
-    # file's assertion-set count. decisions/0089 Sec 3 moved both. Read live at
-    # stage 2 and carried here as the MEASUREMENT, not as the previous prose.
-    _sc5 = R["analysis_table"]["column_set_is_ENUMERATED"][
-        "residuals_this_arm_reported_last_run_RE_MEASURED"][
-        "c_surface_claims_this_arm_published_last_run_RE_READ"][
-        "item_5_the_assertion_set_count_on_the_spec_surfaces"]
 
     # ------------------------------------------------------------------
     # THE LABEL COUNTS ARE DERIVED FROM THE LABELS, NOT TYPED.
@@ -1870,9 +1843,9 @@ def main() -> None:
         "can_fail_on_data_as_specified": len(_bycon) + len(_data),
         "can_fail_on_data_as_specified_names": [i["invariant"] for i in _bycon + _data],
         "DERIVED_NOT_TYPED": (
-            "every number in this block is computed from the `label` field of the emitted "
-            "invariants. decisions/0089 Sec 3 and Red Team seventh pass finding 3 both landed "
-            "on a TYPED count that had drifted from the set it described"),
+            "every number in this block is computed from the `label` field of the invariants "
+            "this run actually emitted, so a typed count cannot drift from the set it "
+            "describes"),
         "the_clock_start_is_counted_as_ABLE_TO_FAIL": (
             "it is CODE CHECK BY CONSTRUCTION, DATA CHECK AS SPECIFIED. Counting it among the "
             "unable-to-fail contradicts the reason it is kept: task-sheet.md requires the "
@@ -1901,12 +1874,8 @@ def main() -> None:
             "first-pass S1 completion date INDEPENDENTLY, and two implementations can disagree "
             "on real records. THAT IS WHAT GIVES IT FORCE, AND A CHECK WITH FORCE IS A CHECK "
             "THAT CAN FAIL. "
-            "***CORRECTED THIS RUN, Red Team seventh pass, finding 3: this arm's -r5 build "
-            "published 'SEVEN of the nine assertions CANNOT FAIL ON ANY DATA' and then, in the "
-            "same sentence, called the seventh a genuine cross-check BECAUSE a value is "
-            "recomputed independently. Those cannot both hold -- if the recomputation gives it "
-            "force it can fail on data. The count is now DERIVED FROM THE LABELS rather than "
-            "typed, so the sentence and the label set cannot diverge again.*** "
+            "EVERY COUNT IN THIS SENTENCE IS DERIVED FROM THE `label` FIELD OF THE INVARIANTS "
+            "ACTUALLY EMITTED, not typed, so the prose and the label set cannot diverge. "
             "'All invariants passed' is therefore mostly a statement that the code computed "
             "what it was told to; it is NOT evidence for the liveness rule or for any "
             "published share."),
@@ -1915,7 +1884,6 @@ def main() -> None:
                        "decisions/0088 Sec 1(c) PROMOTES the tau2 <= tau_pull assertion into "
                        "the published set. It already ran; it was invisible to a reader of the "
                        "deliverable"),
-                   "the_surface_count_this_arm_reported_last_run_IS_RE_READ_NOT_CARRIED": _sc5,
                    "items_reported_but_not_asserted": 2,
                    "items_reported_but_not_asserted_named": [
                        "the set-membership drop rule -- a coverage count (0074 ruling 3)",
