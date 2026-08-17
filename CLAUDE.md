@@ -59,9 +59,26 @@ third fell on.
 authority permitted to make cross-arm statements — **the Human Lead's diff.**
 
 **So: an arm's launch instruction states the SPEC and the arm's OWN defects. It never states what the
-other arm does, publishes, splits, names or reports** — not from a Red Team pass, not from a decision
-entry, not from a prior run's report. **Where a Red Team finding is inherently comparative, the finding
-goes to the Human Lead and only the non-comparative half reaches the arm.**
+other arm does, publishes, splits, names or reports** — not from a Red Team pass, not from a prior run's
+report. **Where a Red Team finding is inherently comparative, the finding goes to the Human Lead and only
+the non-comparative half reaches the arm.**
+
+***AMENDED 2026-08-17 (`0096`), Human Lead ruling: `decisions/` MAY carry cross-arm content, and the
+earlier form of this rule — which excluded "a decision entry" — is WITHDRAWN.*** **A ruling has to record
+what each arm found in order to explain why it was ruled, and forbidding that would mean a ruling cannot
+cite its own evidence.**
+
+**The distinction is what the isolation rule is FOR.** It exists to stop the arms **copying each other's
+implementation**, not to keep **a number the Human Lead has already ruled on** out of reach. **An
+unruled characterisation relayed into a prompt is a measurement the receiving arm cannot check. A ruled
+figure in a decision entry has already been through the Human Lead's diff** — it is a spec input, not a
+peek at the other arm's work.
+
+**But the leak is made EXPLICIT rather than accidental.** **Both arm files state that decision entries
+may contain cross-arm content**, so an arm reading `decisions/` knows what it is reading and is not
+stumbling into a route around isolation. **An arm may cite such content, naming `decisions/` as its
+source. It may never open the other arm's output folder, and it may never treat a cross-arm figure as
+something it measured.**
 
 ## Propagation
 
@@ -207,6 +224,35 @@ closed only after that rerun has happened.**
   and omits that two carry stale text is the defect this rule exists to stop.**
 - **Never edit an artifact to close this gap** — that is the sign-off rule, and it is how the gap becomes
   unsigned text instead of stale text.
+
+## A deliverable asserts only what its own arm measured
+
+**A gate deliverable asserts its own figures, its own inputs and its own limits — and nothing else.**
+Human Lead ruling, 2026-08-17 (`0096`). **It does not assert the state of other steps, other gates, the
+other arm, the shared controls, or the study as a whole.**
+
+**An arm cannot know those things.** It measures a surface at one instant and publishes into a file that
+is never re-read against the world, so **every such claim is expiry-dated from birth**. **Three
+consecutive Red Team passes found a stale one**, and the last was worse than stale: a deliverable told
+the reader `check_surfaces.py` **exits 1** when it exits 0 — true when measured, false when read.
+
+**This is the `## Derived figures` provenance rule applied to STATEMENTS rather than FIGURES.** A figure
+without its provenance is unreadable; **a statement about a surface the arm does not own is unreadable
+the same way, and worse, because it looks like a finding.**
+
+**What this excludes, concretely:**
+
+- **Control exit statuses.** Whether a shared control passes is not the arm's measurement. Report the
+  observation to the Human Lead; it belongs in `logs/`, never in `artifacts/`.
+- **Disk state of other surfaces** — which files exist, which carry a string, how many entries are in
+  `decisions/`. **Measured at an instant, published forever.**
+- **Build-history narration.** A build stamp and a pointer to the run record, not a chronicle of what
+  earlier builds got wrong.
+- **The status of other steps or gates**, including whether Step 8 itself is approved.
+
+**What it still requires:** the arm's own defects, its own open items, and its own divergences from the
+spec — **those are things it measured.** **An arm that notices something wrong on another surface REPORTS
+IT to the Human Lead and does not publish it as a finding in a deliverable.**
 
 ## Artifact sign-off
 

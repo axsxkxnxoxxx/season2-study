@@ -663,6 +663,38 @@ Step 1 §9 hands this step a set of obligations that used to live only in that d
       and is **SUPERSEDED as the example**; under U1 the largest clusters are `secondchance` (8),
       `theisland` (7), `maigret` (6). **The three names are not wrong; they are a different universe's
       answer**, which is the whole reason this needed ruling.
+- [ ] **A GATE DELIVERABLE ASSERTS ONLY WHAT ITS OWN ARM MEASURED.** Human Lead ruling, 2026-08-17
+      (`0096` ruling 1). **Its figures, its inputs, its limits — and nothing else.** ***It does NOT
+      assert the state of other steps, other gates, the other arm, the shared controls, or the study as
+      a whole.*** **An arm cannot know those things**: it measures a surface at one instant and publishes
+      into a file that is never re-read against the world, so **every such claim is expiry-dated from
+      birth.** **THREE CONSECUTIVE RED TEAM PASSES FOUND A STALE ONE**, and the last was worse than
+      stale — a deliverable told its reader that `check_surfaces.py` **EXITS 1** when it exits 0, true
+      when measured and false when read.
+      **This is the `## Derived figures` provenance rule applied to STATEMENTS rather than FIGURES.** A
+      figure without its provenance is unreadable; **a statement about a surface the arm does not own is
+      unreadable the same way and worse, because it looks like a finding.**
+      **EXCLUDED, CONCRETELY: control exit statuses** — report them to the Human Lead, they belong in
+      `logs/` and never in `artifacts/`; **the disk state of other surfaces** — which files exist, which
+      carry a string, how many entries `decisions/` holds; **build-history narration** — a build stamp
+      and a pointer to the run record, not a chronicle of what earlier builds got wrong; and **whether
+      any step or gate is approved**, including this one.
+      **STILL REQUIRED: the arm's own defects, its own open items, and its own divergences from the
+      spec — those it measured.** **An arm that notices something wrong on a surface it does not own
+      REPORTS IT to the Human Lead and does not publish it as a finding in a deliverable.**
+- [ ] **`decisions/` MAY CARRY CROSS-ARM CONTENT, AND THE ARMS ARE TOLD SO.** Human Lead ruling,
+      2026-08-17 (`0096` ruling 2). ***This WITHDRAWS `0095` §1's exclusion of "a decision entry."***
+      **A ruling has to record what each arm found in order to explain why it was ruled**, and
+      forbidding cross-arm content there would mean **a ruling cannot cite its own evidence.**
+      **The distinction is what the isolation rule is FOR: it exists to stop the arms COPYING EACH
+      OTHER'S IMPLEMENTATION, not to keep a number the Human Lead has already ruled on out of reach.**
+      **An UNRULED characterisation relayed into a launch instruction is a measurement the receiving arm
+      cannot check, and stays FORBIDDEN** (`0095` §1). **A RULED figure in a decision entry has already
+      been through the Human Lead's diff — it is a spec input, not a peek at the other arm's work.**
+      **The leak is made EXPLICIT rather than accidental**: both `analytics-engineer` files state this,
+      so an arm reading `decisions/` knows what it is reading. **An arm may cite such content naming
+      `decisions/` as the source; it may NEVER open the other arm's output folder, and it may NEVER
+      treat a cross-arm figure as something it measured.**
 - [ ] **THE TWO UNASSERTED MANDATES ARE MEASURED, NOT SELF-REPORTED.** Human Lead ruling, 2026-08-16
       (`0088` §1), on Red Team's B3/F1, which blocked the gate on the third and fourth passes.
       **The mandates are the HALF-OPEN UTC-INSTANT FORM and D11-AS-GLOBAL-CUTOFF** — not invariants 7
