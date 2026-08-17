@@ -104,8 +104,8 @@ def main():
                    "column_identity_holds": bool(
                        col_true + col_false + (int(mask.sum()) - col_true - col_false)
                        == int(mask.sum())),
-                   "why_both_are_emitted": "Red Team seventh pass, finding 4: the previous "
-                                           "deliverable asserted class 1 empty and described "
+                   "why_both_are_emitted": "Red Team seventh pass, finding 4: build "
+                                           "a/2026-08-16-0090 asserted class 1 empty and described "
                                            "class 2 as non-empty twelve lines apart, and emitted "
                                            "neither cardinality in the markdown. Step 8b builds a "
                                            "schema on this column with no conversion layer.",
@@ -232,7 +232,7 @@ def main():
         "both_bind": int((pos5 & bb).sum()),
         "population_size": int(pos5.sum()),
         "population_stated_at_the_point_of_use": "APPLY, position 5 = " + str(int(pos5.sum())),
-        "superseded_framing": "this key survives only so the previous build's figure can be "
+        "superseded_framing": "this key survives only so build a/2026-08-16-0090's figure can be "
                               "located; the block that governs is "
                               "binding_term_split_BOTH_POPULATIONS_BOTH_POSITIONS (decisions/0092)"}
     D["D2_negative_lag"]["reading"] = (
@@ -449,7 +449,8 @@ def main():
     # only splits where BOTH sides made the cut, and a bound computed on a narrow slice bounds
     # very little.
     #
-    # THIS IS A CHANGE OF OBJECT FOR THIS ARM. The previous build clustered the show IDs appearing
+    # THIS IS A CHANGE OF OBJECT FOR THIS ARM. Build a/2026-08-16-0085 clustered the show IDs
+    # appearing
     # in a D9 COVERAGE ROW, which is a SUBSET of U1: the coverage pivot keeps only dated,
     # pre-tau_pull, season >= 1 episode records, so a show reaching the sweep only through a
     # record D11 discards, an undated record, a specials-only record or a non-episode record is
@@ -642,8 +643,24 @@ def main():
         # collapse two real objects into one, which the standing rule forbids. Every figure below
         # says what its unit is, and the bridge between them is arithmetic and stated.
         "coverage": {
-            "ruling": "decisions/0088 SS2(b): 747,478 and 726,103 are different objects and both "
-                      "correct; each arm states which it publishes and what it counts.",
+            # THE REGISTERED SUPERSEDED STRING IS NOT RESTATED HERE. The sentence this key used
+            # to carry is the needle in src/step7_register.py's SUPERSEDED_STRINGS, and it was
+            # published UNQUALIFIED, attributed to 0088 SS2(b) -- whose AXIS 0089 SS2(b) had
+            # already corrected -- with this file's own correction sitting far below it. That is
+            # superseded text sitting ABOVE its replacement, the shape 0067, 0076, 0083 SS3a,
+            # 0089 SS3 and 0091 each fixed elsewhere. The marker is now AT THE POINT OF USE.
+            "ruling_CONCLUSION_STANDS_AXIS_SUPERSEDED": (
+                "decisions/0088 SS2(b)'s CONCLUSION governs and is applied below: one label over "
+                "two quantities is the defect, and reconciling them would collapse two real "
+                "objects into one. ITS AXIS IS SUPERSEDED -- decisions/0089 SS2(b), propagated to "
+                "the spec by 0094, corrects 0088 SS2(b)'s characterisation of 747,478: it is "
+                "DISTINCT (user, show) PAIRS, unit B below, not the row unit 0088 named. The "
+                "exact sentence 0088 SS2(b) stated it in is REGISTERED AS A SUPERSEDED STRING in "
+                "src/step7_register.py and is deliberately NOT restated here. This arm's own "
+                "figures are the three units below, each named by what it counts; the 726,103 "
+                "that sentence pairs 747,478 with is NOT a quantity this arm measures -- this "
+                "arm's D9 candidate count is unit C -- and it is attributed to the decision log "
+                "at the one place this deliverable discusses it."),
             "unit_note": "THIS ARM PUBLISHES ALL THREE UNITS BELOW so no reader has to infer "
                          "which one a bare number is.",
             "A_undeduplicated_user_show_SEASON_COVERAGE_ROWS": int(cov.shape[0]),
@@ -763,7 +780,8 @@ def main():
     # value, so each glob reports what it looked at.
     #
     # RED TEAM EIGHTH PASS, ITEM (A), AGAINST THIS ARM -- AND IT IS decisions/0093's OWN MECHANISM
-    # SEEN FROM INSIDE AN ARM. The previous build measured these surfaces live and then published
+    # SEEN FROM INSIDE AN ARM. Build a/2026-08-16-0092 measured these surfaces live and then
+    # published
     # a HARDCODED CONCLUSION beside the counts: "0092's N2 edit reached surface 1 and no other."
     # A rerun can contradict a fixed sentence, and this one does -- the agent files and
     # second-brain now carry the correction and decisions/0092 now has a file. So the READING IS
@@ -810,6 +828,60 @@ def main():
         "the same value and only the control knows which it produced")
     _n0092 = len(_glob.glob(os.path.join(lib.ROOT, "decisions/0092*")))
 
+    # THE ENTRY THIS BUILD IS LAUNCHED AGAINST IS CITED AND MAY HAVE NO FILE. Measured, never
+    # asserted: decisions/0092 SS2 and decisions/0094 SS4 each record an entry that was cited
+    # repeatedly with no file in decisions/, the second calling it "the second occurrence in three
+    # entries", and 0094 built a citation resolver against it. That resolver runs over CLAUDE.md's
+    # EIGHT PROPAGATION SURFACES -- and CLAUDE.md IS NOT ONE OF THEM. So a citation that appears
+    # only in CLAUDE.md is outside its coverage by construction. This block resolves CLAUDE.md's
+    # own citations and reports the coverage, because an empty result and a clean result are the
+    # same value and only the control knows which it produced. REPORTED, NOT ACTED ON: writing a
+    # decision entry is not this instance's to do.
+    import re as _re
+    _claude = os.path.join(lib.ROOT, "CLAUDE.md")
+    with open(_claude, encoding="utf-8", errors="replace") as _fh:
+        _ctext = _fh.read()
+    _cited = sorted(set(_re.findall(r"`(\d{4})`", _ctext))
+                    | set(_re.findall(r"decisions/(\d{4})", _ctext)))
+    _unresolved = [c for c in _cited
+                   if not _glob.glob(os.path.join(lib.ROOT, "decisions/%s*" % c))]
+    assert len(_cited) > 0, (
+        "the CLAUDE.md citation resolver found zero citations: a resolver that resolves nothing "
+        "must not report clean (CLAUDE.md; decisions/0094 SS4)")
+    _citation_state = {
+        "why_this_is_measured_here": "decisions/0092 SS2 and 0094 SS4 each record a decision entry "
+                                     "cited many times with NO FILE in decisions/. 0094 built a "
+                                     "resolver and wired it to CLAUDE.md's EIGHT PROPAGATION "
+                                     "SURFACES. CLAUDE.md is NOT one of the eight, so a citation "
+                                     "appearing only there is outside that resolver's coverage BY "
+                                     "CONSTRUCTION -- and that is where this build's own launch "
+                                     "entry is cited.",
+        "surface_scanned": "CLAUDE.md",
+        "coverage_distinct_entries_cited_in_CLAUDE_md": len(_cited),
+        "entries_cited_with_no_file_in_decisions": _unresolved,
+        "decisions_0095_files_on_disk": len(
+            _glob.glob(os.path.join(lib.ROOT, "decisions/0095*"))),
+        "reading": ("DERIVED from the counts on this run. "
+                    + ("every entry CLAUDE.md cites resolves to a file in decisions/."
+                       if not _unresolved else
+                       "CLAUDE.md cites " + ", ".join(_unresolved) + " and no file in decisions/ "
+                       "matches. This is the THIRD occurrence of the missing-entry defect, after "
+                       "0092 SS2 and 0094 SS4. The citation resolver 0094 built could NOT see it "
+                       "while the citation lived only in CLAUDE.md, which is not one of the eight "
+                       "propagation surfaces it scans. THIS DELIVERABLE BRINGS IT INTO COVERAGE: "
+                       "artifacts/ IS surface 6 and this build's provenance names the entry it "
+                       "was launched against, so the resolver now reports MISSING decisions/0095* "
+                       "and src/check_surfaces.py EXITS 1. The cause of that failure is the "
+                       "absent entry, not this deliverable; every other half of that control "
+                       "passes. Removing the citation would make the control green and the gap "
+                       "invisible again, which is CLAUDE.md's 'narrowing until it passes is how a "
+                       "control gets disarmed'.")),
+        "status": "REPORTED, NOT ACTED ON -- writing a decision entry is not this instance's to do,"
+                  " and neither src/check_surfaces.py nor src/step7_register.py was edited: both "
+                  "are shared and were changed this hour.",
+        "build": lib.BUILD_TAG,
+    }
+
     # Per surface, as CLAUDE.md numbers them. `reached` is DERIVED: the superseded form is gone
     # AND the correction is present on at least one file of that surface.
     _surf = [
@@ -829,15 +901,17 @@ def main():
     _reached = [str(x["surface"]) for x in _surf if x["reached"]]
     _not = [str(x["surface"]) for x in _surf if not x["reached"]]
     _reading = (
-        "DERIVED FROM THE COUNTS ABOVE ON THIS RUN, not carried from a prior build. "
+        "DERIVED FROM THE COUNTS ABOVE ON THIS RUN, not carried from any earlier build. "
         "decisions/0092's N2 correction (the population on the both-bind 168) is present and the "
         "population-free form is absent on surface(s) " + (", ".join(_reached) or "NONE") + "; "
         "it is NOT yet on surface(s) " + (", ".join(_not) or "NONE") + ". "
-        "decisions/0092 itself matches " + str(_n0092) + " file(s) in decisions/, so the previous "
-        "build's finding that the entry existed on two surfaces and not in the decision log "
+        "decisions/0092 itself matches " + str(_n0092) + " file(s) in decisions/, so build "
+        "a/2026-08-16-0092's finding that the entry existed on two surfaces and not in the decision "
+        "log "
         + ("is CLOSED." if _n0092 > 0 else "STANDS.") + " "
         "Reported, not edited: the agent files, the decision log and second-brain are not this "
-        "instance's to amend. THE PREVIOUS BUILD PUBLISHED A FIXED SENTENCE HERE and this rerun "
+        "instance's to amend. BUILD a/2026-08-16-0092 PUBLISHED A FIXED SENTENCE HERE and the "
+        "0093 rerun "
         "would have contradicted it -- which is decisions/0093's mechanism exactly: a ruling can "
         "be recorded, propagated and passing every control while an artifact still publishes the "
         "superseded reading, because an artifact only changes on a run.")
@@ -850,6 +924,7 @@ def main():
         "decisions_0092_files_on_disk": _n0092,
         "decisions_0093_files_on_disk": len(
             _glob.glob(os.path.join(lib.ROOT, "decisions/0093*"))),
+        "CLAUDE_md_citation_resolution": _citation_state,
         "decisions_entries_on_disk_total": len(
             _glob.glob(os.path.join(lib.ROOT, "decisions/0*.md"))),
         "negative_needle": _POP_FREE_168,
@@ -860,7 +935,7 @@ def main():
         "per_surface": _surf,
         "surfaces_reached": _reached,
         "surfaces_not_reached": _not,
-        # kept under their previous key names so a diff against the prior build lines up
+        # kept under their previous key names so a diff against build a/2026-08-16-0092 lines up
         "task_sheet_files_examined": _ts_seen,
         "task_sheet_carries_the_N2_population_requirement": bool(_ts_pos > 0),
         "agent_files_examined": _a_seen,
@@ -946,7 +1021,7 @@ def main():
                           "and tau2 midnight-aligned, which is the fact this whole block turns "
                           "on. Day-flooring the CLOCK is required; day-flooring a BOUNDARY TEST "
                           "is forbidden. Only the second is a violation and there are none.",
-                    "correction": "Red Team seventh pass: the previous build published the "
+                    "correction": "Red Team seventh pass: build a/2026-08-16-0090 published the "
                                   "blanket form, which is false of this arm's own source and "
                                   "contradicted this same block's argument.",
                 },
@@ -1029,8 +1104,8 @@ def main():
     flips = {"ruling": "decisions/0089 SS2(a), Red Team fifth pass F1. THE NUMBER THAT SETTLES "
                        "B3(a) is how many POSITION-5 ROWS CHANGE OUTCOME STATE under the "
                        "forbidden date-level form -- four numbers, both bounds x both "
-                       "populations -- NOT how many episodes the form admits. The previous build "
-                       "of this arm emitted episodes admitted and is corrected here.",
+                       "populations -- NOT how many episodes the form admits. Build "
+                       "a/2026-08-16-0088 emitted episodes admitted and is corrected here.",
              "forbidden_form": "date(watched_at) <= date(tau), which on midnight-aligned bounds "
                                "admits the whole of [tau, tau + 24h). It appears NOWHERE in the "
                                "implementation; this is a counterfactual measured on the adopted "
@@ -1050,7 +1125,7 @@ def main():
                     if c_:
                         trans[f"{_NAME[f_]}__to__{_NAME[t_]}"] = c_
             # CONJUNCT 2 IS RECOMPUTED ON THE COUNTERFACTUAL OUTCOME, NOT HELD AT THE ADOPTED ONE.
-            # Red Team seventh pass, finding 1, against this arm: the previous deliverable did not
+            # Red Team seventh pass, finding 1, against this arm: build a/2026-08-16-0090 did not
             # say which, and if conjunct 2 were held at the adopted state then 703 -> 703 would be
             # a TAUTOLOGY establishing nothing. `cont_` below is the COUNTERFACTUAL Continued mask
             # returned by _state() under this variant's bounds; `r["continued"]` is not used here.
@@ -1090,7 +1165,7 @@ def main():
                 "rows_in_one_exclusion_set_but_not_the_other": int((_exc ^ _exc_adopted).sum()),
                 # RED TEAM EIGHTH PASS, ITEM (C), AGAINST THIS ARM. The symmetric difference is
                 # the RIGHT measurement and it is unchanged. What was wrong is the WARRANT the
-                # previous build put on it: "a total that does not move can still be a different
+                # build a/2026-08-16-0092 put on it: "a total that does not move can still be a different
                 # set of rows, and that is what the symmetric difference rules out." Under THIS
                 # counterfactual it cannot. The date-level form RELAXES both bounds, so A and A_H
                 # only GAIN episodes; all three Continued conjuncts are monotone in them; so
@@ -1128,7 +1203,8 @@ def main():
     flips["VACUOUS_ON_THIS_BUILD"] = all(
         v == 0 for k, v in flips["THE_FOUR_NUMBERS"].items() if k != "reading")
     # ---- (C) THE MONOTONICITY THE SYMMETRIC DIFFERENCE RESTS ON, MEASURED ------------------
-    # Red Team eighth pass, item (C), against this arm. The previous build wrote: "a total that
+    # Red Team eighth pass, item (C), against this arm. Build a/2026-08-16-0092 wrote: "a total
+    # that
     # does not move can still be a different set of rows, and that is what the symmetric
     # difference rules out." TRUE IN GENERAL, FALSE HERE -- and a warrant that is one notch
     # stronger than what the structure allows is the shape CLAUDE.md's third blindness class
@@ -1194,7 +1270,7 @@ def main():
         "and both populations. A row can LEAVE the exclusion set and none can ENTER it, so an "
         "unchanged TOTAL already forces an identical SET. The symmetric difference of 0 is "
         "therefore a CONFIRMATION OF THE ARITHMETIC, not independent evidence that the sets "
-        "coincide -- which is what the previous build's sentence claimed for it.")
+        "coincide -- which is what build a/2026-08-16-0092's sentence claimed for it.")
     _mono["WITHDRAWN_SENTENCE"] = (
         "a total that does not move can still be a different set of rows, and that is what the "
         "symmetric difference rules out")
@@ -1270,7 +1346,7 @@ def main():
     boundary["OUTCOME_STATE_FLIPS_the_number_that_settles_B3a"] = flips
 
     # ---- decisions/0068's STRICTNESS RULING, MEASURED ON ITS OWN OBJECT ---------------------
-    # Red Team seventh pass, finding 2, against this arm. The previous deliverable read "exactly 1
+    # Red Team seventh pass, finding 2, against this arm. Build a/2026-08-16-0090 read "exactly 1
     # episode falls exactly AT tau1" and concluded that 0068's strictness ruling "changes the
     # answer for a real row". WRONG OBJECT. The SS5.6a table's unit is a DISTINCT S2 EPISODE BY
     # CANONICAL watched_at. 0068's strictness ruling is about INSERTION INSTANTS in the SILENCE
@@ -1291,8 +1367,8 @@ def main():
         "unit": "PAIRS, keyed on the account's last insertion instant (D11-restricted, "
                 "decisions/0070 ruling 2) -- NOT distinct S2 episodes by watched_at",
         "WITHDRAWN_CLAIM": "***WITHDRAWN, WRONG OBJECT (Red Team seventh pass, finding 2; "
-                           "decisions/0089 SS2(a) as corrected on the sixth pass).*** The previous "
-                           "build of this arm published: 'exactly 1 episode falls exactly AT tau1, "
+                           "decisions/0089 SS2(a) as corrected on the sixth pass).*** Build "
+                           "a/2026-08-16-0090 published: 'exactly 1 episode falls exactly AT tau1, "
                            "so 0068's strictness ruling changes the answer for a real row rather "
                            "than for none.' The 1 is a DISTINCT S2 EPISODE by canonical "
                            "watched_at, which is SS5.6a's unit; the ruling is about INSERTION "
@@ -1323,7 +1399,7 @@ def main():
         "IF the exactly-at count is 0 the strictness ruling is VACUOUS ON THIS DATA -- stated as "
         "a zero, not passed silently. It remains the correct rule and it remains binding on any "
         "future pull; what is measured here is only whether it decides anything on THIS data, "
-        "which is what the previous build got wrong by answering with a different unit.")
+        "which is what build a/2026-08-16-0090 got wrong by answering with a different unit.")
     boundary["STRICTNESS_RULING_0068_MEASURED_ON_ITS_OWN_OBJECT"] = strictness
     boundary["CORRECTION_TO_THE_PREVIOUS_BUILD"] = (
         "build a/2026-08-16-0088 emitted the separating interval and the EPISODES ADMITTED on it, "
@@ -2086,7 +2162,7 @@ def main():
                       "leaving 99 rows covered by neither clause, exactly the started-and-left "
                       "liveness exclusions. Do not take the numerator post-liveness and the "
                       "denominator pre-liveness. ***CORRECTED ON THIS BUILD (Red Team fifth pass, "
-                      "F2): the previous deliverable called this two-clause sum 'THE IDENTITY "
+                      "F2): build a/2026-08-16-0088 called this two-clause sum 'THE IDENTITY "
                       "THAT CLOSES THE HOLE'. IT DOES NOT CLOSE IT. The clauses are `M & left` "
                       "and `M & ~left` -- a set and its complement within the same mask M -- so "
                       "they sum to M.sum() for EVERY M, including a mask that is not the "
@@ -2122,7 +2198,7 @@ def main():
                                      "note": "measured on this build, not asserted: the exact "
                                              "mispairing decisions/0080 SS3 describes is "
                                              "reconstructed and the identity is evaluated on it. "
-                                             "Under the previous build's same-mask denominator "
+                                             "Under build a/2026-08-16-0088's same-mask denominator "
                                              "this pairing could not be detected at all."}},
                           parts=[int((pos5 & r["left"]).sum()), int((pos5 & ~r["left"]).sum())],
                           n_not=0,
@@ -2450,50 +2526,76 @@ def main():
                                                                 "VISIBILITY, not power.",
                   "SUPERSEDED_the_assertion_set_has_EIGHT_members": "superseded by decisions/0088 "
                                                                     "SS1(c); the set is NINE",
-                  # ---- (B) THE HEADLINE ITSELF IS AN ARM-AGAINST-ARM DIVERGENCE --------------
-                  # Red Team eighth pass, item (B) against this arm. Reported, NOT reconciled
-                  # (CLAUDE.md: "Any divergence is either a bug or an ambiguity in the spec.
-                  # Report it. Do not reconcile it."). This arm does not read the other arm's
-                  # output; the fact that the other arm publishes a TWO-WAY split is carried from
-                  # Red Team's pass, and the SHAPE of this arm's split is derived from its own
-                  # label strings immediately above, never typed.
-                  "ARM_AGAINST_ARM_DIVERGENCE_ON_THE_HEADLINE_SHAPE": {
-                      "status": "REPORTED, NOT RECONCILED",
-                      "source_of_the_other_arm_s_shape": "Red Team's eighth pass, relayed in this "
-                                                         "run's launch instruction. This arm did "
-                                                         "NOT read the other arm's output folder "
-                                                         "and does not know its counts.",
-                      "this_arm_publishes": "a THREE-WAY split over the nine labels",
-                      "this_arm_split_derived_from_its_own_labels": {
+                  # ---- THE HEADLINE SHAPE, THIS ARM'S OWN AND NOTHING ELSE -------------------
+                  # A CROSS-ARM CLAIM PUBLISHED HERE BY BUILD a/2026-08-16-0093 AND
+                  # a/2026-08-16-0094 IS STRUCK IN FULL. CLAUDE.md, "Cross-arm characterisations
+                  # never enter a launch instruction" (decisions/0095): a launch instruction is a
+                  # way for one arm to see the other's work, and it is WORSE than reading the
+                  # folder, because the receiving arm is structurally forbidden from re-measuring
+                  # what it was told. This arm published a characterisation of the OTHER arm's
+                  # headline shape, sourced from a Red Team pass relayed in a launch instruction.
+                  # It cannot know that and it was false. Struck in the EMITTER, because a claim
+                  # emitted by a script is withdrawn in the script (CLAUDE.md), and NOT replaced
+                  # with a corrected characterisation: there is no admissible way for this arm to
+                  # know the other arm's shape, and a fabricated divergence in a gate deliverable
+                  # pre-empts the one authority permitted to make cross-arm statements.
+                  "THE_HEADLINE_SHAPE_THIS_ARM_PUBLISHES_derived_from_its_own_labels": {
+                      "split": {
                           "CODE CHECK": sum(1 for i in inv if i["label"] == "CODE CHECK"),
                           "CODE CHECK BY CONSTRUCTION, DATA CHECK AS SPECIFIED":
                               sum(1 for i in inv if i["label"].startswith("CODE CHECK BY")),
                           "DATA CHECK": sum(1 for i in inv if i["label"] == "DATA CHECK")},
-                      "the_other_arm_publishes": "a TWO-WAY split over the SAME nine labels",
-                      "why_this_is_a_divergence_and_not_a_disagreement_about_a_number":
-                          "the nine labels are identical and every per-check label reconciles. "
-                          "What differs is HOW MANY CLASSES THE HEADLINE COLLAPSES THEM INTO, and "
-                          "the spec fixes the label vocabulary at three -- CODE CHECK, CODE CHECK "
-                          "BY CONSTRUCTION/DATA CHECK AS SPECIFIED, DATA CHECK -- while the "
-                          "sentence a reader takes away is the headline. A two-way headline folds "
-                          "the code-check-by-construction member into one side or the other, and "
-                          "which side is not stated anywhere, so two readers get two different "
-                          "counts of what can fail.",
-                      "the_spec_s_own_sentence_is_three_way":
-                          "task-sheet.md and both analytics-engineer files read 'THE ASSERTION "
-                          "SET NOW HAS NINE MEMBERS: SIX pure code checks, one "
-                          "code-by-construction with force only as specified, and TWO that can "
-                          "fail on real data.' This arm's headline is that sentence's shape.",
-                      "why_neither_arm_flagged_it": "the dual diff compares FIGURES, and 6 + 1 + 2 "
-                                                    "and a two-way collapse of the same nine "
-                                                    "labels contain the same per-check labels. "
-                                                    "The divergence is in the presentation the "
-                                                    "diff does not read -- and reading agreement "
-                                                    "into two different headlines over one label "
-                                                    "set is what this entry stops.",
-                      "not_reconciled": "this arm does not change its headline to match, and does "
-                                        "not assert the other arm's is wrong. The Human Lead "
-                                        "diffs.",
+                      "shape": "THREE-WAY",
+                      "derived_never_typed": "each class is a count over the label strings of the "
+                                             "nine checks in the table, computed on this run.",
+                      "why_three_way": "the spec fixes the label vocabulary at three -- CODE "
+                                       "CHECK; CODE CHECK BY CONSTRUCTION, DATA CHECK AS "
+                                       "SPECIFIED; DATA CHECK -- and the spec's own sentence has "
+                                       "that shape: 'THE ASSERTION SET NOW HAS NINE MEMBERS: SIX "
+                                       "pure code checks, one code-by-construction with force "
+                                       "only as specified, and TWO that can fail on real data.' "
+                                       "Collapsing the middle member into either outer class "
+                                       "changes the answer to 'what could this report have "
+                                       "caught?' -- upward it reads as seven that cannot fail, "
+                                       "downward as three that can -- so the middle class is "
+                                       "published as its own.",
+                      "WITHDRAWN_SENTENCE_a_cross_arm_divergence_claim_STRUCK_IN_FULL": {
+                          "what_is_struck": "an assertion about the SHAPE OF THE OTHER ARM'S "
+                                            "HEADLINE, and every sentence resting on it, "
+                                            "published by builds a/2026-08-16-0093 and "
+                                            "a/2026-08-16-0094 in this report, in the waterfall "
+                                            "deliverable's SS0 and in its SS9 residual list.",
+                          "why_it_is_struck": "this arm did not read and may not read the other "
+                                              "arm's output. The claim's stated source was a Red "
+                                              "Team characterisation RELAYED IN A LAUNCH "
+                                              "INSTRUCTION, which CLAUDE.md now records "
+                                              "(decisions/0095) as routing around the isolation "
+                                              "rule -- and worse than reading the folder, because "
+                                              "the receiving arm is forbidden from re-measuring "
+                                              "what it was told, so a relayed characterisation is "
+                                              "a measurement with an expiry date its holder "
+                                              "cannot check.",
+                          "not_replaced_with_a_corrected_version": "deliberately. There is no "
+                                                                   "admissible way for this arm "
+                                                                   "to know the other arm's "
+                                                                   "shape, and stating one is "
+                                                                   "what the isolation rule "
+                                                                   "forbids. A fabricated "
+                                                                   "divergence in a gate "
+                                                                   "deliverable is worse than a "
+                                                                   "missed one: it pre-empts the "
+                                                                   "Human Lead's diff, which is "
+                                                                   "the only authority permitted "
+                                                                   "to make a cross-arm "
+                                                                   "statement.",
+                          "what_this_arm_publishes_instead": "its own 6 + 1 + 2 split and the "
+                                                             "reason for it, and nothing about "
+                                                             "any other arm.",
+                          "the_labels_themselves_are_unchanged": "no label, no per-check result "
+                                                                 "and no count moves. This is a "
+                                                                 "removal of a claim, not a "
+                                                                 "change to a measurement.",
+                      },
                       "build": lib.BUILD_TAG}},
               "all_passed": all(i["passed"] for i in inv)}
 
@@ -2681,8 +2783,9 @@ def main():
             all(k[2] for k in kinds if k[0])),
         "ARITHMETIC_NOT_A_LITERAL_the_plus_one_perturbation": {
             "***RELABELLED***": "Red Team seventh pass, finding 3, against this arm; "
-                                "decisions/0091 SS2 as corrected on the sixth pass. The previous "
-                                "build published this block as 'THE MECHANISM IS DEMONSTRATED, "
+                                "decisions/0091 SS2 as corrected on the sixth pass. Build "
+                                "a/2026-08-16-0090 published this block as 'THE MECHANISM IS "
+                                "DEMONSTRATED, "
                                 "NOT ASSERTED' and read it as a demonstration of INDEPENDENCE. "
                                 "IT IS NOT ONE.",
             "why_it_does_not_test_independence": "on a SAME-MASK denominator the clauses sum to N "
