@@ -503,6 +503,20 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
       nothing.
     - The table goes to `processed/`; the filter waterfall and invariant report, counts only, to
       `artifacts/`.
+- **THREE RULINGS ON THE SCHEMA'S SHAPE** (`0111`), all of them ADDING a dimension rather than
+      restricting a use. **`0107` §3's rule is the constant: one slot where two arms write forces the
+      reconciliation the spec forbids.**
+      **E2 — AN ARM ENTRY'S IDENTITY INCLUDES ITS PRODUCING STEP.** The key is
+      **`(W_days, clock_origin, producing_step)`**. **Step 9's `W = 108` and Step 13's `W = 108` are
+      DIFFERENT MEASUREMENTS OF ONE SETTING** and both must exist. ***The `(W_days, clock_origin)`
+      collision one dimension out, with the same fix.*** ***NOT resolved by restricting which step may
+      occupy a shared `W`.***
+      **E1 — STEP 13'S SIX NON-HEADLINE OUTPUTS TAKE PER-ARM NESTING**, the same shape as its headline:
+      `d3_prime`, `tested_ranges`, `conclusions_surviving`, `conclusions_not_surviving`,
+      `d2_recomputed_inside_this_arm`, `action_type_counts`. ***Third appearance of one defect***, after
+      `0107` §4 and `0109`; **the same widening both took.**
+      **E6 — THE MERGE'S INPUT LIST RECORDS SOURCES, NOT ONLY ARM FILES.** **Step 14's `limitations` is
+      a NAMED NON-ARM-FILE SOURCE with its own provenance entry** — an eighth source, with no arm.
 - **Step 8b, output schema. Chained. RUN 2026-08-18 as arm `a`** (`0102`). ***SUPERSEDED: "NOT LAUNCHED."*** **Deliverables: `artifacts/step8b-output-schema.json` and THREE placeholders** (`0110`) — `step8b-placeholder.json` (**merged**), `step8b-placeholder-arm-file.json` (**a dual step's arm file**) and `step8b-placeholder-sole-file.json` (**a single-arm step's own file**) — with `src/step8b_validate.py` and `src/step8b_selftest.py`. ***`0109` fixed granularity at one file per step per arm, which is THREE legal shapes, and a role with no placeholder is a shape Step 16 would be built without.*** **Single-arm — not in `CLAUDE.md`'s dual list, so there is no diff on it**; the spec names no instance and **arm `a` was the launcher's choice, recorded in both artifacts.** Define the JSON schema the Step 16 visualization
   reads from, and emit a placeholder file with illustrative values and the identical schema so Step 16
   can be built before results exist. **Defined in a prior session and never propagated; added here

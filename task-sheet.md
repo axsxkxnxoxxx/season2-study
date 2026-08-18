@@ -846,6 +846,22 @@ with two amendments that postdate its drafting, both marked below.
       **covering with respect to insertion-dormancy, exhaustively; open only across channel classes
       (D4, D9)**. **D4 and D9 publish alongside and are never folded in**, so the schema has slots for
       them.
+- [ ] ***AN ARM ENTRY'S IDENTITY INCLUDES ITS PRODUCING STEP.*** Human Lead ruling, `0111` (E2).
+      **The key is `(W_days, clock_origin, producing_step)`.** ***Step 9's `W = 108` and Step 13's
+      `W = 108` are DIFFERENT MEASUREMENTS OF ONE SETTING and both must exist as distinct entries.***
+      **This is the `(W_days, clock_origin)` collision ONE DIMENSION OUT, and it takes the same fix —
+      ADD THE MISSING IDENTITY DIMENSION.** ***It must NOT be resolved by restricting which step may
+      occupy a shared `W` value***: the grid contains 91 and 108, Step 9 publishes headlines there, and
+      Step 13 computes a headline at every grid arm. **Four payloads, two slots, was the symptom; the
+      missing dimension is the cause.**
+- [ ] ***STEP 13'S SIX NON-HEADLINE OUTPUTS TAKE PER-ARM NESTING, THE SAME SHAPE AS ITS HEADLINE.***
+      Human Lead ruling, `0111` (E1). **`d3_prime`, `tested_ranges`, `conclusions_surviving`,
+      `conclusions_not_surviving`, `d2_recomputed_inside_this_arm` and `action_type_counts` each had
+      ONE SLOT where TWO ARMS write.** ***One slot where two arms write forces the reconciliation
+      `0107` §3 forbids*** — the merge would have to drop an arm or reconcile.
+      ***THIS IS THE THIRD APPEARANCE OF ONE DEFECT***, after `0107` §4 (a dual step's arm file had no
+      legal shape) and `0109` (§1's duplication). **The fix is the same WIDENING both prior instances
+      took, because widening keeps ONE DEFINITION PER FIGURE.**
 - [ ] **Emit a placeholder file with illustrative values and the IDENTICAL schema**, so Step 16 can be ***— THREE PLACEHOLDERS, ONE PER DOCUMENT ROLE, amended by `0110` (M4/M9): the MERGED document, a DUAL step's ARM FILE, and a SINGLE-ARM step's SOLE FILE.*** **`0109` fixed granularity at one file per step per arm, which makes three distinct legal shapes**, and **a role with no placeholder is a shape Step 16 would be built without** — the same reason the spec required one in the first place. **The arm emitted all three and correctly did NOT amend its own spec to match; that is this entry's job.**
       built before results exist. **The placeholder must be unmistakable as one** — a top-level flag a
       consumer cannot miss, and values that cannot be mistaken for measurements. **A placeholder that
@@ -1149,7 +1165,12 @@ while **no arm may be the merge writer without defeating what dual implementatio
       **It cannot run earlier than every writing step either.** **It has nothing to merge until
       every writing step has landed.** **It is NOT a gate** — `CLAUDE.md` fixes the gate list at five
       and **all five are approved.**
-- [ ] ***INPUTS: SEVEN FILES — ONE PER STEP PER ARM.*** Human Lead ruling, `0109` (M4/M5/M9),
+- [ ] ***INPUTS ARE SOURCES, NOT ONLY ARM FILES.*** Human Lead ruling, `0111` (E6): **the merge's
+      input list records SOURCES.** ***Step 14's `limitations` is a NAMED NON-ARM-FILE SOURCE with
+      its own provenance entry*** — it is an **eighth** source, it has **no arm**, and `0109` moved
+      Step 13b after Step 14 precisely so it could be filled. **A ten-item bias ledger that MUST NOT
+      BE NETTED cannot arrive in the reader-facing document with no recorded provenance.**
+- [ ] ***SEVEN ARM FILES — ONE PER STEP PER ARM.*** Human Lead ruling, `0109` (M4/M5/M9),
       **resolving `0107`'s own §1-vs-§6 ambiguity in favour of §6.** **Step 9 writes TWO files, Step 13
       writes TWO, and Steps 10, 11 and 12 write ONE each.**
       ***Why §6 and not §1:*** **§1 would require Step 10's output to be DUPLICATED into two arm files —
