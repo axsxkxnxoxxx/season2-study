@@ -1,6 +1,6 @@
 {
-  "schema_version": "1.1.0",
-  "schema_id": "urn:season2-study:step8b-output-schema:1.1.0",
+  "schema_version": "1.2.0",
+  "schema_id": "urn:season2-study:step8b-output-schema:1.2.0",
   "placeholder": true,
   "placeholder_notice": {
     "banner": "############  THIS FILE IS A PLACEHOLDER. IT CONTAINS NO MEASUREMENTS.  ############  Every number in it is the sentinel -999 or -999.0 and every writer-supplied string is prefixed 'PLACEHOLDER — NOT A MEASUREMENT'. It exists so Step 16 can be built before results exist. DO NOT PUBLISH, DO NOT CHART, DO NOT QUOTE. A consumer that renders it will show -999% bars, which is the point.  ############",
@@ -12,16 +12,50 @@
   },
   "generated_by": {
     "generator": "src/step8b_schema.py",
-    "generator_sha256_12": "a7a0e0ccac78",
-    "generated_at_utc": "2026-08-18T19:25:30Z",
+    "generator_sha256_12": "ca784fc3d350",
+    "generated_at_utc": "2026-08-18T22:39:36Z",
     "build_tag": "step8b/a/2026-08-18",
-    "git_head_short": "6420f5f",
+    "git_head_short": "f6c57bf",
     "host_step": "Step 8b, output schema",
     "written_by": "Analytics Engineer, instance a",
     "inputs": [
       "task-sheet.md Step 8b (the W grid is read from Step 13 at run time)",
       "artifacts/step8b-output-schema.json"
     ]
+  },
+  "document_scope": {
+    "role": "merged_document",
+    "producing_step": "step13b",
+    "arm": null,
+    "also_written_by_steps": [
+      "step9",
+      "step10",
+      "step11",
+      "step12",
+      "step13"
+    ],
+    "isolation_rule": "Each arm writes its own document, and no arm writes into a document another arm writes into. Neither instance sees the other's work, asks about it, or reads its output folder. It is the DIFF, between two files, that is the dual control.",
+    "note": "PLACEHOLDER — NOT A MEASUREMENT: the file's producing step, not its generator: $.generated_by names Step 8b, because this is the placeholder that shows the shape",
+    "source": "decisions/0107; task-sheet.md Step 13b; CLAUDE.md, Dual implementation",
+    "merge": {
+      "owner_step": "step13b",
+      "owner_role": "Human Lead, Step 13b, merged results document",
+      "arm_files_merged": [
+        "Step 9 arm a",
+        "Step 9 arm b",
+        "Step 13 arm a",
+        "Step 13 arm b",
+        "Step 10 (single-arm)",
+        "Step 11 (single-arm)",
+        "Step 12 (single-arm)"
+      ],
+      "diff_precedes_merge": true,
+      "blocks_only_the_merge_may_fill": [
+        "cross_arm_divergences",
+        "limitations"
+      ],
+      "source": "task-sheet.md Step 13b; decisions/0107 §6"
+    }
   },
   "sentinels": {
     "count": -999,
@@ -158,98 +192,120 @@
       "owner_role": "Analytics Engineer, Step 8b",
       "write_mode": "structural_from_step_8b",
       "may_first_writer_fill": true,
-      "source": "task-sheet.md Step 8b"
+      "source": "task-sheet.md Step 8b",
+      "merged_document_only": false
     },
     "schema_id": {
       "owner_step": "step8b",
       "owner_role": "Analytics Engineer, Step 8b",
       "write_mode": "structural_from_step_8b",
       "may_first_writer_fill": true,
-      "source": "task-sheet.md Step 8b"
+      "source": "task-sheet.md Step 8b",
+      "merged_document_only": false
     },
     "placeholder": {
       "owner_step": "step8b",
       "owner_role": "Analytics Engineer, Step 8b",
       "write_mode": "structural_from_step_8b",
       "may_first_writer_fill": true,
-      "source": "task-sheet.md Step 8b"
+      "source": "task-sheet.md Step 8b",
+      "merged_document_only": false
     },
     "placeholder_notice": {
       "owner_step": "step8b",
       "owner_role": "Analytics Engineer, Step 8b",
       "write_mode": "structural_from_step_8b",
       "may_first_writer_fill": true,
-      "source": "task-sheet.md Step 8b"
+      "source": "task-sheet.md Step 8b",
+      "merged_document_only": false
     },
     "generated_by": {
       "owner_step": "step8b",
       "owner_role": "whichever step writes the file, stamping its own run",
       "write_mode": "written_by_owner_step",
       "may_first_writer_fill": true,
-      "source": "CLAUDE.md, Generated files that function as checks"
+      "source": "CLAUDE.md, Generated files that function as checks",
+      "merged_document_only": false
+    },
+    "document_scope": {
+      "owner_step": "step8b",
+      "owner_role": "whichever step writes the file, declaring what the file IS -- one arm's document or the merged one",
+      "write_mode": "written_by_owner_step",
+      "may_first_writer_fill": true,
+      "source": "decisions/0107; task-sheet.md Step 13b",
+      "merged_document_only": false
     },
     "sentinels": {
       "owner_step": "step8b",
       "owner_role": "Analytics Engineer, Step 8b",
       "write_mode": "structural_from_step_8b",
       "may_first_writer_fill": true,
-      "source": "task-sheet.md Step 8b"
+      "source": "task-sheet.md Step 8b",
+      "merged_document_only": false
     },
     "arm_key": {
       "owner_step": "step8b",
       "owner_role": "Analytics Engineer, Step 8b",
       "write_mode": "structural_from_step_8b",
       "may_first_writer_fill": true,
-      "source": "task-sheet.md Step 8b"
+      "source": "task-sheet.md Step 8b",
+      "merged_document_only": false
     },
     "arm_grid_days": {
       "owner_step": "step13",
       "owner_role": "Data Scientist, Step 13",
       "write_mode": "written_by_owner_step",
       "may_first_writer_fill": true,
-      "source": "decisions/0075; the grid is fixed and any step may copy it"
+      "source": "decisions/0075; the grid is fixed and any step may copy it",
+      "merged_document_only": false
     },
     "populations": {
       "owner_step": "step8b",
       "owner_role": "Analytics Engineer, Step 8b",
       "write_mode": "structural_from_step_8b",
       "may_first_writer_fill": true,
-      "source": "task-sheet.md Step 8b"
+      "source": "task-sheet.md Step 8b",
+      "merged_document_only": false
     },
     "scope_qualifiers": {
       "owner_step": "step8b",
       "owner_role": "Analytics Engineer, Step 8b",
       "write_mode": "structural_from_step_8b",
       "may_first_writer_fill": true,
-      "source": "task-sheet.md Step 8b"
+      "source": "task-sheet.md Step 8b",
+      "merged_document_only": false
     },
     "bootstrap_spec": {
       "owner_step": "step8b",
       "owner_role": "Analytics Engineer, Step 8b",
       "write_mode": "structural_from_step_8b",
       "may_first_writer_fill": true,
-      "source": "task-sheet.md Step 8b"
+      "source": "task-sheet.md Step 8b",
+      "merged_document_only": false
     },
     "binding_clusters": {
       "owner_step": "step8b",
       "owner_role": "Analytics Engineer, Step 8b",
       "write_mode": "structural_from_step_8b",
       "may_first_writer_fill": true,
-      "source": "task-sheet.md Step 8b"
+      "source": "task-sheet.md Step 8b",
+      "merged_document_only": false
     },
     "bootstrap_settings": {
       "owner_step": "step9",
       "owner_role": "Data Scientist, Steps 9 to 13",
       "write_mode": "written_by_owner_step",
       "may_first_writer_fill": true,
-      "source": "decisions/0103 §1"
+      "source": "decisions/0103 §1",
+      "merged_document_only": false
     },
     "block_ownership": {
       "owner_step": "step8b",
       "owner_role": "Analytics Engineer, Step 8b",
       "write_mode": "structural_from_step_8b",
       "may_first_writer_fill": true,
-      "source": "task-sheet.md Step 8b"
+      "source": "task-sheet.md Step 8b",
+      "merged_document_only": false
     },
     "channel_classes": {
       "owner_step": "step8",
@@ -259,7 +315,8 @@
       "source": "decisions/0070 rulings 1 and 7",
       "forbidden_to_compute_here": [
         "step9"
-      ]
+      ],
+      "merged_document_only": false
     },
     "discovery_channel_overlap": {
       "owner_step": "step8",
@@ -269,53 +326,63 @@
       "source": "decisions/0077, 0079",
       "forbidden_to_compute_here": [
         "step9"
-      ]
+      ],
+      "merged_document_only": false
     },
     "derived_fields": {
       "owner_step": "step8b",
       "owner_role": "Analytics Engineer, Step 8b",
       "write_mode": "structural_from_step_8b",
       "may_first_writer_fill": true,
-      "source": "task-sheet.md Step 8b"
+      "source": "task-sheet.md Step 8b",
+      "merged_document_only": false
     },
     "cross_arm_divergences": {
-      "owner_step": "human_lead",
-      "owner_role": "Human Lead, who diffs the arms",
-      "write_mode": "written_by_owner_step",
+      "owner_step": "step13b",
+      "owner_role": "Human Lead, at Step 13b, who diffs the arm files and then merges them",
+      "write_mode": "human_lead_only",
       "may_first_writer_fill": false,
-      "source": "CLAUDE.md, Dual implementation",
+      "source": "CLAUDE.md, Dual implementation; decisions/0107; task-sheet.md Step 13b",
       "forbidden_to_compute_here": [
         "step9",
+        "step10",
+        "step11",
+        "step12",
         "step13"
-      ]
+      ],
+      "merged_document_only": true
     },
     "arms": {
       "owner_step": "step9",
       "owner_role": "Data Scientist, Steps 9 and 13",
       "write_mode": "written_by_owner_step",
       "may_first_writer_fill": true,
-      "source": "task-sheet.md Steps 9 and 13"
+      "source": "task-sheet.md Steps 9 and 13",
+      "merged_document_only": false
     },
     "variants": {
       "owner_step": "step13",
       "owner_role": "Data Scientist, Step 13",
       "write_mode": "written_by_owner_step",
       "may_first_writer_fill": false,
-      "source": "task-sheet.md Step 13"
+      "source": "task-sheet.md Step 13",
+      "merged_document_only": false
     },
     "subpopulation_cuts": {
       "owner_step": "step11",
       "owner_role": "Data Scientist, Steps 11 and 12",
       "write_mode": "written_by_owner_step",
       "may_first_writer_fill": false,
-      "source": "task-sheet.md Steps 11 and 12"
+      "source": "task-sheet.md Steps 11 and 12",
+      "merged_document_only": false
     },
     "tested_ranges": {
       "owner_step": "step13",
       "owner_role": "Data Scientist, Step 13",
       "write_mode": "written_by_owner_step",
       "may_first_writer_fill": false,
-      "source": "task-sheet.md Step 13, 'Record the tested ranges. Step 16 needs them.'"
+      "source": "task-sheet.md Step 13, 'Record the tested ranges. Step 16 needs them.'",
+      "merged_document_only": false
     },
     "limitations": {
       "owner_step": "human_lead",
@@ -329,28 +396,32 @@
         "step11",
         "step12",
         "step13"
-      ]
+      ],
+      "merged_document_only": true
     },
     "spec_choices_made_by_step_8b": {
       "owner_step": "step8b",
       "owner_role": "Analytics Engineer, Step 8b",
       "write_mode": "structural_from_step_8b",
       "may_first_writer_fill": true,
-      "source": "task-sheet.md Step 8b"
+      "source": "task-sheet.md Step 8b",
+      "merged_document_only": false
     },
     "known_limits_of_this_schema": {
       "owner_step": "step8b",
       "owner_role": "Analytics Engineer, Step 8b",
       "write_mode": "structural_from_step_8b",
       "may_first_writer_fill": true,
-      "source": "task-sheet.md Step 8b"
+      "source": "task-sheet.md Step 8b",
+      "merged_document_only": false
     },
     "notes": {
       "owner_step": "step8b",
       "owner_role": "Analytics Engineer, Step 8b",
       "write_mode": "structural_from_step_8b",
       "may_first_writer_fill": true,
-      "source": "task-sheet.md Step 8b"
+      "source": "task-sheet.md Step 8b",
+      "merged_document_only": false
     }
   },
   "channel_classes": {
@@ -603,9 +674,10 @@
           "n_post_liveness": -999,
           "populations_differ_note": "PLACEHOLDER — NOT A MEASUREMENT: the bounds are stated on the position-5 row set and the published shares on the post-liveness row set; they are different populations and every field says which",
           "by_producing_arm": {
-            "dual_status": "dual",
+            "step_dual_status": "dual",
+            "arms_in_this_file": "both_arms",
             "producing_step": "step9",
-            "dual_status_source": "CLAUDE.md, Dual implementation; Step 13's duality is decisions/0103 §3",
+            "step_dual_status_source": "CLAUDE.md, Dual implementation; Step 13's duality is decisions/0103 §3; one file per arm is decisions/0107",
             "arms": {
               "a": {
                 "producing_arm": "a",
@@ -1183,9 +1255,10 @@
           "n_post_liveness": -999,
           "populations_differ_note": "PLACEHOLDER — NOT A MEASUREMENT: the bounds are stated on the position-5 row set and the published shares on the post-liveness row set; they are different populations and every field says which",
           "by_producing_arm": {
-            "dual_status": "dual",
+            "step_dual_status": "dual",
+            "arms_in_this_file": "both_arms",
             "producing_step": "step9",
-            "dual_status_source": "CLAUDE.md, Dual implementation; Step 13's duality is decisions/0103 §3",
+            "step_dual_status_source": "CLAUDE.md, Dual implementation; Step 13's duality is decisions/0103 §3; one file per arm is decisions/0107",
             "arms": {
               "a": {
                 "producing_arm": "a",
@@ -2677,9 +2750,10 @@
           "n_post_liveness": -999,
           "populations_differ_note": "PLACEHOLDER — NOT A MEASUREMENT: the bounds are stated on the position-5 row set and the published shares on the post-liveness row set; they are different populations and every field says which",
           "by_producing_arm": {
-            "dual_status": "dual",
+            "step_dual_status": "dual",
+            "arms_in_this_file": "both_arms",
             "producing_step": "step9",
-            "dual_status_source": "CLAUDE.md, Dual implementation; Step 13's duality is decisions/0103 §3",
+            "step_dual_status_source": "CLAUDE.md, Dual implementation; Step 13's duality is decisions/0103 §3; one file per arm is decisions/0107",
             "arms": {
               "a": {
                 "producing_arm": "a",
@@ -3257,9 +3331,10 @@
           "n_post_liveness": -999,
           "populations_differ_note": "PLACEHOLDER — NOT A MEASUREMENT: the bounds are stated on the position-5 row set and the published shares on the post-liveness row set; they are different populations and every field says which",
           "by_producing_arm": {
-            "dual_status": "dual",
+            "step_dual_status": "dual",
+            "arms_in_this_file": "both_arms",
             "producing_step": "step9",
-            "dual_status_source": "CLAUDE.md, Dual implementation; Step 13's duality is decisions/0103 §3",
+            "step_dual_status_source": "CLAUDE.md, Dual implementation; Step 13's duality is decisions/0103 §3; one file per arm is decisions/0107",
             "arms": {
               "a": {
                 "producing_arm": "a",
@@ -4747,9 +4822,10 @@
           "n_post_liveness": -999,
           "populations_differ_note": "PLACEHOLDER — NOT A MEASUREMENT: the bounds are stated on the position-5 row set and the published shares on the post-liveness row set; they are different populations and every field says which",
           "by_producing_arm": {
-            "dual_status": "dual",
+            "step_dual_status": "dual",
+            "arms_in_this_file": "both_arms",
             "producing_step": "step9",
-            "dual_status_source": "CLAUDE.md, Dual implementation; Step 13's duality is decisions/0103 §3",
+            "step_dual_status_source": "CLAUDE.md, Dual implementation; Step 13's duality is decisions/0103 §3; one file per arm is decisions/0107",
             "arms": {
               "a": {
                 "producing_arm": "a",
@@ -5327,9 +5403,10 @@
           "n_post_liveness": -999,
           "populations_differ_note": "PLACEHOLDER — NOT A MEASUREMENT: the bounds are stated on the position-5 row set and the published shares on the post-liveness row set; they are different populations and every field says which",
           "by_producing_arm": {
-            "dual_status": "dual",
+            "step_dual_status": "dual",
+            "arms_in_this_file": "both_arms",
             "producing_step": "step9",
-            "dual_status_source": "CLAUDE.md, Dual implementation; Step 13's duality is decisions/0103 §3",
+            "step_dual_status_source": "CLAUDE.md, Dual implementation; Step 13's duality is decisions/0103 §3; one file per arm is decisions/0107",
             "arms": {
               "a": {
                 "producing_arm": "a",
@@ -5954,9 +6031,10 @@
           "n_post_liveness": -999,
           "populations_differ_note": "PLACEHOLDER — NOT A MEASUREMENT: the bounds are stated on the position-5 row set and the published shares on the post-liveness row set; they are different populations and every field says which",
           "by_producing_arm": {
-            "dual_status": "dual",
+            "step_dual_status": "dual",
+            "arms_in_this_file": "both_arms",
             "producing_step": "step13",
-            "dual_status_source": "CLAUDE.md, Dual implementation; Step 13's duality is decisions/0103 §3",
+            "step_dual_status_source": "CLAUDE.md, Dual implementation; Step 13's duality is decisions/0103 §3; one file per arm is decisions/0107",
             "arms": {
               "a": {
                 "producing_arm": "a",
@@ -6112,9 +6190,10 @@
           "n_post_liveness": -999,
           "populations_differ_note": "PLACEHOLDER — NOT A MEASUREMENT: the bounds are stated on the position-5 row set and the published shares on the post-liveness row set; they are different populations and every field says which",
           "by_producing_arm": {
-            "dual_status": "dual",
+            "step_dual_status": "dual",
+            "arms_in_this_file": "both_arms",
             "producing_step": "step13",
-            "dual_status_source": "CLAUDE.md, Dual implementation; Step 13's duality is decisions/0103 §3",
+            "step_dual_status_source": "CLAUDE.md, Dual implementation; Step 13's duality is decisions/0103 §3; one file per arm is decisions/0107",
             "arms": {
               "a": {
                 "producing_arm": "a",
@@ -6314,9 +6393,10 @@
           "n_post_liveness": -999,
           "populations_differ_note": "PLACEHOLDER — NOT A MEASUREMENT: the bounds are stated on the position-5 row set and the published shares on the post-liveness row set; they are different populations and every field says which",
           "by_producing_arm": {
-            "dual_status": "single_arm",
+            "step_dual_status": "single_arm",
+            "arms_in_this_file": "one_arm",
             "producing_step": "step11",
-            "dual_status_source": "CLAUDE.md, Dual implementation; Step 13's duality is decisions/0103 §3",
+            "step_dual_status_source": "CLAUDE.md, Dual implementation; Step 13's duality is decisions/0103 §3; one file per arm is decisions/0107",
             "arms": {
               "sole": {
                 "producing_arm": "sole",
@@ -6416,7 +6496,8 @@
                   "source": "decisions/0058, 0063; reviewer-engineering F5"
                 }
               }
-            }
+            },
+            "arm_held": "sole"
           }
         },
         "DERIV": {
@@ -6426,9 +6507,10 @@
           "n_post_liveness": -999,
           "populations_differ_note": "PLACEHOLDER — NOT A MEASUREMENT: the bounds are stated on the position-5 row set and the published shares on the post-liveness row set; they are different populations and every field says which",
           "by_producing_arm": {
-            "dual_status": "single_arm",
+            "step_dual_status": "single_arm",
+            "arms_in_this_file": "one_arm",
             "producing_step": "step11",
-            "dual_status_source": "CLAUDE.md, Dual implementation; Step 13's duality is decisions/0103 §3",
+            "step_dual_status_source": "CLAUDE.md, Dual implementation; Step 13's duality is decisions/0103 §3; one file per arm is decisions/0107",
             "arms": {
               "sole": {
                 "producing_arm": "sole",
@@ -6528,7 +6610,8 @@
                   "source": "decisions/0058, 0063; reviewer-engineering F5"
                 }
               }
-            }
+            },
+            "arm_held": "sole"
           }
         }
       },
@@ -6552,9 +6635,10 @@
           "n_post_liveness": -999,
           "populations_differ_note": "PLACEHOLDER — NOT A MEASUREMENT: the bounds are stated on the position-5 row set and the published shares on the post-liveness row set; they are different populations and every field says which",
           "by_producing_arm": {
-            "dual_status": "single_arm",
+            "step_dual_status": "single_arm",
+            "arms_in_this_file": "one_arm",
             "producing_step": "step11",
-            "dual_status_source": "CLAUDE.md, Dual implementation; Step 13's duality is decisions/0103 §3",
+            "step_dual_status_source": "CLAUDE.md, Dual implementation; Step 13's duality is decisions/0103 §3; one file per arm is decisions/0107",
             "arms": {
               "sole": {
                 "producing_arm": "sole",
@@ -6654,7 +6738,8 @@
                   "source": "decisions/0058, 0063; reviewer-engineering F5"
                 }
               }
-            }
+            },
+            "arm_held": "sole"
           }
         },
         "DERIV": {
@@ -6664,9 +6749,10 @@
           "n_post_liveness": -999,
           "populations_differ_note": "PLACEHOLDER — NOT A MEASUREMENT: the bounds are stated on the position-5 row set and the published shares on the post-liveness row set; they are different populations and every field says which",
           "by_producing_arm": {
-            "dual_status": "single_arm",
+            "step_dual_status": "single_arm",
+            "arms_in_this_file": "one_arm",
             "producing_step": "step11",
-            "dual_status_source": "CLAUDE.md, Dual implementation; Step 13's duality is decisions/0103 §3",
+            "step_dual_status_source": "CLAUDE.md, Dual implementation; Step 13's duality is decisions/0103 §3; one file per arm is decisions/0107",
             "arms": {
               "sole": {
                 "producing_arm": "sole",
@@ -6766,7 +6852,8 @@
                   "source": "decisions/0058, 0063; reviewer-engineering F5"
                 }
               }
-            }
+            },
+            "arm_held": "sole"
           }
         }
       },
@@ -6874,8 +6961,38 @@
     {
       "choice": "Dual structure is a declared status, and single-arm steps write one payload under `sole`.",
       "spec_gap": "The spec names Steps 9 and 13 as dual and Steps 10 to 12 as single-owner, and requires the schema to hold both arms' values where the arms legitimately differ. It does not say what a single-arm step writes into a per-arm container.",
-      "what_was_done": "by_producing_arm carries dual_status and producing_step, with payloads under arms.a and arms.b when dual and arms.sole when not. A not_a_dual_step absence status exists for the slots where the distinction has to be recorded rather than inferred.",
-      "if_ruled_otherwise": "If a step's duality changes -- as Step 13's did at decisions/0103 -- only its dual_status and its arms keys change, and the diff sees the change."
+      "what_was_done": "by_producing_arm carries step_dual_status and producing_step, with payloads under arms.a and arms.b when dual and arms.sole when not. A not_a_dual_step absence status exists for the slots where the distinction has to be recorded rather than inferred.",
+      "if_ruled_otherwise": "If a step's duality changes -- as Step 13's did at decisions/0103 -- only its step_dual_status and its arms keys change, and the diff sees the change."
+    },
+    {
+      "choice": "The field that carried both facts was RENAMED, not redefined: `dual_status` is now `step_dual_status`, beside a new `arms_in_this_file`.",
+      "spec_gap": "decisions/0107 §4 requires the split into two facts -- whether the STEP is dual, and whether THIS FILE holds one arm or both -- and does not say whether the existing key keeps its name with a narrower meaning.",
+      "what_was_done": "The key was renamed. Under additionalProperties: false a writer still emitting `dual_status` fails loudly, rather than silently acquiring a new meaning under an unchanged key -- which is the shape this study has spent most of its entries on. The enum values are unchanged, so nothing about which steps are dual moves.",
+      "if_ruled_otherwise": "Keeping the old name costs one rename here and removes the loud failure. Nothing else depends on it: no consumer reads this file yet."
+    },
+    {
+      "choice": "TWO placeholders are emitted, one per document role.",
+      "spec_gap": "Step 8b's deliverable list says 'placeholder file', singular, and predates decisions/0107, which creates two document shapes: an arm file and the merged document Step 13b produces. The spec does not say which one the placeholder illustrates.",
+      "what_was_done": "artifacts/step8b-placeholder.json is the MERGED document, because Step 16 renders from the merged document and the placeholder exists so Step 16 can be built. artifacts/step8b-placeholder-arm-file.json is an ARM FILE, arm `a`, because Steps 9 to 13 write arm files and an arm writer given only the merged shape would have to invent the arm shape -- and a shape invented once per arm is two definitions of one thing. Both validate against this schema and both are flagged as placeholders.",
+      "if_ruled_otherwise": "If only one is wanted, the merged one is the deliverable and the arm-file one becomes a working file -- but then the arm shape is illustrated nowhere, and the first arm to write one fixes it by example."
+    },
+    {
+      "choice": "ONE FILE PER ARM is read as one file per arm, not one file per step per arm.",
+      "spec_gap": "decisions/0107 §1 says each ARM writes its own document. §6 lists Step 13b's inputs as 'Step 9 x2, Step 13 x2, and the single-arm files from Steps 10 to 12', which reads as one file per step per arm. The two readings differ in whether arm a's Step 9 and Step 13 outputs share a file.",
+      "what_was_done": "The arm-file placeholder holds one ARM: Step 9's headline arms and Step 13's variants together, with $.document_scope.producing_step naming the step that owns the $.arms spine and also_written_by_steps naming the others. It follows the ruling's own phrase and the no-conversion-layer rule, under which several steps write into one file. A Human Lead step may never appear in an arm file's writer list, under either reading.",
+      "if_ruled_otherwise": "If it is one file per step per arm, $.document_scope.producing_step becomes single-valued, also_written_by_steps empties, and Step 13's file carries `variants` while Step 9's does not -- but then it must be said what a Step 13 file's required `arms` spine holds, since both steps write W arms. Nothing in the validator changes: its predicate is the producing step, not the block set."
+    },
+    {
+      "choice": "A single-arm step's own file (arm `sole`) is expressible but is not separately illustrated.",
+      "spec_gap": "decisions/0107 §6 lists 'the single-arm files from Steps 10 to 12' among Step 13b's inputs, so those steps write their own files. The spec does not say what such a file carries at top level: `arms` is the spine of this schema and Steps 10 to 12 do not produce W arms.",
+      "what_was_done": "$.document_scope.arm accepts `sole`, and by_producing_arm accepts a `sole` payload under one_arm, so the file is expressible. It is not illustrated, and the question of what its `arms` spine holds is left OPEN rather than answered here by example.",
+      "if_ruled_otherwise": "If those steps write into an arm file rather than their own, only $.document_scope changes. If they keep their own files, either `arms` stops being required for them or its entries carry block absences -- and that is a ruling, not a schema preference."
+    },
+    {
+      "choice": "The blocks only the merge may fill are declared in the ownership registry, not listed in the validator.",
+      "spec_gap": "task-sheet.md Step 13b names cross_arm_divergences and limitations as the two blocks only it may fill. Nothing says how a file declares that.",
+      "what_was_done": "Each $.block_ownership entry carries merged_document_only, and check S29 reads the registry rather than a list inside the checker. A third such block is added by marking it, in one place.",
+      "if_ruled_otherwise": "A hard-coded list in the validator would work today and drift the moment a block is added, with nothing to compare it against."
     },
     {
       "choice": "Every top-level block declares an owner, and D4 and D9 are marked copied from Step 8 rather than computed where they are written.",
@@ -6930,6 +7047,16 @@
     {
       "limit": "This step is single-arm. There is no second instance and therefore no dual diff on the schema itself.",
       "consequence": "An ambiguity in the Step 8b spec that this schema resolved one way would not show up as a divergence. The resolutions are listed under $.spec_choices_made_by_step_8b instead."
+    },
+    {
+      "limit": "No single file can exercise both document roles, because the role is a property of the whole file. Check S21's branch coverage is therefore role-restricted: an arm file cannot exhibit the merged document's branches and does not pretend to.",
+      "consequence": "Branch coverage of the two roles is a property of the PAIR of placeholders, not of either one. S21 names the families it restricted and why, so a restricted pass cannot be read as a full one.",
+      "mitigation": "Both placeholders are generated by the same run and validated in it, and the run record in logs/step8b/ carries the role of each file beside its result."
+    },
+    {
+      "limit": "The schema can require an arm file to name its arm and can forbid it the blocks only the merge may fill. It cannot tell whether the file was actually written in isolation.",
+      "consequence": "Isolation is a property of how an instance was run, not of its output. The schema removes the one path that made a fabricated cross-arm search the only way to pass; it does not make fabrication impossible.",
+      "mitigation": "The diff between the two arm files is the control, and it is the Human Lead's. Nothing in this file substitutes for it."
     }
   ],
   "notes": {
@@ -6937,6 +7064,8 @@
     "one_definition_per_figure": "Where a figure would otherwise appear twice, this schema references it: the scope qualifier is defined once under $.scope_qualifiers and referenced from every bound, and bootstrap settings are defined once under $.bootstrap_settings and referenced from every interval.",
     "reading_a_placeholder": "Check $.placeholder before reading anything else. This file's flag is true.",
     "bootstrap_is_fixed": "The resample count, the resampling unit for the outcome shares and the seed are fixed by the spec and are stated at $.bootstrap_spec, restated at every interval, and checked against each other. The statistic -- levels versus movements -- is NOT fixed, and differs between the arms.",
-    "which_steps_are_dual": "Steps 9 and 13 are dual and nest their payloads per producing arm. Steps 10, 11 and 12 are single-arm and write one payload under `sole`. Which of the two a block used is a field, not something a consumer has to infer from the keys."
+    "which_steps_are_dual": "Steps 9 and 13 are dual and nest their payloads per producing arm. Steps 10, 11 and 12 are single-arm and write one payload under `sole`. Which of the two a block used is a field, not something a consumer has to infer from the keys.",
+    "one_file_per_arm": "Each arm writes its own document and no arm writes into a document another arm writes into (decisions/0107). A DUAL STEP IS DIFFED BETWEEN TWO ARM FILES, BY THE HUMAN LEAD, BEFORE THE MERGE. The merged reader-facing document is Step 13b's, owned by the Human Lead, and it is the only document that holds both arms and the only one carrying cross_arm_divergences and limitations. Read $.document_scope first: it says which kind of file this is.",
+    "where_the_two_conventions_are_held": "Where the two arms legitimately differ -- the bound over sampling width ratios use two conventions and are REPORTED, NOT RECONCILED -- the MERGED document holds both, under arms.a and arms.b. One slot per figure would force a reconciliation the spec forbids in the merged document; in a single arm's file it forces nothing, because there is no second arm's figure in it."
   }
 }

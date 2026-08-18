@@ -30,6 +30,10 @@ import step8b_validate as V  # noqa: E402
 
 SCHEMA_PATH = os.path.join(ROOT, "artifacts", "step8b-output-schema.json")
 PLACEHOLDER_PATH = os.path.join(ROOT, "artifacts", "step8b-placeholder.json")
+# The ARM-FILE placeholder (decisions/0107). Half of the v1.2.0 behaviour is only
+# observable on a file that is not the merged document: S17 skipping, S29's
+# prohibition, and S28's one-file-per-arm clause.
+ARM_PLACEHOLDER_PATH = os.path.join(ROOT, "artifacts", "step8b-placeholder-arm-file.json")
 LOG_DIR = os.path.join(ROOT, "logs", "step8b")
 
 
@@ -176,6 +180,10 @@ MUTATIONS = {
     "S25": lambda i: _set(_first_abandonment(i), "row_set", "post_liveness"),
     "S26": lambda i: _first_abandonment(i)["histograms"][0]["bin_edges_p"].pop(),
     "S27": lambda i: i["block_ownership"].pop("arms"),
+    # v1.2.0 -- one mutation per check added against decisions/0107.
+    "S28": lambda i: _set(
+        i["arms"][0]["headline"]["APPLY"]["by_producing_arm"], "arms_in_this_file", "one_arm"),
+    "S29": lambda i: i.pop("cross_arm_divergences"),
 }
 
 # Extra mutations that target a SECOND clause of a check whose first clause is
@@ -189,6 +197,54 @@ EXTRA_MUTATIONS = {
         _set(i["cross_arm_divergences"], "entries", []),
         "search", dict(i["cross_arm_divergences"]["search"], performed=False))),
     "S18/inline_settings": ("S18", "placeholder", lambda i: _first_ci(i).pop("seed")),
+    # THE SINGLE-ARM BRANCH IS NOT LOOSENED BY THE SPLIT (decisions/0107 §4). A
+    # single-arm step's block claiming two arms is the mirror defect of the one
+    # v1.2.0 fixes, and it must fail rather than validate silently.
+    "S28/single_arm_step_claims_two_arms": ("S28", "placeholder", lambda i: _set(
+        _set(i["subpopulation_cuts"][0]["headline"]["APPLY"]["by_producing_arm"],
+             "arms_in_this_file", "both_arms"),
+        "arms", {"a": copy.deepcopy(
+            i["subpopulation_cuts"][0]["headline"]["APPLY"]["by_producing_arm"]["arms"]["sole"]),
+            "b": copy.deepcopy(
+            i["subpopulation_cuts"][0]["headline"]["APPLY"]["by_producing_arm"]["arms"]["sole"])})),
+    # A merged document that carries only one arm of a DUAL step has dropped an
+    # arm, and the diff it exists to publish cannot be there.
+    "S28/merged_document_drops_an_arm": ("S28", "placeholder", lambda i: _set(
+        _set(i["arms"][0]["headline"]["APPLY"]["by_producing_arm"], "arms_in_this_file",
+             "one_arm"),
+        "arm_held", "a")),
+}
+
+# Cases exercised against the ARM-FILE placeholder rather than the merged one.
+# Half of the v1.2.0 behaviour is invisible on the merged document.
+ARM_MUTATIONS = {
+    # An arm file that CARRIES the block still fails: S17's requirement is
+    # skipped for an arm file, the prohibition is not.
+    "S17/arm_file_carries_the_merge_only_block": ("S17", lambda i: _set(
+        i, "cross_arm_divergences",
+        {"search": {"performed": True, "coverage_count": 3, "owner_step": "human_lead",
+                    "what_was_searched": "a search an isolated arm could not have run",
+                    "empty_reason": None},
+         "entries": []})),
+    "S29/arm_file_carries_the_merge_only_block": ("S29", lambda i: _set(
+        i, "limitations",
+        [{"id": "x", "text": "a Human Lead block an arm file may not carry",
+          "source": "selftest", "direction": None, "may_be_netted_with_others": False}])),
+    # One file per arm: a block holding an arm other than the file's own.
+    "S28/arm_file_holds_another_arm": ("S28", lambda i: _set(
+        i["arms"][0]["headline"]["APPLY"]["by_producing_arm"], "arm_held", "b")),
+    # The merge arriving through the side door: a Human Lead step named among an
+    # arm file's writers.
+    "S28/arm_file_written_by_a_human_lead_step": ("S28", lambda i: _set(
+        i["document_scope"], "also_written_by_steps", ["step8", "step13", "step13b"])),
+}
+
+# The case the ruling names in as many words: an arm file that correctly OMITS
+# $.cross_arm_divergences must not fail. Before v1.2.0 it did, and the only path
+# to exit 0 was a cross-arm search an isolated arm cannot honestly have run.
+ARM_REQUIRED_NON_FAILURES = {
+    "S17/arm_file_omitting_it_passes": ("S17", lambda i: i),
+    "S29/arm_file_omitting_it_passes": ("S29", lambda i: i),
 }
 
 # Cases that must NOT fail. F4 is the reason this section exists: a legitimately
@@ -229,6 +285,8 @@ def main() -> int:
         schema = json.load(fh)
     with open(PLACEHOLDER_PATH) as fh:
         placeholder = json.load(fh)
+    with open(ARM_PLACEHOLDER_PATH) as fh:
+        arm_file = json.load(fh)
 
     real = _make_real(placeholder)
 
@@ -243,6 +301,7 @@ def main() -> int:
 
     baseline_ph = run(placeholder)
     baseline_real = run(real)
+    baseline_arm = run(arm_file)
 
     results = []
     for cid, mutate in MUTATIONS.items():
@@ -285,9 +344,40 @@ def main() -> int:
             "has_force": after in ("FAIL", "VACUOUS"),
         })
 
+    # The arm-file cases (decisions/0107).
+    for label, (cid, mutate) in ARM_MUTATIONS.items():
+        before = _status_of(baseline_arm, cid)
+        mutated = copy.deepcopy(arm_file)
+        try:
+            mutate(mutated)
+        except Exception as exc:
+            results.append({"check": label, "applied_to": "arm_file", "error": str(exc),
+                            "has_force": False})
+            continue
+        after = _status_of(run(mutated), cid)
+        results.append({
+            "check": label,
+            "applied_to": "arm_file",
+            "status_before": before,
+            "status_after": after,
+            "has_force": after in ("FAIL", "VACUOUS"),
+        })
+
     # Cases that must NOT fail: an emptiness the file declares, with its coverage
     # count, is a finding rather than an omission (reviewer-engineering F4).
     non_failures = []
+    for label, (cid, mutate) in ARM_REQUIRED_NON_FAILURES.items():
+        mutated = copy.deepcopy(arm_file)
+        mutate(mutated)
+        after = _status_of(run(mutated), cid)
+        non_failures.append({
+            "case": label,
+            "check": cid,
+            "applied_to": "arm_file",
+            "status_after": after,
+            "must_not_fail": True,
+            "ok": after not in ("FAIL", "VACUOUS"),
+        })
     for label, (cid, mutate) in REQUIRED_NON_FAILURES.items():
         mutated = copy.deepcopy(placeholder)
         mutate(mutated)
@@ -335,6 +425,11 @@ def main() -> int:
         "baseline_real_copy": {
             "schema_errors": baseline_real["schema_errors"],
             "statuses": {c["id"]: c["status"] for c in baseline_real["semantic_checks"]},
+        },
+        "baseline_arm_file": {
+            "instance": ARM_PLACEHOLDER_PATH,
+            "schema_errors": baseline_arm["schema_errors"],
+            "statuses": {c["id"]: c["status"] for c in baseline_arm["semantic_checks"]},
         },
         "mutations": results,
         "required_non_failures": non_failures,

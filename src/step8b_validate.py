@@ -25,6 +25,15 @@ That split is reviewer-engineering's F4: the previous version failed a
 legitimately empty optional array, which reads "no unreconciled divergence was
 found" as "looked nowhere" and inverts the rule it was written from.
 
+SCOPED BY DOCUMENT ROLE at v1.2.0 (decisions/0107). ONE FILE PER ARM: an arm file
+is written by an isolated instance, the merged document is Step 13b's, and
+$.document_scope says which a file is. Two checks are role-aware -- S17, which no
+longer requires an arm file to carry a cross-arm search it is structurally
+forbidden to have performed, and S21, whose branch coverage is restricted to the
+branches a file's role can reach and NAMES the restriction. Two more are new:
+S28, which ties the two duality facts to each other and to the file, and S29,
+which keeps the blocks only the merge may fill out of an arm file.
+
 Usage:  python3 src/step8b_validate.py <instance.json> [--schema <schema.json>]
 Exit 0 if every check passes, 1 otherwise.
 """
@@ -257,6 +266,31 @@ SENTINEL_COUNT = -999
 SENTINEL_PERCENT = -999.0
 PLACEHOLDER_PREFIX = "PLACEHOLDER — NOT A MEASUREMENT"
 
+# The steps the Human Lead owns among the writers. ONE FILE PER ARM
+# (decisions/0107): the merged reader-facing document is Step 13b's, and it is
+# the only document that reads both arms. A file whose producing step is not one
+# of these is an ARM FILE, written by an isolated instance that is structurally
+# forbidden to have performed a cross-arm search -- which is why check S17 does
+# not apply to it.
+HUMAN_LEAD_STEPS = ("human_lead", "step13b")
+
+
+def _producing_step(inst: dict) -> str | None:
+    """The step whose output this document IS -- not its generator.
+
+    $.generated_by names whatever produced the bytes; a placeholder is generated
+    by Step 8b and shows the shape of another step's document. $.document_scope
+    is what says whose document this is.
+    """
+    scope = inst.get("document_scope")
+    if isinstance(scope, dict):
+        return scope.get("producing_step")
+    return None
+
+
+def _is_merged_document(inst: dict) -> bool:
+    return _producing_step(inst) in HUMAN_LEAD_STEPS
+
 
 class Check:
     """One semantic check, and how many sites it looked at.
@@ -280,6 +314,11 @@ class Check:
         self.skipped_reason: str | None = None
         self.declared_empty: str | None = None
         self.coverage: int | None = None
+        # Notes a check makes about what it did NOT examine and why, where that
+        # is a property of the file's scope rather than a failure. A check whose
+        # coverage is legitimately restricted says so here; a restricted pass
+        # that says nothing is indistinguishable from a full one.
+        self.notes: list[str] = []
 
     @property
     def status(self) -> str:
@@ -304,6 +343,7 @@ class Check:
             "not_applicable_reason": self.skipped_reason,
             "declared_empty_reason": self.declared_empty,
             "search_coverage_count": self.coverage,
+            "scope_notes": self.notes,
         }
 
 
@@ -837,16 +877,46 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
     #        legitimately empty optional array as VACUOUS, which reads "no
     #        unreconciled divergence" as "looked nowhere" -- the inverse of
     #        CLAUDE.md's rule, which requires the control to distinguish them.
+    #
+    #        SCOPED AT v1.2.0 (decisions/0107, E1). This check applies ONLY where
+    #        the file's producing step is the Human Lead's -- the merged document
+    #        of task-sheet.md Step 13b. Before that it applied everywhere, and
+    #        $.block_ownership already forbade an arm from writing the block: the
+    #        arm was forbidden to write it and forbidden to omit it, and the only
+    #        path to exit 0 was a cross-arm search an isolated instance cannot
+    #        honestly have performed. AN ARM FILE THAT CORRECTLY OMITS THE BLOCK
+    #        PASSES. An arm file that CARRIES it still fails, which is the half
+    #        that must not be lost: skipping the requirement is not permitting
+    #        the fabrication.
     c = Check(
         "S17",
-        "figures reported-not-reconciled hold both arms' values and are flagged; an empty "
-        "list is accepted only with a search record and its coverage count",
+        "in the MERGED document, figures reported-not-reconciled hold both arms' values and "
+        "are flagged, and an empty list is accepted only with a search record and its "
+        "coverage count; in an ARM FILE the block must be absent",
     )
     cad = inst.get("cross_arm_divergences")
-    if cad is None:
+    producing = _producing_step(inst)
+    if not _is_merged_document(inst):
+        # AN ARM FILE. The requirement is skipped; the prohibition is not.
+        if cad is None:
+            c.skipped_reason = (
+                f"this file's producing step is {producing!r}, which is not the Human Lead's: "
+                f"$.cross_arm_divergences belongs to the merged document (task-sheet.md Step "
+                f"13b), an isolated arm is forbidden to compute it, and its ABSENCE here is "
+                f"correct rather than a gap. Check S29 asserts that absence against the "
+                f"ownership registry rather than leaving it assumed"
+            )
+        else:
+            c.sites += 1
+            c.failures.append(
+                f"$.cross_arm_divergences is present in a file whose producing step is "
+                f"{producing!r}: only the merged document may carry it, and an isolated arm "
+                f"could not have performed the search it records"
+            )
+    elif cad is None:
         c.failures.append(
-            "$.cross_arm_divergences is absent: with no search record, an empty set of "
-            "divergences cannot be told from a search nobody ran"
+            "$.cross_arm_divergences is absent from the MERGED document: with no search "
+            "record, an empty set of divergences cannot be told from a search nobody ran"
         )
         c.sites += 1
     elif not isinstance(cad, dict):
@@ -949,24 +1019,47 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
     if not is_placeholder:
         c.skipped_reason = "branch coverage is a property of the placeholder, not of a data file"
     else:
+        # ROLE-RESTRICTED at v1.2.0 (decisions/0107). The document role is a
+        # property of the whole file, so no single file can exhibit both roles'
+        # branches: an arm file holds one arm and none of the merge-only blocks.
+        # The restriction is NAMED rather than applied silently -- a restricted
+        # pass that says nothing is indistinguishable from a full one.
+        merged = _is_merged_document(inst)
+        file_arm = (inst.get("document_scope") or {}).get("arm")
         required_branches = {
             "clock_origin": {"s2_finale", "s2_premiere"},
-            "producing_arm": {"a", "b", "sole"},
+            "producing_arm": {"a", "b", "sole"} if merged else {file_arm},
             "population": {"APPLY", "DERIV"},
             "absence_status": {"structurally_absent", "not_published",
                                "no_producer_in_spec", "superseded_for_this_purpose",
                                "not_required_by_spec", "not_a_dual_step"},
-            "dual_status": {"dual", "single_arm"},
+            "step_dual_status": {"dual", "single_arm"} if merged else {"dual"},
+            "arms_in_this_file": {"one_arm", "both_arms"} if merged else {"one_arm"},
             "row_set": {"position_5", "post_liveness"},
             "stratum_kind": {"all", "l2_stratum"},
             "resampling_unit": {"account"},
         }
+        if not merged:
+            # `not_a_dual_step` is written only by a `sole` payload, and `sole`
+            # and `a` are two different arms' files under one-file-per-arm.
+            required_branches["absence_status"] = (
+                required_branches["absence_status"] - {"not_a_dual_step"}
+            )
+            c.notes.append(
+                f"role-restricted: this is an ARM FILE holding arm {file_arm!r}, so the "
+                f"branches 'producing_arm' b and sole, 'step_dual_status' single_arm, "
+                f"'arms_in_this_file' both_arms and 'absence_status' not_a_dual_step are not "
+                f"reachable in it and are not required. They are exercised by the merged "
+                f"placeholder, which is validated in the same run. Branch coverage of the two "
+                f"document roles is a property of the PAIR of files, not of either one."
+            )
         observed = {k: set() for k in required_branches}
         observed["clock_origin"] = {a.get("clock_origin") for a in inst.get("arms", [])}
         for base, pop, block in _iter_payloads(inst):
             observed["population"].add(pop)
             bpa = block.get("by_producing_arm") or {}
-            observed["dual_status"].add(bpa.get("dual_status"))
+            observed["step_dual_status"].add(bpa.get("step_dual_status"))
+            observed["arms_in_this_file"].add(bpa.get("arms_in_this_file"))
             observed["producing_arm"] |= set((bpa.get("arms") or {}).keys())
         for _, pop, blk in _iter_abandonment(inst):
             observed["row_set"].add(blk.get("row_set"))
@@ -1183,6 +1276,169 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
                         f"$.channel_classes.{name}: not marked as copied from Step 8, which "
                         f"is the one thing Step 9 is forbidden to compute here"
                     )
+    checks.append(c)
+
+    # S28 -- THE TWO FACTS AGREE WITH EACH OTHER AND WITH THE FILE (decisions/0107
+    #        §4). `step_dual_status` is a property of the STEP; `arms_in_this_file`
+    #        is a property of THIS FILE; `arm_held` names which arm a one-arm file
+    #        holds. Until v1.2.0 one field carried both, so `dual` required both
+    #        arms and a dual step's arm file -- the file the ruling requires -- had
+    #        no legal shape at all. The schema now permits it; this check is what
+    #        stops the two facts drifting apart inside a file that validates.
+    c = Check(
+        "S28",
+        "every block's step-duality, arms-in-this-file and arm_held agree with its arms keys "
+        "and with $.document_scope; a single-arm step never holds two arms",
+    )
+    scope = inst.get("document_scope")
+    if not isinstance(scope, dict):
+        c.sites += 1
+        c.failures.append(
+            "$.document_scope is absent: the file does not say whether it is one arm's "
+            "document or the merged one, so nothing can be checked against it"
+        )
+    else:
+        merged = _is_merged_document(inst)
+        file_arm = scope.get("arm")
+        c.sites += 1
+        if merged and file_arm is not None:
+            c.failures.append(
+                f"$.document_scope: the merged document names arm {file_arm!r}; it holds all "
+                f"of them and names none"
+            )
+        if not merged and file_arm not in ("a", "b", "sole"):
+            c.failures.append(
+                f"$.document_scope: an arm file must NAME its arm; got {file_arm!r}"
+            )
+        if not merged:
+            also = [s for s in (scope.get("also_written_by_steps") or [])
+                    if s in HUMAN_LEAD_STEPS]
+            if also:
+                c.failures.append(
+                    f"$.document_scope.also_written_by_steps names {also} in an ARM FILE: a "
+                    f"Human Lead step writing into an arm file is the merge arriving through "
+                    f"the side door, and the merge is a separate step on separate inputs"
+                )
+        for base, pop, block in _iter_payloads(inst):
+            bpa = block.get("by_producing_arm")
+            if not isinstance(bpa, dict):
+                c.sites += 1
+                c.failures.append(f"{base}: no by_producing_arm block")
+                continue
+            c.sites += 1
+            path = f"{base}.by_producing_arm"
+            keys = set((bpa.get("arms") or {}).keys())
+            dual = bpa.get("step_dual_status")
+            held_fact = bpa.get("arms_in_this_file")
+            held = bpa.get("arm_held")
+            if held_fact == "one_arm":
+                if len(keys) != 1:
+                    c.failures.append(
+                        f"{path}: arms_in_this_file is one_arm but the arms keys are "
+                        f"{sorted(keys)}"
+                    )
+                elif held not in keys:
+                    c.failures.append(
+                        f"{path}: arm_held is {held!r} but the arm present is "
+                        f"{sorted(keys)[0]!r} -- a one-arm block must NAME the arm it holds"
+                    )
+            elif held_fact == "both_arms":
+                if keys != {"a", "b"}:
+                    c.failures.append(
+                        f"{path}: arms_in_this_file is both_arms but the arms keys are "
+                        f"{sorted(keys)}"
+                    )
+                if held is not None:
+                    c.failures.append(
+                        f"{path}: arms_in_this_file is both_arms and arm_held is {held!r}; a "
+                        f"single name could only contradict one of the two arms present"
+                    )
+            else:
+                c.failures.append(f"{path}: arms_in_this_file is {held_fact!r}")
+            if dual == "single_arm":
+                # NOT loosened by the split: the mirror defect of the one it
+                # fixes is a single-arm step's file claiming two arms.
+                if held_fact != "one_arm" or keys != {"sole"}:
+                    c.failures.append(
+                        f"{path}: a single-arm step holds {sorted(keys)} as "
+                        f"{held_fact!r} -- a single-arm step has one arm, under `sole`"
+                    )
+            elif dual == "dual":
+                if keys & {"sole"}:
+                    c.failures.append(f"{path}: a dual step holds a `sole` payload")
+                if merged and held_fact != "both_arms":
+                    c.failures.append(
+                        f"{path}: the merged document holds {held_fact!r} of a DUAL step -- a "
+                        f"merge that carries one arm of a dual step has dropped the other"
+                    )
+            else:
+                c.failures.append(f"{path}: step_dual_status is {dual!r}")
+            if not merged and held_fact == "one_arm" and held != file_arm:
+                c.failures.append(
+                    f"{path}: this block holds arm {held!r} in the file of arm {file_arm!r} -- "
+                    f"one file per arm, and no arm writes into another arm's document"
+                )
+            for akey, payload in (bpa.get("arms") or {}).items():
+                if isinstance(payload, dict) and not _is_absence(payload) \
+                        and payload.get("producing_arm") != akey:
+                    c.failures.append(
+                        f"{path}.arms.{akey}: the payload says producing_arm "
+                        f"{payload.get('producing_arm')!r}"
+                    )
+    checks.append(c)
+
+    # S29 -- THE BLOCKS ONLY THE MERGE MAY FILL APPEAR ONLY IN THE MERGED DOCUMENT
+    #        (task-sheet.md Step 13b; decisions/0107). This is what stops an arm
+    #        file masquerading as a merged one, and it is the check that makes
+    #        S17's skip safe: S17 no longer requires the block in an arm file, so
+    #        something must assert that the arm file does not carry it.
+    #        The set is read from $.block_ownership, not from a list in here, so a
+    #        third such block is added by marking it in one place.
+    c = Check(
+        "S29",
+        "blocks marked merged_document_only in $.block_ownership appear only in the merged "
+        "document, and every Human-Lead-owned block is so marked",
+    )
+    ownership = inst.get("block_ownership")
+    if not isinstance(ownership, dict):
+        c.sites += 1
+        c.failures.append("$.block_ownership is absent: nothing declares which blocks are "
+                          "the merge's own")
+    else:
+        merged = _is_merged_document(inst)
+        for name, entry in ownership.items():
+            if not isinstance(entry, dict):
+                continue
+            owner = entry.get("owner_step")
+            merge_only = entry.get("merged_document_only")
+            if owner in HUMAN_LEAD_STEPS:
+                c.sites += 1
+                if merge_only is not True:
+                    c.failures.append(
+                        f"$.block_ownership.{name}: owned by {owner!r} but not marked "
+                        f"merged_document_only -- a Human-Lead block an arm file may carry is "
+                        f"a block an arm may fabricate"
+                    )
+            if merge_only is True:
+                c.sites += 1
+                if not merged and name in inst:
+                    c.failures.append(
+                        f"$.{name}: present in an arm file. It is filled only by the merged "
+                        f"document, so an arm file carrying it is an arm file masquerading as "
+                        f"a merged one"
+                    )
+                if merged and name not in inst:
+                    c.failures.append(
+                        f"$.{name}: the merged document must carry the blocks only it may "
+                        f"fill; this one is absent"
+                    )
+        if c.sites == 0:
+            c.failures.append(
+                "$.block_ownership names no merged_document_only block and no Human-Lead "
+                "owner, so this check examined nothing: it found nothing because it looked "
+                "nowhere"
+            )
+            c.sites += 1
     checks.append(c)
 
     return checks

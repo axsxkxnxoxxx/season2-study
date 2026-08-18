@@ -854,7 +854,14 @@ with two amendments that postdate its drafting, both marked below.
 - [ ] **Steps 9 through 13 write into this schema DIRECTLY. No conversion layer.** That is the point of
       the step: a conversion layer is a second definition of every figure, and **two definitions of one
       figure is the defect this study has hit most often** (`0058`, `0061`, `0062`).
-- [ ] **The two arms of a dual step write the same schema and are diffed in it.** Step 9 is dual, so the
+- [ ] ~~**The two arms of a dual step write the same schema and are diffed in it.**~~ ***FIRST CLAUSE
+      RETIRED by `0107` (E2): the two arms write the SAME SCHEMA but NOT THE SAME FILE. A dual step is
+      DIFFED BETWEEN TWO ARM FILES, BY THE HUMAN LEAD, BEFORE THE MERGE — not inside one file, which
+      had no writer. SIXTH assertive surface, found by arm `a` on the rerun; `0107` §5 found five and
+      named four. It is this step's own spec bullet, and the arm correctly declined to edit it —
+      propagating a ruling into its own spec is not an arm's to do.*** **The SECOND clause stands and
+      is unaffected**: one slot per figure would force a reconciliation the spec forbids **in the
+      MERGED document**. Step 9 is dual, so the
       schema must hold **both arms' values for a figure where the arms legitimately differ** — the
       **bound ÷ sampling width ratios use two conventions and are REPORTED, NOT RECONCILED** (`0058`,
       `0063`). **A schema with one slot per figure would force a reconciliation the spec forbids.**
