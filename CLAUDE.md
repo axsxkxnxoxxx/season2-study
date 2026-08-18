@@ -34,7 +34,9 @@ A chained step still returns to the Human Lead before the next one starts. Chain
 
 ## Dual implementation
 
-Steps 6, 7, 8, and 9 run twice. Steps 6, 7, and 9 use data-scientist and data-scientist-b. Step 8 uses analytics-engineer and analytics-engineer-b.
+Steps 6, 7, 8, 9 **and 13** run twice. Steps 6, 7, 9 and 13 use data-scientist and data-scientist-b. Step 8 uses analytics-engineer and analytics-engineer-b.
+
+***STEP 13 IS DUAL. Human Lead ruling, 2026-08-18 (`0103`), resolving a live conflict between this list and `task-sheet.md`***, which argued the `W` grid must be fixed because *"two instances on different grids produce tables that CANNOT BE DIFFED AT ALL"* — presupposing a duality this list did not grant. **Found by `reviewer-engineering` on the Step 8b review and reported rather than charged to the schema.** **Resolved in favour of dual:** Step 13 varies `W` across eight arms **and the completion rule alongside**, making it **the most spec-heavy step remaining** — and **every divergence in this build has come from an unstated convention in a spec, not from a coding error.**
 
 Both instances receive the same written spec from a file. Never describe the task twice in your own words: a difference in output would then prove nothing.
 

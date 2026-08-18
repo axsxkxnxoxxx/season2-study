@@ -105,6 +105,29 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
   Step 8 instances measured the adopted figures independently and identically.** **State the population
   wherever the series appears.**
 
+- **THE BOOTSTRAP IS FIXED — 10,000 RESAMPLES, ACCOUNT-LEVEL, SEED 20260818** (`0103`). **This
+  unblocks Step 9**, which could not write anything while `ci.bootstrap_ref` was required against an
+  unspecified bootstrap. **EVERY INTERVAL RECORDS ITS SEED, RESAMPLE COUNT AND RESAMPLING UNIT AT THE
+  POINT OF USE**, so an unfixed spec is visible rather than silent.
+  **ACCOUNT LEVEL because pairs are NOT independent — one account contributes many — and pair-level
+  resampling understates the interval.** **Measured on this build**: Step 7's threshold interval is
+  account-clustered **[528, 787]** against an i.i.d. **[632, 645]** that **overstates precision by
+  roughly twentyfold** (`0039`).
+  **THE FIXED SEED IS WHAT MAKES THE TWO ARMS COMPARABLE.** Without it **a difference between you could
+  be sampling noise rather than a divergence** — and the dual control rests entirely on that
+  distinction. **The seed VALUE is arbitrary; its FIXITY is the point.**
+  ***THE BINDING CLUSTER IS NOT THE SAME FOR EVERY QUANTITY, AND THIS IS YOURS TO WATCH.*** **`W`'s
+  interval is SHOW-clustered** — 25,120 C1 pairs from **206 shows**, i.i.d. ±8 days against
+  show-clustered [89, 125] — and **`task-sheet.md` names the SHOW as binding there.** **Account-level is
+  right for the outcome shares and would UNDERSTATE a show-bound quantity.** **State `resampling_unit`
+  per interval; a show-bound quantity says `show`, and must not inherit `account` silently. Report a
+  material disagreement between the two units — do not reconcile it.**
+- **STEP 13 IS DUAL** (`0103`). **`CLAUDE.md`'s dual list omitted it while `task-sheet.md` argued the
+  `W` grid must be fixed because two instances on different grids produce tables that **cannot be
+  diffed at all** — presupposing the duality. **Resolved in favour of dual**: Step 13 varies `W` across
+  eight arms **and the completion rule alongside**, the most spec-heavy step remaining, and **every
+  divergence in this build has come from an unstated convention in a spec rather than a coding error.**
+  **So Step 13's payload nests per producing arm exactly as Step 9's does.**
 - **STEP 8b'S SCHEMA EXISTS, AND STEPS 9–13 WRITE INTO IT DIRECTLY** (`0102`). **`0066` §6 recorded
   that you would gain this obligation once the schema existed. It exists now**:
   **`artifacts/step8b-output-schema.json`**, with a placeholder instance at

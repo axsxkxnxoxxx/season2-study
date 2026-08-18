@@ -875,6 +875,36 @@ outputs.
 - [ ] Of users who completed S1, compute the share who never started S2
 - [ ] Compute the share who started and left
 - [ ] Compute the share who continued
+- [ ] **THE BOOTSTRAP IS FIXED: 10,000 RESAMPLES, RESAMPLED AT THE ACCOUNT LEVEL, SEED 20260818.**
+      Human Lead ruling, 2026-08-18 (`0103`), closing the gap `0056` left open and **unblocking Step 9**,
+      which `reviewer-engineering` found could not write **anything at all** while `ci.bootstrap_ref` was
+      required against an unspecified bootstrap.
+      **EVERY INTERVAL RECORDS ITS SEED, ITS RESAMPLE COUNT AND ITS RESAMPLING UNIT, at the point of
+      use** — *"so an unfixed spec is visible in the output rather than silent."*
+      **ACCOUNT LEVEL, because pairs are not independent — one account contributes many — and pair-level
+      resampling understates the interval.** **This build has measured that clustering, and the
+      measurements are on the record**: Step 7's threshold interval is **account-clustered [528, 787]**
+      against an **i.i.d. [632, 645]** that *"overstates precision by roughly twentyfold"* (`0039`).
+      **THE FIXED SEED IS WHAT MAKES THE TWO ARMS COMPARABLE** — without it, a difference between them
+      could be **sampling noise rather than a divergence**, and this study's entire dual control rests on
+      that distinction.
+      ***THE SEED VALUE ITSELF IS ARBITRARY AND ITS FIXITY IS THE POINT.*** `20260818` is set here so the
+      spec states one; **change it freely, but never leave it unstated.**
+      ***AND ONE CAUTION THAT IS NOT A DISAGREEMENT: THE BINDING CLUSTER IS NOT THE SAME FOR EVERY
+      QUANTITY.*** **`W`'s interval is SHOW-clustered** — 25,120 C1 pairs from only **206 shows**, and
+      **`task-sheet.md` names the SHOW as the binding cluster there**: i.i.d. ±8 days, show-clustered
+      [89, 125], ±18 days (`0024`, `0026`). **So account-level resampling is right for the outcome
+      shares, whose clustering is by account, and would UNDERSTATE a show-bound quantity.** **The
+      per-interval `resampling_unit` field this ruling mandates is exactly what makes that visible** — a
+      quantity whose binding cluster is the show must say `show`, not inherit `account` silently.
+      **Report any interval where the two units disagree materially; do not reconcile it.**
+- [ ] **STEP 13 IS DUAL** (`0103`), resolving the conflict between `CLAUDE.md`'s dual list, which omitted
+      it, and this file's own argument that the `W` grid must be fixed because **two instances on
+      different grids produce tables that cannot be diffed at all** — which presupposed the duality.
+      **Found by `reviewer-engineering` on the Step 8b review.** **Ruled dual:** Step 13 varies `W`
+      across eight arms **and the completion rule alongside**, making it **the most spec-heavy step
+      remaining**, and **every divergence in this build has come from an unstated convention in a spec
+      rather than a coding error.**
 - [ ] **ATTACH CONFIDENCE INTERVALS — AND THE BOOTSTRAP IS UNSPECIFIED. THIS BLOCKS STEP 9, NOT STEP 8.** Human Lead ruling, 2026-08-13 (`0056`). **The two Step 7 arms diverged on all three of `B`, seed and statistic** — **A: B = 4,000, seed 20260813, on the movements; B: B = 2,000, seed 20260814, on the levels** — and a dual step whose CIs are built three different ways **produces a divergence that proves nothing.** **`0052` §6 recorded this as "unreconciled and now specified." It was never specified: the string "bootstrap" appears ZERO times in `task-sheet.md`, `CLAUDE.md` and all four pipeline agent files.** That claim is **struck in place** — it is a completed action asserted and not taken, the same class as `0055` §5a. **Specify all three before Step 9 launches**: the resampling unit is the **account** (clustered, per `0044`), and `B`, the seed and whether the interval is on levels or on movements must be fixed **identically for both arms** in this file. **Until they are, Step 9's CIs are not diffable.**
 - [ ] ~~**TEST WHETHER THE HEADLINE IS SENSITIVE ACROSS THE LIVENESS THRESHOLD'S CLUSTERED INTERVAL.**~~ **DISCHARGED and WITHDRAWN 2026-08-13 (`decisions/0046`).** The test was run, the headline was insensitive — 0.026 / 0.038 / 0.012 pp across 787 / 1,293 / 2,200 days — **and the threshold was deleted at `0042`. There is no interval to test across.**
 - [ ] **Compute the never-started bound over the liveness exclusions scored NEVER STARTED. On APPLY: [16.6633%, 16.9704%], width 0.3071 pp, BOTH ENDPOINTS ON 196,654.** The ceiling equals the unfiltered share **as an identity**; both endpoints are attainable. **The 99 started-and-left exclusions enter neither endpoint, so this bound is IDENTICAL under ALT and ALT-BROAD.**
