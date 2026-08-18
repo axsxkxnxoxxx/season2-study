@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:season2-study:step8b-output-schema:1.2.0",
+  "$id": "urn:season2-study:step8b-output-schema:1.3.0",
   "title": "Season 2 abandonment study -- Step 16 results schema",
   "description": "The single output schema. Steps 9 through 13 write into it DIRECTLY, each ARM into its own file, and STEP 16 RENDERS FROM THE MERGED DOCUMENT that Step 13b builds from those files after the Human Lead has diffed the dual pairs (decisions/0107). Both kinds of file are instances of this one schema; $.document_scope says which kind a file is, and it is the first thing to read. There is no conversion layer: a conversion layer is a second definition of every figure. Validate with src/step8b_validate.py, which implements the JSON Schema subset used here plus the cross-field checks the schema language cannot express.",
   "type": "object",
@@ -19,6 +19,7 @@
     "bootstrap_spec",
     "binding_clusters",
     "bootstrap_settings",
+    "step_duality",
     "block_ownership",
     "channel_classes",
     "arms",
@@ -27,10 +28,10 @@
   ],
   "properties": {
     "schema_version": {
-      "const": "1.2.0"
+      "const": "1.3.0"
     },
     "schema_id": {
-      "const": "urn:season2-study:step8b-output-schema:1.2.0"
+      "const": "urn:season2-study:step8b-output-schema:1.3.0"
     },
     "placeholder": {
       "type": "boolean",
@@ -161,7 +162,7 @@
             "owner_step",
             "owner_role",
             "arm_files_merged",
-            "diff_precedes_merge",
+            "diff",
             "blocks_only_the_merge_may_fill",
             "source"
           ],
@@ -175,14 +176,128 @@
             "arm_files_merged": {
               "type": "array",
               "minItems": 1,
+              "uniqueItems": true,
+              "description": "ONE ENTRY PER INPUT FILE, AND AN INPUT FILE IS ONE STEP'S OUTPUT FOR ONE ARM. Human Lead ruling, decisions/0109 §1: granularity is ONE FILE PER STEP PER ARM, so Step 9 writes two files, Step 13 writes two and Steps 10, 11 and 12 write one each -- SEVEN inputs. Until v1.3.0 this was a list of free strings, which could not be read against the payloads it supplied; each entry now names its step and its arm, and check S30 asserts that every payload in the document names one of them and that a block holding two arms names two different ones.",
               "items": {
-                "type": "string"
-              },
-              "description": "One entry per arm file merged in."
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "file_label",
+                  "producing_step",
+                  "arm"
+                ],
+                "properties": {
+                  "file_label": {
+                    "type": "string",
+                    "x-writer-text": true,
+                    "description": "How this input file is named. Payloads reference it by this label in `merged_from`."
+                  },
+                  "producing_step": {
+                    "enum": [
+                      "step8",
+                      "step8b",
+                      "step9",
+                      "step10",
+                      "step11",
+                      "step12",
+                      "step13",
+                      "step13b",
+                      "step16",
+                      "human_lead"
+                    ],
+                    "x-enum-id": "writer_step"
+                  },
+                  "arm": {
+                    "enum": [
+                      "a",
+                      "b",
+                      "sole"
+                    ],
+                    "x-enum-id": "producing_arm"
+                  },
+                  "step_dual_status": {
+                    "enum": [
+                      "dual",
+                      "single_arm"
+                    ],
+                    "x-enum-id": "step_dual_status"
+                  },
+                  "source": {
+                    "type": "string"
+                  }
+                }
+              }
             },
-            "diff_precedes_merge": {
-              "const": true,
-              "description": "The Human Lead has diffed the dual pairs BEFORE this step runs. The merge is not the control; the diff is."
+            "diff": {
+              "type": "object",
+              "description": "THE DIFF, AS A RECORD RATHER THAN AS A SENTENCE. It replaces `diff_precedes_merge: true`, retired at v1.3.0: reviewer-engineering judged that flag to be doing no work, because it was 'not a fact the file records, a sentence the schema requires the file to contain' -- a const true that every writer emits and no reader can check. What replaces it is checkable: WHICH PAIRS were diffed, naming two DIFFERENT input files per dual step; HOW MANY figures were compared, which may not be zero; and HOW MANY divergences were found, which must equal the number of entries in $.cross_arm_divergences. A merge assembled from one arm file cannot fill this without naming a second file that does not exist. Check S30.",
+              "additionalProperties": false,
+              "required": [
+                "performed_by",
+                "pairs_diffed",
+                "figures_compared",
+                "divergences_found",
+                "record"
+              ],
+              "properties": {
+                "performed_by": {
+                  "const": "human_lead",
+                  "description": "The diff is the Human Lead's and no arm may perform it: it is the diff, not the merge, that is the dual control."
+                },
+                "pairs_diffed": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "producing_step",
+                      "arm_a_file",
+                      "arm_b_file"
+                    ],
+                    "properties": {
+                      "producing_step": {
+                        "enum": [
+                          "step8",
+                          "step8b",
+                          "step9",
+                          "step10",
+                          "step11",
+                          "step12",
+                          "step13",
+                          "step13b",
+                          "step16",
+                          "human_lead"
+                        ],
+                        "x-enum-id": "writer_step"
+                      },
+                      "arm_a_file": {
+                        "type": "string",
+                        "x-writer-text": true
+                      },
+                      "arm_b_file": {
+                        "type": "string",
+                        "x-writer-text": true
+                      },
+                      "note": {
+                        "type": "string",
+                        "description": "A note from the writer.  [writer text: carries the placeholder prefix in a placeholder]",
+                        "x-writer-text": true
+                      }
+                    }
+                  }
+                },
+                "figures_compared": {
+                  "$ref": "#/$defs/count"
+                },
+                "divergences_found": {
+                  "$ref": "#/$defs/count"
+                },
+                "record": {
+                  "type": "string",
+                  "description": "Where the diff itself is recorded, outside this file.  [writer text: carries the placeholder prefix in a placeholder]",
+                  "x-writer-text": true
+                }
+              }
             },
             "blocks_only_the_merge_may_fill": {
               "type": "array",
@@ -212,7 +327,7 @@
             ],
             "x-enum-id": "writer_step"
           },
-          "description": "The other steps of this same arm that write into this file. ONE FILE PER ARM is the ruling's own phrase, and several steps of one arm write into that arm's file -- Steps 9 to 13 write into this schema directly, with no conversion layer. A Human Lead step may never appear here in an arm file: that would be the merge arriving through the side door, and check S28 fails it."
+          "description": "OTHER STEPS THAT WRITE INTO THIS FILE -- AND IN AN ARM FILE THERE ARE NONE. Human Lead ruling, decisions/0109 §1: granularity is ONE FILE PER STEP PER ARM, resolving decisions/0107's own §1-vs-§6 ambiguity in favour of §6, because §1 would require Step 10's output to be DUPLICATED into two arm files -- two copies of one figure, the defect the no-conversion-layer rule exists to prevent. So an arm file's list is EMPTY and check S28 asserts it, together with the stronger clause that every payload in an arm file names the file's own producing step. Until v1.3.0 this placeholder pair took OPPOSITE sides of that ambiguity: the merged document listed seven inputs (§6) while the arm file named two extra writers (§1). A Human Lead step here would be the merge arriving through the side door, and it fails under both readings."
         },
         "isolation_rule": {
           "type": "string"
@@ -587,9 +702,191 @@
         }
       }
     },
+    "step_duality": {
+      "type": "object",
+      "description": "WHICH STEPS ARE DUAL, AS A FIXED FACT OF THE SPEC. Added at v1.3.0 against reviewer-engineering's M2. Every by_producing_arm block declares a `step_dual_status` and a `producing_step`, two keys apart in one object, and nothing read one against the other -- so a Step 9 block could declare itself `single_arm` and validate, and in the merged document the clause that catches a dropped arm is guarded on `dual` and would never fire. THE LOOSENING THE RULING FORBADE WAS REACHABLE BY RELABELLING RATHER THAN BY WIDENING. The statuses here are fixed by const, so the registry cannot be relabelled either, and check S31 asserts every block against it.",
+      "additionalProperties": false,
+      "required": [
+        "step10",
+        "step11",
+        "step12",
+        "step13",
+        "step9"
+      ],
+      "properties": {
+        "step9": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "dual_status",
+            "source"
+          ],
+          "properties": {
+            "dual_status": {
+              "const": "dual",
+              "x-enum-id": "step_dual_status"
+            },
+            "source": {
+              "type": "string"
+            },
+            "note": {
+              "type": "string"
+            }
+          }
+        },
+        "step10": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "dual_status",
+            "source"
+          ],
+          "properties": {
+            "dual_status": {
+              "const": "single_arm",
+              "x-enum-id": "step_dual_status"
+            },
+            "source": {
+              "type": "string"
+            },
+            "note": {
+              "type": "string"
+            }
+          }
+        },
+        "step11": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "dual_status",
+            "source"
+          ],
+          "properties": {
+            "dual_status": {
+              "const": "single_arm",
+              "x-enum-id": "step_dual_status"
+            },
+            "source": {
+              "type": "string"
+            },
+            "note": {
+              "type": "string"
+            }
+          }
+        },
+        "step12": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "dual_status",
+            "source"
+          ],
+          "properties": {
+            "dual_status": {
+              "const": "single_arm",
+              "x-enum-id": "step_dual_status"
+            },
+            "source": {
+              "type": "string"
+            },
+            "note": {
+              "type": "string"
+            }
+          }
+        },
+        "step13": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "dual_status",
+            "source"
+          ],
+          "properties": {
+            "dual_status": {
+              "const": "dual",
+              "x-enum-id": "step_dual_status"
+            },
+            "source": {
+              "type": "string"
+            },
+            "note": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "declared_intervals": {
+      "type": "array",
+      "description": "INTERVALS ON QUANTITIES THAT ARE NOT THE OUTCOME SHARES. Added at v1.3.0 against reviewer-engineering's M10: no instance illustrated a `show`-unit interval or the `unit_disagreement` subtree, so Step 16 would have been built without the branches decisions/0103 §2 exists to protect -- THE BINDING CLUSTER IS NOT THE SAME FOR EVERY QUANTITY, and a show-bound quantity that inherits `account` silently is the failure that ruling names. Both branches are exercised here.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "interval_id",
+          "quantity",
+          "produced_by_step",
+          "producing_arm",
+          "ci"
+        ],
+        "properties": {
+          "interval_id": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "string",
+            "description": "The quantity this interval is on.  [writer text: carries the placeholder prefix in a placeholder]",
+            "x-writer-text": true
+          },
+          "produced_by_step": {
+            "enum": [
+              "step8",
+              "step8b",
+              "step9",
+              "step10",
+              "step11",
+              "step12",
+              "step13",
+              "step13b",
+              "step16",
+              "human_lead"
+            ],
+            "x-enum-id": "writer_step"
+          },
+          "producing_arm": {
+            "enum": [
+              "a",
+              "b",
+              "sole"
+            ],
+            "x-enum-id": "producing_arm"
+          },
+          "ci": {
+            "$ref": "#/$defs/ci"
+          },
+          "merged_from": {
+            "type": "string",
+            "x-writer-text": true,
+            "description": "As on a payload: which arm file this came from. Required in the merged document, forbidden in an arm file (check S30)."
+          },
+          "note": {
+            "type": "string",
+            "description": "A note from the writer.  [writer text: carries the placeholder prefix in a placeholder]",
+            "x-writer-text": true
+          },
+          "source": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "block_ownership": {
       "type": "object",
       "description": "WHO OWNS EACH TOP-LEVEL BLOCK. Added at v1.1.0 against reviewer-engineering's F9: six required top-level blocks named no owner, so Step 9 inherited them by being the first step to write the file -- INCLUDING ONE IT IS EXPLICITLY FORBIDDEN TO COMPUTE. Step 8 holds the episode-level evidence for D4 and Step 9 is ruled to CONSUME it, not rebuild it (decisions/0070 rulings 1 and 7), and $.limitations belongs to the Human Lead at Step 14, which no agent may draft. Ownership is now stated per block, with the mode: copied from another step's output, written by its owner, structural from Step 8b, or Human Lead only. Check S27 asserts every top-level block present in the file has an entry here.",
+      "propertyNames": {
+        "type": "string",
+        "description": "A top-level block name, or a DOTTED PATH to a nested block: `arms[].waterfall`, `channel_classes.d4`, `document_scope.merge`. Added at v1.3.0 against reviewer-engineering's M8 -- ownership stopped at depth 1, and `arms` hid Step 8's waterfall, Step 10's abandonment distribution and Step 13's D3' behind ONE Step 9 entry. Check S34 asserts an entry for every nested block the file actually carries."
+      },
       "additionalProperties": {
         "type": "object",
         "additionalProperties": false,
@@ -626,6 +923,22 @@
               "human_lead_only"
             ],
             "x-enum-id": "write_mode"
+          },
+          "published_by_step": {
+            "enum": [
+              "step8",
+              "step8b",
+              "step9",
+              "step10",
+              "step11",
+              "step12",
+              "step13",
+              "step13b",
+              "step16",
+              "human_lead"
+            ],
+            "x-enum-id": "writer_step",
+            "description": "WHICH STEP TRANSCRIBES THIS BLOCK INTO THIS SCHEMA, where that is not the owner -- the waterfall is Step 8's figure and Step 9 publishes it. Added at v1.3.0 with the nested entries: under one file per step per arm, 'who owns it' no longer answers 'whose file is it in', and check S22 needs the second answer to know which absences are legitimate in which file."
           },
           "may_first_writer_fill": {
             "type": "boolean",
@@ -1196,14 +1509,14 @@
   },
   "x-generated-by": {
     "generator": "src/step8b_schema.py",
-    "generator_sha256_12": "ca784fc3d350",
-    "generated_at_utc": "2026-08-18T22:39:36Z",
+    "generator_sha256_12": "f381fc40feca",
+    "generated_at_utc": "2026-08-18T23:31:00Z",
     "build_tag": "step8b/a/2026-08-18",
-    "git_head_short": "f6c57bf",
+    "git_head_short": "9636ed9",
     "host_step": "Step 8b, output schema",
     "written_by": "Analytics Engineer, instance a",
     "validator": "src/step8b_validate.py",
-    "validator_sha256_12": "29d118cf1847",
+    "validator_sha256_12": "95f71360ff1d",
     "selftest": "src/step8b_selftest.py",
     "note": "This schema is generated. Correct it in the generator and rewrite both artifacts together; do not hand-edit either file."
   },
@@ -1386,7 +1699,7 @@
         },
         "coverage_count": {
           "$ref": "#/$defs/count",
-          "description": "How many candidates were examined. A zero here with performed true is itself a finding: the search looked at nothing."
+          "description": "How many candidates were examined. A ZERO HERE WITH `performed` TRUE IS ITSELF A FINDING and is now REJECTED rather than described: the schema's own prose called it one while the file still validated, which is a control asserted in a sentence and not built (reviewer-engineering M7). The if/then below forbids it, and check S33 fails it with the site named."
         },
         "what_was_searched": {
           "type": "string",
@@ -1415,6 +1728,33 @@
           ],
           "description": "Why the list is empty, required by check S17 when it is.",
           "x-writer-text": true
+        }
+      },
+      "if": {
+        "properties": {
+          "performed": {
+            "const": true
+          }
+        },
+        "required": [
+          "performed"
+        ]
+      },
+      "then": {
+        "properties": {
+          "coverage_count": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1
+              },
+              {
+                "const": -999
+              }
+            ],
+            "x-measurement": true,
+            "description": "With `performed` true this must be at least 1. Zero examined candidates and a clean result are the same value, and only the control knows which it produced."
+          }
         }
       }
     },
@@ -1476,6 +1816,7 @@
         "bootstrap_ref",
         "B",
         "seed",
+        "statistic",
         "resampling_unit",
         "quantity_class"
       ],
@@ -1504,6 +1845,14 @@
         "seed": {
           "type": "integer",
           "description": "The seed, at the point of use. Its VALUE is arbitrary and its FIXITY is the point: it is what makes the two arms comparable."
+        },
+        "statistic": {
+          "enum": [
+            "levels",
+            "movements"
+          ],
+          "x-enum-id": "bootstrap_statistic",
+          "description": "LEVELS OR MOVEMENTS, AT THE POINT OF USE. Added to the required set at v1.3.0 (reviewer-engineering M6). B, the seed and the unit are fixed by decisions/0103 and are therefore the same in both arms; THIS is the bootstrap field the arms actually differ on, and it was the only one with no point-of-use restatement and no binding to the arm that produced the interval. Check S23 asserts it against the referenced registry entry and check S32 asserts that entry belongs to the arm that owns this payload -- so an interval cannot point at the other arm's settings and pass. Neither check decides levels versus movements, which is still open."
         },
         "resampling_unit": {
           "enum": [
@@ -2176,6 +2525,11 @@
         "written_by": {
           "type": "string"
         },
+        "merged_from": {
+          "type": "string",
+          "x-writer-text": true,
+          "description": "WHICH ARM FILE THIS PAYLOAD CAME FROM. Required in the merged document, forbidden in an arm file (check S30), and it must name one of $.document_scope.merge.arm_files_merged. Added at v1.3.0 against reviewer-engineering's M1: a merged document assembled from ONE arm file, with the one payload deep-copied into the other arm's slot and relabelled, validated clean and published that the arms agreed everywhere -- a FALSE CLEAN in the block whose whole purpose is to report where they did not. ISOLATION IS UNOBSERVABLE, BUT ARITY IS OBSERVABLE: two arms are two payloads from two files, so each payload names its own file and check S30 asserts that a block holding two arms names two DIFFERENT files."
+        },
         "shares": {
           "type": "object",
           "additionalProperties": false,
@@ -2318,7 +2672,8 @@
             "step16",
             "human_lead"
           ],
-          "x-enum-id": "writer_step"
+          "x-enum-id": "writer_step",
+          "description": "WHICH STEP WROTE THIS BLOCK -- and, since v1.3.0, the field `step_dual_status` is READ AGAINST IT. Duality is a fixed fact of the spec, so the two cannot disagree: the allOf below pins each named step's status by const."
         },
         "step_dual_status_source": {
           "type": "string",
@@ -2522,6 +2877,101 @@
                     "sole"
                   ]
                 }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "producing_step": {
+                "const": "step9"
+              }
+            },
+            "required": [
+              "producing_step"
+            ]
+          },
+          "then": {
+            "properties": {
+              "step_dual_status": {
+                "const": "dual"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "producing_step": {
+                "const": "step10"
+              }
+            },
+            "required": [
+              "producing_step"
+            ]
+          },
+          "then": {
+            "properties": {
+              "step_dual_status": {
+                "const": "single_arm"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "producing_step": {
+                "const": "step11"
+              }
+            },
+            "required": [
+              "producing_step"
+            ]
+          },
+          "then": {
+            "properties": {
+              "step_dual_status": {
+                "const": "single_arm"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "producing_step": {
+                "const": "step12"
+              }
+            },
+            "required": [
+              "producing_step"
+            ]
+          },
+          "then": {
+            "properties": {
+              "step_dual_status": {
+                "const": "single_arm"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "producing_step": {
+                "const": "step13"
+              }
+            },
+            "required": [
+              "producing_step"
+            ]
+          },
+          "then": {
+            "properties": {
+              "step_dual_status": {
+                "const": "dual"
               }
             }
           }

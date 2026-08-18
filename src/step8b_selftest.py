@@ -9,6 +9,13 @@ It also runs the two checks that are N/A on a placeholder -- the derived-figure
 arithmetic and the waterfall monotonicity -- against a de-sentinelled copy, so
 they are exercised somewhere rather than reported N/A and never run.
 
+Three baselines, one per emitted placeholder: the merged document, a dual step's
+arm file and a single-arm step's own file. One mutation family is applied to the
+SCHEMA rather than to an instance, because S35's subject is the schema. And one
+case is asserted as a REQUIRED NON-FAILURE with its own note: the fully
+relabelled false merge, which passes -- it is the residual this build publishes,
+and asserting it here stops the published limit drifting from the behaviour.
+
 Writes its record to logs/step8b/selftest-<stamp>.json. Exit 0 iff every check
 was shown to have force.
 
@@ -34,6 +41,11 @@ PLACEHOLDER_PATH = os.path.join(ROOT, "artifacts", "step8b-placeholder.json")
 # observable on a file that is not the merged document: S17 skipping, S29's
 # prohibition, and S28's one-file-per-arm clause.
 ARM_PLACEHOLDER_PATH = os.path.join(ROOT, "artifacts", "step8b-placeholder-arm-file.json")
+# A SINGLE-ARM step's own file (Step 11, arm `sole`). Added at v1.3.0 with the
+# granularity ruling (decisions/0109 §1): one file per step per arm, so a
+# single-arm step's file must have a legal spine, and a spine described in prose
+# and never emitted cannot be checked.
+SOLE_PLACEHOLDER_PATH = os.path.join(ROOT, "artifacts", "step8b-placeholder-sole-file.json")
 LOG_DIR = os.path.join(ROOT, "logs", "step8b")
 
 
@@ -83,6 +95,25 @@ def _make_real(inst: dict) -> dict:
     real["placeholder"] = False
     real.pop("placeholder_notice", None)
     real["sentinels"] = inst["sentinels"]  # the reserved-value declaration stays literal
+    # _desentinel maps every count to 0, and 0 is exactly what two of the v1.3.0
+    # checks exist to reject: a search that ran and examined nothing, and a diff
+    # that compared nothing. A real file has real counts, so they are set here --
+    # and the divergence count is set from the entry list rather than typed, so
+    # the identity the check asserts is not hand-maintained in two places.
+    cad = real.get("cross_arm_divergences")
+    if isinstance(cad, dict):
+        n_entries = len(cad.get("entries") or [])
+        cad.setdefault("search", {})["coverage_count"] = 17
+        merge = (real.get("document_scope") or {}).get("merge")
+        if isinstance(merge, dict) and isinstance(merge.get("diff"), dict):
+            merge["diff"]["figures_compared"] = 17
+            merge["diff"]["divergences_found"] = n_entries
+    for q in (((real.get("channel_classes") or {}).get("d9") or {})
+              .get("quantities") or {}).values():
+        cov = (q or {}).get("coverage")
+        if isinstance(cov, dict):
+            cov["records_examined"] = 12345
+            cov["records_with_a_slug"] = 12345
     for arm in real["arms"]:
         for pop, block in arm["headline"].items():
             for key, payload in block["by_producing_arm"]["arms"].items():
@@ -184,7 +215,75 @@ MUTATIONS = {
     "S28": lambda i: _set(
         i["arms"][0]["headline"]["APPLY"]["by_producing_arm"], "arms_in_this_file", "one_arm"),
     "S29": lambda i: i.pop("cross_arm_divergences"),
+    # v1.3.0 -- one mutation per check added against decisions/0109 and
+    # reviewer-engineering's M1, M2, M6, M7, M8 and M10.
+    #
+    # S30 IS THE FINDING ITSELF, in its naive form: arm b's payload is a
+    # deep copy of arm a's, relabelled. Before v1.3.0 the whole file validated
+    # and published that the arms agreed everywhere.
+    "S30": lambda i: _set(
+        i["arms"][0]["headline"]["APPLY"]["by_producing_arm"]["arms"],
+        "b", _relabel_arm(copy.deepcopy(
+            i["arms"][0]["headline"]["APPLY"]["by_producing_arm"]["arms"]["a"]), level=1)),
+    # M2: RELABELLING, not widening. The shape is untouched -- a Step 9 block
+    # simply declares itself single-arm, which is what disarms the merged
+    # document's dropped-arm clause.
+    "S31": lambda i: _set(
+        i["arms"][0]["headline"]["APPLY"]["by_producing_arm"],
+        "step_dual_status", "single_arm"),
+    # M6: arm a's interval pointing at arm b's settings, which differ on the one
+    # bootstrap field the spec does not fix.
+    "S32": lambda i: _set(_first_ci(i), "bootstrap_ref", "b_default"),
+    # M7: a search that ran and examined nothing.
+    "S33": lambda i: _set(i["cross_arm_divergences"]["search"], "coverage_count", 0),
+    # M8: ownership at depth 1 only.
+    "S34": lambda i: i["block_ownership"].pop("arms[].abandonment_distribution"),
 }
+
+
+def _relabel_arm(node, level: int):
+    """Relabel a copied arm-a payload as arm b, at three degrees of effort.
+
+    level 1 relabels the arm only; level 2 also relabels the bootstrap
+    references, the statistic and the sampling-width convention labels; level 3
+    also relabels the merge provenance. The three are the M1 forgery ladder, and
+    the point of running all three is to show WHICH rung the check stops at.
+    """
+    if isinstance(node, dict):
+        out = {}
+        for k, v in node.items():
+            if k in ("producing_arm", "arm_held") and v == "a":
+                out[k] = "b"
+            elif k == "bootstrap_ref" and level >= 2 and isinstance(v, str):
+                out[k] = v.replace("a_", "b_", 1)
+            elif k == "statistic" and level >= 2:
+                out[k] = "levels"
+            elif k == "convention_label" and level >= 2 and isinstance(v, str):
+                out[k] = v.replace("arm_a", "arm_b")
+            elif k == "merged_from" and level >= 3 and isinstance(v, str):
+                out[k] = v.replace("arm `a`", "arm `b`")
+            else:
+                out[k] = _relabel_arm(v, level)
+        return out
+    if isinstance(node, list):
+        return [_relabel_arm(v, level) for v in node]
+    return node
+
+
+def _forge_merge(inst: dict, level: int) -> dict:
+    """Assemble the merged document's second arm from the first arm's payload."""
+    def visit(node):
+        if isinstance(node, dict):
+            bpa = node.get("by_producing_arm")
+            if isinstance(bpa, dict) and set(bpa.get("arms") or {}) == {"a", "b"}:
+                bpa["arms"]["b"] = _relabel_arm(copy.deepcopy(bpa["arms"]["a"]), level)
+            for v in node.values():
+                visit(v)
+        elif isinstance(node, list):
+            for v in node:
+                visit(v)
+    visit(inst)
+    return inst
 
 # Extra mutations that target a SECOND clause of a check whose first clause is
 # already exercised above. Keyed by the check they must break.
@@ -213,6 +312,34 @@ EXTRA_MUTATIONS = {
         _set(i["arms"][0]["headline"]["APPLY"]["by_producing_arm"], "arms_in_this_file",
              "one_arm"),
         "arm_held", "a")),
+    # THE M1 FORGERY LADDER. Rung 1 is the finding as reported; rung 2 is the
+    # same copy with its bootstrap references and convention labels relabelled.
+    # Both must be rejected. Rung 3 -- merge provenance relabelled too -- is the
+    # published residual and is NOT asserted here, because it passes: at that
+    # point the file asserts a second input file exists, and nothing inside it
+    # can contradict that.
+    "S30/false_merge_naive_copy": ("S30", "placeholder", lambda i: _forge_merge(i, 1)),
+    "S30/false_merge_refs_relabelled": ("S30", "placeholder", lambda i: _forge_merge(i, 2)),
+    # The merge declares one input file for two arms of a dual step.
+    "S30/one_input_file_for_two_arms": ("S30", "placeholder", lambda i: _set(
+        i["document_scope"]["merge"], "arm_files_merged",
+        [dict(e, arm="b") if e["arm"] == "a" and e["producing_step"] == "step9" else e
+         for e in i["document_scope"]["merge"]["arm_files_merged"]])),
+    # A diff whose two sides are the same file is not a diff.
+    "S30/diff_against_itself": ("S30", "placeholder", lambda i: _set(
+        i["document_scope"]["merge"]["diff"]["pairs_diffed"][0], "arm_b_file",
+        i["document_scope"]["merge"]["diff"]["pairs_diffed"][0]["arm_a_file"])),
+    # The registry itself relabelled, rather than one block (M2).
+    "S31/registry_relabelled": ("S31", "placeholder", lambda i: _set(
+        i["step_duality"]["step13"], "dual_status", "single_arm")),
+    # M7's second site: a bound published on zero records examined.
+    "S33/d9_zero_coverage": ("S33", "real", lambda i: _set(
+        _set(i["channel_classes"]["d9"]["quantities"]["half_a"]["coverage"],
+             "records_examined", 0),
+        "records_with_a_slug", 0)),
+    # M8's second clause: a per-arm block that does not say who publishes it.
+    "S34/publisher_not_named": ("S34", "placeholder", lambda i: i["block_ownership"][
+        "arms[].waterfall"].pop("published_by_step")),
 }
 
 # Cases exercised against the ARM-FILE placeholder rather than the merged one.
@@ -237,6 +364,27 @@ ARM_MUTATIONS = {
     # arm file's writers.
     "S28/arm_file_written_by_a_human_lead_step": ("S28", lambda i: _set(
         i["document_scope"], "also_written_by_steps", ["step8", "step13", "step13b"])),
+    # ONE FILE PER STEP PER ARM (decisions/0109 §1), the half that was unchecked:
+    # another step's payload in this step's file.
+    "S28/arm_file_holds_another_steps_payload": ("S28", lambda i: _set(
+        i["arms"][0]["headline"]["APPLY"]["by_producing_arm"], "producing_step", "step13")),
+    "S28/arm_file_names_a_second_writer": ("S28", lambda i: _set(
+        i["document_scope"], "also_written_by_steps", ["step13"])),
+    # An arm file was merged from nothing, so it may not claim to have been.
+    "S30/arm_file_claims_merge_provenance": ("S30", lambda i: _set(
+        i["arms"][0]["headline"]["APPLY"]["by_producing_arm"]["arms"]["a"],
+        "merged_from", "some other arm's file")),
+}
+
+# Mutations applied to the SCHEMA rather than to an instance. S35 exists to
+# machine-check the constraint decisions/0109 §4 records -- that no oneOf or
+# anyOf sits above $defs/by_producing_arm, because that is the only reason the
+# `dual_status` rename fails loudly -- and a constraint about the schema can only
+# be shown to have force by breaking the schema.
+SCHEMA_MUTATIONS = {
+    "S35/absence_branch_added_above_the_renamed_key": ("S35", lambda s: s["$defs"].__setitem__(
+        "headline",
+        {"oneOf": [dict(s["$defs"]["headline"]), {"$ref": "#/$defs/block_absence"}]})),
 }
 
 # The case the ruling names in as many words: an arm file that correctly OMITS
@@ -287,12 +435,14 @@ def main() -> int:
         placeholder = json.load(fh)
     with open(ARM_PLACEHOLDER_PATH) as fh:
         arm_file = json.load(fh)
+    with open(SOLE_PLACEHOLDER_PATH) as fh:
+        sole_file = json.load(fh)
 
     real = _make_real(placeholder)
 
-    def run(inst: dict) -> dict:
-        ev = V.SchemaEvaluator(schema)
-        ev.validate(inst, schema)
+    def run(inst: dict, use_schema: dict | None = None) -> dict:
+        ev = V.SchemaEvaluator(use_schema or schema)
+        ev.validate(inst, use_schema or schema)
         checks = V.run_semantic_checks(inst, ev)
         return {
             "semantic_checks": [c.as_dict() for c in checks],
@@ -302,6 +452,7 @@ def main() -> int:
     baseline_ph = run(placeholder)
     baseline_real = run(real)
     baseline_arm = run(arm_file)
+    baseline_sole = run(sole_file)
 
     results = []
     for cid, mutate in MUTATIONS.items():
@@ -363,9 +514,46 @@ def main() -> int:
             "has_force": after in ("FAIL", "VACUOUS"),
         })
 
+    # Schema-level cases (S35). The constraint is about the SCHEMA, so breaking
+    # the instance could never show it has force.
+    for label, (cid, mutate) in SCHEMA_MUTATIONS.items():
+        before = _status_of(baseline_ph, cid)
+        mutated_schema = copy.deepcopy(schema)
+        try:
+            mutate(mutated_schema)
+        except Exception as exc:
+            results.append({"check": label, "applied_to": "schema", "error": str(exc),
+                            "has_force": False})
+            continue
+        after = _status_of(run(placeholder, mutated_schema), cid)
+        results.append({
+            "check": label,
+            "applied_to": "schema",
+            "status_before": before,
+            "status_after": after,
+            "has_force": after in ("FAIL", "VACUOUS"),
+        })
+
     # Cases that must NOT fail: an emptiness the file declares, with its coverage
     # count, is a finding rather than an omission (reviewer-engineering F4).
     non_failures = []
+    # THE PUBLISHED RESIDUAL OF M1, asserted as a NON-failure so that the limit
+    # this build publishes is the limit it actually has. Rung 3 of the forgery
+    # ladder relabels the merge provenance as well, and at that point the file
+    # asserts a second input file exists; nothing inside it can contradict that.
+    forged3 = _forge_merge(copy.deepcopy(placeholder), 3)
+    non_failures.append({
+        "case": "S30/false_merge_fully_relabelled_is_the_published_residual",
+        "check": "S30",
+        "status_after": _status_of(run(forged3), "S30"),
+        "must_not_fail": True,
+        "ok": _status_of(run(forged3), "S30") not in ("FAIL", "VACUOUS"),
+        "note": (
+            "This case PASSES, and that is the residual published in "
+            "$.known_limits_of_this_schema. It is asserted here so the limit cannot drift "
+            "from the behaviour."
+        ),
+    })
     for label, (cid, mutate) in ARM_REQUIRED_NON_FAILURES.items():
         mutated = copy.deepcopy(arm_file)
         mutate(mutated)
@@ -431,9 +619,25 @@ def main() -> int:
             "schema_errors": baseline_arm["schema_errors"],
             "statuses": {c["id"]: c["status"] for c in baseline_arm["semantic_checks"]},
         },
+        "baseline_sole_file": {
+            "instance": SOLE_PLACEHOLDER_PATH,
+            "schema_errors": baseline_sole["schema_errors"],
+            "statuses": {c["id"]: c["status"] for c in baseline_sole["semantic_checks"]},
+        },
         "mutations": results,
         "required_non_failures": non_failures,
         "required_non_failures_violated": non_failure_failures,
+        "baseline_failures_anywhere": {
+            "placeholder": [k for k, v in
+                            {c["id"]: c["status"] for c in baseline_ph["semantic_checks"]}.items()
+                            if v in ("FAIL", "VACUOUS")],
+            "arm_file": [k for k, v in
+                         {c["id"]: c["status"] for c in baseline_arm["semantic_checks"]}.items()
+                         if v in ("FAIL", "VACUOUS")],
+            "sole_file": [k for k, v in
+                          {c["id"]: c["status"] for c in baseline_sole["semantic_checks"]}.items()
+                          if v in ("FAIL", "VACUOUS")],
+        },
         "checks_shown_to_have_force": len(results) - len(without_force),
         "checks_total_exercised": len(results),
         "checks_without_force": without_force,
@@ -459,6 +663,12 @@ def main() -> int:
             if v in ("FAIL", "VACUOUS")],
         "baseline_real_failures": [
             k for k, v in record["baseline_real_copy"]["statuses"].items()
+            if v in ("FAIL", "VACUOUS")],
+        "baseline_arm_file_failures": [
+            k for k, v in record["baseline_arm_file"]["statuses"].items()
+            if v in ("FAIL", "VACUOUS")],
+        "baseline_sole_file_failures": [
+            k for k, v in record["baseline_sole_file"]["statuses"].items()
             if v in ("FAIL", "VACUOUS")],
     }, indent=2))
     return 0 if record["ok"] else 1

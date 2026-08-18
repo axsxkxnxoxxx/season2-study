@@ -1,6 +1,6 @@
 {
-  "schema_version": "1.2.0",
-  "schema_id": "urn:season2-study:step8b-output-schema:1.2.0",
+  "schema_version": "1.3.0",
+  "schema_id": "urn:season2-study:step8b-output-schema:1.3.0",
   "placeholder": true,
   "placeholder_notice": {
     "banner": "############  THIS FILE IS A PLACEHOLDER. IT CONTAINS NO MEASUREMENTS.  ############  Every number in it is the sentinel -999 or -999.0 and every writer-supplied string is prefixed 'PLACEHOLDER — NOT A MEASUREMENT'. It exists so Step 16 can be built before results exist. DO NOT PUBLISH, DO NOT CHART, DO NOT QUOTE. A consumer that renders it will show -999% bars, which is the point.  ############",
@@ -8,14 +8,14 @@
     "do_not_publish": true,
     "every_measurement_slot_is_a_sentinel": true,
     "how_to_tell": "Read $.placeholder. If it is true, nothing in this file is a measurement. The sentinel scheme is at $.sentinels and is enforced by check S5 of src/step8b_validate.py.",
-    "generated_for": "Steps 9 to 13, so an arm writer has the arm-file shape to write into rather than inventing one"
+    "generated_for": "step9, arm 'a', so that writer has its own file's shape to write into rather than inventing one"
   },
   "generated_by": {
     "generator": "src/step8b_schema.py",
-    "generator_sha256_12": "ca784fc3d350",
-    "generated_at_utc": "2026-08-18T22:39:36Z",
+    "generator_sha256_12": "f381fc40feca",
+    "generated_at_utc": "2026-08-18T23:31:00Z",
     "build_tag": "step8b/a/2026-08-18",
-    "git_head_short": "f6c57bf",
+    "git_head_short": "9636ed9",
     "host_step": "Step 8b, output schema",
     "written_by": "Analytics Engineer, instance a",
     "inputs": [
@@ -27,10 +27,7 @@
     "role": "arm_file",
     "producing_step": "step9",
     "arm": "a",
-    "also_written_by_steps": [
-      "step8",
-      "step13"
-    ],
+    "also_written_by_steps": [],
     "isolation_rule": "Each arm writes its own document, and no arm writes into a document another arm writes into. Neither instance sees the other's work, asks about it, or reads its output folder. It is the DIFF, between two files, that is the dual control.",
     "note": "PLACEHOLDER — NOT A MEASUREMENT: the file's producing step, not its generator: $.generated_by names Step 8b, because this is the placeholder that shows the shape",
     "source": "decisions/0107; task-sheet.md Step 13b; CLAUDE.md, Dual implementation"
@@ -134,8 +131,99 @@
         "resampling_unit"
       ],
       "note": "PLACEHOLDER — NOT A MEASUREMENT: B, the seed and the unit are fixed by decisions/0103 and are real here; levels-vs-movements is NOT fixed by it and still differs between the arms, so it stays visible rather than silent"
+    },
+    "a_window_w": {
+      "B": 10000,
+      "seed": 20260818,
+      "statistic": "movements",
+      "resampling_unit": "show",
+      "producing_arm": "a",
+      "spec_status": "partly_fixed_in_spec",
+      "fields_fixed_in_spec": [
+        "B",
+        "seed"
+      ],
+      "note": "PLACEHOLDER — NOT A MEASUREMENT: the show-clustered settings for a show-bound quantity; the unit is NOT the account here, and the ruling's per-interval unit field is exactly what makes that visible"
     }
   },
+  "step_duality": {
+    "step10": {
+      "dual_status": "single_arm",
+      "source": "CLAUDE.md, Dual implementation -- Step 10 is not in the dual list",
+      "note": "Read against by_producing_arm.producing_step by check S31. Duality is a fixed fact of the spec, so a block cannot declare its own."
+    },
+    "step11": {
+      "dual_status": "single_arm",
+      "source": "CLAUDE.md, Dual implementation -- Step 11 is not in the dual list",
+      "note": "Read against by_producing_arm.producing_step by check S31. Duality is a fixed fact of the spec, so a block cannot declare its own."
+    },
+    "step12": {
+      "dual_status": "single_arm",
+      "source": "CLAUDE.md, Dual implementation -- Step 12 is not in the dual list",
+      "note": "Read against by_producing_arm.producing_step by check S31. Duality is a fixed fact of the spec, so a block cannot declare its own."
+    },
+    "step13": {
+      "dual_status": "dual",
+      "source": "decisions/0103 §3, which resolved a live CLAUDE.md / task-sheet.md conflict",
+      "note": "Read against by_producing_arm.producing_step by check S31. Duality is a fixed fact of the spec, so a block cannot declare its own."
+    },
+    "step9": {
+      "dual_status": "dual",
+      "source": "CLAUDE.md, Dual implementation; task-sheet.md Step 9",
+      "note": "Read against by_producing_arm.producing_step by check S31. Duality is a fixed fact of the spec, so a block cannot declare its own."
+    }
+  },
+  "declared_intervals": [
+    {
+      "interval_id": "window_w_percentile_a",
+      "quantity": "PLACEHOLDER — NOT A MEASUREMENT: the window W percentile, whose binding cluster is the SHOW",
+      "produced_by_step": "step9",
+      "producing_arm": "a",
+      "ci": {
+        "level_pct": 95,
+        "lower": -999.0,
+        "upper": -999.0,
+        "method": "percentile_bootstrap",
+        "bootstrap_ref": "a_window_w",
+        "B": 10000,
+        "seed": 20260818,
+        "statistic": "movements",
+        "resampling_unit": "show",
+        "quantity_class": "window_w_percentile",
+        "note": "PLACEHOLDER — NOT A MEASUREMENT: the interval is a sentinel; the bootstrap settings, the unit and the quantity class are real, because the ruling requires them at the point of use"
+      },
+      "note": "PLACEHOLDER — NOT A MEASUREMENT: the unit agrees with the binding cluster declared for this class, so no disagreement record is present -- this is the branch a show-bound quantity takes when it is resampled correctly",
+      "source": "decisions/0103 §2; decisions/0024, 0026"
+    },
+    {
+      "interval_id": "window_w_percentile_account_clustered_a",
+      "quantity": "PLACEHOLDER — NOT A MEASUREMENT: the same show-bound quantity resampled at the ACCOUNT level, which UNDERSTATES it",
+      "produced_by_step": "step9",
+      "producing_arm": "a",
+      "ci": {
+        "level_pct": 95,
+        "lower": -999.0,
+        "upper": -999.0,
+        "method": "percentile_bootstrap",
+        "bootstrap_ref": "a_default",
+        "B": 10000,
+        "seed": 20260818,
+        "statistic": "movements",
+        "resampling_unit": "account",
+        "quantity_class": "window_w_percentile",
+        "note": "PLACEHOLDER — NOT A MEASUREMENT: the interval is a sentinel; the bootstrap settings, the unit and the quantity class are real, because the ruling requires them at the point of use",
+        "unit_disagreement": {
+          "binding_cluster": "show",
+          "unit_used": "account",
+          "material": true,
+          "reported_not_reconciled": true,
+          "note": "PLACEHOLDER — NOT A MEASUREMENT: structure only: this branch shows how an interval records a unit that differs from the binding cluster for its quantity class. It is reported and not reconciled"
+        }
+      },
+      "note": "PLACEHOLDER — NOT A MEASUREMENT: the unit differs from the binding cluster for this class, so the interval carries an unreconciled disagreement record: report a material disagreement, do not reconcile it",
+      "source": "decisions/0103 §2"
+    }
+  ],
   "block_ownership": {
     "schema_version": {
       "owner_step": "step8b",
@@ -247,6 +335,22 @@
       "write_mode": "written_by_owner_step",
       "may_first_writer_fill": true,
       "source": "decisions/0103 §1",
+      "merged_document_only": false
+    },
+    "step_duality": {
+      "owner_step": "step8b",
+      "owner_role": "Analytics Engineer, Step 8b",
+      "write_mode": "structural_from_step_8b",
+      "may_first_writer_fill": true,
+      "source": "task-sheet.md Step 8b",
+      "merged_document_only": false
+    },
+    "declared_intervals": {
+      "owner_step": "step9",
+      "owner_role": "Data Scientist, whichever step produces the interval",
+      "write_mode": "written_by_owner_step",
+      "may_first_writer_fill": true,
+      "source": "decisions/0103 §2; reviewer-engineering M10",
       "merged_document_only": false
     },
     "block_ownership": {
@@ -372,6 +476,132 @@
       "may_first_writer_fill": true,
       "source": "task-sheet.md Step 8b",
       "merged_document_only": false
+    },
+    "arms[].headline": {
+      "owner_step": "step9",
+      "owner_role": "Data Scientist, Step 9",
+      "write_mode": "written_by_owner_step",
+      "may_first_writer_fill": true,
+      "source": "task-sheet.md Step 9",
+      "published_by_step": "step9",
+      "merged_document_only": false
+    },
+    "arms[].waterfall": {
+      "owner_step": "step8",
+      "owner_role": "Analytics Engineer, Step 8",
+      "write_mode": "copied_from_step_8_output",
+      "may_first_writer_fill": false,
+      "source": "task-sheet.md Step 8; decisions/0029",
+      "published_by_step": "step9",
+      "merged_document_only": false
+    },
+    "arms[].abandonment_distribution": {
+      "owner_step": "step10",
+      "owner_role": "Data Scientist, Step 10",
+      "write_mode": "written_by_owner_step",
+      "may_first_writer_fill": false,
+      "source": "task-sheet.md Step 10",
+      "published_by_step": "step10",
+      "merged_document_only": false
+    },
+    "arms[].liveness_exclusions": {
+      "owner_step": "step8",
+      "owner_role": "Analytics Engineer, Step 8",
+      "write_mode": "copied_from_step_8_output",
+      "may_first_writer_fill": false,
+      "source": "task-sheet.md Step 8; decisions/0048",
+      "published_by_step": "step9",
+      "merged_document_only": false
+    },
+    "arms[].d3_prime": {
+      "owner_step": "step13",
+      "owner_role": "Data Scientist, Step 13",
+      "write_mode": "written_by_owner_step",
+      "may_first_writer_fill": false,
+      "source": "decisions/0075",
+      "published_by_step": "step13",
+      "merged_document_only": false
+    },
+    "arms[].retained_by_air_period": {
+      "owner_step": "step8",
+      "owner_role": "Analytics Engineer, Step 8",
+      "write_mode": "copied_from_step_8_output",
+      "may_first_writer_fill": false,
+      "source": "decisions/0033",
+      "published_by_step": "step9",
+      "merged_document_only": false
+    },
+    "arms[].action_type_counts": {
+      "owner_step": "step8",
+      "owner_role": "Analytics Engineer, Step 8",
+      "write_mode": "copied_from_step_8_output",
+      "may_first_writer_fill": false,
+      "source": "decisions/0070 ruling 4",
+      "published_by_step": "step9",
+      "merged_document_only": false
+    },
+    "variants[].headline": {
+      "owner_step": "step13",
+      "owner_role": "Data Scientist, Step 13",
+      "write_mode": "written_by_owner_step",
+      "may_first_writer_fill": false,
+      "source": "task-sheet.md Step 13",
+      "published_by_step": "step13",
+      "merged_document_only": false
+    },
+    "variants[].d3_prime": {
+      "owner_step": "step13",
+      "owner_role": "Data Scientist, Step 13",
+      "write_mode": "written_by_owner_step",
+      "may_first_writer_fill": false,
+      "source": "decisions/0075",
+      "published_by_step": "step13",
+      "merged_document_only": false
+    },
+    "variants[].d2_recomputed_inside_this_arm": {
+      "owner_step": "step13",
+      "owner_role": "Data Scientist, Step 13",
+      "write_mode": "written_by_owner_step",
+      "may_first_writer_fill": false,
+      "source": "decisions/0070 ruling 5",
+      "published_by_step": "step13",
+      "merged_document_only": false
+    },
+    "subpopulation_cuts[].headline": {
+      "owner_step": "step11",
+      "owner_role": "Data Scientist, Steps 11 and 12",
+      "write_mode": "written_by_owner_step",
+      "may_first_writer_fill": false,
+      "source": "task-sheet.md Steps 11 and 12",
+      "published_by_step": "step11",
+      "merged_document_only": false
+    },
+    "channel_classes.d4": {
+      "owner_step": "step8",
+      "owner_role": "Analytics Engineer, Step 8",
+      "write_mode": "copied_from_step_8_output",
+      "may_first_writer_fill": false,
+      "source": "decisions/0070 ruling 7",
+      "published_by_step": "step9",
+      "merged_document_only": false
+    },
+    "channel_classes.d9": {
+      "owner_step": "step8",
+      "owner_role": "Analytics Engineer, Step 8",
+      "write_mode": "copied_from_step_8_output",
+      "may_first_writer_fill": false,
+      "source": "decisions/0088 §3, 0090",
+      "published_by_step": "step9",
+      "merged_document_only": false
+    },
+    "document_scope.merge": {
+      "owner_step": "step13b",
+      "owner_role": "Human Lead, at Step 13b, who merges the arm files",
+      "write_mode": "human_lead_only",
+      "may_first_writer_fill": false,
+      "source": "task-sheet.md Step 13b; decisions/0107",
+      "published_by_step": "step13b",
+      "merged_document_only": true
     }
   },
   "channel_classes": {
@@ -630,6 +860,7 @@
                       "bootstrap_ref": "a_default",
                       "B": 10000,
                       "seed": 20260818,
+                      "statistic": "movements",
                       "resampling_unit": "account",
                       "quantity_class": "outcome_shares",
                       "note": "PLACEHOLDER — NOT A MEASUREMENT: the interval is a sentinel; the bootstrap settings, the unit and the quantity class are real, because the ruling requires them at the point of use"
@@ -653,6 +884,7 @@
                       "bootstrap_ref": "a_default",
                       "B": 10000,
                       "seed": 20260818,
+                      "statistic": "movements",
                       "resampling_unit": "account",
                       "quantity_class": "outcome_shares",
                       "note": "PLACEHOLDER — NOT A MEASUREMENT: the interval is a sentinel; the bootstrap settings, the unit and the quantity class are real, because the ruling requires them at the point of use"
@@ -676,6 +908,7 @@
                       "bootstrap_ref": "a_default",
                       "B": 10000,
                       "seed": 20260818,
+                      "statistic": "movements",
                       "resampling_unit": "account",
                       "quantity_class": "outcome_shares",
                       "note": "PLACEHOLDER — NOT A MEASUREMENT: the interval is a sentinel; the bootstrap settings, the unit and the quantity class are real, because the ruling requires them at the point of use"
@@ -929,6 +1162,7 @@
                       "bootstrap_ref": "a_default",
                       "B": 10000,
                       "seed": 20260818,
+                      "statistic": "movements",
                       "resampling_unit": "account",
                       "quantity_class": "outcome_shares",
                       "note": "PLACEHOLDER — NOT A MEASUREMENT: the interval is a sentinel; the bootstrap settings, the unit and the quantity class are real, because the ruling requires them at the point of use"
@@ -952,6 +1186,7 @@
                       "bootstrap_ref": "a_default",
                       "B": 10000,
                       "seed": 20260818,
+                      "statistic": "movements",
                       "resampling_unit": "account",
                       "quantity_class": "outcome_shares",
                       "note": "PLACEHOLDER — NOT A MEASUREMENT: the interval is a sentinel; the bootstrap settings, the unit and the quantity class are real, because the ruling requires them at the point of use"
@@ -975,6 +1210,7 @@
                       "bootstrap_ref": "a_default",
                       "B": 10000,
                       "seed": 20260818,
+                      "statistic": "movements",
                       "resampling_unit": "account",
                       "quantity_class": "outcome_shares",
                       "note": "PLACEHOLDER — NOT A MEASUREMENT: the interval is a sentinel; the bootstrap settings, the unit and the quantity class are real, because the ruling requires them at the point of use"
@@ -1197,6 +1433,20 @@
           }
         }
       },
+      "abandonment_distribution": {
+        "block_is_absent": true,
+        "status": "awaiting_owner_step",
+        "reason": "This file is step9's output for one arm, and this block is published by step10. Under ONE FILE PER STEP PER ARM it arrives in step10's own file and is merged in at Step 13b; writing a copy here would be a second place that figure lives.",
+        "source": "decisions/0109 §1; task-sheet.md Step 13b",
+        "owning_step": "step10"
+      },
+      "d3_prime": {
+        "block_is_absent": true,
+        "status": "awaiting_owner_step",
+        "reason": "This file is step9's output for one arm, and this block is published by step13. Under ONE FILE PER STEP PER ARM it arrives in step13's own file and is merged in at Step 13b; writing a copy here would be a second place that figure lives.",
+        "source": "decisions/0109 §1; task-sheet.md Step 13b",
+        "owning_step": "step13"
+      },
       "waterfall": {
         "APPLY": {
           "population": "APPLY",
@@ -1405,616 +1655,6 @@
           }
         }
       },
-      "abandonment_distribution": {
-        "APPLY": [
-          {
-            "population": "APPLY",
-            "row_set": "position_5",
-            "row_set_label": "position 5 (the row set the bounds are stated on)",
-            "n_rows_in_row_set": -999,
-            "written_by_step": "step10",
-            "n_started_and_left": -999,
-            "p_definition": "p = |{e in E2 : e <= max(A_H)}| / L2",
-            "p_raw_ratio_form_withdrawn": true,
-            "p_is_null_off_started_and_left": true,
-            "bin_unit": "fraction_of_season",
-            "histograms": [
-              {
-                "stratum": {
-                  "kind": "all",
-                  "label": "all shows pooled",
-                  "l2_min": null,
-                  "l2_max": null,
-                  "definition": "PLACEHOLDER — NOT A MEASUREMENT: every started-and-left row in this row set"
-                },
-                "bin_edges_p": [
-                  0.0,
-                  0.1,
-                  0.2,
-                  0.3,
-                  0.4,
-                  0.5,
-                  0.6,
-                  0.7,
-                  0.8,
-                  0.9,
-                  1.0
-                ],
-                "counts": [
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999
-                ],
-                "n_rows": -999
-              },
-              {
-                "stratum": {
-                  "kind": "l2_stratum",
-                  "label": "PLACEHOLDER — NOT A MEASUREMENT: one L2 stratum; the bounds are the writer's",
-                  "l2_min": null,
-                  "l2_max": null,
-                  "definition": "PLACEHOLDER — NOT A MEASUREMENT: structure only: p is a fraction of a season, so bins are not comparable across shows with very different L2, and the instruction not to pool them is an instruction to stratify"
-                },
-                "bin_edges_p": [
-                  0.0,
-                  0.1,
-                  0.2,
-                  0.3,
-                  0.4,
-                  0.5,
-                  0.6,
-                  0.7,
-                  0.8,
-                  0.9,
-                  1.0
-                ],
-                "counts": [
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999
-                ],
-                "n_rows": -999
-              }
-            ],
-            "named_categories": {
-              "first_episode": {
-                "count": -999,
-                "share_percent": -999.0,
-                "definition": "PLACEHOLDER — NOT A MEASUREMENT: first-episode drops"
-              },
-              "mid_season": {
-                "count": -999,
-                "share_percent": -999.0,
-                "definition": "PLACEHOLDER — NOT A MEASUREMENT: mid-season drops"
-              },
-              "near_finale": {
-                "count": -999,
-                "share_percent": -999.0,
-                "definition": "PLACEHOLDER — NOT A MEASUREMENT: near-finale drops, excluding the p = 1.0 residual"
-              },
-              "p_equals_1_residual": {
-                "count": -999,
-                "share_percent": -999.0,
-                "definition": "PLACEHOLDER — NOT A MEASUREMENT: reached the final listed episode but missed the completion threshold; its own named category, not part of near-finale"
-              }
-            },
-            "p_equals_1_residual_is_separate_from_near_finale": true,
-            "p_at_bound": {
-              "column_cardinalities": {
-                "true_count": -999,
-                "false_count": -999,
-                "null_count": -999,
-                "total_rows": -999,
-                "identity_holds": true,
-                "false_is_the_ordinary_case": true
-              },
-              "coextensivity_gap": {
-                "p_equals_one_total": -999,
-                "in_both": -999,
-                "saturated_not_final": -999,
-                "final_not_saturated": -999,
-                "in_neither": -999,
-                "rows_examined": -999,
-                "is_empty": true
-              },
-              "two_classes_note": "PLACEHOLDER — NOT A MEASUREMENT: two different FALSE classes: the coextensivity gap, which is the one the sentence 'the FALSE class is empty' names, and the column's own FALSE value, which is the ordinary started-and-left row and is large. A consumer that provisions p_at_bound as a two-valued column is wrong by the whole of column_cardinalities.false_count",
-              "construction_links": [
-                {
-                  "link": "m_H in E2",
-                  "kind": "construction",
-                  "measured_value": null
-                },
-                {
-                  "link": "|{e in E2 : e <= m_H}| = L2  <=>  m_H = max(E2)",
-                  "kind": "construction",
-                  "measured_value": null
-                },
-                {
-                  "link": "max(E2) = F2",
-                  "kind": "measured",
-                  "measured_value": "PLACEHOLDER — NOT A MEASUREMENT: the frame count that establishes this link"
-                }
-              ]
-            },
-            "amendment_shift": {
-              "direction": "earlier",
-              "pairs_moved": -999,
-              "note": "PLACEHOLDER — NOT A MEASUREMENT: the pairs the amendment moves out of started-and-left are the ones that got furthest, so the chart shifts earlier; the shift is definitional and must not be attributed to behaviour"
-            },
-            "comparability_caveat": "PLACEHOLDER — NOT A MEASUREMENT: p is a fraction of a season, not a count of episodes; bins are not comparable across shows with very different L2, and at L2 = 2 p takes one of two values",
-            "no_specific_episode_claimed": true
-          },
-          {
-            "population": "APPLY",
-            "row_set": "post_liveness",
-            "row_set_label": "post-liveness (position 7)",
-            "n_rows_in_row_set": -999,
-            "written_by_step": "step10",
-            "n_started_and_left": -999,
-            "p_definition": "p = |{e in E2 : e <= max(A_H)}| / L2",
-            "p_raw_ratio_form_withdrawn": true,
-            "p_is_null_off_started_and_left": true,
-            "bin_unit": "fraction_of_season",
-            "histograms": [
-              {
-                "stratum": {
-                  "kind": "all",
-                  "label": "all shows pooled",
-                  "l2_min": null,
-                  "l2_max": null,
-                  "definition": "PLACEHOLDER — NOT A MEASUREMENT: every started-and-left row in this row set"
-                },
-                "bin_edges_p": [
-                  0.0,
-                  0.1,
-                  0.2,
-                  0.3,
-                  0.4,
-                  0.5,
-                  0.6,
-                  0.7,
-                  0.8,
-                  0.9,
-                  1.0
-                ],
-                "counts": [
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999
-                ],
-                "n_rows": -999
-              },
-              {
-                "stratum": {
-                  "kind": "l2_stratum",
-                  "label": "PLACEHOLDER — NOT A MEASUREMENT: one L2 stratum; the bounds are the writer's",
-                  "l2_min": null,
-                  "l2_max": null,
-                  "definition": "PLACEHOLDER — NOT A MEASUREMENT: structure only: p is a fraction of a season, so bins are not comparable across shows with very different L2, and the instruction not to pool them is an instruction to stratify"
-                },
-                "bin_edges_p": [
-                  0.0,
-                  0.1,
-                  0.2,
-                  0.3,
-                  0.4,
-                  0.5,
-                  0.6,
-                  0.7,
-                  0.8,
-                  0.9,
-                  1.0
-                ],
-                "counts": [
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999
-                ],
-                "n_rows": -999
-              }
-            ],
-            "named_categories": {
-              "first_episode": {
-                "count": -999,
-                "share_percent": -999.0,
-                "definition": "PLACEHOLDER — NOT A MEASUREMENT: first-episode drops"
-              },
-              "mid_season": {
-                "count": -999,
-                "share_percent": -999.0,
-                "definition": "PLACEHOLDER — NOT A MEASUREMENT: mid-season drops"
-              },
-              "near_finale": {
-                "count": -999,
-                "share_percent": -999.0,
-                "definition": "PLACEHOLDER — NOT A MEASUREMENT: near-finale drops, excluding the p = 1.0 residual"
-              },
-              "p_equals_1_residual": {
-                "count": -999,
-                "share_percent": -999.0,
-                "definition": "PLACEHOLDER — NOT A MEASUREMENT: reached the final listed episode but missed the completion threshold; its own named category, not part of near-finale"
-              }
-            },
-            "p_equals_1_residual_is_separate_from_near_finale": true,
-            "p_at_bound": {
-              "column_cardinalities": {
-                "true_count": -999,
-                "false_count": -999,
-                "null_count": -999,
-                "total_rows": -999,
-                "identity_holds": true,
-                "false_is_the_ordinary_case": true
-              },
-              "coextensivity_gap": {
-                "p_equals_one_total": -999,
-                "in_both": -999,
-                "saturated_not_final": -999,
-                "final_not_saturated": -999,
-                "in_neither": -999,
-                "rows_examined": -999,
-                "is_empty": true
-              },
-              "two_classes_note": "PLACEHOLDER — NOT A MEASUREMENT: two different FALSE classes: the coextensivity gap, which is the one the sentence 'the FALSE class is empty' names, and the column's own FALSE value, which is the ordinary started-and-left row and is large. A consumer that provisions p_at_bound as a two-valued column is wrong by the whole of column_cardinalities.false_count",
-              "construction_links": [
-                {
-                  "link": "m_H in E2",
-                  "kind": "construction",
-                  "measured_value": null
-                },
-                {
-                  "link": "|{e in E2 : e <= m_H}| = L2  <=>  m_H = max(E2)",
-                  "kind": "construction",
-                  "measured_value": null
-                },
-                {
-                  "link": "max(E2) = F2",
-                  "kind": "measured",
-                  "measured_value": "PLACEHOLDER — NOT A MEASUREMENT: the frame count that establishes this link"
-                }
-              ]
-            },
-            "amendment_shift": {
-              "direction": "earlier",
-              "pairs_moved": -999,
-              "note": "PLACEHOLDER — NOT A MEASUREMENT: the pairs the amendment moves out of started-and-left are the ones that got furthest, so the chart shifts earlier; the shift is definitional and must not be attributed to behaviour"
-            },
-            "comparability_caveat": "PLACEHOLDER — NOT A MEASUREMENT: p is a fraction of a season, not a count of episodes; bins are not comparable across shows with very different L2, and at L2 = 2 p takes one of two values",
-            "no_specific_episode_claimed": true
-          }
-        ],
-        "DERIV": [
-          {
-            "population": "DERIV",
-            "row_set": "position_5",
-            "row_set_label": "position 5 (the row set the bounds are stated on)",
-            "n_rows_in_row_set": -999,
-            "written_by_step": "step10",
-            "n_started_and_left": -999,
-            "p_definition": "p = |{e in E2 : e <= max(A_H)}| / L2",
-            "p_raw_ratio_form_withdrawn": true,
-            "p_is_null_off_started_and_left": true,
-            "bin_unit": "fraction_of_season",
-            "histograms": [
-              {
-                "stratum": {
-                  "kind": "all",
-                  "label": "all shows pooled",
-                  "l2_min": null,
-                  "l2_max": null,
-                  "definition": "PLACEHOLDER — NOT A MEASUREMENT: every started-and-left row in this row set"
-                },
-                "bin_edges_p": [
-                  0.0,
-                  0.1,
-                  0.2,
-                  0.3,
-                  0.4,
-                  0.5,
-                  0.6,
-                  0.7,
-                  0.8,
-                  0.9,
-                  1.0
-                ],
-                "counts": [
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999
-                ],
-                "n_rows": -999
-              },
-              {
-                "stratum": {
-                  "kind": "l2_stratum",
-                  "label": "PLACEHOLDER — NOT A MEASUREMENT: one L2 stratum; the bounds are the writer's",
-                  "l2_min": null,
-                  "l2_max": null,
-                  "definition": "PLACEHOLDER — NOT A MEASUREMENT: structure only: p is a fraction of a season, so bins are not comparable across shows with very different L2, and the instruction not to pool them is an instruction to stratify"
-                },
-                "bin_edges_p": [
-                  0.0,
-                  0.1,
-                  0.2,
-                  0.3,
-                  0.4,
-                  0.5,
-                  0.6,
-                  0.7,
-                  0.8,
-                  0.9,
-                  1.0
-                ],
-                "counts": [
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999
-                ],
-                "n_rows": -999
-              }
-            ],
-            "named_categories": {
-              "first_episode": {
-                "count": -999,
-                "share_percent": -999.0,
-                "definition": "PLACEHOLDER — NOT A MEASUREMENT: first-episode drops"
-              },
-              "mid_season": {
-                "count": -999,
-                "share_percent": -999.0,
-                "definition": "PLACEHOLDER — NOT A MEASUREMENT: mid-season drops"
-              },
-              "near_finale": {
-                "count": -999,
-                "share_percent": -999.0,
-                "definition": "PLACEHOLDER — NOT A MEASUREMENT: near-finale drops, excluding the p = 1.0 residual"
-              },
-              "p_equals_1_residual": {
-                "count": -999,
-                "share_percent": -999.0,
-                "definition": "PLACEHOLDER — NOT A MEASUREMENT: reached the final listed episode but missed the completion threshold; its own named category, not part of near-finale"
-              }
-            },
-            "p_equals_1_residual_is_separate_from_near_finale": true,
-            "p_at_bound": {
-              "column_cardinalities": {
-                "true_count": -999,
-                "false_count": -999,
-                "null_count": -999,
-                "total_rows": -999,
-                "identity_holds": true,
-                "false_is_the_ordinary_case": true
-              },
-              "coextensivity_gap": {
-                "p_equals_one_total": -999,
-                "in_both": -999,
-                "saturated_not_final": -999,
-                "final_not_saturated": -999,
-                "in_neither": -999,
-                "rows_examined": -999,
-                "is_empty": true
-              },
-              "two_classes_note": "PLACEHOLDER — NOT A MEASUREMENT: two different FALSE classes: the coextensivity gap, which is the one the sentence 'the FALSE class is empty' names, and the column's own FALSE value, which is the ordinary started-and-left row and is large. A consumer that provisions p_at_bound as a two-valued column is wrong by the whole of column_cardinalities.false_count",
-              "construction_links": [
-                {
-                  "link": "m_H in E2",
-                  "kind": "construction",
-                  "measured_value": null
-                },
-                {
-                  "link": "|{e in E2 : e <= m_H}| = L2  <=>  m_H = max(E2)",
-                  "kind": "construction",
-                  "measured_value": null
-                },
-                {
-                  "link": "max(E2) = F2",
-                  "kind": "measured",
-                  "measured_value": "PLACEHOLDER — NOT A MEASUREMENT: the frame count that establishes this link"
-                }
-              ]
-            },
-            "amendment_shift": {
-              "direction": "earlier",
-              "pairs_moved": -999,
-              "note": "PLACEHOLDER — NOT A MEASUREMENT: the pairs the amendment moves out of started-and-left are the ones that got furthest, so the chart shifts earlier; the shift is definitional and must not be attributed to behaviour"
-            },
-            "comparability_caveat": "PLACEHOLDER — NOT A MEASUREMENT: p is a fraction of a season, not a count of episodes; bins are not comparable across shows with very different L2, and at L2 = 2 p takes one of two values",
-            "no_specific_episode_claimed": true
-          },
-          {
-            "population": "DERIV",
-            "row_set": "post_liveness",
-            "row_set_label": "post-liveness (position 7)",
-            "n_rows_in_row_set": -999,
-            "written_by_step": "step10",
-            "n_started_and_left": -999,
-            "p_definition": "p = |{e in E2 : e <= max(A_H)}| / L2",
-            "p_raw_ratio_form_withdrawn": true,
-            "p_is_null_off_started_and_left": true,
-            "bin_unit": "fraction_of_season",
-            "histograms": [
-              {
-                "stratum": {
-                  "kind": "all",
-                  "label": "all shows pooled",
-                  "l2_min": null,
-                  "l2_max": null,
-                  "definition": "PLACEHOLDER — NOT A MEASUREMENT: every started-and-left row in this row set"
-                },
-                "bin_edges_p": [
-                  0.0,
-                  0.1,
-                  0.2,
-                  0.3,
-                  0.4,
-                  0.5,
-                  0.6,
-                  0.7,
-                  0.8,
-                  0.9,
-                  1.0
-                ],
-                "counts": [
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999
-                ],
-                "n_rows": -999
-              },
-              {
-                "stratum": {
-                  "kind": "l2_stratum",
-                  "label": "PLACEHOLDER — NOT A MEASUREMENT: one L2 stratum; the bounds are the writer's",
-                  "l2_min": null,
-                  "l2_max": null,
-                  "definition": "PLACEHOLDER — NOT A MEASUREMENT: structure only: p is a fraction of a season, so bins are not comparable across shows with very different L2, and the instruction not to pool them is an instruction to stratify"
-                },
-                "bin_edges_p": [
-                  0.0,
-                  0.1,
-                  0.2,
-                  0.3,
-                  0.4,
-                  0.5,
-                  0.6,
-                  0.7,
-                  0.8,
-                  0.9,
-                  1.0
-                ],
-                "counts": [
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999
-                ],
-                "n_rows": -999
-              }
-            ],
-            "named_categories": {
-              "first_episode": {
-                "count": -999,
-                "share_percent": -999.0,
-                "definition": "PLACEHOLDER — NOT A MEASUREMENT: first-episode drops"
-              },
-              "mid_season": {
-                "count": -999,
-                "share_percent": -999.0,
-                "definition": "PLACEHOLDER — NOT A MEASUREMENT: mid-season drops"
-              },
-              "near_finale": {
-                "count": -999,
-                "share_percent": -999.0,
-                "definition": "PLACEHOLDER — NOT A MEASUREMENT: near-finale drops, excluding the p = 1.0 residual"
-              },
-              "p_equals_1_residual": {
-                "count": -999,
-                "share_percent": -999.0,
-                "definition": "PLACEHOLDER — NOT A MEASUREMENT: reached the final listed episode but missed the completion threshold; its own named category, not part of near-finale"
-              }
-            },
-            "p_equals_1_residual_is_separate_from_near_finale": true,
-            "p_at_bound": {
-              "column_cardinalities": {
-                "true_count": -999,
-                "false_count": -999,
-                "null_count": -999,
-                "total_rows": -999,
-                "identity_holds": true,
-                "false_is_the_ordinary_case": true
-              },
-              "coextensivity_gap": {
-                "p_equals_one_total": -999,
-                "in_both": -999,
-                "saturated_not_final": -999,
-                "final_not_saturated": -999,
-                "in_neither": -999,
-                "rows_examined": -999,
-                "is_empty": true
-              },
-              "two_classes_note": "PLACEHOLDER — NOT A MEASUREMENT: two different FALSE classes: the coextensivity gap, which is the one the sentence 'the FALSE class is empty' names, and the column's own FALSE value, which is the ordinary started-and-left row and is large. A consumer that provisions p_at_bound as a two-valued column is wrong by the whole of column_cardinalities.false_count",
-              "construction_links": [
-                {
-                  "link": "m_H in E2",
-                  "kind": "construction",
-                  "measured_value": null
-                },
-                {
-                  "link": "|{e in E2 : e <= m_H}| = L2  <=>  m_H = max(E2)",
-                  "kind": "construction",
-                  "measured_value": null
-                },
-                {
-                  "link": "max(E2) = F2",
-                  "kind": "measured",
-                  "measured_value": "PLACEHOLDER — NOT A MEASUREMENT: the frame count that establishes this link"
-                }
-              ]
-            },
-            "amendment_shift": {
-              "direction": "earlier",
-              "pairs_moved": -999,
-              "note": "PLACEHOLDER — NOT A MEASUREMENT: the pairs the amendment moves out of started-and-left are the ones that got furthest, so the chart shifts earlier; the shift is definitional and must not be attributed to behaviour"
-            },
-            "comparability_caveat": "PLACEHOLDER — NOT A MEASUREMENT: p is a fraction of a season, not a count of episodes; bins are not comparable across shows with very different L2, and at L2 = 2 p takes one of two values",
-            "no_specific_episode_claimed": true
-          }
-        ]
-      },
       "liveness_exclusions": {
         "APPLY": {
           "total_pairs": -999,
@@ -2037,28 +1677,6 @@
           "identity": "silence_test_alone - spared_by_not_continued = total_pairs",
           "pair_level_not_account_level": true,
           "written_by_step": "step13"
-        }
-      },
-      "d3_prime": {
-        "APPLY": {
-          "population": "APPLY",
-          "cleared_count": -999,
-          "cleared_share_percent": -999.0,
-          "denominator_pairs": -999,
-          "population_label": "PLACEHOLDER — NOT A MEASUREMENT: Step 8's right-censored population at this arm; D3's clearance contains W, so the cleared subpopulation changes with the arm",
-          "H_days_held_constant": 91,
-          "written_by_step": "step13",
-          "note": "PLACEHOLDER — NOT A MEASUREMENT: one cleared count and share per arm, per population"
-        },
-        "DERIV": {
-          "population": "DERIV",
-          "cleared_count": -999,
-          "cleared_share_percent": -999.0,
-          "denominator_pairs": -999,
-          "population_label": "PLACEHOLDER — NOT A MEASUREMENT: Step 8's right-censored population at this arm; D3's clearance contains W, so the cleared subpopulation changes with the arm",
-          "H_days_held_constant": 91,
-          "written_by_step": "step13",
-          "note": "PLACEHOLDER — NOT A MEASUREMENT: one cleared count and share per arm, per population"
         }
       },
       "retained_by_air_period": {
@@ -2142,6 +1760,7 @@
                       "bootstrap_ref": "a_default",
                       "B": 10000,
                       "seed": 20260818,
+                      "statistic": "movements",
                       "resampling_unit": "account",
                       "quantity_class": "outcome_shares",
                       "note": "PLACEHOLDER — NOT A MEASUREMENT: the interval is a sentinel; the bootstrap settings, the unit and the quantity class are real, because the ruling requires them at the point of use"
@@ -2165,6 +1784,7 @@
                       "bootstrap_ref": "a_default",
                       "B": 10000,
                       "seed": 20260818,
+                      "statistic": "movements",
                       "resampling_unit": "account",
                       "quantity_class": "outcome_shares",
                       "note": "PLACEHOLDER — NOT A MEASUREMENT: the interval is a sentinel; the bootstrap settings, the unit and the quantity class are real, because the ruling requires them at the point of use"
@@ -2188,6 +1808,7 @@
                       "bootstrap_ref": "a_default",
                       "B": 10000,
                       "seed": 20260818,
+                      "statistic": "movements",
                       "resampling_unit": "account",
                       "quantity_class": "outcome_shares",
                       "note": "PLACEHOLDER — NOT A MEASUREMENT: the interval is a sentinel; the bootstrap settings, the unit and the quantity class are real, because the ruling requires them at the point of use"
@@ -2441,6 +2062,7 @@
                       "bootstrap_ref": "a_default",
                       "B": 10000,
                       "seed": 20260818,
+                      "statistic": "movements",
                       "resampling_unit": "account",
                       "quantity_class": "outcome_shares",
                       "note": "PLACEHOLDER — NOT A MEASUREMENT: the interval is a sentinel; the bootstrap settings, the unit and the quantity class are real, because the ruling requires them at the point of use"
@@ -2464,6 +2086,7 @@
                       "bootstrap_ref": "a_default",
                       "B": 10000,
                       "seed": 20260818,
+                      "statistic": "movements",
                       "resampling_unit": "account",
                       "quantity_class": "outcome_shares",
                       "note": "PLACEHOLDER — NOT A MEASUREMENT: the interval is a sentinel; the bootstrap settings, the unit and the quantity class are real, because the ruling requires them at the point of use"
@@ -2487,6 +2110,7 @@
                       "bootstrap_ref": "a_default",
                       "B": 10000,
                       "seed": 20260818,
+                      "statistic": "movements",
                       "resampling_unit": "account",
                       "quantity_class": "outcome_shares",
                       "note": "PLACEHOLDER — NOT A MEASUREMENT: the interval is a sentinel; the bootstrap settings, the unit and the quantity class are real, because the ruling requires them at the point of use"
@@ -2709,6 +2333,20 @@
           }
         }
       },
+      "abandonment_distribution": {
+        "block_is_absent": true,
+        "status": "awaiting_owner_step",
+        "reason": "This file is step9's output for one arm, and this block is published by step10. Under ONE FILE PER STEP PER ARM it arrives in step10's own file and is merged in at Step 13b; writing a copy here would be a second place that figure lives.",
+        "source": "decisions/0109 §1; task-sheet.md Step 13b",
+        "owning_step": "step10"
+      },
+      "d3_prime": {
+        "block_is_absent": true,
+        "status": "awaiting_owner_step",
+        "reason": "This file is step9's output for one arm, and this block is published by step13. Under ONE FILE PER STEP PER ARM it arrives in step13's own file and is merged in at Step 13b; writing a copy here would be a second place that figure lives.",
+        "source": "decisions/0109 §1; task-sheet.md Step 13b",
+        "owning_step": "step13"
+      },
       "waterfall": {
         "APPLY": {
           "population": "APPLY",
@@ -2917,616 +2555,6 @@
           }
         }
       },
-      "abandonment_distribution": {
-        "APPLY": [
-          {
-            "population": "APPLY",
-            "row_set": "position_5",
-            "row_set_label": "position 5 (the row set the bounds are stated on)",
-            "n_rows_in_row_set": -999,
-            "written_by_step": "step10",
-            "n_started_and_left": -999,
-            "p_definition": "p = |{e in E2 : e <= max(A_H)}| / L2",
-            "p_raw_ratio_form_withdrawn": true,
-            "p_is_null_off_started_and_left": true,
-            "bin_unit": "fraction_of_season",
-            "histograms": [
-              {
-                "stratum": {
-                  "kind": "all",
-                  "label": "all shows pooled",
-                  "l2_min": null,
-                  "l2_max": null,
-                  "definition": "PLACEHOLDER — NOT A MEASUREMENT: every started-and-left row in this row set"
-                },
-                "bin_edges_p": [
-                  0.0,
-                  0.1,
-                  0.2,
-                  0.3,
-                  0.4,
-                  0.5,
-                  0.6,
-                  0.7,
-                  0.8,
-                  0.9,
-                  1.0
-                ],
-                "counts": [
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999
-                ],
-                "n_rows": -999
-              },
-              {
-                "stratum": {
-                  "kind": "l2_stratum",
-                  "label": "PLACEHOLDER — NOT A MEASUREMENT: one L2 stratum; the bounds are the writer's",
-                  "l2_min": null,
-                  "l2_max": null,
-                  "definition": "PLACEHOLDER — NOT A MEASUREMENT: structure only: p is a fraction of a season, so bins are not comparable across shows with very different L2, and the instruction not to pool them is an instruction to stratify"
-                },
-                "bin_edges_p": [
-                  0.0,
-                  0.1,
-                  0.2,
-                  0.3,
-                  0.4,
-                  0.5,
-                  0.6,
-                  0.7,
-                  0.8,
-                  0.9,
-                  1.0
-                ],
-                "counts": [
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999
-                ],
-                "n_rows": -999
-              }
-            ],
-            "named_categories": {
-              "first_episode": {
-                "count": -999,
-                "share_percent": -999.0,
-                "definition": "PLACEHOLDER — NOT A MEASUREMENT: first-episode drops"
-              },
-              "mid_season": {
-                "count": -999,
-                "share_percent": -999.0,
-                "definition": "PLACEHOLDER — NOT A MEASUREMENT: mid-season drops"
-              },
-              "near_finale": {
-                "count": -999,
-                "share_percent": -999.0,
-                "definition": "PLACEHOLDER — NOT A MEASUREMENT: near-finale drops, excluding the p = 1.0 residual"
-              },
-              "p_equals_1_residual": {
-                "count": -999,
-                "share_percent": -999.0,
-                "definition": "PLACEHOLDER — NOT A MEASUREMENT: reached the final listed episode but missed the completion threshold; its own named category, not part of near-finale"
-              }
-            },
-            "p_equals_1_residual_is_separate_from_near_finale": true,
-            "p_at_bound": {
-              "column_cardinalities": {
-                "true_count": -999,
-                "false_count": -999,
-                "null_count": -999,
-                "total_rows": -999,
-                "identity_holds": true,
-                "false_is_the_ordinary_case": true
-              },
-              "coextensivity_gap": {
-                "p_equals_one_total": -999,
-                "in_both": -999,
-                "saturated_not_final": -999,
-                "final_not_saturated": -999,
-                "in_neither": -999,
-                "rows_examined": -999,
-                "is_empty": true
-              },
-              "two_classes_note": "PLACEHOLDER — NOT A MEASUREMENT: two different FALSE classes: the coextensivity gap, which is the one the sentence 'the FALSE class is empty' names, and the column's own FALSE value, which is the ordinary started-and-left row and is large. A consumer that provisions p_at_bound as a two-valued column is wrong by the whole of column_cardinalities.false_count",
-              "construction_links": [
-                {
-                  "link": "m_H in E2",
-                  "kind": "construction",
-                  "measured_value": null
-                },
-                {
-                  "link": "|{e in E2 : e <= m_H}| = L2  <=>  m_H = max(E2)",
-                  "kind": "construction",
-                  "measured_value": null
-                },
-                {
-                  "link": "max(E2) = F2",
-                  "kind": "measured",
-                  "measured_value": "PLACEHOLDER — NOT A MEASUREMENT: the frame count that establishes this link"
-                }
-              ]
-            },
-            "amendment_shift": {
-              "direction": "earlier",
-              "pairs_moved": -999,
-              "note": "PLACEHOLDER — NOT A MEASUREMENT: the pairs the amendment moves out of started-and-left are the ones that got furthest, so the chart shifts earlier; the shift is definitional and must not be attributed to behaviour"
-            },
-            "comparability_caveat": "PLACEHOLDER — NOT A MEASUREMENT: p is a fraction of a season, not a count of episodes; bins are not comparable across shows with very different L2, and at L2 = 2 p takes one of two values",
-            "no_specific_episode_claimed": true
-          },
-          {
-            "population": "APPLY",
-            "row_set": "post_liveness",
-            "row_set_label": "post-liveness (position 7)",
-            "n_rows_in_row_set": -999,
-            "written_by_step": "step10",
-            "n_started_and_left": -999,
-            "p_definition": "p = |{e in E2 : e <= max(A_H)}| / L2",
-            "p_raw_ratio_form_withdrawn": true,
-            "p_is_null_off_started_and_left": true,
-            "bin_unit": "fraction_of_season",
-            "histograms": [
-              {
-                "stratum": {
-                  "kind": "all",
-                  "label": "all shows pooled",
-                  "l2_min": null,
-                  "l2_max": null,
-                  "definition": "PLACEHOLDER — NOT A MEASUREMENT: every started-and-left row in this row set"
-                },
-                "bin_edges_p": [
-                  0.0,
-                  0.1,
-                  0.2,
-                  0.3,
-                  0.4,
-                  0.5,
-                  0.6,
-                  0.7,
-                  0.8,
-                  0.9,
-                  1.0
-                ],
-                "counts": [
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999
-                ],
-                "n_rows": -999
-              },
-              {
-                "stratum": {
-                  "kind": "l2_stratum",
-                  "label": "PLACEHOLDER — NOT A MEASUREMENT: one L2 stratum; the bounds are the writer's",
-                  "l2_min": null,
-                  "l2_max": null,
-                  "definition": "PLACEHOLDER — NOT A MEASUREMENT: structure only: p is a fraction of a season, so bins are not comparable across shows with very different L2, and the instruction not to pool them is an instruction to stratify"
-                },
-                "bin_edges_p": [
-                  0.0,
-                  0.1,
-                  0.2,
-                  0.3,
-                  0.4,
-                  0.5,
-                  0.6,
-                  0.7,
-                  0.8,
-                  0.9,
-                  1.0
-                ],
-                "counts": [
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999
-                ],
-                "n_rows": -999
-              }
-            ],
-            "named_categories": {
-              "first_episode": {
-                "count": -999,
-                "share_percent": -999.0,
-                "definition": "PLACEHOLDER — NOT A MEASUREMENT: first-episode drops"
-              },
-              "mid_season": {
-                "count": -999,
-                "share_percent": -999.0,
-                "definition": "PLACEHOLDER — NOT A MEASUREMENT: mid-season drops"
-              },
-              "near_finale": {
-                "count": -999,
-                "share_percent": -999.0,
-                "definition": "PLACEHOLDER — NOT A MEASUREMENT: near-finale drops, excluding the p = 1.0 residual"
-              },
-              "p_equals_1_residual": {
-                "count": -999,
-                "share_percent": -999.0,
-                "definition": "PLACEHOLDER — NOT A MEASUREMENT: reached the final listed episode but missed the completion threshold; its own named category, not part of near-finale"
-              }
-            },
-            "p_equals_1_residual_is_separate_from_near_finale": true,
-            "p_at_bound": {
-              "column_cardinalities": {
-                "true_count": -999,
-                "false_count": -999,
-                "null_count": -999,
-                "total_rows": -999,
-                "identity_holds": true,
-                "false_is_the_ordinary_case": true
-              },
-              "coextensivity_gap": {
-                "p_equals_one_total": -999,
-                "in_both": -999,
-                "saturated_not_final": -999,
-                "final_not_saturated": -999,
-                "in_neither": -999,
-                "rows_examined": -999,
-                "is_empty": true
-              },
-              "two_classes_note": "PLACEHOLDER — NOT A MEASUREMENT: two different FALSE classes: the coextensivity gap, which is the one the sentence 'the FALSE class is empty' names, and the column's own FALSE value, which is the ordinary started-and-left row and is large. A consumer that provisions p_at_bound as a two-valued column is wrong by the whole of column_cardinalities.false_count",
-              "construction_links": [
-                {
-                  "link": "m_H in E2",
-                  "kind": "construction",
-                  "measured_value": null
-                },
-                {
-                  "link": "|{e in E2 : e <= m_H}| = L2  <=>  m_H = max(E2)",
-                  "kind": "construction",
-                  "measured_value": null
-                },
-                {
-                  "link": "max(E2) = F2",
-                  "kind": "measured",
-                  "measured_value": "PLACEHOLDER — NOT A MEASUREMENT: the frame count that establishes this link"
-                }
-              ]
-            },
-            "amendment_shift": {
-              "direction": "earlier",
-              "pairs_moved": -999,
-              "note": "PLACEHOLDER — NOT A MEASUREMENT: the pairs the amendment moves out of started-and-left are the ones that got furthest, so the chart shifts earlier; the shift is definitional and must not be attributed to behaviour"
-            },
-            "comparability_caveat": "PLACEHOLDER — NOT A MEASUREMENT: p is a fraction of a season, not a count of episodes; bins are not comparable across shows with very different L2, and at L2 = 2 p takes one of two values",
-            "no_specific_episode_claimed": true
-          }
-        ],
-        "DERIV": [
-          {
-            "population": "DERIV",
-            "row_set": "position_5",
-            "row_set_label": "position 5 (the row set the bounds are stated on)",
-            "n_rows_in_row_set": -999,
-            "written_by_step": "step10",
-            "n_started_and_left": -999,
-            "p_definition": "p = |{e in E2 : e <= max(A_H)}| / L2",
-            "p_raw_ratio_form_withdrawn": true,
-            "p_is_null_off_started_and_left": true,
-            "bin_unit": "fraction_of_season",
-            "histograms": [
-              {
-                "stratum": {
-                  "kind": "all",
-                  "label": "all shows pooled",
-                  "l2_min": null,
-                  "l2_max": null,
-                  "definition": "PLACEHOLDER — NOT A MEASUREMENT: every started-and-left row in this row set"
-                },
-                "bin_edges_p": [
-                  0.0,
-                  0.1,
-                  0.2,
-                  0.3,
-                  0.4,
-                  0.5,
-                  0.6,
-                  0.7,
-                  0.8,
-                  0.9,
-                  1.0
-                ],
-                "counts": [
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999
-                ],
-                "n_rows": -999
-              },
-              {
-                "stratum": {
-                  "kind": "l2_stratum",
-                  "label": "PLACEHOLDER — NOT A MEASUREMENT: one L2 stratum; the bounds are the writer's",
-                  "l2_min": null,
-                  "l2_max": null,
-                  "definition": "PLACEHOLDER — NOT A MEASUREMENT: structure only: p is a fraction of a season, so bins are not comparable across shows with very different L2, and the instruction not to pool them is an instruction to stratify"
-                },
-                "bin_edges_p": [
-                  0.0,
-                  0.1,
-                  0.2,
-                  0.3,
-                  0.4,
-                  0.5,
-                  0.6,
-                  0.7,
-                  0.8,
-                  0.9,
-                  1.0
-                ],
-                "counts": [
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999
-                ],
-                "n_rows": -999
-              }
-            ],
-            "named_categories": {
-              "first_episode": {
-                "count": -999,
-                "share_percent": -999.0,
-                "definition": "PLACEHOLDER — NOT A MEASUREMENT: first-episode drops"
-              },
-              "mid_season": {
-                "count": -999,
-                "share_percent": -999.0,
-                "definition": "PLACEHOLDER — NOT A MEASUREMENT: mid-season drops"
-              },
-              "near_finale": {
-                "count": -999,
-                "share_percent": -999.0,
-                "definition": "PLACEHOLDER — NOT A MEASUREMENT: near-finale drops, excluding the p = 1.0 residual"
-              },
-              "p_equals_1_residual": {
-                "count": -999,
-                "share_percent": -999.0,
-                "definition": "PLACEHOLDER — NOT A MEASUREMENT: reached the final listed episode but missed the completion threshold; its own named category, not part of near-finale"
-              }
-            },
-            "p_equals_1_residual_is_separate_from_near_finale": true,
-            "p_at_bound": {
-              "column_cardinalities": {
-                "true_count": -999,
-                "false_count": -999,
-                "null_count": -999,
-                "total_rows": -999,
-                "identity_holds": true,
-                "false_is_the_ordinary_case": true
-              },
-              "coextensivity_gap": {
-                "p_equals_one_total": -999,
-                "in_both": -999,
-                "saturated_not_final": -999,
-                "final_not_saturated": -999,
-                "in_neither": -999,
-                "rows_examined": -999,
-                "is_empty": true
-              },
-              "two_classes_note": "PLACEHOLDER — NOT A MEASUREMENT: two different FALSE classes: the coextensivity gap, which is the one the sentence 'the FALSE class is empty' names, and the column's own FALSE value, which is the ordinary started-and-left row and is large. A consumer that provisions p_at_bound as a two-valued column is wrong by the whole of column_cardinalities.false_count",
-              "construction_links": [
-                {
-                  "link": "m_H in E2",
-                  "kind": "construction",
-                  "measured_value": null
-                },
-                {
-                  "link": "|{e in E2 : e <= m_H}| = L2  <=>  m_H = max(E2)",
-                  "kind": "construction",
-                  "measured_value": null
-                },
-                {
-                  "link": "max(E2) = F2",
-                  "kind": "measured",
-                  "measured_value": "PLACEHOLDER — NOT A MEASUREMENT: the frame count that establishes this link"
-                }
-              ]
-            },
-            "amendment_shift": {
-              "direction": "earlier",
-              "pairs_moved": -999,
-              "note": "PLACEHOLDER — NOT A MEASUREMENT: the pairs the amendment moves out of started-and-left are the ones that got furthest, so the chart shifts earlier; the shift is definitional and must not be attributed to behaviour"
-            },
-            "comparability_caveat": "PLACEHOLDER — NOT A MEASUREMENT: p is a fraction of a season, not a count of episodes; bins are not comparable across shows with very different L2, and at L2 = 2 p takes one of two values",
-            "no_specific_episode_claimed": true
-          },
-          {
-            "population": "DERIV",
-            "row_set": "post_liveness",
-            "row_set_label": "post-liveness (position 7)",
-            "n_rows_in_row_set": -999,
-            "written_by_step": "step10",
-            "n_started_and_left": -999,
-            "p_definition": "p = |{e in E2 : e <= max(A_H)}| / L2",
-            "p_raw_ratio_form_withdrawn": true,
-            "p_is_null_off_started_and_left": true,
-            "bin_unit": "fraction_of_season",
-            "histograms": [
-              {
-                "stratum": {
-                  "kind": "all",
-                  "label": "all shows pooled",
-                  "l2_min": null,
-                  "l2_max": null,
-                  "definition": "PLACEHOLDER — NOT A MEASUREMENT: every started-and-left row in this row set"
-                },
-                "bin_edges_p": [
-                  0.0,
-                  0.1,
-                  0.2,
-                  0.3,
-                  0.4,
-                  0.5,
-                  0.6,
-                  0.7,
-                  0.8,
-                  0.9,
-                  1.0
-                ],
-                "counts": [
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999
-                ],
-                "n_rows": -999
-              },
-              {
-                "stratum": {
-                  "kind": "l2_stratum",
-                  "label": "PLACEHOLDER — NOT A MEASUREMENT: one L2 stratum; the bounds are the writer's",
-                  "l2_min": null,
-                  "l2_max": null,
-                  "definition": "PLACEHOLDER — NOT A MEASUREMENT: structure only: p is a fraction of a season, so bins are not comparable across shows with very different L2, and the instruction not to pool them is an instruction to stratify"
-                },
-                "bin_edges_p": [
-                  0.0,
-                  0.1,
-                  0.2,
-                  0.3,
-                  0.4,
-                  0.5,
-                  0.6,
-                  0.7,
-                  0.8,
-                  0.9,
-                  1.0
-                ],
-                "counts": [
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999,
-                  -999
-                ],
-                "n_rows": -999
-              }
-            ],
-            "named_categories": {
-              "first_episode": {
-                "count": -999,
-                "share_percent": -999.0,
-                "definition": "PLACEHOLDER — NOT A MEASUREMENT: first-episode drops"
-              },
-              "mid_season": {
-                "count": -999,
-                "share_percent": -999.0,
-                "definition": "PLACEHOLDER — NOT A MEASUREMENT: mid-season drops"
-              },
-              "near_finale": {
-                "count": -999,
-                "share_percent": -999.0,
-                "definition": "PLACEHOLDER — NOT A MEASUREMENT: near-finale drops, excluding the p = 1.0 residual"
-              },
-              "p_equals_1_residual": {
-                "count": -999,
-                "share_percent": -999.0,
-                "definition": "PLACEHOLDER — NOT A MEASUREMENT: reached the final listed episode but missed the completion threshold; its own named category, not part of near-finale"
-              }
-            },
-            "p_equals_1_residual_is_separate_from_near_finale": true,
-            "p_at_bound": {
-              "column_cardinalities": {
-                "true_count": -999,
-                "false_count": -999,
-                "null_count": -999,
-                "total_rows": -999,
-                "identity_holds": true,
-                "false_is_the_ordinary_case": true
-              },
-              "coextensivity_gap": {
-                "p_equals_one_total": -999,
-                "in_both": -999,
-                "saturated_not_final": -999,
-                "final_not_saturated": -999,
-                "in_neither": -999,
-                "rows_examined": -999,
-                "is_empty": true
-              },
-              "two_classes_note": "PLACEHOLDER — NOT A MEASUREMENT: two different FALSE classes: the coextensivity gap, which is the one the sentence 'the FALSE class is empty' names, and the column's own FALSE value, which is the ordinary started-and-left row and is large. A consumer that provisions p_at_bound as a two-valued column is wrong by the whole of column_cardinalities.false_count",
-              "construction_links": [
-                {
-                  "link": "m_H in E2",
-                  "kind": "construction",
-                  "measured_value": null
-                },
-                {
-                  "link": "|{e in E2 : e <= m_H}| = L2  <=>  m_H = max(E2)",
-                  "kind": "construction",
-                  "measured_value": null
-                },
-                {
-                  "link": "max(E2) = F2",
-                  "kind": "measured",
-                  "measured_value": "PLACEHOLDER — NOT A MEASUREMENT: the frame count that establishes this link"
-                }
-              ]
-            },
-            "amendment_shift": {
-              "direction": "earlier",
-              "pairs_moved": -999,
-              "note": "PLACEHOLDER — NOT A MEASUREMENT: the pairs the amendment moves out of started-and-left are the ones that got furthest, so the chart shifts earlier; the shift is definitional and must not be attributed to behaviour"
-            },
-            "comparability_caveat": "PLACEHOLDER — NOT A MEASUREMENT: p is a fraction of a season, not a count of episodes; bins are not comparable across shows with very different L2, and at L2 = 2 p takes one of two values",
-            "no_specific_episode_claimed": true
-          }
-        ]
-      },
       "liveness_exclusions": {
         "APPLY": {
           "total_pairs": -999,
@@ -3545,28 +2573,6 @@
           "reason": "The DERIV per-arm liveness series is recorded as SUPERSEDED FOR THIS PURPOSE: the per-arm series to report is the APPLY one, and the DERIV figures remain correct on DERIV while being the wrong series here. A schema that demands a number in this slot demands a superseded one.",
           "source": "task-sheet.md Step 13; reviewer-engineering F1",
           "owning_step": "step13"
-        }
-      },
-      "d3_prime": {
-        "APPLY": {
-          "population": "APPLY",
-          "cleared_count": -999,
-          "cleared_share_percent": -999.0,
-          "denominator_pairs": -999,
-          "population_label": "PLACEHOLDER — NOT A MEASUREMENT: Step 8's right-censored population at this arm; D3's clearance contains W, so the cleared subpopulation changes with the arm",
-          "H_days_held_constant": 91,
-          "written_by_step": "step13",
-          "note": "PLACEHOLDER — NOT A MEASUREMENT: one cleared count and share per arm, per population"
-        },
-        "DERIV": {
-          "population": "DERIV",
-          "cleared_count": -999,
-          "cleared_share_percent": -999.0,
-          "denominator_pairs": -999,
-          "population_label": "PLACEHOLDER — NOT A MEASUREMENT: Step 8's right-censored population at this arm; D3's clearance contains W, so the cleared subpopulation changes with the arm",
-          "H_days_held_constant": 91,
-          "written_by_step": "step13",
-          "note": "PLACEHOLDER — NOT A MEASUREMENT: one cleared count and share per arm, per population"
         }
       },
       "retained_by_air_period": {
@@ -3650,6 +2656,7 @@
                       "bootstrap_ref": "a_default",
                       "B": 10000,
                       "seed": 20260818,
+                      "statistic": "movements",
                       "resampling_unit": "account",
                       "quantity_class": "outcome_shares",
                       "note": "PLACEHOLDER — NOT A MEASUREMENT: the interval is a sentinel; the bootstrap settings, the unit and the quantity class are real, because the ruling requires them at the point of use"
@@ -3673,6 +2680,7 @@
                       "bootstrap_ref": "a_default",
                       "B": 10000,
                       "seed": 20260818,
+                      "statistic": "movements",
                       "resampling_unit": "account",
                       "quantity_class": "outcome_shares",
                       "note": "PLACEHOLDER — NOT A MEASUREMENT: the interval is a sentinel; the bootstrap settings, the unit and the quantity class are real, because the ruling requires them at the point of use"
@@ -3696,6 +2704,7 @@
                       "bootstrap_ref": "a_default",
                       "B": 10000,
                       "seed": 20260818,
+                      "statistic": "movements",
                       "resampling_unit": "account",
                       "quantity_class": "outcome_shares",
                       "note": "PLACEHOLDER — NOT A MEASUREMENT: the interval is a sentinel; the bootstrap settings, the unit and the quantity class are real, because the ruling requires them at the point of use"
@@ -3949,6 +2958,7 @@
                       "bootstrap_ref": "a_default",
                       "B": 10000,
                       "seed": 20260818,
+                      "statistic": "movements",
                       "resampling_unit": "account",
                       "quantity_class": "outcome_shares",
                       "note": "PLACEHOLDER — NOT A MEASUREMENT: the interval is a sentinel; the bootstrap settings, the unit and the quantity class are real, because the ruling requires them at the point of use"
@@ -3972,6 +2982,7 @@
                       "bootstrap_ref": "a_default",
                       "B": 10000,
                       "seed": 20260818,
+                      "statistic": "movements",
                       "resampling_unit": "account",
                       "quantity_class": "outcome_shares",
                       "note": "PLACEHOLDER — NOT A MEASUREMENT: the interval is a sentinel; the bootstrap settings, the unit and the quantity class are real, because the ruling requires them at the point of use"
@@ -3995,6 +3006,7 @@
                       "bootstrap_ref": "a_default",
                       "B": 10000,
                       "seed": 20260818,
+                      "statistic": "movements",
                       "resampling_unit": "account",
                       "quantity_class": "outcome_shares",
                       "note": "PLACEHOLDER — NOT A MEASUREMENT: the interval is a sentinel; the bootstrap settings, the unit and the quantity class are real, because the ruling requires them at the point of use"
@@ -4256,226 +3268,6 @@
       "note": "PLACEHOLDER — NOT A MEASUREMENT: one entry per arm"
     }
   ],
-  "variants": [
-    {
-      "variant_id": "s1_completion_threshold_90",
-      "axis": "s1_completion_threshold",
-      "level": "90_percent",
-      "base_arm_id": "W108_s2_finale",
-      "headline": {
-        "APPLY": {
-          "population": "APPLY",
-          "definition": "PLACEHOLDER — NOT A MEASUREMENT: the definition of this population, restated by the writer at the point of use",
-          "n_position_5": -999,
-          "n_post_liveness": -999,
-          "populations_differ_note": "PLACEHOLDER — NOT A MEASUREMENT: the bounds are stated on the position-5 row set and the published shares on the post-liveness row set; they are different populations and every field says which",
-          "by_producing_arm": {
-            "step_dual_status": "dual",
-            "arms_in_this_file": "one_arm",
-            "producing_step": "step13",
-            "step_dual_status_source": "CLAUDE.md, Dual implementation; Step 13's duality is decisions/0103 §3; one file per arm is decisions/0107",
-            "arms": {
-              "a": {
-                "producing_arm": "a",
-                "written_by_step": "step13",
-                "written_by": "Step 13",
-                "shares": {
-                  "never_started": {
-                    "value_percent": -999.0,
-                    "numerator_pairs": -999,
-                    "denominator_pairs": -999,
-                    "on_population": "APPLY",
-                    "on_population_n": -999,
-                    "on_population_label": "post-liveness (position 7)",
-                    "ci": {
-                      "status": "not_required_by_spec",
-                      "reason": "The spec does not ask this step for an interval on this quantity: Step 13's per-arm sensitivity series is a series of shares and Step 12 lists candidate cuts without mandating intervals. The slot is present and says so, because 'not asked for' and 'forgotten' must not look alike.",
-                      "source": "task-sheet.md Steps 12 and 13; reviewer-engineering F3"
-                    },
-                    "is_an_observed_count_not_a_bound": true,
-                    "horizon_days": -999,
-                    "note": "PLACEHOLDER — NOT A MEASUREMENT: never-started is read at tau1"
-                  },
-                  "started_and_left": {
-                    "value_percent": -999.0,
-                    "numerator_pairs": -999,
-                    "denominator_pairs": -999,
-                    "on_population": "APPLY",
-                    "on_population_n": -999,
-                    "on_population_label": "post-liveness (position 7)",
-                    "ci": {
-                      "status": "not_required_by_spec",
-                      "reason": "The spec does not ask this step for an interval on this quantity: Step 13's per-arm sensitivity series is a series of shares and Step 12 lists candidate cuts without mandating intervals. The slot is present and says so, because 'not asked for' and 'forgotten' must not look alike.",
-                      "source": "task-sheet.md Steps 12 and 13; reviewer-engineering F3"
-                    },
-                    "is_an_observed_count_not_a_bound": true,
-                    "horizon_days": -999,
-                    "note": "PLACEHOLDER — NOT A MEASUREMENT: started-and-left is assigned at tau2"
-                  },
-                  "continued": {
-                    "value_percent": -999.0,
-                    "numerator_pairs": -999,
-                    "denominator_pairs": -999,
-                    "on_population": "APPLY",
-                    "on_population_n": -999,
-                    "on_population_label": "post-liveness (position 7)",
-                    "ci": {
-                      "status": "not_required_by_spec",
-                      "reason": "The spec does not ask this step for an interval on this quantity: Step 13's per-arm sensitivity series is a series of shares and Step 12 lists candidate cuts without mandating intervals. The slot is present and says so, because 'not asked for' and 'forgotten' must not look alike.",
-                      "source": "task-sheet.md Steps 12 and 13; reviewer-engineering F3"
-                    },
-                    "is_an_observed_count_not_a_bound": true,
-                    "horizon_days": -999,
-                    "note": "PLACEHOLDER — NOT A MEASUREMENT: Continued is read at tau2; this observed share does not replace the ceiling in bounds.continued"
-                  }
-                },
-                "bounds": {
-                  "block_is_absent": true,
-                  "status": "not_required_by_spec",
-                  "reason": "The spec asks for the bounds at the headline arms. It does not ask this step for a bound at every arm of the sensitivity grid, so the slot records that rather than demanding a figure no step produces.",
-                  "source": "task-sheet.md Step 13; reviewer-engineering F1",
-                  "owning_step": "step9"
-                },
-                "ceilings_cannot_all_hold": {
-                  "block_is_absent": true,
-                  "status": "not_required_by_spec",
-                  "reason": "The three-ceiling sum is a function of the three ceilings, and this payload publishes no bounds, so there are no ceilings here to sum. It is absent WITH the bounds and never on its own; check S22 ties the two together.",
-                  "source": "task-sheet.md Step 13; reviewer-engineering F1",
-                  "owning_step": "step9"
-                },
-                "spec_choices_this_arm_made": [
-                  "PLACEHOLDER — NOT A MEASUREMENT: each choice the spec does not fix, named by the arm that made it"
-                ]
-              }
-            },
-            "arm_held": "a"
-          }
-        },
-        "DERIV": {
-          "population": "DERIV",
-          "definition": "PLACEHOLDER — NOT A MEASUREMENT: the definition of this population, restated by the writer at the point of use",
-          "n_position_5": -999,
-          "n_post_liveness": -999,
-          "populations_differ_note": "PLACEHOLDER — NOT A MEASUREMENT: the bounds are stated on the position-5 row set and the published shares on the post-liveness row set; they are different populations and every field says which",
-          "by_producing_arm": {
-            "step_dual_status": "dual",
-            "arms_in_this_file": "one_arm",
-            "producing_step": "step13",
-            "step_dual_status_source": "CLAUDE.md, Dual implementation; Step 13's duality is decisions/0103 §3; one file per arm is decisions/0107",
-            "arms": {
-              "a": {
-                "producing_arm": "a",
-                "written_by_step": "step13",
-                "written_by": "Step 13",
-                "shares": {
-                  "never_started": {
-                    "value_percent": -999.0,
-                    "numerator_pairs": -999,
-                    "denominator_pairs": -999,
-                    "on_population": "DERIV",
-                    "on_population_n": -999,
-                    "on_population_label": "post-liveness (position 7)",
-                    "ci": {
-                      "status": "not_required_by_spec",
-                      "reason": "The spec does not ask this step for an interval on this quantity: Step 13's per-arm sensitivity series is a series of shares and Step 12 lists candidate cuts without mandating intervals. The slot is present and says so, because 'not asked for' and 'forgotten' must not look alike.",
-                      "source": "task-sheet.md Steps 12 and 13; reviewer-engineering F3"
-                    },
-                    "is_an_observed_count_not_a_bound": true,
-                    "horizon_days": -999,
-                    "note": "PLACEHOLDER — NOT A MEASUREMENT: never-started is read at tau1"
-                  },
-                  "started_and_left": {
-                    "value_percent": -999.0,
-                    "numerator_pairs": -999,
-                    "denominator_pairs": -999,
-                    "on_population": "DERIV",
-                    "on_population_n": -999,
-                    "on_population_label": "post-liveness (position 7)",
-                    "ci": {
-                      "status": "not_required_by_spec",
-                      "reason": "The spec does not ask this step for an interval on this quantity: Step 13's per-arm sensitivity series is a series of shares and Step 12 lists candidate cuts without mandating intervals. The slot is present and says so, because 'not asked for' and 'forgotten' must not look alike.",
-                      "source": "task-sheet.md Steps 12 and 13; reviewer-engineering F3"
-                    },
-                    "is_an_observed_count_not_a_bound": true,
-                    "horizon_days": -999,
-                    "note": "PLACEHOLDER — NOT A MEASUREMENT: started-and-left is assigned at tau2"
-                  },
-                  "continued": {
-                    "value_percent": -999.0,
-                    "numerator_pairs": -999,
-                    "denominator_pairs": -999,
-                    "on_population": "DERIV",
-                    "on_population_n": -999,
-                    "on_population_label": "post-liveness (position 7)",
-                    "ci": {
-                      "status": "not_required_by_spec",
-                      "reason": "The spec does not ask this step for an interval on this quantity: Step 13's per-arm sensitivity series is a series of shares and Step 12 lists candidate cuts without mandating intervals. The slot is present and says so, because 'not asked for' and 'forgotten' must not look alike.",
-                      "source": "task-sheet.md Steps 12 and 13; reviewer-engineering F3"
-                    },
-                    "is_an_observed_count_not_a_bound": true,
-                    "horizon_days": -999,
-                    "note": "PLACEHOLDER — NOT A MEASUREMENT: Continued is read at tau2; this observed share does not replace the ceiling in bounds.continued"
-                  }
-                },
-                "bounds": {
-                  "block_is_absent": true,
-                  "status": "not_required_by_spec",
-                  "reason": "The spec asks for the bounds at the headline arms. It does not ask this step for a bound at every arm of the sensitivity grid, so the slot records that rather than demanding a figure no step produces.",
-                  "source": "task-sheet.md Step 13; reviewer-engineering F1",
-                  "owning_step": "step9"
-                },
-                "ceilings_cannot_all_hold": {
-                  "block_is_absent": true,
-                  "status": "not_required_by_spec",
-                  "reason": "The three-ceiling sum is a function of the three ceilings, and this payload publishes no bounds, so there are no ceilings here to sum. It is absent WITH the bounds and never on its own; check S22 ties the two together.",
-                  "source": "task-sheet.md Step 13; reviewer-engineering F1",
-                  "owning_step": "step9"
-                },
-                "spec_choices_this_arm_made": [
-                  "PLACEHOLDER — NOT A MEASUREMENT: each choice the spec does not fix, named by the arm that made it"
-                ]
-              }
-            },
-            "arm_held": "a"
-          }
-        }
-      },
-      "d3_prime": {
-        "APPLY": {
-          "population": "APPLY",
-          "cleared_count": -999,
-          "cleared_share_percent": -999.0,
-          "denominator_pairs": -999,
-          "population_label": "PLACEHOLDER — NOT A MEASUREMENT: Step 8's right-censored population at this arm; D3's clearance contains W, so the cleared subpopulation changes with the arm",
-          "H_days_held_constant": 91,
-          "written_by_step": "step13",
-          "note": "PLACEHOLDER — NOT A MEASUREMENT: one cleared count and share per arm, per population"
-        },
-        "DERIV": {
-          "population": "DERIV",
-          "cleared_count": -999,
-          "cleared_share_percent": -999.0,
-          "denominator_pairs": -999,
-          "population_label": "PLACEHOLDER — NOT A MEASUREMENT: Step 8's right-censored population at this arm; D3's clearance contains W, so the cleared subpopulation changes with the arm",
-          "H_days_held_constant": 91,
-          "written_by_step": "step13",
-          "note": "PLACEHOLDER — NOT A MEASUREMENT: one cleared count and share per arm, per population"
-        }
-      },
-      "d2_recomputed_inside_this_arm": {
-        "finale_binds": -999,
-        "s1_completion_binds": -999,
-        "both_bind": -999,
-        "note": "PLACEHOLDER — NOT A MEASUREMENT: the max() split is three categories, not two: a tie is its own category, not a tiebreak, and the count is not population-invariant"
-      },
-      "conclusions_surviving": [
-        "PLACEHOLDER — NOT A MEASUREMENT: one string per conclusion that survives"
-      ],
-      "conclusions_not_surviving": [
-        "PLACEHOLDER — NOT A MEASUREMENT: one string per conclusion that does not"
-      ]
-    }
-  ],
   "tested_ranges": {
     "W_days": {
       "values": [
@@ -4573,22 +3365,16 @@
       "if_ruled_otherwise": "Keeping the old name costs one rename here and removes the loud failure. Nothing else depends on it: no consumer reads this file yet."
     },
     {
-      "choice": "TWO placeholders are emitted, one per document role.",
-      "spec_gap": "Step 8b's deliverable list says 'placeholder file', singular, and predates decisions/0107, which creates two document shapes: an arm file and the merged document Step 13b produces. The spec does not say which one the placeholder illustrates.",
-      "what_was_done": "artifacts/step8b-placeholder.json is the MERGED document, because Step 16 renders from the merged document and the placeholder exists so Step 16 can be built. artifacts/step8b-placeholder-arm-file.json is an ARM FILE, arm `a`, because Steps 9 to 13 write arm files and an arm writer given only the merged shape would have to invent the arm shape -- and a shape invented once per arm is two definitions of one thing. Both validate against this schema and both are flagged as placeholders.",
-      "if_ruled_otherwise": "If only one is wanted, the merged one is the deliverable and the arm-file one becomes a working file -- but then the arm shape is illustrated nowhere, and the first arm to write one fixes it by example."
+      "choice": "THREE placeholders are emitted: the merged document, a dual step's arm file, and a single-arm step's own file.",
+      "spec_gap": "Step 8b's deliverable list says 'placeholder file', singular, and predates decisions/0107, which creates two document ROLES, and decisions/0109 §1, which makes granularity one file per step per arm and so gives the single-arm steps files of their own. The spec does not say which shape the placeholder illustrates.",
+      "what_was_done": "artifacts/step8b-placeholder.json is the MERGED document, because Step 16 renders from it and the placeholder exists so Step 16 can be built. artifacts/step8b-placeholder-arm-file.json is a DUAL step's arm file (Step 9, arm a). artifacts/step8b-placeholder-sole-file.json is a SINGLE-ARM step's own file (Step 11, arm `sole`), which had been called expressible and left unillustrated -- and an expressible shape nobody has written is a shape the first writer fixes by example. All three validate against this schema and all three are flagged as placeholders.",
+      "if_ruled_otherwise": "If only one is wanted, the merged one is the deliverable and the other two become working files -- but then the two arm-file shapes are illustrated nowhere, and the first writer of each fixes it by example."
     },
     {
-      "choice": "ONE FILE PER ARM is read as one file per arm, not one file per step per arm.",
-      "spec_gap": "decisions/0107 §1 says each ARM writes its own document. §6 lists Step 13b's inputs as 'Step 9 x2, Step 13 x2, and the single-arm files from Steps 10 to 12', which reads as one file per step per arm. The two readings differ in whether arm a's Step 9 and Step 13 outputs share a file.",
-      "what_was_done": "The arm-file placeholder holds one ARM: Step 9's headline arms and Step 13's variants together, with $.document_scope.producing_step naming the step that owns the $.arms spine and also_written_by_steps naming the others. It follows the ruling's own phrase and the no-conversion-layer rule, under which several steps write into one file. A Human Lead step may never appear in an arm file's writer list, under either reading.",
-      "if_ruled_otherwise": "If it is one file per step per arm, $.document_scope.producing_step becomes single-valued, also_written_by_steps empties, and Step 13's file carries `variants` while Step 9's does not -- but then it must be said what a Step 13 file's required `arms` spine holds, since both steps write W arms. Nothing in the validator changes: its predicate is the producing step, not the block set."
-    },
-    {
-      "choice": "A single-arm step's own file (arm `sole`) is expressible but is not separately illustrated.",
-      "spec_gap": "decisions/0107 §6 lists 'the single-arm files from Steps 10 to 12' among Step 13b's inputs, so those steps write their own files. The spec does not say what such a file carries at top level: `arms` is the spine of this schema and Steps 10 to 12 do not produce W arms.",
-      "what_was_done": "$.document_scope.arm accepts `sole`, and by_producing_arm accepts a `sole` payload under one_arm, so the file is expressible. It is not illustrated, and the question of what its `arms` spine holds is left OPEN rather than answered here by example.",
-      "if_ruled_otherwise": "If those steps write into an arm file rather than their own, only $.document_scope changes. If they keep their own files, either `arms` stops being required for them or its entries carry block absences -- and that is a ruling, not a schema preference."
+      "choice": "A single-arm step's file keeps the `arms` spine, and its headline slot records why it holds no payload.",
+      "spec_gap": "decisions/0109 §1 gives Steps 10 to 12 files of their own. `arms` is the spine of this schema and those steps do not produce W arms, so the ruling requires a single-arm step's file to have a legal spine (M9) without saying what it holds.",
+      "what_was_done": "The file carries ONE arm entry -- the arm its cuts are computed at, the one its base_arm_id names -- with the headline payload slot holding an explicit absence: the unconditional headline is Step 9's, and restating it here would be a second definition of one figure. The five per-arm blocks another step publishes are absences naming that step. NO absence branch was added above by_producing_arm to achieve this: an absence branch there would turn the loud `dual_status` rename failure into a silent 'matched 0 oneOf branches' (decisions/0109 §4), and check S35 now asserts that the path from the root to that object carries no oneOf or anyOf.",
+      "if_ruled_otherwise": "If a single-arm step's file is meant to carry no `arms` at all, the top-level requirement becomes conditional on the producing step and S2 must declare its emptiness rather than report VACUOUS. That is a ruling, not a schema preference."
     },
     {
       "choice": "The blocks only the merge may fill are declared in the ownership registry, not listed in the validator.",
@@ -4601,6 +3387,24 @@
       "spec_gap": "The spec says Steps 9 to 13 write into this file directly. It does not say which step owns which top-level block, so the first step to write the file would inherit all of them -- including the D4 count it is ruled to consume rather than compute, and the limitations list that belongs to the Human Lead.",
       "what_was_done": "$.block_ownership names an owner, a role, a write mode and whether a non-owner may originate the contents, with forbidden_to_compute_here where a step may publish but not compute. Check S27 asserts coverage.",
       "if_ruled_otherwise": "A different assignment changes the registry and nothing else. What must not happen is no assignment, which is what being first to write silently resolved."
+    },
+    {
+      "choice": "A merged payload names the arm FILE it came from, and the diff is a record rather than a flag.",
+      "spec_gap": "task-sheet.md Step 13b says the merged document carries both arms' payloads and that the Human Lead diffs the arm files before the merge. It does not say how the merged file EVIDENCES that two arms were merged. Nothing did: a merged document assembled from ONE arm file, with the one payload deep-copied into the other arm's slot and relabelled, validated clean and published that the arms agreed everywhere.",
+      "what_was_done": "Isolation is unobservable, but ARITY is observable. Each input file is a named object carrying its step and its arm; each payload names one of them in `merged_from`; and check S30 asserts that a block holding two arms names two DIFFERENT files, that the two arms' sampling-width convention labels differ -- they are named inputs the spec forbids reconciling, so one label on both arms is a reconciliation on its face -- and that each arm's intervals reference its OWN bootstrap settings. `diff_precedes_merge: true` is RETIRED: it was a sentence the schema required the file to contain rather than a fact the file records. What replaces it is checkable -- which pairs were diffed, naming two files each; how many figures were compared, which may not be zero; and how many divergences were found, which must equal the entry count.",
+      "if_ruled_otherwise": "None of this can establish that the two files were WRITTEN in isolation, and nothing in a file can. It raises the cost of a false merge from a copy-and-relabel to a fabricated second file, and the Human Lead's diff remains the control."
+    },
+    {
+      "choice": "Granularity is ONE FILE PER STEP PER ARM, and a single-arm step's file is illustrated rather than described.",
+      "spec_gap": "decisions/0107 carried two readings of its own -- §1, one file per arm, and §6, one file per step per arm -- and this schema's two placeholders took OPPOSITE sides of it: the merged document listed seven inputs while the arm file named two extra writers.",
+      "what_was_done": "decisions/0109 §1 rules §6. An arm file's also_written_by_steps is empty and check S28 asserts that every payload in it names the file's own producing step; blocks another step publishes are explicit absences naming that step. A THIRD placeholder is emitted, for a single-arm step's own file, because a legal spine asserted in prose and never emitted cannot be checked.",
+      "if_ruled_otherwise": "Under §1 the arm file would carry Step 9's and Step 13's blocks together and the merge would take three inputs. The schema expresses either; what it may not do is hold both readings at once, which is what it did."
+    },
+    {
+      "choice": "Duality is pinned per step, in the schema and in a registry, rather than declared by each block.",
+      "spec_gap": "CLAUDE.md fixes which steps are dual and decisions/0103 §3 rules Step 13 dual. The schema let every block declare its own step_dual_status beside a producing_step it was never read against.",
+      "what_was_done": "$.step_duality carries the map with each status fixed by const, by_producing_arm pins the status per producing_step, and check S31 asserts both. A Step 9 block can no longer relabel itself single_arm -- which would have disarmed the dropped-arm clause in the merged document, since that clause is guarded on `dual`.",
+      "if_ruled_otherwise": "If a step's duality changes, it changes in one place here and the const changes with it. What must not happen is a block choosing."
     },
     {
       "choice": "A CI slot accepts an explicit absence, and every CI names a quantity class whose binding cluster is declared.",
@@ -4651,14 +3455,24 @@
       "consequence": "An ambiguity in the Step 8b spec that this schema resolved one way would not show up as a divergence. The resolutions are listed under $.spec_choices_made_by_step_8b instead."
     },
     {
-      "limit": "No single file can exercise both document roles, because the role is a property of the whole file. Check S21's branch coverage is therefore role-restricted: an arm file cannot exhibit the merged document's branches and does not pretend to.",
-      "consequence": "Branch coverage of the two roles is a property of the PAIR of placeholders, not of either one. S21 names the families it restricted and why, so a restricted pass cannot be read as a full one.",
-      "mitigation": "Both placeholders are generated by the same run and validated in it, and the run record in logs/step8b/ carries the role of each file beside its result."
+      "limit": "No single file can exercise every branch, because the document ROLE and the PRODUCING STEP are properties of the whole file and, under one file per step per arm, they decide which blocks are in it at all. Check S21's branch coverage is therefore restricted per file: an arm file cannot exhibit the merged document's branches and does not pretend to.",
+      "consequence": "Branch coverage is a property of the SET of placeholders -- the merged document, a dual step's arm file and a single-arm step's own file -- not of any one of them. S21 names the families it restricted and why, so a restricted pass cannot be read as a full one.",
+      "mitigation": "All three placeholders are generated by the same run and validated in it, and the run record in logs/step8b/ carries the role, the arm and the producing step of each file beside its result."
     },
     {
       "limit": "The schema can require an arm file to name its arm and can forbid it the blocks only the merge may fill. It cannot tell whether the file was actually written in isolation.",
       "consequence": "Isolation is a property of how an instance was run, not of its output. The schema removes the one path that made a fabricated cross-arm search the only way to pass; it does not make fabrication impossible.",
       "mitigation": "The diff between the two arm files is the control, and it is the Human Lead's. Nothing in this file substitutes for it."
+    },
+    {
+      "limit": "THE MERGE-ARITY RESIDUAL, MEASURED. Check S30 rejects a merged document whose second arm is a copy of the first when the copy keeps the first arm's merge provenance, bootstrap references or sampling-width convention label -- three independent legs, each of which a copy-and-relabel trips. It does NOT reject a copy in which all of those are relabelled as well, because at that point the file asserts that a second input file exists and nothing inside the file can contradict it.",
+      "consequence": "The remaining signal is that the two payloads are identical once the arm labels are normalised. S30 counts and reports that rather than failing it, because two arms may legitimately agree on every figure -- and in a placeholder every measurement is a sentinel, so identity is expected.",
+      "mitigation": "The cost of a false merge is raised from a copy-and-relabel to a fabricated input file. The control remains the Human Lead's diff between two files, which happens before this document is built."
+    },
+    {
+      "limit": "A check whose sites all live in another step's blocks reports N/A in a file that does not carry them, and it says so by QUOTING the file's own absence records. It cannot tell an honest absence from a declared one.",
+      "consequence": "A writer that declares a block absent when it should have written it produces a file whose checks report N/A rather than VACUOUS. An emptiness with NO absence record behind it is not exempted and still fails.",
+      "mitigation": "Check S22 forbids an absence on the primary headline arm for the blocks THIS file's own step publishes, so the exemption cannot reach a block the file is responsible for."
     }
   ],
   "notes": {

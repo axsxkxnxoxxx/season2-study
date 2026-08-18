@@ -846,7 +846,7 @@ with two amendments that postdate its drafting, both marked below.
       **covering with respect to insertion-dormancy, exhaustively; open only across channel classes
       (D4, D9)**. **D4 and D9 publish alongside and are never folded in**, so the schema has slots for
       them.
-- [ ] **Emit a placeholder file with illustrative values and the IDENTICAL schema**, so Step 16 can be
+- [ ] **Emit a placeholder file with illustrative values and the IDENTICAL schema**, so Step 16 can be ***— THREE PLACEHOLDERS, ONE PER DOCUMENT ROLE, amended by `0110` (M4/M9): the MERGED document, a DUAL step's ARM FILE, and a SINGLE-ARM step's SOLE FILE.*** **`0109` fixed granularity at one file per step per arm, which makes three distinct legal shapes**, and **a role with no placeholder is a shape Step 16 would be built without** — the same reason the spec required one in the first place. **The arm emitted all three and correctly did NOT amend its own spec to match; that is this entry's job.**
       built before results exist. **The placeholder must be unmistakable as one** — a top-level flag a
       consumer cannot miss, and values that cannot be mistaken for measurements. **A placeholder that
       reads as data is the failure mode**, and this study has spent seven entries on figures that were
@@ -869,7 +869,7 @@ with two amendments that postdate its drafting, both marked below.
       and levels-vs-movements all differ between the arms. The schema must **record which bootstrap
       settings produced each CI**, so an unfixed spec is visible in the output rather than silent.
 
-**Deliver:** schema definition, placeholder file.
+**Deliver:** schema definition, **three placeholder files — merged, arm-file, sole-file** (`0110`).
 
 **Review:** Engineering, on whether Steps 9 through 13 can write into it without restructuring their
 outputs.
