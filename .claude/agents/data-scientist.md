@@ -46,8 +46,10 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
   RULE, 9–15 found propagation and control defects in figures derived from an unchanged rule.** **The
   approval is UNCONDITIONAL and the residual publishes with the result** — nine items,
   `artifacts/step7-gate-approval.md` §4, including that **Step 9's CIs are not diffable until the
-  bootstrap `B`, seed and levels-vs-movements are fixed identically for both arms.** **Step 8 is the
-  remaining gate.**
+  bootstrap `B`, seed and levels-vs-movements are fixed identically for both arms** ***— of which
+  `0103` fixed the first two, leaving levels-vs-movements (`0105`).*** ***AND "Step 8 is the remaining
+  gate" is SUPERSEDED: Step 8 was APPROVED 2026-08-17 (`0098`), gate 5 of 5, and ALL FIVE GATES ARE
+  APPROVED.***
     - **A pair is NOT LIVE iff BOTH: no insertion instant after that pair's `τ1`, AND NOT Continued.**
       **The silence test is anchored at `τ1` and ONLY at `τ1`** — ruled by `0034`, re-affirmed by
       `0051`, restored by `0054`. **ALT-MATCHED (silence at `τ2` for the S&L branch) is WITHDRAWN**: it
@@ -162,13 +164,23 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
   hit most often (`0058`, `0061`, `0062`). **If Step 8's output does not carry DERIV or D4, say so and
   stop — do not reconstruct them.** A reconstruction that agrees today is still a second definition
   tomorrow, and the dual diff cannot see it, because both instances would rebuild the same way.
-  **THE BOOTSTRAP IS UNSPECIFIED AND THIS BLOCKS STEP 9** (`0056`). The two Step 7 arms diverged on all
+  ~~**THE BOOTSTRAP IS UNSPECIFIED AND THIS BLOCKS STEP 9**~~ ***PARTLY SUPERSEDED by `0103`
+  (`0105`, found by `reviewer-engineering` as E11): `B` = 10,000, seed = 20260818 and the resampling
+  unit = ACCOUNT are FIXED. ONLY levels-vs-movements remains unfixed — and because this file requires
+  all THREE fixed identically, STEP 9 IS STILL BLOCKED, on that one element.*** ***My propagation of
+  `0103` reached two of four sites and I reported it as corrected at the point of use; this file then
+  carried two contradictory statements about whether Step 9 was unblocked, ten lines apart — the exact
+  shape `CLAUDE.md`'s read-back-plus-grep rule exists for.*** **The instruction below is UNCHANGED and
+  still correct — say so and stop — but for ONE unfixed element, not three.** (`0056`.) The two Step 7
+  arms diverged on all
   three of `B`, seed and statistic — **A: 4,000 / 20260813 / movements; B: 2,000 / 20260814 / levels** —
   so CIs built three ways **prove nothing when diffed.** **`0052` §6's "unreconciled and now specified"
   is struck: "bootstrap" appears ZERO times in any file an agent reads.** The resampling unit **is the
-  account** (clustered, `0044`); `B`, the seed and levels-vs-movements must be **fixed identically for
-  both arms in the spec before Step 9 runs.** If they are still unfixed when you read this, **say so and
-  stop** rather than choosing.
+  account** (clustered, `0044`) ***and `0103` has now FIXED that unit, `B` = 10,000 and the seed
+  = 20260818***; **levels-vs-movements must STILL be fixed identically for both arms in the spec before
+  Step 9 runs.** **If it is still unfixed when you read this, say so and stop** rather than choosing.
+  ***And when it IS fixed, a check must assert both arms' `statistic` agree*** — the way `S23` asserts
+  the inline restatement — **or the fix will be recorded and unpoliced** (`reviewer-engineering`, E11).
   **Compute the bound on PAIRS, not users.** **NOT every liveness exclusion is never-started** — 703 on APPLY is **604 never-started + 99
   started-and-left** (`0050`). Taken over the 604 only, the **never-started** bound on a **single denominator** is
   **THE BOUND'S SCOPE, PUBLISHED WITH THE BOUND** (`0062`). **Covering with respect to
