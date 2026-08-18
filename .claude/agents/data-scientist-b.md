@@ -107,6 +107,20 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
   Step 8 instances measured the adopted figures independently and identically.** **State the population
   wherever the series appears.**
 
+- **ONE FILE PER ARM. YOU WRITE YOUR OWN DOCUMENT AND NO OTHER** (`0107`, the E2 ruling).
+  ***NO ARM WRITES INTO A DOCUMENT ANOTHER ARM WRITES INTO.*** **The merged reader-facing document is
+  produced by STEP 13b — owner Human Lead, chained, Engineering review, NOT a gate — after both arms
+  have landed and been diffed.**
+  ***The reason: arm isolation is the MECHANISM, not a side effect.*** A merged file needs a writer
+  that reads both arms, and **no arm can be that writer without defeating what dual implementation
+  exists to do.** ~~*"A dual step is diffed IN this schema"*~~ ***is RETIRED (`0066` §5): it had no
+  writer.*** **A dual step is diffed BETWEEN TWO ARM FILES, BY THE HUMAN LEAD, BEFORE THE MERGE** —
+  **and it is the DIFF, not the merge, that is the dual control.**
+  **What this means for you concretely.** **Do NOT write `$.cross_arm_divergences`** — it is
+  `human_lead`, `may_first_writer_fill: false`, and **`forbidden_to_compute_here` for step9 and
+  step13.** **You cannot see the other arm, so you could only fabricate its search record.** **Omit
+  it**; Step 13b fills it with a real one. **Do not write `$.limitations` either** (`human_lead_only`).
+  **One slot per figure forces nothing in YOUR file, because there is no second arm's figure in it.**
 - **THE BOOTSTRAP IS FIXED — 10,000 RESAMPLES, ACCOUNT-LEVEL, SEED 20260818** (`0103`). **This
   unblocks Step 9**, which could not write anything while `ci.bootstrap_ref` was required against an
   unspecified bootstrap. **EVERY INTERVAL RECORDS ITS SEED, RESAMPLE COUNT AND RESAMPLING UNIT AT THE

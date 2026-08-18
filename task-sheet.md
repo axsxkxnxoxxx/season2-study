@@ -1018,6 +1018,43 @@ outputs.
 
 ---
 
+## Step 13b: Merged results document
+
+**Owner:** Human Lead
+**Mode:** Chained
+**Review:** Engineering
+
+***CREATED BY `0107`, the E2 ruling.*** **Step 8b's schema said *"a dual step is diffed IN this
+schema."* ***That claim had no writer and is RETIRED***: `dual_status: dual` requires both `arms.a` and
+`arms.b`, and **two instances that never see each other's work cannot jointly produce one document** —
+while **no arm may be the merge writer without defeating what dual implementation exists to do.**
+**Arm isolation is the MECHANISM, not a side effect.**
+
+- [ ] **ONE FILE PER ARM, everywhere upstream.** **Each arm writes its own document, and NO ARM WRITES
+      INTO A DOCUMENT ANOTHER ARM WRITES INTO.** **This step is the only writer that reads both arms,
+      and it is the only writer permitted to.**
+- [ ] **IT SITS HERE, AFTER STEP 13, BECAUSE IT CANNOT RUN EARLIER.** **It has nothing to merge until
+      every writing step has landed.** **It is NOT a gate** — `CLAUDE.md` fixes the gate list at five
+      and **all five are approved.**
+- [ ] **INPUTS: every arm file.** **Step 9 ×2 and Step 13 ×2** (both dual, `0103` §3), and **the
+      single-arm files from Steps 10, 11 and 12.** **The Human Lead has diffed the dual pairs BEFORE
+      this step runs** — the diff is between two files, and **it is the diff, not the merge, that is
+      the dual control.**
+- [ ] **EMITS: ONE merged reader-facing document, AGAINST THE SAME SCHEMA**, carrying both arms'
+      payloads under `arms.{a,b}` — **and the blocks only this step may fill**: `cross_arm_divergences`
+      **with its real search record** (which an isolated arm is `forbidden_to_compute_here` and could
+      only have fabricated), and `limitations` (`human_lead_only`).
+- [ ] **STEP 16 RENDERS FROM THE MERGED DOCUMENT**, not from an arm file. **That is a cleaner input
+      than a schema assembled by an unnamed party**, which is what the retired claim implied.
+- [ ] **ENGINEERING REVIEW**, because this is **the last chance to catch a schema mismatch before Step
+      16 renders from it.**
+- [ ] ***WHAT SURVIVES FROM THE RETIRED CLAIM, UNCHANGED:*** where the two arms legitimately differ,
+      **the MERGED document holds both** — the **bound ÷ sampling-width ratios use two conventions and
+      are REPORTED, NOT RECONCILED** (`0058`, `0063`). ***One slot per figure would force a
+      reconciliation the spec forbids — IN THE MERGED DOCUMENT. In a single arm's file it forces
+      nothing, because there is no second arm's figure in it.*** **That is why E3 is closed by this
+      ruling rather than fixed separately** (`0107` §3).
+
 ## Step 14: Honest limits
 
 **Owner:** Human Lead

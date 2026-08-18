@@ -539,9 +539,18 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
     - **Steps 9–13 write into this schema DIRECTLY. No conversion layer** — a conversion layer is a
       second definition of every figure, and **two definitions of one figure is the defect this study
       has hit most often** (`0058`, `0061`, `0062`).
-    - **Dual steps are diffed IN this schema.** Where the two arms legitimately differ it must hold
-      both: the **bound ÷ sampling width ratios use two conventions and are REPORTED, NOT RECONCILED**
-      (`0058`, `0063`). **One slot per figure would force a reconciliation the spec forbids.**
+    - ~~**Dual steps are diffed IN this schema.**~~ ***RETIRED by `0107` (E2): a dual step is diffed
+      BETWEEN TWO ARM FILES, BY THE HUMAN LEAD, BEFORE THE MERGE.*** **ONE FILE PER ARM. Each arm
+      writes its own document, and NO ARM WRITES INTO A DOCUMENT ANOTHER ARM WRITES INTO.** **The
+      merged reader-facing document is produced by a separate named step — Step 13b, owner Human Lead —
+      after both arms have landed and been diffed.** ***The reason is that arm isolation is the
+      MECHANISM, not a side effect: a merged file needs a writer that reads both arms, and no arm can
+      be that writer without defeating what dual implementation exists to do.***
+      **What survives unchanged**: where the two arms legitimately differ, **the MERGED document holds
+      both** — the **bound ÷ sampling width ratios use two conventions and are REPORTED, NOT
+      RECONCILED** (`0058`, `0063`). **One slot per figure would force a reconciliation the spec
+      forbids — IN THE MERGED DOCUMENT. In a single arm's file it forces nothing, because there is no
+      second arm's figure in it** (E3, closed by E2 rather than separately).
     - **Record which bootstrap settings produced each CI.** `B`, seed and levels-vs-movements differ
       between the arms and **the spec fixes none of them**, so an unfixed spec must be visible in the
       output rather than silent.

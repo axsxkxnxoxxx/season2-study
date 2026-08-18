@@ -77,7 +77,7 @@ that omits them cannot hold Step 9's output.**
 - **The scope qualifier is a field, not caption prose** (`0062`): *covering with respect to
   insertion-dormancy, exhaustively; open only across channel classes (D4, D9)*. **D4 and D9 publish
   alongside and are never folded in**, so the schema has slots for them.
-- **A dual step is diffed IN this schema**, so it must hold **both arms' values where the arms
+- ~~**A dual step is diffed IN this schema**~~ ***RETIRED by `0107` (E2, found by `reviewer-engineering`): it has NO WRITER — two isolated instances cannot jointly produce one document, and no arm may be the merge owner without defeating dual implementation. **A dual step is diffed BETWEEN TWO ARM FILES, BY THE HUMAN LEAD, BEFORE THE MERGE.*** The rest of this item stands, scoped to the MERGED document, which must hold **both arms' values where the arms
   legitimately differ.** The bound ÷ sampling-width ratios use **two conventions and are reported, not
   reconciled** (`0058`, `0063`). **One slot per figure would force a reconciliation the spec forbids** —
   the schema would silently do what `0057` did by hand and `0058` reverted.
