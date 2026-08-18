@@ -148,6 +148,14 @@ So after any edit: grep all EIGHT surfaces for the superseded strings and requir
 
 So: `src/step7_regenerate_derived.py` reads the stored counts and writes **every** derived figure into **both halves of both arms** from a single expression each, then verifies numerically that no superseded value survives at any path. Anything derived belongs in it. **If you find yourself editing a derived number by hand, that is the defect.**
 
+***CONSTRAINT ON FUTURE SCHEMA EDITS, recorded 2026-08-18 (`0109`), named by `reviewer-engineering`:***
+**the `step_dual_status` rename fails loudly ONLY BECAUSE `by_producing_arm` is NOT inside a `oneOf`.**
+**If an absence branch is ever added there, a writer emitting the old `dual_status` key stops failing
+against `additionalProperties: false` and instead produces a silent `matched 0 oneOf branches` at the
+parent** — ***the loud failure becomes an invisible one.*** **This is a property of TODAY'S BUILD, not
+of the design, and it must be re-checked whenever an absence branch is added anywhere above a renamed
+key.**
+
 **The two arms' sampling-width conventions are named inputs**, so one arm's denominator cannot silently become the other's; reconciling a divergence is a spec decision and must be visible as one.
 
 *(A second property was claimed here — that a value still live somewhere cannot enter the superseded list, because the list is generated. **Withdrawn 2026-08-13: the mechanism never fired.** The filter compared against a list that never contained the values in question, so it was a no-op. `0.3575` and `0.0672` are out because they were never put in. A control asserted to exist is not a control, and this one was found by reading the code rather than the claim.)*
@@ -255,6 +263,20 @@ the same way, and worse, because it looks like a finding.**
 **What it still requires:** the arm's own defects, its own open items, and its own divergences from the
 spec — **those are things it measured.** **An arm that notices something wrong on another surface REPORTS
 IT to the Human Lead and does not publish it as a finding in a deliverable.**
+
+## Where a check's CODE lives, and where its OUTPUT lives
+
+**The CODE goes in `src/` and is committed. The RUN RECORD goes to `logs/`.** Human Lead ruling,
+2026-08-18 (`0109`), because two rules had been read as pointing opposite ways.
+
+**`0082` — *"a check nobody can see is not a check"* — is satisfied by THE CODE BEING VISIBLE**, in
+`src/`, on a propagation surface, readable by any reviewer. **`0096` ruling 1 sends EVIDENCE ABOUT THE
+TOOLING to `logs/` rather than `artifacts/`**, because a deliverable asserts only what its own arm
+measured, and a control's exit status is not that.
+
+***They do not conflict. They govern different objects*** — `0082` governs **the check**, `0096` governs
+**the report of having run it**. **A selftest committed to `src/` with its output in `logs/` satisfies
+both.**
 
 ## Artifact sign-off
 

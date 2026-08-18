@@ -2,7 +2,7 @@
 
 | | |
 | :--- | :--- |
-| **Decision** | ***ONE FILE PER ARM. Each arm writes its own document, and NO ARM WRITES INTO A DOCUMENT ANOTHER ARM WRITES INTO.*** **The merged reader-facing document is produced by a separate named step — STEP 13b, owner Human Lead — after both arms have landed and been diffed.** ***The reason: arm isolation is the MECHANISM, not a side effect.*** **E3 is CLOSED BY THIS RULING rather than fixed separately. E1 is NOT moot and still needs its validator fix.** |
+| **Decision** | ***ONE FILE PER STEP PER ARM.*** ~~One file per arm; each arm writes its own document~~ ***— AMENDED by `0109` (M4/M5/M9) to §6's reading, which this entry also carried in §6 and which now governs: Step 9 writes TWO files, Step 13 TWO, Steps 10–12 ONE each, SEVEN inputs to the merge. §1's reading would require Step 10's output DUPLICATED into two arm files — two copies of one figure — and the schema rejected both readings until this was settled.*** **NO ARM WRITES INTO A DOCUMENT ANOTHER ARM WRITES INTO.** **The merged reader-facing document is produced by a separate named step — STEP 13b, owner Human Lead — after both arms have landed and been diffed.** ***The reason: arm isolation is the MECHANISM, not a side effect.*** **E3 is CLOSED BY THIS RULING rather than fixed separately. E1 is NOT moot and still needs its validator fix.** |
 | **Decided by** | **Human Lead** |
 | **Date** | 2026-08-18 |
 | **Occasioned by** | `reviewer-engineering`'s E2 — ***"diffed IN this schema" has no writer*** |
@@ -83,7 +83,7 @@ two of four sites, and this claim was on **more surfaces than the ruling named.*
 Lead. Chained. Engineering review. NOT a gate** — `CLAUDE.md` fixes the list at five and all five are
 approved.
 
-**Inputs: every arm file** — Step 9 ×2, Step 13 ×2, and the single-arm files from Steps 10–12, **with the
+**Inputs: SEVEN FILES, one per step per arm** (`0109`) — Step 9 ×2, Step 13 ×2, and one each from Steps 10, 11 and 12, **with the
 dual pairs already diffed.** **Emits one merged document against the same schema**, both arms under
 `arms.{a,b}`, **plus the two blocks only it may fill** — `cross_arm_divergences` with a **real** search
 record, and `limitations`. **Step 16 renders from the merged document.**
