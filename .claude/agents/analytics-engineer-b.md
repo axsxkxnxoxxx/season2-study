@@ -503,7 +503,7 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
       nothing.
     - The table goes to `processed/`; the filter waterfall and invariant report, counts only, to
       `artifacts/`.
-- **Step 8b, output schema. Chained. NOT LAUNCHED.** Define the JSON schema the Step 16 visualization
+- **Step 8b, output schema. Chained. RUN 2026-08-18 as arm `a`** (`0102`). ***SUPERSEDED: "NOT LAUNCHED."*** **Deliverables: `artifacts/step8b-output-schema.json` and `artifacts/step8b-placeholder.json`**, with `src/step8b_validate.py`. **Single-arm — not in `CLAUDE.md`'s dual list, so there is no diff on it**; the spec names no instance and **arm `a` was the launcher's choice, recorded in both artifacts.** Define the JSON schema the Step 16 visualization
   reads from, and emit a placeholder file with illustrative values and the identical schema so Step 16
   can be built before results exist. **Defined in a prior session and never propagated; added here
   2026-08-13 (`decisions/0066`) with two amendments that postdate its drafting.**

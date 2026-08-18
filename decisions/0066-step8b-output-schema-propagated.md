@@ -104,5 +104,5 @@ as data is the failure mode**, and it would reach Step 16, which is the visualiz
   is the Analytics Engineer's deliverable and does not exist yet. **When it does, the `data-scientist`
   files gain the obligation to write into it** — recorded here so that pass is not forgotten, which is
   how the covering qualifier went six entries reaching no agent file.
-- **Nothing is launched.** Step 8b is Chained and sits behind Step 8, which is the remaining gate.
+- ~~**Nothing is launched.** Step 8b is Chained and sits behind Step 8, which is the remaining gate.~~ ***SUPERSEDED 2026-08-18 (`0102`): Step 8 was APPROVED at `0098` and Step 8b RAN as arm `a`.*** **And §6's carried obligation — that the `data-scientist` pair gains the duty to write into this schema once it exists — is DISCHARGED at `0102`. It had gone 35 entries undone**, which is the failure §6 was written to prevent.
 - **Zero API calls.**

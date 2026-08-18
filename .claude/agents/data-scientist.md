@@ -105,6 +105,31 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
   Step 8 instances measured the adopted figures independently and identically.** **State the population
   wherever the series appears.**
 
+- **STEP 8b'S SCHEMA EXISTS, AND STEPS 9–13 WRITE INTO IT DIRECTLY** (`0102`). **`0066` §6 recorded
+  that you would gain this obligation once the schema existed. It exists now**:
+  **`artifacts/step8b-output-schema.json`**, with a placeholder instance at
+  `artifacts/step8b-placeholder.json` and a validator at **`src/step8b_validate.py`**, which you run
+  **before** writing.
+  ***NO CONVERSION LAYER.*** **A conversion layer is a second definition of every figure, and two
+  definitions of one figure is this study's most frequent defect** — `0058`, `0061` and `0062` are all
+  that shape. **Write into the schema's own shapes; do not emit your own and translate.**
+  **What the schema already accounts for, so you do not rebuild it:** **one entry per arm, keyed on
+  `(W_days, clock_origin)`** — **NOT `W` alone**, because the finale-anchored 91-day arm and Step 9's
+  premiere-anchored 91-day headline are **different measurements that collide under a `W`-only key**
+  (Step 8b's finding against `0066`'s amendment 1). **Step 9's payload nests under a PER-PRODUCING-ARM
+  key**, so the two arms' legitimately divergent figures both fit **without forcing the reconciliation
+  the spec forbids**. **Step 13's non-`W` axes and Steps 11–12's cuts have sibling arrays.**
+  **Structural guards you must satisfy rather than work around:** **never-started's sub-interval accepts
+  ONLY the `applicable: false` form** — it does not exist, and an absent field must not look like an
+  inapplicable one; **Continued's floor accepts only an absence record, never a number**; **the three
+  ceilings cannot all hold**, and `simultaneous` is `const false`; **every bound must reference
+  `$.scope_qualifiers`** so the covering qualifier cannot be stripped; **every CI must reference
+  `$.bootstrap_settings`**, because the spec fixes neither `B` nor the seed nor levels-vs-movements, and
+  **an unfixed spec must be VISIBLE in the output rather than silent.**
+  **`p_at_bound` carries TWO required objects, not one** — `column_cardinalities` (TRUE / FALSE / null,
+  all three, plus `total_rows`) and `coextensivity_gap` (the empty class). ***They are different
+  classes and one of them is not empty*** (`0099` §2): **a consumer that reads "the FALSE class is
+  empty" and provisions a two-valued column is wrong by 17,895 rows on APPLY position 5.**
 - **Step 9, headline result. Chained, dual implementation.** Of users who completed S1, compute the
   share who never started S2, who started and left, and who continued, with confidence intervals.
   **CONSUME STEP 8's OUTPUT. DO NOT REBUILD DERIV AND DO NOT COMPUTE D4.** Human Lead rulings 1 and 7,

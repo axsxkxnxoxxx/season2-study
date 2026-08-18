@@ -1,0 +1,2534 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:season2-study:step8b-output-schema:1.0.0",
+  "title": "Season 2 abandonment study -- Step 16 results schema",
+  "description": "The single output schema. Steps 9 through 13 write into it DIRECTLY and Step 16 reads it. There is no conversion layer: a conversion layer is a second definition of every figure. Validate with src/step8b_validate.py, which implements the JSON Schema subset used here plus the cross-field checks the schema language cannot express.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "schema_id",
+    "placeholder",
+    "generated_by",
+    "sentinels",
+    "arm_key",
+    "arm_grid_days",
+    "populations",
+    "scope_qualifiers",
+    "bootstrap_settings",
+    "channel_classes",
+    "arms",
+    "spec_choices_made_by_step_8b",
+    "known_limits_of_this_schema"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "schema_id": {
+      "const": "urn:season2-study:step8b-output-schema:1.0.0"
+    },
+    "placeholder": {
+      "type": "boolean",
+      "description": "TOP-LEVEL FLAG A CONSUMER CANNOT MISS. True means every measurement slot in this file holds a sentinel and nothing in it is a measurement. A placeholder that reads as data is the failure mode."
+    },
+    "placeholder_notice": {
+      "type": "object",
+      "description": "Present iff `placeholder` is true; forbidden otherwise.",
+      "additionalProperties": false,
+      "required": [
+        "banner",
+        "is_placeholder",
+        "do_not_publish",
+        "every_measurement_slot_is_a_sentinel"
+      ],
+      "properties": {
+        "banner": {
+          "type": "string"
+        },
+        "is_placeholder": {
+          "const": true
+        },
+        "do_not_publish": {
+          "const": true
+        },
+        "every_measurement_slot_is_a_sentinel": {
+          "const": true
+        },
+        "how_to_tell": {
+          "type": "string"
+        },
+        "generated_for": {
+          "type": "string"
+        }
+      }
+    },
+    "generated_by": {
+      "type": "object",
+      "description": "A committed generated file states what generated it and when; a generated file without its provenance is worse than no file, because it is trusted.",
+      "additionalProperties": false,
+      "required": [
+        "generator",
+        "generator_sha256_12",
+        "generated_at_utc",
+        "host_step",
+        "written_by"
+      ],
+      "properties": {
+        "generator": {
+          "type": "string"
+        },
+        "generator_sha256_12": {
+          "type": "string"
+        },
+        "generated_at_utc": {
+          "type": "string"
+        },
+        "build_tag": {
+          "type": "string"
+        },
+        "git_head_short": {
+          "type": "string"
+        },
+        "host_step": {
+          "type": "string"
+        },
+        "written_by": {
+          "type": "string"
+        },
+        "inputs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "sentinels": {
+      "type": "object",
+      "description": "Reserved values. They may appear only in a placeholder.",
+      "additionalProperties": false,
+      "required": [
+        "count",
+        "percent",
+        "string_prefix",
+        "rule"
+      ],
+      "properties": {
+        "count": {
+          "const": -999
+        },
+        "percent": {
+          "const": -999.0
+        },
+        "string_prefix": {
+          "const": "PLACEHOLDER — NOT A MEASUREMENT"
+        },
+        "rule": {
+          "type": "string"
+        }
+      }
+    },
+    "arm_key": {
+      "type": "object",
+      "description": "What identifies an arm entry. There is no liveness threshold: one was derived three times and deleted, and the adopted rule is parameter-free.",
+      "additionalProperties": false,
+      "required": [
+        "fields",
+        "note",
+        "no_liveness_threshold"
+      ],
+      "properties": {
+        "fields": {
+          "const": [
+            "W_days",
+            "clock_origin"
+          ]
+        },
+        "note": {
+          "type": "string"
+        },
+        "no_liveness_threshold": {
+          "const": true
+        }
+      }
+    },
+    "arm_grid_days": {
+      "type": "array",
+      "description": "The fixed W grid. Two instances on different grids produce tables that cannot be diffed at all.",
+      "items": {
+        "type": "integer"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "populations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "APPLY",
+        "DERIV"
+      ],
+      "properties": {
+        "APPLY": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "label",
+            "definition",
+            "source"
+          ],
+          "properties": {
+            "label": {
+              "type": "string"
+            },
+            "definition": {
+              "type": "string"
+            },
+            "source": {
+              "type": "string"
+            },
+            "reference_n_at_the_adopted_arm": {
+              "$ref": "#/$defs/count"
+            }
+          }
+        },
+        "DERIV": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "label",
+            "definition",
+            "source"
+          ],
+          "properties": {
+            "label": {
+              "type": "string"
+            },
+            "definition": {
+              "type": "string"
+            },
+            "source": {
+              "type": "string"
+            },
+            "reference_n_at_the_adopted_arm": {
+              "$ref": "#/$defs/count"
+            }
+          }
+        }
+      }
+    },
+    "scope_qualifiers": {
+      "type": "object",
+      "description": "One definition of each qualifier, referenced from every bound. Any table or note that carries the bound carries the qualifier.",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "text",
+          "covering_with_respect_to",
+          "covering_is_exhaustive",
+          "open_across",
+          "source"
+        ],
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "covering_with_respect_to": {
+            "type": "string"
+          },
+          "covering_is_exhaustive": {
+            "type": "boolean"
+          },
+          "open_across": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "stopping_rule": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "bootstrap_settings": {
+      "type": "object",
+      "description": "A registry of bootstrap settings, keyed by id and referenced from every CI. B, the seed and levels-vs-movements differ between the arms and the spec fixes none of them, so the unfixed spec is visible here.",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "B",
+          "seed",
+          "statistic",
+          "resampling_unit",
+          "producing_arm",
+          "spec_status"
+        ],
+        "properties": {
+          "B": {
+            "$ref": "#/$defs/count"
+          },
+          "seed": {
+            "$ref": "#/$defs/integer_setting"
+          },
+          "statistic": {
+            "enum": [
+              "levels",
+              "movements"
+            ],
+            "x-enum-id": "bootstrap_statistic"
+          },
+          "resampling_unit": {
+            "const": "account"
+          },
+          "producing_arm": {
+            "enum": [
+              "a",
+              "b"
+            ],
+            "x-enum-id": "producing_arm"
+          },
+          "spec_status": {
+            "enum": [
+              "fixed_in_spec",
+              "unfixed_at_time_of_writing"
+            ],
+            "x-enum-id": "spec_status"
+          },
+          "note": {
+            "type": "string",
+            "description": "A note from the writer.  [writer text: carries the placeholder prefix in a placeholder]",
+            "x-writer-text": true
+          }
+        }
+      }
+    },
+    "channel_classes": {
+      "type": "object",
+      "description": "D4 and D9 publish ALONGSIDE the bounds and are never folded into them, so they have their own slots (decisions/0062).",
+      "additionalProperties": false,
+      "required": [
+        "d4",
+        "d9"
+      ],
+      "properties": {
+        "d4": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "definition",
+            "published_alongside",
+            "folded_into_bound",
+            "counts"
+          ],
+          "properties": {
+            "definition": {
+              "type": "string"
+            },
+            "published_alongside": {
+              "const": true
+            },
+            "folded_into_bound": {
+              "const": false
+            },
+            "counts": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "APPLY",
+                "DERIV"
+              ],
+              "properties": {
+                "APPLY": {
+                  "$ref": "#/$defs/count"
+                },
+                "DERIV": {
+                  "$ref": "#/$defs/count"
+                }
+              }
+            },
+            "source": {
+              "type": "string"
+            }
+          }
+        },
+        "d9": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "published_alongside",
+            "folded_into_bound",
+            "keys",
+            "universe",
+            "quantities"
+          ],
+          "properties": {
+            "published_alongside": {
+              "const": true
+            },
+            "folded_into_bound": {
+              "const": false
+            },
+            "keys": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "strict",
+                "loose"
+              ],
+              "properties": {
+                "strict": {
+                  "type": "string"
+                },
+                "loose": {
+                  "type": "string"
+                },
+                "third_key_is_not_an_endpoint": {
+                  "type": "string"
+                }
+              }
+            },
+            "universe": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "label",
+                "definition"
+              ],
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "definition": {
+                  "type": "string"
+                },
+                "n_show_ids": {
+                  "$ref": "#/$defs/count"
+                },
+                "rank_basis": {
+                  "type": "string"
+                },
+                "rank_tie_break": {
+                  "$ref": "#/$defs/absence"
+                }
+              }
+            },
+            "quantities": {
+              "type": "object",
+              "description": "Each quantity that has both key forms publishes AS A BOUND: strict is the floor because it cannot over-count, loose is the ceiling because it merges genuinely different shows, and NEITHER endpoint may be quoted as the result. Coverage publishes beside a zero floor, or the bound is indistinguishable from a check that looked nowhere.",
+              "additionalProperties": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "floor",
+                  "ceiling",
+                  "point_estimate",
+                  "coverage"
+                ],
+                "properties": {
+                  "floor": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "value",
+                      "key",
+                      "direction"
+                    ],
+                    "properties": {
+                      "value": {
+                        "$ref": "#/$defs/count"
+                      },
+                      "key": {
+                        "const": "strict"
+                      },
+                      "direction": {
+                        "const": "cannot_over_count"
+                      }
+                    }
+                  },
+                  "ceiling": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "value",
+                      "key",
+                      "direction"
+                    ],
+                    "properties": {
+                      "value": {
+                        "$ref": "#/$defs/count"
+                      },
+                      "key": {
+                        "const": "loose"
+                      },
+                      "direction": {
+                        "const": "merges_genuinely_different_shows"
+                      }
+                    }
+                  },
+                  "point_estimate": {
+                    "$ref": "#/$defs/absence"
+                  },
+                  "coverage": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "records_examined"
+                    ],
+                    "properties": {
+                      "records_examined": {
+                        "$ref": "#/$defs/count"
+                      },
+                      "records_with_a_slug": {
+                        "$ref": "#/$defs/count"
+                      },
+                      "what_was_counted": {
+                        "type": "string",
+                        "description": "What the coverage count counted.  [writer text: carries the placeholder prefix in a placeholder]",
+                        "x-writer-text": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "discovery_channel_overlap": {
+      "type": "array",
+      "description": "The overlap in every unit, each with the consumer that needs that unit. Picking one unit leaves another consumer holding a wrong-unit figure.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "unit",
+          "numerator",
+          "denominator",
+          "consumer",
+          "single_categorical_forbidden"
+        ],
+        "properties": {
+          "unit": {
+            "enum": [
+              "discovery_pool_usernames",
+              "accounts_pulled",
+              "analysis_population_accounts",
+              "analysis_population_pairs"
+            ],
+            "x-enum-id": "overlap_unit"
+          },
+          "numerator": {
+            "$ref": "#/$defs/count"
+          },
+          "denominator": {
+            "$ref": "#/$defs/count"
+          },
+          "consumer": {
+            "type": "string",
+            "description": "The consumer that needs this unit.  [writer text: carries the placeholder prefix in a placeholder]",
+            "x-writer-text": true
+          },
+          "single_categorical_forbidden": {
+            "const": true
+          },
+          "source": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "derived_fields": {
+      "type": "array",
+      "description": "Every stored figure that is computed from another stored figure, with the single expression it comes from and the endpoints it moves with. When an endpoint moves, this list is checked as a set, transitively.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "field",
+          "expression",
+          "moves_with"
+        ],
+        "properties": {
+          "field": {
+            "type": "string"
+          },
+          "expression": {
+            "type": "string"
+          },
+          "moves_with": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "source": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "cross_arm_divergences": {
+      "type": "array",
+      "description": "Figures where the two arms legitimately differ. Both values are held; `reconciled` is const false, so the schema cannot record a reconciliation the spec forbids.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "figure",
+          "arm_a",
+          "arm_b",
+          "reconciled",
+          "reason"
+        ],
+        "properties": {
+          "figure": {
+            "type": "string",
+            "description": "The figure the arms differ on.  [writer text: carries the placeholder prefix in a placeholder]",
+            "x-writer-text": true
+          },
+          "arm_a": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ],
+            "x-writer-text": true,
+            "description": "Arm a's value or convention."
+          },
+          "arm_b": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ],
+            "x-writer-text": true,
+            "description": "Arm b's value or convention."
+          },
+          "reconciled": {
+            "const": false
+          },
+          "reason": {
+            "type": "string",
+            "description": "Why the difference is legitimate.  [writer text: carries the placeholder prefix in a placeholder]",
+            "x-writer-text": true
+          },
+          "source": {
+            "type": "string",
+            "description": "Where it is recorded.  [writer text: carries the placeholder prefix in a placeholder]",
+            "x-writer-text": true
+          }
+        }
+      }
+    },
+    "arms": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/arm_entry"
+      }
+    },
+    "variants": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/variant_entry"
+      }
+    },
+    "subpopulation_cuts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/subpopulation_cut"
+      }
+    },
+    "tested_ranges": {
+      "type": "object",
+      "description": "The ranges actually tested. An interactive Step 16 binds its controls to these so no reader can drive it somewhere that was never tested.",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "values"
+        ],
+        "properties": {
+          "values": {
+            "type": "array"
+          },
+          "min": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "max": {
+            "type": [
+              "number",
+              "string",
+              "null"
+            ]
+          },
+          "source": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "description": "Limitations that travel with the result, each with its source.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "text",
+          "source"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The limitation's identifier.  [writer text: carries the placeholder prefix in a placeholder]",
+            "x-writer-text": true
+          },
+          "text": {
+            "type": "string",
+            "description": "The limitation, in the words of the step that owns it.  [writer text: carries the placeholder prefix in a placeholder]",
+            "x-writer-text": true
+          },
+          "source": {
+            "type": "string",
+            "description": "Where it is stated.  [writer text: carries the placeholder prefix in a placeholder]",
+            "x-writer-text": true
+          },
+          "direction": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "may_be_netted_with_others": {
+            "const": false
+          }
+        }
+      }
+    },
+    "spec_choices_made_by_step_8b": {
+      "type": "array",
+      "description": "Every choice this schema makes that its own spec does not fix, named at the point of use rather than left to be inferred. Each says what would change if it were ruled the other way.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "choice",
+          "spec_gap",
+          "what_was_done",
+          "if_ruled_otherwise"
+        ],
+        "properties": {
+          "choice": {
+            "type": "string"
+          },
+          "spec_gap": {
+            "type": "string"
+          },
+          "what_was_done": {
+            "type": "string"
+          },
+          "if_ruled_otherwise": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "known_limits_of_this_schema": {
+      "type": "array",
+      "description": "What this schema and its validator cannot check. A limit recorded is a limit a consumer can work around; an unrecorded one is a false assurance.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "limit",
+          "consequence"
+        ],
+        "properties": {
+          "limit": {
+            "type": "string"
+          },
+          "consequence": {
+            "type": "string"
+          },
+          "mitigation": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "notes": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  },
+  "if": {
+    "properties": {
+      "placeholder": {
+        "const": true
+      }
+    },
+    "required": [
+      "placeholder"
+    ]
+  },
+  "then": {
+    "required": [
+      "placeholder_notice"
+    ]
+  },
+  "else": {
+    "not": {
+      "required": [
+        "placeholder_notice"
+      ]
+    }
+  },
+  "x-generated-by": {
+    "generator": "src/step8b_schema.py",
+    "generator_sha256_12": "d5dc55c7125e",
+    "generated_at_utc": "2026-08-18T18:37:19Z",
+    "build_tag": "step8b/a/2026-08-18",
+    "git_head_short": "48efb4c",
+    "host_step": "Step 8b, output schema",
+    "written_by": "Analytics Engineer, instance a",
+    "validator": "src/step8b_validate.py",
+    "validator_sha256_12": "611da25fe06b",
+    "selftest": "src/step8b_selftest.py",
+    "note": "This schema is generated. Correct it in the generator and rewrite both artifacts together; do not hand-edit either file."
+  },
+  "$defs": {
+    "count": {
+      "description": "A count of pairs, accounts or records.  [measurement slot: -999 in a placeholder]",
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 0
+        },
+        {
+          "const": -999
+        }
+      ],
+      "x-measurement": true
+    },
+    "percent": {
+      "description": "A percentage on [0, 100].  [measurement slot: -999.0 in a placeholder]",
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        {
+          "const": -999.0
+        }
+      ],
+      "x-measurement": true
+    },
+    "pp": {
+      "description": "A quantity in percentage points; may be zero or negative.  [measurement slot: -999.0 in a placeholder]",
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "const": -999.0
+        }
+      ],
+      "x-measurement": true
+    },
+    "ratio": {
+      "description": "A dimensionless ratio.  [measurement slot: -999.0 in a placeholder]",
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "const": -999.0
+        }
+      ],
+      "x-measurement": true
+    },
+    "integer_setting": {
+      "description": "An integer run setting, e.g. a random seed.  [measurement slot: -999 in a placeholder]",
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "const": -999
+        }
+      ],
+      "x-measurement": true
+    },
+    "absence": {
+      "type": "object",
+      "description": "An explicit record that a value is not here, and why. Never omit a slot and never write null: an absent field and an inapplicable one must not look alike (task-sheet.md Step 8b; decisions/0066 §3).",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "reason",
+        "source"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "structurally_absent",
+            "not_published",
+            "not_yet_written",
+            "unruled"
+          ],
+          "x-enum-id": "absence_status"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 20
+        },
+        "source": {
+          "type": "string"
+        },
+        "decided_by": {
+          "type": "string"
+        }
+      }
+    },
+    "endpoint": {
+      "type": "object",
+      "description": "One end of a bound. Every endpoint states the population it is computed on and the size of that population, because an endpoint and the estimand it bounds must be on the same population (decisions/0047).",
+      "additionalProperties": false,
+      "required": [
+        "percent",
+        "numerator_pairs",
+        "denominator_pairs",
+        "population",
+        "population_n",
+        "population_label"
+      ],
+      "properties": {
+        "percent": {
+          "$ref": "#/$defs/percent"
+        },
+        "numerator_pairs": {
+          "$ref": "#/$defs/count"
+        },
+        "denominator_pairs": {
+          "$ref": "#/$defs/count"
+        },
+        "population": {
+          "enum": [
+            "APPLY",
+            "DERIV"
+          ],
+          "x-enum-id": "population"
+        },
+        "population_n": {
+          "$ref": "#/$defs/count"
+        },
+        "population_label": {
+          "type": "string",
+          "description": "Which row set: e.g. 'position 5' or 'post-liveness (position 7)'."
+        },
+        "attainable": {
+          "type": "boolean"
+        },
+        "note": {
+          "type": "string",
+          "description": "A note from the writer.  [writer text: carries the placeholder prefix in a placeholder]",
+          "x-writer-text": true
+        }
+      }
+    },
+    "ci": {
+      "type": "object",
+      "description": "A confidence interval, with the bootstrap settings that produced it named by reference. The spec fixes none of B, the seed or levels-vs-movements, so the unfixed spec is visible in the output rather than silent (task-sheet.md Step 8b).",
+      "additionalProperties": false,
+      "required": [
+        "level_pct",
+        "lower",
+        "upper",
+        "method",
+        "bootstrap_ref"
+      ],
+      "properties": {
+        "level_pct": {
+          "type": "number"
+        },
+        "lower": {
+          "$ref": "#/$defs/percent"
+        },
+        "upper": {
+          "$ref": "#/$defs/percent"
+        },
+        "method": {
+          "type": "string"
+        },
+        "bootstrap_ref": {
+          "type": "string",
+          "description": "A key of $.bootstrap_settings. Referential integrity is check S3."
+        },
+        "note": {
+          "type": "string",
+          "description": "A note from the writer.  [writer text: carries the placeholder prefix in a placeholder]",
+          "x-writer-text": true
+        }
+      }
+    },
+    "share": {
+      "type": "object",
+      "description": "An observed outcome share. This is a count on the sample, not a bound; the bounds live under the sibling `bounds` object.",
+      "additionalProperties": false,
+      "required": [
+        "value_percent",
+        "numerator_pairs",
+        "denominator_pairs",
+        "on_population",
+        "on_population_n",
+        "on_population_label",
+        "ci",
+        "is_an_observed_count_not_a_bound"
+      ],
+      "properties": {
+        "value_percent": {
+          "$ref": "#/$defs/percent"
+        },
+        "numerator_pairs": {
+          "$ref": "#/$defs/count"
+        },
+        "denominator_pairs": {
+          "$ref": "#/$defs/count"
+        },
+        "on_population": {
+          "enum": [
+            "APPLY",
+            "DERIV"
+          ],
+          "x-enum-id": "population"
+        },
+        "on_population_n": {
+          "$ref": "#/$defs/count"
+        },
+        "on_population_label": {
+          "type": "string"
+        },
+        "ci": {
+          "$ref": "#/$defs/ci"
+        },
+        "is_an_observed_count_not_a_bound": {
+          "const": true
+        },
+        "horizon_days": {
+          "description": "The horizon the state is read over. Never-started is read at tau1 and Continued at tau2, so the three shares are not measured alike and must not be described as if they were.",
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "const": -999
+            }
+          ],
+          "x-measurement": true
+        },
+        "note": {
+          "type": "string",
+          "description": "A note from the writer.  [writer text: carries the placeholder prefix in a placeholder]",
+          "x-writer-text": true
+        }
+      }
+    },
+    "sub_interval_present": {
+      "type": "object",
+      "description": "The conditional sub-interval: the share given that every never-started exclusion is a true decline. Its conditioning constrains the never-started exclusions and says nothing about the channel pairs, so its floor moves with the bound floor (decisions/0056).",
+      "additionalProperties": false,
+      "required": [
+        "applicable",
+        "floor",
+        "ceiling",
+        "width_pp",
+        "conditioning_text",
+        "constrains_never_started_exclusions",
+        "says_nothing_about_channel_pairs",
+        "coincides_with_bound"
+      ],
+      "properties": {
+        "applicable": {
+          "const": true
+        },
+        "floor": {
+          "$ref": "#/$defs/endpoint"
+        },
+        "ceiling": {
+          "$ref": "#/$defs/endpoint"
+        },
+        "width_pp": {
+          "$ref": "#/$defs/pp"
+        },
+        "conditioning_text": {
+          "type": "string",
+          "description": "What the sub-interval conditions on.  [writer text: carries the placeholder prefix in a placeholder]",
+          "x-writer-text": true
+        },
+        "constrains_never_started_exclusions": {
+          "$ref": "#/$defs/count"
+        },
+        "says_nothing_about_channel_pairs": {
+          "$ref": "#/$defs/count"
+        },
+        "coincides_with_bound": {
+          "type": "object",
+          "description": "Whether this sub-interval coincides with its bound. Coincidence is recorded as a measured fact, not by writing the same numbers twice unremarked (decisions/0066 §3).",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "measured",
+            "evidence"
+          ],
+          "properties": {
+            "value": {
+              "type": "boolean"
+            },
+            "measured": {
+              "const": true
+            },
+            "evidence": {
+              "type": "string",
+              "description": "The evidence for the coincidence, or its absence.  [writer text: carries the placeholder prefix in a placeholder]",
+              "x-writer-text": true
+            }
+          }
+        }
+      }
+    },
+    "sub_interval_absent": {
+      "type": "object",
+      "description": "The never-started bound has no conditional sub-interval, structurally: the sub-interval conditions on that bound's own exclusion set. The field is present and says so, rather than being omitted.",
+      "additionalProperties": false,
+      "required": [
+        "applicable",
+        "status",
+        "reason",
+        "source"
+      ],
+      "properties": {
+        "applicable": {
+          "const": false
+        },
+        "status": {
+          "const": "structurally_absent",
+          "x-enum-id": "absence_status"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 20
+        },
+        "source": {
+          "type": "string"
+        }
+      }
+    },
+    "bound_no_subinterval": {
+      "type": "object",
+      "description": "The never-started bound: floor, ceiling, and no conditional sub-interval.",
+      "additionalProperties": false,
+      "required": [
+        "floor",
+        "ceiling",
+        "width_pp",
+        "degenerate",
+        "conditional_sub_interval",
+        "scope_qualifier_ref",
+        "exclusions_covered"
+      ],
+      "properties": {
+        "floor": {
+          "$ref": "#/$defs/endpoint"
+        },
+        "ceiling": {
+          "$ref": "#/$defs/endpoint"
+        },
+        "width_pp": {
+          "$ref": "#/$defs/pp",
+          "description": "ceiling.percent - floor.percent. Always present. A width of 0.0 is a measured zero-width bound and must not read as missing data; see `degenerate`."
+        },
+        "degenerate": {
+          "type": "boolean",
+          "description": "True iff the bound has zero width, i.e. floor == ceiling."
+        },
+        "degenerate_reason": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Why the bound is degenerate. Required when `degenerate` is true.  [writer text: carries the placeholder prefix in a placeholder]",
+          "x-writer-text": true
+        },
+        "conditional_sub_interval": {
+          "$ref": "#/$defs/sub_interval_absent"
+        },
+        "scope_qualifier_ref": {
+          "type": "string",
+          "description": "A key of $.scope_qualifiers. The qualifier travels with the bound wherever the bound goes (decisions/0062); it is referenced, not restated, so there is one definition of it."
+        },
+        "exclusions_covered": {
+          "type": "object",
+          "description": "The exclusion set this bound is taken over.",
+          "additionalProperties": false,
+          "required": [
+            "total_pairs",
+            "never_started_component",
+            "started_and_left_component"
+          ],
+          "properties": {
+            "total_pairs": {
+              "$ref": "#/$defs/count"
+            },
+            "never_started_component": {
+              "$ref": "#/$defs/count"
+            },
+            "started_and_left_component": {
+              "$ref": "#/$defs/count"
+            },
+            "accounts": {
+              "$ref": "#/$defs/count"
+            },
+            "channel_pairs_conceded_by_the_floor": {
+              "$ref": "#/$defs/count"
+            }
+          }
+        },
+        "endpoints_attainable": {
+          "type": "boolean"
+        },
+        "attainable_corners": {
+          "type": "array",
+          "description": "The attainable-corner table. It is on the derived-figures list for both floors, so it has a slot rather than being recomputed by a consumer.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "corner",
+              "never_started_percent",
+              "started_and_left_percent",
+              "continued_percent"
+            ],
+            "properties": {
+              "corner": {
+                "type": "string"
+              },
+              "never_started_percent": {
+                "$ref": "#/$defs/percent"
+              },
+              "started_and_left_percent": {
+                "$ref": "#/$defs/percent"
+              },
+              "continued_percent": {
+                "$ref": "#/$defs/percent"
+              },
+              "note": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "note": {
+          "type": "string",
+          "description": "A note from the writer.  [writer text: carries the placeholder prefix in a placeholder]",
+          "x-writer-text": true
+        }
+      },
+      "if": {
+        "properties": {
+          "degenerate": {
+            "const": true
+          }
+        },
+        "required": [
+          "degenerate"
+        ]
+      },
+      "then": {
+        "required": [
+          "degenerate_reason"
+        ],
+        "properties": {
+          "degenerate_reason": {
+            "type": "string",
+            "minLength": 20
+          }
+        }
+      }
+    },
+    "bound_with_subinterval": {
+      "type": "object",
+      "description": "The started-and-left bound: floor, ceiling and the conditional sub-interval.",
+      "additionalProperties": false,
+      "required": [
+        "floor",
+        "ceiling",
+        "width_pp",
+        "degenerate",
+        "conditional_sub_interval",
+        "scope_qualifier_ref",
+        "exclusions_covered"
+      ],
+      "properties": {
+        "floor": {
+          "$ref": "#/$defs/endpoint"
+        },
+        "ceiling": {
+          "$ref": "#/$defs/endpoint"
+        },
+        "width_pp": {
+          "$ref": "#/$defs/pp",
+          "description": "ceiling.percent - floor.percent. Always present. A width of 0.0 is a measured zero-width bound and must not read as missing data; see `degenerate`."
+        },
+        "degenerate": {
+          "type": "boolean",
+          "description": "True iff the bound has zero width, i.e. floor == ceiling."
+        },
+        "degenerate_reason": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Why the bound is degenerate. Required when `degenerate` is true.  [writer text: carries the placeholder prefix in a placeholder]",
+          "x-writer-text": true
+        },
+        "conditional_sub_interval": {
+          "$ref": "#/$defs/sub_interval_present"
+        },
+        "scope_qualifier_ref": {
+          "type": "string",
+          "description": "A key of $.scope_qualifiers. The qualifier travels with the bound wherever the bound goes (decisions/0062); it is referenced, not restated, so there is one definition of it."
+        },
+        "exclusions_covered": {
+          "type": "object",
+          "description": "The exclusion set this bound is taken over.",
+          "additionalProperties": false,
+          "required": [
+            "total_pairs",
+            "never_started_component",
+            "started_and_left_component"
+          ],
+          "properties": {
+            "total_pairs": {
+              "$ref": "#/$defs/count"
+            },
+            "never_started_component": {
+              "$ref": "#/$defs/count"
+            },
+            "started_and_left_component": {
+              "$ref": "#/$defs/count"
+            },
+            "accounts": {
+              "$ref": "#/$defs/count"
+            },
+            "channel_pairs_conceded_by_the_floor": {
+              "$ref": "#/$defs/count"
+            }
+          }
+        },
+        "endpoints_attainable": {
+          "type": "boolean"
+        },
+        "attainable_corners": {
+          "type": "array",
+          "description": "The attainable-corner table. It is on the derived-figures list for both floors, so it has a slot rather than being recomputed by a consumer.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "corner",
+              "never_started_percent",
+              "started_and_left_percent",
+              "continued_percent"
+            ],
+            "properties": {
+              "corner": {
+                "type": "string"
+              },
+              "never_started_percent": {
+                "$ref": "#/$defs/percent"
+              },
+              "started_and_left_percent": {
+                "$ref": "#/$defs/percent"
+              },
+              "continued_percent": {
+                "$ref": "#/$defs/percent"
+              },
+              "note": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "note": {
+          "type": "string",
+          "description": "A note from the writer.  [writer text: carries the placeholder prefix in a placeholder]",
+          "x-writer-text": true
+        }
+      },
+      "if": {
+        "properties": {
+          "degenerate": {
+            "const": true
+          }
+        },
+        "required": [
+          "degenerate"
+        ]
+      },
+      "then": {
+        "required": [
+          "degenerate_reason"
+        ],
+        "properties": {
+          "degenerate_reason": {
+            "type": "string",
+            "minLength": 20
+          }
+        }
+      }
+    },
+    "continued_bound": {
+      "type": "object",
+      "description": "Continued has a ceiling, because any excluded pair may in truth be Continued. It is never emitted as a point: the floor slot holds an explicit not-published record, never a number (decisions/0050, 0052).",
+      "additionalProperties": false,
+      "required": [
+        "ceiling",
+        "floor",
+        "must_not_be_read_as_a_point",
+        "scope_qualifier_ref"
+      ],
+      "properties": {
+        "ceiling": {
+          "$ref": "#/$defs/endpoint"
+        },
+        "floor": {
+          "$ref": "#/$defs/absence"
+        },
+        "must_not_be_read_as_a_point": {
+          "const": true
+        },
+        "scope_qualifier_ref": {
+          "type": "string"
+        },
+        "exclusions_covered": {
+          "type": "object",
+          "description": "The exclusion set this bound is taken over.",
+          "additionalProperties": false,
+          "required": [
+            "total_pairs",
+            "never_started_component",
+            "started_and_left_component"
+          ],
+          "properties": {
+            "total_pairs": {
+              "$ref": "#/$defs/count"
+            },
+            "never_started_component": {
+              "$ref": "#/$defs/count"
+            },
+            "started_and_left_component": {
+              "$ref": "#/$defs/count"
+            },
+            "accounts": {
+              "$ref": "#/$defs/count"
+            },
+            "channel_pairs_conceded_by_the_floor": {
+              "$ref": "#/$defs/count"
+            }
+          }
+        },
+        "note": {
+          "type": "string",
+          "description": "A note from the writer.  [writer text: carries the placeholder prefix in a placeholder]",
+          "x-writer-text": true
+        }
+      }
+    },
+    "ratio_block": {
+      "type": "object",
+      "description": "A bound width divided by a sampling width. The two arms use two conventions and the spec forbids reconciling them, so the convention is a named input carried with the value (decisions/0058, 0063).",
+      "additionalProperties": false,
+      "required": [
+        "value",
+        "convention_label",
+        "convention_definition",
+        "reconciled_with_other_arm"
+      ],
+      "properties": {
+        "value": {
+          "$ref": "#/$defs/ratio"
+        },
+        "convention_label": {
+          "type": "string"
+        },
+        "convention_definition": {
+          "type": "string",
+          "description": "The convention this arm uses, in its own words.  [writer text: carries the placeholder prefix in a placeholder]",
+          "x-writer-text": true
+        },
+        "numerator_definition": {
+          "type": "string",
+          "description": "What this arm puts in the numerator.  [writer text: carries the placeholder prefix in a placeholder]",
+          "x-writer-text": true
+        },
+        "denominator_definition": {
+          "type": "string",
+          "description": "What this arm puts in the denominator.  [writer text: carries the placeholder prefix in a placeholder]",
+          "x-writer-text": true
+        },
+        "reconciled_with_other_arm": {
+          "const": false
+        }
+      }
+    },
+    "ceilings_block": {
+      "type": "object",
+      "description": "The three ceilings and the fact that they cannot all hold. `simultaneous` is const false in the schema, so no writer can emit three ceilings as simultaneous.",
+      "additionalProperties": false,
+      "required": [
+        "simultaneous",
+        "sum_percent",
+        "excess_pp",
+        "excess_pairs",
+        "excess_mechanism_expression"
+      ],
+      "properties": {
+        "simultaneous": {
+          "const": false
+        },
+        "sum_percent": {
+          "description": "The three ceilings summed. Exceeds 100 by construction.  [measurement slot: -999.0 in a placeholder]",
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "const": -999.0
+            }
+          ],
+          "x-measurement": true
+        },
+        "excess_pp": {
+          "$ref": "#/$defs/pp"
+        },
+        "excess_pairs": {
+          "$ref": "#/$defs/count"
+        },
+        "excess_mechanism_expression": {
+          "type": "string",
+          "description": "The mechanism, not just the total: each never-started exclusion appears in all three ceiling numerators and each started-and-left exclusion in two."
+        },
+        "note": {
+          "type": "string",
+          "description": "A note from the writer.  [writer text: carries the placeholder prefix in a placeholder]",
+          "x-writer-text": true
+        }
+      }
+    },
+    "step9_payload": {
+      "type": "object",
+      "description": "Everything one producing arm computes for one population of one W arm. Step 9 is a dual step and is diffed IN this schema, so each arm writes its own subtree and no figure has a single slot that would force a reconciliation.",
+      "additionalProperties": false,
+      "required": [
+        "producing_arm",
+        "shares",
+        "bounds",
+        "ceilings_cannot_all_hold",
+        "written_by"
+      ],
+      "properties": {
+        "producing_arm": {
+          "enum": [
+            "a",
+            "b"
+          ],
+          "x-enum-id": "producing_arm"
+        },
+        "written_by": {
+          "type": "string"
+        },
+        "shares": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "never_started",
+            "started_and_left",
+            "continued"
+          ],
+          "properties": {
+            "never_started": {
+              "$ref": "#/$defs/share"
+            },
+            "started_and_left": {
+              "$ref": "#/$defs/share"
+            },
+            "continued": {
+              "$ref": "#/$defs/share"
+            }
+          }
+        },
+        "bounds": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "never_started",
+            "started_and_left",
+            "continued"
+          ],
+          "properties": {
+            "never_started": {
+              "$ref": "#/$defs/bound_no_subinterval"
+            },
+            "started_and_left": {
+              "$ref": "#/$defs/bound_with_subinterval"
+            },
+            "continued": {
+              "$ref": "#/$defs/continued_bound"
+            }
+          }
+        },
+        "ceilings_cannot_all_hold": {
+          "$ref": "#/$defs/ceilings_block"
+        },
+        "bound_over_sampling_width_ratios": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "never_started": {
+              "$ref": "#/$defs/ratio_block"
+            },
+            "started_and_left": {
+              "$ref": "#/$defs/ratio_block"
+            },
+            "started_and_left_sub_interval": {
+              "$ref": "#/$defs/ratio_block"
+            }
+          }
+        },
+        "spec_choices_this_arm_made": {
+          "type": "array",
+          "description": "Choices the spec does not fix, named by the arm that made them.",
+          "items": {
+            "type": "string",
+            "description": "One choice the spec does not fix.  [writer text: carries the placeholder prefix in a placeholder]",
+            "x-writer-text": true
+          }
+        }
+      }
+    },
+    "by_producing_arm": {
+      "type": "object",
+      "description": "Both arms of the dual step, side by side. Both keys are required: an arm that has not run writes an explicit absence record, so 'not yet run' and 'agrees with the other arm' cannot look alike.",
+      "additionalProperties": false,
+      "required": [
+        "a",
+        "b"
+      ],
+      "properties": {
+        "a": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/step9_payload"
+            },
+            {
+              "$ref": "#/$defs/absence"
+            }
+          ]
+        },
+        "b": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/step9_payload"
+            },
+            {
+              "$ref": "#/$defs/absence"
+            }
+          ]
+        }
+      }
+    },
+    "population_block": {
+      "type": "object",
+      "description": "One population of one arm. APPLY and DERIV are separate arithmetic under separate keys, never one field carrying a population flag (decisions/0066 §3).",
+      "additionalProperties": false,
+      "required": [
+        "population",
+        "definition",
+        "n_position_5",
+        "n_post_liveness",
+        "by_producing_arm"
+      ],
+      "properties": {
+        "population": {
+          "enum": [
+            "APPLY",
+            "DERIV"
+          ],
+          "x-enum-id": "population"
+        },
+        "definition": {
+          "type": "string",
+          "description": "The population, restated by the writer at the point of use.  [writer text: carries the placeholder prefix in a placeholder]",
+          "x-writer-text": true
+        },
+        "n_position_5": {
+          "$ref": "#/$defs/count",
+          "description": "The row set the bounds are stated on. Each W arm re-censors, so the arms do not share a denominator."
+        },
+        "n_post_liveness": {
+          "$ref": "#/$defs/count",
+          "description": "The row set the published shares are stated on. It differs from n_position_5, which is why every share and every endpoint names its own population label."
+        },
+        "populations_differ_note": {
+          "type": "string",
+          "description": "Why n_position_5 and n_post_liveness differ, in the writer's words.  [writer text: carries the placeholder prefix in a placeholder]",
+          "x-writer-text": true
+        },
+        "by_producing_arm": {
+          "$ref": "#/$defs/by_producing_arm"
+        }
+      }
+    },
+    "waterfall_position": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "position",
+        "filter",
+        "n_in",
+        "n_out",
+        "removed",
+        "inert",
+        "outcome_conditional"
+      ],
+      "properties": {
+        "position": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "filter": {
+          "enum": [
+            "step2_frame",
+            "L2_eq_1_exclusion",
+            "s1_completion_rule",
+            "contamination_exclusion",
+            "right_censoring",
+            "liveness",
+            "outcome_assignment"
+          ],
+          "x-enum-id": "filter"
+        },
+        "n_in": {
+          "$ref": "#/$defs/count"
+        },
+        "n_out": {
+          "$ref": "#/$defs/count"
+        },
+        "removed": {
+          "$ref": "#/$defs/count"
+        },
+        "inert": {
+          "type": "boolean",
+          "description": "True where the position cannot fire on this frame. An unlabelled always-zero filter reads as evidence the rule found nothing when it is evidence the rule cannot fire (decisions/0079)."
+        },
+        "inert_reason": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Why this position cannot fire. Required when `inert` is true.  [writer text: carries the placeholder prefix in a placeholder]",
+          "x-writer-text": true
+        },
+        "outcome_conditional": {
+          "type": "boolean",
+          "description": "True at position 6 under the adopted liveness rule."
+        },
+        "sub_lines": {
+          "type": "array",
+          "description": "Right-censoring publishes as two lines; they go here.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "label",
+              "removed"
+            ],
+            "properties": {
+              "label": {
+                "type": "string",
+                "description": "The label for this sub-line.  [writer text: carries the placeholder prefix in a placeholder]",
+                "x-writer-text": true
+              },
+              "removed": {
+                "$ref": "#/$defs/count"
+              },
+              "n_out": {
+                "$ref": "#/$defs/count"
+              },
+              "note": {
+                "type": "string",
+                "description": "A note from the writer.  [writer text: carries the placeholder prefix in a placeholder]",
+                "x-writer-text": true
+              }
+            }
+          }
+        },
+        "note": {
+          "type": "string",
+          "description": "A note from the writer.  [writer text: carries the placeholder prefix in a placeholder]",
+          "x-writer-text": true
+        }
+      },
+      "if": {
+        "properties": {
+          "inert": {
+            "const": true
+          }
+        },
+        "required": [
+          "inert"
+        ]
+      },
+      "then": {
+        "required": [
+          "inert_reason"
+        ],
+        "properties": {
+          "inert_reason": {
+            "type": "string",
+            "minLength": 20
+          }
+        }
+      }
+    },
+    "waterfall_block": {
+      "type": "object",
+      "description": "The filter waterfall for one population of one arm, in the mandated order. The final row set commutes but the per-filter sample sizes do not, so the order is part of the figure (decisions/0029).",
+      "additionalProperties": false,
+      "required": [
+        "population",
+        "order_ref",
+        "positions",
+        "monotone_check"
+      ],
+      "properties": {
+        "population": {
+          "enum": [
+            "APPLY",
+            "DERIV"
+          ],
+          "x-enum-id": "population"
+        },
+        "order_ref": {
+          "type": "string"
+        },
+        "positions": {
+          "type": "array",
+          "minItems": 7,
+          "maxItems": 7,
+          "items": {
+            "$ref": "#/$defs/waterfall_position"
+          }
+        },
+        "monotone_check": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "operator",
+            "result",
+            "positions_checked"
+          ],
+          "properties": {
+            "operator": {
+              "const": ">=",
+              "description": "Coded >=, not >, so a filter position that legitimately removes nothing does not fail an assertion (decisions/0047)."
+            },
+            "result": {
+              "type": "boolean"
+            },
+            "positions_checked": {
+              "$ref": "#/$defs/count"
+            }
+          }
+        },
+        "retained_by_air_period": {
+          "type": "array",
+          "description": "Retained pairs per air period after right-censoring. The aggregate hides a cohort-asymmetric loss, so the per-period breakdown is required (decisions/0033).",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "air_period",
+              "retained_pairs"
+            ],
+            "properties": {
+              "air_period": {
+                "type": "string",
+                "description": "The air period this row covers.  [writer text: carries the placeholder prefix in a placeholder]",
+                "x-writer-text": true
+              },
+              "retained_pairs": {
+                "$ref": "#/$defs/count"
+              },
+              "entering_pairs": {
+                "$ref": "#/$defs/count"
+              },
+              "retained_share_percent": {
+                "$ref": "#/$defs/percent"
+              }
+            }
+          }
+        }
+      }
+    },
+    "p_at_bound_block": {
+      "type": "object",
+      "description": "TWO DIFFERENT FALSE CLASSES. They are named apart and both are emitted. A consumer that reads 'the FALSE class is empty' and provisions a two-valued column is wrong by the whole of `column_cardinalities.false_count` (decisions/0099 §2).",
+      "additionalProperties": false,
+      "required": [
+        "column_cardinalities",
+        "coextensivity_gap",
+        "two_classes_note"
+      ],
+      "properties": {
+        "column_cardinalities": {
+          "type": "object",
+          "description": "CLASS 2 -- the emitted column's own values. THE COLUMN IS THREE-VALUED: TRUE on the rows where p reached its bound, FALSE on the remaining started-and-left rows, and null everywhere p is null. All three counts are required, so the column cannot be provisioned as two-valued.",
+          "additionalProperties": false,
+          "required": [
+            "true_count",
+            "false_count",
+            "null_count",
+            "total_rows"
+          ],
+          "properties": {
+            "true_count": {
+              "$ref": "#/$defs/count"
+            },
+            "false_count": {
+              "$ref": "#/$defs/count"
+            },
+            "null_count": {
+              "$ref": "#/$defs/count"
+            },
+            "total_rows": {
+              "$ref": "#/$defs/count"
+            },
+            "identity_holds": {
+              "type": "boolean"
+            },
+            "false_is_the_ordinary_case": {
+              "const": true
+            }
+          }
+        },
+        "coextensivity_gap": {
+          "type": "object",
+          "description": "CLASS 1 -- the gap between the two mechanisms of the superseded definition. This is the class that is empty; it is not the column's FALSE value. Four cells plus the coverage count, because an empty result and a clean result are the same value.",
+          "additionalProperties": false,
+          "required": [
+            "in_both",
+            "saturated_not_final",
+            "final_not_saturated",
+            "in_neither",
+            "rows_examined"
+          ],
+          "properties": {
+            "p_equals_one_total": {
+              "$ref": "#/$defs/count"
+            },
+            "in_both": {
+              "$ref": "#/$defs/count"
+            },
+            "saturated_not_final": {
+              "$ref": "#/$defs/count"
+            },
+            "final_not_saturated": {
+              "$ref": "#/$defs/count"
+            },
+            "in_neither": {
+              "$ref": "#/$defs/count"
+            },
+            "rows_examined": {
+              "$ref": "#/$defs/count"
+            },
+            "is_empty": {
+              "type": "boolean"
+            }
+          }
+        },
+        "two_classes_note": {
+          "type": "string",
+          "description": "The two FALSE classes, named apart, in the writer's words.  [writer text: carries the placeholder prefix in a placeholder]",
+          "x-writer-text": true
+        },
+        "construction_links": {
+          "type": "array",
+          "description": "The chain has three links and only the first two are construction; the third is a frame property and is measured (decisions/0085 §4).",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "link",
+              "kind"
+            ],
+            "properties": {
+              "link": {
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "construction",
+                  "measured"
+                ],
+                "x-enum-id": "link_kind"
+              },
+              "measured_value": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "What was measured for a link whose kind is `measured`.  [writer text: carries the placeholder prefix in a placeholder]",
+                "x-writer-text": true
+              }
+            }
+          }
+        }
+      }
+    },
+    "abandonment_block": {
+      "type": "object",
+      "description": "The abandonment distribution for one population of one arm. p is the rank form and is defined only on started-and-left rows.",
+      "additionalProperties": false,
+      "required": [
+        "population",
+        "n_started_and_left",
+        "p_definition",
+        "bin_unit",
+        "histogram",
+        "named_categories",
+        "p_at_bound",
+        "comparability_caveat"
+      ],
+      "properties": {
+        "population": {
+          "enum": [
+            "APPLY",
+            "DERIV"
+          ],
+          "x-enum-id": "population"
+        },
+        "n_started_and_left": {
+          "$ref": "#/$defs/count"
+        },
+        "p_definition": {
+          "const": "p = |{e in E2 : e <= max(A_H)}| / L2",
+          "description": "The rank form. p = m_H / L2 is NOT the rule and must not be reinstated."
+        },
+        "p_raw_ratio_form_withdrawn": {
+          "const": true
+        },
+        "p_is_null_off_started_and_left": {
+          "const": true
+        },
+        "bin_unit": {
+          "const": "fraction_of_season",
+          "description": "p is a fraction of a season, not a count of episodes. A histogram pooled across shows with very different L2 does not have comparable bins."
+        },
+        "histogram": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "bin_edges_p",
+            "counts"
+          ],
+          "properties": {
+            "bin_edges_p": {
+              "type": "array",
+              "description": "Ascending edges on [0, 1]; len(counts) + 1 of them. Bin definitions are structure, not measurements.",
+              "items": {
+                "type": "number"
+              }
+            },
+            "counts": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/count"
+              }
+            },
+            "l2_stratum": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        },
+        "named_categories": {
+          "type": "object",
+          "description": "First-episode, mid-season and near-finale drops, plus the p = 1.0 residual, which is its own named category and is NOT part of near-finale.",
+          "additionalProperties": false,
+          "required": [
+            "first_episode",
+            "mid_season",
+            "near_finale",
+            "p_equals_1_residual"
+          ],
+          "properties": {
+            "first_episode": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "count",
+                "definition"
+              ],
+              "properties": {
+                "count": {
+                  "$ref": "#/$defs/count"
+                },
+                "share_percent": {
+                  "$ref": "#/$defs/percent"
+                },
+                "definition": {
+                  "type": "string",
+                  "description": "How this category is defined by the writer.  [writer text: carries the placeholder prefix in a placeholder]",
+                  "x-writer-text": true
+                }
+              }
+            },
+            "mid_season": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "count",
+                "definition"
+              ],
+              "properties": {
+                "count": {
+                  "$ref": "#/$defs/count"
+                },
+                "share_percent": {
+                  "$ref": "#/$defs/percent"
+                },
+                "definition": {
+                  "type": "string",
+                  "description": "How this category is defined by the writer.  [writer text: carries the placeholder prefix in a placeholder]",
+                  "x-writer-text": true
+                }
+              }
+            },
+            "near_finale": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "count",
+                "definition"
+              ],
+              "properties": {
+                "count": {
+                  "$ref": "#/$defs/count"
+                },
+                "share_percent": {
+                  "$ref": "#/$defs/percent"
+                },
+                "definition": {
+                  "type": "string",
+                  "description": "How this category is defined by the writer.  [writer text: carries the placeholder prefix in a placeholder]",
+                  "x-writer-text": true
+                }
+              }
+            },
+            "p_equals_1_residual": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "count",
+                "definition"
+              ],
+              "properties": {
+                "count": {
+                  "$ref": "#/$defs/count"
+                },
+                "share_percent": {
+                  "$ref": "#/$defs/percent"
+                },
+                "definition": {
+                  "type": "string",
+                  "description": "How this category is defined by the writer.  [writer text: carries the placeholder prefix in a placeholder]",
+                  "x-writer-text": true
+                }
+              }
+            }
+          }
+        },
+        "p_equals_1_residual_is_separate_from_near_finale": {
+          "const": true
+        },
+        "p_at_bound": {
+          "$ref": "#/$defs/p_at_bound_block"
+        },
+        "amendment_shift": {
+          "type": "object",
+          "description": "The amendment moves the pairs that got furthest out of started-and-left, so it shifts this chart earlier. A reader must not attribute the shift to behaviour.",
+          "additionalProperties": false,
+          "required": [
+            "direction",
+            "pairs_moved",
+            "note"
+          ],
+          "properties": {
+            "direction": {
+              "enum": [
+                "earlier",
+                "later",
+                "none"
+              ],
+              "x-enum-id": "shift_direction"
+            },
+            "pairs_moved": {
+              "$ref": "#/$defs/count"
+            },
+            "note": {
+              "type": "string",
+              "description": "A note from the writer.  [writer text: carries the placeholder prefix in a placeholder]",
+              "x-writer-text": true
+            }
+          }
+        },
+        "comparability_caveat": {
+          "type": "string",
+          "description": "The caveat on pooling p across shows.  [writer text: carries the placeholder prefix in a placeholder]",
+          "x-writer-text": true
+        },
+        "no_specific_episode_claimed": {
+          "const": true
+        }
+      }
+    },
+    "liveness_exclusions_block": {
+      "type": "object",
+      "description": "The liveness exclusion count for this arm. The rule has no parameter of its own but is fully determined by W, so the count is reported at every arm and the coupling is visible.",
+      "additionalProperties": false,
+      "required": [
+        "total_pairs",
+        "never_started_component",
+        "started_and_left_component"
+      ],
+      "properties": {
+        "total_pairs": {
+          "$ref": "#/$defs/count"
+        },
+        "never_started_component": {
+          "$ref": "#/$defs/count"
+        },
+        "started_and_left_component": {
+          "$ref": "#/$defs/count"
+        },
+        "accounts": {
+          "$ref": "#/$defs/count"
+        },
+        "silence_test_alone": {
+          "$ref": "#/$defs/count",
+          "description": "Excluded by the silence test on its own, before the NOT Continued conjunct spares any. Without it line 6 cannot be read as a marginal cost."
+        },
+        "spared_by_not_continued": {
+          "$ref": "#/$defs/count"
+        },
+        "identity": {
+          "type": "string"
+        },
+        "pair_level_not_account_level": {
+          "type": "boolean"
+        }
+      }
+    },
+    "headline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "APPLY",
+        "DERIV"
+      ],
+      "properties": {
+        "APPLY": {
+          "$ref": "#/$defs/population_block"
+        },
+        "DERIV": {
+          "$ref": "#/$defs/population_block"
+        }
+      }
+    },
+    "arm_entry": {
+      "type": "object",
+      "description": "One entry per W arm. The entry key is (W_days, clock_origin) -- see $.arm_key for why the origin is part of it. There is NO liveness threshold and no threshold may appear as a key.",
+      "additionalProperties": false,
+      "required": [
+        "arm_id",
+        "W_days",
+        "H_days",
+        "clock_origin",
+        "in_arm_grid",
+        "headline",
+        "waterfall",
+        "abandonment_distribution",
+        "liveness_exclusions"
+      ],
+      "properties": {
+        "arm_id": {
+          "type": "string",
+          "pattern": "^W\\d+_"
+        },
+        "W_days": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "H_days": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Held constant across every arm that varies W."
+        },
+        "clock_origin": {
+          "enum": [
+            "s2_finale",
+            "s2_premiere"
+          ],
+          "x-enum-id": "clock_origin",
+          "description": "Where T0 is anchored. The eight grid arms are finale-anchored. Step 9's 91-day Netflix arm is premiere-anchored and is a different measurement, not the same one at another window length -- so it cannot share an entry with the finale-anchored W = 91 arm."
+        },
+        "clock_origin_note": {
+          "type": "string",
+          "description": "What this arm's clock is anchored on.  [writer text: carries the placeholder prefix in a placeholder]",
+          "x-writer-text": true
+        },
+        "in_arm_grid": {
+          "type": "boolean"
+        },
+        "is_primary_headline": {
+          "type": "boolean"
+        },
+        "headline": {
+          "$ref": "#/$defs/headline"
+        },
+        "waterfall": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "APPLY",
+            "DERIV"
+          ],
+          "properties": {
+            "APPLY": {
+              "$ref": "#/$defs/waterfall_block"
+            },
+            "DERIV": {
+              "$ref": "#/$defs/waterfall_block"
+            }
+          }
+        },
+        "abandonment_distribution": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "APPLY",
+            "DERIV"
+          ],
+          "properties": {
+            "APPLY": {
+              "$ref": "#/$defs/abandonment_block"
+            },
+            "DERIV": {
+              "$ref": "#/$defs/abandonment_block"
+            }
+          }
+        },
+        "liveness_exclusions": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "APPLY",
+            "DERIV"
+          ],
+          "properties": {
+            "APPLY": {
+              "$ref": "#/$defs/liveness_exclusions_block"
+            },
+            "DERIV": {
+              "$ref": "#/$defs/liveness_exclusions_block"
+            }
+          }
+        },
+        "action_type_counts": {
+          "type": "object",
+          "description": "Per-pair counts by action type, aggregated. `action` is record-level and the row is a pair, so there is no row-level action value; Step 13's arm reads these counts.",
+          "additionalProperties": {
+            "$ref": "#/$defs/count"
+          }
+        },
+        "note": {
+          "type": "string",
+          "description": "A note from the writer.  [writer text: carries the placeholder prefix in a placeholder]",
+          "x-writer-text": true
+        }
+      }
+    },
+    "variant_entry": {
+      "type": "object",
+      "description": "A Step 13 arm that varies something other than W. The entry key is W alone plus the clock origin, so a non-W variation cannot be an arm entry without colliding; it lives here and names the arm it is a variation of.",
+      "additionalProperties": false,
+      "required": [
+        "variant_id",
+        "axis",
+        "level",
+        "base_arm_id",
+        "headline"
+      ],
+      "properties": {
+        "variant_id": {
+          "type": "string"
+        },
+        "axis": {
+          "enum": [
+            "s1_completion_threshold",
+            "s1_completion_date_definition",
+            "action_type_evidence",
+            "other"
+          ],
+          "x-enum-id": "variant_axis"
+        },
+        "level": {
+          "type": "string"
+        },
+        "base_arm_id": {
+          "type": "string"
+        },
+        "headline": {
+          "$ref": "#/$defs/headline"
+        },
+        "d2_recomputed_inside_this_arm": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "finale_binds": {
+              "$ref": "#/$defs/count"
+            },
+            "s1_completion_binds": {
+              "$ref": "#/$defs/count"
+            },
+            "both_bind": {
+              "$ref": "#/$defs/count"
+            },
+            "note": {
+              "type": "string",
+              "description": "A note from the writer.  [writer text: carries the placeholder prefix in a placeholder]",
+              "x-writer-text": true
+            }
+          }
+        },
+        "conclusions_surviving": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "One conclusion that survives this variation.  [writer text: carries the placeholder prefix in a placeholder]",
+            "x-writer-text": true
+          }
+        },
+        "conclusions_not_surviving": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "One conclusion that does not survive.  [writer text: carries the placeholder prefix in a placeholder]",
+            "x-writer-text": true
+          }
+        }
+      }
+    },
+    "subpopulation_cut": {
+      "type": "object",
+      "description": "A recomputation of the headline on a subpopulation: Step 11's discovery channels and Step 12's segment cuts. Every candidate considered is written here, not only the one that showed a pattern.",
+      "additionalProperties": false,
+      "required": [
+        "cut_id",
+        "dimension",
+        "level",
+        "base_arm_id",
+        "headline",
+        "candidate_considered"
+      ],
+      "properties": {
+        "cut_id": {
+          "type": "string"
+        },
+        "dimension": {
+          "enum": [
+            "discovery_channel",
+            "origin",
+            "gap_length_between_seasons",
+            "s1_episode_count",
+            "user_tenure",
+            "other"
+          ],
+          "x-enum-id": "cut_dimension"
+        },
+        "level": {
+          "type": "string",
+          "description": "For discovery_channel the levels are channel_a, channel_b, both and neither. Discovery channel is two booleans on the analysis table, not one categorical, so the overlap has its own level rather than being dropped or assigned arbitrarily (decisions/0070 ruling 3)."
+        },
+        "base_arm_id": {
+          "type": "string"
+        },
+        "headline": {
+          "$ref": "#/$defs/headline"
+        },
+        "candidate_considered": {
+          "const": true
+        },
+        "selected_by_human_lead": {
+          "type": "boolean"
+        },
+        "agreement_kind": {
+          "enum": [
+            "genuinely_similar",
+            "not_distinguishable_at_this_n",
+            "diverge",
+            "not_yet_assessed"
+          ],
+          "x-enum-id": "agreement_kind",
+          "description": "Step 11 must state whether 'agree' means genuinely similar or merely not distinguishable at this sample size. It is a field, not caption prose."
+        },
+        "agreement_statement": {
+          "type": "string",
+          "description": "The agreement statement, in the writer's words.  [writer text: carries the placeholder prefix in a placeholder]",
+          "x-writer-text": true
+        },
+        "where_it_holds": {
+          "type": "string",
+          "description": "Where the pattern holds.  [writer text: carries the placeholder prefix in a placeholder]",
+          "x-writer-text": true
+        },
+        "where_it_breaks": {
+          "type": "string",
+          "description": "Where the pattern breaks.  [writer text: carries the placeholder prefix in a placeholder]",
+          "x-writer-text": true
+        }
+      }
+    }
+  }
+}
