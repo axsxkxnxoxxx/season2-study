@@ -55,7 +55,7 @@ EXCLUDED_DATA_TABLES = sorted(str(p) for p in Path("processed").rglob("*")
 sys.path.insert(0, str(Path(__file__).parent))
 from step7_register import (SUPERSEDED, SUPERSEDED_IN, ADOPTED, ADOPTED_IN, LEGITIMATE,
                             DECLARE_SCOPED, DECLARE_JSON_PATH, SUCCESSOR,
-                            WITHDRAWN_PHRASES,
+                            WITHDRAWN_PHRASES, STEP8_LEGITIMATE,
                             SUPERSEDED_STRINGS, SURFACE6_MARKERS, SURFACE6_LINE_LOCAL_CONTROLS,
                             file_is_wholly_superseded, processed_is_working_output, scoped)
 
@@ -365,6 +365,42 @@ def scan_superseded_strings():
     return hits, cov
 
 
+def scan_step8_register():
+    """Exercise the Step 8 trap register, and FAIL on a row that matches nothing.
+
+    0101, closing R3. These figures lived only in second-brain's memory until now -- a second
+    hand-maintained register, the hazard 0059 B3 forbids.
+
+    WHAT THIS CAN AND CANNOT DO. It cannot adjudicate whether a given occurrence names its
+    scope: that is prose, and CLAUDE.md's third blindness class. What it CAN do is prove the
+    register is LIVE rather than inert, and catch the one failure a trap register has of its
+    own -- A ROW THAT MATCHES NOTHING.
+
+    Why a zero-match row must fail: registering a value as legitimate DISARMS the control
+    against it (9.6830 was registered while superseded on four surfaces). A row for a figure
+    that no longer appears anywhere cannot protect a real reading -- it can only sit there
+    waiting to excuse a future coincidence. Dead rows are how a register decays into a
+    blanket exemption, which is the shape second-brain found on 703.
+    """
+    hits, cov = {v: 0 for v in STEP8_LEGITIMATE}, dict(files=0, values=len(STEP8_LEGITIMATE))
+    for surface, files in SURFACES.items():
+        for f in files:
+            if f.endswith((".gz", ".npz", ".npy")):
+                continue
+            is_json = f.endswith(".json")
+            try:
+                items = ([v for v, _ in json_numbers(f)] if is_json
+                         else [v for v, _, _, _ in text_numbers(f)])
+            except Exception:                                       # noqa: BLE001
+                continue
+            cov["files"] += 1
+            for val in items:
+                for reg in hits:
+                    if near(val, float(reg)):
+                        hits[reg] += 1
+    return hits, cov
+
+
 def scan():
     neg, pos, pos_in, allowed, legit_seen = [], {v: set() for v in ADOPTED}, set(), set(), set()
     for surface, files in SURFACES.items():
@@ -470,6 +506,23 @@ if __name__ == "__main__":
         print(f"        {text}")
     print()
 
+    s8_hits, s8_cov = scan_step8_register()
+    s8_dead = sorted(v for v, n in s8_hits.items() if n == 0)
+    print("STEP 8 TRAP REGISTER -- 0101, closing R3 (these lived only in second-brain's memory):")
+    print(f"  coverage: {s8_cov['values']} registered figures x {s8_cov['files']} files; "
+          f"occurrences {min(s8_hits.values())}-{max(s8_hits.values())} per figure")
+    assert s8_cov["files"] > 0, "STEP 8 REGISTER LOOKED NOWHERE"
+    print("  It does NOT adjudicate whether an occurrence names its scope -- that is prose, and "
+          "CLAUDE.md's third blindness class. It proves the register is LIVE and catches a DEAD ROW.")
+    if s8_dead:
+        for v in s8_dead:
+            print(f"  DEAD ROW: {v:,} matches nothing on any surface -- {STEP8_LEGITIMATE[v][0][:70]}")
+        print("  A row matching nothing cannot protect a real reading; it can only excuse a future "
+              "coincidence. Withdraw it or fix the figure.")
+    else:
+        print("  no dead rows")
+    print()
+
     ss_hits, ss_cov = scan_superseded_strings()
     print("NEEDLE REGISTER ACROSS ALL EIGHT SURFACES -- 0095 F3. *** REPORT ONLY: NOT YET A CONTROL ***")
     print(f"  coverage: {ss_cov['needles']} needles x {ss_cov['files']} files "
@@ -548,7 +601,7 @@ if __name__ == "__main__":
                 mark = "  UNUSED: exempts nothing that occurs"
         print(f"  {v}: {why}{mark}")
 
-    if neg or missing or miss_in or phrase_hits or READ_FAILURES or legit_conflicts or missing_d:
+    if neg or missing or miss_in or phrase_hits or READ_FAILURES or legit_conflicts or missing_d or s8_dead:
         print("\nFAIL")
         sys.exit(1)
     print("\nPASS -- all halves, all EIGHT surfaces.")

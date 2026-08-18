@@ -94,6 +94,95 @@ ADOPTED_IN = {
 # than left as two silently missing entries.
 DERIV_NS_RATIOS_ARE_ZERO_BY_DEGENERACY = True
 
+# ------------------------------------------------------------- STEP 8 NUMERIC REGISTER
+# 0101, closing R3. Until now these figures lived ONLY in second-brain's memory --
+# a SECOND hand-maintained register, which is exactly the hazard 0059 B3 forbids:
+# "there were TWO hand-maintained registers ... already divergent by one entry after a
+# single entry's use, and NEITHER contained the values that were actually wrong."
+#
+# TRANSFERRED, NOT AUTHORED. Every reading below is second-brain's, carried across with
+# its scope and its file citation. Re-deriving them here would have created the THIRD
+# register rather than closing the second.
+#
+# Each row carries what CLAUDE.md requires of a legitimate reading: the reading that makes
+# the figure correct, AND the use that makes it a defect. Registering a false positive
+# DISARMS the control against it -- 9.6830 was registered as legitimate while superseded on
+# four surfaces -- so a row with an EMPTY defect column is a blanket exemption and is
+# itself the defect. second-brain found exactly that on 703 and repaired it.
+#
+# THE TWO COINCIDENCES ARE THE DANGEROUS ROWS. 703 and 604 each name two unrelated
+# quantities that happen to be equal, and both arms flag the collision themselves.
+STEP8_LEGITIMATE = {
+    703: ("TWO readings, both current, and they are a COINCIDENCE. (i) ALT-BROAD's APPLY "
+          "liveness exclusion count, 604 + 99 from 216 accounts. (ii) distinct S2 episodes in "
+          "the SEPARATING interval [tau1, tau1+24h) on APPLY position 5 -- both arms, "
+          "step8-waterfall-a.json:2095 and step8-invariants-b.json:219, 0089 SS2(a) / 0091 SS1; "
+          "(ii) sits beside [tau2, tau2+24h) = 303 and the DERIV pair 595 / 261",
+          "quoting (ii) as the exclusion count, or (i) as evidence about the half-open form. "
+          "UNRELATED QUANTITIES THAT HAPPEN TO BE EQUAL"),
+    604: ("TWO readings, both current, and they are a COINCIDENCE. (i) the never-started "
+          "COMPONENT of ALT-BROAD's 703 on APPLY, 191 accounts. (ii) invariant 8's scope note, "
+          "arm a: the 7 accounts skipped on one attempt but yielding data on another hold 604 "
+          "position-5 pairs, 119 of them never-started -- step8-invariants-a.json:628",
+          "604 as a liveness exclusion TOTAL -- that is ALT's superseded answer, and producing "
+          "it at position 6 IS a divergence (0046 -> 0048)"),
+    168: ("D2's max() BOTH-BIND tie count on APPLY, and it is NOT population-invariant: 168 is "
+          "invariant across line 1 (220,107), position 4 (201,900), position 5 (196,654) AND "
+          "post-liveness (195,951) -- step8-waterfall-a.json:1311,1320",
+          "quoted without its population. 0092 SS3's premise '168 cannot be correct on both' is "
+          "WITHDRAWN: both arms' differing readings would have given 168, and the agreement was "
+          "INVARIANCE, not error"),
+    153: ("D2's both-bind tie count on DERIV -- 147,370 and 147,271. THE COUNT IS NOT "
+          "POPULATION-INVARIANT and this is the half that proves it",
+          "quoted without its population, or listed among D9's numbers -- 0093 SS3(a) did that and "
+          "was corrected at 0099. ALSO the ALT-MATCHED S&L component at several arms in "
+          "step7-liveness-mm-* (allowlisted, history) and a 153.4 d median in step5-contamination"),
+    75: ("D9's LOOSE key = the CEILING of the published bound [0, 75] on complementary pairs "
+         "(0090). Also the U3 universe size",
+         "75 as 'D9's result' -- NEITHER ENDPOINT IS THE POINT ESTIMATE (0090)"),
+    76: ("the THIRD key's answer -- it strips a trailing digit group of arbitrary length, "
+         "reducing the-100 to the. Reported as a divergence only (0076, 0078 SS3, 0090). Its "
+         "half (b) is 28 against loose 27",
+         "76 as the CEILING. It is NOT AN ENDPOINT -- a different key's answer"),
+    46428: ("distinct SLUGGED show IDs in the parsed sweep = the U1 universe ruled at 0088 SS3, "
+            "both arms -- step8-waterfall-b.md:339, step8-waterfall-a.md:477",
+            "confusing it with the D9 COVERAGE PIVOT count, which is a different object"),
+    46366: ("the D9 COVERAGE PIVOT's show-ID count, arm a -- a different object from U1, 62 "
+            "fewer, WITHIN ONE ARM (0089 SS3, correcting 0087 SS2's '62 apart' two-arm reading). "
+            "The pivot count ITSELF diverges across arms: 46,366 (a) against 45,014 (b), gate "
+            "residual 4, resolvable only by reading each arm's mask",
+            "labelled distinct_show_ids_in_the_sweep -- arm a published both for one label 27 "
+            "lines apart, and its '0 carry no slug' clause was computed on the wrong base"),
+    726102: ("arm a's D9 candidate (user, show) pairs: 435,642 + 8,834 + 281,626. Also "
+             "747,478 - 21,376 S3-only",
+             "treating the one-pair gap against arm b's 726,103 as the whole S3-only gap -- "
+             "which is how it stayed unrecorded (0089 SS3)"),
+    726103: ("arm b's D9 candidate (user, show) pairs: 435,643 + 8,834 + 281,626. A GENUINE "
+             "ONE-PAIR DIVERGENCE from arm a, reported not reconciled; two classes agree exactly "
+             "and the S1-only class differs by 1",
+             "726,103 as 'arm b's user-show coverage ROWS' -- that was 0086 SS1 / 0087 SS2's "
+             "characterisation and is SUPERSEDED (0089 SS2b)"),
+    71: ("position-5 rows whose OUTCOME STATE changes under the forbidden date(ts) <= date(tau) "
+         "form, APPLY: 52 at tau1 + 19 at tau2. Both arms agree to the row. A COUNTERFACTUAL, at "
+         "W = 108 only (0091 SS1)",
+         "as a figure that moves the published result. IT DOES NOT -- it is what makes the "
+         "half-open mandate OUTCOME_DECIDING rather than vacuous. OCCUPIED_INERT is the "
+         "WITHDRAWN verdict (0089 SS2a, reversed 0091 SS1)"),
+    59: ("the same counterfactual on DERIV: 45 at tau1 + 14 at tau2",
+         "same as 71 -- it is a counterfactual, not a published result"),
+    20: ("APPLY rows with tau2 EXACTLY AT tau_pull. tau2 > tau_pull is 0, but THE BOUND IS "
+         "ATTAINED -- a >= form of invariant 9 would fail (0089 SS1, 0091 SS3)",
+         "reading the 0 as slack. A passing assertion AT THE BOUND and one WITH SLACK are not "
+         "the same evidence"),
+    17: ("the same on DERIV",
+         "reading the 0 as slack -- see 20"),
+}
+# Every row states BOTH halves. A row whose defect column is empty is a blanket exemption,
+# which is the shape second-brain found on 703 and repaired.
+for _v, _r in STEP8_LEGITIMATE.items():
+    assert len(_r) == 2 and _r[0].strip() and _r[1].strip(), \
+        f"STEP8_LEGITIMATE[{_v}] must carry BOTH the legitimate reading and the defective use"
+
 # --------------------------------------------------------------------------- legitimate
 LEGITIMATE = {
     0.3575: "APPLY exclusion share of population, 703 / 196,654. Superseded only as a bound WIDTH",
