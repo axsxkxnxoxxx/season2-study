@@ -147,7 +147,7 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
   inapplicable one; **Continued's floor accepts only an absence record, never a number**; **the three
   ceilings cannot all hold**, and `simultaneous` is `const false`; **every bound must reference
   `$.scope_qualifiers`** so the covering qualifier cannot be stripped; **every CI must reference
-  `$.bootstrap_settings`**, because the spec fixes neither `B` nor the seed nor levels-vs-movements, and
+  `$.bootstrap_settings`**. ***PARTLY SUPERSEDED by `0103`, which FIXED `B` = 10,000, the seed = 20260818 and the resampling unit = account.*** ***LEVELS-VS-MOVEMENTS IS STILL UNFIXED, and this file requires all THREE fixed identically — so Step 9 REMAINS BLOCKED on that third element alone*** (`0104`, found by arm `a` on the Step 8b rerun). **The reference stays**, because
   **an unfixed spec must be VISIBLE in the output rather than silent.**
   **`p_at_bound` carries TWO required objects, not one** — `column_cardinalities` (TRUE / FALSE / null,
   all three, plus `total_rows`) and `coextensivity_gap` (the empty class). ***They are different

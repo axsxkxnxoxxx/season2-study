@@ -34,7 +34,15 @@ LOG_DIR = os.path.join(ROOT, "logs", "step8b")
 
 
 def _first_payload(inst: dict) -> dict:
-    return inst["arms"][0]["headline"]["APPLY"]["by_producing_arm"]["a"]
+    return inst["arms"][0]["headline"]["APPLY"]["by_producing_arm"]["arms"]["a"]
+
+
+def _first_abandonment(inst: dict) -> dict:
+    return inst["arms"][0]["abandonment_distribution"]["APPLY"][0]
+
+
+def _first_ci(inst: dict) -> dict:
+    return _first_payload(inst)["shares"]["never_started"]["ci"]
 
 
 def _desentinel(node, seen=None):
@@ -50,6 +58,21 @@ def _desentinel(node, seen=None):
     return node
 
 
+def _fix_ceilings(payload: dict) -> None:
+    """Make the three-ceiling arithmetic consistent in the de-sentinelled copy."""
+    bounds = payload.get("bounds") or {}
+    cch = payload.get("ceilings_cannot_all_hold")
+    if bounds.get("block_is_absent") or not isinstance(cch, dict) or cch.get("block_is_absent"):
+        return
+    total = 0.0
+    for outcome in ("never_started", "started_and_left", "continued"):
+        ceiling = (bounds.get(outcome) or {}).get("ceiling") or {}
+        if isinstance(ceiling.get("percent"), (int, float)):
+            total += ceiling["percent"]
+    cch["sum_percent"] = total
+    cch["excess_pp"] = total - 100
+
+
 def _make_real(inst: dict) -> dict:
     """A structurally valid file flagged as real data, with consistent arithmetic."""
     real = _desentinel(copy.deepcopy(inst))
@@ -58,8 +81,11 @@ def _make_real(inst: dict) -> dict:
     real["sentinels"] = inst["sentinels"]  # the reserved-value declaration stays literal
     for arm in real["arms"]:
         for pop, block in arm["headline"].items():
-            for key, payload in block["by_producing_arm"].items():
-                for bname, bnode in payload["bounds"].items():
+            for key, payload in block["by_producing_arm"]["arms"].items():
+                bounds = payload.get("bounds") or {}
+                if bounds.get("block_is_absent"):
+                    continue
+                for bname, bnode in bounds.items():
                     if "width_pp" not in bnode:
                         continue
                     bnode["floor"]["percent"] = 10.0
@@ -72,6 +98,9 @@ def _make_real(inst: dict) -> dict:
                         sub["floor"]["percent"] = 10.0
                         sub["ceiling"]["percent"] = 11.0
                         sub["width_pp"] = 1.0
+                _fix_ceilings(payload)
+        if arm["waterfall"].get("block_is_absent"):
+            continue
         for pop, w in arm["waterfall"].items():
             n = 1000
             for p in w["positions"]:
@@ -79,6 +108,26 @@ def _make_real(inst: dict) -> dict:
                 p["n_out"] = n - 10
                 p["removed"] = 10
                 n = p["n_out"]
+    for node in (real.get("variants", []) + real.get("subpopulation_cuts", [])):
+        for pop, block in node["headline"].items():
+            for key, payload in block["by_producing_arm"]["arms"].items():
+                bounds = payload.get("bounds") or {}
+                if bounds.get("block_is_absent"):
+                    continue
+                for bname, bnode in bounds.items():
+                    if "width_pp" not in bnode:
+                        continue
+                    bnode["floor"]["percent"] = 10.0
+                    bnode["ceiling"]["percent"] = 12.0
+                    bnode["width_pp"] = 2.0
+                    bnode["degenerate"] = False
+                    bnode["degenerate_reason"] = None
+                    sub = bnode.get("conditional_sub_interval")
+                    if isinstance(sub, dict) and sub.get("applicable") is True:
+                        sub["floor"]["percent"] = 10.0
+                        sub["ceiling"]["percent"] = 11.0
+                        sub["width_pp"] = 1.0
+                _fix_ceilings(payload)
     return real
 
 
@@ -99,7 +148,7 @@ MUTATIONS = {
     "S8": lambda i: _set(_first_payload(i)["bounds"]["continued"], "floor",
                          {"status": None}),
     "S9": lambda i: _first_payload(i)["ceilings_cannot_all_hold"].pop("excess_pairs"),
-    "S10": lambda i: i["arms"][0]["abandonment_distribution"]["APPLY"]["p_at_bound"][
+    "S10": lambda i: _first_abandonment(i)["p_at_bound"][
         "column_cardinalities"].pop("false_count"),
     "S11": lambda i: _set(_first_payload(i)["bounds"]["never_started"]["floor"],
                           "population", "DERIV"),
@@ -109,12 +158,49 @@ MUTATIONS = {
                           "inert_reason", None),
     "S15": lambda i: _set(i["channel_classes"]["d4"], "folded_into_bound", True),
     "S16": lambda i: i["channel_classes"]["d9"]["quantities"]["half_a"].pop("coverage"),
-    "S17": lambda i: _set(i["cross_arm_divergences"][0], "reconciled", True),
+    "S17": lambda i: _set(i["cross_arm_divergences"]["entries"][0], "reconciled", True),
     "S18": lambda i: _first_payload(i)["shares"]["continued"]["ci"].pop("bootstrap_ref"),
     "S19": lambda i: _set(_first_payload(i)["bounds"]["continued"]["floor"], "reason", "no"),
     "S20": lambda i: _set(_first_payload(i)["bounds"]["never_started"], "degenerate", True),
     "S21": lambda i: i["arms"].__setitem__(
         2, _set(copy.deepcopy(i["arms"][2]), "clock_origin", "s2_finale")),
+    # v1.1.0 -- one mutation per check added against reviewer-engineering's
+    # findings, so that none of them is a check that cannot fail.
+    "S22": lambda i: _set(
+        i["arms"][0], "waterfall",
+        {"block_is_absent": True, "status": "no_producer_in_spec",
+         "reason": "an absence written onto the primary headline arm, where a producer exists",
+         "source": "selftest", "owning_step": "step8"}),
+    "S23": lambda i: _set(_first_ci(i), "B", 5),
+    "S24": lambda i: _set(_first_ci(i), "quantity_class", "window_w_percentile"),
+    "S25": lambda i: _set(_first_abandonment(i), "row_set", "post_liveness"),
+    "S26": lambda i: _first_abandonment(i)["histograms"][0]["bin_edges_p"].pop(),
+    "S27": lambda i: i["block_ownership"].pop("arms"),
+}
+
+# Extra mutations that target a SECOND clause of a check whose first clause is
+# already exercised above. Keyed by the check they must break.
+EXTRA_MUTATIONS = {
+    "S12/machine_checked_flags": ("S12", "placeholder", lambda i: _set(
+        i["derived_fields"][0], "machine_checked", False)),
+    "S13/chaining": ("S13", "real", lambda i: _set(
+        i["arms"][0]["waterfall"]["APPLY"]["positions"][3], "n_in", 4242)),
+    "S17/empty_and_unsearched": ("S17", "placeholder", lambda i: _set(
+        _set(i["cross_arm_divergences"], "entries", []),
+        "search", dict(i["cross_arm_divergences"]["search"], performed=False))),
+    "S18/inline_settings": ("S18", "placeholder", lambda i: _first_ci(i).pop("seed")),
+}
+
+# Cases that must NOT fail. F4 is the reason this section exists: a legitimately
+# empty list, declared as empty with its coverage count, must be distinguishable
+# from a list nobody searched -- and the way to prove the distinction is live is
+# to assert that one of them passes while the other fails.
+REQUIRED_NON_FAILURES = {
+    "S17/empty_but_declared": ("S17", lambda i: _set(
+        _set(i["cross_arm_divergences"], "entries", []),
+        "search", dict(i["cross_arm_divergences"]["search"],
+                       performed=True, coverage_count=17,
+                       empty_reason="every compared figure agreed between the arms"))),
 }
 
 # Which mutations must be applied to the real-data copy rather than the placeholder,
@@ -179,6 +265,41 @@ def main() -> int:
             "has_force": before == "PASS" and after in ("FAIL", "VACUOUS"),
         })
 
+    # Second clauses of checks whose first clause is already exercised.
+    for label, (cid, base_name, mutate) in EXTRA_MUTATIONS.items():
+        base = real if base_name == "real" else placeholder
+        before = _status_of(baseline_real if base_name == "real" else baseline_ph, cid)
+        mutated = copy.deepcopy(base)
+        try:
+            mutate(mutated)
+        except Exception as exc:
+            results.append({"check": label, "applied_to": base_name, "error": str(exc),
+                            "has_force": False})
+            continue
+        after = _status_of(run(mutated), cid)
+        results.append({
+            "check": label,
+            "applied_to": base_name,
+            "status_before": before,
+            "status_after": after,
+            "has_force": after in ("FAIL", "VACUOUS"),
+        })
+
+    # Cases that must NOT fail: an emptiness the file declares, with its coverage
+    # count, is a finding rather than an omission (reviewer-engineering F4).
+    non_failures = []
+    for label, (cid, mutate) in REQUIRED_NON_FAILURES.items():
+        mutated = copy.deepcopy(placeholder)
+        mutate(mutated)
+        after = _status_of(run(mutated), cid)
+        non_failures.append({
+            "case": label,
+            "check": cid,
+            "status_after": after,
+            "must_not_fail": True,
+            "ok": after not in ("FAIL", "VACUOUS"),
+        })
+
     # The two-sided half of S5 and S6: a sentinel or a prefixed string left in a
     # file flagged as real data must fail.
     for cid, label in REAL_SIDE.items():
@@ -200,6 +321,8 @@ def main() -> int:
     without_force = [r["check"] for r in results if not r["has_force"]]
     na_on_real = [c["id"] for c in baseline_real["semantic_checks"] if c["status"] == "N/A"]
 
+    non_failure_failures = [n["case"] for n in non_failures if not n["ok"]]
+
     record = {
         "generated_at_utc": stamp,
         "generator": "src/step8b_selftest.py",
@@ -214,11 +337,13 @@ def main() -> int:
             "statuses": {c["id"]: c["status"] for c in baseline_real["semantic_checks"]},
         },
         "mutations": results,
+        "required_non_failures": non_failures,
+        "required_non_failures_violated": non_failure_failures,
         "checks_shown_to_have_force": len(results) - len(without_force),
         "checks_total_exercised": len(results),
         "checks_without_force": without_force,
         "checks_na_on_the_real_copy": na_on_real,
-        "ok": not without_force,
+        "ok": not without_force and not non_failure_failures,
     }
 
     os.makedirs(LOG_DIR, exist_ok=True)
@@ -233,6 +358,7 @@ def main() -> int:
         "checks_shown_to_have_force": record["checks_shown_to_have_force"],
         "checks_total_exercised": record["checks_total_exercised"],
         "checks_without_force": without_force,
+        "required_non_failures_violated": non_failure_failures,
         "baseline_placeholder_failures": [
             k for k, v in record["baseline_placeholder"]["statuses"].items()
             if v in ("FAIL", "VACUOUS")],

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:season2-study:step8b-output-schema:1.0.0",
+  "$id": "urn:season2-study:step8b-output-schema:1.1.0",
   "title": "Season 2 abandonment study -- Step 16 results schema",
   "description": "The single output schema. Steps 9 through 13 write into it DIRECTLY and Step 16 reads it. There is no conversion layer: a conversion layer is a second definition of every figure. Validate with src/step8b_validate.py, which implements the JSON Schema subset used here plus the cross-field checks the schema language cannot express.",
   "type": "object",
@@ -15,7 +15,10 @@
     "arm_grid_days",
     "populations",
     "scope_qualifiers",
+    "bootstrap_spec",
+    "binding_clusters",
     "bootstrap_settings",
+    "block_ownership",
     "channel_classes",
     "arms",
     "spec_choices_made_by_step_8b",
@@ -23,10 +26,10 @@
   ],
   "properties": {
     "schema_version": {
-      "const": "1.0.0"
+      "const": "1.1.0"
     },
     "schema_id": {
-      "const": "urn:season2-study:step8b-output-schema:1.0.0"
+      "const": "urn:season2-study:step8b-output-schema:1.1.0"
     },
     "placeholder": {
       "type": "boolean",
@@ -256,9 +259,93 @@
         }
       }
     },
+    "bootstrap_spec": {
+      "type": "object",
+      "description": "WHAT THE SPEC FIXES, IN ONE PLACE. Human Lead ruling, 2026-08-18 (decisions/0103 §1): 10,000 resamples, resampled at the ACCOUNT level for the outcome shares, seed 20260818, identical for both arms. The seed's VALUE is arbitrary and its FIXITY is the point -- without a fixed seed a difference between the arms could be sampling noise rather than a divergence, and the dual control rests on that distinction. LEVELS-VS-MOVEMENTS IS NOT FIXED BY THAT RULING and is recorded here as still unfixed, per arm in $.bootstrap_settings, so an unfixed spec stays visible rather than silent.",
+      "additionalProperties": false,
+      "required": [
+        "B",
+        "seed",
+        "resampling_unit_for_outcome_shares",
+        "identical_for_both_arms",
+        "fields_fixed_in_spec",
+        "fields_not_fixed_in_spec",
+        "source"
+      ],
+      "properties": {
+        "B": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "seed": {
+          "type": "integer"
+        },
+        "resampling_unit_for_outcome_shares": {
+          "enum": [
+            "account",
+            "show",
+            "pair"
+          ],
+          "x-enum-id": "resampling_unit"
+        },
+        "identical_for_both_arms": {
+          "const": true
+        },
+        "seed_value_is_arbitrary_its_fixity_is_the_point": {
+          "const": true
+        },
+        "fields_fixed_in_spec": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "fields_not_fixed_in_spec": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "why_account_level": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      }
+    },
+    "binding_clusters": {
+      "type": "object",
+      "description": "THE BINDING CLUSTER PER CLASS OF QUANTITY, because it is NOT the same for every quantity (decisions/0103 §2). The outcome shares cluster by ACCOUNT -- one account contributes many pairs, so pair-level resampling understates the interval. W's interval is SHOW-clustered, and the spec names the show as binding there, so account-level resampling would UNDERSTATE it. Every CI names its quantity class, and check S24 asserts the unit used is the binding cluster for that class or that the disagreement is recorded and NOT reconciled. A class that is not in this registry cannot carry a CI, which is what stops a show-bound quantity inheriting `account` silently.",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "binding_cluster",
+          "source"
+        ],
+        "properties": {
+          "binding_cluster": {
+            "enum": [
+              "account",
+              "show",
+              "pair"
+            ],
+            "x-enum-id": "resampling_unit"
+          },
+          "evidence": {
+            "type": "string",
+            "description": "Cited by source, not restated as figures: a figure copied into a schema is a second place it lives."
+          },
+          "source": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "bootstrap_settings": {
       "type": "object",
-      "description": "A registry of bootstrap settings, keyed by id and referenced from every CI. B, the seed and levels-vs-movements differ between the arms and the spec fixes none of them, so the unfixed spec is visible here.",
+      "description": "A registry of bootstrap settings, keyed by id, referenced from every CI AND restated inline at each one, because the ruling requires the seed, the resample count and the resampling unit AT THE POINT OF USE. B, the seed and the unit are now fixed by the spec (decisions/0103); levels-vs-movements is not, and differs between the arms, so it stays visible here.",
       "additionalProperties": {
         "type": "object",
         "additionalProperties": false,
@@ -268,14 +355,16 @@
           "statistic",
           "resampling_unit",
           "producing_arm",
-          "spec_status"
+          "spec_status",
+          "fields_fixed_in_spec"
         ],
         "properties": {
           "B": {
-            "$ref": "#/$defs/count"
+            "type": "integer",
+            "minimum": 1
           },
           "seed": {
-            "$ref": "#/$defs/integer_setting"
+            "type": "integer"
           },
           "statistic": {
             "enum": [
@@ -285,21 +374,36 @@
             "x-enum-id": "bootstrap_statistic"
           },
           "resampling_unit": {
-            "const": "account"
+            "enum": [
+              "account",
+              "show",
+              "pair"
+            ],
+            "x-enum-id": "resampling_unit",
+            "description": "An enum, not a constant: pinning it to `account` made it impossible for a show-bound quantity to say `show` (decisions/0103 §2)."
           },
           "producing_arm": {
             "enum": [
               "a",
-              "b"
+              "b",
+              "sole"
             ],
             "x-enum-id": "producing_arm"
           },
           "spec_status": {
             "enum": [
               "fixed_in_spec",
-              "unfixed_at_time_of_writing"
+              "unfixed_at_time_of_writing",
+              "partly_fixed_in_spec"
             ],
             "x-enum-id": "spec_status"
+          },
+          "fields_fixed_in_spec": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Which of this entry's fields the spec fixes. `spec_status` alone cannot say that B is fixed while the statistic is not."
           },
           "note": {
             "type": "string",
@@ -309,9 +413,76 @@
         }
       }
     },
+    "block_ownership": {
+      "type": "object",
+      "description": "WHO OWNS EACH TOP-LEVEL BLOCK. Added at v1.1.0 against reviewer-engineering's F9: six required top-level blocks named no owner, so Step 9 inherited them by being the first step to write the file -- INCLUDING ONE IT IS EXPLICITLY FORBIDDEN TO COMPUTE. Step 8 holds the episode-level evidence for D4 and Step 9 is ruled to CONSUME it, not rebuild it (decisions/0070 rulings 1 and 7), and $.limitations belongs to the Human Lead at Step 14, which no agent may draft. Ownership is now stated per block, with the mode: copied from another step's output, written by its owner, structural from Step 8b, or Human Lead only. Check S27 asserts every top-level block present in the file has an entry here.",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "owner_step",
+          "owner_role",
+          "write_mode",
+          "may_first_writer_fill"
+        ],
+        "properties": {
+          "owner_step": {
+            "enum": [
+              "step8",
+              "step8b",
+              "step9",
+              "step10",
+              "step11",
+              "step12",
+              "step13",
+              "step16",
+              "human_lead"
+            ],
+            "x-enum-id": "writer_step"
+          },
+          "owner_role": {
+            "type": "string"
+          },
+          "write_mode": {
+            "enum": [
+              "structural_from_step_8b",
+              "copied_from_step_8_output",
+              "written_by_owner_step",
+              "human_lead_only"
+            ],
+            "x-enum-id": "write_mode"
+          },
+          "may_first_writer_fill": {
+            "type": "boolean",
+            "description": "False means a step that is not the owner may not ORIGINATE this block's contents. Being the first step to write the file is not a claim to a block. Where `write_mode` is copied_from_step_8_output the writer still transcribes the owner's figures -- that is copying, not originating, and it is exactly what Step 9 is ruled to do with D4."
+          },
+          "forbidden_to_compute_here": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "step8",
+                "step8b",
+                "step9",
+                "step10",
+                "step11",
+                "step12",
+                "step13",
+                "step16",
+                "human_lead"
+              ],
+              "x-enum-id": "writer_step"
+            },
+            "description": "Steps that must not COMPUTE this block's contents, even though they may publish them."
+          },
+          "source": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "channel_classes": {
       "type": "object",
-      "description": "D4 and D9 publish ALONGSIDE the bounds and are never folded into them, so they have their own slots (decisions/0062).",
+      "description": "D4 and D9 publish ALONGSIDE the bounds and are never folded into them, so they have their own slots (decisions/0062). BOTH ARE STEP 8's FIGURES: Step 8 holds the episode-level evidence and Step 9 is forbidden to recompute either, so the counts here are COPIED, and the schema says so at the point of use (F9).",
       "additionalProperties": false,
       "required": [
         "d4",
@@ -325,7 +496,9 @@
             "definition",
             "published_alongside",
             "folded_into_bound",
-            "counts"
+            "counts",
+            "computed_by",
+            "copied_not_computed"
           ],
           "properties": {
             "definition": {
@@ -336,6 +509,13 @@
             },
             "folded_into_bound": {
               "const": false
+            },
+            "computed_by": {
+              "const": "step8",
+              "description": "Step 8 emits the D4 count; Step 9 must not compute it (decisions/0070 ruling 7)."
+            },
+            "copied_not_computed": {
+              "const": true
             },
             "counts": {
               "type": "object",
@@ -366,7 +546,9 @@
             "folded_into_bound",
             "keys",
             "universe",
-            "quantities"
+            "quantities",
+            "computed_by",
+            "copied_not_computed"
           ],
           "properties": {
             "published_alongside": {
@@ -374,6 +556,13 @@
             },
             "folded_into_bound": {
               "const": false
+            },
+            "computed_by": {
+              "const": "step8",
+              "description": "D9's search runs on the pulled sweep, which Step 8 holds and Step 9 does not."
+            },
+            "copied_not_computed": {
+              "const": true
             },
             "keys": {
               "type": "object",
@@ -421,7 +610,12 @@
             },
             "quantities": {
               "type": "object",
-              "description": "Each quantity that has both key forms publishes AS A BOUND: strict is the floor because it cannot over-count, loose is the ceiling because it merges genuinely different shows, and NEITHER endpoint may be quoted as the result. Coverage publishes beside a zero floor, or the bound is indistinguishable from a check that looked nowhere.",
+              "description": "Each quantity that has both key forms publishes AS A BOUND: strict is the floor because it cannot over-count, loose is the ceiling because it merges genuinely different shows, and NEITHER endpoint may be quoted as the result. Coverage publishes beside a zero floor, or the bound is indistinguishable from a check that looked nowhere. THE THREE NAMED QUANTITIES ARE REQUIRED -- the record fixes exactly these three as having both key forms (decisions/0078, 0090), and requiring them by name is what stops check S16 examining an empty map and reporting an emptiness it cannot distinguish from a clean pass (F4).",
+              "required": [
+                "complementary_pairs",
+                "half_a",
+                "half_b"
+              ],
               "additionalProperties": {
                 "type": "object",
                 "additionalProperties": false,
@@ -554,7 +748,8 @@
         "required": [
           "field",
           "expression",
-          "moves_with"
+          "moves_with",
+          "machine_checked"
         ],
         "properties": {
           "field": {
@@ -569,6 +764,13 @@
               "type": "string"
             }
           },
+          "machine_checked": {
+            "type": "boolean",
+            "description": "Whether check S12 EVALUATES this identity or merely records the declaration. Added at v1.1.0 against reviewer-engineering's F8: S12's title claimed it recomputed the declared derived fields while the code evaluated one identity. S12 now evaluates every identity whose operands the schema fixes, and asserts this flag against the set it actually evaluated -- so the claim and the code are checked against each other rather than the title being trusted."
+          },
+          "checked_by": {
+            "type": "string"
+          },
           "source": {
             "type": "string"
           }
@@ -576,54 +778,67 @@
       }
     },
     "cross_arm_divergences": {
-      "type": "array",
-      "description": "Figures where the two arms legitimately differ. Both values are held; `reconciled` is const false, so the schema cannot record a reconciliation the spec forbids.",
-      "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "figure",
-          "arm_a",
-          "arm_b",
-          "reconciled",
-          "reason"
-        ],
-        "properties": {
-          "figure": {
-            "type": "string",
-            "description": "The figure the arms differ on.  [writer text: carries the placeholder prefix in a placeholder]",
-            "x-writer-text": true
-          },
-          "arm_a": {
-            "type": [
-              "string",
-              "number",
-              "null"
+      "type": "object",
+      "description": "Figures where the two arms legitimately differ, WITH THE SEARCH THAT LOOKED FOR THEM. Restructured at v1.1.0 against reviewer-engineering's F4: it was a bare array, and the validator failed an empty one as VACUOUS, which collapses 'the arms agreed everywhere' into 'nobody looked'. CLAUDE.md requires a control to DISTINGUISH those and to print its coverage, so the emptiness is now declared and counted rather than inferred from an empty list. `reconciled` stays const false: the schema cannot record a reconciliation the spec forbids.",
+      "additionalProperties": false,
+      "required": [
+        "entries",
+        "search"
+      ],
+      "properties": {
+        "search": {
+          "$ref": "#/$defs/search_record"
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "figure",
+              "arm_a",
+              "arm_b",
+              "reconciled",
+              "reason"
             ],
-            "x-writer-text": true,
-            "description": "Arm a's value or convention."
-          },
-          "arm_b": {
-            "type": [
-              "string",
-              "number",
-              "null"
-            ],
-            "x-writer-text": true,
-            "description": "Arm b's value or convention."
-          },
-          "reconciled": {
-            "const": false
-          },
-          "reason": {
-            "type": "string",
-            "description": "Why the difference is legitimate.  [writer text: carries the placeholder prefix in a placeholder]",
-            "x-writer-text": true
-          },
-          "source": {
-            "type": "string",
-            "description": "Where it is recorded.  [writer text: carries the placeholder prefix in a placeholder]",
-            "x-writer-text": true
+            "properties": {
+              "figure": {
+                "type": "string",
+                "description": "The figure the arms differ on.  [writer text: carries the placeholder prefix in a placeholder]",
+                "x-writer-text": true
+              },
+              "arm_a": {
+                "type": [
+                  "string",
+                  "number",
+                  "null"
+                ],
+                "x-writer-text": true,
+                "description": "Arm a's value or convention."
+              },
+              "arm_b": {
+                "type": [
+                  "string",
+                  "number",
+                  "null"
+                ],
+                "x-writer-text": true,
+                "description": "Arm b's value or convention."
+              },
+              "reconciled": {
+                "const": false
+              },
+              "reason": {
+                "type": "string",
+                "description": "Why the difference is legitimate.  [writer text: carries the placeholder prefix in a placeholder]",
+                "x-writer-text": true
+              },
+              "source": {
+                "type": "string",
+                "description": "Where it is recorded.  [writer text: carries the placeholder prefix in a placeholder]",
+                "x-writer-text": true
+              }
+            }
           }
         }
       }
@@ -682,7 +897,7 @@
     },
     "limitations": {
       "type": "array",
-      "description": "Limitations that travel with the result, each with its source.",
+      "description": "Limitations that travel with the result, each with its source. THIS BLOCK BELONGS TO THE HUMAN LEAD AT STEP 14 -- see $.block_ownership, where its write_mode is human_lead_only and no step may fill it. It is listed here because F9 found six required top-level blocks with no owner, and a step writing this file first would otherwise inherit a block no agent may draft.",
       "items": {
         "type": "object",
         "additionalProperties": false,
@@ -801,14 +1016,14 @@
   },
   "x-generated-by": {
     "generator": "src/step8b_schema.py",
-    "generator_sha256_12": "d5dc55c7125e",
-    "generated_at_utc": "2026-08-18T18:37:19Z",
+    "generator_sha256_12": "a7a0e0ccac78",
+    "generated_at_utc": "2026-08-18T19:25:30Z",
     "build_tag": "step8b/a/2026-08-18",
-    "git_head_short": "48efb4c",
+    "git_head_short": "6420f5f",
     "host_step": "Step 8b, output schema",
     "written_by": "Analytics Engineer, instance a",
     "validator": "src/step8b_validate.py",
-    "validator_sha256_12": "611da25fe06b",
+    "validator_sha256_12": "e054793359a0",
     "selftest": "src/step8b_selftest.py",
     "note": "This schema is generated. Correct it in the generator and rewrite both artifacts together; do not hand-edit either file."
   },
@@ -891,7 +1106,12 @@
             "structurally_absent",
             "not_published",
             "not_yet_written",
-            "unruled"
+            "unruled",
+            "no_producer_in_spec",
+            "superseded_for_this_purpose",
+            "not_a_dual_step",
+            "awaiting_owner_step",
+            "not_required_by_spec"
           ],
           "x-enum-id": "absence_status"
         },
@@ -904,6 +1124,115 @@
         },
         "decided_by": {
           "type": "string"
+        }
+      }
+    },
+    "block_absence": {
+      "type": "object",
+      "description": "An explicit record that a whole BLOCK is not here, naming the step that would have produced it. Added at v1.1.0 against reviewer-engineering's F1: three of the four per-arm blocks have no producer at a non-primary arm -- nothing in the spec produces a filter waterfall or an abandonment distribution for the premiere-anchored 91-day arm -- so requiring them unconditionally required more than the spec asks. The slot stays present and says who would have filled it, so 'no producer' and 'not run yet' and 'superseded for this use' never look alike.",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "reason",
+        "source",
+        "owning_step",
+        "block_is_absent"
+      ],
+      "properties": {
+        "block_is_absent": {
+          "const": true
+        },
+        "status": {
+          "enum": [
+            "no_producer_in_spec",
+            "not_yet_written",
+            "superseded_for_this_purpose",
+            "structurally_absent",
+            "not_required_by_spec",
+            "awaiting_owner_step",
+            "not_a_dual_step"
+          ],
+          "x-enum-id": "absence_status"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 20
+        },
+        "source": {
+          "type": "string"
+        },
+        "owning_step": {
+          "oneOf": [
+            {
+              "enum": [
+                "step8",
+                "step8b",
+                "step9",
+                "step10",
+                "step11",
+                "step12",
+                "step13",
+                "step16",
+                "human_lead"
+              ],
+              "x-enum-id": "writer_step"
+            },
+            {
+              "const": "none"
+            }
+          ],
+          "description": "The step that would write this block, or 'none' where the spec names no producer for it here. 'none' is a finding about the spec, not a default."
+        },
+        "decided_by": {
+          "type": "string"
+        }
+      }
+    },
+    "search_record": {
+      "type": "object",
+      "description": "What a list-shaped block searched, so that an EMPTY list and an UNSEARCHED list are distinguishable. Added at v1.1.0 against reviewer-engineering's F4: the validator treated a legitimately empty optional array as VACUOUS and failed it, which collapses 'no unreconciled divergence was found' into 'looked nowhere'. CLAUDE.md requires the control to DISTINGUISH those, so the file carries the coverage count and the checker reads it.",
+      "additionalProperties": false,
+      "required": [
+        "performed",
+        "coverage_count",
+        "what_was_searched",
+        "owner_step"
+      ],
+      "properties": {
+        "performed": {
+          "type": "boolean",
+          "description": "False means nobody has looked yet; the list being empty says nothing."
+        },
+        "coverage_count": {
+          "$ref": "#/$defs/count",
+          "description": "How many candidates were examined. A zero here with performed true is itself a finding: the search looked at nothing."
+        },
+        "what_was_searched": {
+          "type": "string",
+          "description": "What was examined, in the writer's words.  [writer text: carries the placeholder prefix in a placeholder]",
+          "x-writer-text": true
+        },
+        "owner_step": {
+          "enum": [
+            "step8",
+            "step8b",
+            "step9",
+            "step10",
+            "step11",
+            "step12",
+            "step13",
+            "step16",
+            "human_lead"
+          ],
+          "x-enum-id": "writer_step"
+        },
+        "empty_reason": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Why the list is empty, required by check S17 when it is.",
+          "x-writer-text": true
         }
       }
     },
@@ -955,14 +1284,18 @@
     },
     "ci": {
       "type": "object",
-      "description": "A confidence interval, with the bootstrap settings that produced it named by reference. The spec fixes none of B, the seed or levels-vs-movements, so the unfixed spec is visible in the output rather than silent (task-sheet.md Step 8b).",
+      "description": "A confidence interval. THE BOOTSTRAP IS FIXED -- 10,000 resamples, account level for the outcome shares, seed 20260818 (decisions/0103) -- and EVERY INTERVAL RECORDS ITS SEED, RESAMPLE COUNT AND RESAMPLING UNIT AT THE POINT OF USE. They are written here as well as referenced, because the ruling says at the point of use and a reference is not that; check S23 asserts the inline values equal the referenced registry entry, so the redundancy is checked rather than trusted. Levels-vs-movements is NOT fixed by that ruling and stays visible per arm.",
       "additionalProperties": false,
       "required": [
         "level_pct",
         "lower",
         "upper",
         "method",
-        "bootstrap_ref"
+        "bootstrap_ref",
+        "B",
+        "seed",
+        "resampling_unit",
+        "quantity_class"
       ],
       "properties": {
         "level_pct": {
@@ -981,12 +1314,90 @@
           "type": "string",
           "description": "A key of $.bootstrap_settings. Referential integrity is check S3."
         },
+        "B": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "The resample count, at the point of use (decisions/0103)."
+        },
+        "seed": {
+          "type": "integer",
+          "description": "The seed, at the point of use. Its VALUE is arbitrary and its FIXITY is the point: it is what makes the two arms comparable."
+        },
+        "resampling_unit": {
+          "enum": [
+            "account",
+            "show",
+            "pair"
+          ],
+          "x-enum-id": "resampling_unit",
+          "description": "THE BINDING CLUSTER IS NOT THE SAME FOR EVERY QUANTITY (decisions/0103 §2). Account level is right for the outcome shares and would UNDERSTATE a show-bound quantity such as W, whose interval is show-clustered. This is an enum, not a constant, so a show-bound quantity says `show` rather than inheriting `account` silently -- which was the whole mechanism the caution relied on, and the previous schema pinned it to `account` by const."
+        },
+        "quantity_class": {
+          "enum": [
+            "outcome_shares",
+            "window_w_percentile",
+            "other_declared"
+          ],
+          "x-enum-id": "quantity_class",
+          "description": "A key of $.binding_clusters. Check S24 asserts the unit used matches the binding cluster the record states for this class, or that the disagreement is recorded and not reconciled."
+        },
+        "unit_disagreement": {
+          "type": "object",
+          "description": "Present only where the unit used differs from the binding cluster for this quantity class. Report a material disagreement; do not reconcile it.",
+          "additionalProperties": false,
+          "required": [
+            "binding_cluster",
+            "unit_used",
+            "material",
+            "reported_not_reconciled"
+          ],
+          "properties": {
+            "binding_cluster": {
+              "enum": [
+                "account",
+                "show",
+                "pair"
+              ],
+              "x-enum-id": "resampling_unit"
+            },
+            "unit_used": {
+              "enum": [
+                "account",
+                "show",
+                "pair"
+              ],
+              "x-enum-id": "resampling_unit"
+            },
+            "material": {
+              "type": "boolean"
+            },
+            "reported_not_reconciled": {
+              "const": true
+            },
+            "note": {
+              "type": "string",
+              "description": "What the disagreement is and how large.  [writer text: carries the placeholder prefix in a placeholder]",
+              "x-writer-text": true
+            }
+          }
+        },
         "note": {
           "type": "string",
           "description": "A note from the writer.  [writer text: carries the placeholder prefix in a placeholder]",
           "x-writer-text": true
         }
       }
+    },
+    "ci_or_absence": {
+      "description": "A confidence interval, or an explicit record that there is none. Added at v1.1.0 against reviewer-engineering's F3: the bootstrap ruling closes the 'no settings exist yet' case, but a CI is still legitimately absent where the spec does not ask the writing step for one -- Step 12 lists every candidate cut and mandates intervals nowhere, and Step 13's per-arm sensitivity series is a series of shares, not of intervals. Requiring a CI everywhere would require more than the spec asks; omitting the slot would make 'not asked for' look like 'forgotten'.",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/ci"
+        },
+        {
+          "$ref": "#/$defs/absence"
+        }
+      ]
     },
     "share": {
       "type": "object",
@@ -1026,7 +1437,7 @@
           "type": "string"
         },
         "ci": {
-          "$ref": "#/$defs/ci"
+          "$ref": "#/$defs/ci_or_absence"
         },
         "is_an_observed_count_not_a_bound": {
           "const": true
@@ -1548,6 +1959,7 @@
       "additionalProperties": false,
       "required": [
         "producing_arm",
+        "written_by_step",
         "shares",
         "bounds",
         "ceilings_cannot_all_hold",
@@ -1557,9 +1969,26 @@
         "producing_arm": {
           "enum": [
             "a",
-            "b"
+            "b",
+            "sole"
           ],
-          "x-enum-id": "producing_arm"
+          "x-enum-id": "producing_arm",
+          "description": "`sole` is the single-arm case. Added at v1.1.0 against reviewer-engineering's F5: Steps 10, 11 and 12 are single-arm and were being forced to name an `a` and a `b`. Step 9 and Step 13 are dual (decisions/0103 §3) and use `a` and `b`."
+        },
+        "written_by_step": {
+          "enum": [
+            "step8",
+            "step8b",
+            "step9",
+            "step10",
+            "step11",
+            "step12",
+            "step13",
+            "step16",
+            "human_lead"
+          ],
+          "x-enum-id": "writer_step",
+          "description": "Which step wrote this payload. Ownership is stated, never inherited by whoever writes first (F9)."
         },
         "written_by": {
           "type": "string"
@@ -1585,42 +2014,66 @@
           }
         },
         "bounds": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "never_started",
-            "started_and_left",
-            "continued"
-          ],
-          "properties": {
-            "never_started": {
-              "$ref": "#/$defs/bound_no_subinterval"
+          "description": "The three bounds, or a block absence. Absence is permitted because the spec asks for the bounds at the headline arms and does not ask Step 13 for a bound at each of its eight W arms; requiring them everywhere requires more than the spec asks (F1). Check S22 forbids an absence here on the primary headline arm.",
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "never_started",
+                "started_and_left",
+                "continued"
+              ],
+              "properties": {
+                "never_started": {
+                  "$ref": "#/$defs/bound_no_subinterval"
+                },
+                "started_and_left": {
+                  "$ref": "#/$defs/bound_with_subinterval"
+                },
+                "continued": {
+                  "$ref": "#/$defs/continued_bound"
+                }
+              }
             },
-            "started_and_left": {
-              "$ref": "#/$defs/bound_with_subinterval"
-            },
-            "continued": {
-              "$ref": "#/$defs/continued_bound"
+            {
+              "$ref": "#/$defs/block_absence"
             }
-          }
+          ]
         },
         "ceilings_cannot_all_hold": {
-          "$ref": "#/$defs/ceilings_block"
+          "oneOf": [
+            {
+              "$ref": "#/$defs/ceilings_block"
+            },
+            {
+              "$ref": "#/$defs/block_absence"
+            }
+          ],
+          "description": "Absent only where `bounds` is absent: with no ceilings there is no three-ceiling sum. Check S22 ties the two together."
         },
         "bound_over_sampling_width_ratios": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "never_started": {
-              "$ref": "#/$defs/ratio_block"
+          "description": "The bound-over-sampling-width ratios, or an absence. The ratios exist to hold TWO conventions the spec forbids reconciling, so a single-arm step has no second convention to hold against and writes an absence with the not_a_dual_step status -- which is the status reviewer-engineering's F5 found missing: `structurally_absent` already means something else here.",
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "never_started": {
+                  "$ref": "#/$defs/ratio_block"
+                },
+                "started_and_left": {
+                  "$ref": "#/$defs/ratio_block"
+                },
+                "started_and_left_sub_interval": {
+                  "$ref": "#/$defs/ratio_block"
+                }
+              }
             },
-            "started_and_left": {
-              "$ref": "#/$defs/ratio_block"
-            },
-            "started_and_left_sub_interval": {
-              "$ref": "#/$defs/ratio_block"
+            {
+              "$ref": "#/$defs/absence"
             }
-          }
+          ]
         },
         "spec_choices_this_arm_made": {
           "type": "array",
@@ -1635,32 +2088,123 @@
     },
     "by_producing_arm": {
       "type": "object",
-      "description": "Both arms of the dual step, side by side. Both keys are required: an arm that has not run writes an explicit absence record, so 'not yet run' and 'agrees with the other arm' cannot look alike.",
+      "description": "The producing arms of this block. RESTRUCTURED at v1.1.0 against reviewer-engineering's F5. Previously both `a` and `b` were required everywhere, which pushed dual structure into single-arm steps and left them writing an absence record whose available statuses all said something false: `structurally_absent` already means 'this quantity does not exist here', and nothing meant 'this step is not dual'. Now `dual_status` says which kind of step wrote the block, and the payloads sit under `arms`: `a` and `b` when dual, a single `sole` when not. DUAL STEPS ARE 9 AND 13 (decisions/0103 §3); Steps 10, 11 and 12 are single-arm.",
       "additionalProperties": false,
       "required": [
-        "a",
-        "b"
+        "dual_status",
+        "producing_step",
+        "arms"
       ],
       "properties": {
-        "a": {
-          "oneOf": [
-            {
-              "$ref": "#/$defs/step9_payload"
-            },
-            {
-              "$ref": "#/$defs/absence"
-            }
-          ]
+        "dual_status": {
+          "enum": [
+            "dual",
+            "single_arm"
+          ],
+          "x-enum-id": "dual_status",
+          "description": "Whether the step that wrote this block runs twice in isolation."
         },
-        "b": {
-          "oneOf": [
-            {
-              "$ref": "#/$defs/step9_payload"
+        "producing_step": {
+          "enum": [
+            "step8",
+            "step8b",
+            "step9",
+            "step10",
+            "step11",
+            "step12",
+            "step13",
+            "step16",
+            "human_lead"
+          ],
+          "x-enum-id": "writer_step"
+        },
+        "dual_status_source": {
+          "type": "string",
+          "description": "Where the duality is ruled. Step 13's is decisions/0103 §3, which resolved a live CLAUDE.md / task-sheet.md conflict."
+        },
+        "arms": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "a": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/step9_payload"
+                },
+                {
+                  "$ref": "#/$defs/absence"
+                }
+              ]
             },
-            {
-              "$ref": "#/$defs/absence"
+            "b": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/step9_payload"
+                },
+                {
+                  "$ref": "#/$defs/absence"
+                }
+              ]
+            },
+            "sole": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/step9_payload"
+                },
+                {
+                  "$ref": "#/$defs/absence"
+                }
+              ]
             }
-          ]
+          }
+        }
+      },
+      "if": {
+        "properties": {
+          "dual_status": {
+            "const": "dual"
+          }
+        },
+        "required": [
+          "dual_status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "arms": {
+            "required": [
+              "a",
+              "b"
+            ],
+            "not": {
+              "required": [
+                "sole"
+              ]
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "arms": {
+            "required": [
+              "sole"
+            ],
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "a"
+                  ]
+                },
+                {
+                  "required": [
+                    "b"
+                  ]
+                }
+              ]
+            }
+          }
         }
       }
     },
@@ -1825,6 +2369,7 @@
       "additionalProperties": false,
       "required": [
         "population",
+        "written_by_step",
         "order_ref",
         "positions",
         "monotone_check"
@@ -1836,6 +2381,20 @@
             "DERIV"
           ],
           "x-enum-id": "population"
+        },
+        "written_by_step": {
+          "enum": [
+            "step8",
+            "step8b",
+            "step9",
+            "step10",
+            "step11",
+            "step12",
+            "step13",
+            "step16",
+            "human_lead"
+          ],
+          "x-enum-id": "writer_step"
         },
         "order_ref": {
           "type": "string"
@@ -1866,34 +2425,6 @@
             },
             "positions_checked": {
               "$ref": "#/$defs/count"
-            }
-          }
-        },
-        "retained_by_air_period": {
-          "type": "array",
-          "description": "Retained pairs per air period after right-censoring. The aggregate hides a cohort-asymmetric loss, so the per-period breakdown is required (decisions/0033).",
-          "items": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-              "air_period",
-              "retained_pairs"
-            ],
-            "properties": {
-              "air_period": {
-                "type": "string",
-                "description": "The air period this row covers.  [writer text: carries the placeholder prefix in a placeholder]",
-                "x-writer-text": true
-              },
-              "retained_pairs": {
-                "$ref": "#/$defs/count"
-              },
-              "entering_pairs": {
-                "$ref": "#/$defs/count"
-              },
-              "retained_share_percent": {
-                "$ref": "#/$defs/percent"
-              }
             }
           }
         }
@@ -2020,10 +2551,14 @@
       "additionalProperties": false,
       "required": [
         "population",
+        "row_set",
+        "row_set_label",
+        "n_rows_in_row_set",
+        "written_by_step",
         "n_started_and_left",
         "p_definition",
         "bin_unit",
-        "histogram",
+        "histograms",
         "named_categories",
         "p_at_bound",
         "comparability_caveat"
@@ -2035,6 +2570,37 @@
             "DERIV"
           ],
           "x-enum-id": "population"
+        },
+        "row_set": {
+          "enum": [
+            "position_5",
+            "post_liveness",
+            "other"
+          ],
+          "x-enum-id": "row_set",
+          "description": "WHICH ROW SET THIS BLOCK IS MEASURED ON. Added at v1.1.0 against reviewer-engineering's F2: `endpoint` and `share` both require a row-set label and this block carried none, while Step 8 measured p_at_bound, n_started_and_left, the histogram and the p = 1.0 residual on FOUR row sets -- APPLY and DERIV, each at position 5 and post-liveness -- with different values on each. A population name alone does not identify which of the two a figure came from."
+        },
+        "row_set_label": {
+          "type": "string",
+          "description": "The row set in words, e.g. 'position 5' or 'post-liveness (position 7)'."
+        },
+        "n_rows_in_row_set": {
+          "$ref": "#/$defs/count",
+          "description": "The size of the row set this block is measured on, so a consumer can tell which of the four cells it is reading."
+        },
+        "written_by_step": {
+          "enum": [
+            "step8",
+            "step8b",
+            "step9",
+            "step10",
+            "step11",
+            "step12",
+            "step13",
+            "step16",
+            "human_lead"
+          ],
+          "x-enum-id": "writer_step"
         },
         "n_started_and_left": {
           "$ref": "#/$defs/count"
@@ -2053,32 +2619,73 @@
           "const": "fraction_of_season",
           "description": "p is a fraction of a season, not a count of episodes. A histogram pooled across shows with very different L2 does not have comparable bins."
         },
-        "histogram": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "bin_edges_p",
-            "counts"
-          ],
-          "properties": {
-            "bin_edges_p": {
-              "type": "array",
-              "description": "Ascending edges on [0, 1]; len(counts) + 1 of them. Bin definitions are structure, not measurements.",
-              "items": {
-                "type": "number"
-              }
-            },
-            "counts": {
-              "type": "array",
-              "items": {
+        "histograms": {
+          "type": "array",
+          "minItems": 1,
+          "description": "ONE ENTRY PER STRATUM. Added at v1.1.0 against reviewer-engineering's F7: there was one histogram slot per population per arm carrying an `l2_stratum` label, so stratification was anticipated and could not be expressed -- a second stratum had nowhere to go and the label could only ever describe the single pooled histogram. Step 10 is told not to read a p histogram across shows with very different L2 as if the bins were comparable, which is an instruction to stratify. The unstratified case is one entry with stratum kind `all`.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "stratum",
+              "bin_edges_p",
+              "counts"
+            ],
+            "properties": {
+              "stratum": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "kind",
+                  "label"
+                ],
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "all",
+                      "l2_stratum",
+                      "other"
+                    ],
+                    "x-enum-id": "stratum_kind"
+                  },
+                  "label": {
+                    "type": "string"
+                  },
+                  "l2_min": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ]
+                  },
+                  "l2_max": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ]
+                  },
+                  "definition": {
+                    "type": "string",
+                    "description": "How this stratum is defined.  [writer text: carries the placeholder prefix in a placeholder]",
+                    "x-writer-text": true
+                  }
+                }
+              },
+              "bin_edges_p": {
+                "type": "array",
+                "description": "Ascending edges on [0, 1]; len(counts) + 1 of them. Bin definitions are structure, not measurements. Check S26 asserts the two lengths agree.",
+                "items": {
+                  "type": "number"
+                }
+              },
+              "counts": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/count"
+                }
+              },
+              "n_rows": {
                 "$ref": "#/$defs/count"
               }
-            },
-            "l2_stratum": {
-              "type": [
-                "string",
-                "null"
-              ]
             }
           }
         },
@@ -2257,6 +2864,142 @@
         },
         "pair_level_not_account_level": {
           "type": "boolean"
+        },
+        "written_by_step": {
+          "enum": [
+            "step8",
+            "step8b",
+            "step9",
+            "step10",
+            "step11",
+            "step12",
+            "step13",
+            "step16",
+            "human_lead"
+          ],
+          "x-enum-id": "writer_step"
+        }
+      }
+    },
+    "d3_prime_block": {
+      "type": "object",
+      "description": "D3'S CLEARED COUNT AND SHARE FOR ONE POPULATION OF ONE ARM. Added at v1.1.0 against reviewer-engineering's F6: Step 13 is required to run D3' at EVERY arm and report each arm's own cleared count and share, and the schema had nowhere to put them -- their only home was the free-string `note`, which turns a mandated per-arm figure into prose a consumer cannot read. D3's clearance contains W, so the cleared subpopulation changes with the arm and a single figure carried from the adopted arm would misdescribe every other one. The share is measured on Step 8's right-censored population at THIS arm, which is why the population label is required beside it.",
+      "additionalProperties": false,
+      "required": [
+        "population",
+        "cleared_count",
+        "cleared_share_percent",
+        "population_label",
+        "written_by_step"
+      ],
+      "properties": {
+        "population": {
+          "enum": [
+            "APPLY",
+            "DERIV"
+          ],
+          "x-enum-id": "population"
+        },
+        "cleared_count": {
+          "$ref": "#/$defs/count"
+        },
+        "cleared_share_percent": {
+          "$ref": "#/$defs/percent"
+        },
+        "denominator_pairs": {
+          "$ref": "#/$defs/count"
+        },
+        "population_label": {
+          "type": "string",
+          "description": "The right-censored population at this arm, named at the point of use. The series is not comparable across arms without it."
+        },
+        "H_days_held_constant": {
+          "type": "integer",
+          "description": "H is held constant across every arm that varies W, or D3' and D8 are not comparable between arms."
+        },
+        "written_by_step": {
+          "enum": [
+            "step8",
+            "step8b",
+            "step9",
+            "step10",
+            "step11",
+            "step12",
+            "step13",
+            "step16",
+            "human_lead"
+          ],
+          "x-enum-id": "writer_step"
+        },
+        "note": {
+          "type": "string",
+          "description": "A note from the writer.  [writer text: carries the placeholder prefix in a placeholder]",
+          "x-writer-text": true
+        }
+      }
+    },
+    "air_period_block": {
+      "type": "object",
+      "description": "Retained pairs per air period after right-censoring, for one population of one arm. The aggregate hides a cohort-asymmetric loss, so the per-period breakdown is required at EVERY arm (decisions/0033). MOVED to the arm at v1.1.0: it used to sit inside the waterfall block, and once a waterfall may legitimately be absent -- reviewer-engineering's F1 -- a mandate required at every arm would have had nowhere to go at the arms where it is absent. It is the same figure in one place, not a second copy.",
+      "additionalProperties": false,
+      "required": [
+        "population",
+        "rows",
+        "written_by_step"
+      ],
+      "properties": {
+        "population": {
+          "enum": [
+            "APPLY",
+            "DERIV"
+          ],
+          "x-enum-id": "population"
+        },
+        "written_by_step": {
+          "enum": [
+            "step8",
+            "step8b",
+            "step9",
+            "step10",
+            "step11",
+            "step12",
+            "step13",
+            "step16",
+            "human_lead"
+          ],
+          "x-enum-id": "writer_step"
+        },
+        "measured_after": {
+          "type": "string",
+          "description": "Which filter position the retention is measured after. The mandated order censors the position-4 output, and a count measured after a different position is a different figure."
+        },
+        "rows": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "air_period",
+              "retained_pairs"
+            ],
+            "properties": {
+              "air_period": {
+                "type": "string",
+                "description": "The air period this row covers.  [writer text: carries the placeholder prefix in a placeholder]",
+                "x-writer-text": true
+              },
+              "retained_pairs": {
+                "$ref": "#/$defs/count"
+              },
+              "entering_pairs": {
+                "$ref": "#/$defs/count"
+              },
+              "retained_share_percent": {
+                "$ref": "#/$defs/percent"
+              }
+            }
+          }
         }
       }
     },
@@ -2289,7 +3032,9 @@
         "headline",
         "waterfall",
         "abandonment_distribution",
-        "liveness_exclusions"
+        "liveness_exclusions",
+        "d3_prime",
+        "retained_by_air_period"
       ],
       "properties": {
         "arm_id": {
@@ -2328,52 +3073,190 @@
           "$ref": "#/$defs/headline"
         },
         "waterfall": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "APPLY",
-            "DERIV"
-          ],
-          "properties": {
-            "APPLY": {
-              "$ref": "#/$defs/waterfall_block"
+          "description": "The filter waterfall, per population. Step 8 produces it; nothing in the spec produces one for a premiere-anchored arm, so the block may be an explicit absence naming that (F1). Check S22 forbids an absence on the primary headline arm.",
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "APPLY",
+                "DERIV"
+              ],
+              "properties": {
+                "APPLY": {
+                  "$ref": "#/$defs/waterfall_block"
+                },
+                "DERIV": {
+                  "$ref": "#/$defs/waterfall_block"
+                }
+              }
             },
-            "DERIV": {
-              "$ref": "#/$defs/waterfall_block"
+            {
+              "$ref": "#/$defs/block_absence"
             }
-          }
+          ]
         },
         "abandonment_distribution": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "APPLY",
-            "DERIV"
-          ],
-          "properties": {
-            "APPLY": {
-              "$ref": "#/$defs/abandonment_block"
+          "description": "The abandonment distribution, per population, one entry per row set. Step 10 produces it at the headline arm; no step produces it at every W arm.",
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "APPLY",
+                "DERIV"
+              ],
+              "properties": {
+                "APPLY": {
+                  "oneOf": [
+                    {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "$ref": "#/$defs/abandonment_block"
+                      },
+                      "description": "ONE ENTRY PER ROW SET (F2). The four cells the record requires are APPLY and DERIV, each at position 5 and post-liveness."
+                    },
+                    {
+                      "$ref": "#/$defs/block_absence"
+                    }
+                  ]
+                },
+                "DERIV": {
+                  "oneOf": [
+                    {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "$ref": "#/$defs/abandonment_block"
+                      },
+                      "description": "ONE ENTRY PER ROW SET (F2). The four cells the record requires are APPLY and DERIV, each at position 5 and post-liveness."
+                    },
+                    {
+                      "$ref": "#/$defs/block_absence"
+                    }
+                  ]
+                }
+              }
             },
-            "DERIV": {
-              "$ref": "#/$defs/abandonment_block"
+            {
+              "$ref": "#/$defs/block_absence"
             }
-          }
+          ]
         },
         "liveness_exclusions": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "APPLY",
-            "DERIV"
-          ],
-          "properties": {
-            "APPLY": {
-              "$ref": "#/$defs/liveness_exclusions_block"
+          "description": "The liveness exclusion count, per population. The per-population slot may carry an absence in its own right: the DERIV per-arm series is recorded as SUPERSEDED FOR THIS PURPOSE, so a schema that demands a number in that slot demands a superseded one (F1).",
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "APPLY",
+                "DERIV"
+              ],
+              "properties": {
+                "APPLY": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/$defs/liveness_exclusions_block"
+                    },
+                    {
+                      "$ref": "#/$defs/block_absence"
+                    }
+                  ]
+                },
+                "DERIV": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/$defs/liveness_exclusions_block"
+                    },
+                    {
+                      "$ref": "#/$defs/block_absence"
+                    }
+                  ]
+                }
+              }
             },
-            "DERIV": {
-              "$ref": "#/$defs/liveness_exclusions_block"
+            {
+              "$ref": "#/$defs/block_absence"
             }
-          }
+          ]
+        },
+        "d3_prime": {
+          "description": "D3's cleared count and share at this arm, per population (F6). Step 13 runs D3' at every arm; an arm no step re-runs it at carries an absence.",
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "APPLY",
+                "DERIV"
+              ],
+              "properties": {
+                "APPLY": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/$defs/d3_prime_block"
+                    },
+                    {
+                      "$ref": "#/$defs/block_absence"
+                    }
+                  ]
+                },
+                "DERIV": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/$defs/d3_prime_block"
+                    },
+                    {
+                      "$ref": "#/$defs/block_absence"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "$ref": "#/$defs/block_absence"
+            }
+          ]
+        },
+        "retained_by_air_period": {
+          "description": "Retained pairs per air period after right-censoring, at this arm, per population -- required at every arm because the censoring loss is cohort-asymmetric and widens with W.",
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "APPLY",
+                "DERIV"
+              ],
+              "properties": {
+                "APPLY": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/$defs/air_period_block"
+                    },
+                    {
+                      "$ref": "#/$defs/block_absence"
+                    }
+                  ]
+                },
+                "DERIV": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/$defs/air_period_block"
+                    },
+                    {
+                      "$ref": "#/$defs/block_absence"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "$ref": "#/$defs/block_absence"
+            }
+          ]
         },
         "action_type_counts": {
           "type": "object",
@@ -2441,6 +3324,44 @@
               "x-writer-text": true
             }
           }
+        },
+        "d3_prime": {
+          "description": "D3' inside this variation, where the variation re-censors (F6).",
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "APPLY",
+                "DERIV"
+              ],
+              "properties": {
+                "APPLY": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/$defs/d3_prime_block"
+                    },
+                    {
+                      "$ref": "#/$defs/block_absence"
+                    }
+                  ]
+                },
+                "DERIV": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/$defs/d3_prime_block"
+                    },
+                    {
+                      "$ref": "#/$defs/block_absence"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "$ref": "#/$defs/block_absence"
+            }
+          ]
         },
         "conclusions_surviving": {
           "type": "array",
