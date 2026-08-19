@@ -1199,6 +1199,15 @@ while **no arm may be the merge writer without defeating what dual implementatio
       its own provenance entry*** — it is an **eighth** source, it has **no arm**, and `0109` moved
       Step 13b after Step 14 precisely so it could be filled. **A ten-item bias ledger that MUST NOT
       BE NETTED cannot arrive in the reader-facing document with no recorded provenance.**
+- [ ] ***THE MERGE TAKES NINE SOURCES.*** ***CORRECTED `0117`, found by `reviewer-engineering`: this
+      section said SEVEN, corrected itself to EIGHT nineteen lines lower, and the anchor requires
+      NINE.*** **Seven ARM FILES, plus Step 14's `limitations`, plus STEP 8's ARTIFACT — which
+      `0114` E8 made a declared merge source when it moved `channel_classes` and
+      `discovery_channel_overlap` out of the arm files.** ***`0114` E8 reached the Step 8b section of
+      this file and NOT this one, the CONSUMER's*** — **so a Human Lead building the merge from this
+      spec would declare eight and fail `S30` leg (f) on the first run.**
+- [ ] ***AND THE BLOCKS ONLY THE MERGE MAY FILL ARE FOUR, NOT TWO*** (`0117`): `cross_arm_divergences`
+      and `limitations`, **plus `channel_classes` and `discovery_channel_overlap`** (`0114` E8).
 - [ ] ***SEVEN ARM FILES — ONE PER STEP PER ARM.*** Human Lead ruling, `0109` (M4/M5/M9),
       **resolving `0107`'s own §1-vs-§6 ambiguity in favour of §6.** **Step 9 writes TWO files, Step 13
       writes TWO, and Steps 10, 11 and 12 write ONE each.**

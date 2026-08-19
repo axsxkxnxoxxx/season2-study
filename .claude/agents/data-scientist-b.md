@@ -107,6 +107,19 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
   Step 8 instances measured the adopted figures independently and identically.** **State the population
   wherever the series appears.**
 
+- ***YOU DO NOT WRITE `channel_classes` OR `discovery_channel_overlap`*** (`0114` E8, propagated
+  `0117`). **They hold STEP 8's D4 and D9 figures.** **Requiring them in seven arm files would make
+  seven writers of a figure none of you produced** — ***the FOURTH appearance of
+  one-slot-vs-one-definition.*** **Emit the ABSENCE IDIOM.** **The merged document carries them ONCE,
+  filled at Step 13b from Step 8's artifact, which is itself a declared merge source.**
+- ***THE ADOPTED-RULE REVISION IS READ, NEVER TYPED*** (`0114` E14, propagated `0117`). **Read it from
+  `processed/step5/adopted_rule.json`** — the schema's generator does this at
+  `_read_adopted_rule_revision()` in `src/step8b_schema.py`, scanning for
+  `approved_(?:rule_)?revision_(\d+)` and taking the highest, and **recording the exact key and the
+  file's SHA-12.** ***NO MATCH IS A HARD STOP, NEVER A DEFAULT.***
+  ***And know the limit you are inheriting***: **the validator does NOT open that file** — it checks
+  that you declared `read_not_typed: true`, **not that you did.** **A typed revision validates
+  identically to a read one, so the honesty of this field is yours, not the control's.**
 - **ONE FILE PER ARM. YOU WRITE YOUR OWN DOCUMENT AND NO OTHER** (`0107`, the E2 ruling).
   ***NO ARM WRITES INTO A DOCUMENT ANOTHER ARM WRITES INTO.*** **The merged reader-facing document is
   produced by STEP 13b — owner Human Lead, chained, Engineering review, NOT a gate — after both arms
@@ -159,15 +172,20 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
   `tested_ranges`, `conclusions_surviving`, `conclusions_not_surviving`,
   `d2_recomputed_inside_this_arm`, `action_type_counts`. **Per-arm nesting is not the headline's alone.**
   ***ONE FILE PER STEP PER ARM*** (`0109`): **Step 9 writes two files, Step 13 two, Steps 10–12 one
-  each.** **The merge takes EIGHT sources — those seven plus Step 14's `limitations`, which is a
+  each.** **The merge takes NINE sources (`0117`; eight until `0114` E8 added Step 8's artifact) — those seven plus Step 14's `limitations`, which is a
   non-arm-file source with no arm** (`0111` E6).
   and a validator at **`src/step8b_validate.py`**, which you run
   **before** writing.
   ***NO CONVERSION LAYER.*** **A conversion layer is a second definition of every figure, and two
   definitions of one figure is this study's most frequent defect** — `0058`, `0061` and `0062` are all
   that shape. **Write into the schema's own shapes; do not emit your own and translate.**
-  **What the schema already accounts for, so you do not rebuild it:** **one entry per arm, keyed on
-  `(W_days, clock_origin)`** — **NOT `W` alone**, because the finale-anchored 91-day arm and Step 9's
+  **What the schema already accounts for, so you do not rebuild it:** **one entry per arm, keyed on**
+  ~~`(W_days, clock_origin)`~~ ***— SUPERSEDED TWICE and this line stood in the PRESENT TENSE fourteen
+  lines below its own replacement. THE KEY IS `(W_days, clock_origin, producing_step,
+  adopted_rule_revision)`*** (`0111` E2, `0114` E14; marked `0117`, found by
+  `reviewer-engineering` — **third consecutive entry in which a stale arm key was invisible to
+  `check_surfaces.py`, because a key is a STRUCTURAL CLAIM, not a number or a registered phrase**) —
+  **NOT `W` alone**, because the finale-anchored 91-day arm and Step 9's
   premiere-anchored 91-day headline are **different measurements that collide under a `W`-only key**
   (Step 8b's finding against `0066`'s amendment 1). **Step 9's payload nests under a PER-PRODUCING-ARM
   key**, so the two arms' legitimately divergent figures both fit **without forcing the reconciliation
