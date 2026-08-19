@@ -230,10 +230,12 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
   appeared ZERO times in any file an agent reads at the time it was written.** The resampling unit
   **is the account** (clustered, `0044`).
 
-<!-- BOOTSTRAP-STATISTIC-BEGIN. This block is BYTE-IDENTICAL in data-scientist.md and
-     data-scientist-b.md. src/check_surfaces.py::scan_statistic_declaration() FAILS if the two
-     copies differ, if either marker is missing, or if the block does not name all four fixed
-     elements. NEVER edit one file's copy alone. -->
+<!-- BOOTSTRAP-STATISTIC-BEGIN -->
+*(This block is **BYTE-IDENTICAL** in `data-scientist.md` and `data-scientist-b.md`.
+`src/check_surfaces.py::scan_statistic_declaration()` FAILS if the two copies differ, if a marker is
+missing or duplicated, if the block is short, if it does not ASSERT all four fixed elements, or if it
+contains a sentence that reverses them. **NEVER edit one file's copy alone.** The markers are exact
+strings — closing `-->` included — so prose naming them cannot be mistaken for them.)*
 - ***THE BOOTSTRAP STATISTIC IS FIXED: BOTH LEVELS AND PAIRED MOVEMENTS.*** Human Lead ruling,
   2026-08-19 (`0118`), closing the third and last unfixed bootstrap element. **Both arms produce
   BOTH objects. Both objects are LABELLED. NEITHER is presented as *the* design.**

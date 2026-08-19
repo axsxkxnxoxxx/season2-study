@@ -74,10 +74,26 @@ recorded and unpoliced."* **It is built with the ruling rather than after it.**
   own words."* **Two paraphrases of one requirement are two definitions of it.**
 - **A MISSING MARKER FAILS AS LOUDLY AS A MISMATCH.** If a marker is deleted the extraction returns
   nothing, **two nothings compare equal**, and a naïve byte-identity check would report clean over
-  **zero characters** — the exact shape of the three controls that reported clean while checking
+  ~~**zero characters**~~ — the exact shape of the three controls that reported clean while checking
   zero rows.
-- **It asserts all four fixed elements by VALUE** in each copy — `10,000`, `20260818`, `account`,
-  `levels and paired movements` — not by prose.
+
+  > ***THE PROPERTY IS TRUE. THE MECHANISM CREDITED FOR IT COULD NOT FIRE.*** **Corrected
+  > 2026-08-19 (`0120`), `reviewer-engineering` H3.** **The explicit guard —
+  > `if cov["chars"] == 0 and not fails` — was UNSATISFIABLE DEAD CODE.** `chars` was assigned only
+  > inside the both-blocks-found branch, where a block always contains both markers and so is never
+  > zero; **every other path appends to `fails` before reaching it.** The condition could not be
+  > met, **and `_stat_verdict()` did not model it, so deleting the line would not have failed the
+  > selftest.** ***The protection was real and was delivered by the marker branches, not by the line
+  > this bullet points at.*** **This is `CLAUDE.md`'s withdrawn-mechanism class — *"a control
+  > asserted to exist is not a control, and this one was found by reading the code rather than the
+  > claim"* — inside the entry that cites that class.** **Replaced by
+  > `STAT_MIN_CHARS`, a floor that CAN fail and that the selftest exercises.**
+- ~~**It asserts all four fixed elements by VALUE** in each copy — `10,000`, `20260818`, `account`,
+  `levels and paired movements` — not by prose.~~ ***SUPERSEDED 2026-08-19 (`0120`), H5: those were
+  SUBSTRING PRESENCE TESTS, not assertions.*** *"The arms may choose between levels and paired
+  movements"* satisfied one **while reversing the ruling**, and `account` also matched *"accounts"*
+  and *"accounted for"*. **Now anchored patterns plus a forbidden-reversal list**, because
+  **an assertion can be undone by ADDING a sentence, which no positive test can see.**
 - **It prints its coverage:** files read, **characters compared**, elements asserted. Current run:
   **2/2 files, 2,118 characters, 4 elements.**
 - **`_selftest_statistic_matcher()` runs on every invocation** and asserts the control fails on each

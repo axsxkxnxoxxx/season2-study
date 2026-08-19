@@ -242,6 +242,26 @@ WITHDRAWN_PHRASES = {
         "a hard-coded literal that nothing checked and that was false; replaced by an assertion "
         "in check_ratios_written(). Withdrawn from the JSON half at 0059 and still emitted into "
         "the .md half -- Red Team 14, B10"),
+    # H1, reviewer-engineering on v1.6.0. THE EIGHT-SURFACE HALF of the statistic control.
+    # scan_statistic_declaration() reads TWO surfaces, and the only defect of this class ever
+    # found -- 0119 SS2, analytics-engineer{,-b}.md:583 -- sat in files it does not open, contradicting
+    # all four fixed elements while both copies stayed byte-identical. Byte-identity cannot see a
+    # claim made OUTSIDE the block or made IDENTICALLY IN BOTH copies; a phrase scan can, on all
+    # eight surfaces, with the strikethrough/withdrawal exemption the other phrases already use.
+    "the spec fixes none of them": (
+        "the bootstrap's three elements declared unfixed. ALL FOUR are fixed and identical for "
+        "both arms: B = 10,000, seed 20260818, unit = account (0103), statistic = BOTH levels "
+        "and paired movements (0118). Withdrawn 0118, and the instance at "
+        "analytics-engineer{,-b}.md:583 found by the arm at 0119 SS2"),
+    "levels-vs-movements is still unfixed": (
+        "0104's reading, true when written and closed by 0118. Withdrawn 0120"),
+    "levels-vs-movements remains unfixed": (
+        "same claim in the other tense; both forms were live on different surfaces. "
+        "Withdrawn 0120"),
+    "statistic (levels vs movements)": (
+        "the generator's fields_not_fixed_in_spec entry, v1.5.0. The statistic is FIXED and the "
+        "list is empty with its universe declared. Withdrawn 0119 SS1"),
+
     "everything else in this file stands": (
         "a stamp that affirmatively certified superseded figures. Withdrawn 0056 SS4"),
     "cannot enter the list": (

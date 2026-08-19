@@ -380,89 +380,174 @@ def scan_superseded_strings():
 # and only the control knows which it produced." If a marker is deleted the block extraction returns
 # nothing, two nothings compare equal, and a byte-identity check would report clean while covering
 # ZERO characters. That is the exact shape of the three controls that reported clean over zero rows.
-STAT_BEGIN = "<!-- BOOTSTRAP-STATISTIC-BEGIN"
+STAT_BEGIN = "<!-- BOOTSTRAP-STATISTIC-BEGIN -->"
 STAT_END = "<!-- BOOTSTRAP-STATISTIC-END -->"
+# H4, reviewer-engineering on v1.6.0. BOTH markers are EXACT strings, closing `-->` included.
+# The prior BEGIN was the PREFIX "<!-- BOOTSTRAP-STATISTIC-BEGIN" with no terminator, so any prose
+# naming the marker moved the extraction start and silently swallowed arbitrary text into the
+# "block" -- while byte-identity still passed, because both copies swallowed the same text. The
+# character count 0118 SS3 cited as evidence of coverage was the quantity that stopped meaning
+# anything first.
 STAT_WRITERS = (".claude/agents/data-scientist.md", ".claude/agents/data-scientist-b.md")
-# The four elements the block must name. Values, not prose -- prose is the third blindness class.
+# A block shorter than this cannot be the canonical block. This is the REAL coverage floor; see
+# the H3 note below for the one it replaces.
+STAT_MIN_CHARS = 800
+
+# H5. The four elements are matched as ASSERTIONS, not as substrings present somewhere.
+# The prior form tested `needle in block`, which "the arms may choose between levels and paired
+# movements" satisfies while REVERSING the ruling, and which "not 10,000 but 4,000" satisfies for B.
+# `account` was the fragile one: a bare substring also matched "accounts", "account-clustered",
+# "accounted for", and 0118 SS4 REQUIRES this block to carry prose, so one future sentence using the
+# word in another sense would have disarmed the unit test silently.
+# Matching runs on the block with whitespace collapsed, because the block is line-wrapped.
 STAT_REQUIRED = {
-    "B = 10,000": ("10,000", "0103"),
-    "seed = 20260818": ("20260818", "0103"),
-    "unit = account": ("account", "0103"),
-    "statistic = both levels and paired movements": ("levels and paired movements", "0118"),
+    "B = 10,000": (re.compile(r"`B` = \*\*10,000\*\*"), "0103"),
+    "seed = 20260818": (re.compile(r"seed = \*\*20260818\*\*"), "0103"),
+    "unit = account": (re.compile(r"resampling unit = \*\*account\*\*"), "0103"),
+    "statistic = BOTH levels and paired movements":
+        (re.compile(r"statistic = BOTH levels and paired movements"), "0118"),
 }
+# And the assertion can be reversed by ADDING a sentence rather than by removing one, which no
+# positive test can see. These are the reversals; `unfixed` alone is NOT forbidden, because the
+# block legitimately says "the third and last unfixed bootstrap element".
+STAT_FORBIDDEN = (
+    re.compile(r"may choose"),
+    re.compile(r"is not fixed"),
+    re.compile(r"(remains|still) unfixed"),
+    re.compile(r"the spec fixes n(one|either)"),
+    re.compile(r"differs? between the arms"),
+)
+
+
+def extract_block(text):
+    """THE ONE implementation of the block extraction. Returns (block, error).
+
+    H2, reviewer-engineering on v1.6.0: there were THREE -- this function's predecessor,
+    _stat_verdict's copy, and step8b_selftest.py's _extract_block -- and they ALREADY DISAGREED.
+    A quoted END marker in prose made check_surfaces.py report "END precedes BEGIN" and exit 1
+    while step8b_selftest.py found the real block and reported ok: TWO CONTROLS, OPPOSITE VERDICTS,
+    ONE FILE. That is CLAUDE.md's "one definition per statement" applied to code, and the fix for
+    a duplicated-register finding had introduced a third register of its own.
+
+    Everything that checks this block imports THIS function and STAT_REQUIRED. Nothing restates them.
+    """
+    nb, ne = text.count(STAT_BEGIN), text.count(STAT_END)
+    if nb != 1 or ne != 1:
+        # H4: t.find() took the FIRST of each, so a second contradicting block was invisible and
+        # "one definition per statement" was violated with the control passing.
+        return None, (f"{nb} BEGIN and {ne} END markers; exactly one of each is required. "
+                      f"A duplicate hides a second, possibly contradicting, block from a "
+                      f"first-occurrence search")
+    i = text.find(STAT_BEGIN)
+    j = text.find(STAT_END, i)          # searched AFTER begin, which is where the three disagreed
+    if j < 0:
+        return None, "the END marker does not follow the BEGIN marker -- the block is malformed"
+    blk = text[i:j + len(STAT_END)]
+    if len(blk) < STAT_MIN_CHARS:
+        return None, (f"the block is {len(blk)} characters, under the {STAT_MIN_CHARS} floor -- "
+                      f"a block holding only its markers would otherwise compare equal to itself "
+                      f"and report coverage")
+    return blk, None
+
+
+def stat_verdict(text_a, text_b):
+    """The whole rule, over two file CONTENTS. Both the live scan and the selftest call this.
+
+    H3. THE ZERO-COVERAGE GUARD IT REPLACES WAS UNSATISFIABLE DEAD CODE. The old line read
+    `if cov["chars"] == 0 and not fails`, and chars was assigned ONLY inside the both-blocks-found
+    branch, where a block always contains both markers and so is never 0; every other path appends
+    to fails before it. The condition could not be met. 0118 SS3 credited the control's
+    looked-nowhere protection to that line: the property was real, delivered by the marker branches,
+    and attributed to a mechanism that never fired -- CLAUDE.md's withdrawn-mechanism class, inside
+    the entry that names it. The floor in extract_block() is the real guard and it CAN fail.
+    """
+    fails, blocks = [], {}
+    for name, text in (("a", text_a), ("b", text_b)):
+        blk, err = extract_block(text)
+        if err:
+            fails.append(f"{name}: {err}")
+        else:
+            blocks[name] = blk
+    if len(blocks) != 2:
+        return fails, 0
+    a, b = blocks["a"], blocks["b"]
+    chars = min(len(a), len(b))
+    if a != b:
+        n = next((k for k, (x, y) in enumerate(zip(a, b)) if x != y), chars)
+        fails.append(f"THE TWO ARMS' DECLARATIONS DIFFER, first at character {n}:\n"
+                     f"      a: ...{a[max(0, n - 40):n + 40]!r}\n"
+                     f"      b: ...{b[max(0, n - 40):n + 40]!r}")
+    for name, blk in blocks.items():
+        flat = WS.sub(" ", blk)
+        for label, (pat, ruling) in STAT_REQUIRED.items():
+            if not pat.search(flat):
+                fails.append(f"{name}: the block does not ASSERT {label} ({ruling})")
+        for pat in STAT_FORBIDDEN:
+            if pat.search(flat):
+                fails.append(f"{name}: the block contains {pat.pattern!r}, which REVERSES the "
+                             f"ruling it is supposed to state -- an assertion can be undone by "
+                             f"ADDING a sentence, which no positive test can see")
+    return fails, chars
 
 
 def scan_statistic_declaration():
     """FAIL if the two arms' bootstrap-statistic declarations differ, or if the block is absent.
 
-    Returns (failures, cov). cov reports CHARACTERS COMPARED, not files opened: a control that
-    opened two files and compared two empty strings has looked nowhere, and must say so.
+    KNOWN AND NOT FIXED HERE -- H1, reviewer-engineering, confirmed and WIDER than reported:
+    this control reads TWO of the eight surfaces, and the one defect of this class ever found
+    (0119 SS2, analytics-engineer{,-b}.md:583) sat in files it does not open. Byte-identity is
+    also defeated by a contradiction placed in BOTH copies, inside the block or below it.
+    The eight-surface half is scan_unfixity_phrases(), below; neither half subsumes the other.
     """
-    fails, blocks, cov = [], {}, dict(files=0, chars=0, elements=len(STAT_REQUIRED))
+    fails, cov = [], dict(files=0, chars=0, elements=len(STAT_REQUIRED))
+    texts = []
     for f in STAT_WRITERS:
         try:
-            t = Path(f).read_text()
+            texts.append(Path(f).read_text())
+            cov["files"] += 1
         except OSError as e:                                        # noqa: BLE001
             fails.append(f"{f}: unreadable ({e}) -- the declaration cannot be checked")
-            continue
-        cov["files"] += 1
-        i, j = t.find(STAT_BEGIN), t.find(STAT_END)
-        if i < 0 or j < 0:
-            fails.append(
-                f"{f}: {'BEGIN' if i < 0 else 'END'} marker absent. The canonical block is gone or "
-                f"was renamed; two absent blocks compare EQUAL, so this must fail rather than pass")
-            continue
-        if j < i:
-            fails.append(f"{f}: END marker precedes BEGIN -- the block is malformed")
-            continue
-        blocks[f] = t[i:j + len(STAT_END)]
-    if len(blocks) == len(STAT_WRITERS):
-        a, b = (blocks[f] for f in STAT_WRITERS)
-        cov["chars"] = min(len(a), len(b))
-        if a != b:
-            n = next((k for k, (x, y) in enumerate(zip(a, b)) if x != y), min(len(a), len(b)))
-            fails.append(
-                f"THE TWO ARMS' STATISTIC DECLARATIONS DIFFER, first at character {n}:\n"
-                f"      {STAT_WRITERS[0]}: ...{a[max(0, n - 40):n + 40]!r}\n"
-                f"      {STAT_WRITERS[1]}: ...{b[max(0, n - 40):n + 40]!r}\n"
-                f"      A divergence in Step 9's CIs would then be a SPEC difference wearing the "
-                f"costume of a measurement difference, which is what the dual diff cannot tell apart")
-        for label, (needle, ruling) in STAT_REQUIRED.items():
-            for f, blk in blocks.items():
-                if needle not in blk:
-                    fails.append(f"{f}: the block does not name {label} ({needle!r}, {ruling})")
-    if cov["chars"] == 0 and not fails:
-        fails.append("COVERAGE ZERO: compared 0 characters and reported clean -- looked nowhere")
+            texts.append("")
+    v, chars = stat_verdict(*texts)
+    cov["chars"] = chars
+    for m in v:
+        fails.append(m.replace("a: ", f"{STAT_WRITERS[0]}: ").replace("b: ", f"{STAT_WRITERS[1]}: "))
     return fails, cov
 
 
 def _selftest_statistic_matcher():
-    """The control must fail on each thing it claims to catch. Asserted, not asserted-about."""
-    good = STAT_BEGIN + " x -->\n10,000 20260818 account levels and paired movements\n" + STAT_END
-    assert _stat_verdict(good, good) == [], "selftest: identical valid blocks must pass"
-    assert _stat_verdict(good, good.replace("account", "show")), "selftest: a mismatch must fail"
-    assert _stat_verdict(good, good.replace("10,000", "4,000")), "selftest: a changed B must fail"
-    assert _stat_verdict(good.replace(STAT_END, ""), good), "selftest: a missing marker must fail"
-    assert _stat_verdict("", ""), "selftest: two ABSENT blocks must fail, not compare equal"
-
-
-def _stat_verdict(a, b):
-    """Pure form of scan_statistic_declaration's logic, for the selftest above."""
-    fails, blocks = [], {}
-    for name, t in (("a", a), ("b", b)):
-        i, j = t.find(STAT_BEGIN), t.find(STAT_END)
-        if i < 0 or j < 0 or j < i:
-            fails.append(f"{name}: marker absent")
-            continue
-        blocks[name] = t[i:j + len(STAT_END)]
-    if len(blocks) == 2:
-        if blocks["a"] != blocks["b"]:
-            fails.append("differ")
-        for _, (needle, _r) in STAT_REQUIRED.items():
-            for name, blk in blocks.items():
-                if needle not in blk:
-                    fails.append(f"{name}: missing {needle}")
-    return fails
+    """The control must FAIL on each thing it claims to catch. Asserted, not asserted-about."""
+    body = ("\n`B` = **10,000**, seed = **20260818**, resampling unit = **account**, and "
+            "**statistic = BOTH levels and paired movements**.\n" + "padding. " * 90 + "\n")
+    good = STAT_BEGIN + body + STAT_END
+    assert stat_verdict(good, good)[0] == [], "selftest: identical valid blocks must pass"
+    assert stat_verdict(good, good)[1] >= STAT_MIN_CHARS, "selftest: coverage must be reported"
+    # the four originals
+    assert stat_verdict(good, good.replace("**account**", "**show**"))[0], "mismatch must fail"
+    assert stat_verdict(good, good.replace("10,000", "4,000"))[0], "a changed B must fail"
+    assert stat_verdict(good.replace(STAT_END, ""), good)[0], "a missing marker must fail"
+    assert stat_verdict("", "")[0], "two ABSENT blocks must fail, not compare equal"
+    # H4 -- duplicated markers, in BOTH copies so byte-identity cannot catch them
+    dup = good + "\n" + good
+    assert stat_verdict(dup, dup)[0], "selftest: a duplicated block must fail"
+    stray = STAT_BEGIN + "\n" + good
+    assert stat_verdict(stray, stray)[0], "selftest: a duplicated BEGIN must fail"
+    # H4 -- prose naming the marker must NOT be mistaken for it now that it is closed
+    prose = good.replace(body, body + "\nwe write BOOTSTRAP-STATISTIC-BEGIN in prose here.\n")
+    assert stat_verdict(prose, prose)[0] == [], "selftest: prose naming a marker must not match it"
+    # H3 -- the coverage floor, which the dead guard could not do
+    assert stat_verdict(STAT_BEGIN + STAT_END, STAT_BEGIN + STAT_END)[0], \
+        "selftest: a markers-only block must fail the floor, not compare equal to itself"
+    # H5 -- reversal by ADDITION, identical in both copies
+    for reversal in ("the arms may choose between them.", "the statistic is not fixed.",
+                     "levels-vs-movements remains unfixed.", "the spec fixes none of them."):
+        bad = good.replace(STAT_END, reversal + "\n" + STAT_END)
+        assert stat_verdict(bad, bad)[0], f"selftest: {reversal!r} must fail"
+    # RESIDUAL, STATED RATHER THAN ASSERTED AWAY. A pattern match still cannot read a sentence:
+    # "not `B` = **10,000** but 4,000" satisfies the B pattern. STAT_FORBIDDEN covers the reversals
+    # seen in this study's own history, not the set of all reversals -- that would be a prose
+    # checker, CLAUDE.md's third blindness class. NO ASSERTION IS WRITTEN HERE, because an
+    # assertion that cannot fail is the defect this file exists to catch.
 
 
 def scan_step8_register():
