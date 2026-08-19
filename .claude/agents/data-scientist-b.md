@@ -147,7 +147,21 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
 - **STEP 8b'S SCHEMA EXISTS, AND STEPS 9–13 WRITE INTO IT DIRECTLY** (`0102`). **`0066` §6 recorded
   that you would gain this obligation once the schema existed. It exists now**:
   **`artifacts/step8b-output-schema.json`**, with a placeholder instance at
-  `artifacts/step8b-placeholder.json` and a validator at **`src/step8b_validate.py`**, which you run
+  ***THE PLACEHOLDER YOU WRITE AGAINST IS `artifacts/step8b-placeholder-arm-file.json`, NOT
+  `step8b-placeholder.json`*** (`0113`, found by `reviewer-engineering`). **`step8b-placeholder.json` is
+  the MERGED document, produced by Step 13b. You write an ARM FILE.** ***A Step 9 arm built against the
+  merged placeholder fails S17, S28, S29 and S30 on its first run.*** **A single-arm step (10, 11, 12)
+  writes against `artifacts/step8b-placeholder-sole-file.json`.**
+  ***THE ARM KEY IS `(W_days, clock_origin, producing_step)`*** (`0111` E2) — **NOT the two-field key.**
+  **Step 9's `W = 108` and Step 13's `W = 108` are different measurements of one setting and BOTH
+  EXIST.** **Under the two-field key they collide: four payloads, two slots.**
+  ***STEP 13: SIX NON-HEADLINE OUTPUTS TAKE PER-ARM NESTING TOO*** (`0111` E1) — `d3_prime`,
+  `tested_ranges`, `conclusions_surviving`, `conclusions_not_surviving`,
+  `d2_recomputed_inside_this_arm`, `action_type_counts`. **Per-arm nesting is not the headline's alone.**
+  ***ONE FILE PER STEP PER ARM*** (`0109`): **Step 9 writes two files, Step 13 two, Steps 10–12 one
+  each.** **The merge takes EIGHT sources — those seven plus Step 14's `limitations`, which is a
+  non-arm-file source with no arm** (`0111` E6).
+  and a validator at **`src/step8b_validate.py`**, which you run
   **before** writing.
   ***NO CONVERSION LAYER.*** **A conversion layer is a second definition of every figure, and two
   definitions of one figure is this study's most frequent defect** — `0058`, `0061` and `0062` are all

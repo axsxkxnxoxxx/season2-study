@@ -815,7 +815,11 @@ with two amendments that postdate its drafting, both marked below.
 - [ ] **One entry per tested `W` arm.** ***AMENDED:*** the original said *"per tested combination of `W`
       and liveness threshold."* **There is no liveness threshold.** A numeric threshold was derived
       three times — 632 d, then 1,293 d — and **DELETED** (`0042`); the adopted rule is **parameter-free**
-      (`0048`, approved `0064`). **The key is `W` alone.** `632` and `1,293` must not reappear as schema
+      (`0048`, approved `0064`). ~~**The key is `W` alone.**~~ ***SUPERSEDED TWICE and this line is the
+      ORIGINAL, not a restatement: `0102` added `clock_origin`, `0111` (E2) added `producing_step`.
+      THE KEY IS `(W_days, clock_origin, producing_step)`.*** **What this bullet's amendment actually
+      ruled — that NO LIVENESS PARAMETER enters the key — stands untouched**, and is why `632` and
+      `1,293` must not reappear as schema
       keys — and note that **`632` is also the legitimate frozen-D10 never-started component at
       `W = 125`**, so a blind grep for the deleted threshold produces a false positive there (`0051` §3).
 - [ ] **Each entry carries, for that arm:** the **three outcome shares**; a **confidence interval on
