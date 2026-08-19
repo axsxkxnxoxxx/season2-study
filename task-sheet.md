@@ -850,6 +850,31 @@ with two amendments that postdate its drafting, both marked below.
       **covering with respect to insertion-dormancy, exhaustively; open only across channel classes
       (D4, D9)**. **D4 and D9 publish alongside and are never folded in**, so the schema has slots for
       them.
+- [ ] ***ARM FILES DO NOT CARRY `channel_classes`.*** Human Lead ruling, `0114` (E8). **It holds Step
+      8's D4 and D9 figures, so requiring it in seven arm files creates SEVEN WRITERS OF A FIGURE NONE OF
+      THEM PRODUCED.** ***Q1's class at the top level, and the FOURTH appearance of
+      one-slot-vs-one-definition.*** **Add the `TOP_LEVEL_PUBLISHER` row: the MERGED document carries it
+      ONCE, filled at Step 13b, sourced from Step 8's artifact.** **Arm files use the ABSENCE IDIOM.**
+- [ ] ***PUBLISHER ROWS KEY ON ARM IDENTITY, NOT PRODUCING STEP ALONE.*** Human Lead ruling, `0114`
+      (E13). ***Where the schema's own text says NO PRODUCER EXISTS at an arm, an absence record is
+      LEGAL there and `S22` must accept it.*** **The schema's text and its control currently disagree
+      — the TEXT IS RIGHT.** **`BLOCK_PUBLISHER` makes `S22` require `waterfall`,
+      `liveness_exclusions` and `retained_by_air_period` wherever a `step9` entry is primary, including
+      a PREMIERE-ANCHORED arm where the schema itself says nothing produces one.**
+      ***ABSENCE STATED, NOT SILENCE*** — the record is required; what is not required is a figure no
+      step makes.
+- [ ] ***THE ADOPTED-RULE REVISION JOINS THE KEY AS A FOURTH IDENTITY DIMENSION.*** Human Lead ruling,
+      `0114` (E14). **The key is `(W_days, clock_origin, producing_step, adopted_rule_revision)`.**
+      ***Same lineage as `clock_origin` (`0102`) and `producing_step` (`0111` E2): a setting under which
+      the measurement was taken that was invisible in the key.***
+      ***AND THIS ONE HAS ALREADY BEEN OCCUPIED*** — **`processed/step5/adopted_rule.json` carried
+      REVISION-3 figures against the approved REVISION-6 rule, and a Step 8 instance had to work around
+      it** (`CLAUDE.md`, surface 8). **If a Step 5 or Step 7 amendment lands between Step 9's run and
+      Step 13's, their entries at one setting are different measurements — and without this dimension
+      `S2` calls the rerun a duplicate.**
+      ***VERIFIED BEFORE RULING, not assumed: NO revision key exists anywhere in any of the three
+      placeholders.*** **It is ABSENT, not carried incorrectly** — so this adds a dimension rather than
+      correcting one.
 - [ ] ***AN ARM ENTRY'S IDENTITY INCLUDES ITS PRODUCING STEP.*** Human Lead ruling, `0111` (E2).
       **The key is `(W_days, clock_origin, producing_step)`.** ***Step 9's `W = 108` and Step 13's
       `W = 108` are DIFFERENT MEASUREMENTS OF ONE SETTING and both must exist as distinct entries.***

@@ -152,7 +152,7 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
   the MERGED document, produced by Step 13b. You write an ARM FILE.** ***A Step 9 arm built against the
   merged placeholder fails S17, S28, S29 and S30 on its first run.*** **A single-arm step (10, 11, 12)
   writes against `artifacts/step8b-placeholder-sole-file.json`.**
-  ***THE ARM KEY IS `(W_days, clock_origin, producing_step)`*** (`0111` E2) — **NOT the two-field key.**
+  ***THE ARM KEY IS `(W_days, clock_origin, producing_step, adopted_rule_revision)`*** (`0111` E2, **fourth dimension added by `0114` E14**) — **NOT the two-field key and NOT the three-field one.** **The revision matters because `adopted_rule.json` once carried revision-3 figures against the revision-6 rule**: if an amendment lands between your run and the other step's, your entries at one setting are **different measurements**, and without it `S2` calls a rerun a duplicate.
   **Step 9's `W = 108` and Step 13's `W = 108` are different measurements of one setting and BOTH
   EXIST.** **Under the two-field key they collide: four payloads, two slots.**
   ***STEP 13: SIX NON-HEADLINE OUTPUTS TAKE PER-ARM NESTING TOO*** (`0111` E1) — `d3_prime`,

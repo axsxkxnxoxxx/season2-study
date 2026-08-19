@@ -503,6 +503,21 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
       nothing.
     - The table goes to `processed/`; the filter waterfall and invariant report, counts only, to
       `artifacts/`.
+- **THREE MORE RULINGS** (`0114`), same shape: **E8 — ARM FILES DO NOT CARRY `channel_classes`.** It
+      holds **Step 8's** D4 and D9 figures, so requiring it in seven arm files makes **seven writers of
+      a figure none of them produced** — ***Q1's class at the top level, the FOURTH appearance of
+      one-slot-vs-one-definition.*** **The merged document carries it ONCE, filled at Step 13b, sourced
+      from Step 8's artifact; arm files use the ABSENCE IDIOM.**
+      **E13 — PUBLISHER ROWS KEY ON ARM IDENTITY, NOT PRODUCING STEP ALONE.** ***Where the schema's own
+      text says no producer exists at an arm, an absence record is LEGAL and `S22` must accept it.***
+      **The schema's text and its control disagree; THE TEXT IS RIGHT.** ***Absence stated, not
+      silence.***
+      **E14 — THE ADOPTED-RULE REVISION JOINS THE KEY**, fourth dimension:
+      **`(W_days, clock_origin, producing_step, adopted_rule_revision)`**. ***Already occupied once***:
+      `adopted_rule.json` carried revision-3 figures against the revision-6 rule. ***Verified: NO
+      revision key exists in any placeholder — absent, not wrong.***
+      **RATIFIED: the six blocks' one-arm form closes IN THE SELFTEST. No fourth placeholder.
+      `0110`'s count of three stands.**
 - **THREE RULINGS ON THE SCHEMA'S SHAPE** (`0111`), all of them ADDING a dimension rather than
       restricting a use. **`0107` §3's rule is the constant: one slot where two arms write forces the
       reconciliation the spec forbids.**
