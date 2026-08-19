@@ -1,6 +1,6 @@
 {
-  "schema_version": "1.3.0",
-  "schema_id": "urn:season2-study:step8b-output-schema:1.3.0",
+  "schema_version": "1.4.0",
+  "schema_id": "urn:season2-study:step8b-output-schema:1.4.0",
   "placeholder": true,
   "placeholder_notice": {
     "banner": "############  THIS FILE IS A PLACEHOLDER. IT CONTAINS NO MEASUREMENTS.  ############  Every number in it is the sentinel -999 or -999.0 and every writer-supplied string is prefixed 'PLACEHOLDER — NOT A MEASUREMENT'. It exists so Step 16 can be built before results exist. DO NOT PUBLISH, DO NOT CHART, DO NOT QUOTE. A consumer that renders it will show -999% bars, which is the point.  ############",
@@ -12,10 +12,10 @@
   },
   "generated_by": {
     "generator": "src/step8b_schema.py",
-    "generator_sha256_12": "f381fc40feca",
-    "generated_at_utc": "2026-08-18T23:31:00Z",
-    "build_tag": "step8b/a/2026-08-18",
-    "git_head_short": "9636ed9",
+    "generator_sha256_12": "e53fefbe8f35",
+    "generated_at_utc": "2026-08-19T00:31:43Z",
+    "build_tag": "step8b/a/2026-08-19",
+    "git_head_short": "6d7e58a",
     "host_step": "Step 8b, output schema",
     "written_by": "Analytics Engineer, instance a",
     "inputs": [
@@ -41,9 +41,10 @@
   "arm_key": {
     "fields": [
       "W_days",
-      "clock_origin"
+      "clock_origin",
+      "producing_step"
     ],
-    "note": "W alone does not identify an arm. Step 9 reports a second 91-day headline anchored on the S2 premiere rather than the finale, and states plainly that it is not the same measurement at another window length -- so it would collide with the finale-anchored W = 91 grid arm under a W-only key. There is no liveness threshold in the key: one was derived three times and deleted, and the adopted rule is parameter-free.",
+    "note": "THE PRODUCING STEP IS PART OF THE KEY (decisions/0111 E2): Step 9's W = 108 and Step 13's W = 108 are DIFFERENT MEASUREMENTS OF ONE SETTING and both exist as entries. That is the collision below, one dimension out, with the same fix -- add the missing identity dimension, never restrict which step may occupy a shared W. W alone does not identify an arm either. Step 9 reports a second 91-day headline anchored on the S2 premiere rather than the finale, and states plainly that it is not the same measurement at another window length -- so it would collide with the finale-anchored W = 91 grid arm under a W-only key. There is no liveness threshold in the key: one was derived three times and deleted, and the adopted rule is parameter-free.",
     "no_liveness_threshold": true
   },
   "arm_grid_days": [
@@ -420,6 +421,7 @@
       "write_mode": "written_by_owner_step",
       "may_first_writer_fill": false,
       "source": "task-sheet.md Step 13",
+      "published_by_step": "step13",
       "merged_document_only": false
     },
     "subpopulation_cuts": {
@@ -436,6 +438,7 @@
       "write_mode": "written_by_owner_step",
       "may_first_writer_fill": false,
       "source": "task-sheet.md Step 13, 'Record the tested ranges. Step 16 needs them.'",
+      "published_by_step": "step13",
       "merged_document_only": false
     },
     "limitations": {
@@ -536,8 +539,8 @@
       "owner_role": "Analytics Engineer, Step 8",
       "write_mode": "copied_from_step_8_output",
       "may_first_writer_fill": false,
-      "source": "decisions/0070 ruling 4",
-      "published_by_step": "step9",
+      "source": "decisions/0070 ruling 4; decisions/0111 E1",
+      "published_by_step": "step13",
       "merged_document_only": false
     },
     "variants[].headline": {
@@ -564,6 +567,24 @@
       "write_mode": "written_by_owner_step",
       "may_first_writer_fill": false,
       "source": "decisions/0070 ruling 5",
+      "published_by_step": "step13",
+      "merged_document_only": false
+    },
+    "variants[].conclusions_surviving": {
+      "owner_step": "step13",
+      "owner_role": "Data Scientist, Step 13",
+      "write_mode": "written_by_owner_step",
+      "may_first_writer_fill": false,
+      "source": "task-sheet.md Step 13; decisions/0111 E1",
+      "published_by_step": "step13",
+      "merged_document_only": false
+    },
+    "variants[].conclusions_not_surviving": {
+      "owner_step": "step13",
+      "owner_role": "Data Scientist, Step 13",
+      "write_mode": "written_by_owner_step",
+      "may_first_writer_fill": false,
+      "source": "task-sheet.md Step 13; decisions/0111 E1",
       "published_by_step": "step13",
       "merged_document_only": false
     },
@@ -820,11 +841,12 @@
   ],
   "arms": [
     {
-      "arm_id": "W108_s2_finale",
+      "arm_id": "W108_s2_finale__step11",
       "W_days": 108,
       "H_days": 91,
       "clock_origin": "s2_finale",
-      "clock_origin_note": "PLACEHOLDER — NOT A MEASUREMENT: the arm this step's subpopulation cuts are computed at; the unconditional headline at this arm is Step 9's and is not restated here",
+      "clock_origin_note": "PLACEHOLDER — NOT A MEASUREMENT: the adopted setting as STEP 11's entry: the arm its subpopulation cuts are computed at. The unconditional headline here is Step 9's and is not restated, so this entry's headline payload slot carries an explicit absence",
+      "producing_step": "step11",
       "in_arm_grid": true,
       "is_primary_headline": true,
       "headline": {
@@ -871,52 +893,7 @@
           }
         }
       },
-      "waterfall": {
-        "block_is_absent": true,
-        "status": "awaiting_owner_step",
-        "reason": "This file is step11's output for one arm, and this block is published by step9. Under ONE FILE PER STEP PER ARM it arrives in step9's own file and is merged in at Step 13b; writing a copy here would be a second place that figure lives.",
-        "source": "decisions/0109 §1; task-sheet.md Step 13b",
-        "owning_step": "step9"
-      },
-      "abandonment_distribution": {
-        "block_is_absent": true,
-        "status": "awaiting_owner_step",
-        "reason": "This file is step11's output for one arm, and this block is published by step10. Under ONE FILE PER STEP PER ARM it arrives in step10's own file and is merged in at Step 13b; writing a copy here would be a second place that figure lives.",
-        "source": "decisions/0109 §1; task-sheet.md Step 13b",
-        "owning_step": "step10"
-      },
-      "liveness_exclusions": {
-        "block_is_absent": true,
-        "status": "awaiting_owner_step",
-        "reason": "This file is step11's output for one arm, and this block is published by step9. Under ONE FILE PER STEP PER ARM it arrives in step9's own file and is merged in at Step 13b; writing a copy here would be a second place that figure lives.",
-        "source": "decisions/0109 §1; task-sheet.md Step 13b",
-        "owning_step": "step9"
-      },
-      "d3_prime": {
-        "block_is_absent": true,
-        "status": "awaiting_owner_step",
-        "reason": "This file is step11's output for one arm, and this block is published by step13. Under ONE FILE PER STEP PER ARM it arrives in step13's own file and is merged in at Step 13b; writing a copy here would be a second place that figure lives.",
-        "source": "decisions/0109 §1; task-sheet.md Step 13b",
-        "owning_step": "step13"
-      },
-      "retained_by_air_period": {
-        "block_is_absent": true,
-        "status": "awaiting_owner_step",
-        "reason": "This file is step11's output for one arm, and this block is published by step9. Under ONE FILE PER STEP PER ARM it arrives in step9's own file and is merged in at Step 13b; writing a copy here would be a second place that figure lives.",
-        "source": "decisions/0109 §1; task-sheet.md Step 13b",
-        "owning_step": "step9"
-      },
-      "action_type_counts": {
-        "s1_watch": -999,
-        "s1_scrobble": -999,
-        "s1_checkin": -999,
-        "s1_other": -999,
-        "s2_watch": -999,
-        "s2_scrobble": -999,
-        "s2_checkin": -999,
-        "s2_other": -999
-      },
-      "note": "PLACEHOLDER — NOT A MEASUREMENT: one entry per arm"
+      "note": "PLACEHOLDER — NOT A MEASUREMENT: one entry per (W, clock origin, producing step)"
     }
   ],
   "subpopulation_cuts": [
@@ -924,7 +901,8 @@
       "cut_id": "discovery_channel_a",
       "dimension": "discovery_channel",
       "level": "channel_a",
-      "base_arm_id": "W108_s2_finale",
+      "base_arm_id": "W108_s2_finale__step11",
+      "producing_step": "step11",
       "headline": {
         "APPLY": {
           "population": "APPLY",
@@ -1172,7 +1150,8 @@
       "cut_id": "discovery_channel_both",
       "dimension": "discovery_channel",
       "level": "both",
-      "base_arm_id": "W108_s2_finale",
+      "base_arm_id": "W108_s2_finale__step11",
+      "producing_step": "step11",
       "headline": {
         "APPLY": {
           "population": "APPLY",
@@ -1417,41 +1396,6 @@
       "where_it_breaks": "PLACEHOLDER — NOT A MEASUREMENT: where the pattern breaks"
     }
   ],
-  "tested_ranges": {
-    "W_days": {
-      "values": [
-        38,
-        46,
-        77,
-        91,
-        107,
-        108,
-        150,
-        213
-      ],
-      "min": 38,
-      "max": 213,
-      "source": "decisions/0075"
-    },
-    "s1_completion_threshold_percent": {
-      "values": [
-        90,
-        100
-      ],
-      "min": 90,
-      "max": 100,
-      "source": "task-sheet.md Step 13"
-    },
-    "s1_completion_date_definition": {
-      "values": [
-        "first_pass",
-        "last_observed"
-      ],
-      "min": null,
-      "max": null,
-      "source": "task-sheet.md Step 13; Step 1 §5"
-    }
-  },
   "spec_choices_made_by_step_8b": [
     {
       "choice": "Step 8b ran as instance `a`.",
@@ -1460,10 +1404,46 @@
       "if_ruled_otherwise": "Nothing in the schema depends on it. It is recorded because an unstated choice is the shape that has cost this study repeatedly."
     },
     {
-      "choice": "The arm key is (W_days, clock_origin), not W alone.",
-      "spec_gap": "Step 8b says the key is W alone -- an amendment aimed at the deleted liveness threshold. Step 9 separately requires a second 91-day headline anchored on the S2 premiere rather than the finale, and states that it is not the same measurement at two window lengths. The W grid already contains a finale-anchored 91-day arm, so a W-only key collides.",
-      "what_was_done": "The origin is part of the entry key and is a required enum on every arm. No liveness threshold enters the key, which is what the amendment fixed.",
-      "if_ruled_otherwise": "If the Netflix arm is meant to live outside the arm list, it moves to a sibling array and `clock_origin` becomes a plain field. The collision must be resolved somewhere; it cannot be left to the writer."
+      "choice": "The arm key is (W_days, clock_origin, producing_step), not W alone.",
+      "spec_gap": "Step 8b says the key is W alone -- an amendment aimed at the deleted liveness threshold. Step 9 separately requires a second 91-day headline anchored on the S2 premiere rather than the finale, and states that it is not the same measurement at two window lengths. The W grid already contains a finale-anchored 91-day arm, so a W-only key collides. AND THE SAME COLLISION RECURS ONE DIMENSION OUT: Step 9 and Step 13 both measure at W = 108, finale-anchored -- four payloads, two slots.",
+      "what_was_done": "The origin AND THE PRODUCING STEP are part of the entry key, both required on every arm entry (decisions/0111 E2). Step 9's W = 108 and Step 13's W = 108 are different measurements of one setting and BOTH EXIST as entries; check S2 asserts uniqueness on the three-field key and asserts that $.arm_key declares it. No liveness threshold enters the key, which is what the amendment fixed.",
+      "if_ruled_otherwise": "It must NOT be resolved by restricting which step may occupy a shared W: that would make the schema decide an ownership question the spec does not, and would drop a measurement rather than hold it. If the Netflix arm is meant to live outside the arm list, it moves to a sibling array and `clock_origin` becomes a plain field. The collision must be resolved somewhere; it cannot be left to the writer."
+    },
+    {
+      "choice": "Step 13's six non-headline outputs nest per producing arm, and the nesting is UNCONDITIONAL -- no absence branch above it.",
+      "spec_gap": "decisions/0111 E1 requires d3_prime, tested_ranges, conclusions_surviving, conclusions_not_surviving, d2_recomputed_inside_this_arm and action_type_counts to take per-arm nesting, because each had ONE SLOT where TWO ARMS write and Step 13 is dual. It does not say how a file that does not publish one of them says so, and the obvious way -- an absence branch above the container -- is forbidden by decisions/0109 §4, which records that the step_dual_status rename fails LOUDLY only because no oneOf sits above by_producing_arm.",
+      "what_was_done": "The container is required wherever the block appears, and a block the entry's producing step does not publish is OMITTED rather than wrapped. $.block_ownership names every block's publisher, check S22 requires an entry to carry its own step's blocks at the adopted setting, and check S36 forbids it any other step's. Check S35 was widened from one container to the family of six and its dead root-side scan was fixed, so the constraint covers every member rather than the one that existed when it was written.",
+      "if_ruled_otherwise": "If an explicit absence is wanted for a block another step publishes, it goes INSIDE the container, in the arm payload slot, where an absence branch already exists and sits BELOW the renamed key rather than above it. What it may not do is sit above the container."
+    },
+    {
+      "choice": "A block another step publishes is OMITTED from an entry, and both directions are policed.",
+      "spec_gap": "Nothing said what a file does about a block it does not publish, and until v1.4.0 only one direction was checked at all: the file was checked for writing too LITTLE and never for writing too MUCH.",
+      "what_was_done": "Omission, with $.block_ownership naming the publisher, and a new check S36 that fails an entry carrying a block its own producing step does not publish -- the direction that let a single-arm step's placeholder ship carrying Step 13's action-type counts while declaring five other blocks absent on the reasoning that a copy would be a second place that figure lives (decisions/0111 §3, Q1). The ownership row for that block was itself wrong and is corrected: its publisher is Step 13, which is what decisions/0111 E1 makes it.",
+      "if_ruled_otherwise": "If a slot is wanted for every block in every entry, the four non-nested blocks can carry an absence again and S36 narrows to filled blocks only. The two nested ones cannot: an absence branch above a by_producing_arm container is what decisions/0109 §4 forbids."
+    },
+    {
+      "choice": "The publisher table the checks read is held in the VALIDATOR, not in the file under test.",
+      "spec_gap": "decisions/0111 E4: check S22 read `ownership_map` out of the instance it was checking, so any arm file could exempt itself from S22 by editing one string in its own table -- and `d3_prime` and `retained_by_air_period` had no other backstop. The spec does not say where such a table lives.",
+      "what_was_done": "The table moved into src/step8b_validate.py, carrying the reasoning check S31 already recorded about duality: A TABLE READ FROM THE FILE UNDER TEST COULD ONLY AGREE WITH ITSELF. The file's own table is still read -- and is asserted AGAINST the external one, so a rewrite fails on the rewrite instead of escaping through it. The same route now warrants a check's N/A: a block missing because another step publishes it is out of scope by the external table, not by the file's own account of itself.",
+      "if_ruled_otherwise": "If a publisher assignment changes, it changes in the validator and in this generator, and the two are compared on every run. What must not happen is the checked file being the only place it is written down."
+    },
+    {
+      "choice": "The waterfall, the liveness exclusions and the per-air-period retention are Step 9's entries at EVERY arm this file shows, including the grid arm at W = 91.",
+      "spec_gap": "Once an arm entry is one step's measurement (decisions/0111 E2), each per-arm block has to sit in the entry of the step that publishes it -- and nothing states who publishes the waterfall, the liveness exclusion count and the retained-pair counts AT THE GRID ARMS. Step 13 runs the grid; the publisher table assigns those three blocks to Step 9.",
+      "what_was_done": "The table was followed mechanically: those blocks appear in Step 9 entries, so this file carries a Step 9 entry at W = 91 finale-anchored alongside Step 13's. Nothing was invented to fill it -- the same blocks, in the entry of the step the table names.",
+      "if_ruled_otherwise": "If the per-arm series across the W grid is Step 13's, the publisher table changes in ONE place -- in this generator and in the validator, which compare on every run -- and those blocks move into the Step 13 entries that already exist at each grid arm. No figure moves and no slot is added."
+    },
+    {
+      "choice": "The merge's input list records SOURCES, and the key was RENAMED to `sources_merged`.",
+      "spec_gap": "decisions/0111 E6: Step 14's `limitations` is a named NON-ARM-FILE source with its own provenance entry -- an eighth source, with no arm. Step 14 delivers a limits section rather than a schema file, so it was not one of the seven and had no way to be recorded.",
+      "what_was_done": "`arm_files_merged` became `sources_merged`; each entry carries a source_kind, an arm that is null for a non-arm-file source, and, for such a source, the blocks it fills. Every limitations entry names it in merged_from. The key was RENAMED rather than widened in place, so a merge still emitting the old one fails loudly instead of silently supplying a list that no longer means what it says.",
+      "if_ruled_otherwise": "If a second non-arm-file source appears -- another Human-Lead section, say -- it is added to the same list with its own fills_blocks, and check S30 requires its blocks to name it. Nothing else moves."
+    },
+    {
+      "choice": "Check S30 reads the input list in BOTH directions.",
+      "spec_gap": "decisions/0111 E3b: S30 checked payload -> input and never input -> payload, so A MERGE DROPPING AN ENTIRE DECLARED INPUT VALIDATED CLEAN. The shipped merged placeholder was occupied by exactly that: two of its seven declared inputs were named by no payload at all.",
+      "what_was_done": "Every declared source must be named by at least one payload's merged_from, and a non-arm-file source must be named by the blocks it declares it fills. Step 10's block carried no merge provenance at all because its arm is `sole` by construction, and Step 12's cut did not exist in the document; both are now emitted. It is M1 inverted -- one file supplying two arms was caught, one file supplying nothing was not, and it needs no forgery, only an omission.",
+      "if_ruled_otherwise": "If a source may legitimately supply nothing, it stops being an input and leaves the list. A declared input that supplies nothing is either a dropped arm or a list that has drifted from the merge."
     },
     {
       "choice": "Step 9's payload is nested under a per-producing-arm key.",
@@ -1541,7 +1521,7 @@
       "choice": "A merged payload names the arm FILE it came from, and the diff is a record rather than a flag.",
       "spec_gap": "task-sheet.md Step 13b says the merged document carries both arms' payloads and that the Human Lead diffs the arm files before the merge. It does not say how the merged file EVIDENCES that two arms were merged. Nothing did: a merged document assembled from ONE arm file, with the one payload deep-copied into the other arm's slot and relabelled, validated clean and published that the arms agreed everywhere.",
       "what_was_done": "Isolation is unobservable, but ARITY is observable. Each input file is a named object carrying its step and its arm; each payload names one of them in `merged_from`; and check S30 asserts that a block holding two arms names two DIFFERENT files, that the two arms' sampling-width convention labels differ -- they are named inputs the spec forbids reconciling, so one label on both arms is a reconciliation on its face -- and that each arm's intervals reference its OWN bootstrap settings. `diff_precedes_merge: true` is RETIRED: it was a sentence the schema required the file to contain rather than a fact the file records. What replaces it is checkable -- which pairs were diffed, naming two files each; how many figures were compared, which may not be zero; and how many divergences were found, which must equal the entry count.",
-      "if_ruled_otherwise": "None of this can establish that the two files were WRITTEN in isolation, and nothing in a file can. It raises the cost of a false merge from a copy-and-relabel to a fabricated second file, and the Human Lead's diff remains the control."
+      "if_ruled_otherwise": "None of this can establish that the two files were WRITTEN in isolation, and nothing in a file can. It raises the cost of a false merge from a copy-and-relabel to A FABRICATED INPUT FILE PLUS ONE REWRITTEN SENTENCE -- `convention_definition`, which S30 does not normalise (decisions/0111 §4) -- and past that rung there is no in-file signal at all. THE HUMAN LEAD'S DIFF REMAINS THE CONTROL."
     },
     {
       "choice": "Granularity is ONE FILE PER STEP PER ARM, and a single-arm step's file is illustrated rather than described.",
@@ -1614,14 +1594,19 @@
       "mitigation": "The diff between the two arm files is the control, and it is the Human Lead's. Nothing in this file substitutes for it."
     },
     {
-      "limit": "THE MERGE-ARITY RESIDUAL, MEASURED. Check S30 rejects a merged document whose second arm is a copy of the first when the copy keeps the first arm's merge provenance, bootstrap references or sampling-width convention label -- three independent legs, each of which a copy-and-relabel trips. It does NOT reject a copy in which all of those are relabelled as well, because at that point the file asserts that a second input file exists and nothing inside the file can contradict it.",
-      "consequence": "The remaining signal is that the two payloads are identical once the arm labels are normalised. S30 counts and reports that rather than failing it, because two arms may legitimately agree on every figure -- and in a placeholder every measurement is a sentinel, so identity is expected.",
-      "mitigation": "The cost of a false merge is raised from a copy-and-relabel to a fabricated input file. The control remains the Human Lead's diff between two files, which happens before this document is built."
+      "limit": "THE MERGE-ARITY RESIDUAL, MEASURED -- AND NARROWER THAN v1.3.0 PUBLISHED. Check S30 rejects a merged document whose second arm is a copy of the first when the copy keeps the first arm's merge provenance, bootstrap references or sampling-width convention label -- three independent legs, each of which a copy-and-relabel trips. It does NOT reject a copy in which all of those are relabelled as well, because at that point the file asserts that a second input file exists and nothing inside the file can contradict it. THE PUBLISHED LIMIT STOPPED THERE, AND THE ACTUAL LIMIT IS ONE RUNG LOWER (decisions/0111 §4): S30 normalises FIVE keys and NOT `convention_definition` -- one arm's sampling-width convention in that arm's own words -- and a forger making the copy internally coherent rewrites that sentence anyway. THE MOMENT THEY DO, the identical-payload signal inverts to 0 of N, WHICH IS WHAT A GENUINE MERGE PRODUCES.",
+      "consequence": "The remaining signal is that the two payloads are identical once those five keys are normalised. S30 counts and reports that rather than failing it, because two arms may legitimately agree on every figure -- and in a placeholder every measurement is a sentinel, so identity is expected. Past the rung above, the count separates nothing: SO S30 RAISES THE COST OF A FALSE MERGE TO A FABRICATED INPUT FILE PLUS ONE REWRITTEN SENTENCE, AND PAST THAT THERE IS NO IN-FILE SIGNAL AT ALL.",
+      "mitigation": "THE DIFF REMAINS THE CONTROL PAST THAT RUNG. It is the Human Lead's, it is between two files, and it happens before this document is built. Nothing in this file substitutes for it, and the selftest asserts the fully relabelled copy as a NON-failure so this limit cannot drift from the behaviour."
     },
     {
-      "limit": "A check whose sites all live in another step's blocks reports N/A in a file that does not carry them, and it says so by QUOTING the file's own absence records. It cannot tell an honest absence from a declared one.",
-      "consequence": "A writer that declares a block absent when it should have written it produces a file whose checks report N/A rather than VACUOUS. An emptiness with NO absence record behind it is not exempted and still fails.",
-      "mitigation": "Check S22 forbids an absence on the primary headline arm for the blocks THIS file's own step publishes, so the exemption cannot reach a block the file is responsible for."
+      "limit": "A check whose sites all live in another step's blocks reports N/A in a file that does not carry them. Until v1.4.0 it said so by QUOTING THE FILE'S OWN ABSENCE RECORDS, and could not tell an honest absence from a declared one. Since v1.4.0 the second route is the usual one: the block is not in the file at all, and the warrant is the EXTERNAL publisher table this build's validator holds, not a sentence the file wrote about itself.",
+      "consequence": "The external route cannot be talked out of: a file that omits a block its own step publishes fails check S22 rather than being exempted. The quoting route survives for the arms with no producer in the spec, and there a writer that declares a block absent when it should have written it still produces a file whose checks report N/A. An emptiness with NO warrant behind it is not exempted and still fails as VACUOUS.",
+      "mitigation": "Check S22 requires each arm entry to carry the blocks ITS OWN producing step publishes at the adopted setting, and check S36 forbids it any block another step publishes -- so neither direction is left to the file's own account of itself."
+    },
+    {
+      "limit": "One absence status in the enum, `awaiting_owner_step`, is exercised by no placeholder. The shape that used it is gone: it labelled another step's per-arm block sitting in this file as an absence naming its publisher, and under decisions/0111 E2 an arm entry is ONE STEP'S measurement, so another step's block is omitted rather than described.",
+      "consequence": "Step 16 is not built against that branch by any placeholder in this set. The status stays in the enum because a writer may genuinely be waiting on an owner step; every absence record renders identically, carrying a status, a reason and an owning step.",
+      "mitigation": "Check S21 lists the absence statuses a file does not exercise and does not require, so a restricted pass cannot be read as a full one."
     }
   ],
   "notes": {
@@ -1630,6 +1615,8 @@
     "reading_a_placeholder": "Check $.placeholder before reading anything else. This file's flag is true.",
     "bootstrap_is_fixed": "The resample count, the resampling unit for the outcome shares and the seed are fixed by the spec and are stated at $.bootstrap_spec, restated at every interval, and checked against each other. The statistic -- levels versus movements -- is NOT fixed, and differs between the arms.",
     "which_steps_are_dual": "Steps 9 and 13 are dual and nest their payloads per producing arm. Steps 10, 11 and 12 are single-arm and write one payload under `sole`. Which of the two a block used is a field, not something a consumer has to infer from the keys.",
+    "an_arm_entry_is_one_steps_measurement": "An arm entry is identified by (W_days, clock_origin, producing_step). Step 9's W = 108 and Step 13's W = 108 are different measurements of one setting and both appear, as separate entries. An entry carries the blocks its own producing step publishes and no others; $.block_ownership names each block's publisher, and a block missing from an entry is not a gap -- it is in the entry of the step that publishes it.",
+    "step_13s_non_headline_outputs_are_per_arm": "d3_prime, tested_ranges, conclusions_surviving, conclusions_not_surviving, d2_recomputed_inside_this_arm and action_type_counts each nest under by_producing_arm, exactly as the headline does. Step 13 is dual, so one slot would have been one slot where two arms write -- and the merge would have had to drop an arm or reconcile them.",
     "one_file_per_arm": "Each arm writes its own document and no arm writes into a document another arm writes into (decisions/0107). A DUAL STEP IS DIFFED BETWEEN TWO ARM FILES, BY THE HUMAN LEAD, BEFORE THE MERGE. The merged reader-facing document is Step 13b's, owned by the Human Lead, and it is the only document that holds both arms and the only one carrying cross_arm_divergences and limitations. Read $.document_scope first: it says which kind of file this is.",
     "where_the_two_conventions_are_held": "Where the two arms legitimately differ -- the bound over sampling width ratios use two conventions and are REPORTED, NOT RECONCILED -- the MERGED document holds both, under arms.a and arms.b. One slot per figure would force a reconciliation the spec forbids in the merged document; in a single arm's file it forces nothing, because there is no second arm's figure in it."
   }

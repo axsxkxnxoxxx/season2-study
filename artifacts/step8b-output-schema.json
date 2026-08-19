@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:season2-study:step8b-output-schema:1.3.0",
+  "$id": "urn:season2-study:step8b-output-schema:1.4.0",
   "title": "Season 2 abandonment study -- Step 16 results schema",
   "description": "The single output schema. Steps 9 through 13 write into it DIRECTLY, each ARM into its own file, and STEP 16 RENDERS FROM THE MERGED DOCUMENT that Step 13b builds from those files after the Human Lead has diffed the dual pairs (decisions/0107). Both kinds of file are instances of this one schema; $.document_scope says which kind a file is, and it is the first thing to read. There is no conversion layer: a conversion layer is a second definition of every figure. Validate with src/step8b_validate.py, which implements the JSON Schema subset used here plus the cross-field checks the schema language cannot express.",
   "type": "object",
@@ -28,10 +28,10 @@
   ],
   "properties": {
     "schema_version": {
-      "const": "1.3.0"
+      "const": "1.4.0"
     },
     "schema_id": {
-      "const": "urn:season2-study:step8b-output-schema:1.3.0"
+      "const": "urn:season2-study:step8b-output-schema:1.4.0"
     },
     "placeholder": {
       "type": "boolean",
@@ -161,7 +161,7 @@
           "required": [
             "owner_step",
             "owner_role",
-            "arm_files_merged",
+            "sources_merged",
             "diff",
             "blocks_only_the_merge_may_fill",
             "source"
@@ -173,24 +173,33 @@
             "owner_role": {
               "type": "string"
             },
-            "arm_files_merged": {
+            "sources_merged": {
               "type": "array",
               "minItems": 1,
               "uniqueItems": true,
-              "description": "ONE ENTRY PER INPUT FILE, AND AN INPUT FILE IS ONE STEP'S OUTPUT FOR ONE ARM. Human Lead ruling, decisions/0109 §1: granularity is ONE FILE PER STEP PER ARM, so Step 9 writes two files, Step 13 writes two and Steps 10, 11 and 12 write one each -- SEVEN inputs. Until v1.3.0 this was a list of free strings, which could not be read against the payloads it supplied; each entry now names its step and its arm, and check S30 asserts that every payload in the document names one of them and that a block holding two arms names two different ones.",
+              "description": "ONE ENTRY PER SOURCE. RENAMED FROM `arm_files_merged` AT v1.4.0 (decisions/0111 E6): THE INPUT LIST RECORDS SOURCES, NOT ONLY ARM FILES. Seven of them are arm files, one per step per arm (decisions/0109 §1): Step 9 writes two, Step 13 writes two, Steps 10, 11 and 12 write one each. THE EIGHTH IS STEP 14's `limitations`, which is a NAMED NON-ARM-FILE SOURCE WITH ITS OWN PROVENANCE ENTRY -- Step 14 delivers a limits section rather than a schema file, decisions/0109 moved Step 13b after it precisely so that block could be filled, and a ten-item bias ledger that must not be netted cannot arrive in the reader-facing document with no recorded provenance. It has NO ARM, and `arm` is null there rather than absent. The key was RENAMED rather than widened in place, so a merge still emitting the old key fails loudly against additionalProperties instead of silently supplying a list that no longer means what it says. Check S30 asserts BOTH directions: every payload names a declared source, AND every declared source is named by at least one payload.",
               "items": {
                 "type": "object",
                 "additionalProperties": false,
                 "required": [
                   "file_label",
                   "producing_step",
-                  "arm"
+                  "arm",
+                  "source_kind"
                 ],
                 "properties": {
                   "file_label": {
                     "type": "string",
                     "x-writer-text": true,
-                    "description": "How this input file is named. Payloads reference it by this label in `merged_from`."
+                    "description": "How this source is named. Payloads reference it by this label in `merged_from`."
+                  },
+                  "source_kind": {
+                    "enum": [
+                      "arm_file",
+                      "non_arm_file"
+                    ],
+                    "x-enum-id": "source_kind",
+                    "description": "`arm_file` -- one step's output for one arm, written against this schema. `non_arm_file` -- a source that is not a schema file at all, which is what Step 14's limits section is."
                   },
                   "producing_step": {
                     "enum": [
@@ -211,9 +220,11 @@
                     "enum": [
                       "a",
                       "b",
-                      "sole"
+                      "sole",
+                      null
                     ],
-                    "x-enum-id": "producing_arm"
+                    "x-enum-id": "producing_arm_or_none",
+                    "description": "The arm this source is, or null where the source has none. A non-arm-file source has no arm, and null says so rather than the field being dropped: an absent field and an inapplicable one must not look alike."
                   },
                   "step_dual_status": {
                     "enum": [
@@ -222,10 +233,52 @@
                     ],
                     "x-enum-id": "step_dual_status"
                   },
+                  "fills_blocks": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Which blocks of the merged document this source supplies. Stated for a non-arm-file source, whose payloads are not per-arm and so cannot be found by walking the arm keys."
+                  },
                   "source": {
                     "type": "string"
                   }
-                }
+                },
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "source_kind": {
+                          "const": "non_arm_file"
+                        }
+                      },
+                      "required": [
+                        "source_kind"
+                      ]
+                    },
+                    "then": {
+                      "required": [
+                        "fills_blocks"
+                      ],
+                      "properties": {
+                        "arm": {
+                          "const": null
+                        }
+                      }
+                    },
+                    "else": {
+                      "properties": {
+                        "arm": {
+                          "enum": [
+                            "a",
+                            "b",
+                            "sole"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                ]
               }
             },
             "diff": {
@@ -434,7 +487,8 @@
         "fields": {
           "const": [
             "W_days",
-            "clock_origin"
+            "clock_origin",
+            "producing_step"
           ]
         },
         "note": {
@@ -1357,34 +1411,14 @@
     },
     "tested_ranges": {
       "type": "object",
-      "description": "The ranges actually tested. An interactive Step 16 binds its controls to these so no reader can drive it somewhere that was never tested.",
-      "additionalProperties": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "values"
-        ],
-        "properties": {
-          "values": {
-            "type": "array"
-          },
-          "min": {
-            "type": [
-              "number",
-              "string",
-              "null"
-            ]
-          },
-          "max": {
-            "type": [
-              "number",
-              "string",
-              "null"
-            ]
-          },
-          "source": {
-            "type": "string"
-          }
+      "additionalProperties": false,
+      "required": [
+        "by_producing_arm"
+      ],
+      "description": "The ranges actually tested, PER PRODUCING ARM since v1.4.0 (decisions/0111 E1). An interactive Step 16 binds its controls to these so no reader can drive it somewhere that was never tested -- and the two arms of Step 13 may not have tested the same set, which one slot could not have said.",
+      "properties": {
+        "by_producing_arm": {
+          "$ref": "#/$defs/by_producing_arm_tested_ranges"
         }
       }
     },
@@ -1397,7 +1431,8 @@
         "required": [
           "id",
           "text",
-          "source"
+          "source",
+          "merged_from"
         ],
         "properties": {
           "id": {
@@ -1423,6 +1458,11 @@
           },
           "may_be_netted_with_others": {
             "const": false
+          },
+          "merged_from": {
+            "type": "string",
+            "x-writer-text": true,
+            "description": "WHICH SOURCE THIS LIMITATION CAME FROM, added at v1.4.0 (decisions/0111 E6). Step 14's limits section is a NAMED NON-ARM-FILE SOURCE with its own entry in $.document_scope.merge.sources_merged, and this is where an entry names it. A ten-item bias ledger that must not be netted cannot arrive in the reader-facing document with no recorded provenance."
           }
         }
       }
@@ -1509,14 +1549,14 @@
   },
   "x-generated-by": {
     "generator": "src/step8b_schema.py",
-    "generator_sha256_12": "f381fc40feca",
-    "generated_at_utc": "2026-08-18T23:31:00Z",
-    "build_tag": "step8b/a/2026-08-18",
-    "git_head_short": "9636ed9",
+    "generator_sha256_12": "e53fefbe8f35",
+    "generated_at_utc": "2026-08-19T00:31:43Z",
+    "build_tag": "step8b/a/2026-08-19",
+    "git_head_short": "6d7e58a",
     "host_step": "Step 8b, output schema",
     "written_by": "Analytics Engineer, instance a",
     "validator": "src/step8b_validate.py",
-    "validator_sha256_12": "95f71360ff1d",
+    "validator_sha256_12": "a4af26dbb6f9",
     "selftest": "src/step8b_selftest.py",
     "note": "This schema is generated. Correct it in the generator and rewrite both artifacts together; do not hand-edit either file."
   },
@@ -2528,7 +2568,7 @@
         "merged_from": {
           "type": "string",
           "x-writer-text": true,
-          "description": "WHICH ARM FILE THIS PAYLOAD CAME FROM. Required in the merged document, forbidden in an arm file (check S30), and it must name one of $.document_scope.merge.arm_files_merged. Added at v1.3.0 against reviewer-engineering's M1: a merged document assembled from ONE arm file, with the one payload deep-copied into the other arm's slot and relabelled, validated clean and published that the arms agreed everywhere -- a FALSE CLEAN in the block whose whole purpose is to report where they did not. ISOLATION IS UNOBSERVABLE, BUT ARITY IS OBSERVABLE: two arms are two payloads from two files, so each payload names its own file and check S30 asserts that a block holding two arms names two DIFFERENT files."
+          "description": "WHICH SOURCE THIS PAYLOAD CAME FROM. Required in the merged document, forbidden in an arm file (check S30), and it must name one of $.document_scope.merge.sources_merged -- renamed from arm_files_merged at v1.4.0, because the input list records SOURCES and one of them is not an arm file at all (decisions/0111 E6). Added at v1.3.0 against reviewer-engineering's M1: a merged document assembled from ONE arm file, with the one payload deep-copied into the other arm's slot and relabelled, validated clean and published that the arms agreed everywhere -- a FALSE CLEAN in the block whose whole purpose is to report where they did not. ISOLATION IS UNOBSERVABLE, BUT ARITY IS OBSERVABLE: two arms are two payloads from two files, so each payload names its own file and check S30 asserts that a block holding two arms names two DIFFERENT files."
         },
         "shares": {
           "type": "object",
@@ -2625,7 +2665,7 @@
     },
     "by_producing_arm": {
       "type": "object",
-      "description": "The producing arms of this block, AS TWO SEPARATE FACTS. SPLIT AT v1.2.0 under decisions/0107 §4. Until then one field, `dual_status`, carried both -- whether the STEP is dual AND whether the file holds two payloads -- so `dual` required both arms.a and arms.b and A DUAL STEP'S SINGLE-ARM FILE HAD NO LEGAL SHAPE AT ALL, while the ruling requires exactly that file. The two facts are now `step_dual_status`, a property of the STEP, and `arms_in_this_file`, a property of THIS FILE. A dual step's arm file names which arm it holds in `arm_held`; the merged document holds both under arms.a and arms.b; a single-arm step writes one payload under arms.sole. THE SINGLE-ARM BRANCH IS NOT LOOSENED BY THE SPLIT: a single-arm step may never hold two arms, which is the opposite defect and would otherwise validate silently. DUAL STEPS ARE 9 AND 13 (decisions/0103 §3); Steps 10, 11 and 12 are single-arm. The field was RENAMED rather than redefined in place, so a writer still carrying the old `dual_status` fails loudly against additionalProperties instead of silently acquiring a new meaning under an unchanged key.",
+      "description": "The producing arms of this block, AS TWO SEPARATE FACTS. SPLIT AT v1.2.0 under decisions/0107 §4. Until then one field, `dual_status`, carried both -- whether the STEP is dual AND whether the file holds two payloads -- so `dual` required both arms.a and arms.b and A DUAL STEP'S SINGLE-ARM FILE HAD NO LEGAL SHAPE AT ALL, while the ruling requires exactly that file. The two facts are now `step_dual_status`, a property of the STEP, and `arms_in_this_file`, a property of THIS FILE. A dual step's arm file names which arm it holds in `arm_held`; the merged document holds both under arms.a and arms.b; a single-arm step writes one payload under arms.sole. THE SINGLE-ARM BRANCH IS NOT LOOSENED BY THE SPLIT: a single-arm step may never hold two arms, which is the opposite defect and would otherwise validate silently. DUAL STEPS ARE 9 AND 13 (decisions/0103 §3); Steps 10, 11 and 12 are single-arm. The field was RENAMED rather than redefined in place, so a writer still carrying the old `dual_status` fails loudly against additionalProperties instead of silently acquiring a new meaning under an unchanged key.  SUBJECT: the headline payload -- the outcome shares, the two bounds and the ratios",
       "additionalProperties": false,
       "required": [
         "step_dual_status",
@@ -3167,6 +3207,22 @@
           ],
           "x-enum-id": "writer_step"
         },
+        "figures_owned_by_step": {
+          "enum": [
+            "step8",
+            "step8b",
+            "step9",
+            "step10",
+            "step11",
+            "step12",
+            "step13",
+            "step13b",
+            "step16",
+            "human_lead"
+          ],
+          "x-enum-id": "writer_step",
+          "description": "WHO OWNS THE FIGURES, where that is not who writes them here. Step 8 produces the waterfall and Step 9 publishes it into this schema; until v1.4.0 `written_by_step` carried Step 8 while $.block_ownership said Step 9 published it, so one block answered two different questions with one field and disagreed with the registry."
+        },
         "order_ref": {
           "type": "string"
         },
@@ -3341,6 +3397,11 @@
             "DERIV"
           ],
           "x-enum-id": "population"
+        },
+        "merged_from": {
+          "type": "string",
+          "x-writer-text": true,
+          "description": "Which input file this block came from; required in the merged document and forbidden in an arm file (check S30)."
         },
         "row_set": {
           "enum": [
@@ -3651,6 +3712,21 @@
             "human_lead"
           ],
           "x-enum-id": "writer_step"
+        },
+        "figures_owned_by_step": {
+          "enum": [
+            "step8",
+            "step8b",
+            "step9",
+            "step10",
+            "step11",
+            "step12",
+            "step13",
+            "step13b",
+            "step16",
+            "human_lead"
+          ],
+          "x-enum-id": "writer_step"
         }
       }
     },
@@ -3663,7 +3739,8 @@
         "cleared_count",
         "cleared_share_percent",
         "population_label",
-        "written_by_step"
+        "written_by_step",
+        "producing_arm"
       ],
       "properties": {
         "population": {
@@ -3672,6 +3749,19 @@
             "DERIV"
           ],
           "x-enum-id": "population"
+        },
+        "producing_arm": {
+          "enum": [
+            "a",
+            "b",
+            "sole"
+          ],
+          "x-enum-id": "producing_arm"
+        },
+        "merged_from": {
+          "type": "string",
+          "x-writer-text": true,
+          "description": "Which input file this payload came from; required in the merged document and forbidden in an arm file (check S30)."
         },
         "cleared_count": {
           "$ref": "#/$defs/count"
@@ -3744,6 +3834,21 @@
           ],
           "x-enum-id": "writer_step"
         },
+        "figures_owned_by_step": {
+          "enum": [
+            "step8",
+            "step8b",
+            "step9",
+            "step10",
+            "step11",
+            "step12",
+            "step13",
+            "step13b",
+            "step16",
+            "human_lead"
+          ],
+          "x-enum-id": "writer_step"
+        },
         "measured_after": {
           "type": "string",
           "description": "Which filter position the retention is measured after. The mandated order censors the position-4 output, and a count measured after a different position is a different figure."
@@ -3794,27 +3899,2052 @@
         }
       }
     },
+    "action_type_counts_payload": {
+      "type": "object",
+      "description": "Per-pair counts by action type, for one producing arm. `action` is record-level and the row is a pair, so there is no row-level action value (decisions/0070 ruling 4). PER-ARM SINCE v1.4.0 (decisions/0111 E1).",
+      "additionalProperties": false,
+      "required": [
+        "producing_arm",
+        "written_by_step",
+        "counts"
+      ],
+      "properties": {
+        "producing_arm": {
+          "enum": [
+            "a",
+            "b",
+            "sole"
+          ],
+          "x-enum-id": "producing_arm",
+          "description": "Which arm produced this payload; it must equal the key it sits under (check S28)."
+        },
+        "written_by_step": {
+          "enum": [
+            "step8",
+            "step8b",
+            "step9",
+            "step10",
+            "step11",
+            "step12",
+            "step13",
+            "step13b",
+            "step16",
+            "human_lead"
+          ],
+          "x-enum-id": "writer_step"
+        },
+        "merged_from": {
+          "type": "string",
+          "x-writer-text": true,
+          "description": "Which input file this payload came from. Required in the merged document and forbidden in an arm file (check S30), and it must name one of $.document_scope.merge.sources_merged."
+        },
+        "counts": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/count"
+          }
+        },
+        "note": {
+          "type": "string",
+          "description": "A note from the writer.  [writer text: carries the placeholder prefix in a placeholder]",
+          "x-writer-text": true
+        }
+      }
+    },
+    "tested_ranges_payload": {
+      "type": "object",
+      "description": "The ranges this arm actually tested. An interactive Step 16 binds its controls to these so no reader can drive it somewhere that was never tested. PER-ARM SINCE v1.4.0: two arms may test different ranges, and one slot could hold only one answer (decisions/0111 E1).",
+      "additionalProperties": false,
+      "required": [
+        "producing_arm",
+        "written_by_step",
+        "ranges"
+      ],
+      "properties": {
+        "producing_arm": {
+          "enum": [
+            "a",
+            "b",
+            "sole"
+          ],
+          "x-enum-id": "producing_arm",
+          "description": "Which arm produced this payload; it must equal the key it sits under (check S28)."
+        },
+        "written_by_step": {
+          "enum": [
+            "step8",
+            "step8b",
+            "step9",
+            "step10",
+            "step11",
+            "step12",
+            "step13",
+            "step13b",
+            "step16",
+            "human_lead"
+          ],
+          "x-enum-id": "writer_step"
+        },
+        "merged_from": {
+          "type": "string",
+          "x-writer-text": true,
+          "description": "Which input file this payload came from. Required in the merged document and forbidden in an arm file (check S30), and it must name one of $.document_scope.merge.sources_merged."
+        },
+        "ranges": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "values"
+            ],
+            "properties": {
+              "values": {
+                "type": "array"
+              },
+              "min": {
+                "type": [
+                  "number",
+                  "string",
+                  "null"
+                ]
+              },
+              "max": {
+                "type": [
+                  "number",
+                  "string",
+                  "null"
+                ]
+              },
+              "source": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "note": {
+          "type": "string",
+          "description": "A note from the writer.  [writer text: carries the placeholder prefix in a placeholder]",
+          "x-writer-text": true
+        }
+      }
+    },
+    "conclusions_payload": {
+      "type": "object",
+      "description": "The conclusions this arm found surviving, or not surviving, a variation. PER-ARM SINCE v1.4.0 (decisions/0111 E1): the two arms may reach different lists, and a single list would have to drop one arm's.",
+      "additionalProperties": false,
+      "required": [
+        "producing_arm",
+        "written_by_step",
+        "conclusions"
+      ],
+      "properties": {
+        "producing_arm": {
+          "enum": [
+            "a",
+            "b",
+            "sole"
+          ],
+          "x-enum-id": "producing_arm",
+          "description": "Which arm produced this payload; it must equal the key it sits under (check S28)."
+        },
+        "written_by_step": {
+          "enum": [
+            "step8",
+            "step8b",
+            "step9",
+            "step10",
+            "step11",
+            "step12",
+            "step13",
+            "step13b",
+            "step16",
+            "human_lead"
+          ],
+          "x-enum-id": "writer_step"
+        },
+        "merged_from": {
+          "type": "string",
+          "x-writer-text": true,
+          "description": "Which input file this payload came from. Required in the merged document and forbidden in an arm file (check S30), and it must name one of $.document_scope.merge.sources_merged."
+        },
+        "conclusions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "One conclusion, in the writing arm's words.  [writer text: carries the placeholder prefix in a placeholder]",
+            "x-writer-text": true
+          }
+        },
+        "note": {
+          "type": "string",
+          "description": "A note from the writer.  [writer text: carries the placeholder prefix in a placeholder]",
+          "x-writer-text": true
+        }
+      }
+    },
+    "d2_recomputed_payload": {
+      "type": "object",
+      "description": "D2's max() split recomputed inside this variation, for one producing arm. THREE categories, not two: finale binds, S1 completion binds, both bind -- a tie is its own category, not a tiebreak, and the count is NOT population-invariant (decisions/0070 ruling 5; decisions/0092 §3). PER-ARM SINCE v1.4.0.",
+      "additionalProperties": false,
+      "required": [
+        "producing_arm",
+        "written_by_step"
+      ],
+      "properties": {
+        "producing_arm": {
+          "enum": [
+            "a",
+            "b",
+            "sole"
+          ],
+          "x-enum-id": "producing_arm",
+          "description": "Which arm produced this payload; it must equal the key it sits under (check S28)."
+        },
+        "written_by_step": {
+          "enum": [
+            "step8",
+            "step8b",
+            "step9",
+            "step10",
+            "step11",
+            "step12",
+            "step13",
+            "step13b",
+            "step16",
+            "human_lead"
+          ],
+          "x-enum-id": "writer_step"
+        },
+        "merged_from": {
+          "type": "string",
+          "x-writer-text": true,
+          "description": "Which input file this payload came from. Required in the merged document and forbidden in an arm file (check S30), and it must name one of $.document_scope.merge.sources_merged."
+        },
+        "finale_binds": {
+          "$ref": "#/$defs/count"
+        },
+        "s1_completion_binds": {
+          "$ref": "#/$defs/count"
+        },
+        "both_bind": {
+          "$ref": "#/$defs/count"
+        },
+        "note": {
+          "type": "string",
+          "description": "A note from the writer.  [writer text: carries the placeholder prefix in a placeholder]",
+          "x-writer-text": true
+        }
+      }
+    },
+    "by_producing_arm_d3_prime": {
+      "type": "object",
+      "description": "The producing arms of this block, AS TWO SEPARATE FACTS. SPLIT AT v1.2.0 under decisions/0107 §4. Until then one field, `dual_status`, carried both -- whether the STEP is dual AND whether the file holds two payloads -- so `dual` required both arms.a and arms.b and A DUAL STEP'S SINGLE-ARM FILE HAD NO LEGAL SHAPE AT ALL, while the ruling requires exactly that file. The two facts are now `step_dual_status`, a property of the STEP, and `arms_in_this_file`, a property of THIS FILE. A dual step's arm file names which arm it holds in `arm_held`; the merged document holds both under arms.a and arms.b; a single-arm step writes one payload under arms.sole. THE SINGLE-ARM BRANCH IS NOT LOOSENED BY THE SPLIT: a single-arm step may never hold two arms, which is the opposite defect and would otherwise validate silently. DUAL STEPS ARE 9 AND 13 (decisions/0103 §3); Steps 10, 11 and 12 are single-arm. The field was RENAMED rather than redefined in place, so a writer still carrying the old `dual_status` fails loudly against additionalProperties instead of silently acquiring a new meaning under an unchanged key.  SUBJECT: D3's cleared count and share at this arm, for one population",
+      "additionalProperties": false,
+      "required": [
+        "step_dual_status",
+        "arms_in_this_file",
+        "producing_step",
+        "arms"
+      ],
+      "properties": {
+        "step_dual_status": {
+          "enum": [
+            "dual",
+            "single_arm"
+          ],
+          "x-enum-id": "step_dual_status",
+          "description": "FACT ONE, ABOUT THE STEP: whether the step that wrote this block runs twice in isolation. It does not change with the file it is written into."
+        },
+        "arms_in_this_file": {
+          "enum": [
+            "one_arm",
+            "both_arms"
+          ],
+          "x-enum-id": "arms_in_this_file",
+          "description": "FACT TWO, ABOUT THIS FILE: whether this file holds one arm's payload or both. One arm in an arm file, both only in the merged document Step 13b produces. A dual step written into an arm file is `dual` and `one_arm` at once, which is the combination the previous single field could not express."
+        },
+        "arm_held": {
+          "enum": [
+            "a",
+            "b",
+            "sole"
+          ],
+          "x-enum-id": "arm_held",
+          "description": "WHICH arm this file holds. Required when arms_in_this_file is one_arm -- a dual step's single-arm file must NAME the arm, not merely be shaped like one -- and forbidden when both_arms, where the arms keys carry it and a single name could only contradict one of them. Check S28 asserts it against the arms keys and against $.document_scope.arm."
+        },
+        "producing_step": {
+          "enum": [
+            "step8",
+            "step8b",
+            "step9",
+            "step10",
+            "step11",
+            "step12",
+            "step13",
+            "step13b",
+            "step16",
+            "human_lead"
+          ],
+          "x-enum-id": "writer_step",
+          "description": "WHICH STEP WROTE THIS BLOCK -- and, since v1.3.0, the field `step_dual_status` is READ AGAINST IT. Duality is a fixed fact of the spec, so the two cannot disagree: the allOf below pins each named step's status by const."
+        },
+        "step_dual_status_source": {
+          "type": "string",
+          "description": "Where the duality is ruled. Step 13's is decisions/0103 §3, which resolved a live CLAUDE.md / task-sheet.md conflict."
+        },
+        "arms": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "a": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/d3_prime_block"
+                },
+                {
+                  "$ref": "#/$defs/absence"
+                }
+              ]
+            },
+            "b": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/d3_prime_block"
+                },
+                {
+                  "$ref": "#/$defs/absence"
+                }
+              ]
+            },
+            "sole": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/d3_prime_block"
+                },
+                {
+                  "$ref": "#/$defs/absence"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "step_dual_status": {
+                "const": "single_arm"
+              }
+            },
+            "required": [
+              "step_dual_status"
+            ]
+          },
+          "then": {
+            "required": [
+              "arm_held"
+            ],
+            "properties": {
+              "arms_in_this_file": {
+                "const": "one_arm"
+              },
+              "arm_held": {
+                "const": "sole"
+              },
+              "arms": {
+                "required": [
+                  "sole"
+                ],
+                "allOf": [
+                  {
+                    "not": {
+                      "required": [
+                        "a"
+                      ]
+                    }
+                  },
+                  {
+                    "not": {
+                      "required": [
+                        "b"
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "allOf": [
+              {
+                "properties": {
+                  "step_dual_status": {
+                    "const": "dual"
+                  }
+                },
+                "required": [
+                  "step_dual_status"
+                ]
+              },
+              {
+                "properties": {
+                  "arms_in_this_file": {
+                    "const": "one_arm"
+                  }
+                },
+                "required": [
+                  "arms_in_this_file"
+                ]
+              }
+            ]
+          },
+          "then": {
+            "required": [
+              "arm_held"
+            ],
+            "properties": {
+              "arm_held": {
+                "enum": [
+                  "a",
+                  "b"
+                ]
+              },
+              "arms": {
+                "allOf": [
+                  {
+                    "anyOf": [
+                      {
+                        "required": [
+                          "a"
+                        ]
+                      },
+                      {
+                        "required": [
+                          "b"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "not": {
+                      "required": [
+                        "a",
+                        "b"
+                      ]
+                    }
+                  },
+                  {
+                    "not": {
+                      "required": [
+                        "sole"
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "allOf": [
+              {
+                "properties": {
+                  "step_dual_status": {
+                    "const": "dual"
+                  }
+                },
+                "required": [
+                  "step_dual_status"
+                ]
+              },
+              {
+                "properties": {
+                  "arms_in_this_file": {
+                    "const": "both_arms"
+                  }
+                },
+                "required": [
+                  "arms_in_this_file"
+                ]
+              }
+            ]
+          },
+          "then": {
+            "not": {
+              "required": [
+                "arm_held"
+              ]
+            },
+            "properties": {
+              "arms": {
+                "required": [
+                  "a",
+                  "b"
+                ],
+                "not": {
+                  "required": [
+                    "sole"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "producing_step": {
+                "const": "step9"
+              }
+            },
+            "required": [
+              "producing_step"
+            ]
+          },
+          "then": {
+            "properties": {
+              "step_dual_status": {
+                "const": "dual"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "producing_step": {
+                "const": "step10"
+              }
+            },
+            "required": [
+              "producing_step"
+            ]
+          },
+          "then": {
+            "properties": {
+              "step_dual_status": {
+                "const": "single_arm"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "producing_step": {
+                "const": "step11"
+              }
+            },
+            "required": [
+              "producing_step"
+            ]
+          },
+          "then": {
+            "properties": {
+              "step_dual_status": {
+                "const": "single_arm"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "producing_step": {
+                "const": "step12"
+              }
+            },
+            "required": [
+              "producing_step"
+            ]
+          },
+          "then": {
+            "properties": {
+              "step_dual_status": {
+                "const": "single_arm"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "producing_step": {
+                "const": "step13"
+              }
+            },
+            "required": [
+              "producing_step"
+            ]
+          },
+          "then": {
+            "properties": {
+              "step_dual_status": {
+                "const": "dual"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "by_producing_arm_action_counts": {
+      "type": "object",
+      "description": "The producing arms of this block, AS TWO SEPARATE FACTS. SPLIT AT v1.2.0 under decisions/0107 §4. Until then one field, `dual_status`, carried both -- whether the STEP is dual AND whether the file holds two payloads -- so `dual` required both arms.a and arms.b and A DUAL STEP'S SINGLE-ARM FILE HAD NO LEGAL SHAPE AT ALL, while the ruling requires exactly that file. The two facts are now `step_dual_status`, a property of the STEP, and `arms_in_this_file`, a property of THIS FILE. A dual step's arm file names which arm it holds in `arm_held`; the merged document holds both under arms.a and arms.b; a single-arm step writes one payload under arms.sole. THE SINGLE-ARM BRANCH IS NOT LOOSENED BY THE SPLIT: a single-arm step may never hold two arms, which is the opposite defect and would otherwise validate silently. DUAL STEPS ARE 9 AND 13 (decisions/0103 §3); Steps 10, 11 and 12 are single-arm. The field was RENAMED rather than redefined in place, so a writer still carrying the old `dual_status` fails loudly against additionalProperties instead of silently acquiring a new meaning under an unchanged key.  SUBJECT: the per-pair counts by action type",
+      "additionalProperties": false,
+      "required": [
+        "step_dual_status",
+        "arms_in_this_file",
+        "producing_step",
+        "arms"
+      ],
+      "properties": {
+        "step_dual_status": {
+          "enum": [
+            "dual",
+            "single_arm"
+          ],
+          "x-enum-id": "step_dual_status",
+          "description": "FACT ONE, ABOUT THE STEP: whether the step that wrote this block runs twice in isolation. It does not change with the file it is written into."
+        },
+        "arms_in_this_file": {
+          "enum": [
+            "one_arm",
+            "both_arms"
+          ],
+          "x-enum-id": "arms_in_this_file",
+          "description": "FACT TWO, ABOUT THIS FILE: whether this file holds one arm's payload or both. One arm in an arm file, both only in the merged document Step 13b produces. A dual step written into an arm file is `dual` and `one_arm` at once, which is the combination the previous single field could not express."
+        },
+        "arm_held": {
+          "enum": [
+            "a",
+            "b",
+            "sole"
+          ],
+          "x-enum-id": "arm_held",
+          "description": "WHICH arm this file holds. Required when arms_in_this_file is one_arm -- a dual step's single-arm file must NAME the arm, not merely be shaped like one -- and forbidden when both_arms, where the arms keys carry it and a single name could only contradict one of them. Check S28 asserts it against the arms keys and against $.document_scope.arm."
+        },
+        "producing_step": {
+          "enum": [
+            "step8",
+            "step8b",
+            "step9",
+            "step10",
+            "step11",
+            "step12",
+            "step13",
+            "step13b",
+            "step16",
+            "human_lead"
+          ],
+          "x-enum-id": "writer_step",
+          "description": "WHICH STEP WROTE THIS BLOCK -- and, since v1.3.0, the field `step_dual_status` is READ AGAINST IT. Duality is a fixed fact of the spec, so the two cannot disagree: the allOf below pins each named step's status by const."
+        },
+        "step_dual_status_source": {
+          "type": "string",
+          "description": "Where the duality is ruled. Step 13's is decisions/0103 §3, which resolved a live CLAUDE.md / task-sheet.md conflict."
+        },
+        "arms": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "a": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/action_type_counts_payload"
+                },
+                {
+                  "$ref": "#/$defs/absence"
+                }
+              ]
+            },
+            "b": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/action_type_counts_payload"
+                },
+                {
+                  "$ref": "#/$defs/absence"
+                }
+              ]
+            },
+            "sole": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/action_type_counts_payload"
+                },
+                {
+                  "$ref": "#/$defs/absence"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "step_dual_status": {
+                "const": "single_arm"
+              }
+            },
+            "required": [
+              "step_dual_status"
+            ]
+          },
+          "then": {
+            "required": [
+              "arm_held"
+            ],
+            "properties": {
+              "arms_in_this_file": {
+                "const": "one_arm"
+              },
+              "arm_held": {
+                "const": "sole"
+              },
+              "arms": {
+                "required": [
+                  "sole"
+                ],
+                "allOf": [
+                  {
+                    "not": {
+                      "required": [
+                        "a"
+                      ]
+                    }
+                  },
+                  {
+                    "not": {
+                      "required": [
+                        "b"
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "allOf": [
+              {
+                "properties": {
+                  "step_dual_status": {
+                    "const": "dual"
+                  }
+                },
+                "required": [
+                  "step_dual_status"
+                ]
+              },
+              {
+                "properties": {
+                  "arms_in_this_file": {
+                    "const": "one_arm"
+                  }
+                },
+                "required": [
+                  "arms_in_this_file"
+                ]
+              }
+            ]
+          },
+          "then": {
+            "required": [
+              "arm_held"
+            ],
+            "properties": {
+              "arm_held": {
+                "enum": [
+                  "a",
+                  "b"
+                ]
+              },
+              "arms": {
+                "allOf": [
+                  {
+                    "anyOf": [
+                      {
+                        "required": [
+                          "a"
+                        ]
+                      },
+                      {
+                        "required": [
+                          "b"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "not": {
+                      "required": [
+                        "a",
+                        "b"
+                      ]
+                    }
+                  },
+                  {
+                    "not": {
+                      "required": [
+                        "sole"
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "allOf": [
+              {
+                "properties": {
+                  "step_dual_status": {
+                    "const": "dual"
+                  }
+                },
+                "required": [
+                  "step_dual_status"
+                ]
+              },
+              {
+                "properties": {
+                  "arms_in_this_file": {
+                    "const": "both_arms"
+                  }
+                },
+                "required": [
+                  "arms_in_this_file"
+                ]
+              }
+            ]
+          },
+          "then": {
+            "not": {
+              "required": [
+                "arm_held"
+              ]
+            },
+            "properties": {
+              "arms": {
+                "required": [
+                  "a",
+                  "b"
+                ],
+                "not": {
+                  "required": [
+                    "sole"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "producing_step": {
+                "const": "step9"
+              }
+            },
+            "required": [
+              "producing_step"
+            ]
+          },
+          "then": {
+            "properties": {
+              "step_dual_status": {
+                "const": "dual"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "producing_step": {
+                "const": "step10"
+              }
+            },
+            "required": [
+              "producing_step"
+            ]
+          },
+          "then": {
+            "properties": {
+              "step_dual_status": {
+                "const": "single_arm"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "producing_step": {
+                "const": "step11"
+              }
+            },
+            "required": [
+              "producing_step"
+            ]
+          },
+          "then": {
+            "properties": {
+              "step_dual_status": {
+                "const": "single_arm"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "producing_step": {
+                "const": "step12"
+              }
+            },
+            "required": [
+              "producing_step"
+            ]
+          },
+          "then": {
+            "properties": {
+              "step_dual_status": {
+                "const": "single_arm"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "producing_step": {
+                "const": "step13"
+              }
+            },
+            "required": [
+              "producing_step"
+            ]
+          },
+          "then": {
+            "properties": {
+              "step_dual_status": {
+                "const": "dual"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "by_producing_arm_tested_ranges": {
+      "type": "object",
+      "description": "The producing arms of this block, AS TWO SEPARATE FACTS. SPLIT AT v1.2.0 under decisions/0107 §4. Until then one field, `dual_status`, carried both -- whether the STEP is dual AND whether the file holds two payloads -- so `dual` required both arms.a and arms.b and A DUAL STEP'S SINGLE-ARM FILE HAD NO LEGAL SHAPE AT ALL, while the ruling requires exactly that file. The two facts are now `step_dual_status`, a property of the STEP, and `arms_in_this_file`, a property of THIS FILE. A dual step's arm file names which arm it holds in `arm_held`; the merged document holds both under arms.a and arms.b; a single-arm step writes one payload under arms.sole. THE SINGLE-ARM BRANCH IS NOT LOOSENED BY THE SPLIT: a single-arm step may never hold two arms, which is the opposite defect and would otherwise validate silently. DUAL STEPS ARE 9 AND 13 (decisions/0103 §3); Steps 10, 11 and 12 are single-arm. The field was RENAMED rather than redefined in place, so a writer still carrying the old `dual_status` fails loudly against additionalProperties instead of silently acquiring a new meaning under an unchanged key.  SUBJECT: the tested ranges",
+      "additionalProperties": false,
+      "required": [
+        "step_dual_status",
+        "arms_in_this_file",
+        "producing_step",
+        "arms"
+      ],
+      "properties": {
+        "step_dual_status": {
+          "enum": [
+            "dual",
+            "single_arm"
+          ],
+          "x-enum-id": "step_dual_status",
+          "description": "FACT ONE, ABOUT THE STEP: whether the step that wrote this block runs twice in isolation. It does not change with the file it is written into."
+        },
+        "arms_in_this_file": {
+          "enum": [
+            "one_arm",
+            "both_arms"
+          ],
+          "x-enum-id": "arms_in_this_file",
+          "description": "FACT TWO, ABOUT THIS FILE: whether this file holds one arm's payload or both. One arm in an arm file, both only in the merged document Step 13b produces. A dual step written into an arm file is `dual` and `one_arm` at once, which is the combination the previous single field could not express."
+        },
+        "arm_held": {
+          "enum": [
+            "a",
+            "b",
+            "sole"
+          ],
+          "x-enum-id": "arm_held",
+          "description": "WHICH arm this file holds. Required when arms_in_this_file is one_arm -- a dual step's single-arm file must NAME the arm, not merely be shaped like one -- and forbidden when both_arms, where the arms keys carry it and a single name could only contradict one of them. Check S28 asserts it against the arms keys and against $.document_scope.arm."
+        },
+        "producing_step": {
+          "enum": [
+            "step8",
+            "step8b",
+            "step9",
+            "step10",
+            "step11",
+            "step12",
+            "step13",
+            "step13b",
+            "step16",
+            "human_lead"
+          ],
+          "x-enum-id": "writer_step",
+          "description": "WHICH STEP WROTE THIS BLOCK -- and, since v1.3.0, the field `step_dual_status` is READ AGAINST IT. Duality is a fixed fact of the spec, so the two cannot disagree: the allOf below pins each named step's status by const."
+        },
+        "step_dual_status_source": {
+          "type": "string",
+          "description": "Where the duality is ruled. Step 13's is decisions/0103 §3, which resolved a live CLAUDE.md / task-sheet.md conflict."
+        },
+        "arms": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "a": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/tested_ranges_payload"
+                },
+                {
+                  "$ref": "#/$defs/absence"
+                }
+              ]
+            },
+            "b": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/tested_ranges_payload"
+                },
+                {
+                  "$ref": "#/$defs/absence"
+                }
+              ]
+            },
+            "sole": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/tested_ranges_payload"
+                },
+                {
+                  "$ref": "#/$defs/absence"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "step_dual_status": {
+                "const": "single_arm"
+              }
+            },
+            "required": [
+              "step_dual_status"
+            ]
+          },
+          "then": {
+            "required": [
+              "arm_held"
+            ],
+            "properties": {
+              "arms_in_this_file": {
+                "const": "one_arm"
+              },
+              "arm_held": {
+                "const": "sole"
+              },
+              "arms": {
+                "required": [
+                  "sole"
+                ],
+                "allOf": [
+                  {
+                    "not": {
+                      "required": [
+                        "a"
+                      ]
+                    }
+                  },
+                  {
+                    "not": {
+                      "required": [
+                        "b"
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "allOf": [
+              {
+                "properties": {
+                  "step_dual_status": {
+                    "const": "dual"
+                  }
+                },
+                "required": [
+                  "step_dual_status"
+                ]
+              },
+              {
+                "properties": {
+                  "arms_in_this_file": {
+                    "const": "one_arm"
+                  }
+                },
+                "required": [
+                  "arms_in_this_file"
+                ]
+              }
+            ]
+          },
+          "then": {
+            "required": [
+              "arm_held"
+            ],
+            "properties": {
+              "arm_held": {
+                "enum": [
+                  "a",
+                  "b"
+                ]
+              },
+              "arms": {
+                "allOf": [
+                  {
+                    "anyOf": [
+                      {
+                        "required": [
+                          "a"
+                        ]
+                      },
+                      {
+                        "required": [
+                          "b"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "not": {
+                      "required": [
+                        "a",
+                        "b"
+                      ]
+                    }
+                  },
+                  {
+                    "not": {
+                      "required": [
+                        "sole"
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "allOf": [
+              {
+                "properties": {
+                  "step_dual_status": {
+                    "const": "dual"
+                  }
+                },
+                "required": [
+                  "step_dual_status"
+                ]
+              },
+              {
+                "properties": {
+                  "arms_in_this_file": {
+                    "const": "both_arms"
+                  }
+                },
+                "required": [
+                  "arms_in_this_file"
+                ]
+              }
+            ]
+          },
+          "then": {
+            "not": {
+              "required": [
+                "arm_held"
+              ]
+            },
+            "properties": {
+              "arms": {
+                "required": [
+                  "a",
+                  "b"
+                ],
+                "not": {
+                  "required": [
+                    "sole"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "producing_step": {
+                "const": "step9"
+              }
+            },
+            "required": [
+              "producing_step"
+            ]
+          },
+          "then": {
+            "properties": {
+              "step_dual_status": {
+                "const": "dual"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "producing_step": {
+                "const": "step10"
+              }
+            },
+            "required": [
+              "producing_step"
+            ]
+          },
+          "then": {
+            "properties": {
+              "step_dual_status": {
+                "const": "single_arm"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "producing_step": {
+                "const": "step11"
+              }
+            },
+            "required": [
+              "producing_step"
+            ]
+          },
+          "then": {
+            "properties": {
+              "step_dual_status": {
+                "const": "single_arm"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "producing_step": {
+                "const": "step12"
+              }
+            },
+            "required": [
+              "producing_step"
+            ]
+          },
+          "then": {
+            "properties": {
+              "step_dual_status": {
+                "const": "single_arm"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "producing_step": {
+                "const": "step13"
+              }
+            },
+            "required": [
+              "producing_step"
+            ]
+          },
+          "then": {
+            "properties": {
+              "step_dual_status": {
+                "const": "dual"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "by_producing_arm_conclusions": {
+      "type": "object",
+      "description": "The producing arms of this block, AS TWO SEPARATE FACTS. SPLIT AT v1.2.0 under decisions/0107 §4. Until then one field, `dual_status`, carried both -- whether the STEP is dual AND whether the file holds two payloads -- so `dual` required both arms.a and arms.b and A DUAL STEP'S SINGLE-ARM FILE HAD NO LEGAL SHAPE AT ALL, while the ruling requires exactly that file. The two facts are now `step_dual_status`, a property of the STEP, and `arms_in_this_file`, a property of THIS FILE. A dual step's arm file names which arm it holds in `arm_held`; the merged document holds both under arms.a and arms.b; a single-arm step writes one payload under arms.sole. THE SINGLE-ARM BRANCH IS NOT LOOSENED BY THE SPLIT: a single-arm step may never hold two arms, which is the opposite defect and would otherwise validate silently. DUAL STEPS ARE 9 AND 13 (decisions/0103 §3); Steps 10, 11 and 12 are single-arm. The field was RENAMED rather than redefined in place, so a writer still carrying the old `dual_status` fails loudly against additionalProperties instead of silently acquiring a new meaning under an unchanged key.  SUBJECT: a list of conclusions surviving, or not surviving, a variation",
+      "additionalProperties": false,
+      "required": [
+        "step_dual_status",
+        "arms_in_this_file",
+        "producing_step",
+        "arms"
+      ],
+      "properties": {
+        "step_dual_status": {
+          "enum": [
+            "dual",
+            "single_arm"
+          ],
+          "x-enum-id": "step_dual_status",
+          "description": "FACT ONE, ABOUT THE STEP: whether the step that wrote this block runs twice in isolation. It does not change with the file it is written into."
+        },
+        "arms_in_this_file": {
+          "enum": [
+            "one_arm",
+            "both_arms"
+          ],
+          "x-enum-id": "arms_in_this_file",
+          "description": "FACT TWO, ABOUT THIS FILE: whether this file holds one arm's payload or both. One arm in an arm file, both only in the merged document Step 13b produces. A dual step written into an arm file is `dual` and `one_arm` at once, which is the combination the previous single field could not express."
+        },
+        "arm_held": {
+          "enum": [
+            "a",
+            "b",
+            "sole"
+          ],
+          "x-enum-id": "arm_held",
+          "description": "WHICH arm this file holds. Required when arms_in_this_file is one_arm -- a dual step's single-arm file must NAME the arm, not merely be shaped like one -- and forbidden when both_arms, where the arms keys carry it and a single name could only contradict one of them. Check S28 asserts it against the arms keys and against $.document_scope.arm."
+        },
+        "producing_step": {
+          "enum": [
+            "step8",
+            "step8b",
+            "step9",
+            "step10",
+            "step11",
+            "step12",
+            "step13",
+            "step13b",
+            "step16",
+            "human_lead"
+          ],
+          "x-enum-id": "writer_step",
+          "description": "WHICH STEP WROTE THIS BLOCK -- and, since v1.3.0, the field `step_dual_status` is READ AGAINST IT. Duality is a fixed fact of the spec, so the two cannot disagree: the allOf below pins each named step's status by const."
+        },
+        "step_dual_status_source": {
+          "type": "string",
+          "description": "Where the duality is ruled. Step 13's is decisions/0103 §3, which resolved a live CLAUDE.md / task-sheet.md conflict."
+        },
+        "arms": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "a": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/conclusions_payload"
+                },
+                {
+                  "$ref": "#/$defs/absence"
+                }
+              ]
+            },
+            "b": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/conclusions_payload"
+                },
+                {
+                  "$ref": "#/$defs/absence"
+                }
+              ]
+            },
+            "sole": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/conclusions_payload"
+                },
+                {
+                  "$ref": "#/$defs/absence"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "step_dual_status": {
+                "const": "single_arm"
+              }
+            },
+            "required": [
+              "step_dual_status"
+            ]
+          },
+          "then": {
+            "required": [
+              "arm_held"
+            ],
+            "properties": {
+              "arms_in_this_file": {
+                "const": "one_arm"
+              },
+              "arm_held": {
+                "const": "sole"
+              },
+              "arms": {
+                "required": [
+                  "sole"
+                ],
+                "allOf": [
+                  {
+                    "not": {
+                      "required": [
+                        "a"
+                      ]
+                    }
+                  },
+                  {
+                    "not": {
+                      "required": [
+                        "b"
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "allOf": [
+              {
+                "properties": {
+                  "step_dual_status": {
+                    "const": "dual"
+                  }
+                },
+                "required": [
+                  "step_dual_status"
+                ]
+              },
+              {
+                "properties": {
+                  "arms_in_this_file": {
+                    "const": "one_arm"
+                  }
+                },
+                "required": [
+                  "arms_in_this_file"
+                ]
+              }
+            ]
+          },
+          "then": {
+            "required": [
+              "arm_held"
+            ],
+            "properties": {
+              "arm_held": {
+                "enum": [
+                  "a",
+                  "b"
+                ]
+              },
+              "arms": {
+                "allOf": [
+                  {
+                    "anyOf": [
+                      {
+                        "required": [
+                          "a"
+                        ]
+                      },
+                      {
+                        "required": [
+                          "b"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "not": {
+                      "required": [
+                        "a",
+                        "b"
+                      ]
+                    }
+                  },
+                  {
+                    "not": {
+                      "required": [
+                        "sole"
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "allOf": [
+              {
+                "properties": {
+                  "step_dual_status": {
+                    "const": "dual"
+                  }
+                },
+                "required": [
+                  "step_dual_status"
+                ]
+              },
+              {
+                "properties": {
+                  "arms_in_this_file": {
+                    "const": "both_arms"
+                  }
+                },
+                "required": [
+                  "arms_in_this_file"
+                ]
+              }
+            ]
+          },
+          "then": {
+            "not": {
+              "required": [
+                "arm_held"
+              ]
+            },
+            "properties": {
+              "arms": {
+                "required": [
+                  "a",
+                  "b"
+                ],
+                "not": {
+                  "required": [
+                    "sole"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "producing_step": {
+                "const": "step9"
+              }
+            },
+            "required": [
+              "producing_step"
+            ]
+          },
+          "then": {
+            "properties": {
+              "step_dual_status": {
+                "const": "dual"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "producing_step": {
+                "const": "step10"
+              }
+            },
+            "required": [
+              "producing_step"
+            ]
+          },
+          "then": {
+            "properties": {
+              "step_dual_status": {
+                "const": "single_arm"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "producing_step": {
+                "const": "step11"
+              }
+            },
+            "required": [
+              "producing_step"
+            ]
+          },
+          "then": {
+            "properties": {
+              "step_dual_status": {
+                "const": "single_arm"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "producing_step": {
+                "const": "step12"
+              }
+            },
+            "required": [
+              "producing_step"
+            ]
+          },
+          "then": {
+            "properties": {
+              "step_dual_status": {
+                "const": "single_arm"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "producing_step": {
+                "const": "step13"
+              }
+            },
+            "required": [
+              "producing_step"
+            ]
+          },
+          "then": {
+            "properties": {
+              "step_dual_status": {
+                "const": "dual"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "by_producing_arm_d2_recomputed": {
+      "type": "object",
+      "description": "The producing arms of this block, AS TWO SEPARATE FACTS. SPLIT AT v1.2.0 under decisions/0107 §4. Until then one field, `dual_status`, carried both -- whether the STEP is dual AND whether the file holds two payloads -- so `dual` required both arms.a and arms.b and A DUAL STEP'S SINGLE-ARM FILE HAD NO LEGAL SHAPE AT ALL, while the ruling requires exactly that file. The two facts are now `step_dual_status`, a property of the STEP, and `arms_in_this_file`, a property of THIS FILE. A dual step's arm file names which arm it holds in `arm_held`; the merged document holds both under arms.a and arms.b; a single-arm step writes one payload under arms.sole. THE SINGLE-ARM BRANCH IS NOT LOOSENED BY THE SPLIT: a single-arm step may never hold two arms, which is the opposite defect and would otherwise validate silently. DUAL STEPS ARE 9 AND 13 (decisions/0103 §3); Steps 10, 11 and 12 are single-arm. The field was RENAMED rather than redefined in place, so a writer still carrying the old `dual_status` fails loudly against additionalProperties instead of silently acquiring a new meaning under an unchanged key.  SUBJECT: D2's three-category max() split recomputed inside this variation",
+      "additionalProperties": false,
+      "required": [
+        "step_dual_status",
+        "arms_in_this_file",
+        "producing_step",
+        "arms"
+      ],
+      "properties": {
+        "step_dual_status": {
+          "enum": [
+            "dual",
+            "single_arm"
+          ],
+          "x-enum-id": "step_dual_status",
+          "description": "FACT ONE, ABOUT THE STEP: whether the step that wrote this block runs twice in isolation. It does not change with the file it is written into."
+        },
+        "arms_in_this_file": {
+          "enum": [
+            "one_arm",
+            "both_arms"
+          ],
+          "x-enum-id": "arms_in_this_file",
+          "description": "FACT TWO, ABOUT THIS FILE: whether this file holds one arm's payload or both. One arm in an arm file, both only in the merged document Step 13b produces. A dual step written into an arm file is `dual` and `one_arm` at once, which is the combination the previous single field could not express."
+        },
+        "arm_held": {
+          "enum": [
+            "a",
+            "b",
+            "sole"
+          ],
+          "x-enum-id": "arm_held",
+          "description": "WHICH arm this file holds. Required when arms_in_this_file is one_arm -- a dual step's single-arm file must NAME the arm, not merely be shaped like one -- and forbidden when both_arms, where the arms keys carry it and a single name could only contradict one of them. Check S28 asserts it against the arms keys and against $.document_scope.arm."
+        },
+        "producing_step": {
+          "enum": [
+            "step8",
+            "step8b",
+            "step9",
+            "step10",
+            "step11",
+            "step12",
+            "step13",
+            "step13b",
+            "step16",
+            "human_lead"
+          ],
+          "x-enum-id": "writer_step",
+          "description": "WHICH STEP WROTE THIS BLOCK -- and, since v1.3.0, the field `step_dual_status` is READ AGAINST IT. Duality is a fixed fact of the spec, so the two cannot disagree: the allOf below pins each named step's status by const."
+        },
+        "step_dual_status_source": {
+          "type": "string",
+          "description": "Where the duality is ruled. Step 13's is decisions/0103 §3, which resolved a live CLAUDE.md / task-sheet.md conflict."
+        },
+        "arms": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "a": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/d2_recomputed_payload"
+                },
+                {
+                  "$ref": "#/$defs/absence"
+                }
+              ]
+            },
+            "b": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/d2_recomputed_payload"
+                },
+                {
+                  "$ref": "#/$defs/absence"
+                }
+              ]
+            },
+            "sole": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/d2_recomputed_payload"
+                },
+                {
+                  "$ref": "#/$defs/absence"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "step_dual_status": {
+                "const": "single_arm"
+              }
+            },
+            "required": [
+              "step_dual_status"
+            ]
+          },
+          "then": {
+            "required": [
+              "arm_held"
+            ],
+            "properties": {
+              "arms_in_this_file": {
+                "const": "one_arm"
+              },
+              "arm_held": {
+                "const": "sole"
+              },
+              "arms": {
+                "required": [
+                  "sole"
+                ],
+                "allOf": [
+                  {
+                    "not": {
+                      "required": [
+                        "a"
+                      ]
+                    }
+                  },
+                  {
+                    "not": {
+                      "required": [
+                        "b"
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "allOf": [
+              {
+                "properties": {
+                  "step_dual_status": {
+                    "const": "dual"
+                  }
+                },
+                "required": [
+                  "step_dual_status"
+                ]
+              },
+              {
+                "properties": {
+                  "arms_in_this_file": {
+                    "const": "one_arm"
+                  }
+                },
+                "required": [
+                  "arms_in_this_file"
+                ]
+              }
+            ]
+          },
+          "then": {
+            "required": [
+              "arm_held"
+            ],
+            "properties": {
+              "arm_held": {
+                "enum": [
+                  "a",
+                  "b"
+                ]
+              },
+              "arms": {
+                "allOf": [
+                  {
+                    "anyOf": [
+                      {
+                        "required": [
+                          "a"
+                        ]
+                      },
+                      {
+                        "required": [
+                          "b"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "not": {
+                      "required": [
+                        "a",
+                        "b"
+                      ]
+                    }
+                  },
+                  {
+                    "not": {
+                      "required": [
+                        "sole"
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "allOf": [
+              {
+                "properties": {
+                  "step_dual_status": {
+                    "const": "dual"
+                  }
+                },
+                "required": [
+                  "step_dual_status"
+                ]
+              },
+              {
+                "properties": {
+                  "arms_in_this_file": {
+                    "const": "both_arms"
+                  }
+                },
+                "required": [
+                  "arms_in_this_file"
+                ]
+              }
+            ]
+          },
+          "then": {
+            "not": {
+              "required": [
+                "arm_held"
+              ]
+            },
+            "properties": {
+              "arms": {
+                "required": [
+                  "a",
+                  "b"
+                ],
+                "not": {
+                  "required": [
+                    "sole"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "producing_step": {
+                "const": "step9"
+              }
+            },
+            "required": [
+              "producing_step"
+            ]
+          },
+          "then": {
+            "properties": {
+              "step_dual_status": {
+                "const": "dual"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "producing_step": {
+                "const": "step10"
+              }
+            },
+            "required": [
+              "producing_step"
+            ]
+          },
+          "then": {
+            "properties": {
+              "step_dual_status": {
+                "const": "single_arm"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "producing_step": {
+                "const": "step11"
+              }
+            },
+            "required": [
+              "producing_step"
+            ]
+          },
+          "then": {
+            "properties": {
+              "step_dual_status": {
+                "const": "single_arm"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "producing_step": {
+                "const": "step12"
+              }
+            },
+            "required": [
+              "producing_step"
+            ]
+          },
+          "then": {
+            "properties": {
+              "step_dual_status": {
+                "const": "single_arm"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "producing_step": {
+                "const": "step13"
+              }
+            },
+            "required": [
+              "producing_step"
+            ]
+          },
+          "then": {
+            "properties": {
+              "step_dual_status": {
+                "const": "dual"
+              }
+            }
+          }
+        }
+      ]
+    },
     "arm_entry": {
       "type": "object",
-      "description": "One entry per W arm. The entry key is (W_days, clock_origin) -- see $.arm_key for why the origin is part of it. There is NO liveness threshold and no threshold may appear as a key.",
+      "description": "ONE ENTRY PER (W_days, clock_origin, producing_step) -- see $.arm_key. THE PRODUCING STEP JOINED THE KEY AT v1.4.0 (decisions/0111 E2): Step 9's W = 108 and Step 13's W = 108 are DIFFERENT MEASUREMENTS OF ONE SETTING and both must exist, which is the (W_days, clock_origin) collision one dimension out and takes the same fix -- ADD THE MISSING IDENTITY DIMENSION. It is NOT resolved by restricting which step may occupy a shared W value: that would make the schema decide an ownership question the spec does not, and would drop a measurement rather than hold it. AN ENTRY CARRIES THE BLOCKS ITS OWN PRODUCING STEP PUBLISHES AND NO OTHERS: $.block_ownership names each block's publisher, and check S36 fails an entry that carries one that is not its own. There is NO liveness threshold and no threshold may appear as a key.",
       "additionalProperties": false,
       "required": [
         "arm_id",
         "W_days",
         "H_days",
         "clock_origin",
+        "producing_step",
         "in_arm_grid",
-        "headline",
-        "waterfall",
-        "abandonment_distribution",
-        "liveness_exclusions",
-        "d3_prime",
-        "retained_by_air_period"
+        "headline"
       ],
       "properties": {
         "arm_id": {
           "type": "string",
           "pattern": "^W\\d+_"
+        },
+        "producing_step": {
+          "enum": [
+            "step8",
+            "step8b",
+            "step9",
+            "step10",
+            "step11",
+            "step12",
+            "step13",
+            "step13b",
+            "step16",
+            "human_lead"
+          ],
+          "x-enum-id": "writer_step",
+          "description": "WHICH STEP'S MEASUREMENT THIS ENTRY IS. Part of the entry key since v1.4.0. Step 9 and Step 13 both measure the headline at W = 108, and before this field the two collided in one slot -- four payloads, two slots. The blocks this entry may carry are exactly the blocks this step publishes."
         },
         "W_days": {
           "type": "integer",
@@ -3958,42 +6088,39 @@
           ]
         },
         "d3_prime": {
-          "description": "D3's cleared count and share at this arm, per population (F6). Step 13 runs D3' at every arm; an arm no step re-runs it at carries an absence.",
-          "oneOf": [
-            {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "APPLY",
+            "DERIV"
+          ],
+          "description": "D3's cleared count and share at this arm, per population (F6), PER PRODUCING ARM since v1.4.0 (decisions/0111 E1). Step 13 is dual and runs D3' at every arm, so one slot here would have been one slot where two arms write. Present only in an entry whose producing step is Step 13's; check S36 fails it anywhere else.",
+          "properties": {
+            "APPLY": {
               "type": "object",
               "additionalProperties": false,
               "required": [
-                "APPLY",
-                "DERIV"
+                "by_producing_arm"
               ],
               "properties": {
-                "APPLY": {
-                  "oneOf": [
-                    {
-                      "$ref": "#/$defs/d3_prime_block"
-                    },
-                    {
-                      "$ref": "#/$defs/block_absence"
-                    }
-                  ]
-                },
-                "DERIV": {
-                  "oneOf": [
-                    {
-                      "$ref": "#/$defs/d3_prime_block"
-                    },
-                    {
-                      "$ref": "#/$defs/block_absence"
-                    }
-                  ]
+                "by_producing_arm": {
+                  "$ref": "#/$defs/by_producing_arm_d3_prime"
                 }
               }
             },
-            {
-              "$ref": "#/$defs/block_absence"
+            "DERIV": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "by_producing_arm"
+              ],
+              "properties": {
+                "by_producing_arm": {
+                  "$ref": "#/$defs/by_producing_arm_d3_prime"
+                }
+              }
             }
-          ]
+          }
         },
         "retained_by_air_period": {
           "description": "Retained pairs per air period after right-censoring, at this arm, per population -- required at every arm because the censoring loss is cohort-asymmetric and widens with W.",
@@ -4035,9 +6162,15 @@
         },
         "action_type_counts": {
           "type": "object",
-          "description": "Per-pair counts by action type, aggregated. `action` is record-level and the row is a pair, so there is no row-level action value; Step 13's arm reads these counts.",
-          "additionalProperties": {
-            "$ref": "#/$defs/count"
+          "additionalProperties": false,
+          "required": [
+            "by_producing_arm"
+          ],
+          "description": "Per-pair counts by action type, aggregated, PER PRODUCING ARM since v1.4.0 (decisions/0111 E1). `action` is record-level and the row is a pair, so there is no row-level action value; Step 13's arm reads these counts, and Step 13 is dual, so one slot would be one slot where two arms write.",
+          "properties": {
+            "by_producing_arm": {
+              "$ref": "#/$defs/by_producing_arm_action_counts"
+            }
           }
         },
         "note": {
@@ -4056,11 +6189,28 @@
         "axis",
         "level",
         "base_arm_id",
+        "producing_step",
         "headline"
       ],
       "properties": {
         "variant_id": {
           "type": "string"
+        },
+        "producing_step": {
+          "enum": [
+            "step8",
+            "step8b",
+            "step9",
+            "step10",
+            "step11",
+            "step12",
+            "step13",
+            "step13b",
+            "step16",
+            "human_lead"
+          ],
+          "x-enum-id": "writer_step",
+          "description": "Which step's measurement this variant is, stated for the same reason an arm entry states it (decisions/0111 E2). Every variant here is Step 13's; the field exists so that is a fact the file records rather than one a reader infers from the container it sits in."
         },
         "axis": {
           "enum": [
@@ -4083,75 +6233,72 @@
         "d2_recomputed_inside_this_arm": {
           "type": "object",
           "additionalProperties": false,
+          "required": [
+            "by_producing_arm"
+          ],
           "properties": {
-            "finale_binds": {
-              "$ref": "#/$defs/count"
-            },
-            "s1_completion_binds": {
-              "$ref": "#/$defs/count"
-            },
-            "both_bind": {
-              "$ref": "#/$defs/count"
-            },
-            "note": {
-              "type": "string",
-              "description": "A note from the writer.  [writer text: carries the placeholder prefix in a placeholder]",
-              "x-writer-text": true
+            "by_producing_arm": {
+              "$ref": "#/$defs/by_producing_arm_d2_recomputed"
             }
           }
         },
         "d3_prime": {
-          "description": "D3' inside this variation, where the variation re-censors (F6).",
-          "oneOf": [
-            {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "APPLY",
+            "DERIV"
+          ],
+          "description": "D3' inside this variation, where the variation re-censors (F6), per population and per producing arm.",
+          "properties": {
+            "APPLY": {
               "type": "object",
               "additionalProperties": false,
               "required": [
-                "APPLY",
-                "DERIV"
+                "by_producing_arm"
               ],
               "properties": {
-                "APPLY": {
-                  "oneOf": [
-                    {
-                      "$ref": "#/$defs/d3_prime_block"
-                    },
-                    {
-                      "$ref": "#/$defs/block_absence"
-                    }
-                  ]
-                },
-                "DERIV": {
-                  "oneOf": [
-                    {
-                      "$ref": "#/$defs/d3_prime_block"
-                    },
-                    {
-                      "$ref": "#/$defs/block_absence"
-                    }
-                  ]
+                "by_producing_arm": {
+                  "$ref": "#/$defs/by_producing_arm_d3_prime"
                 }
               }
             },
-            {
-              "$ref": "#/$defs/block_absence"
+            "DERIV": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "by_producing_arm"
+              ],
+              "properties": {
+                "by_producing_arm": {
+                  "$ref": "#/$defs/by_producing_arm_d3_prime"
+                }
+              }
             }
-          ]
+          }
         },
         "conclusions_surviving": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "description": "One conclusion that survives this variation.  [writer text: carries the placeholder prefix in a placeholder]",
-            "x-writer-text": true
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "by_producing_arm"
+          ],
+          "properties": {
+            "by_producing_arm": {
+              "$ref": "#/$defs/by_producing_arm_conclusions"
+            }
           }
         },
         "conclusions_not_surviving": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "description": "One conclusion that does not survive.  [writer text: carries the placeholder prefix in a placeholder]",
-            "x-writer-text": true
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "by_producing_arm"
+          ],
+          "properties": {
+            "by_producing_arm": {
+              "$ref": "#/$defs/by_producing_arm_conclusions"
+            }
           }
         }
       }
@@ -4165,12 +6312,29 @@
         "dimension",
         "level",
         "base_arm_id",
+        "producing_step",
         "headline",
         "candidate_considered"
       ],
       "properties": {
         "cut_id": {
           "type": "string"
+        },
+        "producing_step": {
+          "enum": [
+            "step8",
+            "step8b",
+            "step9",
+            "step10",
+            "step11",
+            "step12",
+            "step13",
+            "step13b",
+            "step16",
+            "human_lead"
+          ],
+          "x-enum-id": "writer_step",
+          "description": "Which step's measurement this cut is. Steps 11 and 12 both write cuts here, and until v1.4.0 nothing in the file said which -- so a merge could declare Step 12's file among its inputs while carrying nothing from it, and no check could see the gap (decisions/0111 E3b)."
         },
         "dimension": {
           "enum": [

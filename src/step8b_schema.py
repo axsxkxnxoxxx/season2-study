@@ -12,8 +12,8 @@ Writes:
                                                (Step 11, arm `sole`), flagged the same way
     logs/step8b/validation-<stamp>.json        the validator run record for all three
 
-Both artifacts are generated. Nothing in either is typed by hand at any later
-point: if a value is wrong, this file is where it is corrected and both files
+All four artifacts are generated. Nothing in any of them is typed by hand at any
+later point: if a value is wrong, this file is where it is corrected and all four
 are rewritten together (CLAUDE.md, "Derived figures" and "Generated files that
 function as checks").
 
@@ -54,8 +54,8 @@ ARM_PLACEHOLDER_PATH = os.path.join(ROOT, "artifacts", "step8b-placeholder-arm-f
 SOLE_PLACEHOLDER_PATH = os.path.join(ROOT, "artifacts", "step8b-placeholder-sole-file.json")
 LOG_DIR = os.path.join(ROOT, "logs", "step8b")
 
-SCHEMA_VERSION = "1.3.0"
-SCHEMA_ID = "urn:season2-study:step8b-output-schema:1.3.0"
+SCHEMA_VERSION = "1.4.0"
+SCHEMA_ID = "urn:season2-study:step8b-output-schema:1.4.0"
 
 SENT_C = -999
 SENT_P = -999.0
@@ -153,6 +153,60 @@ STEP_DUALITY_SOURCE = {
 # Recording it per arm does not pre-empt the open ruling: it makes the unfixed
 # half visible, which is what the spec asks for.
 ARM_STATISTIC = {"a": "movements", "b": "levels", "sole": "levels"}
+
+# WHICH STEP PUBLISHES EACH PER-ARM BLOCK. It is not always the step that owns
+# the figure -- Step 8 owns the waterfall and Step 9 publishes it -- and under one
+# file per step per arm (decisions/0109 §1) it is this map, not ownership, that
+# says which file a block appears in. Since v1.4.0 it also says which ARM ENTRY a
+# block appears in, because an arm entry's identity now includes its producing
+# step (decisions/0111 E2).
+#
+# `action_type_counts` MOVED FROM step9 TO step13 at v1.4.0. decisions/0111 E1
+# names it one of STEP 13's six non-headline outputs; the table said Step 9
+# published it, and the disagreement was live -- the single-arm placeholder wrote
+# the block while its own ownership table gave it to Step 9 (0111 §3, Q1).
+BLOCK_PUBLISHER = {
+    "waterfall": "step9",
+    "abandonment_distribution": "step10",
+    "liveness_exclusions": "step9",
+    "d3_prime": "step13",
+    "retained_by_air_period": "step9",
+    "action_type_counts": "step13",
+}
+
+# The blocks that carry a HEADLINE payload rather than a per-arm block: an arm
+# entry always has the slot, and the payload inside it is a real one only where
+# that entry's producing step publishes a headline.
+HEADLINE_PUBLISHERS = ("step9", "step13")
+
+# STEP 13'S SIX NON-HEADLINE OUTPUTS (decisions/0111 E1). Each had ONE SLOT where
+# TWO ARMS write, which forces the reconciliation decisions/0107 §3 forbids, so
+# each takes per-arm nesting -- the same shape as its headline. The nesting is
+# UNCONDITIONAL: no oneOf or anyOf may sit above a by_producing_arm container
+# (decisions/0109 §4, machine-checked by S35), so a block that is not this
+# entry's is OMITTED rather than wrapped in an absence branch, and check S36
+# fails an entry that carries a block published by another step.
+PER_ARM_NESTED_BLOCKS = (
+    "d3_prime",
+    "tested_ranges",
+    "conclusions_surviving",
+    "conclusions_not_surviving",
+    "d2_recomputed_inside_this_arm",
+    "action_type_counts",
+)
+
+# Top-level blocks whose publisher the spec fixes. Read by check S36's file leg.
+# The registry blocks -- bootstrap settings, the population definitions, the
+# sentinel scheme -- name no publisher and are not policed by it; that scope is
+# stated rather than left to be inferred from a passing check.
+# `subpopulation_cuts` is deliberately NOT here: Steps 11 and 12 BOTH write cuts
+# into it, so the question "whose block is this?" has no single answer at the
+# block level and is answered per ENTRY, by each cut's own producing_step. A
+# publisher named here would have made one of the two steps' files illegal.
+TOP_LEVEL_PUBLISHER = {
+    "tested_ranges": "step13",
+    "variants": "step13",
+}
 
 # What kind of document a file is. An ARM FILE holds one arm and is written by an
 # isolated instance; the MERGED DOCUMENT holds both and is written by Step 13b.
@@ -777,9 +831,11 @@ def build_schema(provenance: dict | None = None) -> dict:
                 "type": "string",
                 "x-writer-text": True,
                 "description": (
-                    "WHICH ARM FILE THIS PAYLOAD CAME FROM. Required in the merged document, "
+                    "WHICH SOURCE THIS PAYLOAD CAME FROM. Required in the merged document, "
                     "forbidden in an arm file (check S30), and it must name one of "
-                    "$.document_scope.merge.arm_files_merged. Added at v1.3.0 against "
+                    "$.document_scope.merge.sources_merged -- renamed from arm_files_merged at "
+                    "v1.4.0, because the input list records SOURCES and one of them is not an "
+                    "arm file at all (decisions/0111 E6). Added at v1.3.0 against "
                     "reviewer-engineering's M1: a merged document assembled from ONE arm file, "
                     "with the one payload deep-copied into the other arm's slot and relabelled, "
                     "validated clean and published that the arms agreed everywhere -- a FALSE "
@@ -873,7 +929,31 @@ def build_schema(provenance: dict | None = None) -> dict:
         "properties": {"arms_in_this_file": {"const": "both_arms"}},
         "required": ["arms_in_this_file"],
     }
-    d["by_producing_arm"] = {
+    def _by_producing_arm(payload_or_absence: dict, subject: str) -> dict:
+        """One per-arm container, over any payload shape.
+
+        FACTORED AT v1.4.0 (decisions/0111 E1). Step 13's six non-headline
+        outputs each had ONE SLOT where TWO ARMS write, which forces the
+        reconciliation decisions/0107 §3 forbids, so each takes the same
+        container its headline takes. One factory rather than six hand-written
+        objects, because six copies of one shape is six places a rule is stated
+        and one place it will be forgotten -- and check S35 requires EVERY member
+        of the family to be reachable without a oneOf or anyOf above it, which is
+        only checkable if they are one shape.
+        """
+        return dict(_bpa_body, description=_bpa_body["description"] + f"  SUBJECT: {subject}",
+                    properties=dict(_bpa_body["properties"],
+                                    arms={
+                                        "type": "object",
+                                        "additionalProperties": False,
+                                        "properties": {
+                                            "a": payload_or_absence,
+                                            "b": payload_or_absence,
+                                            "sole": payload_or_absence,
+                                        },
+                                    }))
+
+    _bpa_body = {
         "type": "object",
         "description": (
             "The producing arms of this block, AS TWO SEPARATE FACTS. SPLIT AT v1.2.0 under "
@@ -1019,6 +1099,11 @@ def build_schema(provenance: dict | None = None) -> dict:
         ],
     }
 
+    d["by_producing_arm"] = _by_producing_arm(
+        _payload_or_absence,
+        "the headline payload -- the outcome shares, the two bounds and the ratios",
+    )
+
     d["population_block"] = {
         "type": "object",
         "description": (
@@ -1116,6 +1201,17 @@ def build_schema(provenance: dict | None = None) -> dict:
         "properties": {
             "population": {"enum": POPULATIONS, "x-enum-id": "population"},
             "written_by_step": {"enum": WRITER_STEPS, "x-enum-id": "writer_step"},
+            "figures_owned_by_step": {
+                "enum": WRITER_STEPS,
+                "x-enum-id": "writer_step",
+                "description": (
+                    "WHO OWNS THE FIGURES, where that is not who writes them here. Step 8 "
+                    "produces the waterfall and Step 9 publishes it into this schema; until "
+                    "v1.4.0 `written_by_step` carried Step 8 while $.block_ownership said Step "
+                    "9 published it, so one block answered two different questions with one "
+                    "field and disagreed with the registry."
+                ),
+            },
             "order_ref": {"type": "string"},
             "positions": {
                 "type": "array",
@@ -1230,6 +1326,17 @@ def build_schema(provenance: dict | None = None) -> dict:
                      "histograms", "named_categories", "p_at_bound", "comparability_caveat"],
         "properties": {
             "population": {"enum": POPULATIONS, "x-enum-id": "population"},
+            # A SINGLE-ARM STEP'S BLOCK CAME FROM A FILE TOO. Step 10 writes this
+            # block, its arm is `sole` by construction, and until v1.4.0 it
+            # carried no merge provenance at all -- so its declared input was
+            # named by nothing and S30's new input -> payload leg had nothing to
+            # find (decisions/0111 E3b).
+            "merged_from": {
+                "type": "string",
+                "x-writer-text": True,
+                "description": "Which input file this block came from; required in the merged "
+                               "document and forbidden in an arm file (check S30).",
+            },
             "row_set": {
                 "enum": ["position_5", "post_liveness", "other"],
                 "x-enum-id": "row_set",
@@ -1385,6 +1492,7 @@ def build_schema(provenance: dict | None = None) -> dict:
             "identity": {"type": "string"},
             "pair_level_not_account_level": {"type": "boolean"},
             "written_by_step": {"enum": WRITER_STEPS, "x-enum-id": "writer_step"},
+            "figures_owned_by_step": {"enum": WRITER_STEPS, "x-enum-id": "writer_step"},
         },
     }
 
@@ -1403,9 +1511,22 @@ def build_schema(provenance: dict | None = None) -> dict:
         ),
         "additionalProperties": False,
         "required": ["population", "cleared_count", "cleared_share_percent",
-                     "population_label", "written_by_step"],
+                     "population_label", "written_by_step", "producing_arm"],
         "properties": {
             "population": {"enum": POPULATIONS, "x-enum-id": "population"},
+            # PER-ARM SINCE v1.4.0 (decisions/0111 E1): D3' is one of Step 13's
+            # six non-headline outputs, and Step 13 is dual, so the payload names
+            # its arm and the file it was merged from like any other.
+            "producing_arm": {
+                "enum": ["a", "b", "sole"],
+                "x-enum-id": "producing_arm",
+            },
+            "merged_from": {
+                "type": "string",
+                "x-writer-text": True,
+                "description": "Which input file this payload came from; required in the "
+                               "merged document and forbidden in an arm file (check S30).",
+            },
             "cleared_count": {"$ref": "#/$defs/count"},
             "cleared_share_percent": {"$ref": "#/$defs/percent"},
             "denominator_pairs": {"$ref": "#/$defs/count"},
@@ -1440,6 +1561,7 @@ def build_schema(provenance: dict | None = None) -> dict:
         "properties": {
             "population": {"enum": POPULATIONS, "x-enum-id": "population"},
             "written_by_step": {"enum": WRITER_STEPS, "x-enum-id": "writer_step"},
+            "figures_owned_by_step": {"enum": WRITER_STEPS, "x-enum-id": "writer_step"},
             "measured_after": {
                 "type": "string",
                 "description": "Which filter position the retention is measured after. The "
@@ -1471,19 +1593,180 @@ def build_schema(provenance: dict | None = None) -> dict:
         "properties": {p: {"$ref": "#/$defs/population_block"} for p in POPULATIONS},
     }
 
+    # ------------------------------------------------------------------
+    # STEP 13'S SIX NON-HEADLINE OUTPUTS, PER PRODUCING ARM (decisions/0111 E1).
+    # Each of these had ONE SLOT where TWO ARMS write. Step 13 is dual
+    # (decisions/0103 §3), so the merge would have had to drop an arm or
+    # reconcile the two -- and decisions/0107 §3 forbids exactly that. The fix is
+    # the same WIDENING the two earlier appearances took, because widening keeps
+    # ONE DEFINITION PER FIGURE.
+    #
+    # THE NESTING IS UNCONDITIONAL, and that is not incidental: decisions/0109 §4
+    # records that the `step_dual_status` rename fails loudly ONLY because no
+    # oneOf sits above by_producing_arm, so none of these containers may be
+    # wrapped in an absence branch. A block that this entry's producing step does
+    # not publish is OMITTED, its publisher is named in $.block_ownership, and
+    # check S36 fails an entry that carries one that is not its own.
+    # ------------------------------------------------------------------
+    _provenance_fields = {
+        "producing_arm": {
+            "enum": ["a", "b", "sole"],
+            "x-enum-id": "producing_arm",
+            "description": "Which arm produced this payload; it must equal the key it sits "
+                           "under (check S28).",
+        },
+        "written_by_step": {"enum": WRITER_STEPS, "x-enum-id": "writer_step"},
+        "merged_from": {
+            "type": "string",
+            "x-writer-text": True,
+            "description": (
+                "Which input file this payload came from. Required in the merged document and "
+                "forbidden in an arm file (check S30), and it must name one of "
+                "$.document_scope.merge.sources_merged."
+            ),
+        },
+    }
+
+    d["action_type_counts_payload"] = {
+        "type": "object",
+        "description": (
+            "Per-pair counts by action type, for one producing arm. `action` is record-level "
+            "and the row is a pair, so there is no row-level action value (decisions/0070 "
+            "ruling 4). PER-ARM SINCE v1.4.0 (decisions/0111 E1)."
+        ),
+        "additionalProperties": False,
+        "required": ["producing_arm", "written_by_step", "counts"],
+        "properties": dict(
+            _provenance_fields,
+            counts={
+                "type": "object",
+                "additionalProperties": {"$ref": "#/$defs/count"},
+            },
+            note=_text("A note from the writer."),
+        ),
+    }
+
+    d["tested_ranges_payload"] = {
+        "type": "object",
+        "description": (
+            "The ranges this arm actually tested. An interactive Step 16 binds its controls to "
+            "these so no reader can drive it somewhere that was never tested. PER-ARM SINCE "
+            "v1.4.0: two arms may test different ranges, and one slot could hold only one "
+            "answer (decisions/0111 E1)."
+        ),
+        "additionalProperties": False,
+        "required": ["producing_arm", "written_by_step", "ranges"],
+        "properties": dict(
+            _provenance_fields,
+            ranges={
+                "type": "object",
+                "additionalProperties": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["values"],
+                    "properties": {
+                        "values": {"type": "array"},
+                        "min": {"type": ["number", "string", "null"]},
+                        "max": {"type": ["number", "string", "null"]},
+                        "source": {"type": "string"},
+                    },
+                },
+            },
+            note=_text("A note from the writer."),
+        ),
+    }
+
+    d["conclusions_payload"] = {
+        "type": "object",
+        "description": (
+            "The conclusions this arm found surviving, or not surviving, a variation. PER-ARM "
+            "SINCE v1.4.0 (decisions/0111 E1): the two arms may reach different lists, and a "
+            "single list would have to drop one arm's."
+        ),
+        "additionalProperties": False,
+        "required": ["producing_arm", "written_by_step", "conclusions"],
+        "properties": dict(
+            _provenance_fields,
+            conclusions={
+                "type": "array",
+                "items": _text("One conclusion, in the writing arm's words."),
+            },
+            note=_text("A note from the writer."),
+        ),
+    }
+
+    d["d2_recomputed_payload"] = {
+        "type": "object",
+        "description": (
+            "D2's max() split recomputed inside this variation, for one producing arm. THREE "
+            "categories, not two: finale binds, S1 completion binds, both bind -- a tie is its "
+            "own category, not a tiebreak, and the count is NOT population-invariant "
+            "(decisions/0070 ruling 5; decisions/0092 §3). PER-ARM SINCE v1.4.0."
+        ),
+        "additionalProperties": False,
+        "required": ["producing_arm", "written_by_step"],
+        "properties": dict(
+            _provenance_fields,
+            finale_binds={"$ref": "#/$defs/count"},
+            s1_completion_binds={"$ref": "#/$defs/count"},
+            both_bind={"$ref": "#/$defs/count"},
+            note=_text("A note from the writer."),
+        ),
+    }
+
+    d["by_producing_arm_d3_prime"] = _by_producing_arm(
+        {"oneOf": [{"$ref": "#/$defs/d3_prime_block"}, {"$ref": "#/$defs/absence"}]},
+        "D3's cleared count and share at this arm, for one population",
+    )
+    d["by_producing_arm_action_counts"] = _by_producing_arm(
+        {"oneOf": [{"$ref": "#/$defs/action_type_counts_payload"},
+                   {"$ref": "#/$defs/absence"}]},
+        "the per-pair counts by action type",
+    )
+    d["by_producing_arm_tested_ranges"] = _by_producing_arm(
+        {"oneOf": [{"$ref": "#/$defs/tested_ranges_payload"}, {"$ref": "#/$defs/absence"}]},
+        "the tested ranges",
+    )
+    d["by_producing_arm_conclusions"] = _by_producing_arm(
+        {"oneOf": [{"$ref": "#/$defs/conclusions_payload"}, {"$ref": "#/$defs/absence"}]},
+        "a list of conclusions surviving, or not surviving, a variation",
+    )
+    d["by_producing_arm_d2_recomputed"] = _by_producing_arm(
+        {"oneOf": [{"$ref": "#/$defs/d2_recomputed_payload"}, {"$ref": "#/$defs/absence"}]},
+        "D2's three-category max() split recomputed inside this variation",
+    )
+
     d["arm_entry"] = {
         "type": "object",
         "description": (
-            "One entry per W arm. The entry key is (W_days, clock_origin) -- see "
-            "$.arm_key for why the origin is part of it. There is NO liveness threshold and "
-            "no threshold may appear as a key."
+            "ONE ENTRY PER (W_days, clock_origin, producing_step) -- see $.arm_key. THE "
+            "PRODUCING STEP JOINED THE KEY AT v1.4.0 (decisions/0111 E2): Step 9's W = 108 and "
+            "Step 13's W = 108 are DIFFERENT MEASUREMENTS OF ONE SETTING and both must exist, "
+            "which is the (W_days, clock_origin) collision one dimension out and takes the "
+            "same fix -- ADD THE MISSING IDENTITY DIMENSION. It is NOT resolved by restricting "
+            "which step may occupy a shared W value: that would make the schema decide an "
+            "ownership question the spec does not, and would drop a measurement rather than "
+            "hold it. AN ENTRY CARRIES THE BLOCKS ITS OWN PRODUCING STEP PUBLISHES AND NO "
+            "OTHERS: $.block_ownership names each block's publisher, and check S36 fails an "
+            "entry that carries one that is not its own. There is NO liveness threshold and no "
+            "threshold may appear as a key."
         ),
         "additionalProperties": False,
-        "required": ["arm_id", "W_days", "H_days", "clock_origin", "in_arm_grid",
-                     "headline", "waterfall", "abandonment_distribution",
-                     "liveness_exclusions", "d3_prime", "retained_by_air_period"],
+        "required": ["arm_id", "W_days", "H_days", "clock_origin", "producing_step",
+                     "in_arm_grid", "headline"],
         "properties": {
             "arm_id": {"type": "string", "pattern": r"^W\d+_"},
+            "producing_step": {
+                "enum": WRITER_STEPS,
+                "x-enum-id": "writer_step",
+                "description": (
+                    "WHICH STEP'S MEASUREMENT THIS ENTRY IS. Part of the entry key since "
+                    "v1.4.0. Step 9 and Step 13 both measure the headline at W = 108, and "
+                    "before this field the two collided in one slot -- four payloads, two "
+                    "slots. The blocks this entry may carry are exactly the blocks this step "
+                    "publishes."
+                ),
+            },
             "W_days": {"type": "integer", "minimum": 1},
             "H_days": {
                 "type": "integer",
@@ -1540,16 +1823,28 @@ def build_schema(provenance: dict | None = None) -> dict:
                 "SUPERSEDED FOR THIS PURPOSE, so a schema that demands a number in that slot "
                 "demands a superseded one (F1).",
             ),
-            "d3_prime": _block_or_absence(
-                {p: {
-                    "oneOf": [
-                        {"$ref": "#/$defs/d3_prime_block"},
-                        {"$ref": "#/$defs/block_absence"},
-                    ]
-                } for p in POPULATIONS},
-                "D3's cleared count and share at this arm, per population (F6). Step 13 runs "
-                "D3' at every arm; an arm no step re-runs it at carries an absence.",
-            ),
+            "d3_prime": {
+                "type": "object",
+                "additionalProperties": False,
+                "required": POPULATIONS,
+                "description": (
+                    "D3's cleared count and share at this arm, per population (F6), PER "
+                    "PRODUCING ARM since v1.4.0 (decisions/0111 E1). Step 13 is dual and runs "
+                    "D3' at every arm, so one slot here would have been one slot where two "
+                    "arms write. Present only in an entry whose producing step is Step 13's; "
+                    "check S36 fails it anywhere else."
+                ),
+                "properties": {
+                    p: {
+                        "type": "object",
+                        "additionalProperties": False,
+                        "required": ["by_producing_arm"],
+                        "properties": {
+                            "by_producing_arm": {"$ref": "#/$defs/by_producing_arm_d3_prime"},
+                        },
+                    } for p in POPULATIONS
+                },
+            },
             "retained_by_air_period": _block_or_absence(
                 {p: {
                     "oneOf": [
@@ -1563,12 +1858,18 @@ def build_schema(provenance: dict | None = None) -> dict:
             ),
             "action_type_counts": {
                 "type": "object",
+                "additionalProperties": False,
+                "required": ["by_producing_arm"],
                 "description": (
-                    "Per-pair counts by action type, aggregated. `action` is record-level and "
-                    "the row is a pair, so there is no row-level action value; Step 13's arm "
-                    "reads these counts."
+                    "Per-pair counts by action type, aggregated, PER PRODUCING ARM since "
+                    "v1.4.0 (decisions/0111 E1). `action` is record-level and the row is a "
+                    "pair, so there is no row-level action value; Step 13's arm reads these "
+                    "counts, and Step 13 is dual, so one slot would be one slot where two arms "
+                    "write."
                 ),
-                "additionalProperties": {"$ref": "#/$defs/count"},
+                "properties": {
+                    "by_producing_arm": {"$ref": "#/$defs/by_producing_arm_action_counts"},
+                },
             },
             "note": _text("A note from the writer."),
         },
@@ -1582,9 +1883,20 @@ def build_schema(provenance: dict | None = None) -> dict:
             "it lives here and names the arm it is a variation of."
         ),
         "additionalProperties": False,
-        "required": ["variant_id", "axis", "level", "base_arm_id", "headline"],
+        "required": ["variant_id", "axis", "level", "base_arm_id", "producing_step",
+                     "headline"],
         "properties": {
             "variant_id": {"type": "string"},
+            "producing_step": {
+                "enum": WRITER_STEPS,
+                "x-enum-id": "writer_step",
+                "description": (
+                    "Which step's measurement this variant is, stated for the same reason an "
+                    "arm entry states it (decisions/0111 E2). Every variant here is Step 13's; "
+                    "the field exists so that is a fact the file records rather than one a "
+                    "reader infers from the container it sits in."
+                ),
+            },
             "axis": {
                 "enum": [
                     "s1_completion_threshold",
@@ -1597,30 +1909,48 @@ def build_schema(provenance: dict | None = None) -> dict:
             "level": {"type": "string"},
             "base_arm_id": {"type": "string"},
             "headline": {"$ref": "#/$defs/headline"},
+            # ALL FOUR PER PRODUCING ARM SINCE v1.4.0 (decisions/0111 E1). Each
+            # was one slot where two arms write, and Step 13 is dual.
             "d2_recomputed_inside_this_arm": {
                 "type": "object",
                 "additionalProperties": False,
+                "required": ["by_producing_arm"],
                 "properties": {
-                    "finale_binds": {"$ref": "#/$defs/count"},
-                    "s1_completion_binds": {"$ref": "#/$defs/count"},
-                    "both_bind": {"$ref": "#/$defs/count"},
-                    "note": _text("A note from the writer."),
+                    "by_producing_arm": {"$ref": "#/$defs/by_producing_arm_d2_recomputed"},
                 },
             },
-            "d3_prime": _block_or_absence(
-                {p: {
-                    "oneOf": [
-                        {"$ref": "#/$defs/d3_prime_block"},
-                        {"$ref": "#/$defs/block_absence"},
-                    ]
-                } for p in POPULATIONS},
-                "D3' inside this variation, where the variation re-censors (F6).",
-            ),
+            "d3_prime": {
+                "type": "object",
+                "additionalProperties": False,
+                "required": POPULATIONS,
+                "description": "D3' inside this variation, where the variation re-censors "
+                               "(F6), per population and per producing arm.",
+                "properties": {
+                    p: {
+                        "type": "object",
+                        "additionalProperties": False,
+                        "required": ["by_producing_arm"],
+                        "properties": {
+                            "by_producing_arm": {"$ref": "#/$defs/by_producing_arm_d3_prime"},
+                        },
+                    } for p in POPULATIONS
+                },
+            },
             "conclusions_surviving": {
-                "type": "array", "items": _text("One conclusion that survives this variation.")
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["by_producing_arm"],
+                "properties": {
+                    "by_producing_arm": {"$ref": "#/$defs/by_producing_arm_conclusions"},
+                },
             },
             "conclusions_not_surviving": {
-                "type": "array", "items": _text("One conclusion that does not survive.")
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["by_producing_arm"],
+                "properties": {
+                    "by_producing_arm": {"$ref": "#/$defs/by_producing_arm_conclusions"},
+                },
             },
         },
     }
@@ -1633,10 +1963,20 @@ def build_schema(provenance: dict | None = None) -> dict:
             "the one that showed a pattern."
         ),
         "additionalProperties": False,
-        "required": ["cut_id", "dimension", "level", "base_arm_id", "headline",
-                     "candidate_considered"],
+        "required": ["cut_id", "dimension", "level", "base_arm_id", "producing_step",
+                     "headline", "candidate_considered"],
         "properties": {
             "cut_id": {"type": "string"},
+            "producing_step": {
+                "enum": WRITER_STEPS,
+                "x-enum-id": "writer_step",
+                "description": (
+                    "Which step's measurement this cut is. Steps 11 and 12 both write cuts "
+                    "here, and until v1.4.0 nothing in the file said which -- so a merge could "
+                    "declare Step 12's file among its inputs while carrying nothing from it, "
+                    "and no check could see the gap (decisions/0111 E3b)."
+                ),
+            },
             "dimension": {
                 "enum": [
                     "discovery_channel",
@@ -1808,52 +2148,104 @@ def build_schema(provenance: dict | None = None) -> dict:
                             "that grew an extra arm."
                         ),
                         "additionalProperties": False,
-                        "required": ["owner_step", "owner_role", "arm_files_merged",
+                        "required": ["owner_step", "owner_role", "sources_merged",
                                      "diff", "blocks_only_the_merge_may_fill",
                                      "source"],
                         "properties": {
                             "owner_step": {"const": "step13b"},
                             "owner_role": {"type": "string"},
-                            "arm_files_merged": {
+                            "sources_merged": {
                                 "type": "array",
                                 "minItems": 1,
                                 "uniqueItems": True,
                                 "description": (
-                                    "ONE ENTRY PER INPUT FILE, AND AN INPUT FILE IS ONE STEP'S "
-                                    "OUTPUT FOR ONE ARM. Human Lead ruling, decisions/0109 §1: "
-                                    "granularity is ONE FILE PER STEP PER ARM, so Step 9 writes "
-                                    "two files, Step 13 writes two and Steps 10, 11 and 12 "
-                                    "write one each -- SEVEN inputs. Until v1.3.0 this was a "
-                                    "list of free strings, which could not be read against the "
-                                    "payloads it supplied; each entry now names its step and "
-                                    "its arm, and check S30 asserts that every payload in the "
-                                    "document names one of them and that a block holding two "
-                                    "arms names two different ones."
+                                    "ONE ENTRY PER SOURCE. RENAMED FROM `arm_files_merged` AT "
+                                    "v1.4.0 (decisions/0111 E6): THE INPUT LIST RECORDS "
+                                    "SOURCES, NOT ONLY ARM FILES. Seven of them are arm files, "
+                                    "one per step per arm (decisions/0109 §1): Step 9 writes "
+                                    "two, Step 13 writes two, Steps 10, 11 and 12 write one "
+                                    "each. THE EIGHTH IS STEP 14's `limitations`, which is a "
+                                    "NAMED NON-ARM-FILE SOURCE WITH ITS OWN PROVENANCE ENTRY -- "
+                                    "Step 14 delivers a limits section rather than a schema "
+                                    "file, decisions/0109 moved Step 13b after it precisely so "
+                                    "that block could be filled, and a ten-item bias ledger "
+                                    "that must not be netted cannot arrive in the "
+                                    "reader-facing document with no recorded provenance. It has "
+                                    "NO ARM, and `arm` is null there rather than absent. The "
+                                    "key was RENAMED rather than widened in place, so a merge "
+                                    "still emitting the old key fails loudly against "
+                                    "additionalProperties instead of silently supplying a list "
+                                    "that no longer means what it says. Check S30 asserts BOTH "
+                                    "directions: every payload names a declared source, AND "
+                                    "every declared source is named by at least one payload."
                                 ),
                                 "items": {
                                     "type": "object",
                                     "additionalProperties": False,
-                                    "required": ["file_label", "producing_step", "arm"],
+                                    "required": ["file_label", "producing_step", "arm",
+                                                 "source_kind"],
                                     "properties": {
                                         "file_label": {
                                             "type": "string",
                                             "x-writer-text": True,
                                             "description": (
-                                                "How this input file is named. Payloads "
-                                                "reference it by this label in `merged_from`."
+                                                "How this source is named. Payloads reference "
+                                                "it by this label in `merged_from`."
+                                            ),
+                                        },
+                                        "source_kind": {
+                                            "enum": ["arm_file", "non_arm_file"],
+                                            "x-enum-id": "source_kind",
+                                            "description": (
+                                                "`arm_file` -- one step's output for one arm, "
+                                                "written against this schema. `non_arm_file` -- "
+                                                "a source that is not a schema file at all, "
+                                                "which is what Step 14's limits section is."
                                             ),
                                         },
                                         "producing_step": {
                                             "enum": WRITER_STEPS, "x-enum-id": "writer_step",
                                         },
-                                        "arm": {"enum": ["a", "b", "sole"],
-                                                "x-enum-id": "producing_arm"},
+                                        "arm": {"enum": ["a", "b", "sole", None],
+                                                "x-enum-id": "producing_arm_or_none",
+                                                "description": (
+                                                    "The arm this source is, or null where the "
+                                                    "source has none. A non-arm-file source has "
+                                                    "no arm, and null says so rather than the "
+                                                    "field being dropped: an absent field and "
+                                                    "an inapplicable one must not look alike."
+                                                )},
                                         "step_dual_status": {
                                             "enum": ["dual", "single_arm"],
                                             "x-enum-id": "step_dual_status",
                                         },
+                                        "fills_blocks": {
+                                            "type": "array",
+                                            "items": {"type": "string"},
+                                            "description": (
+                                                "Which blocks of the merged document this "
+                                                "source supplies. Stated for a non-arm-file "
+                                                "source, whose payloads are not per-arm and so "
+                                                "cannot be found by walking the arm keys."
+                                            ),
+                                        },
                                         "source": {"type": "string"},
                                     },
+                                    "allOf": [{
+                                        "if": {
+                                            "properties": {
+                                                "source_kind": {"const": "non_arm_file"}},
+                                            "required": ["source_kind"],
+                                        },
+                                        "then": {
+                                            "required": ["fills_blocks"],
+                                            "properties": {"arm": {"const": None}},
+                                        },
+                                        "else": {
+                                            "properties": {
+                                                "arm": {"enum": ["a", "b", "sole"]}},
+                                        },
+                                    }],
                                 },
                             },
                             "diff": {
@@ -1986,7 +2378,7 @@ def build_schema(provenance: dict | None = None) -> dict:
                 "additionalProperties": False,
                 "required": ["fields", "note", "no_liveness_threshold"],
                 "properties": {
-                    "fields": {"const": ["W_days", "clock_origin"]},
+                    "fields": {"const": ["W_days", "clock_origin", "producing_step"]},
                     "note": {"type": "string"},
                     "no_liveness_threshold": {"const": True},
                 },
@@ -2552,20 +2944,17 @@ def build_schema(provenance: dict | None = None) -> dict:
             },
             "tested_ranges": {
                 "type": "object",
+                "additionalProperties": False,
+                "required": ["by_producing_arm"],
                 "description": (
-                    "The ranges actually tested. An interactive Step 16 binds its controls to "
-                    "these so no reader can drive it somewhere that was never tested."
+                    "The ranges actually tested, PER PRODUCING ARM since v1.4.0 "
+                    "(decisions/0111 E1). An interactive Step 16 binds its controls to these "
+                    "so no reader can drive it somewhere that was never tested -- and the two "
+                    "arms of Step 13 may not have tested the same set, which one slot could "
+                    "not have said."
                 ),
-                "additionalProperties": {
-                    "type": "object",
-                    "additionalProperties": False,
-                    "required": ["values"],
-                    "properties": {
-                        "values": {"type": "array"},
-                        "min": {"type": ["number", "string", "null"]},
-                        "max": {"type": ["number", "string", "null"]},
-                        "source": {"type": "string"},
-                    },
+                "properties": {
+                    "by_producing_arm": {"$ref": "#/$defs/by_producing_arm_tested_ranges"},
                 },
             },
             "limitations": {
@@ -2581,13 +2970,26 @@ def build_schema(provenance: dict | None = None) -> dict:
                 "items": {
                     "type": "object",
                     "additionalProperties": False,
-                    "required": ["id", "text", "source"],
+                    "required": ["id", "text", "source", "merged_from"],
                     "properties": {
                         "id": _text("The limitation's identifier."),
                         "text": _text("The limitation, in the words of the step that owns it."),
                         "source": _text("Where it is stated."),
                         "direction": {"type": ["string", "null"]},
                         "may_be_netted_with_others": {"const": False},
+                        "merged_from": {
+                            "type": "string",
+                            "x-writer-text": True,
+                            "description": (
+                                "WHICH SOURCE THIS LIMITATION CAME FROM, added at v1.4.0 "
+                                "(decisions/0111 E6). Step 14's limits section is a NAMED "
+                                "NON-ARM-FILE SOURCE with its own entry in "
+                                "$.document_scope.merge.sources_merged, and this is where an "
+                                "entry names it. A ten-item bias ledger that must not be "
+                                "netted cannot arrive in the reader-facing document with no "
+                                "recorded provenance."
+                            ),
+                        },
                     },
                 },
             },
@@ -3049,7 +3451,12 @@ def _waterfall(pop: str) -> dict:
         positions.append(p)
     return {
         "population": pop,
-        "written_by_step": "step8",
+        # WHO WRITES IT HERE, and separately WHO OWNS THE FIGURES. Step 8 owns
+        # the waterfall and Step 9 publishes it into this schema; until v1.4.0
+        # this field said `step8` while $.block_ownership said Step 9 published
+        # it, and the two were never read against each other.
+        "written_by_step": "step9",
+        "figures_owned_by_step": "step8",
         "order_ref": "decisions/0029 positions 1-7",
         "positions": positions,
         "monotone_check": {"operator": ">=", "result": True, "positions_checked": SENT_C},
@@ -3059,7 +3466,8 @@ def _waterfall(pop: str) -> dict:
 def _air_periods(pop: str) -> dict:
     return {
         "population": pop,
-        "written_by_step": "step13",
+        "written_by_step": "step9",
+        "figures_owned_by_step": "step8",
         "measured_after": "position 4 (the mandated order censors the position-4 output)",
         "rows": [
             {
@@ -3216,13 +3624,15 @@ def _liveness(pop: str) -> dict:
         "spared_by_not_continued": SENT_C,
         "identity": "silence_test_alone - spared_by_not_continued = total_pairs",
         "pair_level_not_account_level": True,
-        "written_by_step": "step13",
+        "written_by_step": "step9",
+        "figures_owned_by_step": "step8",
     }
 
 
-def _d3_prime(pop: str, w: int) -> dict:
+def _d3_prime(pop: str, w: int, arm: str) -> dict:
     return {
         "population": pop,
+        "producing_arm": arm,
         "cleared_count": SENT_C,
         "cleared_share_percent": SENT_P,
         "denominator_pairs": SENT_C,
@@ -3246,46 +3656,96 @@ def _absent_block(status: str, owning_step: str, reason: str, source: str) -> di
     }
 
 
-# Which step PUBLISHES each per-arm block into this schema. It is not always the
-# step that owns the figure -- Step 8 owns the waterfall and Step 9 publishes it
-# -- and under one file per step per arm (decisions/0109 §1) it is this map, not
-# ownership, that says which file a block appears in.
-BLOCK_PUBLISHER = {
-    "waterfall": "step9",
-    "abandonment_distribution": "step10",
-    "liveness_exclusions": "step9",
-    "d3_prime": "step13",
-    "retained_by_air_period": "step9",
-}
+def _arm_id(setting_id: str, step: str) -> str:
+    """The arm entry's label: the setting AND the producing step."""
+    return f"{setting_id}__{step}"
+
+
+def _per_arm_container(step: str, dual_arms: tuple, make_payload) -> dict:
+    """One by_producing_arm container over any payload (decisions/0111 E1).
+
+    THE SAME SHAPE THE HEADLINE TAKES. Step 13's six non-headline outputs each
+    had ONE SLOT where TWO ARMS write, which forces the reconciliation
+    decisions/0107 §3 forbids; the fix is the widening both earlier appearances
+    of this defect took, because widening keeps ONE DEFINITION PER FIGURE.
+    """
+    dual = STEP_DUALITY.get(step, "dual") == "dual"
+    keys = tuple(dual_arms) if dual else ("sole",)
+    arms = {k: make_payload(k) for k in keys}
+    held = list(arms)
+    return {
+        "step_dual_status": "dual" if dual else "single_arm",
+        "arms_in_this_file": "both_arms" if len(held) > 1 else "one_arm",
+        "producing_step": step,
+        "step_dual_status_source": (
+            "CLAUDE.md, Dual implementation; Step 13's duality is decisions/0103 §3; "
+            "one file per arm is decisions/0107"
+        ),
+        "arms": arms,
+        **({"arm_held": held[0]} if len(held) == 1 else {}),
+    }
+
+
+def _action_counts_payload(arm: str, step: str) -> dict:
+    return {
+        "producing_arm": arm,
+        "written_by_step": step,
+        "counts": {
+            "s1_watch": SENT_C, "s1_scrobble": SENT_C, "s1_checkin": SENT_C, "s1_other": SENT_C,
+            "s2_watch": SENT_C, "s2_scrobble": SENT_C, "s2_checkin": SENT_C, "s2_other": SENT_C,
+        },
+        "note": ph(
+            "per-pair counts by action type, per producing arm; `action` is record-level and "
+            "the row is a pair, so there is no row-level action value"
+        ),
+    }
 
 
 def _arm(arm_id: str, w: int, origin: str, in_grid: bool, primary: bool,
-         origin_note: str, blocks_have_producers: bool = True,
-         deriv_liveness_superseded: bool = False,
-         dual_arms: tuple = ("a", "b"), dual: bool = True, step: str = "step9",
-         publishes: set | None = None, headline_absent: bool = False) -> dict:
-    """One arm entry.
+         origin_note: str, step: str, dual_arms: tuple,
+         blocks_have_producers: bool = True,
+         deriv_liveness_superseded: bool = False) -> dict:
+    """One arm entry: ONE STEP'S MEASUREMENT AT ONE (W, clock origin) SETTING.
 
-    `publishes` is the set of per-arm blocks THIS FILE's producing step writes.
-    Under one file per step per arm, a block whose publisher is another step is
-    an explicit absence naming that step -- not a gap, and not a copy.
+    THE PRODUCING STEP IS PART OF THE ENTRY KEY (decisions/0111 E2). Step 9's
+    W = 108 and Step 13's W = 108 are different measurements of one setting and
+    BOTH MUST EXIST, so an entry names the step whose measurement it is and
+    carries exactly the blocks that step publishes.
+
+    A block another step publishes is OMITTED here rather than written as an
+    absence: the per-arm containers may not sit under a oneOf (decisions/0109 §4,
+    machine-checked by S35), $.block_ownership names every block's publisher, and
+    check S36 fails an entry that carries a block that is not its own. That is
+    the direction nothing policed -- the file was checked for writing too little
+    and never for writing too much, which is how a single-arm step's placeholder
+    came to write Step 13's action-type counts (decisions/0111 §3, Q1).
     """
-    publishes = set(BLOCK_PUBLISHER) if publishes is None else publishes
+    publishes = {name for name, pub in BLOCK_PUBLISHER.items() if pub == step}
+    writes_headline = step in HEADLINE_PUBLISHERS
+    dual = STEP_DUALITY.get(step, "dual") == "dual"
     arm: dict = {
-        "arm_id": arm_id,
+        # THE LABEL CARRIES THE WHOLE KEY. Three entries share the setting
+        # (W = 108, finale-anchored) and a label naming only the setting would
+        # collide for any consumer that indexed by it -- which is the collision
+        # decisions/0111 E2 exists to remove, reappearing in the label.
+        "arm_id": _arm_id(arm_id, step),
         "W_days": w,
         "H_days": 91,
         "clock_origin": origin,
         "clock_origin_note": ph(origin_note),
+        "producing_step": step,
         "in_arm_grid": in_grid,
+        # THE ADOPTED SETTING, not a claim that this entry publishes the
+        # headline: several steps measure at (108, s2_finale) and each marks it,
+        # which is what lets check S22 require each entry's own blocks there.
         "is_primary_headline": primary,
         "headline": {
             "APPLY": _population_block("APPLY", degenerate_ns=False, coincides=False,
                                        dual=dual, step=step, dual_arms=dual_arms,
-                                       payload_absent=headline_absent),
+                                       payload_absent=not writes_headline),
             "DERIV": _population_block("DERIV", degenerate_ns=True, coincides=True,
                                        dual=dual, step=step, dual_arms=dual_arms,
-                                       payload_absent=headline_absent),
+                                       payload_absent=not writes_headline),
         },
     }
     if not blocks_have_producers:
@@ -3294,7 +3754,7 @@ def _arm(arm_id: str, w: int, origin: str, in_grid: bool, primary: bool,
         # distribution, a per-arm liveness count or a D3' figure: Step 8 builds
         # the waterfall at the adopted finale-anchored arm, Step 10 charts the
         # headline arm, and Step 13's grid is finale-anchored throughout. Each
-        # slot stays present and names the gap.
+        # slot THIS STEP would have filled stays present and names the gap.
         why = (
             "No step in the spec produces this block for a premiere-anchored arm. Step 8 "
             "builds the waterfall at the adopted finale-anchored arm, Step 10 charts the "
@@ -3302,30 +3762,14 @@ def _arm(arm_id: str, w: int, origin: str, in_grid: bool, primary: bool,
             "arms. The slot is present and says so rather than requiring a figure that would "
             "have to be invented."
         )
-        for name in ("waterfall", "abandonment_distribution", "liveness_exclusions",
-                     "d3_prime", "retained_by_air_period"):
+        for name in sorted(publishes):
             arm[name] = _absent_block(
                 "no_producer_in_spec", "none", why,
                 "task-sheet.md Steps 8, 10 and 13; reviewer-engineering F1",
             )
-        arm["action_type_counts"] = {}
-        arm["note"] = ph("one entry per arm")
+        arm["note"] = ph("one entry per (W, clock origin, producing step)")
         return arm
 
-    # Blocks another step publishes are present and name that step. This is the
-    # granularity ruling showing through: one file per step per arm means a Step
-    # 9 file carries no abandonment distribution, and the slot says whose it is
-    # rather than reading as a gap (decisions/0109 §1).
-    for name, publisher in BLOCK_PUBLISHER.items():
-        if name not in publishes:
-            arm[name] = _absent_block(
-                "awaiting_owner_step", publisher,
-                f"This file is {step}'s output for one arm, and this block is published by "
-                f"{publisher}. Under ONE FILE PER STEP PER ARM it arrives in {publisher}'s own "
-                f"file and is merged in at Step 13b; writing a copy here would be a second "
-                f"place that figure lives.",
-                "decisions/0109 §1; task-sheet.md Step 13b",
-            )
     if "waterfall" in publishes:
         arm["waterfall"] = {p: _waterfall(p) for p in POPULATIONS}
     if "abandonment_distribution" in publishes:
@@ -3350,17 +3794,21 @@ def _arm(arm_id: str, w: int, origin: str, in_grid: bool, primary: bool,
             }
         else:
             arm["liveness_exclusions"] = {p: _liveness(p) for p in POPULATIONS}
-    if "d3_prime" in publishes:
-        arm["d3_prime"] = {p: _d3_prime(p, w) for p in POPULATIONS}
     if "retained_by_air_period" in publishes:
         arm["retained_by_air_period"] = {p: _air_periods(p) for p in POPULATIONS}
-    arm.update({
-        "action_type_counts": {
-            "s1_watch": SENT_C, "s1_scrobble": SENT_C, "s1_checkin": SENT_C, "s1_other": SENT_C,
-            "s2_watch": SENT_C, "s2_scrobble": SENT_C, "s2_checkin": SENT_C, "s2_other": SENT_C,
-        },
-        "note": ph("one entry per arm"),
-    })
+    # THE TWO PER-ARM NESTED BLOCKS (decisions/0111 E1), both Step 13's.
+    if "d3_prime" in publishes:
+        arm["d3_prime"] = {
+            p: {"by_producing_arm": _per_arm_container(
+                step, dual_arms, lambda a, p=p: _d3_prime(p, w, a))}
+            for p in POPULATIONS
+        }
+    if "action_type_counts" in publishes:
+        arm["action_type_counts"] = {
+            "by_producing_arm": _per_arm_container(
+                step, dual_arms, lambda a: _action_counts_payload(a, step))
+        }
+    arm["note"] = ph("one entry per (W, clock origin, producing step)")
     return arm
 
 
@@ -3442,8 +3890,13 @@ def _block_ownership() -> dict:
         ),
         "variants": (
             "step13", "Data Scientist, Step 13", "written_by_owner_step", False,
-            "task-sheet.md Step 13",
+            "task-sheet.md Step 13", "step13",
         ),
+        # NO published_by_step, deliberately: Steps 11 and 12 BOTH write cuts
+        # here, so the question is answered per ENTRY by each cut's own
+        # producing_step. Naming one publisher would make the other step's file
+        # illegal (check S36 reads this field, and its absence is a fact about
+        # the block rather than an omission).
         "subpopulation_cuts": (
             "step11", "Data Scientist, Steps 11 and 12", "written_by_owner_step", False,
             "task-sheet.md Steps 11 and 12",
@@ -3451,6 +3904,7 @@ def _block_ownership() -> dict:
         "tested_ranges": (
             "step13", "Data Scientist, Step 13", "written_by_owner_step", False,
             "task-sheet.md Step 13, 'Record the tested ranges. Step 16 needs them.'",
+            "step13",
         ),
         "limitations": (
             "human_lead", "Human Lead, Step 14", "human_lead_only", False,
@@ -3481,9 +3935,14 @@ def _block_ownership() -> dict:
         "arms[].retained_by_air_period": ("step8", "Analytics Engineer, Step 8",
                                           "copied_from_step_8_output", False,
                                           "decisions/0033", "step9"),
+        # PUBLISHER CORRECTED AT v1.4.0, step9 -> step13 (decisions/0111 E1,
+        # which names action_type_counts one of STEP 13's six non-headline
+        # outputs). The old row is what the Q1 finding turned on: the single-arm
+        # placeholder wrote this block while its own table gave it to Step 9, and
+        # nothing checked the direction "this file wrote too much".
         "arms[].action_type_counts": ("step8", "Analytics Engineer, Step 8",
                                       "copied_from_step_8_output", False,
-                                      "decisions/0070 ruling 4", "step9"),
+                                      "decisions/0070 ruling 4; decisions/0111 E1", "step13"),
         "variants[].headline": ("step13", "Data Scientist, Step 13", "written_by_owner_step",
                                 False, "task-sheet.md Step 13", "step13"),
         "variants[].d3_prime": ("step13", "Data Scientist, Step 13", "written_by_owner_step",
@@ -3491,6 +3950,16 @@ def _block_ownership() -> dict:
         "variants[].d2_recomputed_inside_this_arm": (
             "step13", "Data Scientist, Step 13", "written_by_owner_step", False,
             "decisions/0070 ruling 5", "step13"),
+        # The last two of decisions/0111 E1's six, which had no ownership row at
+        # all while they were arrays of strings: check S34 only demands a row for
+        # a block, and a list of scalars is not one. Per-arm nesting makes them
+        # blocks, and a block with no owner is owned by whoever writes first.
+        "variants[].conclusions_surviving": (
+            "step13", "Data Scientist, Step 13", "written_by_owner_step", False,
+            "task-sheet.md Step 13; decisions/0111 E1", "step13"),
+        "variants[].conclusions_not_surviving": (
+            "step13", "Data Scientist, Step 13", "written_by_owner_step", False,
+            "task-sheet.md Step 13; decisions/0111 E1", "step13"),
         "subpopulation_cuts[].headline": ("step11", "Data Scientist, Steps 11 and 12",
                                           "written_by_owner_step", False,
                                           "task-sheet.md Steps 11 and 12", "step11"),
@@ -3550,15 +4019,30 @@ def _refs_in_scope(arms_held: tuple) -> set:
     return refs
 
 
-# The seven inputs to the merge (decisions/0109 §1): ONE FILE PER STEP PER ARM.
+# THE MERGE'S INPUT LIST RECORDS SOURCES, NOT ONLY ARM FILES (decisions/0111 E6).
+# Seven are arm files, one per step per arm (decisions/0109 §1). THE EIGHTH IS
+# STEP 14's `limitations`: Step 14 delivers a limits section rather than a schema
+# file, so it is not one of the seven and had no way to be recorded -- and a
+# ten-item bias ledger that MUST NOT BE NETTED cannot arrive in the reader-facing
+# document with no recorded provenance. It has no arm.
 MERGE_INPUTS = [
     ("step9", "a"), ("step9", "b"),
     ("step13", "a"), ("step13", "b"),
     ("step10", "sole"), ("step11", "sole"), ("step12", "sole"),
 ]
+NON_ARM_SOURCES = [
+    {
+        "step": "human_lead",
+        "fills_blocks": ["limitations"],
+        "label": "the Step 14 limits section",
+        "source": "decisions/0111 E6; task-sheet.md Step 14 and Step 13b",
+    },
+]
 
 
-def _input_label(step: str, arm: str) -> str:
+def _input_label(step: str, arm: str | None) -> str:
+    if arm is None:
+        return ph("the Step 14 limits section (not a schema file, and it has no arm)")
     return ph(f"the Step {step[4:]} arm `{arm}` file")
 
 
@@ -3578,7 +4062,7 @@ def _document_scope(role: str, arm: str | None, step: str) -> dict:
         # EMPTY EVERYWHERE UNDER decisions/0109 §1. In an arm file because one
         # file is one step's output for one arm; in the merged document because
         # STEP 13b IS ITS ONLY WRITER -- the other steps' payloads arrive as
-        # MERGED INPUTS, enumerated once at merge.arm_files_merged. Listing them
+        # MERGED INPUTS, enumerated once at merge.sources_merged. Listing them
         # here as well would be a second place that list lives, and would read as
         # 'these steps write into the merged file', which is what the ruling
         # forbids. The field is present and empty: an absent field and an empty
@@ -3599,18 +4083,34 @@ def _document_scope(role: str, arm: str | None, step: str) -> dict:
         scope["merge"] = {
             "owner_step": "step13b",
             "owner_role": "Human Lead, Step 13b, merged results document",
-            # SEVEN INPUTS, ONE PER STEP PER ARM (decisions/0109 §1). Each names
-            # its step and its arm, so a payload can be read back against the
-            # file it came from -- which is what makes the arity observable.
-            "arm_files_merged": [
+            # EIGHT SOURCES: seven arm files, one per step per arm
+            # (decisions/0109 §1), and Step 14's limits section, which is a
+            # NAMED NON-ARM-FILE SOURCE with its own provenance entry
+            # (decisions/0111 E6). Each names its step and its arm, so a payload
+            # can be read back against the source it came from -- which is what
+            # makes the arity observable -- and check S30 now reads the relation
+            # in BOTH directions, so a merge that DROPS an entire declared source
+            # can no longer validate clean.
+            "sources_merged": [
                 {
                     "file_label": _input_label(s, a),
+                    "source_kind": "arm_file",
                     "producing_step": s,
                     "arm": a,
                     "step_dual_status": STEP_DUALITY[s],
                     "source": "decisions/0109 §1; task-sheet.md Step 13b",
                 }
                 for s, a in MERGE_INPUTS
+            ] + [
+                {
+                    "file_label": _input_label(src["step"], None),
+                    "source_kind": "non_arm_file",
+                    "producing_step": src["step"],
+                    "arm": None,
+                    "fills_blocks": src["fills_blocks"],
+                    "source": src["source"],
+                }
+                for src in NON_ARM_SOURCES
             ],
             "diff": {
                 "performed_by": "human_lead",
@@ -3636,57 +4136,91 @@ def _document_scope(role: str, arm: str | None, step: str) -> dict:
     return scope
 
 
+# WHICH (SETTING, PRODUCING STEP) ENTRIES EXIST (decisions/0111 E2). An arm
+# entry is ONE STEP'S MEASUREMENT AT ONE SETTING, so the same setting appears
+# once per step that measures there -- Step 9's W = 108 and Step 13's W = 108 are
+# both here, which is exactly what the ruling requires and what the old W-only
+# key could not hold. The list is not restricted by "which step may occupy a
+# shared W": that would make the schema decide an ownership question the spec
+# does not.
+ARM_ENTRIES = [
+    # (arm_id, W, origin, in_grid, is_the_adopted_setting, producing_step,
+    #  note, premiere_arm_with_no_producers, deriv_liveness_superseded)
+    ("W108_s2_finale", 108, "s2_finale", True, True, "step9",
+     "the adopted arm; T0 is the later of the S2 finale and the first-pass S1 completion "
+     "date. This entry is STEP 9's measurement at that setting",
+     False, False),
+    ("W108_s2_finale", 108, "s2_finale", True, True, "step10",
+     "the adopted setting again, as STEP 10's entry: it publishes the abandonment "
+     "distribution here and no headline of its own, which is why its headline payload slot "
+     "carries an explicit absence rather than a copy of Step 9's figure",
+     False, False),
+    ("W108_s2_finale", 108, "s2_finale", True, True, "step13",
+     "the adopted setting again, as STEP 13's measurement. Step 9's W = 108 and Step 13's "
+     "W = 108 are DIFFERENT MEASUREMENTS OF ONE SETTING and both exist",
+     False, False),
+    ("W108_s2_finale", 108, "s2_finale", True, True, "step11",
+     "the adopted setting as STEP 11's entry: the arm its subpopulation cuts are computed at. "
+     "The unconditional headline here is Step 9's and is not restated, so this entry's "
+     "headline payload slot carries an explicit absence",
+     False, False),
+    ("W108_s2_finale", 108, "s2_finale", True, True, "step12",
+     "the adopted setting as STEP 12's entry, for the same reason as Step 11's: its cuts name "
+     "this arm as their base and the base has to resolve to an entry",
+     False, False),
+    ("W091_s2_finale", 91, "s2_finale", True, False, "step9",
+     "a grid arm at 91 days, finale-anchored, distinct from the premiere-anchored arm; this "
+     "is Step 9's entry at that setting",
+     False, True),
+    ("W091_s2_finale", 91, "s2_finale", True, False, "step13",
+     "the same grid arm as Step 13's own measurement",
+     False, False),
+    ("W091_s2_premiere", 91, "s2_premiere", False, False, "step9",
+     "Step 9's second headline at Netflix's own 91-day reporting window, anchored on the "
+     "later of the S2 premiere and the first-pass S1 completion date; it sits on a different "
+     "origin from the primary headline and the two are NOT the same measurement at two "
+     "window lengths",
+     True, False),
+]
+
+
 def _arms_for(role: str, arm: str | None, step: str, dual_arms: tuple) -> list:
     """The $.arms spine for one file, under ONE FILE PER STEP PER ARM.
 
-    The merged document carries every publisher's blocks. A dual step's arm file
-    carries the blocks that step publishes and an explicit absence, naming the
-    publisher, for the rest. A single-arm step's file carries the spine with the
-    headline slot recording why it holds no payload -- which is the legal spine
-    reviewer-engineering's M9 asked for, emitted rather than described.
+    The merged document carries every producing step's entries. An ARM FILE
+    carries only its own step's, because an arm entry is now identified by its
+    producing step as well as by (W_days, clock_origin) -- decisions/0111 E2 --
+    and one file is one step's output for one arm.
+
+    A single-arm step's file keeps the spine with the headline payload slot
+    recording why it holds no payload: the legal spine reviewer-engineering's M9
+    asked for, emitted rather than described.
     """
     merged = role == "merged_document"
-    dual = step in ("step9", "step13", "step13b")
-    publishes = (
-        set(BLOCK_PUBLISHER) if merged
-        else {name for name, pub in BLOCK_PUBLISHER.items() if pub == step}
-    )
-    common = dict(dual_arms=dual_arms, dual=dual, step="step9" if merged else step,
-                  publishes=publishes, headline_absent=not merged and not dual)
-    if not merged and not dual:
-        # A single-arm step's own file. One arm entry: the arm its cuts are
-        # computed at. It is the base_arm_id the cuts name, and nothing else.
+    if merged:
         return [
-            _arm(
-                "W108_s2_finale", 108, "s2_finale", True, True,
-                "the arm this step's subpopulation cuts are computed at; the unconditional "
-                "headline at this arm is Step 9's and is not restated here",
-                **common,
-            )
+            _arm(arm_id, w, origin, in_grid, primary, note, s, dual_arms,
+                 blocks_have_producers=not premiere, deriv_liveness_superseded=superseded)
+            for (arm_id, w, origin, in_grid, primary, s, note, premiere, superseded)
+            in ARM_ENTRIES
         ]
+    mine = [e for e in ARM_ENTRIES if e[5] == step]
+    if mine:
+        return [
+            _arm(arm_id, w, origin, in_grid, primary, note, s, dual_arms,
+                 blocks_have_producers=not premiere, deriv_liveness_superseded=superseded)
+            for (arm_id, w, origin, in_grid, primary, s, note, premiere, superseded) in mine
+        ]
+    # A single-arm step with no entry of its own in the table above -- Steps 11
+    # and 12. One arm entry: the setting its cuts are computed at, which is the
+    # base_arm_id those cuts name, and nothing else.
     return [
         _arm(
             "W108_s2_finale", 108, "s2_finale", True, True,
-            "the adopted arm; T0 is the later of the S2 finale and the first-pass S1 "
-            "completion date",
-            **common,
-        ),
-        _arm(
-            "W091_s2_finale", 91, "s2_finale", True, False,
-            "a grid arm at 91 days, finale-anchored, distinct from the premiere-anchored "
-            "arm below",
-            deriv_liveness_superseded="liveness_exclusions" in publishes,
-            **common,
-        ),
-        _arm(
-            "W091_s2_premiere", 91, "s2_premiere", False, False,
-            "Step 9's second headline at Netflix's own 91-day reporting window, anchored "
-            "on the later of the S2 premiere and the first-pass S1 completion date; it "
-            "sits on a different origin from the primary headline and the two are NOT the "
-            "same measurement at two window lengths",
-            blocks_have_producers=False,
-            **common,
-        ),
+            "the arm this step's subpopulation cuts are computed at; the unconditional "
+            "headline at this arm is Step 9's and is not restated here",
+            step, dual_arms,
+        )
     ]
 
 
@@ -3700,6 +4234,7 @@ def _stamp_merged_from(inst: dict) -> None:
     check S30 asserts that a block holding two arms names two DIFFERENT files.
     """
     labels = {(s, a): _input_label(s, a) for s, a in MERGE_INPUTS}
+    single_arm_steps = {s for s, a in MERGE_INPUTS if a == "sole"}
 
     def visit(node):
         if isinstance(node, dict):
@@ -3711,6 +4246,14 @@ def _stamp_merged_from(inst: dict) -> None:
                 key = (node["produced_by_step"], node["producing_arm"])
                 if key in labels:
                     node["merged_from"] = labels[key]
+            # A SINGLE-ARM STEP'S BLOCK HAS NO `producing_arm` FIELD AND STILL
+            # CAME FROM A FILE. Step 10's abandonment distribution is the case:
+            # its arm is `sole` by construction, so it was left unstamped, and
+            # its declared input was therefore named by nothing. Under S30's old
+            # one-way reading that was invisible (decisions/0111 E3b).
+            if ("producing_arm" not in node and "merged_from" not in node
+                    and node.get("written_by_step") in single_arm_steps):
+                node["merged_from"] = labels[(node["written_by_step"], "sole")]
             for v in node.values():
                 visit(v)
         elif isinstance(node, list):
@@ -3718,6 +4261,15 @@ def _stamp_merged_from(inst: dict) -> None:
                 visit(v)
 
     visit(inst)
+    # The NON-ARM-FILE source (decisions/0111 E6): Step 14's limits section. Its
+    # payloads are not per-arm, so they are stamped by the block the source
+    # declares it fills rather than by walking arm keys.
+    for src in NON_ARM_SOURCES:
+        label = _input_label(src["step"], None)
+        for block in src["fills_blocks"]:
+            for entry in inst.get(block) or []:
+                if isinstance(entry, dict):
+                    entry["merged_from"] = label
 
 
 def build_placeholder(provenance: dict, grid: list[int],
@@ -3782,9 +4334,14 @@ def build_placeholder(provenance: dict, grid: list[int],
             ),
         },
         "arm_key": {
-            "fields": ["W_days", "clock_origin"],
+            "fields": ["W_days", "clock_origin", "producing_step"],
             "note": (
-                "W alone does not identify an arm. Step 9 reports a second 91-day headline "
+                "THE PRODUCING STEP IS PART OF THE KEY (decisions/0111 E2): Step 9's W = 108 "
+                "and Step 13's W = 108 are DIFFERENT MEASUREMENTS OF ONE SETTING and both "
+                "exist as entries. That is the collision below, one dimension out, with the "
+                "same fix -- add the missing identity dimension, never restrict which step may "
+                "occupy a shared W. "
+                "W alone does not identify an arm either. Step 9 reports a second 91-day headline "
                 "anchored on the S2 premiere rather than the finale, and states plainly that "
                 "it is not the same measurement at another window length -- so it would "
                 "collide with the finale-anchored W = 91 grid arm under a W-only key. There is "
@@ -4181,7 +4738,8 @@ def build_placeholder(provenance: dict, grid: list[int],
                 "variant_id": "s1_completion_threshold_90",
                 "axis": "s1_completion_threshold",
                 "level": "90_percent",
-                "base_arm_id": "W108_s2_finale",
+                "base_arm_id": _arm_id("W108_s2_finale", "step13"),
+                "producing_step": "step13",
                 # Step 13 is DUAL (decisions/0103 §3), so its payload nests per
                 # producing arm exactly as Step 9's does. Its per-arm sensitivity
                 # shares carry no bound and no interval, and the slots say so
@@ -4194,31 +4752,64 @@ def build_placeholder(provenance: dict, grid: list[int],
                                                step="step13", bounds_present=False,
                                                ci_present=False, dual_arms=dual_arms),
                 },
-                "d3_prime": {p: _d3_prime(p, 108) for p in POPULATIONS},
-                "d2_recomputed_inside_this_arm": {
-                    "finale_binds": SENT_C,
-                    "s1_completion_binds": SENT_C,
-                    "both_bind": SENT_C,
-                    "note": ph(
-                        "the max() split is three categories, not two: a tie is its own "
-                        "category, not a tiebreak, and the count is not population-invariant"
-                    ),
+                # ALL FOUR PER PRODUCING ARM (decisions/0111 E1). Step 13 is
+                # dual, so each of these was one slot where two arms write.
+                "d3_prime": {
+                    p: {"by_producing_arm": _per_arm_container(
+                        "step13", dual_arms, lambda a, p=p: _d3_prime(p, 108, a))}
+                    for p in POPULATIONS
                 },
-                "conclusions_surviving": [ph("one string per conclusion that survives")],
-                "conclusions_not_surviving": [ph("one string per conclusion that does not")],
+                "d2_recomputed_inside_this_arm": {
+                    "by_producing_arm": _per_arm_container(
+                        "step13", dual_arms, lambda a: {
+                            "producing_arm": a,
+                            "written_by_step": "step13",
+                            "finale_binds": SENT_C,
+                            "s1_completion_binds": SENT_C,
+                            "both_bind": SENT_C,
+                            "note": ph(
+                                "the max() split is three categories, not two: a tie is its "
+                                "own category, not a tiebreak, and the count is not "
+                                "population-invariant"
+                            ),
+                        }),
+                },
+                "conclusions_surviving": {
+                    "by_producing_arm": _per_arm_container(
+                        "step13", dual_arms, lambda a: {
+                            "producing_arm": a,
+                            "written_by_step": "step13",
+                            "conclusions": [
+                                ph("one string per conclusion that survives, in this arm's "
+                                   "words")],
+                        }),
+                },
+                "conclusions_not_surviving": {
+                    "by_producing_arm": _per_arm_container(
+                        "step13", dual_arms, lambda a: {
+                            "producing_arm": a,
+                            "written_by_step": "step13",
+                            "conclusions": [
+                                ph("one string per conclusion that does not survive")],
+                        }),
+                },
             }
         ]} if merged or step == "step13" else {}),
         # Steps 11 and 12 are single-arm steps, and under decisions/0107 and
         # 0109 §1 they write their OWN files (arm `sole`, one file per step).
         # The cuts appear in the merged document and in those files; a DUAL
         # step's arm file does not carry them, because a file is one step's
-        # output for one arm and `a` and `sole` are two arms.
-        **({"subpopulation_cuts": [
+        # output for one arm and `a` and `sole` are two arms. AND STEP 11's FILE
+        # HOLDS STEP 11's CUTS ONLY: `sole` is not one shared arm, it is each
+        # single-arm step's own, so Step 12's cut belongs in Step 12's file and
+        # in the merge.
+        **({"subpopulation_cuts": [cut for cut in [
             {
                 "cut_id": "discovery_channel_a",
                 "dimension": "discovery_channel",
                 "level": "channel_a",
-                "base_arm_id": "W108_s2_finale",
+                "base_arm_id": _arm_id("W108_s2_finale", "step11"),
+                "producing_step": "step11",
                 # Step 11 is SINGLE-ARM: one payload under `sole`, and the
                 # dual_status field says so. It is not a dual step writing an
                 # absence for an arm it never had (reviewer-engineering F5).
@@ -4242,7 +4833,8 @@ def build_placeholder(provenance: dict, grid: list[int],
                 "cut_id": "discovery_channel_both",
                 "dimension": "discovery_channel",
                 "level": "both",
-                "base_arm_id": "W108_s2_finale",
+                "base_arm_id": _arm_id("W108_s2_finale", "step11"),
+                "producing_step": "step11",
                 "headline": {
                     "APPLY": _population_block("APPLY", False, False, dual=False,
                                                step="step11", bounds_present=False),
@@ -4259,27 +4851,68 @@ def build_placeholder(provenance: dict, grid: list[int],
                 "where_it_holds": ph("where the pattern holds"),
                 "where_it_breaks": ph("where the pattern breaks"),
             },
-        ]} if holds_sole else {}),
-        "tested_ranges": {
-            "W_days": {
-                "values": grid,
-                "min": min(grid),
-                "max": max(grid),
-                "source": "decisions/0075",
+            # STEP 12'S OWN CUT. Steps 11 and 12 both write into this array and
+            # nothing in the file said which was which, so the merged document
+            # could declare Step 12's file among its inputs and carry nothing
+            # from it -- which it did, and no check could see it
+            # (decisions/0111 E3b). A cut now names its producing step, and check
+            # S30 reads the input list in both directions.
+            {
+                "cut_id": "gap_length_between_seasons_long",
+                "dimension": "gap_length_between_seasons",
+                "level": ph("one level of the segment cut this step lists"),
+                "base_arm_id": _arm_id("W108_s2_finale", "step12"),
+                "producing_step": "step12",
+                "headline": {
+                    "APPLY": _population_block("APPLY", False, False, dual=False,
+                                               step="step12", bounds_present=False),
+                    "DERIV": _population_block("DERIV", True, True, dual=False,
+                                               step="step12", bounds_present=False),
+                },
+                "candidate_considered": True,
+                "selected_by_human_lead": False,
+                "agreement_kind": "not_yet_assessed",
+                "agreement_statement": ph(
+                    "every candidate considered is written here, not only the one that showed "
+                    "a pattern"
+                ),
+                "where_it_holds": ph("where the pattern holds"),
+                "where_it_breaks": ph("where the pattern breaks"),
             },
-            "s1_completion_threshold_percent": {
-                "values": [90, 100],
-                "min": 90,
-                "max": 100,
-                "source": "task-sheet.md Step 13",
-            },
-            "s1_completion_date_definition": {
-                "values": ["first_pass", "last_observed"],
-                "min": None,
-                "max": None,
-                "source": "task-sheet.md Step 13; Step 1 §5",
-            },
-        },
+        ] if merged or cut["producing_step"] == step]} if holds_sole else {}),
+        # PER PRODUCING ARM (decisions/0111 E1), and present only where this
+        # file's step publishes it: it is Step 13's, and check S36 fails a file
+        # that carries a block its own ownership table gives to another step.
+        **({"tested_ranges": {
+            "by_producing_arm": _per_arm_container("step13", dual_arms, lambda a: {
+                "producing_arm": a,
+                "written_by_step": "step13",
+                "ranges": {
+                    "W_days": {
+                        "values": grid,
+                        "min": min(grid),
+                        "max": max(grid),
+                        "source": "decisions/0075",
+                    },
+                    "s1_completion_threshold_percent": {
+                        "values": [90, 100],
+                        "min": 90,
+                        "max": 100,
+                        "source": "task-sheet.md Step 13",
+                    },
+                    "s1_completion_date_definition": {
+                        "values": ["first_pass", "last_observed"],
+                        "min": None,
+                        "max": None,
+                        "source": "task-sheet.md Step 13; Step 1 §5",
+                    },
+                },
+                "note": ph(
+                    "the ranges this arm actually tested; Step 16 binds its controls to them "
+                    "so no reader can drive it somewhere that was never tested"
+                ),
+            }),
+        }} if merged or step == "step13" else {}),
         # THE MERGED DOCUMENT ONLY, for the same reason as cross_arm_divergences:
         # it is one of the two blocks only the merge may fill, and it belongs to
         # the Human Lead, which no agent may draft.
@@ -4313,22 +4946,180 @@ def build_placeholder(provenance: dict, grid: list[int],
                 ),
             },
             {
-                "choice": "The arm key is (W_days, clock_origin), not W alone.",
+                "choice": "The arm key is (W_days, clock_origin, producing_step), not W alone.",
                 "spec_gap": (
                     "Step 8b says the key is W alone -- an amendment aimed at the deleted "
                     "liveness threshold. Step 9 separately requires a second 91-day headline "
                     "anchored on the S2 premiere rather than the finale, and states that it is "
                     "not the same measurement at two window lengths. The W grid already "
-                    "contains a finale-anchored 91-day arm, so a W-only key collides."
+                    "contains a finale-anchored 91-day arm, so a W-only key collides. AND THE "
+                    "SAME COLLISION RECURS ONE DIMENSION OUT: Step 9 and Step 13 both measure "
+                    "at W = 108, finale-anchored -- four payloads, two slots."
                 ),
                 "what_was_done": (
-                    "The origin is part of the entry key and is a required enum on every arm. "
-                    "No liveness threshold enters the key, which is what the amendment fixed."
+                    "The origin AND THE PRODUCING STEP are part of the entry key, both "
+                    "required on every arm entry (decisions/0111 E2). Step 9's W = 108 and "
+                    "Step 13's W = 108 are different measurements of one setting and BOTH "
+                    "EXIST as entries; check S2 asserts uniqueness on the three-field key and "
+                    "asserts that $.arm_key declares it. No liveness threshold enters the key, "
+                    "which is what the amendment fixed."
                 ),
                 "if_ruled_otherwise": (
-                    "If the Netflix arm is meant to live outside the arm list, it moves to a "
-                    "sibling array and `clock_origin` becomes a plain field. The collision "
-                    "must be resolved somewhere; it cannot be left to the writer."
+                    "It must NOT be resolved by restricting which step may occupy a shared W: "
+                    "that would make the schema decide an ownership question the spec does "
+                    "not, and would drop a measurement rather than hold it. If the Netflix arm "
+                    "is meant to live outside the arm list, it moves to a sibling array and "
+                    "`clock_origin` becomes a plain field. The collision must be resolved "
+                    "somewhere; it cannot be left to the writer."
+                ),
+            },
+            {
+                "choice": "Step 13's six non-headline outputs nest per producing arm, and the "
+                          "nesting is UNCONDITIONAL -- no absence branch above it.",
+                "spec_gap": (
+                    "decisions/0111 E1 requires d3_prime, tested_ranges, "
+                    "conclusions_surviving, conclusions_not_surviving, "
+                    "d2_recomputed_inside_this_arm and action_type_counts to take per-arm "
+                    "nesting, because each had ONE SLOT where TWO ARMS write and Step 13 is "
+                    "dual. It does not say how a file that does not publish one of them says "
+                    "so, and the obvious way -- an absence branch above the container -- is "
+                    "forbidden by decisions/0109 §4, which records that the step_dual_status "
+                    "rename fails LOUDLY only because no oneOf sits above by_producing_arm."
+                ),
+                "what_was_done": (
+                    "The container is required wherever the block appears, and a block the "
+                    "entry's producing step does not publish is OMITTED rather than wrapped. "
+                    "$.block_ownership names every block's publisher, check S22 requires an "
+                    "entry to carry its own step's blocks at the adopted setting, and check "
+                    "S36 forbids it any other step's. Check S35 was widened from one "
+                    "container to the family of six and its dead root-side scan was fixed, so "
+                    "the constraint covers every member rather than the one that existed when "
+                    "it was written."
+                ),
+                "if_ruled_otherwise": (
+                    "If an explicit absence is wanted for a block another step publishes, it "
+                    "goes INSIDE the container, in the arm payload slot, where an absence "
+                    "branch already exists and sits BELOW the renamed key rather than above "
+                    "it. What it may not do is sit above the container."
+                ),
+            },
+            {
+                "choice": "A block another step publishes is OMITTED from an entry, and both "
+                          "directions are policed.",
+                "spec_gap": (
+                    "Nothing said what a file does about a block it does not publish, and "
+                    "until v1.4.0 only one direction was checked at all: the file was checked "
+                    "for writing too LITTLE and never for writing too MUCH."
+                ),
+                "what_was_done": (
+                    "Omission, with $.block_ownership naming the publisher, and a new check "
+                    "S36 that fails an entry carrying a block its own producing step does not "
+                    "publish -- the direction that let a single-arm step's placeholder ship "
+                    "carrying Step 13's action-type counts while declaring five other blocks "
+                    "absent on the reasoning that a copy would be a second place that figure "
+                    "lives (decisions/0111 §3, Q1). The ownership row for that block was "
+                    "itself wrong and is corrected: its publisher is Step 13, which is what "
+                    "decisions/0111 E1 makes it."
+                ),
+                "if_ruled_otherwise": (
+                    "If a slot is wanted for every block in every entry, the four "
+                    "non-nested blocks can carry an absence again and S36 narrows to filled "
+                    "blocks only. The two nested ones cannot: an absence branch above a "
+                    "by_producing_arm container is what decisions/0109 §4 forbids."
+                ),
+            },
+            {
+                "choice": "The publisher table the checks read is held in the VALIDATOR, not "
+                          "in the file under test.",
+                "spec_gap": (
+                    "decisions/0111 E4: check S22 read `ownership_map` out of the instance it "
+                    "was checking, so any arm file could exempt itself from S22 by editing one "
+                    "string in its own table -- and `d3_prime` and `retained_by_air_period` "
+                    "had no other backstop. The spec does not say where such a table lives."
+                ),
+                "what_was_done": (
+                    "The table moved into src/step8b_validate.py, carrying the reasoning check "
+                    "S31 already recorded about duality: A TABLE READ FROM THE FILE UNDER TEST "
+                    "COULD ONLY AGREE WITH ITSELF. The file's own table is still read -- and "
+                    "is asserted AGAINST the external one, so a rewrite fails on the rewrite "
+                    "instead of escaping through it. The same route now warrants a check's "
+                    "N/A: a block missing because another step publishes it is out of scope by "
+                    "the external table, not by the file's own account of itself."
+                ),
+                "if_ruled_otherwise": (
+                    "If a publisher assignment changes, it changes in the validator and in "
+                    "this generator, and the two are compared on every run. What must not "
+                    "happen is the checked file being the only place it is written down."
+                ),
+            },
+            {
+                "choice": "The waterfall, the liveness exclusions and the per-air-period "
+                          "retention are Step 9's entries at EVERY arm this file shows, "
+                          "including the grid arm at W = 91.",
+                "spec_gap": (
+                    "Once an arm entry is one step's measurement (decisions/0111 E2), each "
+                    "per-arm block has to sit in the entry of the step that publishes it -- and "
+                    "nothing states who publishes the waterfall, the liveness exclusion count "
+                    "and the retained-pair counts AT THE GRID ARMS. Step 13 runs the grid; the "
+                    "publisher table assigns those three blocks to Step 9."
+                ),
+                "what_was_done": (
+                    "The table was followed mechanically: those blocks appear in Step 9 "
+                    "entries, so this file carries a Step 9 entry at W = 91 finale-anchored "
+                    "alongside Step 13's. Nothing was invented to fill it -- the same blocks, "
+                    "in the entry of the step the table names."
+                ),
+                "if_ruled_otherwise": (
+                    "If the per-arm series across the W grid is Step 13's, the publisher table "
+                    "changes in ONE place -- in this generator and in the validator, which "
+                    "compare on every run -- and those blocks move into the Step 13 entries "
+                    "that already exist at each grid arm. No figure moves and no slot is added."
+                ),
+            },
+            {
+                "choice": "The merge's input list records SOURCES, and the key was RENAMED to "
+                          "`sources_merged`.",
+                "spec_gap": (
+                    "decisions/0111 E6: Step 14's `limitations` is a named NON-ARM-FILE source "
+                    "with its own provenance entry -- an eighth source, with no arm. Step 14 "
+                    "delivers a limits section rather than a schema file, so it was not one of "
+                    "the seven and had no way to be recorded."
+                ),
+                "what_was_done": (
+                    "`arm_files_merged` became `sources_merged`; each entry carries a "
+                    "source_kind, an arm that is null for a non-arm-file source, and, for such "
+                    "a source, the blocks it fills. Every limitations entry names it in "
+                    "merged_from. The key was RENAMED rather than widened in place, so a merge "
+                    "still emitting the old one fails loudly instead of silently supplying a "
+                    "list that no longer means what it says."
+                ),
+                "if_ruled_otherwise": (
+                    "If a second non-arm-file source appears -- another Human-Lead section, "
+                    "say -- it is added to the same list with its own fills_blocks, and check "
+                    "S30 requires its blocks to name it. Nothing else moves."
+                ),
+            },
+            {
+                "choice": "Check S30 reads the input list in BOTH directions.",
+                "spec_gap": (
+                    "decisions/0111 E3b: S30 checked payload -> input and never input -> "
+                    "payload, so A MERGE DROPPING AN ENTIRE DECLARED INPUT VALIDATED CLEAN. "
+                    "The shipped merged placeholder was occupied by exactly that: two of its "
+                    "seven declared inputs were named by no payload at all."
+                ),
+                "what_was_done": (
+                    "Every declared source must be named by at least one payload's "
+                    "merged_from, and a non-arm-file source must be named by the blocks it "
+                    "declares it fills. Step 10's block carried no merge provenance at all "
+                    "because its arm is `sole` by construction, and Step 12's cut did not "
+                    "exist in the document; both are now emitted. It is M1 inverted -- one "
+                    "file supplying two arms was caught, one file supplying nothing was not, "
+                    "and it needs no forgery, only an omission."
+                ),
+                "if_ruled_otherwise": (
+                    "If a source may legitimately supply nothing, it stops being an input and "
+                    "leaves the list. A declared input that supplies nothing is either a "
+                    "dropped arm or a list that has drifted from the merge."
                 ),
             },
             {
@@ -4610,8 +5401,10 @@ def build_placeholder(provenance: dict, grid: list[int],
                 "if_ruled_otherwise": (
                     "None of this can establish that the two files were WRITTEN in isolation, "
                     "and nothing in a file can. It raises the cost of a false merge from a "
-                    "copy-and-relabel to a fabricated second file, and the Human Lead's diff "
-                    "remains the control."
+                    "copy-and-relabel to A FABRICATED INPUT FILE PLUS ONE REWRITTEN SENTENCE "
+                    "-- `convention_definition`, which S30 does not normalise (decisions/0111 "
+                    "§4) -- and past that rung there is no in-file signal at all. THE HUMAN "
+                    "LEAD'S DIFF REMAINS THE CONTROL."
                 ),
             },
             {
@@ -4854,41 +5647,79 @@ def build_placeholder(provenance: dict, grid: list[int],
             },
             {
                 "limit": (
-                    "THE MERGE-ARITY RESIDUAL, MEASURED. Check S30 rejects a merged document "
-                    "whose second arm is a copy of the first when the copy keeps the first "
-                    "arm's merge provenance, bootstrap references or sampling-width convention "
-                    "label -- three independent legs, each of which a copy-and-relabel trips. "
-                    "It does NOT reject a copy in which all of those are relabelled as well, "
-                    "because at that point the file asserts that a second input file exists "
-                    "and nothing inside the file can contradict it."
+                    "THE MERGE-ARITY RESIDUAL, MEASURED -- AND NARROWER THAN v1.3.0 PUBLISHED. "
+                    "Check S30 rejects a merged document whose second arm is a copy of the "
+                    "first when the copy keeps the first arm's merge provenance, bootstrap "
+                    "references or sampling-width convention label -- three independent legs, "
+                    "each of which a copy-and-relabel trips. It does NOT reject a copy in "
+                    "which all of those are relabelled as well, because at that point the file "
+                    "asserts that a second input file exists and nothing inside the file can "
+                    "contradict it. THE PUBLISHED LIMIT STOPPED THERE, AND THE ACTUAL LIMIT IS "
+                    "ONE RUNG LOWER (decisions/0111 §4): S30 normalises FIVE keys and NOT "
+                    "`convention_definition` -- one arm's sampling-width convention in that "
+                    "arm's own words -- and a forger making the copy internally coherent "
+                    "rewrites that sentence anyway. THE MOMENT THEY DO, the identical-payload "
+                    "signal inverts to 0 of N, WHICH IS WHAT A GENUINE MERGE PRODUCES."
                 ),
                 "consequence": (
-                    "The remaining signal is that the two payloads are identical once the arm "
-                    "labels are normalised. S30 counts and reports that rather than failing "
+                    "The remaining signal is that the two payloads are identical once those "
+                    "five keys are normalised. S30 counts and reports that rather than failing "
                     "it, because two arms may legitimately agree on every figure -- and in a "
-                    "placeholder every measurement is a sentinel, so identity is expected."
+                    "placeholder every measurement is a sentinel, so identity is expected. "
+                    "Past the rung above, the count separates nothing: SO S30 RAISES THE COST "
+                    "OF A FALSE MERGE TO A FABRICATED INPUT FILE PLUS ONE REWRITTEN SENTENCE, "
+                    "AND PAST THAT THERE IS NO IN-FILE SIGNAL AT ALL."
                 ),
                 "mitigation": (
-                    "The cost of a false merge is raised from a copy-and-relabel to a "
-                    "fabricated input file. The control remains the Human Lead's diff between "
-                    "two files, which happens before this document is built."
+                    "THE DIFF REMAINS THE CONTROL PAST THAT RUNG. It is the Human Lead's, it "
+                    "is between two files, and it happens before this document is built. "
+                    "Nothing in this file substitutes for it, and the selftest asserts the "
+                    "fully relabelled copy as a NON-failure so this limit cannot drift from "
+                    "the behaviour."
                 ),
             },
             {
                 "limit": (
                     "A check whose sites all live in another step's blocks reports N/A in a "
-                    "file that does not carry them, and it says so by QUOTING the file's own "
-                    "absence records. It cannot tell an honest absence from a declared one."
+                    "file that does not carry them. Until v1.4.0 it said so by QUOTING THE "
+                    "FILE'S OWN ABSENCE RECORDS, and could not tell an honest absence from a "
+                    "declared one. Since v1.4.0 the second route is the usual one: the block "
+                    "is not in the file at all, and the warrant is the EXTERNAL publisher "
+                    "table this build's validator holds, not a sentence the file wrote about "
+                    "itself."
                 ),
                 "consequence": (
-                    "A writer that declares a block absent when it should have written it "
-                    "produces a file whose checks report N/A rather than VACUOUS. An emptiness "
-                    "with NO absence record behind it is not exempted and still fails."
+                    "The external route cannot be talked out of: a file that omits a block its "
+                    "own step publishes fails check S22 rather than being exempted. The "
+                    "quoting route survives for the arms with no producer in the spec, and "
+                    "there a writer that declares a block absent when it should have written "
+                    "it still produces a file whose checks report N/A. An emptiness with NO "
+                    "warrant behind it is not exempted and still fails as VACUOUS."
                 ),
                 "mitigation": (
-                    "Check S22 forbids an absence on the primary headline arm for the blocks "
-                    "THIS file's own step publishes, so the exemption cannot reach a block the "
-                    "file is responsible for."
+                    "Check S22 requires each arm entry to carry the blocks ITS OWN producing "
+                    "step publishes at the adopted setting, and check S36 forbids it any "
+                    "block another step publishes -- so neither direction is left to the "
+                    "file's own account of itself."
+                ),
+            },
+            {
+                "limit": (
+                    "One absence status in the enum, `awaiting_owner_step`, is exercised by no "
+                    "placeholder. The shape that used it is gone: it labelled another step's "
+                    "per-arm block sitting in this file as an absence naming its publisher, "
+                    "and under decisions/0111 E2 an arm entry is ONE STEP'S measurement, so "
+                    "another step's block is omitted rather than described."
+                ),
+                "consequence": (
+                    "Step 16 is not built against that branch by any placeholder in this set. "
+                    "The status stays in the enum because a writer may genuinely be waiting on "
+                    "an owner step; every absence record renders identically, carrying a "
+                    "status, a reason and an owning step."
+                ),
+                "mitigation": (
+                    "Check S21 lists the absence statuses a file does not exercise and does "
+                    "not require, so a restricted pass cannot be read as a full one."
                 ),
             },
         ],
@@ -4917,6 +5748,21 @@ def build_placeholder(provenance: dict, grid: list[int],
                 "Steps 9 and 13 are dual and nest their payloads per producing arm. Steps 10, "
                 "11 and 12 are single-arm and write one payload under `sole`. Which of the two "
                 "a block used is a field, not something a consumer has to infer from the keys."
+            ),
+            "an_arm_entry_is_one_steps_measurement": (
+                "An arm entry is identified by (W_days, clock_origin, producing_step). Step "
+                "9's W = 108 and Step 13's W = 108 are different measurements of one setting "
+                "and both appear, as separate entries. An entry carries the blocks its own "
+                "producing step publishes and no others; $.block_ownership names each block's "
+                "publisher, and a block missing from an entry is not a gap -- it is in the "
+                "entry of the step that publishes it."
+            ),
+            "step_13s_non_headline_outputs_are_per_arm": (
+                "d3_prime, tested_ranges, conclusions_surviving, conclusions_not_surviving, "
+                "d2_recomputed_inside_this_arm and action_type_counts each nest under "
+                "by_producing_arm, exactly as the headline does. Step 13 is dual, so one slot "
+                "would have been one slot where two arms write -- and the merge would have had "
+                "to drop an arm or reconcile them."
             ),
             "one_file_per_arm": (
                 "Each arm writes its own document and no arm writes into a document another "
@@ -5035,9 +5881,10 @@ def main() -> int:
         json.dump(schema, fh, indent=2, ensure_ascii=False)
         fh.write("\n")
 
-    # TWO placeholders, one per document role (decisions/0107). The merged one is
-    # the deliverable Step 16 builds against; the arm-file one is the shape Steps
-    # 9 to 13 write, and it exists so that no arm has to invent it.
+    # THREE placeholders, one per document ROLE and per granularity (0107, 0109
+    # §1). The merged one is the deliverable Step 16 builds against; the arm-file
+    # one is the shape a dual step writes; the sole-file one is a single-arm
+    # step's own file. Each exists so that no writer has to invent its shape.
     merged_instance = build_placeholder(provenance, grid, "merged_document", None, "step13b")
     _stamp_merged_from(merged_instance)
     emitted = [

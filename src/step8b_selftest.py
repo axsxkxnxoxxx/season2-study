@@ -49,12 +49,26 @@ SOLE_PLACEHOLDER_PATH = os.path.join(ROOT, "artifacts", "step8b-placeholder-sole
 LOG_DIR = os.path.join(ROOT, "logs", "step8b")
 
 
+def _arm_with(inst: dict, block: str) -> dict:
+    """The first arm entry that carries `block`.
+
+    AN ARM ENTRY IS ONE STEP'S MEASUREMENT AT ONE SETTING since v1.4.0
+    (decisions/0111 E2), so the waterfall, the abandonment distribution and D3'
+    now sit in three DIFFERENT entries of the merged document. Indexing arms[0]
+    and reaching for any of them was correct only while one entry held them all.
+    """
+    for arm in inst["arms"]:
+        if block in arm and not arm[block].get("block_is_absent"):
+            return arm
+    raise KeyError(f"no arm entry carries {block}")
+
+
 def _first_payload(inst: dict) -> dict:
     return inst["arms"][0]["headline"]["APPLY"]["by_producing_arm"]["arms"]["a"]
 
 
 def _first_abandonment(inst: dict) -> dict:
-    return inst["arms"][0]["abandonment_distribution"]["APPLY"][0]
+    return _arm_with(inst, "abandonment_distribution")["abandonment_distribution"]["APPLY"][0]
 
 
 def _first_ci(inst: dict) -> dict:
@@ -134,9 +148,10 @@ def _make_real(inst: dict) -> dict:
                         sub["ceiling"]["percent"] = 11.0
                         sub["width_pp"] = 1.0
                 _fix_ceilings(payload)
-        if arm["waterfall"].get("block_is_absent"):
+        wf = arm.get("waterfall")
+        if not isinstance(wf, dict) or wf.get("block_is_absent"):
             continue
-        for pop, w in arm["waterfall"].items():
+        for pop, w in wf.items():
             n = 1000
             for p in w["positions"]:
                 p["n_in"] = n
@@ -188,8 +203,9 @@ MUTATIONS = {
     "S11": lambda i: _set(_first_payload(i)["bounds"]["never_started"]["floor"],
                           "population", "DERIV"),
     "S12": lambda i: _set(_first_payload(i)["bounds"]["never_started"], "width_pp", 99.0),
-    "S13": lambda i: _set(i["arms"][0]["waterfall"]["APPLY"]["positions"][3], "removed", 7),
-    "S14": lambda i: _set(i["arms"][0]["waterfall"]["APPLY"]["positions"][0],
+    "S13": lambda i: _set(_arm_with(i, "waterfall")["waterfall"]["APPLY"]["positions"][3],
+                          "removed", 7),
+    "S14": lambda i: _set(_arm_with(i, "waterfall")["waterfall"]["APPLY"]["positions"][0],
                           "inert_reason", None),
     "S15": lambda i: _set(i["channel_classes"]["d4"], "folded_into_bound", True),
     "S16": lambda i: i["channel_classes"]["d9"]["quantities"]["half_a"].pop("coverage"),
@@ -197,12 +213,13 @@ MUTATIONS = {
     "S18": lambda i: _first_payload(i)["shares"]["continued"]["ci"].pop("bootstrap_ref"),
     "S19": lambda i: _set(_first_payload(i)["bounds"]["continued"]["floor"], "reason", "no"),
     "S20": lambda i: _set(_first_payload(i)["bounds"]["never_started"], "degenerate", True),
-    "S21": lambda i: i["arms"].__setitem__(
-        2, _set(copy.deepcopy(i["arms"][2]), "clock_origin", "s2_finale")),
+    "S21": lambda i: [
+        _set(a, "clock_origin", "s2_finale") for a in i["arms"]
+        if a.get("clock_origin") == "s2_premiere"],
     # v1.1.0 -- one mutation per check added against reviewer-engineering's
     # findings, so that none of them is a check that cannot fail.
     "S22": lambda i: _set(
-        i["arms"][0], "waterfall",
+        _arm_with(i, "waterfall"), "waterfall",
         {"block_is_absent": True, "status": "no_producer_in_spec",
          "reason": "an absence written onto the primary headline arm, where a producer exists",
          "source": "selftest", "owning_step": "step8"}),
@@ -238,6 +255,13 @@ MUTATIONS = {
     "S33": lambda i: _set(i["cross_arm_divergences"]["search"], "coverage_count", 0),
     # M8: ownership at depth 1 only.
     "S34": lambda i: i["block_ownership"].pop("arms[].abandonment_distribution"),
+    # v1.4.0 -- decisions/0111. S36 IS THE Q1 FINDING ITSELF: a block written
+    # into an entry whose producing step does not publish it. Only absences were
+    # policed before, so the file was checked for writing too little and never
+    # for writing too much.
+    "S36": lambda i: _set(
+        _arm_with(i, "waterfall"), "action_type_counts",
+        copy.deepcopy(_arm_with(i, "action_type_counts")["action_type_counts"])),
 }
 
 
@@ -291,7 +315,7 @@ EXTRA_MUTATIONS = {
     "S12/machine_checked_flags": ("S12", "placeholder", lambda i: _set(
         i["derived_fields"][0], "machine_checked", False)),
     "S13/chaining": ("S13", "real", lambda i: _set(
-        i["arms"][0]["waterfall"]["APPLY"]["positions"][3], "n_in", 4242)),
+        _arm_with(i, "waterfall")["waterfall"]["APPLY"]["positions"][3], "n_in", 4242)),
     "S17/empty_and_unsearched": ("S17", "placeholder", lambda i: _set(
         _set(i["cross_arm_divergences"], "entries", []),
         "search", dict(i["cross_arm_divergences"]["search"], performed=False))),
@@ -322,9 +346,9 @@ EXTRA_MUTATIONS = {
     "S30/false_merge_refs_relabelled": ("S30", "placeholder", lambda i: _forge_merge(i, 2)),
     # The merge declares one input file for two arms of a dual step.
     "S30/one_input_file_for_two_arms": ("S30", "placeholder", lambda i: _set(
-        i["document_scope"]["merge"], "arm_files_merged",
+        i["document_scope"]["merge"], "sources_merged",
         [dict(e, arm="b") if e["arm"] == "a" and e["producing_step"] == "step9" else e
-         for e in i["document_scope"]["merge"]["arm_files_merged"]])),
+         for e in i["document_scope"]["merge"]["sources_merged"]])),
     # A diff whose two sides are the same file is not a diff.
     "S30/diff_against_itself": ("S30", "placeholder", lambda i: _set(
         i["document_scope"]["merge"]["diff"]["pairs_diffed"][0], "arm_b_file",
@@ -340,6 +364,41 @@ EXTRA_MUTATIONS = {
     # M8's second clause: a per-arm block that does not say who publishes it.
     "S34/publisher_not_named": ("S34", "placeholder", lambda i: i["block_ownership"][
         "arms[].waterfall"].pop("published_by_step")),
+    # v1.4.0 -- decisions/0111.
+    #
+    # E3b, THE FINDING ITSELF AND IT NEEDS NO FORGERY: drop the one payload that
+    # names a declared input, and the merge has an input supplying nothing. Under
+    # S30's old one-way reading this validated clean.
+    "S30/declared_input_named_by_no_payload": ("S30", "placeholder", lambda i: _set(
+        i, "subpopulation_cuts",
+        [c for c in i["subpopulation_cuts"] if c.get("producing_step") != "step12"])),
+    # E6: the non-arm-file source is declared and its block does not name it.
+    "S30/non_arm_source_not_named_by_its_block": ("S30", "placeholder", lambda i: [
+        e.pop("merged_from") for e in i["limitations"]]),
+    # E2: the producing step dropped out of the declared key, which is how two
+    # steps' measurements at one setting would start colliding again.
+    "S2/producing_step_dropped_from_the_key": ("S2", "placeholder", lambda i: _set(
+        i["arm_key"], "fields", ["W_days", "clock_origin"])),
+    # E2's second half: the LABEL. Several entries share a setting now, so an
+    # arm_id that names only the setting reintroduces the collision for any
+    # consumer that indexes by it.
+    "S2/arm_id_label_collides": ("S2", "placeholder", lambda i: _set(
+        i["arms"][1], "arm_id", i["arms"][0]["arm_id"])),
+    # And a reference a consumer cannot follow: a variant or cut whose base arm
+    # names no entry. The label changed shape at v1.4.0, so a stale reference is
+    # exactly the failure to guard.
+    "S2/base_arm_id_names_no_entry": ("S2", "placeholder", lambda i: _set(
+        i["variants"][0], "base_arm_id", "W108_s2_finale")),
+    # E4: the file rewrites its OWN ownership table. Before v1.4.0 S22 read that
+    # table out of the file under test, so this was the whole of a self-exemption.
+    "S22/self_exempting_ownership_table": ("S22", "placeholder", lambda i: _set(
+        i["block_ownership"]["arms[].retained_by_air_period"],
+        "published_by_step", "step13")),
+    # E1: a second member of the by_producing_arm family reached through a branch
+    # keyword. S35 guarded one member of six before v1.4.0.
+    "S36/variant_carries_another_steps_block": ("S36", "placeholder", lambda i: _set(
+        i["subpopulation_cuts"][0], "d3_prime",
+        copy.deepcopy(_arm_with(i, "d3_prime")["d3_prime"]))),
 }
 
 # Cases exercised against the ARM-FILE placeholder rather than the merged one.
@@ -376,6 +435,29 @@ ARM_MUTATIONS = {
         "merged_from", "some other arm's file")),
 }
 
+# Cases exercised against the SINGLE-ARM step's own file. THE Q1 FINDING SHIPPED
+# IN THIS FILE: it declared five blocks absent on the reasoning that "writing a
+# copy here would be a second place that figure lives", and then wrote
+# `action_type_counts`, which its own ownership table marks published_by_step
+# step9, may_first_writer_fill false. Both mutations below are that file as it
+# shipped, reconstructed on the current one.
+SOLE_MUTATIONS = {
+    "S36/sole_file_writes_another_steps_per_arm_block": ("S36", lambda i: _set(
+        i["arms"][0], "action_type_counts",
+        {"by_producing_arm": {
+            "step_dual_status": "dual", "arms_in_this_file": "one_arm",
+            "producing_step": "step13", "arm_held": "a",
+            "arms": {"a": {"producing_arm": "a", "written_by_step": "step13",
+                           "counts": {"s1_watch": V.SENTINEL_COUNT}}}}})),
+    "S36/sole_file_writes_another_steps_top_level_block": ("S36", lambda i: _set(
+        i, "tested_ranges",
+        {"by_producing_arm": {
+            "step_dual_status": "dual", "arms_in_this_file": "one_arm",
+            "producing_step": "step13", "arm_held": "a",
+            "arms": {"a": {"producing_arm": "a", "written_by_step": "step13",
+                           "ranges": {"W_days": {"values": [108]}}}}}})),
+}
+
 # Mutations applied to the SCHEMA rather than to an instance. S35 exists to
 # machine-check the constraint decisions/0109 §4 records -- that no oneOf or
 # anyOf sits above $defs/by_producing_arm, because that is the only reason the
@@ -385,6 +467,29 @@ SCHEMA_MUTATIONS = {
     "S35/absence_branch_added_above_the_renamed_key": ("S35", lambda s: s["$defs"].__setitem__(
         "headline",
         {"oneOf": [dict(s["$defs"]["headline"]), {"$ref": "#/$defs/block_absence"}]})),
+    # v1.4.0: THE FAMILY, NOT ONE MEMBER. decisions/0111 E1 gave five more blocks
+    # the same container, and a constraint that guarded one of six would have had
+    # five ways around it -- which is exactly the temptation the widening creates,
+    # since an absence branch above one of the new containers is the obvious way
+    # to express "this block is not this entry's".
+    # v1.4.0: THE ROOT-SIDE SCAN, WHICH WAS DEAD CODE. It was handed a bare
+    # PROPERTY MAP, and _scan recurses only into schema KEYWORDS, so it followed
+    # nothing and returned at once. This mutation reaches a container through a
+    # branch keyword on the ROOT side only -- inlined at a top-level property
+    # rather than through $defs -- so it is caught by the fixed call and by
+    # nothing else.
+    "S35/branch_on_the_root_side_only": (
+        "S35",
+        lambda s: s["properties"].__setitem__(
+            "arms",
+            {"oneOf": [dict(s["properties"]["arms"]),
+                       {"$ref": "#/$defs/by_producing_arm"}]})),
+    "S35/absence_branch_added_above_a_new_family_member": (
+        "S35",
+        lambda s: s["$defs"]["arm_entry"]["properties"].__setitem__(
+            "d3_prime",
+            {"oneOf": [dict(s["$defs"]["arm_entry"]["properties"]["d3_prime"]),
+                       {"$ref": "#/$defs/block_absence"}]})),
 }
 
 # The case the ruling names in as many words: an arm file that correctly OMITS
@@ -400,6 +505,14 @@ ARM_REQUIRED_NON_FAILURES = {
 # from a list nobody searched -- and the way to prove the distinction is live is
 # to assert that one of them passes while the other fails.
 REQUIRED_NON_FAILURES = {
+    # THE E2 WIDENING, ASSERTED AS A NON-FAILURE. Two steps' measurements at ONE
+    # (W, clock origin) setting must both be able to exist: that is the whole of
+    # decisions/0111 E2, and a key that called the second a duplicate would have
+    # forced the schema to decide which step may occupy a shared W. The merged
+    # baseline already holds several entries at the adopted setting, so this case
+    # is the UNMUTATED file -- and main() asserts the count is greater than one,
+    # because a non-failure on a file with nothing to collide would prove nothing.
+    "S2/two_steps_at_one_setting_is_not_a_duplicate": ("S2", lambda i: i),
     "S17/empty_but_declared": ("S17", lambda i: _set(
         _set(i["cross_arm_divergences"], "entries", []),
         "search", dict(i["cross_arm_divergences"]["search"],
@@ -514,6 +627,25 @@ def main() -> int:
             "has_force": after in ("FAIL", "VACUOUS"),
         })
 
+    # The single-arm file's cases (decisions/0111 §3, Q1).
+    for label, (cid, mutate) in SOLE_MUTATIONS.items():
+        before = _status_of(baseline_sole, cid)
+        mutated = copy.deepcopy(sole_file)
+        try:
+            mutate(mutated)
+        except Exception as exc:
+            results.append({"check": label, "applied_to": "sole_file", "error": str(exc),
+                            "has_force": False})
+            continue
+        after = _status_of(run(mutated), cid)
+        results.append({
+            "check": label,
+            "applied_to": "sole_file",
+            "status_before": before,
+            "status_after": after,
+            "has_force": after in ("FAIL", "VACUOUS"),
+        })
+
     # Schema-level cases (S35). The constraint is about the SCHEMA, so breaking
     # the instance could never show it has force.
     for label, (cid, mutate) in SCHEMA_MUTATIONS.items():
@@ -566,17 +698,31 @@ def main() -> int:
             "must_not_fail": True,
             "ok": after not in ("FAIL", "VACUOUS"),
         })
+    shared_settings = {}
+    for a in placeholder["arms"]:
+        shared_settings.setdefault((a["W_days"], a["clock_origin"]), []).append(
+            a.get("producing_step"))
+    most_shared = max((len(v) for v in shared_settings.values()), default=0)
     for label, (cid, mutate) in REQUIRED_NON_FAILURES.items():
         mutated = copy.deepcopy(placeholder)
         mutate(mutated)
         after = _status_of(run(mutated), cid)
-        non_failures.append({
+        entry = {
             "case": label,
             "check": cid,
             "status_after": after,
             "must_not_fail": True,
             "ok": after not in ("FAIL", "VACUOUS"),
-        })
+        }
+        if cid == "S2":
+            # A non-failure on a file with nothing to collide proves nothing.
+            entry["steps_sharing_one_setting"] = {
+                f"W{w}_{o}": steps for (w, o), steps in shared_settings.items()
+                if len(steps) > 1
+            }
+            entry["max_steps_at_one_setting"] = most_shared
+            entry["ok"] = entry["ok"] and most_shared > 1
+        non_failures.append(entry)
 
     # The two-sided half of S5 and S6: a sentinel or a prefixed string left in a
     # file flagged as real data must fail.
