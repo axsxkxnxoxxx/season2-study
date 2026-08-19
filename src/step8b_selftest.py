@@ -513,6 +513,23 @@ EXTRA_MUTATIONS = {
     # empty not-fixed list is indistinguishable from an unfilled one.
     "S40/entry_universe_not_declared": ("S40", "placeholder", lambda i: _set(
         i["bootstrap_settings"]["a_default"], "fields_considered", [])),
+    # v1.8.0 -- reviewer-engineering E4 on the v1.7.0 review. THE ANCHOR WAS READ
+    # OUT OF THE ENTRY UNDER TEST. E2's fix required the two lists to partition
+    # `fields_considered`, and `fields_considered` is the writer's own free list --
+    # so an entry declaring a universe of ONE element partitioned it perfectly and
+    # dropped B, the seed and the unit out of the record entirely. decisions/0111
+    # E4 -- a table read from the file under test could only agree with itself --
+    # REINSTALLED BY THE FIX FOR E2, which is the same hole the first S41 fixture
+    # had and caught. Both levels get a mutation, because the anchor is applied at
+    # both and a check written once can still be called once.
+    "S40/entry_universe_narrowed_to_agree_with_itself": ("S40", "placeholder", lambda i: _set(
+        _set(_set(i["bootstrap_settings"]["a_default"], "fields_considered", ["statistics"]),
+             "fields_fixed_in_spec", ["statistics"]),
+        "fields_not_fixed_in_spec", [])),
+    "S40/spec_universe_narrowed_to_agree_with_itself": ("S40", "placeholder", lambda i: _set(
+        _set(_set(i["bootstrap_spec"], "fields_considered", ["statistics"]),
+             "fields_fixed_in_spec", ["statistics"]),
+        "fields_not_fixed_in_spec", [])),
     # THE SINGLE-ARM BRANCH IS NOT LOOSENED BY THE SPLIT (decisions/0107 §4). A
     # single-arm step's block claiming two arms is the mirror defect of the one
     # v1.2.0 fixes, and it must fail rather than validate silently.
@@ -930,7 +947,24 @@ def _tokens_named_by_the_block(block: str) -> tuple[list[str], str | None]:
 # so that widening V.INTERVALS_NOT_MANDATED_BY_STEP FAILS this selftest instead of
 # moving the expectation with the behaviour, which is what the first form of this
 # fixture did.
-S41_EXEMPT_BY_RULING = {"step12"}
+# THE EXPECTED S41 STATUS PER PRODUCING STEP, PINNED EXACTLY (v1.8.0,
+# reviewer-engineering E5). The fixture used to assert only
+# `(status in ("FAIL", "VACUOUS")) == must_fail`, under which `step12` reporting
+# PASS or N/A kept it green while the table decisions/0120 §1 publishes became
+# false. The status IS the finding, so the status is what is asserted.
+#
+# ONE DEFINITION: the exempt set is derived from this table rather than typed
+# beside it, and it is written FROM THE RULING -- Step 12 alone -- not read from
+# V.INTERVALS_NOT_MANDATED_BY_STEP, which is the table under test.
+S41_EMPTY_BRANCH_EXPECTED = {
+    "step9": "FAIL",
+    "step10": "FAIL",
+    "step11": "FAIL",
+    "step12": "EMPTY_DECLARED",
+    "step13": "FAIL",
+}
+S41_EXEMPT_BY_RULING = {s for s, v in S41_EMPTY_BRANCH_EXPECTED.items()
+                        if v == "EMPTY_DECLARED"}
 
 _NO_INTERVAL_ABSENCE = {
     "status": "not_required_by_spec",
@@ -939,30 +973,16 @@ _NO_INTERVAL_ABSENCE = {
 }
 
 
-def _file_with_no_intervals(base: dict, step: str) -> dict:
-    """An arm file of `step` in which every interval is an explicit absence.
+def _relabel_producing_step(inst: dict, step: str) -> dict:
+    """Make every measurement in `inst` this step's, in place.
 
-    Built from the single-arm placeholder rather than typed, so the fixture is
-    the shipped shape with one thing changed. Every `ci` holding a bootstrap_ref
-    becomes an absence record and $.declared_intervals empties, which is exactly
-    the state S41's empty branch judges.
+    `produced_by_step` and `written_by_step` JOINED THIS AT v1.8.0
+    (reviewer-engineering E3): S41 now keys on (producing step, arm), and a
+    fixture that relabelled only the entry-level `producing_step` would leave its
+    intervals attributed to whatever step the placeholder was built for -- so the
+    fixture would exercise a step it did not name.
     """
-    inst = copy.deepcopy(base)
     inst["document_scope"]["producing_step"] = step
-
-    def walk(node):
-        if isinstance(node, dict):
-            for k, v in list(node.items()):
-                if k == "ci" and isinstance(v, dict) and "bootstrap_ref" in v:
-                    node[k] = dict(_NO_INTERVAL_ABSENCE)
-                else:
-                    walk(v)
-        elif isinstance(node, list):
-            for v in node:
-                walk(v)
-
-    walk(inst)
-    inst["declared_intervals"] = []
     for fam in ("arms", "variants", "subpopulation_cuts"):
         for e in inst.get(fam) or []:
             if "producing_step" in e:
@@ -973,7 +993,87 @@ def _file_with_no_intervals(base: dict, step: str) -> dict:
         for payload in (bpa.get("arms") or {}).values():
             if isinstance(payload, dict) and "producing_step" in payload:
                 payload["producing_step"] = step
+
+    def walk(node):
+        if isinstance(node, dict):
+            for key in ("written_by_step", "produced_by_step"):
+                if key in node:
+                    node[key] = step
+            for v in node.values():
+                walk(v)
+        elif isinstance(node, list):
+            for v in node:
+                walk(v)
+
+    walk(inst)
     return inst
+
+
+def _file_with_no_intervals(base: dict, step: str, record_absences: bool = True) -> dict:
+    """An arm file of `step` that carries no interval.
+
+    Built from the single-arm placeholder rather than typed, so the fixture is
+    the shipped shape with one thing changed. Every `ci` holding a bootstrap_ref
+    becomes an absence record and $.declared_intervals empties, which is exactly
+    the state S41's empty branch judges.
+
+    `record_absences=False` IS THE ZERO-COVERAGE SHAPE (v1.8.0,
+    reviewer-engineering E5): the `ci` slots are removed rather than filled with
+    an absence, so the file says nothing about where its intervals would have
+    been. That is the state that used to be awarded EMPTY_DECLARED with a reason
+    asserting "the emptiness was searched for rather than assumed" over a search
+    that examined nothing -- and it must now be VACUOUS FOR EVERY STEP, THE
+    EXEMPT ONE INCLUDED, because the exemption excuses the intervals and not the
+    coverage.
+    """
+    inst = copy.deepcopy(base)
+
+    def walk(node):
+        if isinstance(node, dict):
+            for k, v in list(node.items()):
+                if k == "ci" and isinstance(v, dict) and "bootstrap_ref" in v:
+                    if record_absences:
+                        node[k] = dict(_NO_INTERVAL_ABSENCE)
+                    else:
+                        del node[k]
+                else:
+                    walk(v)
+        elif isinstance(node, list):
+            for v in node:
+                walk(v)
+
+    walk(inst)
+    inst["declared_intervals"] = []
+    return _relabel_producing_step(inst, step)
+
+
+def _file_with_levels_only(base: dict, step: str) -> dict:
+    """An arm file of `step` that PUBLISHES intervals and only ever labels them
+    `levels`.
+
+    THE BRANCH NO FIXTURE REACHED (v1.8.0, reviewer-engineering E2). The
+    exemption used to gate this branch as well as the empty one, so a Step 12
+    file emitting forty levels-only intervals collected a "RESTRICTED, NOT FULL"
+    note and PASSED with sites > 0 and zero failures -- and nothing in either
+    direction exercised it. The ruling's ground is that requiring intervals would
+    make Step 12 MANUFACTURE two figures; a file that has already computed them
+    is manufacturing nothing, so decisions/0118's "a run that emits only one is
+    INCOMPLETE" reaches it directly and it must FAIL FOR EVERY STEP.
+    """
+    inst = copy.deepcopy(base)
+
+    def walk(node):
+        if isinstance(node, dict):
+            if "bootstrap_ref" in node and "statistic" in node:
+                node["statistic"] = "levels"
+            for v in node.values():
+                walk(v)
+        elif isinstance(node, list):
+            for v in node:
+                walk(v)
+
+    walk(inst)
+    return _relabel_producing_step(inst, step)
 
 
 def _statistic_vocabulary_link(schema: dict) -> dict:
@@ -1133,30 +1233,137 @@ def main() -> int:
     # "a table read from the file under test could only agree with itself",
     # reached through code rather than through a file. Found by probing the
     # control live rather than by reading it.
+    #
+    # THREE SHAPES SINCE v1.8.0, NOT ONE (reviewer-engineering E2 and E5). The
+    # empty branch was the only one any fixture reached, so the exemption's SECOND
+    # site -- the per-owner missing-object branch -- was exercised in neither
+    # direction, and a zero-coverage emptiness was awarded EMPTY_DECLARED with
+    # nothing asserting otherwise. The statuses are PINNED rather than bucketed:
+    # `(status in ("FAIL", "VACUOUS")) == must_fail` kept the fixture green while
+    # a PASS or an N/A would have made the published table false.
     s41_scope = {}
-    for step in ("step9", "step10", "step11", "step12", "step13"):
-        fixture = _file_with_no_intervals(sole_file, step)
-        st = _status_of(run(fixture), "S41")
-        must_fail = step not in S41_EXEMPT_BY_RULING
+    for step in sorted(S41_EMPTY_BRANCH_EXPECTED):
+        want = S41_EMPTY_BRANCH_EXPECTED[step]
+        declared = _status_of(run(_file_with_no_intervals(sole_file, step)), "S41")
+        # THE SAME FILE WITH NO ABSENCE RECORDS: nothing was examined, so no step
+        # may reach a passing state, exempt or not. The two failing states are
+        # DIFFERENT and both are pinned: an exempt step falls through to VACUOUS,
+        # having nothing to declare its emptiness with, while a non-exempt step
+        # collects the check's own explicit failure and reports FAIL.
+        want_unsearched = "VACUOUS" if step in S41_EXEMPT_BY_RULING else "FAIL"
+        unsearched = _status_of(
+            run(_file_with_no_intervals(sole_file, step, record_absences=False)), "S41")
+        # A FILE THAT PUBLISHED INTERVALS AND LABELLED THEM ALL `levels`: the
+        # exemption does not reach this, for any step.
+        levels_only = _status_of(run(_file_with_levels_only(sole_file, step)), "S41")
         s41_scope[step] = {
-            "S41_status": st,
-            "must_fail": must_fail,
-            "ok": (st in ("FAIL", "VACUOUS")) == must_fail,
+            "no_intervals_absences_recorded": {"expected": want, "got": declared,
+                                               "ok": declared == want},
+            "no_intervals_zero_coverage": {"expected": want_unsearched, "got": unsearched,
+                                           "ok": unsearched == want_unsearched},
+            "levels_only_intervals": {"expected": "FAIL", "got": levels_only,
+                                      "ok": levels_only == "FAIL"},
+            "exempt_by_the_ruling": step in S41_EXEMPT_BY_RULING,
         }
+        s41_scope[step]["ok"] = all(
+            s41_scope[step][k]["ok"] for k in
+            ("no_intervals_absences_recorded", "no_intervals_zero_coverage",
+             "levels_only_intervals"))
     s41_record = {
-        "what": "S41's empty branch, per producing step, on a file whose every interval has been "
-                "replaced by an explicit absence record. Step 12 is exempt; the other four are "
-                "not, and an exemption that widens is the defect",
+        "what": "S41 per producing step, on THREE fixtures: a file whose every interval is an "
+                "explicit absence record, the same file with the slots simply gone, and a file "
+                "that published intervals and labelled every one of them `levels`. Step 12 is "
+                "exempt from CARRYING intervals; it is exempt from neither of the other two "
+                "states, and an exemption that widens is the defect",
+        "expected_statuses": dict(S41_EMPTY_BRANCH_EXPECTED),
         "exempt_by_the_ruling": sorted(S41_EXEMPT_BY_RULING),
         "exempt_in_the_validator": sorted(V.INTERVALS_NOT_MANDATED_BY_STEP),
         "tables_agree": set(V.INTERVALS_NOT_MANDATED_BY_STEP) == S41_EXEMPT_BY_RULING,
         "by_step": s41_scope,
-        "steps_that_must_fail_and_do": sorted(
-            s for s, v in s41_scope.items() if v["must_fail"] and v["ok"]),
-        "steps_that_must_pass_and_do": sorted(
-            s for s, v in s41_scope.items() if not v["must_fail"] and v["ok"]),
+        "statuses": {s: v["no_intervals_absences_recorded"]["got"]
+                     for s, v in s41_scope.items()},
+        "zero_coverage_statuses": {s: v["no_intervals_zero_coverage"]["got"]
+                                   for s, v in s41_scope.items()},
+        "levels_only_statuses": {s: v["levels_only_intervals"]["got"]
+                                 for s, v in s41_scope.items()},
         "ok": (all(v["ok"] for v in s41_scope.values()) and len(s41_scope) == 5
                and set(V.INTERVALS_NOT_MANDATED_BY_STEP) == S41_EXEMPT_BY_RULING),
+    }
+
+    # THE OWNER KEY IS (PRODUCING STEP, ARM) (v1.8.0, reviewer-engineering E3).
+    # In the merged document `sole` is Steps 10, 11 and 12 together and `a` is
+    # Step 9 AND Step 13, so keying on the arm let one step's movement discharge
+    # another step's obligation. The assertion is on the MERGED placeholder, the
+    # only shape in which the two keyings differ at all: every owner that carries
+    # an interval carries both objects, and at least two distinct steps share one
+    # arm label -- without which this fixture would pass on a file where the
+    # distinction cannot arise.
+    owners: dict = {}
+    for _p, istep, arm, ci in V._iter_cis_with_arm(placeholder):
+        owners.setdefault((istep, arm), set()).add(ci.get("statistic"))
+    arms_with_two_steps = sorted(
+        {a for a in {o[1] for o in owners}
+         if len({o[0] for o in owners if o[1] == a}) > 1})
+    s41_owner_record = {
+        "what": "S41's owner key on the merged placeholder: one entry per (producing step, "
+                "arm), each carrying both objects. Keying on the arm alone would collapse "
+                "these rows and let one step's paired movement stand in for another's",
+        "owners": {f"{s}/{a}": sorted(v) for (s, a), v in
+                   sorted(owners.items(), key=lambda kv: (str(kv[0][0]), str(kv[0][1])))},
+        "owner_count": len(owners),
+        "arm_labels": sorted({str(o[1]) for o in owners}),
+        "arm_labels_covering_more_than_one_step": arms_with_two_steps,
+        "every_owner_carries_both_objects": all(
+            v == {"levels", "movements"} for v in owners.values()),
+        "ok": (len(owners) > len({o[1] for o in owners})
+               and bool(arms_with_two_steps)
+               and all(v == {"levels", "movements"} for v in owners.values())),
+    }
+
+    # THE PARTITION UNIVERSE IS ANCHORED OUTSIDE THE FILE (v1.8.0,
+    # reviewer-engineering E4), and the anchor has two copies by design: the
+    # validator's, written from decisions/0103 and decisions/0118, decides; the
+    # generator's is what gets written into a file. They are asserted equal HERE
+    # so that widening one alone fails rather than passing quietly -- the same
+    # shape as `tables_agree` above, and the reason S31 gives for not deriving an
+    # expectation from the table under test.
+    anchor_record = {
+        "what": "the four bootstrap elements the spec fixes, compared between the validator's "
+                "anchor and the generator's emitted list",
+        "validator_anchor": sorted(V.BOOTSTRAP_ELEMENTS_FIXED_BY_SPEC),
+        "generator_list": sorted(G.BOOTSTRAP_FIELDS_CONSIDERED),
+        "ok": (set(V.BOOTSTRAP_ELEMENTS_FIXED_BY_SPEC)
+               == set(G.BOOTSTRAP_FIELDS_CONSIDERED)
+               and len(V.BOOTSTRAP_ELEMENTS_FIXED_BY_SPEC) == 4),
+    }
+
+    # ONE REGISTRY FACT, ONE RENDERING (v1.8.0, reviewer-engineering E7). It had
+    # three: this module's docstring, the generator's schema description and a
+    # placeholder note, and two of them disagreed about whether `resampling_unit`
+    # is an arm difference. THE DISK IS THE ARBITER and it is read here rather
+    # than quoted: entries of the same quantity class must differ from each other
+    # in `producing_arm` alone, and the unit must vary between classes and not
+    # between arms.
+    reg = placeholder.get("bootstrap_settings") or {}
+    fields = ("B", "seed", "resampling_unit", "statistics")
+    by_class: dict = {}
+    for key, entry in reg.items():
+        by_class.setdefault(key.split("_", 1)[1], {})[key] = entry
+    differing_within_class = sorted({
+        f for cls in by_class.values() for f in fields
+        if len({json.dumps(e.get(f), sort_keys=True) for e in cls.values()}) > 1})
+    units_by_class = {cls: sorted({e.get("resampling_unit") for e in entries.values()})
+                      for cls, entries in by_class.items()}
+    registry_fact_record = {
+        "what": "the registry fact, measured on the merged placeholder rather than restated: "
+                "which fields actually differ between two entries of one quantity class",
+        "classes": {c: sorted(e) for c, e in by_class.items()},
+        "fields_differing_between_arms_within_a_class": differing_within_class,
+        "resampling_unit_by_class": units_by_class,
+        "the_one_rendering": V.REGISTRY_ARM_DIFFERENCE_FACT,
+        "ok": (differing_within_class == []
+               and len(by_class) > 1
+               and len({tuple(u) for u in units_by_class.values()}) > 1),
     }
 
     results = []
@@ -1376,6 +1583,9 @@ def main() -> int:
         },
         "step13_arm_file_fixture": step13_record,
         "s41_interval_exemption_scope": s41_record,
+        "s41_owner_key": s41_owner_record,
+        "bootstrap_partition_anchor": anchor_record,
+        "registry_arm_difference_fact": registry_fact_record,
         "statistic_vocabulary_link": vocab_link,
         "mutations": results,
         "required_non_failures": non_failures,
@@ -1397,7 +1607,9 @@ def main() -> int:
         "checks_without_force": without_force,
         "checks_na_on_the_real_copy": na_on_real,
         "ok": (not without_force and not non_failure_failures and not unexercised
-               and step13_ok and vocab_link["ok"] and s41_record["ok"]),
+               and step13_ok and vocab_link["ok"] and s41_record["ok"]
+               and s41_owner_record["ok"] and anchor_record["ok"]
+               and registry_fact_record["ok"]),
     }
 
     os.makedirs(LOG_DIR, exist_ok=True)
@@ -1420,9 +1632,27 @@ def main() -> int:
             "exempt_by_the_ruling": s41_record["exempt_by_the_ruling"],
             "exempt_in_the_validator": s41_record["exempt_in_the_validator"],
             "tables_agree": s41_record["tables_agree"],
-            "still_fail_the_empty_branch": s41_record["steps_that_must_fail_and_do"],
-            "exempted_and_passes": s41_record["steps_that_must_pass_and_do"],
-            "statuses": {k: v["S41_status"] for k, v in s41_record["by_step"].items()},
+            "expected_statuses": s41_record["expected_statuses"],
+            "statuses": s41_record["statuses"],
+            "zero_coverage_statuses": s41_record["zero_coverage_statuses"],
+            "levels_only_statuses": s41_record["levels_only_statuses"],
+        },
+        "s41_owner_key": {
+            "ok": s41_owner_record["ok"],
+            "owners": s41_owner_record["owners"],
+            "arm_labels_covering_more_than_one_step":
+                s41_owner_record["arm_labels_covering_more_than_one_step"],
+        },
+        "bootstrap_partition_anchor": {
+            "ok": anchor_record["ok"],
+            "validator_anchor": anchor_record["validator_anchor"],
+            "generator_list": anchor_record["generator_list"],
+        },
+        "registry_arm_difference_fact": {
+            "ok": registry_fact_record["ok"],
+            "fields_differing_between_arms_within_a_class":
+                registry_fact_record["fields_differing_between_arms_within_a_class"],
+            "resampling_unit_by_class": registry_fact_record["resampling_unit_by_class"],
         },
         "statistic_vocabulary_link": {
             "ok": vocab_link["ok"],

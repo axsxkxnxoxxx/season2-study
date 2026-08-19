@@ -64,10 +64,11 @@ sys.path.insert(0, os.path.join(ROOT, "src"))
 from step8b_validate import (  # noqa: E402
     ARM_LABELS_ARITY_WORD as _ARM_LABELS_ARITY_WORD,
     ARM_LABELS_NORMALISED as _ARM_LABELS_NORMALISED,
+    REGISTRY_ARM_DIFFERENCE_FACT as _REGISTRY_ARM_DIFFERENCE_FACT,
 )
 
-SCHEMA_VERSION = "1.7.0"
-SCHEMA_ID = "urn:season2-study:step8b-output-schema:1.7.0"
+SCHEMA_VERSION = "1.8.0"
+SCHEMA_ID = "urn:season2-study:step8b-output-schema:1.8.0"
 
 # WHERE THE ADOPTED-RULE REVISION IS READ FROM (decisions/0114 E14). It is the
 # fourth identity dimension, and the ruling asks where the value is READ rather
@@ -528,12 +529,16 @@ def build_schema(provenance: dict | None = None) -> dict:
             "as referenced, because the ruling says at the point of use and a reference is not "
             "that; check S23 asserts the inline values against the referenced registry entry, "
             "so the redundancy is checked rather than trusted. An interval is ONE of the two "
-            "objects and says which; check S41 asserts that BOTH appear, per producing arm, "
-            "because a run that emits only one is INCOMPLETE rather than differently designed. "
-            "ONE STEP IS EXEMPT AND THE EXEMPTION IS NAMED HERE RATHER THAN LEFT TO BE "
-            "DISCOVERED: a Step 12 file mandates intervals nowhere (see $defs.ci_or_absence), so "
-            "S41 reports a DECLARED EMPTINESS for it and still fails for Steps 9, 10, 11 and 13. "
-            "Human Lead ruling, 2026-08-19."
+            "objects and says which; check S41 asserts that BOTH appear, PER (PRODUCING STEP, "
+            "ARM), because a run that emits only one is INCOMPLETE rather than differently "
+            "designed -- and the owner of an interval is a step and an arm together, since in "
+            "the merged document one arm label covers several steps. ONE STEP IS EXEMPT AND "
+            "THE EXEMPTION IS NAMED HERE RATHER THAN LEFT TO BE DISCOVERED: a Step 12 file "
+            "mandates intervals nowhere (see $defs.ci_or_absence), so a Step 12 file carrying "
+            "no interval declares that emptiness rather than failing to fill it. Human Lead "
+            "ruling, 2026-08-19. THE EXEMPTION IS FROM PRODUCING INTERVALS, NOT FROM PRODUCING "
+            "THEM COMPLETELY: a step that HAS published an interval owes both objects like any "
+            "other, because it is then manufacturing nothing."
         ),
         "additionalProperties": False,
         "required": [
@@ -571,14 +576,13 @@ def build_schema(provenance: dict | None = None) -> dict:
                     "COMPARED TO EACH OTHER, so an interval that did not say which it was "
                     "would be off by an order of magnitude with nothing to warn the reader. "
                     "Check S23 asserts this value is one the referenced registry entry "
-                    "declares; check S41 asserts both values appear in the file, per producing "
-                    "arm -- except in a Step 12 file, which the spec asks for no interval at "
-                    "all (Human Lead ruling, 2026-08-19); check S32 asserts the referenced "
-                    "entry belongs to the arm that owns this payload. NOTE THE CONSEQUENCE OF "
-                    "THE RULING FOR S32: with all four elements now identical across the arms, "
-                    "two registry entries differ only in `producing_arm` and `resampling_unit`, "
-                    "so a cross-arm reference misreports the ARM and no longer misreports the "
-                    "settings -- and what it catches is an INCOHERENT reference rather than a "
+                    "declares; check S41 asserts both values appear in the file, per "
+                    "(producing step, arm) -- except in a file the spec asks for no interval "
+                    "at all, which is Step 12's (Human Lead ruling, 2026-08-19); check S32 "
+                    "asserts the referenced entry belongs to the arm that owns this payload. "
+                    "NOTE THE CONSEQUENCE OF THE RULING FOR S32: "
+                    + _REGISTRY_ARM_DIFFERENCE_FACT
+                    + " -- and what it catches is an INCOHERENT reference rather than a "
                     "mislabel, because both sides are the writer's own declarations and a "
                     "coherent mislabel is unobservable to it."
                 ),
@@ -2817,7 +2821,17 @@ def build_schema(provenance: dict | None = None) -> dict:
                                 "`statistics` -- so an entry could carry "
                                 "`fields_fixed_in_spec: [\"statistics\"]`, silently dropping B, "
                                 "the seed and the unit, and pass. Same reasoning, same shape: "
-                                "the fixed and not-fixed lists must partition THIS list."
+                                "the fixed and not-fixed lists must partition THIS list.\n"
+                                "AND THIS LIST IS ITSELF ANCHORED OUTSIDE THE FILE, since "
+                                "v1.8.0: an anchor read from the entry under test could only "
+                                "agree with itself, so `fields_considered: [\"statistics\"]` "
+                                "partitioned perfectly while dropping the other three out of "
+                                "the record entirely. Check S40 asserts this list CONTAINS "
+                                "every element the spec fixes -- B, the seed, the resampling "
+                                "unit and the statistic (decisions/0103, decisions/0118) -- "
+                                "held in the validator and written from those rulings. A fifth "
+                                "element may be considered and must then be partitioned like "
+                                "any other; none of the four may be dropped."
                             ),
                         },
                         "fields_fixed_in_spec": {
@@ -4634,6 +4648,27 @@ INTERVAL_CLASS_PUBLISHERS = {
 }
 
 
+# WHICH (STEP, ARM) OWNERS CARRY INTERVALS IN THE MERGED DOCUMENT (v1.8.0,
+# reviewer-engineering E3). Check S41 keys on the pair, because in a merged
+# document `sole` is Steps 10, 11 and 12 together and `a` is Step 9 AND Step 13 --
+# so a movement declared under `a` used to discharge two steps' obligations at
+# once. The merged placeholder must therefore declare a paired movement PER
+# OWNER, not per arm.
+#
+# WHO IS ABSENT AND WHY, because an owner missing from a list reads as an
+# oversight: STEP 10's headline payload in this placeholder is an absence record
+# -- it charts the headline arm rather than publishing its own -- so it carries no
+# interval and owes no movement. STEP 12 lists candidate cuts and mandates
+# intervals nowhere ($defs.ci_or_absence; Human Lead ruling, 2026-08-19), so its
+# cut's shares carry the CI-ABSENCE form and it likewise owes none. An owner that
+# published a level and no movement WOULD fail S41, exemption or not.
+MERGED_INTERVAL_OWNERS = (
+    ("step9", "a"), ("step9", "b"),
+    ("step13", "a"), ("step13", "b"),
+    ("step11", "sole"),
+)
+
+
 def _interval_step_for(role: str, step: str, arm: str) -> str:
     """Whose interval an entry in this file is.
 
@@ -4685,14 +4720,19 @@ def _declared_intervals(role: str, step: str, arms_held: tuple) -> list:
     all three placeholders.
     """
     out = []
-    for a in arms_held:
-        istep = _interval_step_for(role, step, a)
-        # THE PAIRED MOVEMENT, one per arm, on a class every publisher may hold.
-        # It is emitted BEFORE the branch split so that no branch can drop it:
-        # the requirement is a property of the run, not of which quantities a
-        # step happens to publish.
+    # THE PAIRED MOVEMENT, ONE PER (STEP, ARM) OWNER (v1.8.0, E3). It used to be
+    # one per ARM, which is the same thing in an arm file and is NOT in the merged
+    # document, where one arm label covers several steps -- so Step 13 arm `a`'s
+    # movement discharged Step 9 arm `a`'s obligation and Step 13 declared none of
+    # its own. It is emitted BEFORE the branch split so that no branch can drop
+    # it: the requirement is a property of the run, not of which quantities a step
+    # happens to publish.
+    movement_owners = (MERGED_INTERVAL_OWNERS if role == "merged_document"
+                       else tuple((step, a) for a in arms_held))
+    for istep, a in movement_owners:
         out.append({
-            "interval_id": f"paired_movement_{a}",
+            "interval_id": (f"paired_movement_{istep}_{a}" if role == "merged_document"
+                            else f"paired_movement_{a}"),
             "quantity": ph(
                 "a PAIRED MOVEMENT -- the difference between two configurations of the same "
                 "share, resampled as a paired delta rather than as two independent levels. "
@@ -4712,6 +4752,8 @@ def _declared_intervals(role: str, step: str, arms_held: tuple) -> list:
             ),
             "source": "decisions/0118",
         })
+    for a in arms_held:
+        istep = _interval_step_for(role, step, a)
         if istep in INTERVAL_CLASS_PUBLISHERS["window_w_percentile"]:
             out.append({
                 "interval_id": f"window_w_percentile_{a}",
@@ -5068,11 +5110,11 @@ def build_placeholder(provenance: dict, grid: list[int],
                 # difference to expose the inconsistency either.
                 "note": ph(
                     "as above, for the other arm. It is IDENTICAL to a_default except for "
-                    "producing_arm, and that is what decisions/0118 did: with all four "
-                    "elements fixed, two entries differ only in the arm that produced them, so "
-                    "check S32 catches an INCOHERENT arm reference -- a payload under one arm "
-                    "pointing at the other arm's entry -- and no longer catches a settings "
-                    "mismatch, because there is none left to catch. It does NOT catch a "
+                    "producing_arm, and that is what decisions/0118 did: "
+                    + _REGISTRY_ARM_DIFFERENCE_FACT
+                    + ", so check S32 catches an INCOHERENT arm reference -- a payload under "
+                    "one arm pointing at the other arm's entry -- and no longer catches a "
+                    "settings mismatch, because there is none left to catch. It does NOT catch a "
                     "COHERENT mislabel: both sides are the writer's own declarations, so a file "
                     "that labels a payload and its settings entry with the same wrong arm is "
                     "unobservable here and only the Human Lead's diff reaches it"
@@ -5481,11 +5523,25 @@ def build_placeholder(provenance: dict, grid: list[int],
                 "level": ph("one level of the segment cut this step lists"),
                 "base_arm_id": _arm_id("W108_s2_finale", "step12"),
                 "producing_step": "step12",
+                # STEP 12'S SHARES CARRY THE CI-ABSENCE FORM (v1.8.0,
+                # reviewer-engineering E2/E3). The Human Lead ruled on 2026-08-19
+                # that the spec asks Step 12 for no interval, on this schema's own
+                # warrant at $defs.ci_or_absence -- "Step 12 lists every candidate
+                # cut and mandates intervals nowhere" -- and the placeholder is
+                # the shape a writer fills in. Showing Step 12 with intervals
+                # would show it manufacturing the two figures the ruling exists to
+                # spare it; showing it with intervals but no paired movement is a
+                # shape v1.8.0's S41 rejects, because the exemption covers a step
+                # asked for NO interval and not a step that published half a run.
+                # So the slot is present and says "not asked for", which is what
+                # $defs.ci_or_absence was added for.
                 "headline": {
                     "APPLY": _population_block("APPLY", False, False, dual=False,
-                                               step="step12", bounds_present=False),
+                                               step="step12", bounds_present=False,
+                                               ci_present=False),
                     "DERIV": _population_block("DERIV", True, True, dual=False,
-                                               step="step12", bounds_present=False),
+                                               step="step12", bounds_present=False,
+                                               ci_present=False),
                 },
                 "candidate_considered": True,
                 "selected_by_human_lead": False,
@@ -6175,7 +6231,8 @@ def build_placeholder(provenance: dict, grid: list[int],
                     "are never compared to each other and an interval that did not say which "
                     "it was would mislead by an order of magnitude. Check S40 asserts the "
                     "registry side and the partition of `fields_considered`; check S41 asserts "
-                    "both objects actually appear, per producing arm, with its coverage count. "
+                    "both objects actually appear, per (producing step, arm), with its "
+                    "coverage count. "
                     "The entry field was RENAMED from `statistic` to `statistics` so that a "
                     "writer still emitting the singular key fails against "
                     "additionalProperties: false rather than being accepted silently."
@@ -6245,27 +6302,34 @@ def build_placeholder(provenance: dict, grid: list[int],
                     "requirement reaches them. Extending it was an inference."
                 ),
                 "what_was_done": (
-                    "The requirement is applied to every writing step: checks S40 and S41 do "
-                    "not branch on which step wrote the file. The GROUND is that decisions/0118 "
-                    "calls a run emitting one object INCOMPLETE rather than differently "
-                    "designed, and incompleteness is a property of a bootstrap rather than of "
-                    "having a counterpart arm -- the same reasoning by which B, the seed and "
-                    "the unit already reach the single-arm steps under decisions/0103, which is "
-                    "recorded in the same two files. THE ONE EXEMPTION IS STEP 12'S AND IT IS A "
-                    "RULING RATHER THAN THIS STEP'S CHOICE: the Human Lead ruled on 2026-08-19 "
-                    "that Step 12 mandates intervals nowhere -- this schema's own warrant at "
-                    "$defs.ci_or_absence -- so S41's empty branch reports a declared emptiness "
-                    "for a Step 12 file and still fails for Steps 9, 10, 11 and 13. "
-                    "src/step8b_selftest.py asserts those four failures beside the one pass, "
-                    "against an expectation written from the ruling rather than read from the "
-                    "validator's own table."
+                    "The requirement is applied to every writing step. The GROUND is that "
+                    "decisions/0118 calls a run emitting one object INCOMPLETE rather than "
+                    "differently designed, and incompleteness is a property of a bootstrap "
+                    "rather than of having a counterpart arm -- the same reasoning by which B, "
+                    "the seed and the unit already reach the single-arm steps under "
+                    "decisions/0103, which is recorded in the same two files. THE ONE EXEMPTION "
+                    "IS STEP 12'S AND IT IS A RULING RATHER THAN THIS STEP'S CHOICE: the Human "
+                    "Lead ruled on 2026-08-19 that Step 12 mandates intervals nowhere -- this "
+                    "schema's own warrant at $defs.ci_or_absence -- so a Step 12 file carrying "
+                    "no interval declares that emptiness instead of failing to fill it. AND THE "
+                    "EXEMPTION IS FROM PRODUCING INTERVALS, NOT FROM PRODUCING THEM COMPLETELY: "
+                    "a Step 12 file that HAS published intervals owes both objects like any "
+                    "other file, because the ruling's ground is that requiring them would make "
+                    "the step MANUFACTURE two figures, and a step that has already computed "
+                    "them is manufacturing nothing. THE PREVIOUS VERSION OF THIS RECORD SAID "
+                    "\"checks S40 and S41 do not branch on which step wrote the file\", WHICH "
+                    "IS NOW FALSE OF S41 AND WAS ALREADY FALSE WHEN WRITTEN -- the step-level "
+                    "exemption in the same paragraph is exactly such a branch."
                 ),
                 "if_ruled_otherwise": (
-                    "If the requirement is meant to reach only the steps whose writers hold the "
-                    "canonical block, S40 and S41 gain a producing-step guard and Steps 10 to "
-                    "12 record a per-arm choice again. Nothing else moves. The reverse -- "
-                    "widening the Step 12 exemption to another step -- would fail the selftest "
-                    "fixture, which is the point of holding its expectation independently."
+                    "RETIRED AT v1.8.0, and quoted rather than deleted so the retirement is "
+                    "readable: this field used to offer \"S40 and S41 gain a producing-step "
+                    "guard\" as the counterfactual remedy, WHICH IS HALF-IMPLEMENTED ALREADY -- "
+                    "S41 branches on the producing step for the Step 12 exemption. A "
+                    "counterfactual that describes the current build is not a counterfactual, "
+                    "which is the disposition `if_ruled_otherwise` took at v1.6.0 for the same "
+                    "reason. What remains true and is not a counterfactual: widening the Step "
+                    "12 exemption to another step is a ruling, not an implementation choice."
                 ),
             },
         ],
@@ -6275,7 +6339,8 @@ def build_placeholder(provenance: dict, grid: list[int],
                     "A DECLARATION IS NOT A COMPUTATION: THIS SCHEMA CANNOT ESTABLISH THAT A "
                     "RUN ACTUALLY BOOTSTRAPPED BOTH OBJECTS. It requires the pair in every "
                     "registry entry, requires each interval to label itself, and requires both "
-                    "labels to appear per producing arm (S40, S41). A writer that computed "
+                    "labels to appear per (producing step, arm) (S40, S41). A writer that "
+                    "computed "
                     "levels only, wrote the pair into its registry and attached the "
                     "`movements` label to a levels interval satisfies every one of those and "
                     "validates clean. THE SCHEMA SEES WHAT A FILE SAYS ABOUT ITSELF."
@@ -6301,10 +6366,10 @@ def build_placeholder(provenance: dict, grid: list[int],
             {
                 "limit": (
                     "S41 ASKS WHETHER BOTH OBJECTS APPEAR, NOT WHETHER THE RIGHT QUANTITIES "
-                    "HAVE BOTH. One movement interval anywhere in an arm satisfies it, even if "
-                    "every substantive quantity in that arm is levels-only. The schema has no "
-                    "notion of which quantities must carry a paired counterpart, because the "
-                    "spec names none."
+                    "HAVE BOTH. One movement interval anywhere in a (producing step, arm) "
+                    "satisfies it, even if every substantive quantity of that owner is "
+                    "levels-only. The schema has no notion of which quantities must carry a "
+                    "paired counterpart, because the spec names none."
                 ),
                 "consequence": (
                     "A file can be complete in the sense S41 checks and incomplete in the "
@@ -6337,7 +6402,7 @@ def build_placeholder(provenance: dict, grid: list[int],
                     "interval that names neither endpoint validates."
                 ),
                 "consequence": (
-                    "S41's per-arm existence test can be satisfied by a movement whose "
+                    "S41's per-owner existence test can be satisfied by a movement whose "
                     "endpoints are unstated, and no reader can reconstruct what moved. This is "
                     "the SECOND-ORDER form of the limit above: that one says the right "
                     "QUANTITIES need not carry both objects; this one says the movement that "

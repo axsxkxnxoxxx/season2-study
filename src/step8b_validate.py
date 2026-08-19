@@ -64,9 +64,8 @@ among the intervals of every producing arm, because S40 checks what a file
 declares and this checks what it emits. S23 -- the statistic is compared by
 MEMBERSHIP rather than by equality, the registry now holding both objects while
 an interval is one of them. S18 -- `statistic` joined the point-of-use set. S32 --
-unchanged in code and NARROWER IN FORCE: with all four elements fixed and
-identical across the arms, two registry entries differ only in `producing_arm`,
-so a cross-arm reference misreports the arm and no longer misreports a setting.
+unchanged in code and NARROWER IN FORCE, for the reason written once at
+REGISTRY_ARM_DIFFERENCE_FACT below and restated nowhere.
 
 THREE CHECKS CHANGED AT v1.7.0, against the Human Lead's ruling of 2026-08-19 on
 reviewer-engineering's v1.6.0 review. S41 -- ITS EMPTY BRANCH IS SCOPE-AWARE:
@@ -83,6 +82,27 @@ listing all four elements as fixed and validate at 41 checks, 0 failures. And ea
 ENTRY's fixed list gained the partition anchor $.bootstrap_spec got one level up,
 so an entry that silently drops B, the seed and the unit from its fixed list is no
 longer indistinguishable from one that declares them.
+
+THREE CHECKS CHANGED AT v1.8.0, on reviewer-engineering's v1.7.0 review. S41 --
+ITS OWNER KEY IS (PRODUCING STEP, ARM), NOT ARM: in the merged document `sole` is
+Steps 10, 11 and 12 together and `a` is Step 9 AND Step 13, so one step's movement
+discharged another step's obligation -- the very reasoning the per-arm keying was
+written from, one dimension out, and the dimension decisions/0111 E2 already
+ruled is part of a measurement's identity. AND ITS EXEMPTION IS SCOPED TO THE
+EMPTY BRANCH: it used to gate the per-owner missing-object branch too, so a Step
+12 file emitting forty levels-only intervals passed with a note. The ruling's
+ground is that requiring intervals would make Step 12 MANUFACTURE two figures; a
+file that has already computed intervals is manufacturing nothing, and
+decisions/0118's "a run that emits only one is INCOMPLETE" reaches it directly.
+S41's scope-empty branch -- IT NO LONGER AWARDS EMPTY_DECLARED OVER ZERO
+COVERAGE: it set `declared_empty` unconditionally, carrying the words "so the
+emptiness was searched for rather than assumed" with nothing requiring a single
+record to have been examined, which is the rule S33 enforces everywhere else.
+S40 -- ITS PARTITION UNIVERSE IS ANCHORED OUTSIDE THE FILE: `fields_considered`
+was read out of the entry under test, so `fields_considered: ["statistics"]` with
+`fields_fixed_in_spec: ["statistics"]` partitioned cleanly and dropped B, the seed
+and the unit out of the record entirely -- decisions/0111 E4 reinstalled by the
+fix for it.
 
 SCOPED BY DOCUMENT ROLE at v1.2.0 (decisions/0107). ONE FILE PER ARM: an arm file
 is written by an isolated instance, the merged document is Step 13b's, and
@@ -407,6 +427,47 @@ INTERVAL_CLASS_PUBLISHERS = {
     "window_w_percentile": ("step9", "step13"),
 }
 
+# THE FOUR BOOTSTRAP ELEMENTS THE SPEC FIXES, HELD OUTSIDE THE FILE UNDER TEST
+# (v1.8.0, reviewer-engineering E4 on the v1.7.0 review). B, the seed and the
+# resampling unit are fixed by decisions/0103 and the statistic by decisions/0118;
+# this tuple is written FROM THOSE RULINGS, not read from the generator and not
+# read from the instance.
+#
+# WHY IT HAD TO EXIST. v1.7.0 gave each registry entry a partition anchor -- the
+# fixed and not-fixed lists must partition `fields_considered` -- and read
+# `fields_considered` OUT OF THE ENTRY BEING CHECKED, where the schema constrains
+# it only to a non-empty array of free strings. So an entry declaring
+# `fields_considered: ["statistics"]` and `fields_fixed_in_spec: ["statistics"]`
+# partitioned perfectly while dropping B, the seed and the unit out of the record
+# entirely. THAT IS decisions/0111 E4 -- a table read from the file under test
+# could only agree with itself -- REINSTALLED BY THE FIX FOR E2, and it is the
+# same defect the S41 fixture had and caught.
+#
+# The check is CONTAINMENT, not equality: a writer may consider a fifth element
+# the record has not ruled on, and must then partition it like any other. What it
+# may not do is consider fewer than the four the spec has already fixed.
+# src/step8b_selftest.py asserts this tuple against the generator's
+# BOOTSTRAP_FIELDS_CONSIDERED, so the two cannot drift in silence.
+BOOTSTRAP_ELEMENTS_FIXED_BY_SPEC = ("B", "seed", "resampling_unit", "statistics")
+
+# THE REGISTRY FACT, WRITTEN ONCE (v1.8.0, reviewer-engineering E7 on the v1.7.0
+# review). It had three renderings and two of them disagreed: this module's
+# docstring said two entries differ only in `producing_arm`, the generator said
+# "and `resampling_unit`", and a placeholder note said `producing_arm` alone. The
+# disk settles it -- `a_default` and `b_default` differ in `producing_arm` and
+# nothing else, and `a_default` and `a_show_clustered` differ in
+# `resampling_unit` AND `spec_status`, which is one arm's two quantity classes
+# rather than two arms' one setting. So the unit varies by QUANTITY CLASS, never
+# by arm. The generator imports this string for the schema description and the
+# placeholder note; nothing restates it.
+REGISTRY_ARM_DIFFERENCE_FACT = (
+    "with all four bootstrap elements fixed and identical across the arms, two registry "
+    "entries OF THE SAME QUANTITY CLASS differ only in `producing_arm` -- `resampling_unit` "
+    "varies by QUANTITY CLASS and never by arm, the account-clustered and show-clustered "
+    "entries being one arm's two classes rather than two arms' one setting -- so a cross-arm "
+    "reference misreports the ARM and no longer misreports a setting"
+)
+
 # THE KEYS S30 NORMALISES AWAY BEFORE COMPARING TWO ARMS' PAYLOADS -- ONE
 # DEFINITION, AND ITS ARITY IS DERIVED FROM IT (reviewer-engineering E3 on the
 # v1.6.0 review). These are ARM LABELS: fields whose whole content is which arm a
@@ -443,13 +504,28 @@ ARM_LABELS_ARITY_WORD = _ARITY_WORDS.get(ARM_LABELS_ARITY, str(ARM_LABELS_ARITY)
 # own warrant text false, which is fixing a control by breaking a statement of
 # fact.
 #
-# THE EXEMPTION IS ONE STEP'S AND MUST NOT WIDEN. Steps 9, 10, 11 and 13 all
-# publish outcome-share intervals -- INTERVAL_CLASS_PUBLISHERS above names Steps
-# 9, 11, 12 and 13 on `outcome_shares`, and Step 10 charts the headline arm -- so
-# an arm file of any of those carrying no interval at all is INCOMPLETE, not
-# out of scope, and still fails. src/step8b_selftest.py asserts the four failures
-# and the one pass, because an exemption that quietly covers five steps when it
-# was granted to one is the shape this study keeps finding.
+# THE EXEMPTION IS ONE STEP'S AND MUST NOT WIDEN. Every step outside this table
+# fails the empty branch, and src/step8b_selftest.py asserts that for Steps 9, 10,
+# 11 and 13 beside the one pass, because an exemption that quietly covers five
+# steps when it was granted to one is the shape this study keeps finding.
+#
+# THE GROUND IS NOT THE PUBLISHER TABLE, AND SAYING SO WAS A DEFECT (v1.8.0,
+# reviewer-engineering E6). This comment used to read "Steps 9, 10, 11 and 13 all
+# publish outcome-share intervals", which INTERVAL_CLASS_PUBLISHERS does not
+# support: it names Steps 9, 11, 12 and 13 on `outcome_shares` and does NOT name
+# Step 10. The table is a PERMISSION -- who may attribute an interval on a class
+# -- and this one is a MANDATE, and neither implies the other. What actually
+# holds: this table has ONE member because ONE step was ruled on. WHETHER STEP 10
+# BELONGS IN IT IS UNRULED AND IS REPORTED TO THE HUMAN LEAD RATHER THAN DECIDED
+# HERE; an arm may not widen a ruling to make its own comment true.
+#
+# THE PERMISSION AND THE MANDATE ARE NOT IN CONFLICT. Step 12 MAY attribute an
+# outcome-shares interval (INTERVAL_CLASS_PUBLISHERS) and is REQUIRED to produce
+# none (this table); permitted-and-not-required is a coherent pair, and it is what
+# makes v1.8.0's narrowing bite -- Step 12 need not publish, and if it does, S41
+# holds it to both objects like any other step. What WAS incoherent is the state
+# this narrowing removed: the exemption covering the has-intervals case, under
+# which Step 12 was permitted to publish a half-run that nothing could see.
 #
 # The same warrant names Step 13's per-arm SENSITIVITY SERIES as a series of
 # shares rather than of intervals. That is NOT a step-level exemption: Step 13
@@ -723,23 +799,55 @@ def _owning_arm_of(payload: dict) -> str | None:
 
 
 def _iter_cis_with_arm(inst: dict):
-    """Yield (path, arm, ci) for every interval whose owning arm is knowable.
+    """Yield (path, step, arm, ci) for every interval whose OWNER is knowable.
 
-    An interval inside a payload belongs to that payload's arm; one under
-    $.declared_intervals belongs to the arm the entry names. Nothing else in the
-    file carries an interval.
+    THE OWNER IS A (PRODUCING STEP, ARM) PAIR, NOT AN ARM (v1.8.0,
+    reviewer-engineering E3). An arm label alone identifies a measurement's owner
+    only in an arm file, where one file is one step's. IN THE MERGED DOCUMENT
+    `sole` IS STEPS 10, 11 AND 12 TOGETHER AND `a` IS STEP 9 AND STEP 13, so
+    attributing by arm let Step 13 arm `a`'s single paired movement discharge Step
+    9 arm `a`'s obligation -- which is S41's own reason for keying per arm at all,
+    one dimension out. decisions/0111 E2 already ruled the producing step is part
+    of a measurement's identity, and S2 keys on it.
+
+    An interval inside a payload belongs to that payload's arm and to the step
+    that wrote it; one under $.declared_intervals belongs to the step and arm the
+    entry names. Nothing else in the file carries an interval.
+
+    The step is read from the payload's own `written_by_step` first, then the
+    block's `by_producing_arm.producing_step`, then the containing entry's
+    `producing_step`, then the file's -- most specific first, because in a merged
+    document the file's own step is Step 13b, which wrote no interval.
     """
-    for base, pop, block in _iter_payloads(inst):
-        for ppath, akey, payload in _iter_arm_payloads(block, base):
-            arm = _owning_arm_of(payload) or akey
-            for path, node in _walk(payload):
-                if isinstance(node, dict) and "lower" in node and "upper" in node \
-                        and "bootstrap_ref" in node:
-                    yield ppath + path[1:], arm, node
+    file_step = _producing_step(inst)
+    for fam in ("arms", "variants", "subpopulation_cuts"):
+        for i, entry in enumerate(inst.get(fam) or []):
+            if not isinstance(entry, dict):
+                continue
+            entry_step = entry.get("producing_step")
+            headline = entry.get("headline")
+            if not isinstance(headline, dict):
+                continue
+            for pop, block in headline.items():
+                if not isinstance(block, dict):
+                    continue
+                base = f"$.{fam}[{i}].headline.{pop}"
+                bpa = block.get("by_producing_arm")
+                block_step = bpa.get("producing_step") if isinstance(bpa, dict) else None
+                for ppath, akey, payload in _iter_arm_payloads(block, base):
+                    arm = _owning_arm_of(payload) or akey
+                    step = (payload.get("written_by_step") or block_step
+                            or entry_step or file_step)
+                    for path, node in _walk(payload):
+                        if isinstance(node, dict) and "lower" in node and "upper" in node \
+                                and "bootstrap_ref" in node:
+                            yield ppath + path[1:], step, arm, node
     for i, entry in enumerate(inst.get("declared_intervals") or []):
         ci = entry.get("ci")
         if isinstance(ci, dict) and "bootstrap_ref" in ci:
-            yield f"$.declared_intervals[{i}].ci", entry.get("producing_arm"), ci
+            yield (f"$.declared_intervals[{i}].ci",
+                   entry.get("produced_by_step") or file_step,
+                   entry.get("producing_arm"), ci)
 
 
 def _iter_abandonment(inst: dict):
@@ -781,6 +889,18 @@ def _partition_failures(where: str, considered, fixed, notfixed) -> list[str]:
     if out:
         return out
     uni, f_set, n_set = set(considered), set(fixed), set(notfixed)
+    # THE UNIVERSE IS ANCHORED OUTSIDE THE FILE (v1.8.0, E4). Without this the
+    # anchor was the entry's own `fields_considered`, and a declared universe of
+    # one element partitioned cleanly while dropping three the spec has fixed.
+    short = [f for f in BOOTSTRAP_ELEMENTS_FIXED_BY_SPEC if f not in uni]
+    if short:
+        out.append(
+            f"{where}.fields_considered is {sorted(uni)} and does not consider {short}. The "
+            f"spec fixes all of {list(BOOTSTRAP_ELEMENTS_FIXED_BY_SPEC)} (decisions/0103, "
+            f"decisions/0118), so an element left out of the declared universe is left out of "
+            f"the record: the two lists would then partition a universe the writer chose. A "
+            f"fifth element may be added; none of these four may be dropped"
+        )
     if f_set & n_set:
         out.append(
             f"{where}: {sorted(f_set & n_set)} appear in BOTH the fixed and the not-fixed "
@@ -2600,7 +2720,7 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
         "every interval references bootstrap settings produced by the arm that owns it",
     )
     registry = inst.get("bootstrap_settings") or {}
-    for path, arm, ci in _iter_cis_with_arm(inst):
+    for path, _step, arm, ci in _iter_cis_with_arm(inst):
         c.sites += 1
         ref = ci.get("bootstrap_ref")
         entry = registry.get(ref)
@@ -3250,31 +3370,44 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
     #        AND BOTH STATISTICS APPEAR. A run that emits only one is INCOMPLETE,
     #        not merely differently designed."
     #
-    #        The arm an interval belongs to is taken from the payload it sits in
-    #        or the declared-intervals entry that names it -- the same attribution
-    #        S32 uses -- so a merged document is checked arm by arm rather than in
-    #        aggregate, where one arm's movement could cover for the other's
-    #        absence.
+    #        THE OWNER KEY IS (PRODUCING STEP, ARM) SINCE v1.8.0
+    #        (reviewer-engineering E3). It is taken from the payload an interval
+    #        sits in or from the declared-intervals entry that names it. Keying on
+    #        the ARM alone was right for an arm file and wrong for the merged
+    #        document, where `sole` is Steps 10, 11 and 12 together and `a` is Step
+    #        9 AND Step 13 -- so Step 13 arm `a`'s single movement discharged Step
+    #        9 arm `a`'s obligation, which is this check's own reason for keying
+    #        per arm, one dimension out.
     #
-    #        SCOPE-AWARE SINCE v1.7.0 (Human Lead ruling, 2026-08-19). The empty
-    #        branch failed unconditionally, which made a Step 12 arm file fail for
-    #        not carrying intervals the spec never asks it for. The exemption is
-    #        INTERVALS_NOT_MANDATED_BY_STEP, it is read from the FILE'S OWN
-    #        producing step, and it is one step's. A merged document is never
-    #        exempt: it holds every arm's intervals and Step 12's silence there is
-    #        covered by the steps that do publish.
+    #        SCOPE-AWARE SINCE v1.7.0 (Human Lead ruling, 2026-08-19): a Step 12
+    #        file is not asked for intervals at all, and failing it for having none
+    #        would make it manufacture two figures the spec never asked it to
+    #        compute. NARROWED AT v1.8.0 TO THE EMPTY BRANCH ALONE (E4 of the same
+    #        review): the exemption used to gate the per-owner missing-object
+    #        branch as well, so a Step 12 file emitting forty levels-only intervals
+    #        passed with a note. THE RULING'S GROUND DOES NOT REACH THAT STATE -- a
+    #        file that has already computed intervals is being asked to manufacture
+    #        nothing, and decisions/0118's "a run that emits only one is INCOMPLETE"
+    #        applies to it directly.
+    #
+    #        A MERGED DOCUMENT IS STILL NEVER EXEMPT, and the reason is now the
+    #        keying rather than the aggregation it used to rest on: a step that
+    #        publishes no interval raises no owner key at all, so Step 12's silence
+    #        inside a merge is simply absent rather than covered by another step's
+    #        movement. The two facts are independent, where before the second was
+    #        an artifact of the defect E3 names.
     c = Check(
         "S41",
         "both bootstrap statistics -- levels and paired movements -- appear among the "
-        "intervals of every producing arm in this file",
+        "intervals of every (producing step, arm) in this file",
     )
     s41_step = _producing_step(inst)
     s41_exempt = (
         None if _is_merged_document(inst)
         else INTERVALS_NOT_MANDATED_BY_STEP.get(s41_step)
     )
-    by_arm: dict = {}
-    for path, arm, ci in _iter_cis_with_arm(inst):
+    by_owner: dict = {}
+    for path, istep, arm, ci in _iter_cis_with_arm(inst):
         c.sites += 1
         stat = ci.get("statistic")
         if stat is None:
@@ -3284,37 +3417,34 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
                 f"each other"
             )
             continue
-        by_arm.setdefault(arm, {}).setdefault(stat, []).append(path)
-    for arm in sorted(by_arm, key=lambda a: (a is None, a)):
-        seen = set(by_arm[arm])
+        by_owner.setdefault((istep, arm), {}).setdefault(stat, []).append(path)
+    for owner in sorted(by_owner, key=lambda t: (t[0] is None, str(t[0]),
+                                                 t[1] is None, str(t[1]))):
+        istep, arm = owner
+        seen = set(by_owner[owner])
         missing = expected_statistics - seen
         if not missing:
             continue
-        n_ivl = sum(len(v) for v in by_arm[arm].values())
-        if s41_exempt is not None:
-            # The exemption reaches here as well as the empty branch: an interval
-            # this step volunteered does not create an obligation to produce its
-            # paired counterpart, which is the fabrication the ruling forbids.
-            # REPORTED, never silent -- a restricted pass that says nothing is
-            # indistinguishable from a full one.
-            c.notes.append(
-                f"RESTRICTED, NOT FULL: arm {arm!r} declares {sorted(seen)} and none of "
-                f"{sorted(missing)} across {n_ivl} interval(s), and this is NOT failed because "
-                f"the file's producing step is {s41_step!r}, which is exempt -- {s41_exempt}"
-            )
-            continue
+        n_ivl = sum(len(v) for v in by_owner[owner].values())
+        # NO EXEMPTION HERE, INCLUDING FOR STEP 12 (v1.8.0). Having published an
+        # interval, a writer owes both objects: the ruling exempts a step from
+        # PRODUCING intervals, not from producing them completely.
         c.failures.append(
-            f"arm {arm!r} declares {sorted(seen)} and none of {sorted(missing)} across "
-            f"{n_ivl} interval(s). Both arms produce BOTH objects (decisions/0118); a file "
-            f"emitting one is incomplete"
+            f"step {istep!r} arm {arm!r} declares {sorted(seen)} and none of "
+            f"{sorted(missing)} across {n_ivl} interval(s). Every producing step produces "
+            f"BOTH objects (decisions/0118); a run emitting one is INCOMPLETE rather than "
+            f"differently designed. The Step 12 exemption does NOT reach this branch -- it "
+            f"covers a step asked for no interval, and this owner published "
+            f"{n_ivl} of them"
         )
     c.notes.append(
-        "intervals examined per arm and statistic: "
-        + json.dumps({str(a): {s: len(p) for s, p in sorted(m.items())}
-                      for a, m in sorted(by_arm.items(), key=lambda kv: (kv[0] is None, kv[0]))},
+        "intervals examined per (producing step, arm) and statistic: "
+        + json.dumps({f"{o[0]}/{o[1]}": {s: len(p) for s, p in sorted(m.items())}
+                      for o, m in sorted(by_owner.items(),
+                                         key=lambda kv: (str(kv[0][0]), str(kv[0][1])))},
                      sort_keys=True)
     )
-    if not by_arm and s41_exempt is None:
+    if not by_owner and s41_exempt is None:
         c.failures.append(
             "this file carries no interval whose owning arm is knowable, so the "
             "both-objects requirement was checked against nothing. An empty result and a "
@@ -3414,15 +3544,36 @@ def _declare_scope_emptiness(inst: dict, checks: list) -> None:
                 continue
             records = _absence_records_for(inst, "intervals")
             c.coverage = len(records)
+            if not records:
+                # ZERO COVERAGE IS NOT A DECLARED EMPTINESS (v1.8.0,
+                # reviewer-engineering E5). `declared_empty` used to be set
+                # unconditionally, carrying the words "so the emptiness was
+                # searched for rather than assumed" with nothing requiring a
+                # single record to have been examined -- so a file whose headline
+                # blocks are simply absent was awarded EMPTY_DECLARED for a search
+                # that examined nothing. That is the rule S33 enforces on every
+                # other search record and CLAUDE.md states in as many words: an
+                # empty result and a clean result are the same value, and a check
+                # that finds nothing because it looked nowhere must FAIL. The
+                # exemption survives; what it no longer does is stand in for the
+                # coverage.
+                c.notes.append(
+                    f"the step-level interval exemption applies to {file_step!r}, but this "
+                    f"file carries NO interval-absence record: nothing was examined, so the "
+                    f"emptiness is not established and this check stays VACUOUS. An exempt "
+                    f"step still says where its intervals would have been"
+                )
+                continue
             c.declared_empty = (
                 f"this file carries no interval, and is not asked for one: it is "
                 f"{file_step!r}'s output, and {reason}. The requirement decisions/0118 fixes "
                 f"is that a step which PRODUCES intervals produces BOTH objects; it creates "
                 f"no obligation to produce any. {len(records)} interval slot(s) in this file "
                 f"carry an explicit absence record rather than an interval, so the emptiness "
-                f"was searched for rather than assumed. THE EXEMPTION IS THIS STEP'S ALONE -- "
-                f"Steps 9, 10, 11 and 13 publish outcome-share intervals and still FAIL this "
-                f"branch."
+                f"was searched for rather than assumed. THE EXEMPTION IS THIS STEP'S ALONE and "
+                f"reaches only a file with no interval at all: a step that HAS published "
+                f"intervals owes both objects like any other, and every step outside "
+                f"{sorted(INTERVALS_NOT_MANDATED_BY_STEP)} fails this branch."
             )
             c.notes.append(
                 f"scope-empty by the step-level interval exemption: {file_step!r} is asked for "
