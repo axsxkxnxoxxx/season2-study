@@ -1,6 +1,6 @@
 {
-  "schema_version": "1.4.0",
-  "schema_id": "urn:season2-study:step8b-output-schema:1.4.0",
+  "schema_version": "1.5.0",
+  "schema_id": "urn:season2-study:step8b-output-schema:1.5.0",
   "placeholder": true,
   "placeholder_notice": {
     "banner": "############  THIS FILE IS A PLACEHOLDER. IT CONTAINS NO MEASUREMENTS.  ############  Every number in it is the sentinel -999 or -999.0 and every writer-supplied string is prefixed 'PLACEHOLDER — NOT A MEASUREMENT'. It exists so Step 16 can be built before results exist. DO NOT PUBLISH, DO NOT CHART, DO NOT QUOTE. A consumer that renders it will show -999% bars, which is the point.  ############",
@@ -12,10 +12,10 @@
   },
   "generated_by": {
     "generator": "src/step8b_schema.py",
-    "generator_sha256_12": "e53fefbe8f35",
-    "generated_at_utc": "2026-08-19T00:31:43Z",
+    "generator_sha256_12": "42ddef7cdbc3",
+    "generated_at_utc": "2026-08-19T01:33:26Z",
     "build_tag": "step8b/a/2026-08-19",
-    "git_head_short": "6d7e58a",
+    "git_head_short": "984c344",
     "host_step": "Step 8b, output schema",
     "written_by": "Analytics Engineer, instance a",
     "inputs": [
@@ -38,13 +38,24 @@
     "string_prefix": "PLACEHOLDER — NOT A MEASUREMENT",
     "rule": "Structure is real, measurements are sentinels. Identifiers, keys, enum values, booleans, refs, definitions and the provenance block are written as they would really appear, so every branch can be built against. Every slot the schema marks x-measurement holds -999 or -999.0, and every slot it marks x-writer-text carries the string prefix. Both are reserved: neither may appear in a file whose `placeholder` flag is false, which is what stops a leftover placeholder value surviving into a published file."
   },
+  "adopted_rule_revision": {
+    "revision": 6,
+    "source_file": "processed/step5/adopted_rule.json",
+    "source_key": "_SUPERSEDED_FIGURES_CORRECTED_2026_08_13.approved_rule_revision_6",
+    "source_sha256_12": "2e878460bd55",
+    "read_not_typed": true,
+    "how_it_is_read": "A WRITER CALLS src/step8b_schema.py's `_read_adopted_rule_revision()` RATHER THAN REIMPLEMENTING THIS: a second reader is a second definition of the rule's version, and two definitions of one figure is the defect this study has hit most often. Every key in the adopted-rule file is scanned for the pattern 'approved_(?:rule_)?revision_(\\\\d+)' and the highest match is taken; the key it came from is recorded above. The file carries no first-class revision field, which is a residual reported to the Human Lead rather than corrected here -- it is Step 5's output, and a deliverable is corrected by rerunning the arm that produced it.",
+    "why_it_is_in_the_key": "A setting under which the measurement was taken that was invisible in the key, like the clock origin and the producing step before it. If a Step 5 or Step 7 amendment lands between one step's run and another's, their entries at one setting are DIFFERENT MEASUREMENTS, and without this dimension check S2 calls the rerun a duplicate. The dimension has been occupied once already: this file carried revision-3 figures against the approved revision-6 rule.",
+    "source": "decisions/0114 E14; CLAUDE.md, propagation surface 8"
+  },
   "arm_key": {
     "fields": [
       "W_days",
       "clock_origin",
-      "producing_step"
+      "producing_step",
+      "adopted_rule_revision"
     ],
-    "note": "THE PRODUCING STEP IS PART OF THE KEY (decisions/0111 E2): Step 9's W = 108 and Step 13's W = 108 are DIFFERENT MEASUREMENTS OF ONE SETTING and both exist as entries. That is the collision below, one dimension out, with the same fix -- add the missing identity dimension, never restrict which step may occupy a shared W. W alone does not identify an arm either. Step 9 reports a second 91-day headline anchored on the S2 premiere rather than the finale, and states plainly that it is not the same measurement at another window length -- so it would collide with the finale-anchored W = 91 grid arm under a W-only key. There is no liveness threshold in the key: one was derived three times and deleted, and the adopted rule is parameter-free.",
+    "note": "THE ADOPTED-RULE REVISION IS THE FOURTH FIELD (decisions/0114 E14), and it is READ from processed/step5/adopted_rule.json at write time rather than typed: $.adopted_rule_revision names the file, the key and the hash. Two runs at one setting under different rule revisions are DIFFERENT MEASUREMENTS, and that dimension has been occupied once already -- that file carried revision-3 figures against the approved revision-6 rule. THE PRODUCING STEP IS PART OF THE KEY (decisions/0111 E2): Step 9's W = 108 and Step 13's W = 108 are DIFFERENT MEASUREMENTS OF ONE SETTING and both exist as entries. That is the collision below, one dimension out, with the same fix -- add the missing identity dimension, never restrict which step may occupy a shared W. W alone does not identify an arm either. Step 9 reports a second 91-day headline anchored on the S2 premiere rather than the finale, and states plainly that it is not the same measurement at another window length -- so it would collide with the finale-anchored W = 91 grid arm under a W-only key. There is no liveness threshold in the key: one was derived three times and deleted, and the adopted rule is parameter-free.",
     "no_liveness_threshold": true
   },
   "arm_grid_days": [
@@ -133,7 +144,7 @@
       ],
       "note": "PLACEHOLDER — NOT A MEASUREMENT: B, the seed and the unit are fixed by decisions/0103 and are real here; levels-vs-movements is NOT fixed by it and still differs between the arms, so it stays visible rather than silent"
     },
-    "a_window_w": {
+    "a_show_clustered": {
       "B": 10000,
       "seed": 20260818,
       "statistic": "movements",
@@ -185,7 +196,7 @@
         "lower": -999.0,
         "upper": -999.0,
         "method": "percentile_bootstrap",
-        "bootstrap_ref": "a_window_w",
+        "bootstrap_ref": "a_show_clustered",
         "B": 10000,
         "seed": 20260818,
         "statistic": "movements",
@@ -290,6 +301,14 @@
       "source": "task-sheet.md Step 8b",
       "merged_document_only": false
     },
+    "adopted_rule_revision": {
+      "owner_step": "step8b",
+      "owner_role": "Analytics Engineer, Step 8b",
+      "write_mode": "structural_from_step_8b",
+      "may_first_writer_fill": true,
+      "source": "task-sheet.md Step 8b",
+      "merged_document_only": false
+    },
     "arm_grid_days": {
       "owner_step": "step13",
       "owner_role": "Data Scientist, Step 13",
@@ -367,9 +386,14 @@
       "owner_role": "Analytics Engineer, Step 8",
       "write_mode": "copied_from_step_8_output",
       "may_first_writer_fill": false,
-      "source": "decisions/0070 rulings 1 and 7",
+      "source": "decisions/0070 rulings 1 and 7; decisions/0114 E8",
+      "published_by_step": "step13b",
       "forbidden_to_compute_here": [
-        "step9"
+        "step9",
+        "step10",
+        "step11",
+        "step12",
+        "step13"
       ],
       "merged_document_only": false
     },
@@ -378,9 +402,14 @@
       "owner_role": "Analytics Engineer, Step 8",
       "write_mode": "copied_from_step_8_output",
       "may_first_writer_fill": false,
-      "source": "decisions/0077, 0079",
+      "source": "decisions/0077, 0079; decisions/0114 E8",
+      "published_by_step": "step13b",
       "forbidden_to_compute_here": [
-        "step9"
+        "step9",
+        "step10",
+        "step11",
+        "step12",
+        "step13"
       ],
       "merged_document_only": false
     },
@@ -602,8 +631,8 @@
       "owner_role": "Analytics Engineer, Step 8",
       "write_mode": "copied_from_step_8_output",
       "may_first_writer_fill": false,
-      "source": "decisions/0070 ruling 7",
-      "published_by_step": "step9",
+      "source": "decisions/0070 ruling 7; decisions/0114 E8",
+      "published_by_step": "step13b",
       "merged_document_only": false
     },
     "channel_classes.d9": {
@@ -611,8 +640,8 @@
       "owner_role": "Analytics Engineer, Step 8",
       "write_mode": "copied_from_step_8_output",
       "may_first_writer_fill": false,
-      "source": "decisions/0088 §3, 0090",
-      "published_by_step": "step9",
+      "source": "decisions/0088 §3, 0090; decisions/0114 E8",
+      "published_by_step": "step13b",
       "merged_document_only": false
     },
     "document_scope.merge": {
@@ -626,146 +655,19 @@
     }
   },
   "channel_classes": {
-    "d4": {
-      "definition": "S3 or later evidence without S2 evidence.",
-      "published_alongside": true,
-      "folded_into_bound": false,
-      "computed_by": "step8",
-      "copied_not_computed": true,
-      "counts": {
-        "APPLY": -999,
-        "DERIV": -999
-      },
-      "source": "decisions/0070 ruling 7"
-    },
-    "d9": {
-      "published_alongside": true,
-      "folded_into_bound": false,
-      "computed_by": "step8",
-      "copied_not_computed": true,
-      "keys": {
-        "strict": "lowercase the slug and drop every non-alphanumeric character",
-        "loose": "remove a trailing four-digit year first, then apply strict",
-        "third_key_is_not_an_endpoint": "A key that strips a trailing digit group of arbitrary length is a third key, not an endpoint of this bound; its answer is reported as a divergence."
-      },
-      "universe": {
-        "label": "U1",
-        "definition": "Every distinct show ID appearing anywhere in the pulled sweep that carries a slug, deduplicated to one row per show ID.",
-        "n_show_ids": -999,
-        "rank_basis": "distinct strict keys merged",
-        "rank_tie_break": {
-          "status": "unruled",
-          "reason": "The rank ordering ties and no rule specifies the tie-break, so no single name may be published at a tied rank; every key at the tied rank is listed instead.",
-          "source": "decisions/0089 §2(c)"
-        }
-      },
-      "quantities": {
-        "complementary_pairs": {
-          "floor": {
-            "value": -999,
-            "key": "strict",
-            "direction": "cannot_over_count"
-          },
-          "ceiling": {
-            "value": -999,
-            "key": "loose",
-            "direction": "merges_genuinely_different_shows"
-          },
-          "point_estimate": {
-            "status": "not_published",
-            "reason": "This quantity publishes as a bound. Neither endpoint may be quoted as the result: strict is the floor because it cannot over-count and loose is the ceiling because it merges genuinely different shows.",
-            "source": "decisions/0090",
-            "decided_by": "Human Lead"
-          },
-          "coverage": {
-            "records_examined": -999,
-            "records_with_a_slug": -999,
-            "what_was_counted": "PLACEHOLDER — NOT A MEASUREMENT: a zero floor is not an absence of evidence; the coverage publishes beside it so the bound is distinguishable from a check that looked nowhere"
-          }
-        },
-        "half_a": {
-          "floor": {
-            "value": -999,
-            "key": "strict",
-            "direction": "cannot_over_count"
-          },
-          "ceiling": {
-            "value": -999,
-            "key": "loose",
-            "direction": "merges_genuinely_different_shows"
-          },
-          "point_estimate": {
-            "status": "not_published",
-            "reason": "This quantity publishes as a bound. Neither endpoint may be quoted as the result: strict is the floor because it cannot over-count and loose is the ceiling because it merges genuinely different shows.",
-            "source": "decisions/0090",
-            "decided_by": "Human Lead"
-          },
-          "coverage": {
-            "records_examined": -999,
-            "records_with_a_slug": -999,
-            "what_was_counted": "PLACEHOLDER — NOT A MEASUREMENT: a zero floor is not an absence of evidence; the coverage publishes beside it so the bound is distinguishable from a check that looked nowhere"
-          }
-        },
-        "half_b": {
-          "floor": {
-            "value": -999,
-            "key": "strict",
-            "direction": "cannot_over_count"
-          },
-          "ceiling": {
-            "value": -999,
-            "key": "loose",
-            "direction": "merges_genuinely_different_shows"
-          },
-          "point_estimate": {
-            "status": "not_published",
-            "reason": "This quantity publishes as a bound. Neither endpoint may be quoted as the result: strict is the floor because it cannot over-count and loose is the ceiling because it merges genuinely different shows.",
-            "source": "decisions/0090",
-            "decided_by": "Human Lead"
-          },
-          "coverage": {
-            "records_examined": -999,
-            "records_with_a_slug": -999,
-            "what_was_counted": "PLACEHOLDER — NOT A MEASUREMENT: a zero floor is not an absence of evidence; the coverage publishes beside it so the bound is distinguishable from a check that looked nowhere"
-          }
-        }
-      }
-    }
+    "block_is_absent": true,
+    "status": "not_required_by_spec",
+    "reason": "D4 and D9 are STEP 8's figures and Step 9 is forbidden to recompute either. Requiring this block in seven arm files would make seven writers of one figure, with no precedence rule and no agreement check; the merged document carries it once, filled at Step 13b from Step 8's artifact.",
+    "owning_step": "step13b",
+    "source": "decisions/0114 E8; decisions/0109 §1"
   },
-  "discovery_channel_overlap": [
-    {
-      "unit": "discovery_pool_usernames",
-      "numerator": -999,
-      "denominator": -999,
-      "consumer": "PLACEHOLDER — NOT A MEASUREMENT: Step 3's seeding-bias statement",
-      "single_categorical_forbidden": true,
-      "source": "decisions/0079"
-    },
-    {
-      "unit": "accounts_pulled",
-      "numerator": -999,
-      "denominator": -999,
-      "consumer": "PLACEHOLDER — NOT A MEASUREMENT: Step 4 coverage",
-      "single_categorical_forbidden": true,
-      "source": "decisions/0079"
-    },
-    {
-      "unit": "analysis_population_accounts",
-      "numerator": -999,
-      "denominator": -999,
-      "consumer": "PLACEHOLDER — NOT A MEASUREMENT: Step 11, which cuts the analysis population",
-      "single_categorical_forbidden": true,
-      "source": "decisions/0079"
-    },
-    {
-      "unit": "analysis_population_pairs",
-      "numerator": -999,
-      "denominator": -999,
-      "consumer": "PLACEHOLDER — NOT A MEASUREMENT: Step 11, in pairs rather than accounts",
-      "single_categorical_forbidden": true,
-      "source": "decisions/0079"
-    }
-  ],
+  "discovery_channel_overlap": {
+    "block_is_absent": true,
+    "status": "not_required_by_spec",
+    "reason": "The discovery-channel overlap is STEP 8's measurement, published in four units with a different consumer for each. Same shape as channel_classes, checked rather than assumed: the merged document carries it once.",
+    "owning_step": "step13b",
+    "source": "decisions/0114 E8; decisions/0109 §1"
+  },
   "derived_fields": [
     {
       "field": "$..bounds.*.width_pp",
@@ -841,12 +743,13 @@
   ],
   "arms": [
     {
-      "arm_id": "W108_s2_finale__step9",
+      "arm_id": "W108_s2_finale__step9__r6",
       "W_days": 108,
       "H_days": 91,
       "clock_origin": "s2_finale",
       "clock_origin_note": "PLACEHOLDER — NOT A MEASUREMENT: the adopted arm; T0 is the later of the S2 finale and the first-pass S1 completion date. This entry is STEP 9's measurement at that setting",
       "producing_step": "step9",
+      "adopted_rule_revision": 6,
       "in_arm_grid": true,
       "is_primary_headline": true,
       "headline": {
@@ -1724,12 +1627,13 @@
       "note": "PLACEHOLDER — NOT A MEASUREMENT: one entry per (W, clock origin, producing step)"
     },
     {
-      "arm_id": "W091_s2_finale__step9",
+      "arm_id": "W091_s2_finale__step9__r6",
       "W_days": 91,
       "H_days": 91,
       "clock_origin": "s2_finale",
       "clock_origin_note": "PLACEHOLDER — NOT A MEASUREMENT: a grid arm at 91 days, finale-anchored, distinct from the premiere-anchored arm; this is Step 9's entry at that setting",
       "producing_step": "step9",
+      "adopted_rule_revision": 6,
       "in_arm_grid": true,
       "is_primary_headline": false,
       "headline": {
@@ -2602,12 +2506,13 @@
       "note": "PLACEHOLDER — NOT A MEASUREMENT: one entry per (W, clock origin, producing step)"
     },
     {
-      "arm_id": "W091_s2_premiere__step9",
+      "arm_id": "W091_s2_premiere__step9__r6",
       "W_days": 91,
       "H_days": 91,
       "clock_origin": "s2_premiere",
       "clock_origin_note": "PLACEHOLDER — NOT A MEASUREMENT: Step 9's second headline at Netflix's own 91-day reporting window, anchored on the later of the S2 premiere and the first-pass S1 completion date; it sits on a different origin from the primary headline and the two are NOT the same measurement at two window lengths",
       "producing_step": "step9",
+      "adopted_rule_revision": 6,
       "in_arm_grid": false,
       "is_primary_headline": false,
       "headline": {
@@ -3248,9 +3153,21 @@
       "if_ruled_otherwise": "Nothing in the schema depends on it. It is recorded because an unstated choice is the shape that has cost this study repeatedly."
     },
     {
-      "choice": "The arm key is (W_days, clock_origin, producing_step), not W alone.",
+      "choice": "STEP 8's ARTIFACT IS DECLARED AS A NINTH MERGE SOURCE, so that the block it fills has recorded provenance.",
+      "spec_gap": "decisions/0114 E8 says `channel_classes` is filled ONCE in the merged document, at Step 13b, SOURCED FROM STEP 8's ARTIFACT. decisions/0111 E6 fixes the merge's input list at eight sources -- seven arm files and Step 14's limits section -- and says the list records SOURCES rather than only arm files. It does not say whether Step 8's artifact is one of them.",
+      "what_was_done": "It is declared as a non-arm-file source with no arm, filling `channel_classes` and `discovery_channel_overlap`, and both blocks name it in `merged_from`. The reason is E6's own: a block that must not be netted cannot arrive in the reader-facing document with no recorded provenance, and that argument does not distinguish a bias ledger from a D9 bound. Check S30's external anchor expects it, so a merge that drops it fails.",
+      "if_ruled_otherwise": "If the count of eight is meant to be exact, the Step 8 row comes out of NON_ARM_MERGE_SOURCES in src/step8b_validate.py and out of NON_ARM_SOURCES in the generator, and the two blocks lose their merged_from stamp -- at which point the merged document carries Step 8's figures with no recorded source, which is the state E6 was written to end."
+    },
+    {
+      "choice": "The adopted-rule revision is READ from processed/step5/adopted_rule.json by parsing its KEY NAMES, because that file has no revision field.",
+      "spec_gap": "decisions/0114 E14 makes the revision the fourth key dimension and the launch instruction asks where it is READ rather than typed. The file the dimension is about carries the revision only inside key names -- `approved_rule_revision_6`, `approved_revision_6` -- and nowhere as a value.",
+      "what_was_done": "Every key in that file is scanned for the approved-revision pattern, the highest match is taken, and the KEY IT CAME FROM is recorded beside the file's hash in $.adopted_rule_revision. No match is a HARD STOP, not a default: a default would be a typed revision wearing a reader's clothes. The file itself was NOT edited to add a field -- it is Step 5's output, and a deliverable is corrected by rerunning the arm that produced it.",
+      "if_ruled_otherwise": "A first-class `adopted_rule_revision` field in that file would make the read exact instead of inferred, and the reader would name the field rather than a pattern. Reported to the Human Lead as a residual."
+    },
+    {
+      "choice": "The arm key is (W_days, clock_origin, producing_step, adopted_rule_revision), not W alone.",
       "spec_gap": "Step 8b says the key is W alone -- an amendment aimed at the deleted liveness threshold. Step 9 separately requires a second 91-day headline anchored on the S2 premiere rather than the finale, and states that it is not the same measurement at two window lengths. The W grid already contains a finale-anchored 91-day arm, so a W-only key collides. AND THE SAME COLLISION RECURS ONE DIMENSION OUT: Step 9 and Step 13 both measure at W = 108, finale-anchored -- four payloads, two slots.",
-      "what_was_done": "The origin AND THE PRODUCING STEP are part of the entry key, both required on every arm entry (decisions/0111 E2). Step 9's W = 108 and Step 13's W = 108 are different measurements of one setting and BOTH EXIST as entries; check S2 asserts uniqueness on the three-field key and asserts that $.arm_key declares it. No liveness threshold enters the key, which is what the amendment fixed.",
+      "what_was_done": "The origin, THE PRODUCING STEP and THE ADOPTED-RULE REVISION are part of the entry key, all required on every arm entry (decisions/0111 E2, 0114 E14). Step 9's W = 108 and Step 13's W = 108 are different measurements of one setting and BOTH EXIST as entries; so are two runs at one setting under different rule revisions. Check S2 asserts uniqueness on the FOUR-field key and asserts that $.arm_key declares it. No liveness threshold enters the key, which is what the amendment fixed.",
       "if_ruled_otherwise": "It must NOT be resolved by restricting which step may occupy a shared W: that would make the schema decide an ownership question the spec does not, and would drop a measurement rather than hold it. If the Netflix arm is meant to live outside the arm list, it moves to a sibling array and `clock_origin` becomes a plain field. The collision must be resolved somewhere; it cannot be left to the writer."
     },
     {
@@ -3400,6 +3317,16 @@
   ],
   "known_limits_of_this_schema": [
     {
+      "limit": "THE MERGE'S EXPECTED SOURCE LIST IS DERIVED FROM THE DUALITY TABLE, WHICH IS ITSELF A COPY OF THE SPEC. Check S30's external anchor knows that seven arm files and two non-arm sources are expected because STEP_DUALITY and NON_ARM_MERGE_SOURCES in src/step8b_validate.py say so. If the spec adds a writing step and those tables are not updated, the anchor will expect the old set.",
+      "consequence": "The anchor catches a merge that declares fewer sources than the tables know about. It cannot catch a source the tables have never heard of, and an extra ARM FILE fails rather than being accepted.",
+      "mitigation": "The duality table is asserted against each file's own $.step_duality by check S31, so a file written under a newer spec disagrees loudly with a validator running an older one, rather than passing quietly."
+    },
+    {
+      "limit": "THE ADOPTED-RULE REVISION IS READ BY PARSING KEY NAMES. processed/step5/adopted_rule.json carries no first-class revision field, so the reader scans its keys for the approved-revision pattern and takes the highest.",
+      "consequence": "A revision recorded ONLY in prose in that file, or one written under a key name that does not match the pattern, would not be seen. The reader hard stops when it finds no match at all, so the failure mode is a stop rather than a silent default -- but a NEWER revision recorded in an unmatched shape would leave the older one looking current.",
+      "mitigation": "$.adopted_rule_revision records the exact key the value came from and the file's hash, so the reading can be checked rather than trusted. A first-class field in that file would remove the inference; it is reported to the Human Lead rather than added here, because that file is Step 5's output."
+    },
+    {
       "limit": "JSON Schema cannot express cross-field constraints, so floor <= ceiling, the derived-figure identities, the waterfall arithmetic, referential integrity of the two ref families and the sentinel discipline are checked by src/step8b_validate.py, not by the schema.",
       "consequence": "A file that validates structurally is not thereby correct. Run the validator, not a generic JSON Schema tool.",
       "mitigation": "The validator reports the number of sites each check examined. A check that examined none and cannot say why reports VACUOUS and fails; one whose set the file declares empty, with a coverage count, reports EMPTY_DECLARED and does not."
@@ -3459,7 +3386,7 @@
     "reading_a_placeholder": "Check $.placeholder before reading anything else. This file's flag is true.",
     "bootstrap_is_fixed": "The resample count, the resampling unit for the outcome shares and the seed are fixed by the spec and are stated at $.bootstrap_spec, restated at every interval, and checked against each other. The statistic -- levels versus movements -- is NOT fixed, and differs between the arms.",
     "which_steps_are_dual": "Steps 9 and 13 are dual and nest their payloads per producing arm. Steps 10, 11 and 12 are single-arm and write one payload under `sole`. Which of the two a block used is a field, not something a consumer has to infer from the keys.",
-    "an_arm_entry_is_one_steps_measurement": "An arm entry is identified by (W_days, clock_origin, producing_step). Step 9's W = 108 and Step 13's W = 108 are different measurements of one setting and both appear, as separate entries. An entry carries the blocks its own producing step publishes and no others; $.block_ownership names each block's publisher, and a block missing from an entry is not a gap -- it is in the entry of the step that publishes it.",
+    "an_arm_entry_is_one_steps_measurement": "An arm entry is identified by (W_days, clock_origin, producing_step, adopted_rule_revision). Step 9's W = 108 and Step 13's W = 108 are different measurements of one setting and both appear, as separate entries; so are two runs at one setting under different rule revisions. The revision is READ from the adopted-rule file and $.adopted_rule_revision says which file and key. An entry carries the blocks its own producing step publishes and no others; $.block_ownership names each block's publisher, and a block missing from an entry is not a gap -- it is in the entry of the step that publishes it.",
     "step_13s_non_headline_outputs_are_per_arm": "d3_prime, tested_ranges, conclusions_surviving, conclusions_not_surviving, d2_recomputed_inside_this_arm and action_type_counts each nest under by_producing_arm, exactly as the headline does. Step 13 is dual, so one slot would have been one slot where two arms write -- and the merge would have had to drop an arm or reconcile them.",
     "one_file_per_arm": "Each arm writes its own document and no arm writes into a document another arm writes into (decisions/0107). A DUAL STEP IS DIFFED BETWEEN TWO ARM FILES, BY THE HUMAN LEAD, BEFORE THE MERGE. The merged reader-facing document is Step 13b's, owned by the Human Lead, and it is the only document that holds both arms and the only one carrying cross_arm_divergences and limitations. Read $.document_scope first: it says which kind of file this is.",
     "where_the_two_conventions_are_held": "Where the two arms legitimately differ -- the bound over sampling width ratios use two conventions and are REPORTED, NOT RECONCILED -- the MERGED document holds both, under arms.a and arms.b. One slot per figure would force a reconciliation the spec forbids in the merged document; in a single arm's file it forces nothing, because there is no second arm's figure in it."

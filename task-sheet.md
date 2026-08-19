@@ -817,7 +817,7 @@ with two amendments that postdate its drafting, both marked below.
       three times — 632 d, then 1,293 d — and **DELETED** (`0042`); the adopted rule is **parameter-free**
       (`0048`, approved `0064`). ~~**The key is `W` alone.**~~ ***SUPERSEDED TWICE and this line is the
       ORIGINAL, not a restatement: `0102` added `clock_origin`, `0111` (E2) added `producing_step`.
-      THE KEY IS `(W_days, clock_origin, producing_step)`.*** **What this bullet's amendment actually
+      THE KEY IS ~~`(W_days, clock_origin, producing_step)`~~. ***SUPERSEDED — a FOURTH dimension was added at `0114` (E14): the key is `(W_days, clock_origin, producing_step, adopted_rule_revision)`. Marked at the point of use 2026-08-19 (`0116`), found by arm `a`: `0114`'s propagation ADDED the four-field key in new text and left the three-field statements standing — in three places BELOW their own replacement. `0113` §2's defect, one entry later, and invisible to `check_surfaces.py` because an arm key is a STRUCTURAL CLAIM, not a number or a registered phrase.****** **What this bullet's amendment actually
       ruled — that NO LIVENESS PARAMETER enters the key — stands untouched**, and is why `632` and
       `1,293` must not reappear as schema
       keys — and note that **`632` is also the legitimate frozen-D10 never-started component at
@@ -876,7 +876,7 @@ with two amendments that postdate its drafting, both marked below.
       placeholders.*** **It is ABSENT, not carried incorrectly** — so this adds a dimension rather than
       correcting one.
 - [ ] ***AN ARM ENTRY'S IDENTITY INCLUDES ITS PRODUCING STEP.*** Human Lead ruling, `0111` (E2).
-      **The key is `(W_days, clock_origin, producing_step)`.** ***Step 9's `W = 108` and Step 13's
+      **The key is ~~`(W_days, clock_origin, producing_step)`~~.** ***SUPERSEDED — a FOURTH dimension was added at `0114` (E14): the key is `(W_days, clock_origin, producing_step, adopted_rule_revision)`. Marked at the point of use 2026-08-19 (`0116`), found by arm `a`: `0114`'s propagation ADDED the four-field key in new text and left the three-field statements standing — in three places BELOW their own replacement. `0113` §2's defect, one entry later, and invisible to `check_surfaces.py` because an arm key is a STRUCTURAL CLAIM, not a number or a registered phrase.*** ***Step 9's `W = 108` and Step 13's
       `W = 108` are DIFFERENT MEASUREMENTS OF ONE SETTING and both must exist as distinct entries.***
       **This is the `(W_days, clock_origin)` collision ONE DIMENSION OUT, and it takes the same fix —
       ADD THE MISSING IDENTITY DIMENSION.** ***It must NOT be resolved by restricting which step may

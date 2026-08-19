@@ -535,7 +535,7 @@ of "a decision entry."***
 
 **Owner Analytics Engineer, Mode Chained, sits behind the Step 8 gate.** It **had been defined in a
 prior session and existed in NO FILE** — neither `task-sheet.md` nor either agent file. Two amendments
-at propagation: ~~**the key is `W` ALONE**~~ ***SUPERSEDED TWICE — `0102` added `clock_origin`, `0111` (E2) added `producing_step`; THE KEY IS `(W_days, clock_origin, producing_step)`. What the amendment ruled — no liveness parameter in the key — stands*** (there is no liveness threshold), and **Step 9 publishes TWO
+at propagation: ~~**the key is `W` ALONE**~~ ***SUPERSEDED TWICE — `0102` added `clock_origin`, `0111` (E2) added `producing_step`; THE KEY IS ~~`(W_days, clock_origin, producing_step)`~~ — ***and a FOURTH dimension was added at `0114` (E14): `(W_days, clock_origin, producing_step, adopted_rule_revision)` (`0116`).*** What the amendment ruled — no liveness parameter in the key — stands*** (there is no liveness threshold), and **Step 9 publishes TWO
 bounds on TWO populations**, never one field with a population flag. **Never-started has NO conditional
 sub-interval, structurally, and the schema must SAY SO rather than omit the field — an absent field and
 an inapplicable one must not look alike.** On DERIV the never-started bound is **degenerate,

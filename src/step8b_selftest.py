@@ -34,6 +34,20 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "src"))
 
 import step8b_validate as V  # noqa: E402
+import step8b_schema as G  # noqa: E402
+
+# THE SIX BLOCKS decisions/0111 E1 GAVE PER-ARM NESTING. Their ONE-ARM form is
+# what decisions/0114 ratifies as closing HERE rather than in a fourth
+# placeholder file: reviewer-engineering established the shape is representable
+# and policed, so what was missing is an EXAMPLE, not a shape.
+PER_ARM_NESTED_BLOCKS = (
+    "d3_prime",
+    "tested_ranges",
+    "conclusions_surviving",
+    "conclusions_not_surviving",
+    "d2_recomputed_inside_this_arm",
+    "action_type_counts",
+)
 
 SCHEMA_PATH = os.path.join(ROOT, "artifacts", "step8b-output-schema.json")
 PLACEHOLDER_PATH = os.path.join(ROOT, "artifacts", "step8b-placeholder.json")
@@ -262,6 +276,18 @@ MUTATIONS = {
     "S36": lambda i: _set(
         _arm_with(i, "waterfall"), "action_type_counts",
         copy.deepcopy(_arm_with(i, "action_type_counts")["action_type_counts"])),
+    # v1.5.0 -- decisions/0114.
+    #
+    # E14: an entry measured under a revision the file does not account for. This
+    # is the case the fourth key dimension exists for, in its simplest form: two
+    # runs at one setting under different rule revisions are DIFFERENT
+    # MEASUREMENTS, and a document that carries one without saying so is a
+    # document whose key lies about what it holds.
+    "S37": lambda i: _set(i["arms"][0], "adopted_rule_revision", 3),
+    # E11: an interval attributed to a step that does not produce that quantity.
+    # THE SHIPPED PLACEHOLDERS WERE OCCUPIED BY THIS -- the window-W percentile
+    # attributed to `step11`, which does not compute W.
+    "S38": lambda i: _set(i["declared_intervals"][0], "produced_by_step", "step10"),
 }
 
 
@@ -308,6 +334,62 @@ def _forge_merge(inst: dict, level: int) -> dict:
                 visit(v)
     visit(inst)
     return inst
+
+def _drop_source(inst: dict, step: str, arm: str | None) -> dict:
+    """Drop a declared merge source AND every payload that named it.
+
+    THE POINT IS THAT NOTHING INSIDE THE FILE CONTRADICTS ANYTHING ELSE IN IT
+    afterwards: the declared list and the payloads close against each other, and
+    only a table held OUTSIDE the file can see that a source is missing
+    (decisions/0114, E9/E15).
+    """
+    srcs = inst["document_scope"]["merge"]["sources_merged"]
+    dropped = [s for s in srcs
+               if s.get("producing_step") == step and s.get("arm") == arm]
+    labels = {s["file_label"] for s in dropped}
+    inst["document_scope"]["merge"]["sources_merged"] = [s for s in srcs if s not in dropped]
+
+    def prune(node):
+        if isinstance(node, dict):
+            for v in node.values():
+                prune(v)
+        elif isinstance(node, list):
+            for v in list(node):
+                if isinstance(v, dict) and v.get("merged_from") in labels:
+                    node.remove(v)
+                else:
+                    prune(v)
+
+    for family in ("arms", "variants", "subpopulation_cuts"):
+        inst[family] = [e for e in inst.get(family, [])
+                        if e.get("producing_step") != step]
+    inst["declared_intervals"] = [d for d in inst.get("declared_intervals", [])
+                                  if d.get("produced_by_step") != step]
+    prune(inst)
+    return inst
+
+
+def _mention_only(inst: dict) -> dict:
+    """A declared source whose ONLY appearance is a $.declared_intervals entry.
+
+    Leg (e) walked every node carrying a `merged_from` string, so a reference to
+    a file discharged the requirement that a payload came from it.
+    """
+    label = None
+    for s in inst["document_scope"]["merge"]["sources_merged"]:
+        if s.get("producing_step") == "step10":
+            label = s["file_label"]
+    inst["arms"] = [a for a in inst["arms"] if a.get("producing_step") != "step10"]
+    template = copy.deepcopy(inst["declared_intervals"][0])
+    template.update({
+        "interval_id": "mention_only",
+        "produced_by_step": "step10",
+        "producing_arm": "sole",
+        "merged_from": label,
+    })
+    inst["declared_intervals"].append(template)
+    return inst
+
 
 # Extra mutations that target a SECOND clause of a check whose first clause is
 # already exercised above. Keyed by the check they must break.
@@ -399,6 +481,33 @@ EXTRA_MUTATIONS = {
     "S36/variant_carries_another_steps_block": ("S36", "placeholder", lambda i: _set(
         i["subpopulation_cuts"][0], "d3_prime",
         copy.deepcopy(_arm_with(i, "d3_prime")["d3_prime"]))),
+    # v1.5.0 -- decisions/0114.
+    #
+    # E9/E15, THE FINDING ITSELF AND IT NEEDS NO FORGERY: drop a declared source
+    # AND the payloads it supplied, so the file closes against itself. Every leg
+    # of S30 before v1.5.0 read the declared list against this file's own
+    # payloads, so a merge declaring five of eight sources validated clean. The
+    # anchor is derived from STEP_DUALITY, outside the file.
+    "S30/declares_a_subset_of_the_expected_sources": ("S30", "placeholder", lambda i: _drop_source(
+        i, "step12", "sole")),
+    # E9/E15's second half: leg (e) proved MENTION, not CONTRIBUTION. A
+    # declared_intervals entry references a file; it is not a payload from one,
+    # and it used to discharge the requirement on its own.
+    "S30/mention_is_not_contribution": ("S30", "placeholder", _mention_only),
+    # E8: a filled copy of Step 8's block in the merged document's own file is
+    # legal; an ABSENCE there is not, because every other file states the absence
+    # and the figure would then be nowhere.
+    "S36/merged_document_states_the_absence_instead_of_filling_it": (
+        "S36", "placeholder", lambda i: _set(
+            i, "channel_classes",
+            {"block_is_absent": True, "status": "not_required_by_spec",
+             "reason": "an absence written where the block is actually published",
+             "owning_step": "step13b", "source": "selftest"})),
+    # E14's second clause: the registry that says where the revision was READ
+    # from, without which each entry's revision is a claim with nothing behind it.
+    "S37/registry_absent": ("S37", "placeholder", lambda i: i.pop("adopted_rule_revision")),
+    "S37/typed_not_read": ("S37", "placeholder", lambda i: _set(
+        i["adopted_rule_revision"], "read_not_typed", False)),
 }
 
 # Cases exercised against the ARM-FILE placeholder rather than the merged one.
@@ -433,6 +542,45 @@ ARM_MUTATIONS = {
     "S30/arm_file_claims_merge_provenance": ("S30", lambda i: _set(
         i["arms"][0]["headline"]["APPLY"]["by_producing_arm"]["arms"]["a"],
         "merged_from", "some other arm's file")),
+    # v1.5.0 -- decisions/0114 E8. THE FINDING ITSELF: an arm file that FILLS
+    # Step 8's block instead of stating its absence. `channel_classes` was
+    # REQUIRED at the top level of every file, so this was not a thing a writer
+    # had to reach for -- it was the only legal shape, and seven arm files each
+    # had to produce it.
+    "S36/arm_file_fills_step_8s_block": ("S36", lambda i: _set(
+        i, "channel_classes",
+        {"d4": {"definition": "a copy of Step 8's D4 count made by an arm",
+                "published_alongside": True, "folded_into_bound": False,
+                "computed_by": "step8", "copied_not_computed": True,
+                "counts": {"APPLY": V.SENTINEL_COUNT, "DERIV": V.SENTINEL_COUNT}},
+         "d9": {"published_alongside": True, "folded_into_bound": False,
+                "computed_by": "step8", "copied_not_computed": True,
+                "keys": {"strict": "s", "loose": "l"},
+                "universe": {"label": "U1", "definition": "d"},
+                "quantities": {}}})),
+    "S36/arm_file_fills_the_overlap_block": ("S36", lambda i: _set(
+        i, "discovery_channel_overlap",
+        [{"unit": "accounts_pulled", "numerator": V.SENTINEL_COUNT,
+          "denominator": V.SENTINEL_COUNT,
+          "consumer": "PLACEHOLDER — NOT A MEASUREMENT: a copy made by an arm",
+          "single_categorical_forbidden": True}])),
+    # decisions/0114 E11: an arm file carrying ANOTHER STEP's interval, at its own
+    # arm, so no bootstrap-arm control fires instead and this clause is the only
+    # thing that can catch it.
+    "S38/arm_file_carries_another_steps_interval": ("S38", lambda i: _set(
+        i["declared_intervals"][0], "produced_by_step", "step13")),
+    # decisions/0114 E14: one arm file is one run, and one run is one revision.
+    "S37/arm_file_entry_disagrees_with_its_own_registry": ("S37", lambda i: _set(
+        i["arms"][0], "adopted_rule_revision", 3)),
+    # decisions/0114 E13, THE OTHER SIDE OF THE RULING, and it must keep failing:
+    # ABSENCE STATED, NOT SILENCE. The figure stops being required at an arm
+    # where no step produces it; the RECORD does not.
+    "S22/silence_where_the_absence_is_legal": ("S22", lambda i: [
+        (a.__setitem__("is_primary_headline", a.get("clock_origin") == "s2_premiere"),
+         [a.pop(b, None) for b in ("waterfall", "liveness_exclusions",
+                                   "retained_by_air_period")]
+         if a.get("clock_origin") == "s2_premiere" else None)
+        for a in i["arms"]]),
 }
 
 # Cases exercised against the SINGLE-ARM step's own file. THE Q1 FINDING SHIPPED
@@ -490,6 +638,20 @@ SCHEMA_MUTATIONS = {
             "d3_prime",
             {"oneOf": [dict(s["$defs"]["arm_entry"]["properties"]["d3_prime"]),
                        {"$ref": "#/$defs/block_absence"}]})),
+    # v1.5.0 -- decisions/0114 E12. A PER-ARM BLOCK ADDED TO THE SCHEMA WITH NO
+    # ROW IN THE PUBLISHER TABLE. S22 iterates that table and S36 iterates that
+    # table, so before v1.5.0 the new block fell through both in silence and
+    # could be written into any step's entry in any file. Like S35, the subject
+    # is the SCHEMA, so only a schema mutation can show the check has force.
+    "S39/per_arm_block_with_no_publisher_row": (
+        "S39",
+        lambda s: s["$defs"]["arm_entry"]["properties"].__setitem__(
+            "unpublished_block", {"type": "object"})),
+    # And the other direction: a row for a block the schema no longer defines,
+    # which reads as coverage and is none.
+    "S39/publisher_row_for_a_block_that_does_not_exist": (
+        "S39",
+        lambda s: s["$defs"]["arm_entry"]["properties"].pop("waterfall")),
 }
 
 # The case the ruling names in as many words: an arm file that correctly OMITS
@@ -498,6 +660,17 @@ SCHEMA_MUTATIONS = {
 ARM_REQUIRED_NON_FAILURES = {
     "S17/arm_file_omitting_it_passes": ("S17", lambda i: i),
     "S29/arm_file_omitting_it_passes": ("S29", lambda i: i),
+    # decisions/0114 E13, THE RULING ITSELF, asserted as a NON-failure. Where the
+    # schema's own text says NO PRODUCER EXISTS -- a premiere-anchored arm, at
+    # which Step 8 builds no waterfall, Step 10 charts nothing and Step 13's grid
+    # does not reach -- an absence record is LEGAL EVEN AT A PRIMARY ENTRY, and
+    # S22 rejected it. Publisher rows key on ARM IDENTITY, not producing step
+    # alone. The mirror case, silence in the same place, is asserted as a FAILURE
+    # in ARM_MUTATIONS above.
+    "S22/legal_absence_at_a_premiere_anchored_primary_entry": ("S22", lambda i: [
+        i["arms"][k].__setitem__("is_primary_headline",
+                                 i["arms"][k].get("clock_origin") == "s2_premiere")
+        for k in range(len(i["arms"]))] and i),
 }
 
 # Cases that must NOT fail. F4 is the reason this section exists: a legitimately
@@ -533,6 +706,30 @@ def _set(node, key, value):
     return node
 
 
+def _synthetic_step13_arm_file() -> dict:
+    """A STEP 13 ARM FILE, built here rather than emitted as a fourth placeholder.
+
+    THE RATIFICATION (decisions/0114 §4). Step 13 is dual (decisions/0103 §3) and
+    writes one file per arm, so the ONE-ARM form of the six per-arm nested blocks
+    is a legal shape of this schema -- and no emitted file illustrated it: the
+    merged placeholder holds both arms, the Step 9 arm file holds none of the
+    six, and the single-arm file's `sole` container is a different branch again.
+
+    reviewer-engineering established the shape is REPRESENTABLE and POLICED, so
+    what was missing was an EXAMPLE. It is built from the same generator the
+    deliverables come from -- not hand-written -- so it cannot drift from them,
+    and it is not written to artifacts/, so the deliverable count stays at three.
+    """
+    provenance = {
+        "generator": "src/step8b_selftest.py, via src/step8b_schema.build_placeholder",
+        "generator_sha256_12": "selftest0000",
+        "generated_at_utc": "2026-01-01T00:00:00Z",
+        "host_step": "Step 8b, output schema",
+        "written_by": "Analytics Engineer, instance a -- selftest fixture, not a deliverable",
+    }
+    return G.build_placeholder(provenance, G._read_grid(), "arm_file", "a", "step13")
+
+
 def _status_of(report: dict, cid: str) -> str:
     for c in report["semantic_checks"]:
         if c["id"] == cid:
@@ -566,6 +763,42 @@ def main() -> int:
     baseline_real = run(real)
     baseline_arm = run(arm_file)
     baseline_sole = run(sole_file)
+
+    # THE RATIFIED FOURTH SHAPE, EXERCISED HERE AND NOT EMITTED (decisions/0114
+    # §4). A Step 13 arm file: dual step, one arm, which is the only shape in
+    # which the six per-arm nested blocks appear in their ONE-ARM form.
+    step13_arm = _synthetic_step13_arm_file()
+    baseline_step13 = run(step13_arm)
+    one_arm_form = {}
+    containers = {}
+    for path, bpa in V._iter_containers(step13_arm):
+        containers[path] = bpa
+    for block in PER_ARM_NESTED_BLOCKS:
+        found = [(p, b) for p, b in containers.items() if f".{block}." in p + "."]
+        one_arm_form[block] = {
+            "containers_found": len(found),
+            "all_one_arm": all(b.get("arms_in_this_file") == "one_arm" for _, b in found),
+            "arms_held": sorted({b.get("arm_held") for _, b in found}),
+            "arm_keys": sorted({k for _, b in found for k in (b.get("arms") or {})}),
+            "producing_steps": sorted({b.get("producing_step") for _, b in found}),
+        }
+    step13_record = {
+        "what": "a STEP 13 ARM FILE -- dual step, one arm -- built from the generator inside "
+                "this selftest rather than emitted as a fourth placeholder (decisions/0114 §4)",
+        "schema_errors": baseline_step13["schema_errors"],
+        "statuses": {c["id"]: c["status"] for c in baseline_step13["semantic_checks"]},
+        "failures": [c["id"] for c in baseline_step13["semantic_checks"]
+                     if c["status"] in ("FAIL", "VACUOUS")],
+        "one_arm_form_of_the_six_blocks": one_arm_form,
+    }
+    step13_ok = (
+        baseline_step13["schema_errors"] == 0
+        and not step13_record["failures"]
+        and all(v["containers_found"] > 0 and v["all_one_arm"]
+                and v["arm_keys"] == ["a"] and v["producing_steps"] == ["step13"]
+                for v in one_arm_form.values())
+    )
+    step13_record["ok"] = step13_ok
 
     results = []
     for cid, mutate in MUTATIONS.items():
@@ -747,6 +980,16 @@ def main() -> int:
 
     non_failure_failures = [n["case"] for n in non_failures if not n["ok"]]
 
+    # EVERY CHECK THAT EXISTS IS EXERCISED BY SOMETHING HERE. Without this, a
+    # check added to the validator and to no mutation table is silently
+    # unexercised, and this script's headline count still reads "N of N with
+    # force" -- the count of what it happened to try, not of what exists. That is
+    # the shape CLAUDE.md names: an empty result and a clean result are the same
+    # value, and only the control knows which it produced.
+    exercised = {r["check"].split("/")[0] for r in results}
+    all_check_ids = {c["id"] for c in baseline_ph["semantic_checks"]}
+    unexercised = sorted(all_check_ids - exercised)
+
     record = {
         "generated_at_utc": stamp,
         "generator": "src/step8b_selftest.py",
@@ -770,9 +1013,11 @@ def main() -> int:
             "schema_errors": baseline_sole["schema_errors"],
             "statuses": {c["id"]: c["status"] for c in baseline_sole["semantic_checks"]},
         },
+        "step13_arm_file_fixture": step13_record,
         "mutations": results,
         "required_non_failures": non_failures,
         "required_non_failures_violated": non_failure_failures,
+        "checks_defined_but_never_exercised": unexercised,
         "baseline_failures_anywhere": {
             "placeholder": [k for k, v in
                             {c["id"]: c["status"] for c in baseline_ph["semantic_checks"]}.items()
@@ -788,7 +1033,8 @@ def main() -> int:
         "checks_total_exercised": len(results),
         "checks_without_force": without_force,
         "checks_na_on_the_real_copy": na_on_real,
-        "ok": not without_force and not non_failure_failures,
+        "ok": (not without_force and not non_failure_failures and not unexercised
+               and step13_ok),
     }
 
     os.makedirs(LOG_DIR, exist_ok=True)
@@ -803,6 +1049,9 @@ def main() -> int:
         "checks_shown_to_have_force": record["checks_shown_to_have_force"],
         "checks_total_exercised": record["checks_total_exercised"],
         "checks_without_force": without_force,
+        "checks_defined_but_never_exercised": unexercised,
+        "step13_arm_file_fixture_ok": step13_ok,
+        "step13_arm_file_failures": step13_record["failures"],
         "required_non_failures_violated": non_failure_failures,
         "baseline_placeholder_failures": [
             k for k, v in record["baseline_placeholder"]["statuses"].items()

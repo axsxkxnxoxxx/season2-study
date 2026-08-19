@@ -54,8 +54,27 @@ ARM_PLACEHOLDER_PATH = os.path.join(ROOT, "artifacts", "step8b-placeholder-arm-f
 SOLE_PLACEHOLDER_PATH = os.path.join(ROOT, "artifacts", "step8b-placeholder-sole-file.json")
 LOG_DIR = os.path.join(ROOT, "logs", "step8b")
 
-SCHEMA_VERSION = "1.4.0"
-SCHEMA_ID = "urn:season2-study:step8b-output-schema:1.4.0"
+SCHEMA_VERSION = "1.5.0"
+SCHEMA_ID = "urn:season2-study:step8b-output-schema:1.5.0"
+
+# WHERE THE ADOPTED-RULE REVISION IS READ FROM (decisions/0114 E14). It is the
+# fourth identity dimension, and the ruling asks where the value is READ rather
+# than typed. It is read HERE, from the file a Step 8 implementation reaches for
+# first -- processed/step5/adopted_rule.json, CLAUDE.md's eighth propagation
+# surface -- because that file is where the dimension was occupied: it carried
+# REVISION-3 figures against the approved REVISION-6 rule and a Step 8 instance
+# had to work around it.
+#
+# The file has NO first-class revision field. It names the revision only in its
+# KEY NAMES (`approved_rule_revision_6`, `approved_revision_6`), so the reader
+# below parses those and takes the highest, records WHICH KEY it read and the
+# file's hash, and RAISES if it finds none. It does not default: a default would
+# be a typed revision wearing a reader's clothes. The absence of a first-class
+# field is reported to the Human Lead as a residual rather than fixed here --
+# adopted_rule.json is Step 5's output and a deliverable is corrected by
+# rerunning the arm that produced it (CLAUDE.md, Artifact sign-off).
+ADOPTED_RULE_PATH = os.path.join(ROOT, "processed", "step5", "adopted_rule.json")
+ADOPTED_RULE_REVISION_KEY_RE = r"approved_(?:rule_)?revision_(\d+)"
 
 SENT_C = -999
 SENT_P = -999.0
@@ -64,6 +83,24 @@ PH = "PLACEHOLDER — NOT A MEASUREMENT"
 
 def ph(text: str) -> str:
     return f"{PH}: {text}"
+
+
+# The adopted-rule revision, READ ONCE PER RUN from the file named above and
+# cached, so that every entry in every emitted document carries one value from
+# one reading. `_read_adopted_rule_revision` is defined with the other readers at
+# the foot of this file; this is the accessor the builders use.
+_REVISION_CACHE: dict | None = None
+
+
+def _revision_record() -> dict:
+    global _REVISION_CACHE
+    if _REVISION_CACHE is None:
+        _REVISION_CACHE = _read_adopted_rule_revision()
+    return _REVISION_CACHE
+
+
+def _revision() -> int:
+    return _revision_record()["revision"]
 
 
 # ---------------------------------------------------------------------------
@@ -203,9 +240,21 @@ PER_ARM_NESTED_BLOCKS = (
 # into it, so the question "whose block is this?" has no single answer at the
 # block level and is answered per ENTRY, by each cut's own producing_step. A
 # publisher named here would have made one of the two steps' files illegal.
+#
+# `channel_classes` AND `discovery_channel_overlap` JOINED AT v1.5.0
+# (decisions/0114 E8). They hold STEP 8's figures, and `channel_classes` was
+# REQUIRED at the top level of every file: seven arm files, seven writers of a
+# figure none of them produced, no precedence rule, no agreement check -- Q1's
+# class at the top level and the FOURTH appearance of one-slot-vs-one-definition.
+# The merged document carries them ONCE, filled at Step 13b from Step 8's
+# artifact; arm files use the absence idiom. `discovery_channel_overlap` was
+# checked rather than assumed and is the same shape, differing only in being
+# optional, so the defect there was reachable rather than shipped.
 TOP_LEVEL_PUBLISHER = {
     "tested_ranges": "step13",
     "variants": "step13",
+    "channel_classes": "step13b",
+    "discovery_channel_overlap": "step13b",
 }
 
 # What kind of document a file is. An ARM FILE holds one arm and is written by an
@@ -1739,23 +1788,38 @@ def build_schema(provenance: dict | None = None) -> dict:
     d["arm_entry"] = {
         "type": "object",
         "description": (
-            "ONE ENTRY PER (W_days, clock_origin, producing_step) -- see $.arm_key. THE "
-            "PRODUCING STEP JOINED THE KEY AT v1.4.0 (decisions/0111 E2): Step 9's W = 108 and "
-            "Step 13's W = 108 are DIFFERENT MEASUREMENTS OF ONE SETTING and both must exist, "
-            "which is the (W_days, clock_origin) collision one dimension out and takes the "
-            "same fix -- ADD THE MISSING IDENTITY DIMENSION. It is NOT resolved by restricting "
-            "which step may occupy a shared W value: that would make the schema decide an "
-            "ownership question the spec does not, and would drop a measurement rather than "
-            "hold it. AN ENTRY CARRIES THE BLOCKS ITS OWN PRODUCING STEP PUBLISHES AND NO "
-            "OTHERS: $.block_ownership names each block's publisher, and check S36 fails an "
-            "entry that carries one that is not its own. There is NO liveness threshold and no "
-            "threshold may appear as a key."
+            "ONE ENTRY PER (W_days, clock_origin, producing_step, adopted_rule_revision) -- see "
+            "$.arm_key. THE PRODUCING STEP JOINED THE KEY AT v1.4.0 (decisions/0111 E2) AND THE "
+            "ADOPTED-RULE REVISION AT v1.5.0 (decisions/0114 E14). Step 9's W = 108 and Step "
+            "13's W = 108 are DIFFERENT MEASUREMENTS OF ONE SETTING and both must exist; so are "
+            "two runs at one setting under different rule revisions. Each is the "
+            "(W_days, clock_origin) collision one dimension further out and each takes the same "
+            "fix -- ADD THE MISSING IDENTITY DIMENSION. It is NOT resolved by restricting which "
+            "step may occupy a shared W value: that would make the schema decide an ownership "
+            "question the spec does not, and would drop a measurement rather than hold it. AN "
+            "ENTRY CARRIES THE BLOCKS ITS OWN PRODUCING STEP PUBLISHES AND NO OTHERS: "
+            "$.block_ownership names each block's publisher, and check S36 fails an entry that "
+            "carries one that is not its own. There is NO liveness threshold and no threshold "
+            "may appear as a key."
         ),
         "additionalProperties": False,
         "required": ["arm_id", "W_days", "H_days", "clock_origin", "producing_step",
-                     "in_arm_grid", "headline"],
+                     "adopted_rule_revision", "in_arm_grid", "headline"],
         "properties": {
             "arm_id": {"type": "string", "pattern": r"^W\d+_"},
+            "adopted_rule_revision": {
+                "type": "integer",
+                "minimum": 1,
+                "description": (
+                    "THE FOURTH KEY DIMENSION (decisions/0114 E14): the revision of the adopted "
+                    "contamination rule this measurement was taken under. It is READ from the "
+                    "adopted-rule file at write time, never typed -- $.adopted_rule_revision "
+                    "records which file and which key it came from, and check S37 asserts every "
+                    "entry against it. The dimension has been occupied once already: "
+                    "processed/step5/adopted_rule.json carried revision-3 figures against the "
+                    "approved revision-6 rule."
+                ),
+            },
             "producing_step": {
                 "enum": WRITER_STEPS,
                 "x-enum-id": "writer_step",
@@ -1792,7 +1856,9 @@ def build_schema(provenance: dict | None = None) -> dict:
                 "The filter waterfall, per population. Step 8 produces it; nothing in the "
                 "spec produces one for a premiere-anchored arm, so the block may be an "
                 "explicit absence naming that (F1). Check S22 forbids an absence on the "
-                "primary headline arm.",
+                "primary headline arm WHERE A PRODUCER EXISTS AT THAT ARM, and requires one "
+                "where none does -- publisher rows key on ARM IDENTITY, not producing step "
+                "alone, and ABSENCE IS STATED, NEVER SILENT (decisions/0114 E13).",
             ),
             "abandonment_distribution": _block_or_absence(
                 {p: {
@@ -1878,15 +1944,31 @@ def build_schema(provenance: dict | None = None) -> dict:
     d["variant_entry"] = {
         "type": "object",
         "description": (
-            "A Step 13 arm that varies something other than W. The entry key is W alone plus "
-            "the clock origin, so a non-W variation cannot be an arm entry without colliding; "
-            "it lives here and names the arm it is a variation of."
+            "A Step 13 arm that varies something other than W. THE ARM ENTRY KEY IS "
+            "(W_days, clock_origin, producing_step, adopted_rule_revision) -- see $.arm_key -- "
+            "and NONE of its four fields distinguishes a non-W variation, so such a variation "
+            "cannot be an arm entry without colliding: it lives here and names the arm it is a "
+            "variation of. "
+            "CORRECTED AT v1.5.0 (decisions/0114 E10). This description said 'the entry key is "
+            "W alone plus the clock origin' -- THE PRE-E2 TWO-FIELD KEY, superseded by "
+            "decisions/0111 E2 and again by 0114 E14, and live on propagation surface 6 while "
+            "the rest of the schema carried the current one. A description is what a writer "
+            "reads before it reads a check."
         ),
         "additionalProperties": False,
         "required": ["variant_id", "axis", "level", "base_arm_id", "producing_step",
-                     "headline"],
+                     "adopted_rule_revision", "headline"],
         "properties": {
             "variant_id": {"type": "string"},
+            "adopted_rule_revision": {
+                "type": "integer",
+                "minimum": 1,
+                "description": (
+                    "The adopted-rule revision this variation was measured under, stated for "
+                    "the same reason the arm entry states it (decisions/0114 E14) and asserted "
+                    "against $.adopted_rule_revision by check S37."
+                ),
+            },
             "producing_step": {
                 "enum": WRITER_STEPS,
                 "x-enum-id": "writer_step",
@@ -1964,9 +2046,17 @@ def build_schema(provenance: dict | None = None) -> dict:
         ),
         "additionalProperties": False,
         "required": ["cut_id", "dimension", "level", "base_arm_id", "producing_step",
-                     "headline", "candidate_considered"],
+                     "adopted_rule_revision", "headline", "candidate_considered"],
         "properties": {
             "cut_id": {"type": "string"},
+            "adopted_rule_revision": {
+                "type": "integer",
+                "minimum": 1,
+                "description": (
+                    "The adopted-rule revision this cut was measured under (decisions/0114 "
+                    "E14), asserted against $.adopted_rule_revision by check S37."
+                ),
+            },
             "producing_step": {
                 "enum": WRITER_STEPS,
                 "x-enum-id": "writer_step",
@@ -2039,7 +2129,8 @@ def build_schema(provenance: dict | None = None) -> dict:
         "required": [
             "schema_version", "schema_id", "placeholder", "generated_by", "document_scope",
             "sentinels",
-            "arm_key", "arm_grid_days", "populations", "scope_qualifiers",
+            "arm_key", "adopted_rule_revision", "arm_grid_days", "populations",
+            "scope_qualifiers",
             "bootstrap_spec", "binding_clusters", "bootstrap_settings", "step_duality",
             "block_ownership",
             "channel_classes", "arms",
@@ -2373,14 +2464,57 @@ def build_schema(provenance: dict | None = None) -> dict:
                 "type": "object",
                 "description": (
                     "What identifies an arm entry. There is no liveness threshold: one was "
-                    "derived three times and deleted, and the adopted rule is parameter-free."
+                    "derived three times and deleted, and the adopted rule is parameter-free. "
+                    "The key has grown three times and each growth ADDED A SETTING THE "
+                    "MEASUREMENT WAS TAKEN UNDER that the key could not see: the clock origin "
+                    "(decisions/0102), the producing step (0111 E2) and the adopted-rule "
+                    "revision (0114 E14)."
                 ),
                 "additionalProperties": False,
                 "required": ["fields", "note", "no_liveness_threshold"],
                 "properties": {
-                    "fields": {"const": ["W_days", "clock_origin", "producing_step"]},
+                    "fields": {"const": ["W_days", "clock_origin", "producing_step",
+                                         "adopted_rule_revision"]},
                     "note": {"type": "string"},
                     "no_liveness_threshold": {"const": True},
+                },
+            },
+            "adopted_rule_revision": {
+                "type": "object",
+                "description": (
+                    "WHERE THE FOURTH KEY DIMENSION WAS READ FROM (decisions/0114 E14). The "
+                    "revision is READ from the adopted-rule file at write time, never typed: a "
+                    "typed revision is a second definition of the rule's version, and the "
+                    "defect this study has hit most often is two definitions of one figure. "
+                    "The registry names the file, the key inside it and the file's hash, so a "
+                    "reader can go and check rather than trust. Check S37 asserts every arm, "
+                    "variant and cut entry against it."
+                ),
+                "additionalProperties": False,
+                "required": ["revision", "source_file", "source_key", "source_sha256_12",
+                             "read_not_typed"],
+                "properties": {
+                    "revision": {"type": "integer", "minimum": 1},
+                    "source_file": {"type": "string"},
+                    "source_key": {"type": "string"},
+                    "source_sha256_12": {"type": "string"},
+                    "read_not_typed": {"const": True},
+                    "how_it_is_read": {"type": "string"},
+                    "why_it_is_in_the_key": {"type": "string"},
+                    "revisions_present": {
+                        "type": "array",
+                        "items": {"type": "integer", "minimum": 1},
+                        "minItems": 1,
+                        "uniqueItems": True,
+                        "description": (
+                            "MERGED DOCUMENT ONLY: the revisions its entries were measured "
+                            "under. The merge assembles files written at different times, so "
+                            "'this document's revision' is not one number and the set is "
+                            "enumerated rather than assumed away. In an arm file the field is "
+                            "absent -- one file is one run, and one run is one revision."
+                        ),
+                    },
+                    "source": {"type": "string"},
                 },
             },
             "arm_grid_days": {
@@ -2689,18 +2823,34 @@ def build_schema(provenance: dict | None = None) -> dict:
                     },
                 },
             },
-            "channel_classes": {
+            "channel_classes": {"oneOf": [{
                 "type": "object",
                 "description": (
                     "D4 and D9 publish ALONGSIDE the bounds and are never folded into them, so "
                     "they have their own slots (decisions/0062). BOTH ARE STEP 8's FIGURES: "
                     "Step 8 holds the episode-level evidence and Step 9 is forbidden to "
                     "recompute either, so the counts here are COPIED, and the schema says so "
-                    "at the point of use (F9)."
+                    "at the point of use (F9). "
+                    "ARM FILES DO NOT CARRY THIS BLOCK (decisions/0114 E8): requiring it in "
+                    "seven arm files made SEVEN WRITERS OF A FIGURE NONE OF THEM PRODUCED, "
+                    "with no precedence rule and no agreement check. The MERGED DOCUMENT "
+                    "carries it ONCE, filled at Step 13b from Step 8's artifact; an arm file "
+                    "carries the ABSENCE IDIOM below -- the block stays required, so the "
+                    "absence is STATED rather than silent. Check S36 fails a filled copy in an "
+                    "arm file and fails an absence in the merged document."
                 ),
                 "additionalProperties": False,
                 "required": ["d4", "d9"],
                 "properties": {
+                    "merged_from": {
+                        "type": "string",
+                        "description": (
+                            "The source this block was filled from, named at the point of use "
+                            "(decisions/0111 E6, decisions/0114 E8). It is Step 8's artifact, "
+                            "which is a NON-ARM-FILE source of the merge and is declared as one "
+                            "in $.document_scope.merge.sources_merged."
+                        ),
+                    },
                     "d4": {
                         "type": "object",
                         "additionalProperties": False,
@@ -2825,12 +2975,19 @@ def build_schema(provenance: dict | None = None) -> dict:
                         },
                     },
                 },
-            },
-            "discovery_channel_overlap": {
+            }, {"$ref": "#/$defs/block_absence"}]},
+            "discovery_channel_overlap": {"oneOf": [{
                 "type": "array",
                 "description": (
                     "The overlap in every unit, each with the consumer that needs that unit. "
-                    "Picking one unit leaves another consumer holding a wrong-unit figure."
+                    "Picking one unit leaves another consumer holding a wrong-unit figure. "
+                    "CHECKED FOR E8's SHAPE AND FOUND TO HAVE IT (decisions/0114 E8): these "
+                    "are STEP 8's counts too, no publisher named them, and nothing stopped "
+                    "seven arm files from each writing them. It differs from `channel_classes` "
+                    "only in being optional rather than required, so the defect was REACHABLE "
+                    "rather than shipped. Same fix: the merged document carries it once, "
+                    "filled at Step 13b from Step 8's artifact, and an arm file that carries "
+                    "the slot at all carries the absence idiom."
                 ),
                 "items": {
                     "type": "object",
@@ -2849,9 +3006,16 @@ def build_schema(provenance: dict | None = None) -> dict:
                         "consumer": _text("The consumer that needs this unit."),
                         "single_categorical_forbidden": {"const": True},
                         "source": {"type": "string"},
+                        "merged_from": {
+                            "type": "string",
+                            "description": (
+                                "The source this row was filled from -- Step 8's artifact, a "
+                                "declared non-arm-file source of the merge (decisions/0114 E8)."
+                            ),
+                        },
                     },
                 },
-            },
+            }, {"$ref": "#/$defs/block_absence"}]},
             "derived_fields": {
                 "type": "array",
                 "description": (
@@ -3066,7 +3230,7 @@ BOOTSTRAP_SEED = 20260818
 
 
 def _ci(ref: str, unit: str = "account", quantity_class: str = "outcome_shares",
-        disagreement: bool = False) -> dict:
+        disagreement: bool = False, binding: str = "show") -> dict:
     ci = {
         "level_pct": 95,
         "lower": SENT_P,
@@ -3088,7 +3252,11 @@ def _ci(ref: str, unit: str = "account", quantity_class: str = "outcome_shares",
     }
     if disagreement:
         ci["unit_disagreement"] = {
-            "binding_cluster": "show",
+            # THE BINDING CLUSTER IS A PROPERTY OF THE QUANTITY CLASS, NOT A
+            # CONSTANT. It is `show` for the window-W percentile and `account`
+            # for the outcome shares, and the disagreement runs in whichever
+            # direction the two differ (decisions/0103 §2).
+            "binding_cluster": binding,
             "unit_used": unit,
             "material": True,
             "reported_not_reconciled": True,
@@ -3656,9 +3824,16 @@ def _absent_block(status: str, owning_step: str, reason: str, source: str) -> di
     }
 
 
-def _arm_id(setting_id: str, step: str) -> str:
-    """The arm entry's label: the setting AND the producing step."""
-    return f"{setting_id}__{step}"
+def _arm_id(setting_id: str, step: str, revision: int | None = None) -> str:
+    """The arm entry's label: the setting, the producing step AND the revision.
+
+    THE LABEL CARRIES THE WHOLE KEY. Entries share a setting, so a label naming
+    part of the key reintroduces the collision the key exists to remove for any
+    consumer that indexes by the label -- which is why the producing step went in
+    at v1.4.0 and the adopted-rule revision goes in here (decisions/0114 E14).
+    """
+    rev = _revision() if revision is None else revision
+    return f"{setting_id}__{step}__r{rev}"
 
 
 def _per_arm_container(step: str, dual_arms: tuple, make_payload) -> dict:
@@ -3734,6 +3909,8 @@ def _arm(arm_id: str, w: int, origin: str, in_grid: bool, primary: bool,
         "clock_origin": origin,
         "clock_origin_note": ph(origin_note),
         "producing_step": step,
+        # THE FOURTH KEY FIELD, READ AND NOT TYPED (decisions/0114 E14).
+        "adopted_rule_revision": _revision(),
         "in_arm_grid": in_grid,
         # THE ADOPTED SETTING, not a claim that this entry publishes the
         # headline: several steps measure at (108, s2_finale) and each marks it,
@@ -3850,6 +4027,11 @@ def _block_ownership() -> dict:
         ),
         "sentinels": structural,
         "arm_key": structural,
+        # STRUCTURAL, and the reason is worth stating: the VALUE is Step 5's, but
+        # the block is a registry Step 8b defines and every writer READS its own
+        # revision from the adopted-rule file rather than from another writer
+        # (decisions/0114 E14).
+        "adopted_rule_revision": structural,
         "arm_grid_days": (
             "step13", "Data Scientist, Step 13", "written_by_owner_step", True,
             "decisions/0075; the grid is fixed and any step may copy it",
@@ -3869,13 +4051,18 @@ def _block_ownership() -> dict:
             "decisions/0103 §2; reviewer-engineering M10",
         ),
         "block_ownership": structural,
+        # PUBLISHER ADDED AT v1.5.0, step13b (decisions/0114 E8). Step 8 still
+        # OWNS these figures; what changed is WHOSE FILE they arrive in. They
+        # arrive in the merged document, once, copied from Step 8's artifact --
+        # not in seven arm files, which is what "required at the top level with
+        # no publisher" amounted to.
         "channel_classes": (
             "step8", "Analytics Engineer, Step 8", "copied_from_step_8_output", False,
-            "decisions/0070 rulings 1 and 7",
+            "decisions/0070 rulings 1 and 7; decisions/0114 E8", "step13b",
         ),
         "discovery_channel_overlap": (
             "step8", "Analytics Engineer, Step 8", "copied_from_step_8_output", False,
-            "decisions/0077, 0079",
+            "decisions/0077, 0079; decisions/0114 E8", "step13b",
         ),
         "derived_fields": structural,
         "cross_arm_divergences": (
@@ -3963,19 +4150,27 @@ def _block_ownership() -> dict:
         "subpopulation_cuts[].headline": ("step11", "Data Scientist, Steps 11 and 12",
                                           "written_by_owner_step", False,
                                           "task-sheet.md Steps 11 and 12", "step11"),
+        # PUBLISHER CORRECTED AT v1.5.0, step9 -> step13b (decisions/0114 E8).
+        # These two rows said Step 9 publishes D4 and D9 while the block they sit
+        # in was required of every file -- so the table said one writer and the
+        # schema demanded seven.
         "channel_classes.d4": ("step8", "Analytics Engineer, Step 8",
                                "copied_from_step_8_output", False,
-                               "decisions/0070 ruling 7", "step9"),
+                               "decisions/0070 ruling 7; decisions/0114 E8", "step13b"),
         "channel_classes.d9": ("step8", "Analytics Engineer, Step 8",
                                "copied_from_step_8_output", False,
-                               "decisions/0088 §3, 0090", "step9"),
+                               "decisions/0088 §3, 0090; decisions/0114 E8", "step13b"),
         "document_scope.merge": (
             "step13b", "Human Lead, at Step 13b, who merges the arm files",
             "human_lead_only", False, "task-sheet.md Step 13b; decisions/0107", "step13b"),
     }
     forbidden = {
-        "channel_classes": ["step9"],
-        "discovery_channel_overlap": ["step9"],
+        # EVERY ARM STEP, not step9 alone (decisions/0114 E8). The old rows named
+        # the one step that had been caught reaching for these figures, while the
+        # block was required of all seven arm files -- so six of the seven were
+        # forbidden nothing and required everything.
+        "channel_classes": ["step9", "step10", "step11", "step12", "step13"],
+        "discovery_channel_overlap": ["step9", "step10", "step11", "step12", "step13"],
         "limitations": ["step9", "step10", "step11", "step12", "step13"],
         # Every isolated writing step, not only the two dual ones: a single-arm
         # step is just as unable to have seen another arm's file, so listing only
@@ -4015,7 +4210,12 @@ def _refs_in_scope(arms_held: tuple) -> set:
     refs = set()
     for a in arms_held:
         refs.add(f"{a}_default")
-        refs.add(f"{a}_window_w")
+        # RENAMED FROM `{arm}_window_w` AT v1.5.0. The show-clustered settings
+        # are not the window-W quantity's private property: under decisions/0114
+        # E11 a single-arm step may not declare a window-W interval at all, and
+        # its show-clustered interval is on a different quantity. The key names
+        # the UNIT, which is what the entry fixes.
+        refs.add(f"{a}_show_clustered")
     return refs
 
 
@@ -4030,19 +4230,32 @@ MERGE_INPUTS = [
     ("step13", "a"), ("step13", "b"),
     ("step10", "sole"), ("step11", "sole"), ("step12", "sole"),
 ]
+# A NINTH SOURCE AT v1.5.0, AND IT IS A CONSEQUENCE OF E8 RATHER THAN A NEW
+# RULING: once `channel_classes` and `discovery_channel_overlap` are filled ONCE
+# in the merged document from STEP 8's ARTIFACT, that artifact is a source, and
+# decisions/0111 E6 already ruled that the input list records SOURCES rather than
+# only arm files -- for exactly this reason, that a block cannot arrive in the
+# reader-facing document with no recorded provenance. It has no arm.
 NON_ARM_SOURCES = [
     {
         "step": "human_lead",
         "fills_blocks": ["limitations"],
-        "label": "the Step 14 limits section",
+        "label": "the Step 14 limits section (not a schema file, and it has no arm)",
         "source": "decisions/0111 E6; task-sheet.md Step 14 and Step 13b",
     },
+    {
+        "step": "step8",
+        "fills_blocks": ["channel_classes", "discovery_channel_overlap"],
+        "label": "the Step 8 artifact (not a schema file, and it has no arm)",
+        "source": "decisions/0114 E8; decisions/0111 E6",
+    },
 ]
+NON_ARM_LABELS = {src["step"]: src["label"] for src in NON_ARM_SOURCES}
 
 
 def _input_label(step: str, arm: str | None) -> str:
     if arm is None:
-        return ph("the Step 14 limits section (not a schema file, and it has no arm)")
+        return ph(NON_ARM_LABELS[step])
     return ph(f"the Step {step[4:]} arm `{arm}` file")
 
 
@@ -4224,6 +4437,137 @@ def _arms_for(role: str, arm: str | None, step: str, dual_arms: tuple) -> list:
     ]
 
 
+# WHICH STEP MAY DECLARE AN INTERVAL ON EACH QUANTITY CLASS (decisions/0114 E11).
+# W is derived at Step 6 and reported at Step 9's two window arms and across Step
+# 13's grid; STEPS 10, 11 AND 12 DO NOT VARY IT. Held here and in
+# src/step8b_validate.py, where check S38 reads it -- the validator's copy is the
+# one that decides, for the reason S31 records: a table read from the file under
+# test could only agree with itself.
+INTERVAL_CLASS_PUBLISHERS = {
+    "outcome_shares": ("step9", "step11", "step12", "step13"),
+    "window_w_percentile": ("step9", "step13"),
+}
+
+
+def _interval_step_for(role: str, step: str, arm: str) -> str:
+    """Whose interval an entry in this file is.
+
+    In an arm file, the file's own step: one file is one step's output for one
+    arm, and an interval is a measurement like any other (decisions/0114 E11).
+    In the merged document, the step that supplied that arm's file.
+    """
+    if role != "merged_document":
+        return step
+    return "step9" if arm in ("a", "b") else "step11"
+
+
+def _step8_block_absence(reason: str) -> dict:
+    """The ABSENCE IDIOM an arm file uses for a block Step 13b fills (0114 E8).
+
+    `owning_step` is `step13b`, which is where the block arrives -- not `none`,
+    because a producer DOES exist for it; it is simply not this file's step.
+    """
+    return {
+        "block_is_absent": True,
+        "status": "not_required_by_spec",
+        "reason": reason,
+        "owning_step": "step13b",
+        "source": "decisions/0114 E8; decisions/0109 §1",
+    }
+
+
+def _declared_intervals(role: str, step: str, arms_held: tuple) -> list:
+    """The intervals this file declares, ATTRIBUTED TO A STEP THAT PRODUCES THEM.
+
+    CORRECTED AT v1.5.0 (decisions/0114 E11). Both entries used to be the WINDOW-W
+    PERCENTILE, and for the `sole` arm they were attributed to `step11` -- WHICH
+    DOES NOT COMPUTE W. `$.declared_intervals` sat outside ENTRY_FAMILIES and
+    outside TOP_LEVEL_PUBLISHER, so nothing asked whose interval an entry was and
+    nothing caught it; the shipped single-arm placeholder and the merged
+    placeholder both carried it.
+
+    The two branches the placeholder must exercise are UNIT AGREEMENT and UNIT
+    DISAGREEMENT with the class's binding cluster, and both survive the fix: a
+    step that may publish a window-W interval declares that pair, and a step that
+    may not declares the same pair on its own outcome-shares quantity, which is
+    account-bound and so disagrees in the other direction.
+    """
+    out = []
+    for a in arms_held:
+        istep = _interval_step_for(role, step, a)
+        if istep in INTERVAL_CLASS_PUBLISHERS["window_w_percentile"]:
+            out.append({
+                "interval_id": f"window_w_percentile_{a}",
+                "quantity": ph("the window W percentile, whose binding cluster is the SHOW"),
+                "produced_by_step": istep,
+                "producing_arm": a,
+                "ci": _ci(f"{a}_show_clustered", unit="show",
+                          quantity_class="window_w_percentile"),
+                "note": ph(
+                    "the unit agrees with the binding cluster declared for this class, so no "
+                    "disagreement record is present -- this is the branch a show-bound "
+                    "quantity takes when it is resampled correctly"
+                ),
+                "source": "decisions/0103 §2; decisions/0024, 0026",
+            })
+            out.append({
+                "interval_id": f"window_w_percentile_account_clustered_{a}",
+                "quantity": ph(
+                    "the same show-bound quantity resampled at the ACCOUNT level, which "
+                    "UNDERSTATES it"
+                ),
+                "produced_by_step": istep,
+                "producing_arm": a,
+                "ci": _ci(f"{a}_default", unit="account",
+                          quantity_class="window_w_percentile", disagreement=True),
+                "note": ph(
+                    "the unit differs from the binding cluster for this class, so the "
+                    "interval carries an unreconciled disagreement record: report a material "
+                    "disagreement, do not reconcile it"
+                ),
+                "source": "decisions/0103 §2",
+            })
+            continue
+        # A STEP THAT DOES NOT COMPUTE W. Its interval is on a quantity it does
+        # produce -- the share it recomputes on its own cut -- and the two
+        # branches are exercised on that instead. The disagreement runs the other
+        # way here: the binding cluster for outcome shares is the ACCOUNT, so a
+        # show-resampled interval is the one that must carry the record.
+        out.append({
+            "interval_id": f"cut_share_{a}",
+            "quantity": ph(
+                "a share this step recomputes on its own subpopulation, whose binding cluster "
+                "is the ACCOUNT"
+            ),
+            "produced_by_step": istep,
+            "producing_arm": a,
+            "ci": _ci(f"{a}_default", unit="account", quantity_class="outcome_shares"),
+            "note": ph(
+                "the unit agrees with the binding cluster declared for this class, so no "
+                "disagreement record is present"
+            ),
+            "source": "decisions/0103 §1; decisions/0114 E11",
+        })
+        out.append({
+            "interval_id": f"cut_share_show_clustered_{a}",
+            "quantity": ph(
+                "the same account-bound share resampled at the SHOW level, which is not its "
+                "binding cluster"
+            ),
+            "produced_by_step": istep,
+            "producing_arm": a,
+            "ci": _ci(f"{a}_show_clustered", unit="show", quantity_class="outcome_shares",
+                      disagreement=True, binding="account"),
+            "note": ph(
+                "the unit differs from the binding cluster for this class, so the interval "
+                "carries an unreconciled disagreement record: report a material disagreement, "
+                "do not reconcile it"
+            ),
+            "source": "decisions/0103 §2; decisions/0114 E11",
+        })
+    return out
+
+
 def _stamp_merged_from(inst: dict) -> None:
     """Name the input file every merged payload came from (M1).
 
@@ -4267,9 +4611,17 @@ def _stamp_merged_from(inst: dict) -> None:
     for src in NON_ARM_SOURCES:
         label = _input_label(src["step"], None)
         for block in src["fills_blocks"]:
-            for entry in inst.get(block) or []:
-                if isinstance(entry, dict):
-                    entry["merged_from"] = label
+            node = inst.get(block)
+            # A NON-ARM SOURCE MAY FILL A LIST OR AN OBJECT. `limitations` is a
+            # list of entries; `channel_classes` is one object. Stamping only
+            # lists would have left Step 8's block unstamped, which is the
+            # unnamed-source case decisions/0111 E3b closed for arm files.
+            if isinstance(node, list):
+                for entry in node:
+                    if isinstance(entry, dict):
+                        entry["merged_from"] = label
+            elif isinstance(node, dict):
+                node["merged_from"] = label
 
 
 def build_placeholder(provenance: dict, grid: list[int],
@@ -4333,9 +4685,23 @@ def build_placeholder(provenance: dict, grid: list[int],
                 "leftover placeholder value surviving into a published file."
             ),
         },
+        "adopted_rule_revision": dict(
+            _revision_record(),
+            # MERGED DOCUMENT ONLY: the merge assembles files written at
+            # different times, so "this document's revision" is not one number
+            # and the set is enumerated. In an arm file the field is absent --
+            # one file is one run, and one run is one revision.
+            **({"revisions_present": [_revision()]} if merged else {}),
+        ),
         "arm_key": {
-            "fields": ["W_days", "clock_origin", "producing_step"],
+            "fields": ["W_days", "clock_origin", "producing_step", "adopted_rule_revision"],
             "note": (
+                "THE ADOPTED-RULE REVISION IS THE FOURTH FIELD (decisions/0114 E14), and it is "
+                "READ from processed/step5/adopted_rule.json at write time rather than typed: "
+                "$.adopted_rule_revision names the file, the key and the hash. Two runs at one "
+                "setting under different rule revisions are DIFFERENT MEASUREMENTS, and that "
+                "dimension has been occupied once already -- that file carried revision-3 "
+                "figures against the approved revision-6 rule. "
                 "THE PRODUCING STEP IS PART OF THE KEY (decisions/0111 E2): Step 9's W = 108 "
                 "and Step 13's W = 108 are DIFFERENT MEASUREMENTS OF ONE SETTING and both "
                 "exist as entries. That is the collision below, one dimension out, with the "
@@ -4475,7 +4841,7 @@ def build_placeholder(provenance: dict, grid: list[int],
             # show-clustered and account-level resampling would UNDERSTATE it.
             # Without an entry whose unit is `show`, no interval could name one.
             **{
-                f"{a}_window_w": {
+                f"{a}_show_clustered": {
                     "B": BOOTSTRAP_B,
                     "seed": BOOTSTRAP_SEED,
                     "statistic": ARM_STATISTIC[a],
@@ -4506,44 +4872,27 @@ def build_placeholder(provenance: dict, grid: list[int],
         # M10: a show-unit interval and the unit_disagreement subtree, both
         # exercised, so Step 16 is built against the branches decisions/0103 §2
         # exists to protect rather than against the account-clustered case alone.
-        "declared_intervals": [
-            {
-                "interval_id": f"window_w_percentile_{a}",
-                "quantity": ph("the window W percentile, whose binding cluster is the SHOW"),
-                "produced_by_step": "step9" if a in ("a", "b") else "step11",
-                "producing_arm": a,
-                "ci": _ci(f"{a}_window_w", unit="show",
-                          quantity_class="window_w_percentile"),
-                "note": ph(
-                    "the unit agrees with the binding cluster declared for this class, so no "
-                    "disagreement record is present -- this is the branch a show-bound "
-                    "quantity takes when it is resampled correctly"
-                ),
-                "source": "decisions/0103 §2; decisions/0024, 0026",
-            }
-            for a in arms_held
-        ] + [
-            {
-                "interval_id": f"window_w_percentile_account_clustered_{a}",
-                "quantity": ph(
-                    "the same show-bound quantity resampled at the ACCOUNT level, which "
-                    "UNDERSTATES it"
-                ),
-                "produced_by_step": "step9" if a in ("a", "b") else "step11",
-                "producing_arm": a,
-                "ci": _ci(f"{a}_default", unit="account",
-                          quantity_class="window_w_percentile", disagreement=True),
-                "note": ph(
-                    "the unit differs from the binding cluster for this class, so the "
-                    "interval carries an unreconciled disagreement record: report a material "
-                    "disagreement, do not reconcile it"
-                ),
-                "source": "decisions/0103 §2",
-            }
-            for a in arms_held
-        ],
+        "declared_intervals": _declared_intervals(role, step, arms_held),
         "block_ownership": _block_ownership(),
-        "channel_classes": {
+        # ARM FILES DO NOT CARRY THESE TWO (decisions/0114 E8). They hold STEP
+        # 8's figures, and `channel_classes` was required at the top level of
+        # every file -- so seven arm files each had to fill a figure none of them
+        # produced, with no precedence rule and no agreement check. The merged
+        # document carries them once, filled at Step 13b from Step 8's artifact,
+        # and an arm file states the absence: ABSENCE STATED, NOT SILENCE, which
+        # is why the slot stays present rather than being made optional.
+        **({} if merged else {
+            "channel_classes": _step8_block_absence(
+                "D4 and D9 are STEP 8's figures and Step 9 is forbidden to recompute either. "
+                "Requiring this block in seven arm files would make seven writers of one "
+                "figure, with no precedence rule and no agreement check; the merged document "
+                "carries it once, filled at Step 13b from Step 8's artifact."),
+            "discovery_channel_overlap": _step8_block_absence(
+                "The discovery-channel overlap is STEP 8's measurement, published in four "
+                "units with a different consumer for each. Same shape as channel_classes, "
+                "checked rather than assumed: the merged document carries it once."),
+        }),
+        **({"channel_classes": {
             "d4": {
                 "definition": "S3 or later evidence without S2 evidence.",
                 "published_alongside": True,
@@ -4625,7 +4974,7 @@ def build_placeholder(provenance: dict, grid: list[int],
                 "single_categorical_forbidden": True,
                 "source": "decisions/0079",
             },
-        ],
+        ]} if merged else {}),
         # `machine_checked` says which of these check S12 EVALUATES rather than
         # merely records. S12 asserts the flags against the set it actually
         # evaluated, so the check's title and the check's code are compared with
@@ -4736,6 +5085,7 @@ def build_placeholder(provenance: dict, grid: list[int],
         **({"variants": [
             {
                 "variant_id": "s1_completion_threshold_90",
+                "adopted_rule_revision": _revision(),
                 "axis": "s1_completion_threshold",
                 "level": "90_percent",
                 "base_arm_id": _arm_id("W108_s2_finale", "step13"),
@@ -4806,6 +5156,7 @@ def build_placeholder(provenance: dict, grid: list[int],
         **({"subpopulation_cuts": [cut for cut in [
             {
                 "cut_id": "discovery_channel_a",
+                "adopted_rule_revision": _revision(),
                 "dimension": "discovery_channel",
                 "level": "channel_a",
                 "base_arm_id": _arm_id("W108_s2_finale", "step11"),
@@ -4831,6 +5182,7 @@ def build_placeholder(provenance: dict, grid: list[int],
             },
             {
                 "cut_id": "discovery_channel_both",
+                "adopted_rule_revision": _revision(),
                 "dimension": "discovery_channel",
                 "level": "both",
                 "base_arm_id": _arm_id("W108_s2_finale", "step11"),
@@ -4859,6 +5211,7 @@ def build_placeholder(provenance: dict, grid: list[int],
             # S30 reads the input list in both directions.
             {
                 "cut_id": "gap_length_between_seasons_long",
+                "adopted_rule_revision": _revision(),
                 "dimension": "gap_length_between_seasons",
                 "level": ph("one level of the segment cut this step lists"),
                 "base_arm_id": _arm_id("W108_s2_finale", "step12"),
@@ -4946,7 +5299,64 @@ def build_placeholder(provenance: dict, grid: list[int],
                 ),
             },
             {
-                "choice": "The arm key is (W_days, clock_origin, producing_step), not W alone.",
+                "choice": (
+                    "STEP 8's ARTIFACT IS DECLARED AS A NINTH MERGE SOURCE, so that the block "
+                    "it fills has recorded provenance."
+                ),
+                "spec_gap": (
+                    "decisions/0114 E8 says `channel_classes` is filled ONCE in the merged "
+                    "document, at Step 13b, SOURCED FROM STEP 8's ARTIFACT. decisions/0111 E6 "
+                    "fixes the merge's input list at eight sources -- seven arm files and Step "
+                    "14's limits section -- and says the list records SOURCES rather than only "
+                    "arm files. It does not say whether Step 8's artifact is one of them."
+                ),
+                "what_was_done": (
+                    "It is declared as a non-arm-file source with no arm, filling "
+                    "`channel_classes` and `discovery_channel_overlap`, and both blocks name it "
+                    "in `merged_from`. The reason is E6's own: a block that must not be netted "
+                    "cannot arrive in the reader-facing document with no recorded provenance, "
+                    "and that argument does not distinguish a bias ledger from a D9 bound. "
+                    "Check S30's external anchor expects it, so a merge that drops it fails."
+                ),
+                "if_ruled_otherwise": (
+                    "If the count of eight is meant to be exact, the Step 8 row comes out of "
+                    "NON_ARM_MERGE_SOURCES in src/step8b_validate.py and out of NON_ARM_SOURCES "
+                    "in the generator, and the two blocks lose their merged_from stamp -- at "
+                    "which point the merged document carries Step 8's figures with no recorded "
+                    "source, which is the state E6 was written to end."
+                ),
+            },
+            {
+                "choice": (
+                    "The adopted-rule revision is READ from processed/step5/adopted_rule.json "
+                    "by parsing its KEY NAMES, because that file has no revision field."
+                ),
+                "spec_gap": (
+                    "decisions/0114 E14 makes the revision the fourth key dimension and the "
+                    "launch instruction asks where it is READ rather than typed. The file the "
+                    "dimension is about carries the revision only inside key names -- "
+                    "`approved_rule_revision_6`, `approved_revision_6` -- and nowhere as a "
+                    "value."
+                ),
+                "what_was_done": (
+                    "Every key in that file is scanned for the approved-revision pattern, the "
+                    "highest match is taken, and the KEY IT CAME FROM is recorded beside the "
+                    "file's hash in $.adopted_rule_revision. No match is a HARD STOP, not a "
+                    "default: a default would be a typed revision wearing a reader's clothes. "
+                    "The file itself was NOT edited to add a field -- it is Step 5's output, "
+                    "and a deliverable is corrected by rerunning the arm that produced it."
+                ),
+                "if_ruled_otherwise": (
+                    "A first-class `adopted_rule_revision` field in that file would make the "
+                    "read exact instead of inferred, and the reader would name the field rather "
+                    "than a pattern. Reported to the Human Lead as a residual."
+                ),
+            },
+            {
+                "choice": (
+                    "The arm key is (W_days, clock_origin, producing_step, "
+                    "adopted_rule_revision), not W alone."
+                ),
                 "spec_gap": (
                     "Step 8b says the key is W alone -- an amendment aimed at the deleted "
                     "liveness threshold. Step 9 separately requires a second 91-day headline "
@@ -4957,12 +5367,13 @@ def build_placeholder(provenance: dict, grid: list[int],
                     "at W = 108, finale-anchored -- four payloads, two slots."
                 ),
                 "what_was_done": (
-                    "The origin AND THE PRODUCING STEP are part of the entry key, both "
-                    "required on every arm entry (decisions/0111 E2). Step 9's W = 108 and "
-                    "Step 13's W = 108 are different measurements of one setting and BOTH "
-                    "EXIST as entries; check S2 asserts uniqueness on the three-field key and "
-                    "asserts that $.arm_key declares it. No liveness threshold enters the key, "
-                    "which is what the amendment fixed."
+                    "The origin, THE PRODUCING STEP and THE ADOPTED-RULE REVISION are part of "
+                    "the entry key, all required on every arm entry (decisions/0111 E2, 0114 "
+                    "E14). Step 9's W = 108 and Step 13's W = 108 are different measurements of "
+                    "one setting and BOTH EXIST as entries; so are two runs at one setting "
+                    "under different rule revisions. Check S2 asserts uniqueness on the "
+                    "FOUR-field key and asserts that $.arm_key declares it. No liveness "
+                    "threshold enters the key, which is what the amendment fixed."
                 ),
                 "if_ruled_otherwise": (
                     "It must NOT be resolved by restricting which step may occupy a shared W: "
@@ -5519,6 +5930,48 @@ def build_placeholder(provenance: dict, grid: list[int],
         "known_limits_of_this_schema": [
             {
                 "limit": (
+                    "THE MERGE'S EXPECTED SOURCE LIST IS DERIVED FROM THE DUALITY TABLE, WHICH "
+                    "IS ITSELF A COPY OF THE SPEC. Check S30's external anchor knows that seven "
+                    "arm files and two non-arm sources are expected because STEP_DUALITY and "
+                    "NON_ARM_MERGE_SOURCES in src/step8b_validate.py say so. If the spec adds a "
+                    "writing step and those tables are not updated, the anchor will expect the "
+                    "old set."
+                ),
+                "consequence": (
+                    "The anchor catches a merge that declares fewer sources than the tables "
+                    "know about. It cannot catch a source the tables have never heard of, and "
+                    "an extra ARM FILE fails rather than being accepted."
+                ),
+                "mitigation": (
+                    "The duality table is asserted against each file's own $.step_duality by "
+                    "check S31, so a file written under a newer spec disagrees loudly with a "
+                    "validator running an older one, rather than passing quietly."
+                ),
+            },
+            {
+                "limit": (
+                    "THE ADOPTED-RULE REVISION IS READ BY PARSING KEY NAMES. "
+                    "processed/step5/adopted_rule.json carries no first-class revision field, "
+                    "so the reader scans its keys for the approved-revision pattern and takes "
+                    "the highest."
+                ),
+                "consequence": (
+                    "A revision recorded ONLY in prose in that file, or one written under a key "
+                    "name that does not match the pattern, would not be seen. The reader hard "
+                    "stops when it finds no match at all, so the failure mode is a stop rather "
+                    "than a silent default -- but a NEWER revision recorded in an unmatched "
+                    "shape would leave the older one looking current."
+                ),
+                "mitigation": (
+                    "$.adopted_rule_revision records the exact key the value came from and the "
+                    "file's hash, so the reading can be checked rather than trusted. A "
+                    "first-class field in that file would remove the inference; it is reported "
+                    "to the Human Lead rather than added here, because that file is Step 5's "
+                    "output."
+                ),
+            },
+            {
+                "limit": (
                     "JSON Schema cannot express cross-field constraints, so floor <= ceiling, "
                     "the derived-figure identities, the waterfall arithmetic, referential "
                     "integrity of the two ref families and the sentinel discipline are checked "
@@ -5750,12 +6203,14 @@ def build_placeholder(provenance: dict, grid: list[int],
                 "a block used is a field, not something a consumer has to infer from the keys."
             ),
             "an_arm_entry_is_one_steps_measurement": (
-                "An arm entry is identified by (W_days, clock_origin, producing_step). Step "
-                "9's W = 108 and Step 13's W = 108 are different measurements of one setting "
-                "and both appear, as separate entries. An entry carries the blocks its own "
-                "producing step publishes and no others; $.block_ownership names each block's "
-                "publisher, and a block missing from an entry is not a gap -- it is in the "
-                "entry of the step that publishes it."
+                "An arm entry is identified by (W_days, clock_origin, producing_step, "
+                "adopted_rule_revision). Step 9's W = 108 and Step 13's W = 108 are different "
+                "measurements of one setting and both appear, as separate entries; so are two "
+                "runs at one setting under different rule revisions. The revision is READ from "
+                "the adopted-rule file and $.adopted_rule_revision says which file and key. An "
+                "entry carries the blocks its own producing step publishes and no others; "
+                "$.block_ownership names each block's publisher, and a block missing from an "
+                "entry is not a gap -- it is in the entry of the step that publishes it."
             ),
             "step_13s_non_headline_outputs_are_per_arm": (
                 "d3_prime, tested_ranges, conclusions_surviving, conclusions_not_surviving, "
@@ -5830,6 +6285,73 @@ def _git_head() -> str:
         ).stdout.strip()
     except Exception:
         return "unavailable"
+
+
+def _read_adopted_rule_revision() -> dict:
+    """READ the adopted contamination-rule revision; never type it.
+
+    decisions/0114 E14 makes the revision the FOURTH identity dimension, and the
+    launch instruction asks where it is read from. It is read here, from
+    processed/step5/adopted_rule.json -- the first file a Step 8 implementation
+    reaches for, and the file where this dimension was already occupied once.
+
+    The file carries no first-class revision field: the revision appears only in
+    KEY NAMES. So every key in the document is scanned for the approved-revision
+    pattern, the highest is taken, and the KEY IT WAS READ FROM is recorded
+    alongside the file's hash, so a reader can go and check. If no key matches,
+    this RAISES: a default would be a typed value wearing a reader's clothes, and
+    the whole point of the dimension is that it moves when the rule does.
+    """
+    import re
+    with open(ADOPTED_RULE_PATH) as fh:
+        doc = json.load(fh)
+    found: list[tuple[int, str]] = []
+
+    def walk(node, path=""):
+        if isinstance(node, dict):
+            for k, v in node.items():
+                m = re.fullmatch(ADOPTED_RULE_REVISION_KEY_RE, k)
+                if m:
+                    found.append((int(m.group(1)), f"{path}.{k}".lstrip(".")))
+                walk(v, f"{path}.{k}")
+        elif isinstance(node, list):
+            for i, v in enumerate(node):
+                walk(v, f"{path}[{i}]")
+
+    walk(doc)
+    if not found:
+        raise SystemExit(
+            f"no approved-revision key found in {ADOPTED_RULE_PATH}; the adopted-rule "
+            f"revision is READ, never typed (decisions/0114 E14), so this is a hard stop "
+            f"rather than a default"
+        )
+    revision, key = max(found)
+    return {
+        "revision": revision,
+        "source_file": os.path.relpath(ADOPTED_RULE_PATH, ROOT),
+        "source_key": key,
+        "source_sha256_12": _sha12(ADOPTED_RULE_PATH),
+        "read_not_typed": True,
+        "how_it_is_read": (
+            "A WRITER CALLS src/step8b_schema.py's `_read_adopted_rule_revision()` RATHER THAN "
+            "REIMPLEMENTING THIS: a second reader is a second definition of the rule's version, "
+            "and two definitions of one figure is the defect this study has hit most often. "
+            "Every key in the adopted-rule file is scanned for the pattern "
+            f"{ADOPTED_RULE_REVISION_KEY_RE!r} and the highest match is taken; the key it came "
+            "from is recorded above. The file carries no first-class revision field, which is "
+            "a residual reported to the Human Lead rather than corrected here -- it is Step "
+            "5's output, and a deliverable is corrected by rerunning the arm that produced it."
+        ),
+        "why_it_is_in_the_key": (
+            "A setting under which the measurement was taken that was invisible in the key, "
+            "like the clock origin and the producing step before it. If a Step 5 or Step 7 "
+            "amendment lands between one step's run and another's, their entries at one "
+            "setting are DIFFERENT MEASUREMENTS, and without this dimension check S2 calls "
+            "the rerun a duplicate. The dimension has been occupied once already: this file "
+            "carried revision-3 figures against the approved revision-6 rule."
+        ),
+        "source": "decisions/0114 E14; CLAUDE.md, propagation surface 8",
+    }
 
 
 def _read_grid() -> list[int]:

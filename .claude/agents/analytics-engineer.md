@@ -522,7 +522,7 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
       restricting a use. **`0107` §3's rule is the constant: one slot where two arms write forces the
       reconciliation the spec forbids.**
       **E2 — AN ARM ENTRY'S IDENTITY INCLUDES ITS PRODUCING STEP.** The key is
-      **`(W_days, clock_origin, producing_step)`**. **Step 9's `W = 108` and Step 13's `W = 108` are
+      ~~**`(W_days, clock_origin, producing_step)`**~~ ***SUPERSEDED by `0114` (E14) — a FOURTH dimension: `(W_days, clock_origin, producing_step, adopted_rule_revision)`. Marked at the point of use (`0116`), found by arm `a`: `0114` added the new key and left this standing BELOW its own replacement.*** **Step 9's `W = 108` and Step 13's `W = 108` are
       DIFFERENT MEASUREMENTS OF ONE SETTING** and both must exist. ***The `(W_days, clock_origin)`
       collision one dimension out, with the same fix.*** ***NOT resolved by restricting which step may
       occupy a shared `W`.***

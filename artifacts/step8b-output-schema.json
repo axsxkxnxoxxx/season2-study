@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:season2-study:step8b-output-schema:1.4.0",
+  "$id": "urn:season2-study:step8b-output-schema:1.5.0",
   "title": "Season 2 abandonment study -- Step 16 results schema",
   "description": "The single output schema. Steps 9 through 13 write into it DIRECTLY, each ARM into its own file, and STEP 16 RENDERS FROM THE MERGED DOCUMENT that Step 13b builds from those files after the Human Lead has diffed the dual pairs (decisions/0107). Both kinds of file are instances of this one schema; $.document_scope says which kind a file is, and it is the first thing to read. There is no conversion layer: a conversion layer is a second definition of every figure. Validate with src/step8b_validate.py, which implements the JSON Schema subset used here plus the cross-field checks the schema language cannot express.",
   "type": "object",
@@ -13,6 +13,7 @@
     "document_scope",
     "sentinels",
     "arm_key",
+    "adopted_rule_revision",
     "arm_grid_days",
     "populations",
     "scope_qualifiers",
@@ -28,10 +29,10 @@
   ],
   "properties": {
     "schema_version": {
-      "const": "1.4.0"
+      "const": "1.5.0"
     },
     "schema_id": {
-      "const": "urn:season2-study:step8b-output-schema:1.4.0"
+      "const": "urn:season2-study:step8b-output-schema:1.5.0"
     },
     "placeholder": {
       "type": "boolean",
@@ -476,7 +477,7 @@
     },
     "arm_key": {
       "type": "object",
-      "description": "What identifies an arm entry. There is no liveness threshold: one was derived three times and deleted, and the adopted rule is parameter-free.",
+      "description": "What identifies an arm entry. There is no liveness threshold: one was derived three times and deleted, and the adopted rule is parameter-free. The key has grown three times and each growth ADDED A SETTING THE MEASUREMENT WAS TAKEN UNDER that the key could not see: the clock origin (decisions/0102), the producing step (0111 E2) and the adopted-rule revision (0114 E14).",
       "additionalProperties": false,
       "required": [
         "fields",
@@ -488,7 +489,8 @@
           "const": [
             "W_days",
             "clock_origin",
-            "producing_step"
+            "producing_step",
+            "adopted_rule_revision"
           ]
         },
         "note": {
@@ -496,6 +498,55 @@
         },
         "no_liveness_threshold": {
           "const": true
+        }
+      }
+    },
+    "adopted_rule_revision": {
+      "type": "object",
+      "description": "WHERE THE FOURTH KEY DIMENSION WAS READ FROM (decisions/0114 E14). The revision is READ from the adopted-rule file at write time, never typed: a typed revision is a second definition of the rule's version, and the defect this study has hit most often is two definitions of one figure. The registry names the file, the key inside it and the file's hash, so a reader can go and check rather than trust. Check S37 asserts every arm, variant and cut entry against it.",
+      "additionalProperties": false,
+      "required": [
+        "revision",
+        "source_file",
+        "source_key",
+        "source_sha256_12",
+        "read_not_typed"
+      ],
+      "properties": {
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "source_file": {
+          "type": "string"
+        },
+        "source_key": {
+          "type": "string"
+        },
+        "source_sha256_12": {
+          "type": "string"
+        },
+        "read_not_typed": {
+          "const": true
+        },
+        "how_it_is_read": {
+          "type": "string"
+        },
+        "why_it_is_in_the_key": {
+          "type": "string"
+        },
+        "revisions_present": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true,
+          "description": "MERGED DOCUMENT ONLY: the revisions its entries were measured under. The merge assembles files written at different times, so 'this document's revision' is not one number and the set is enumerated rather than assumed away. In an arm file the field is absent -- one file is one run, and one run is one revision."
+        },
+        "source": {
+          "type": "string"
         }
       }
     },
@@ -1028,211 +1079,219 @@
       }
     },
     "channel_classes": {
-      "type": "object",
-      "description": "D4 and D9 publish ALONGSIDE the bounds and are never folded into them, so they have their own slots (decisions/0062). BOTH ARE STEP 8's FIGURES: Step 8 holds the episode-level evidence and Step 9 is forbidden to recompute either, so the counts here are COPIED, and the schema says so at the point of use (F9).",
-      "additionalProperties": false,
-      "required": [
-        "d4",
-        "d9"
-      ],
-      "properties": {
-        "d4": {
+      "oneOf": [
+        {
           "type": "object",
+          "description": "D4 and D9 publish ALONGSIDE the bounds and are never folded into them, so they have their own slots (decisions/0062). BOTH ARE STEP 8's FIGURES: Step 8 holds the episode-level evidence and Step 9 is forbidden to recompute either, so the counts here are COPIED, and the schema says so at the point of use (F9). ARM FILES DO NOT CARRY THIS BLOCK (decisions/0114 E8): requiring it in seven arm files made SEVEN WRITERS OF A FIGURE NONE OF THEM PRODUCED, with no precedence rule and no agreement check. The MERGED DOCUMENT carries it ONCE, filled at Step 13b from Step 8's artifact; an arm file carries the ABSENCE IDIOM below -- the block stays required, so the absence is STATED rather than silent. Check S36 fails a filled copy in an arm file and fails an absence in the merged document.",
           "additionalProperties": false,
           "required": [
-            "definition",
-            "published_alongside",
-            "folded_into_bound",
-            "counts",
-            "computed_by",
-            "copied_not_computed"
+            "d4",
+            "d9"
           ],
           "properties": {
-            "definition": {
-              "type": "string"
+            "merged_from": {
+              "type": "string",
+              "description": "The source this block was filled from, named at the point of use (decisions/0111 E6, decisions/0114 E8). It is Step 8's artifact, which is a NON-ARM-FILE source of the merge and is declared as one in $.document_scope.merge.sources_merged."
             },
-            "published_alongside": {
-              "const": true
-            },
-            "folded_into_bound": {
-              "const": false
-            },
-            "computed_by": {
-              "const": "step8",
-              "description": "Step 8 emits the D4 count; Step 9 must not compute it (decisions/0070 ruling 7)."
-            },
-            "copied_not_computed": {
-              "const": true
-            },
-            "counts": {
+            "d4": {
               "type": "object",
               "additionalProperties": false,
               "required": [
-                "APPLY",
-                "DERIV"
+                "definition",
+                "published_alongside",
+                "folded_into_bound",
+                "counts",
+                "computed_by",
+                "copied_not_computed"
               ],
               "properties": {
-                "APPLY": {
-                  "$ref": "#/$defs/count"
-                },
-                "DERIV": {
-                  "$ref": "#/$defs/count"
-                }
-              }
-            },
-            "source": {
-              "type": "string"
-            }
-          }
-        },
-        "d9": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "published_alongside",
-            "folded_into_bound",
-            "keys",
-            "universe",
-            "quantities",
-            "computed_by",
-            "copied_not_computed"
-          ],
-          "properties": {
-            "published_alongside": {
-              "const": true
-            },
-            "folded_into_bound": {
-              "const": false
-            },
-            "computed_by": {
-              "const": "step8",
-              "description": "D9's search runs on the pulled sweep, which Step 8 holds and Step 9 does not."
-            },
-            "copied_not_computed": {
-              "const": true
-            },
-            "keys": {
-              "type": "object",
-              "additionalProperties": false,
-              "required": [
-                "strict",
-                "loose"
-              ],
-              "properties": {
-                "strict": {
-                  "type": "string"
-                },
-                "loose": {
-                  "type": "string"
-                },
-                "third_key_is_not_an_endpoint": {
-                  "type": "string"
-                }
-              }
-            },
-            "universe": {
-              "type": "object",
-              "additionalProperties": false,
-              "required": [
-                "label",
-                "definition"
-              ],
-              "properties": {
-                "label": {
-                  "type": "string"
-                },
                 "definition": {
                   "type": "string"
                 },
-                "n_show_ids": {
-                  "$ref": "#/$defs/count"
+                "published_alongside": {
+                  "const": true
                 },
-                "rank_basis": {
+                "folded_into_bound": {
+                  "const": false
+                },
+                "computed_by": {
+                  "const": "step8",
+                  "description": "Step 8 emits the D4 count; Step 9 must not compute it (decisions/0070 ruling 7)."
+                },
+                "copied_not_computed": {
+                  "const": true
+                },
+                "counts": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "APPLY",
+                    "DERIV"
+                  ],
+                  "properties": {
+                    "APPLY": {
+                      "$ref": "#/$defs/count"
+                    },
+                    "DERIV": {
+                      "$ref": "#/$defs/count"
+                    }
+                  }
+                },
+                "source": {
                   "type": "string"
-                },
-                "rank_tie_break": {
-                  "$ref": "#/$defs/absence"
                 }
               }
             },
-            "quantities": {
+            "d9": {
               "type": "object",
-              "description": "Each quantity that has both key forms publishes AS A BOUND: strict is the floor because it cannot over-count, loose is the ceiling because it merges genuinely different shows, and NEITHER endpoint may be quoted as the result. Coverage publishes beside a zero floor, or the bound is indistinguishable from a check that looked nowhere. THE THREE NAMED QUANTITIES ARE REQUIRED -- the record fixes exactly these three as having both key forms (decisions/0078, 0090), and requiring them by name is what stops check S16 examining an empty map and reporting an emptiness it cannot distinguish from a clean pass (F4).",
+              "additionalProperties": false,
               "required": [
-                "complementary_pairs",
-                "half_a",
-                "half_b"
+                "published_alongside",
+                "folded_into_bound",
+                "keys",
+                "universe",
+                "quantities",
+                "computed_by",
+                "copied_not_computed"
               ],
-              "additionalProperties": {
-                "type": "object",
-                "additionalProperties": false,
-                "required": [
-                  "floor",
-                  "ceiling",
-                  "point_estimate",
-                  "coverage"
-                ],
-                "properties": {
-                  "floor": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "required": [
-                      "value",
-                      "key",
-                      "direction"
-                    ],
-                    "properties": {
-                      "value": {
-                        "$ref": "#/$defs/count"
-                      },
-                      "key": {
-                        "const": "strict"
-                      },
-                      "direction": {
-                        "const": "cannot_over_count"
-                      }
+              "properties": {
+                "published_alongside": {
+                  "const": true
+                },
+                "folded_into_bound": {
+                  "const": false
+                },
+                "computed_by": {
+                  "const": "step8",
+                  "description": "D9's search runs on the pulled sweep, which Step 8 holds and Step 9 does not."
+                },
+                "copied_not_computed": {
+                  "const": true
+                },
+                "keys": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "strict",
+                    "loose"
+                  ],
+                  "properties": {
+                    "strict": {
+                      "type": "string"
+                    },
+                    "loose": {
+                      "type": "string"
+                    },
+                    "third_key_is_not_an_endpoint": {
+                      "type": "string"
                     }
-                  },
-                  "ceiling": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "required": [
-                      "value",
-                      "key",
-                      "direction"
-                    ],
-                    "properties": {
-                      "value": {
-                        "$ref": "#/$defs/count"
-                      },
-                      "key": {
-                        "const": "loose"
-                      },
-                      "direction": {
-                        "const": "merges_genuinely_different_shows"
-                      }
+                  }
+                },
+                "universe": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "label",
+                    "definition"
+                  ],
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "definition": {
+                      "type": "string"
+                    },
+                    "n_show_ids": {
+                      "$ref": "#/$defs/count"
+                    },
+                    "rank_basis": {
+                      "type": "string"
+                    },
+                    "rank_tie_break": {
+                      "$ref": "#/$defs/absence"
                     }
-                  },
-                  "point_estimate": {
-                    "$ref": "#/$defs/absence"
-                  },
-                  "coverage": {
+                  }
+                },
+                "quantities": {
+                  "type": "object",
+                  "description": "Each quantity that has both key forms publishes AS A BOUND: strict is the floor because it cannot over-count, loose is the ceiling because it merges genuinely different shows, and NEITHER endpoint may be quoted as the result. Coverage publishes beside a zero floor, or the bound is indistinguishable from a check that looked nowhere. THE THREE NAMED QUANTITIES ARE REQUIRED -- the record fixes exactly these three as having both key forms (decisions/0078, 0090), and requiring them by name is what stops check S16 examining an empty map and reporting an emptiness it cannot distinguish from a clean pass (F4).",
+                  "required": [
+                    "complementary_pairs",
+                    "half_a",
+                    "half_b"
+                  ],
+                  "additionalProperties": {
                     "type": "object",
                     "additionalProperties": false,
                     "required": [
-                      "records_examined"
+                      "floor",
+                      "ceiling",
+                      "point_estimate",
+                      "coverage"
                     ],
                     "properties": {
-                      "records_examined": {
-                        "$ref": "#/$defs/count"
+                      "floor": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "value",
+                          "key",
+                          "direction"
+                        ],
+                        "properties": {
+                          "value": {
+                            "$ref": "#/$defs/count"
+                          },
+                          "key": {
+                            "const": "strict"
+                          },
+                          "direction": {
+                            "const": "cannot_over_count"
+                          }
+                        }
                       },
-                      "records_with_a_slug": {
-                        "$ref": "#/$defs/count"
+                      "ceiling": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "value",
+                          "key",
+                          "direction"
+                        ],
+                        "properties": {
+                          "value": {
+                            "$ref": "#/$defs/count"
+                          },
+                          "key": {
+                            "const": "loose"
+                          },
+                          "direction": {
+                            "const": "merges_genuinely_different_shows"
+                          }
+                        }
                       },
-                      "what_was_counted": {
-                        "type": "string",
-                        "description": "What the coverage count counted.  [writer text: carries the placeholder prefix in a placeholder]",
-                        "x-writer-text": true
+                      "point_estimate": {
+                        "$ref": "#/$defs/absence"
+                      },
+                      "coverage": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "records_examined"
+                        ],
+                        "properties": {
+                          "records_examined": {
+                            "$ref": "#/$defs/count"
+                          },
+                          "records_with_a_slug": {
+                            "$ref": "#/$defs/count"
+                          },
+                          "what_was_counted": {
+                            "type": "string",
+                            "description": "What the coverage count counted.  [writer text: carries the placeholder prefix in a placeholder]",
+                            "x-writer-text": true
+                          }
+                        }
                       }
                     }
                   }
@@ -1240,51 +1299,65 @@
               }
             }
           }
+        },
+        {
+          "$ref": "#/$defs/block_absence"
         }
-      }
+      ]
     },
     "discovery_channel_overlap": {
-      "type": "array",
-      "description": "The overlap in every unit, each with the consumer that needs that unit. Picking one unit leaves another consumer holding a wrong-unit figure.",
-      "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "unit",
-          "numerator",
-          "denominator",
-          "consumer",
-          "single_categorical_forbidden"
-        ],
-        "properties": {
-          "unit": {
-            "enum": [
-              "discovery_pool_usernames",
-              "accounts_pulled",
-              "analysis_population_accounts",
-              "analysis_population_pairs"
+      "oneOf": [
+        {
+          "type": "array",
+          "description": "The overlap in every unit, each with the consumer that needs that unit. Picking one unit leaves another consumer holding a wrong-unit figure. CHECKED FOR E8's SHAPE AND FOUND TO HAVE IT (decisions/0114 E8): these are STEP 8's counts too, no publisher named them, and nothing stopped seven arm files from each writing them. It differs from `channel_classes` only in being optional rather than required, so the defect was REACHABLE rather than shipped. Same fix: the merged document carries it once, filled at Step 13b from Step 8's artifact, and an arm file that carries the slot at all carries the absence idiom.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "unit",
+              "numerator",
+              "denominator",
+              "consumer",
+              "single_categorical_forbidden"
             ],
-            "x-enum-id": "overlap_unit"
-          },
-          "numerator": {
-            "$ref": "#/$defs/count"
-          },
-          "denominator": {
-            "$ref": "#/$defs/count"
-          },
-          "consumer": {
-            "type": "string",
-            "description": "The consumer that needs this unit.  [writer text: carries the placeholder prefix in a placeholder]",
-            "x-writer-text": true
-          },
-          "single_categorical_forbidden": {
-            "const": true
-          },
-          "source": {
-            "type": "string"
+            "properties": {
+              "unit": {
+                "enum": [
+                  "discovery_pool_usernames",
+                  "accounts_pulled",
+                  "analysis_population_accounts",
+                  "analysis_population_pairs"
+                ],
+                "x-enum-id": "overlap_unit"
+              },
+              "numerator": {
+                "$ref": "#/$defs/count"
+              },
+              "denominator": {
+                "$ref": "#/$defs/count"
+              },
+              "consumer": {
+                "type": "string",
+                "description": "The consumer that needs this unit.  [writer text: carries the placeholder prefix in a placeholder]",
+                "x-writer-text": true
+              },
+              "single_categorical_forbidden": {
+                "const": true
+              },
+              "source": {
+                "type": "string"
+              },
+              "merged_from": {
+                "type": "string",
+                "description": "The source this row was filled from -- Step 8's artifact, a declared non-arm-file source of the merge (decisions/0114 E8)."
+              }
+            }
           }
+        },
+        {
+          "$ref": "#/$defs/block_absence"
         }
-      }
+      ]
     },
     "derived_fields": {
       "type": "array",
@@ -1549,14 +1622,14 @@
   },
   "x-generated-by": {
     "generator": "src/step8b_schema.py",
-    "generator_sha256_12": "e53fefbe8f35",
-    "generated_at_utc": "2026-08-19T00:31:43Z",
+    "generator_sha256_12": "42ddef7cdbc3",
+    "generated_at_utc": "2026-08-19T01:33:26Z",
     "build_tag": "step8b/a/2026-08-19",
-    "git_head_short": "6d7e58a",
+    "git_head_short": "984c344",
     "host_step": "Step 8b, output schema",
     "written_by": "Analytics Engineer, instance a",
     "validator": "src/step8b_validate.py",
-    "validator_sha256_12": "a4af26dbb6f9",
+    "validator_sha256_12": "5b71eb12d658",
     "selftest": "src/step8b_selftest.py",
     "note": "This schema is generated. Correct it in the generator and rewrite both artifacts together; do not hand-edit either file."
   },
@@ -5914,7 +5987,7 @@
     },
     "arm_entry": {
       "type": "object",
-      "description": "ONE ENTRY PER (W_days, clock_origin, producing_step) -- see $.arm_key. THE PRODUCING STEP JOINED THE KEY AT v1.4.0 (decisions/0111 E2): Step 9's W = 108 and Step 13's W = 108 are DIFFERENT MEASUREMENTS OF ONE SETTING and both must exist, which is the (W_days, clock_origin) collision one dimension out and takes the same fix -- ADD THE MISSING IDENTITY DIMENSION. It is NOT resolved by restricting which step may occupy a shared W value: that would make the schema decide an ownership question the spec does not, and would drop a measurement rather than hold it. AN ENTRY CARRIES THE BLOCKS ITS OWN PRODUCING STEP PUBLISHES AND NO OTHERS: $.block_ownership names each block's publisher, and check S36 fails an entry that carries one that is not its own. There is NO liveness threshold and no threshold may appear as a key.",
+      "description": "ONE ENTRY PER (W_days, clock_origin, producing_step, adopted_rule_revision) -- see $.arm_key. THE PRODUCING STEP JOINED THE KEY AT v1.4.0 (decisions/0111 E2) AND THE ADOPTED-RULE REVISION AT v1.5.0 (decisions/0114 E14). Step 9's W = 108 and Step 13's W = 108 are DIFFERENT MEASUREMENTS OF ONE SETTING and both must exist; so are two runs at one setting under different rule revisions. Each is the (W_days, clock_origin) collision one dimension further out and each takes the same fix -- ADD THE MISSING IDENTITY DIMENSION. It is NOT resolved by restricting which step may occupy a shared W value: that would make the schema decide an ownership question the spec does not, and would drop a measurement rather than hold it. AN ENTRY CARRIES THE BLOCKS ITS OWN PRODUCING STEP PUBLISHES AND NO OTHERS: $.block_ownership names each block's publisher, and check S36 fails an entry that carries one that is not its own. There is NO liveness threshold and no threshold may appear as a key.",
       "additionalProperties": false,
       "required": [
         "arm_id",
@@ -5922,6 +5995,7 @@
         "H_days",
         "clock_origin",
         "producing_step",
+        "adopted_rule_revision",
         "in_arm_grid",
         "headline"
       ],
@@ -5929,6 +6003,11 @@
         "arm_id": {
           "type": "string",
           "pattern": "^W\\d+_"
+        },
+        "adopted_rule_revision": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "THE FOURTH KEY DIMENSION (decisions/0114 E14): the revision of the adopted contamination rule this measurement was taken under. It is READ from the adopted-rule file at write time, never typed -- $.adopted_rule_revision records which file and which key it came from, and check S37 asserts every entry against it. The dimension has been occupied once already: processed/step5/adopted_rule.json carried revision-3 figures against the approved revision-6 rule."
         },
         "producing_step": {
           "enum": [
@@ -5978,7 +6057,7 @@
           "$ref": "#/$defs/headline"
         },
         "waterfall": {
-          "description": "The filter waterfall, per population. Step 8 produces it; nothing in the spec produces one for a premiere-anchored arm, so the block may be an explicit absence naming that (F1). Check S22 forbids an absence on the primary headline arm.",
+          "description": "The filter waterfall, per population. Step 8 produces it; nothing in the spec produces one for a premiere-anchored arm, so the block may be an explicit absence naming that (F1). Check S22 forbids an absence on the primary headline arm WHERE A PRODUCER EXISTS AT THAT ARM, and requires one where none does -- publisher rows key on ARM IDENTITY, not producing step alone, and ABSENCE IS STATED, NEVER SILENT (decisions/0114 E13).",
           "oneOf": [
             {
               "type": "object",
@@ -6182,7 +6261,7 @@
     },
     "variant_entry": {
       "type": "object",
-      "description": "A Step 13 arm that varies something other than W. The entry key is W alone plus the clock origin, so a non-W variation cannot be an arm entry without colliding; it lives here and names the arm it is a variation of.",
+      "description": "A Step 13 arm that varies something other than W. THE ARM ENTRY KEY IS (W_days, clock_origin, producing_step, adopted_rule_revision) -- see $.arm_key -- and NONE of its four fields distinguishes a non-W variation, so such a variation cannot be an arm entry without colliding: it lives here and names the arm it is a variation of. CORRECTED AT v1.5.0 (decisions/0114 E10). This description said 'the entry key is W alone plus the clock origin' -- THE PRE-E2 TWO-FIELD KEY, superseded by decisions/0111 E2 and again by 0114 E14, and live on propagation surface 6 while the rest of the schema carried the current one. A description is what a writer reads before it reads a check.",
       "additionalProperties": false,
       "required": [
         "variant_id",
@@ -6190,11 +6269,17 @@
         "level",
         "base_arm_id",
         "producing_step",
+        "adopted_rule_revision",
         "headline"
       ],
       "properties": {
         "variant_id": {
           "type": "string"
+        },
+        "adopted_rule_revision": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "The adopted-rule revision this variation was measured under, stated for the same reason the arm entry states it (decisions/0114 E14) and asserted against $.adopted_rule_revision by check S37."
         },
         "producing_step": {
           "enum": [
@@ -6313,12 +6398,18 @@
         "level",
         "base_arm_id",
         "producing_step",
+        "adopted_rule_revision",
         "headline",
         "candidate_considered"
       ],
       "properties": {
         "cut_id": {
           "type": "string"
+        },
+        "adopted_rule_revision": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "The adopted-rule revision this cut was measured under (decisions/0114 E14), asserted against $.adopted_rule_revision by check S37."
         },
         "producing_step": {
           "enum": [

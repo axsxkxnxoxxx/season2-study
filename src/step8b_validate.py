@@ -335,14 +335,115 @@ BLOCK_PUBLISHER = {
 # Top-level blocks whose publisher the spec fixes. `subpopulation_cuts` is NOT
 # here: Steps 11 and 12 both write cuts into it, so the question is answered per
 # ENTRY by each cut's own producing_step.
+#
+# `channel_classes` AND `discovery_channel_overlap` JOINED AT v1.5.0
+# (decisions/0114 E8). Both hold STEP 8's figures -- D4, D9, and the discovery
+# channel overlap in its four units -- and `channel_classes` was REQUIRED at the
+# top level of every file, so all seven arm files had to fill it: SEVEN WRITERS
+# OF A FIGURE NONE OF THEM PRODUCED, with no precedence rule and no agreement
+# check. That is the fourth appearance of one-slot-vs-one-definition, and it
+# takes the fix the three before it took -- ONE PLACE, and the ABSENCE IDIOM
+# everywhere else. The merged document carries them once, filled at Step 13b
+# from Step 8's artifact, so the publisher is `step13b`.
+#
+# `discovery_channel_overlap` WAS CHECKED RATHER THAN ASSUMED, as E8 asks: it is
+# the same shape -- Step 8's measured counts, no publisher row, nothing stopping
+# seven files from each writing them -- and differs only in being OPTIONAL rather
+# than required, so the defect was reachable rather than shipped.
 TOP_LEVEL_PUBLISHER = {
     "tested_ranges": "step13",
     "variants": "step13",
+    "channel_classes": "step13b",
+    "discovery_channel_overlap": "step13b",
 }
 # The steps that publish a headline payload of their own.
 HEADLINE_PUBLISHERS = ("step9", "step13")
 # The entry families whose entries name their own producing step.
 ENTRY_FAMILIES = ("arms", "variants", "subpopulation_cuts")
+
+# WHICH STEP MAY DECLARE AN INTERVAL ON EACH QUANTITY CLASS (decisions/0114 E11).
+# `$.declared_intervals` sat outside ENTRY_FAMILIES and outside
+# TOP_LEVEL_PUBLISHER, so nothing asked whose interval an entry was -- an arm
+# file could carry another step's, and the shipped single-arm placeholder was
+# OCCUPIED by exactly that: it attributed the WINDOW-W PERCENTILE to `step11`,
+# which does not compute W. W is derived at Step 6 and reported at Step 9's two
+# window arms and across Step 13's grid; Steps 10, 11 and 12 do not vary it.
+# `other_declared` is open to every writer by construction -- it is the class for
+# a quantity the record has not ruled on -- so it names no publisher here and the
+# arm-identity clause is the only one that applies to it.
+INTERVAL_CLASS_PUBLISHERS = {
+    "outcome_shares": ("step9", "step11", "step12", "step13"),
+    "window_w_percentile": ("step9", "step13"),
+}
+
+# THE PER-ARM BLOCKS THAT HAVE NO PRODUCER AT A PREMIERE-ANCHORED ARM
+# (decisions/0114 E13). PUBLISHER ROWS KEY ON ARM IDENTITY, NOT PRODUCING STEP
+# ALONE: BLOCK_PUBLISHER says WHICH STEP publishes a block, and S22 read that
+# alone, so it required `waterfall`, `liveness_exclusions` and
+# `retained_by_air_period` wherever a `step9` entry is primary -- INCLUDING a
+# premiere-anchored arm, where the schema's own text says nothing produces one.
+# The schema's text and its control disagreed and THE TEXT IS RIGHT.
+#
+# The warrant is the spec, not the file: Step 8 builds the waterfall at the
+# adopted finale-anchored arm, Step 10 charts the headline arm, and Step 13's W
+# grid is finale-anchored at every one of its eight arms.
+#
+# ABSENCE STATED, NOT SILENCE. The record stays required wherever the block would
+# otherwise be; what stops being required is a FIGURE NO STEP MAKES.
+NO_PRODUCER_AT_CLOCK_ORIGIN = {"s2_premiere"}
+
+
+def _block_has_producer(entry: dict) -> bool:
+    """Whether any step in the spec produces a per-arm block at this arm."""
+    return (entry or {}).get("clock_origin") not in NO_PRODUCER_AT_CLOCK_ORIGIN
+
+
+# THE ARM-ENTRY PROPERTIES THAT ARE NOT BLOCKS (decisions/0114 E12). Held here,
+# outside the schema and outside the file, so that a per-arm block added to the
+# schema WITHOUT a BLOCK_PUBLISHER row fails check S39 instead of falling through
+# both S22 and S36 in silence: S22 iterates BLOCK_PUBLISHER and S36 iterates
+# BLOCK_PUBLISHER, so a block the table does not name is a block neither of them
+# looks at. Adding a property here is a deliberate declaration that it carries no
+# figure; adding one to the schema and nowhere else now fails.
+ARM_ENTRY_NON_BLOCK_PROPERTIES = frozenset({
+    "arm_id", "W_days", "H_days", "clock_origin", "clock_origin_note",
+    "producing_step", "in_arm_grid", "is_primary_headline", "note",
+    "adopted_rule_revision",
+    # `headline` IS a block and is deliberately not in BLOCK_PUBLISHER: every
+    # entry carries the slot and the payload inside it is real only where that
+    # entry's producing step publishes a headline, which HEADLINE_PUBLISHERS
+    # states and check S28 reads. It is named here so the exemption is a written
+    # decision rather than an omission.
+    "headline",
+})
+
+# THE MERGE'S EXPECTED SOURCES, DERIVED RATHER THAN READ FROM THE FILE
+# (decisions/0114, E9/E15). S30 had payload<->input closure in both directions
+# and NO EXTERNAL ANCHOR, so a merge that declared five of eight sources and
+# dropped the payloads to match closed against itself and validated clean. The
+# expected set is derived from STEP_DUALITY -- which already holds the material:
+# a dual step contributes arms `a` and `b`, a single-arm step contributes `sole`
+# -- plus the non-arm-file sources the spec names. That is S31's reasoning
+# carried one level out: A TABLE READ FROM THE FILE UNDER TEST COULD ONLY AGREE
+# WITH ITSELF.
+NON_ARM_MERGE_SOURCES = {
+    # decisions/0111 E6: Step 14's limits section is an eighth source, it has no
+    # arm, and Step 13b was moved after Step 14 precisely so it could be filled.
+    ("human_lead", None): ("limitations",),
+    # decisions/0114 E8: Step 8's artifact supplies the blocks no arm produces.
+    ("step8", None): ("channel_classes", "discovery_channel_overlap"),
+}
+
+
+def _expected_merge_sources() -> dict:
+    """(producing_step, arm) -> source_kind, for every source a merge must name."""
+    out = {}
+    for step, duality in STEP_DUALITY.items():
+        for arm in (("a", "b") if duality == "dual" else ("sole",)):
+            out[(step, arm)] = "arm_file"
+    for key in NON_ARM_MERGE_SOURCES:
+        out[key] = "non_arm_file"
+    return out
 
 
 def _producing_step(inst: dict) -> str | None:
@@ -591,10 +692,19 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
     #       (decisions/0111 E2): Step 9's W = 108 and Step 13's W = 108 are
     #       different measurements of one setting and both must exist, so a
     #       two-field key would have called the second a duplicate of the first.
-    c = Check("S2", "arm identity unique on (W_days, clock_origin, producing_step), "
-                    "which is the key $.arm_key declares")
+    c = Check("S2", "arm identity unique on (W_days, clock_origin, producing_step, "
+                    "adopted_rule_revision), which is the key $.arm_key declares")
     declared_key = ((inst.get("arm_key") or {}).get("fields"))
-    expected_key = ["W_days", "clock_origin", "producing_step"]
+    # THE ADOPTED-RULE REVISION JOINED THE KEY AT v1.5.0 (decisions/0114 E14).
+    # Same lineage as `clock_origin` and `producing_step`: a setting under which
+    # the measurement was taken that was invisible in the key. If a Step 5 or
+    # Step 7 amendment lands between Step 9's run and Step 13's, their entries at
+    # one setting are DIFFERENT MEASUREMENTS -- and without this dimension this
+    # very check calls the rerun a duplicate. The dimension has been occupied
+    # once already: processed/step5/adopted_rule.json carried revision-3 figures
+    # against the approved revision-6 rule, and a Step 8 instance had to work
+    # around it.
+    expected_key = ["W_days", "clock_origin", "producing_step", "adopted_rule_revision"]
     c.sites += 1
     if declared_key != expected_key:
         c.failures.append(
@@ -1014,22 +1124,43 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
     # S15 -- D4 and D9 are published alongside and never folded into a bound.
     c = Check("S15", "D4 and D9 are marked published-alongside and not folded into any bound")
     cc = inst.get("channel_classes", {})
-    for name in ("d4", "d9"):
-        node = cc.get(name)
-        if not isinstance(node, dict):
-            c.failures.append(f"$.channel_classes.{name} is absent")
-            continue
-        c.sites += 1
-        if node.get("folded_into_bound") is not False:
-            c.failures.append(f"$.channel_classes.{name}: folded_into_bound is not false")
-        if node.get("published_alongside") is not True:
-            c.failures.append(f"$.channel_classes.{name}: published_alongside is not true")
+    # ARM FILES NO LONGER CARRY THIS BLOCK (decisions/0114 E8): it holds Step 8's
+    # D4 and D9 figures, the merged document carries it once, and an arm file
+    # states the absence. The check says which of the two it is looking at rather
+    # than reporting a clean pass on a block that is not there.
+    if _is_block_absence(cc) or _is_absence(cc):
+        c.skipped_reason = (
+            f"$.channel_classes is an ABSENCE RECORD here, with status "
+            f"{cc.get('status')!r}: this is {_producing_step(inst)!r}'s file, the block holds "
+            f"STEP 8's D4 and D9 figures, and it is filled ONCE in the merged document at "
+            f"Step 13b (decisions/0114 E8). There is nothing to examine and the file says why."
+        )
+    else:
+        for name in ("d4", "d9"):
+            node = cc.get(name)
+            if not isinstance(node, dict):
+                c.failures.append(f"$.channel_classes.{name} is absent")
+                continue
+            c.sites += 1
+            if node.get("folded_into_bound") is not False:
+                c.failures.append(f"$.channel_classes.{name}: folded_into_bound is not false")
+            if node.get("published_alongside") is not True:
+                c.failures.append(f"$.channel_classes.{name}: published_alongside is not true")
     checks.append(c)
 
     # S16 -- every D9 quantity with both key forms publishes as a bound with no
     #        point estimate, and carries its coverage.
     c = Check("S16", "each D9 bounded quantity has floor, ceiling, no point estimate, and coverage")
-    for qname, q in ((cc.get("d9") or {}).get("quantities") or {}).items():
+    if _is_block_absence(cc) or _is_absence(cc):
+        c.skipped_reason = (
+            f"$.channel_classes is an absence record in {_producing_step(inst)!r}'s file "
+            f"(decisions/0114 E8), so there are no D9 quantities here to examine; they are in "
+            f"the merged document, where this check runs."
+        )
+    _d9_quantities = {}
+    if isinstance(cc, dict) and not (_is_block_absence(cc) or _is_absence(cc)):
+        _d9_quantities = ((cc.get("d9") or {}).get("quantities") or {})
+    for qname, q in _d9_quantities.items():
         if not isinstance(q, dict):
             continue
         c.sites += 1
@@ -1215,18 +1346,28 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
         # enum for a writer that is genuinely waiting on an owner step; no
         # placeholder exercises it, and that is stated in
         # $.known_limits_of_this_schema rather than passed over.
+        # RESTRICTED BY PRODUCING STEP AS WELL AS BY ROLE, at v1.5.0. The
+        # premiere-anchored arm and the superseded DERIV liveness series are
+        # STEP 9's alone: Step 9 reports Netflix's 91-day window on a different
+        # origin, and Step 13's W grid is finale-anchored at every one of its
+        # eight arms. Requiring those branches of every dual arm file made a
+        # STEP 13 arm file -- a shape the spec requires and this build can emit
+        # -- fail S21 for holding exactly what the spec asks of it. Found by the
+        # synthetic Step 13 arm file the ratification adds to the selftest.
+        step9_only_shapes = merged or file_step == "step9"
         if merged:
             absence_needed = {"structurally_absent", "not_published",
                               "no_producer_in_spec", "superseded_for_this_purpose",
                               "not_required_by_spec", "not_a_dual_step"}
         elif single_arm_file:
             absence_needed = {"not_required_by_spec", "not_a_dual_step"}
-        else:
+        elif step9_only_shapes:
             absence_needed = {"structurally_absent", "not_published",
                               "no_producer_in_spec", "superseded_for_this_purpose"}
+        else:
+            absence_needed = {"structurally_absent", "not_published"}
         required_branches = {
-            "clock_origin": ({"s2_finale", "s2_premiere"} if not single_arm_file
-                             else {"s2_finale"}),
+            "clock_origin": {"s2_finale"} | ({"s2_premiere"} if step9_only_shapes else set()),
             "producing_arm": {"a", "b", "sole"} if merged else {file_arm},
             "population": {"APPLY", "DERIV"},
             "absence_status": absence_needed,
@@ -1242,7 +1383,18 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
             # only against `account` is built without the branch decisions/0103
             # §2 exists to protect.
             "resampling_unit": {"account", "show"},
-            "quantity_class": {"outcome_shares", "window_w_percentile"},
+            # RESTRICTED BY PUBLISHER at v1.5.0 (decisions/0114 E11). W is not
+            # every step's to report: Steps 10, 11 and 12 do not vary it, so
+            # requiring the window-W branch of their files is what made the
+            # shipped single-arm placeholder attribute the window-W percentile to
+            # `step11`. The branch is exercised where it is legal, and the other
+            # files still exercise both RESAMPLING UNITS, which is the branch
+            # decisions/0103 §2 exists to protect.
+            "quantity_class": (
+                {"outcome_shares", "window_w_percentile"}
+                if merged or file_step in INTERVAL_CLASS_PUBLISHERS["window_w_percentile"]
+                else {"outcome_shares"}
+            ),
             "unit_disagreement": {"present"},
         }
         if not merged:
@@ -1297,7 +1449,8 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
     c = Check(
         "S22",
         "every block absence names an owning step and a reason; the primary headline arm "
-        "carries no absent block; and ceilings are absent only where the bounds are",
+        "carries no absent block WHERE A PRODUCER EXISTS AT THAT ARM, and states an absence "
+        "where none does; and ceilings are absent only where the bounds are",
     )
     for path, node in _walk(inst):
         if _is_block_absence(node):
@@ -1342,6 +1495,11 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
         if arm.get("is_primary_headline") is not True:
             continue
         entry_step = arm.get("producing_step")
+        # PUBLISHER ROWS KEY ON ARM IDENTITY, NOT PRODUCING STEP ALONE
+        # (decisions/0114 E13). BLOCK_PUBLISHER names the step; whether that step
+        # produces the block AT THIS ARM is a second question, and reading only
+        # the first made this check require a figure no step makes.
+        has_producer = _block_has_producer(arm)
         for name in sorted(BLOCK_PUBLISHER):
             pub = BLOCK_PUBLISHER[name]
             if pub != entry_step:
@@ -1353,6 +1511,35 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
                 continue
             c.sites += 1
             node = arm.get(name)
+            if not has_producer:
+                # ABSENCE STATED, NOT SILENCE. The record is still required; what
+                # is not required is the figure. A missing key is silence and
+                # still fails -- an empty result and a clean result are the same
+                # value, and only the record says which.
+                if node is None:
+                    c.failures.append(
+                        f"$.arms[{i}].{name}: MISSING at a "
+                        f"{arm.get('clock_origin')!r}-anchored entry. No step in the spec "
+                        f"produces this block there, so the FIGURE is not required -- but the "
+                        f"RECORD is: absence stated, not silence (decisions/0114 E13)"
+                    )
+                elif not _is_block_absence(node):
+                    c.notes.append(
+                        f"$.arms[{i}].{name}: carried at a {arm.get('clock_origin')!r}-anchored "
+                        f"entry, where the spec names no producer. Not a failure -- a writer "
+                        f"that has a figure may publish it -- but it is recorded rather than "
+                        f"passed over"
+                    )
+                else:
+                    c.notes.append(
+                        f"$.arms[{i}].{name}: absence accepted at a "
+                        f"{arm.get('clock_origin')!r}-anchored entry with status "
+                        f"{node.get('status')!r}. This entry is the adopted setting for "
+                        f"{entry_step!r} AND no step produces this block at this clock origin, "
+                        f"so requiring the figure would require one to be invented "
+                        f"(decisions/0114 E13)"
+                    )
+                continue
             if node is None:
                 c.failures.append(
                     f"$.arms[{i}].{name}: MISSING on the adopted setting, where the spec names "
@@ -1903,19 +2090,88 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
         #     and it needs no forgery, only an omission. The shipped placeholder
         #     was occupied by exactly that: two of its seven declared inputs were
         #     named by no payload at all.
+        #     AND IT PROVED MENTION, NOT CONTRIBUTION, until v1.5.0
+        #     (decisions/0114, E9/E15). `named` walked EVERY node carrying a
+        #     `merged_from` string, so a single `$.declared_intervals` entry --
+        #     which is a reference to a file, not a payload from it -- satisfied
+        #     an arm-file source that had supplied nothing at all. The two are
+        #     counted separately now: a mention keeps its own tally and does not
+        #     discharge the requirement.
         named: dict[str, int] = {}
+        mentioned: dict[str, int] = {}
         for path, node in _walk(inst):
-            if isinstance(node, dict) and isinstance(node.get("merged_from"), str):
+            if not (isinstance(node, dict) and isinstance(node.get("merged_from"), str)):
+                continue
+            if path.startswith("$.declared_intervals"):
+                mentioned[node["merged_from"]] = mentioned.get(node["merged_from"], 0) + 1
+            else:
                 named[node["merged_from"]] = named.get(node["merged_from"], 0) + 1
         for label, (step_of, arm_of) in labels.items():
             c.sites += 1
             if label not in named:
+                only_mentioned = (
+                    f" It IS named by {mentioned[label]} $.declared_intervals entr"
+                    f"{'y' if mentioned[label] == 1 else 'ies'}, and that is a MENTION, not a "
+                    f"CONTRIBUTION: an interval entry references a file, it is not a payload "
+                    f"from one (decisions/0114 E9/E15)." if label in mentioned else ""
+                )
                 c.failures.append(
                     f"$.document_scope.merge.sources_merged: the source ({step_of!r}, "
                     f"{arm_of!r}) is declared as an input and NO payload names it in "
                     f"merged_from -- a merge that drops an entire declared input is the "
                     f"inverse of the one this check was written for, and it needs no forgery, "
-                    f"only an omission"
+                    f"only an omission.{only_mentioned}"
+                )
+        # (f) THE EXTERNAL ANCHOR (decisions/0114, E9/E15). Every leg above reads
+        #     the declared list against the file's own payloads, so the two close
+        #     against each other and A MERGE DECLARING FIVE OF EIGHT SOURCES
+        #     VALIDATED CLEAN: drop three sources and the payloads they supplied,
+        #     and nothing in the file contradicts anything else in it. The
+        #     expected set is DERIVED FROM STEP_DUALITY, which already held the
+        #     material -- dual steps contribute two arms, single-arm steps one --
+        #     plus the non-arm-file sources the spec names. Same reasoning as S31
+        #     and as S22's publisher table: A TABLE READ FROM THE FILE UNDER TEST
+        #     COULD ONLY AGREE WITH ITSELF.
+        expected_sources = _expected_merge_sources()
+        declared_pairs = {}
+        for entry in (inputs if isinstance(inputs, list) else []):
+            if isinstance(entry, dict):
+                declared_pairs[(entry.get("producing_step"), entry.get("arm"))] = entry
+        for key, kind in sorted(expected_sources.items(), key=lambda kv: (kv[0][0], str(kv[0][1]))):
+            step_of, arm_of = key
+            c.sites += 1
+            entry = declared_pairs.get(key)
+            if entry is None:
+                c.failures.append(
+                    f"$.document_scope.merge.sources_merged: the source ({step_of!r}, "
+                    f"{arm_of!r}) is EXPECTED and is not declared. The expected set is derived "
+                    f"from the duality the spec fixes plus the named non-arm-file sources "
+                    f"({len(expected_sources)} in all), not read from this file -- a merge that "
+                    f"declares a subset and drops the matching payloads closes against itself "
+                    f"and would otherwise validate clean (decisions/0114 E9/E15)"
+                )
+            elif entry.get("source_kind") != kind:
+                c.failures.append(
+                    f"$.document_scope.merge.sources_merged: the source ({step_of!r}, "
+                    f"{arm_of!r}) declares source_kind {entry.get('source_kind')!r}; the spec "
+                    f"makes it {kind!r}"
+                )
+        for key, entry in sorted(declared_pairs.items(), key=lambda kv: (str(kv[0][0]), str(kv[0][1]))):
+            if key in expected_sources:
+                continue
+            c.sites += 1
+            if entry.get("source_kind") == "arm_file":
+                c.failures.append(
+                    f"$.document_scope.merge.sources_merged: ({key[0]!r}, {key[1]!r}) is "
+                    f"declared as an ARM FILE and is not one of the seven the spec fixes "
+                    f"(decisions/0109 §1, one file per step per arm)"
+                )
+            else:
+                c.notes.append(
+                    f"$.document_scope.merge.sources_merged: ({key[0]!r}, {key[1]!r}) is an "
+                    f"undeclared-in-spec NON-ARM-FILE source. Permitted -- the input list "
+                    f"records SOURCES (decisions/0111 E6) -- and recorded here rather than "
+                    f"passed over; its blocks are checked below like any other"
                 )
         # A non-arm-file source names the blocks it fills, and those blocks are
         # where its provenance has to appear: its payloads are not per-arm, so no
@@ -1923,7 +2179,21 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
         for label, blocks in non_arm_labels.items():
             for block in blocks:
                 c.sites += 1
-                entries = inst.get(block)
+                node = inst.get(block)
+                # A NON-ARM SOURCE MAY FILL A LIST OR AN OBJECT (v1.5.0). Step
+                # 14's limits section fills a list; Step 8's artifact fills
+                # `channel_classes`, which is one object, and a leg that only
+                # understood lists would have reported it absent.
+                if isinstance(node, dict) and not _is_block_absence(node):
+                    if node.get("merged_from") != label:
+                        c.failures.append(
+                            f"$.{block}: declared as filled by the non-arm-file source "
+                            f"{label!r} and does not name it in merged_from -- a block cannot "
+                            f"arrive in the reader-facing document with no recorded provenance "
+                            f"(decisions/0111 E6)"
+                        )
+                    continue
+                entries = node
                 if not isinstance(entries, list) or not entries:
                     c.failures.append(
                         f"$.{block}: declared as filled by the non-arm-file source {label!r}, "
@@ -2164,7 +2434,23 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
                     f"{path}: performed with coverage_count 0 -- an empty result and a clean "
                     f"result are the same value, and this one looked at nothing"
                 )
-    d9 = ((inst.get("channel_classes") or {}).get("d9") or {}).get("quantities") or {}
+    cc33 = inst.get("channel_classes") or {}
+    cc33_absent = _is_block_absence(cc33) or _is_absence(cc33)
+    d9 = {} if cc33_absent else ((cc33.get("d9") or {}).get("quantities") or {})
+    if c.sites == 0 and cc33_absent:
+        # SCOPE-EMPTY, AND IT SAYS SO. Both of this check's site families live in
+        # the merged document: the cross-arm search record is merge-only, and D9's
+        # coverage moved there with `channel_classes` (decisions/0114 E8). The
+        # warrant is the EXTERNAL publisher table plus this file's own absence
+        # record -- not silence.
+        c.skipped_reason = (
+            f"this file is {_producing_step(inst)!r}'s and carries neither site family: the "
+            f"cross-arm search record belongs to the merged document, and D9's coverage sits "
+            f"inside $.channel_classes, which this file records as absent with status "
+            f"{cc33.get('status')!r} because the block is published by "
+            f"{TOP_LEVEL_PUBLISHER.get('channel_classes')!r} (decisions/0114 E8). Both halves "
+            f"run on the merged document, which is validated in the same run."
+        )
     for qname, q in d9.items():
         cov = (q or {}).get("coverage") or {}
         if "records_examined" not in cov:
@@ -2388,11 +2674,41 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
             if name not in inst:
                 continue
             c.sites += 1
-            if publisher != file_step:
+            if publisher == file_step:
+                continue
+            # THE ABSENCE IDIOM IS THE LEGAL FORM (decisions/0114 E8). A block
+            # another party publishes may be PRESENT as a record that says so --
+            # `channel_classes` is REQUIRED at the top level, so an arm file has
+            # no way to omit it and must be able to state the absence. What is
+            # forbidden is a FILLED copy: that is the seventh writer of a figure
+            # none of them produced.
+            if _is_block_absence(inst[name]) or _is_absence(inst[name]):
+                c.notes.append(
+                    f"$.{name}: present as an ABSENCE RECORD in {file_step!r}'s file, which is "
+                    f"the legal form -- the block is published by {publisher!r} and this file "
+                    f"states that rather than falling silent (decisions/0114 E8)"
+                )
+                continue
+            c.failures.append(
+                f"$.{name}: FILLED in {file_step!r}'s file, and this block is published "
+                f"by {publisher!r}. It holds figures this file's step did not produce, so a "
+                f"copy here is one of seven writers of one figure, with no precedence rule "
+                f"and no agreement check. The legal form is the absence idiom "
+                f"(decisions/0114 E8)"
+            )
+    else:
+        # THE PUBLISHER'S OWN FILE CARRIES THE REAL ONE. Absence everywhere and
+        # presence nowhere is the failure the one-place rule creates if it is
+        # applied without its other half.
+        for name, publisher in sorted(TOP_LEVEL_PUBLISHER.items()):
+            if publisher != file_step or name not in inst:
+                continue
+            c.sites += 1
+            if _is_block_absence(inst[name]) or _is_absence(inst[name]):
                 c.failures.append(
-                    f"$.{name}: present in {file_step!r}'s file, and this block is published "
-                    f"by {publisher!r}, which writes its own file under one file per step per "
-                    f"arm"
+                    f"$.{name}: an ABSENCE RECORD in {file_step!r}'s own file, and "
+                    f"{file_step!r} is the step that publishes it. Every other file states "
+                    f"this block's absence; if this one does too, the figure is nowhere"
                 )
         # The file's own table is read here too -- and only to be asserted
         # against the external one, never to decide the question.
@@ -2407,6 +2723,169 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
                     f"$.block_ownership.{name}.published_by_step is "
                     f"{entry.get('published_by_step')!r}; the spec fixes {publisher!r}"
                 )
+    checks.append(c)
+
+    # S37 -- THE ADOPTED-RULE REVISION IS A KEY FIELD, AND IT IS READ FROM A FILE
+    #        RATHER THAN TYPED (decisions/0114 E14). It is the fourth identity
+    #        dimension, and its lineage is the same as `clock_origin`'s and
+    #        `producing_step`'s: a setting under which the measurement was taken
+    #        that was invisible in the key. THE DIMENSION HAS ALREADY BEEN
+    #        OCCUPIED -- processed/step5/adopted_rule.json carried revision-3
+    #        figures against the approved revision-6 rule, and a Step 8 instance
+    #        had to work around it, which is why CLAUDE.md made processed/ the
+    #        eighth propagation surface.
+    #
+    #        The registry says WHERE the value was read from, so a reader can go
+    #        and check it. A typed revision would be a second definition of the
+    #        rule's version, which is the defect this study has hit most often.
+    c = Check(
+        "S37",
+        "every arm, variant and cut entry names the adopted-rule revision it was measured "
+        "under, and the registry says which file and key that value was READ FROM",
+    )
+    reg = inst.get("adopted_rule_revision")
+    c.sites += 1
+    if not isinstance(reg, dict):
+        c.failures.append(
+            "$.adopted_rule_revision is absent: the fourth key dimension has no registry, so "
+            "each entry's revision is a claim with nothing behind it (decisions/0114 E14)"
+        )
+        reg = {}
+    else:
+        for field in ("revision", "source_file", "source_key", "source_sha256_12",
+                      "read_not_typed"):
+            if field not in reg:
+                c.failures.append(f"$.adopted_rule_revision: missing {field}")
+        if reg.get("read_not_typed") is not True:
+            c.failures.append(
+                "$.adopted_rule_revision.read_not_typed is not true: the revision is READ FROM "
+                "the adopted-rule file at write time, never typed into this document"
+            )
+    merged_here = _is_merged_document(inst)
+    present = reg.get("revisions_present")
+    for family in ENTRY_FAMILIES:
+        for i, entry in enumerate(inst.get(family) or []):
+            if not isinstance(entry, dict):
+                continue
+            c.sites += 1
+            value = entry.get("adopted_rule_revision")
+            if value is None:
+                c.failures.append(
+                    f"$.{family}[{i}]: no adopted_rule_revision. Two runs at one "
+                    f"(W, clock origin, step) setting under different rule revisions are "
+                    f"DIFFERENT MEASUREMENTS, and without this field check S2 calls the "
+                    f"second a duplicate of the first"
+                )
+            elif merged_here:
+                if not isinstance(present, list) or value not in present:
+                    c.failures.append(
+                        f"$.{family}[{i}].adopted_rule_revision is {value!r} and is not in "
+                        f"$.adopted_rule_revision.revisions_present {present!r} -- the merged "
+                        f"document carries entries from several runs, so the revisions it "
+                        f"holds are enumerated rather than assumed to be one"
+                    )
+            elif "revision" in reg and value != reg.get("revision"):
+                c.failures.append(
+                    f"$.{family}[{i}].adopted_rule_revision is {value!r}; this file was "
+                    f"written under revision {reg.get('revision')!r}. One arm file is one "
+                    f"run, and one run is one revision"
+                )
+    checks.append(c)
+
+    # S38 -- A DECLARED INTERVAL BELONGS TO A STEP THAT PRODUCES IT, AND IN AN ARM
+    #        FILE TO THAT FILE'S OWN STEP AND ARM (decisions/0114 E11).
+    #        `$.declared_intervals` sat outside ENTRY_FAMILIES and outside
+    #        TOP_LEVEL_PUBLISHER, so nothing asked whose interval an entry was and
+    #        an arm file could carry another step's. OCCUPIED, in the shipped
+    #        single-arm placeholder: the WINDOW-W PERCENTILE attributed to
+    #        `step11`, which does not compute W.
+    c = Check(
+        "S38",
+        "every declared interval names a producing step the spec lets publish that quantity "
+        "class, and in an arm file names that file's own step and arm",
+    )
+    file_step_i = _producing_step(inst)
+    file_arm_i = (inst.get("document_scope") or {}).get("arm")
+    for i, entry in enumerate(inst.get("declared_intervals") or []):
+        if not isinstance(entry, dict):
+            continue
+        step_of = entry.get("produced_by_step")
+        arm_of = entry.get("producing_arm")
+        qclass = (entry.get("ci") or {}).get("quantity_class")
+        c.sites += 1
+        allowed = INTERVAL_CLASS_PUBLISHERS.get(qclass)
+        if allowed is None:
+            c.notes.append(
+                f"$.declared_intervals[{i}]: quantity class {qclass!r} names no publisher in "
+                f"the external table -- it is open to any writer by construction, so only the "
+                f"arm-identity clause applies to it"
+            )
+        elif step_of not in allowed:
+            c.failures.append(
+                f"$.declared_intervals[{i}]: attributed to {step_of!r}, which does not produce "
+                f"a {qclass!r} interval. The spec lets {list(allowed)!r} publish that class "
+                f"(decisions/0114 E11)"
+            )
+        if not merged_here:
+            c.sites += 1
+            if step_of != file_step_i or arm_of != file_arm_i:
+                c.failures.append(
+                    f"$.declared_intervals[{i}]: names ({step_of!r}, {arm_of!r}) in "
+                    f"{file_step_i!r}'s arm-{file_arm_i!r} file. One file is one step's output "
+                    f"for one arm, and an interval is a measurement like any other"
+                )
+    if not (inst.get("declared_intervals") or []):
+        c.declared_empty = (
+            "this file declares no intervals. The block is optional and the emptiness is "
+            "reported rather than passed over."
+        )
+        c.coverage = 0
+    checks.append(c)
+
+    # S39 -- THE PUBLISHER TABLE COVERS EVERY PER-ARM BLOCK THE SCHEMA DEFINES
+    #        (decisions/0114 E12). S22 iterates BLOCK_PUBLISHER and S36 iterates
+    #        BLOCK_PUBLISHER, so A BLOCK THE TABLE DOES NOT NAME IS A BLOCK
+    #        NEITHER OF THEM LOOKS AT: it can be written into any step's entry, in
+    #        any file, and no control says a word. Nothing kept the table complete
+    #        except that it happened to be, and "complete today" is not a control.
+    #
+    #        The two sets are compared against each other, and the exemptions --
+    #        the identity fields and `headline` -- are declared in this module,
+    #        outside the schema and outside the file under test.
+    c = Check(
+        "S39",
+        "every per-arm block property the schema defines has a row in the external publisher "
+        "table, and every row names a property the schema defines",
+    )
+    arm_entry_schema = ((ev.root.get("$defs") or {}).get("arm_entry") or {})
+    props = set((arm_entry_schema.get("properties") or {}))
+    if not props:
+        c.failures.append(
+            "$defs/arm_entry defines no properties: the closure has nothing to run against, "
+            "and a check that looked at nothing is not a clean check"
+        )
+    blocks_in_schema = props - set(ARM_ENTRY_NON_BLOCK_PROPERTIES)
+    for name in sorted(blocks_in_schema):
+        c.sites += 1
+        if name not in BLOCK_PUBLISHER:
+            c.failures.append(
+                f"$defs/arm_entry.properties.{name}: a per-arm block with NO row in the "
+                f"external publisher table. S22 and S36 both iterate that table, so this "
+                f"block can be written into any step's entry in any file and neither check "
+                f"looks at it (decisions/0114 E12). Give it a row, or declare it a non-block "
+                f"in ARM_ENTRY_NON_BLOCK_PROPERTIES with a reason"
+            )
+    for name in sorted(BLOCK_PUBLISHER):
+        c.sites += 1
+        if name not in props:
+            c.failures.append(
+                f"BLOCK_PUBLISHER names {name!r}, which $defs/arm_entry does not define. A row "
+                f"for a block that no longer exists reads as coverage and is none"
+            )
+    c.notes.append(
+        f"exempted as identity or headline slots, by name in this module: "
+        f"{sorted(ARM_ENTRY_NON_BLOCK_PROPERTIES & props)}"
+    )
     checks.append(c)
 
     _declare_scope_emptiness(inst, checks)
