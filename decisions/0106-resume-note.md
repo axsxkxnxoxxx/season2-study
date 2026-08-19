@@ -158,8 +158,10 @@ movements alone.***
 the levels first).** **Propagated onward to `task-sheet.md:960`,
 `.claude/agents/data-scientist.md:222`, `.claude/agents/data-scientist-b.md:222` and
 `.claude/agent-memory/second-brain/gate-step7-liveness.md:498`** — **seven surfaces carrying a
-characterisation of an arm that the arm's own artifact contradicts.** ***Not corrected here: this is
-the object of the pending ruling, and correcting it is the ruling.***
+characterisation of an arm that the arm's own artifact contradicts.** ~~***Not corrected here: this
+is the object of the pending ruling, and correcting it is the ruling.***~~ ***RULED AND CORRECTED
+2026-08-19 (`0118`): all seven sites CORRECTED, not marked — it was wrong when written, not
+superseded later.*** **The statistic is fixed as BOTH levels and paired movements, both arms.**
 
 ### 7.3 ***WITHDRAWN — the seed contradiction does not exist, and neither does my "appears once"***
 
@@ -235,5 +237,9 @@ spec's requirement is that the statistic be *fixed identically for both arms*, a
 a candidate answer to that, not a third position.** ***The Human Lead's ruling is whether "both,
 explicitly labelled" satisfies `0056` §159's "must be fixed identically for both arms in the spec
 before Step 9 runs" — and if it does, whether the three sites in §7.2 are corrected or marked.***
+
+> ***ANSWERED 2026-08-19 (`0118`): IT DOES.*** **The statistic is fixed as BOTH levels and paired
+> movements, both arms, both labelled, neither presented as the design.** **All three bootstrap
+> elements are now fixed and identical, and Step 9 is no longer blocked on the bootstrap.**
 
 ***STEP 9 IS NOT BEGUN. NOTHING ELSE STARTED.***

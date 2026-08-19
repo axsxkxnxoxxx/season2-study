@@ -493,10 +493,16 @@ first time in this step.**
 `x = x` there** (`0050` §3). The informative comparison is on APPLY.
 
 **The bootstraps became diffable for the first time at the `0053` run** — both B = 4,000,
-account-clustered, both levels and movements, seeds stated. Before that they were **not diffable at
-all** and nobody had said so: A used B = 4,000 / seed 20260813 / **movements**, B used 2,000 / seed
-20260814 / **levels**, and *"the spec fixes neither and Step 9 must attach confidence intervals"*
-(`0052` §6). **That gap survived `0049`, `0050` and `0051` unactioned while the gate's own Check line
+account-clustered, both levels and movements, seeds stated (**A `20260813`, B `20260815`; that pair
+is the `mm` run and both halves are correct on disk** — `0106` §7.3). Before that they were **not
+diffable at all** and nobody had said so: on the `bb` gate-closing run A used B = 4,000 / seed
+20260813, B used 2,000 / seed 20260814, and *"the spec fixes neither and Step 9 must attach
+confidence intervals"* (`0052` §6). ~~A used … **movements**, B … **levels**~~ ***THE
+STATISTIC HALF OF THAT PAIRING IS CORRECTED, NOT MARKED — IT WAS NEVER TRUE*** (`0118` §2):
+**arm `a` published BOTH levels and paired movements on BOTH runs**, which this very paragraph
+records one sentence earlier for the `mm` run and did not reconcile. ***The statistic is now FIXED
+as BOTH, for both arms, both labelled, neither presented as the design*** (`0118`), joining
+`B` = 10,000, seed 20260818 and unit = account (`0103`) — **no bootstrap element is unfixed.** **That gap survived `0049`, `0050` and `0051` unactioned while the gate's own Check line
 is "dual implementation diff."**
 
 **Two divergences reported and NOT reconciled, per `CLAUDE.md`** (`0054` §6):

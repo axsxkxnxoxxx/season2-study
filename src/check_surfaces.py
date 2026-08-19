@@ -365,6 +365,106 @@ def scan_superseded_strings():
     return hits, cov
 
 
+# ------------------------------------------------------------------ 0118: the statistic control
+#
+# reviewer-engineering's E11, carried in both data-scientist files as "when it IS fixed, a check
+# must assert both arms' `statistic` agree -- or the fix will be recorded and unpoliced."
+# 0118 fixes it, so the check is built with it rather than after it.
+#
+# WHY BYTE-IDENTITY AND NOT A KEYWORD SEARCH. CLAUDE.md: "Never describe the task twice in your own
+# words: a difference in output would then prove nothing." Two paraphrases of one requirement are
+# two definitions of it, and this study's most-repeated defect is a second definition of one figure.
+# So the requirement is ONE block, delimited, and the control compares the two copies as bytes.
+#
+# WHY A MISSING MARKER FAILS. CLAUDE.md: "An empty result and a clean result are the same value,
+# and only the control knows which it produced." If a marker is deleted the block extraction returns
+# nothing, two nothings compare equal, and a byte-identity check would report clean while covering
+# ZERO characters. That is the exact shape of the three controls that reported clean over zero rows.
+STAT_BEGIN = "<!-- BOOTSTRAP-STATISTIC-BEGIN"
+STAT_END = "<!-- BOOTSTRAP-STATISTIC-END -->"
+STAT_WRITERS = (".claude/agents/data-scientist.md", ".claude/agents/data-scientist-b.md")
+# The four elements the block must name. Values, not prose -- prose is the third blindness class.
+STAT_REQUIRED = {
+    "B = 10,000": ("10,000", "0103"),
+    "seed = 20260818": ("20260818", "0103"),
+    "unit = account": ("account", "0103"),
+    "statistic = both levels and paired movements": ("levels and paired movements", "0118"),
+}
+
+
+def scan_statistic_declaration():
+    """FAIL if the two arms' bootstrap-statistic declarations differ, or if the block is absent.
+
+    Returns (failures, cov). cov reports CHARACTERS COMPARED, not files opened: a control that
+    opened two files and compared two empty strings has looked nowhere, and must say so.
+    """
+    fails, blocks, cov = [], {}, dict(files=0, chars=0, elements=len(STAT_REQUIRED))
+    for f in STAT_WRITERS:
+        try:
+            t = Path(f).read_text()
+        except OSError as e:                                        # noqa: BLE001
+            fails.append(f"{f}: unreadable ({e}) -- the declaration cannot be checked")
+            continue
+        cov["files"] += 1
+        i, j = t.find(STAT_BEGIN), t.find(STAT_END)
+        if i < 0 or j < 0:
+            fails.append(
+                f"{f}: {'BEGIN' if i < 0 else 'END'} marker absent. The canonical block is gone or "
+                f"was renamed; two absent blocks compare EQUAL, so this must fail rather than pass")
+            continue
+        if j < i:
+            fails.append(f"{f}: END marker precedes BEGIN -- the block is malformed")
+            continue
+        blocks[f] = t[i:j + len(STAT_END)]
+    if len(blocks) == len(STAT_WRITERS):
+        a, b = (blocks[f] for f in STAT_WRITERS)
+        cov["chars"] = min(len(a), len(b))
+        if a != b:
+            n = next((k for k, (x, y) in enumerate(zip(a, b)) if x != y), min(len(a), len(b)))
+            fails.append(
+                f"THE TWO ARMS' STATISTIC DECLARATIONS DIFFER, first at character {n}:\n"
+                f"      {STAT_WRITERS[0]}: ...{a[max(0, n - 40):n + 40]!r}\n"
+                f"      {STAT_WRITERS[1]}: ...{b[max(0, n - 40):n + 40]!r}\n"
+                f"      A divergence in Step 9's CIs would then be a SPEC difference wearing the "
+                f"costume of a measurement difference, which is what the dual diff cannot tell apart")
+        for label, (needle, ruling) in STAT_REQUIRED.items():
+            for f, blk in blocks.items():
+                if needle not in blk:
+                    fails.append(f"{f}: the block does not name {label} ({needle!r}, {ruling})")
+    if cov["chars"] == 0 and not fails:
+        fails.append("COVERAGE ZERO: compared 0 characters and reported clean -- looked nowhere")
+    return fails, cov
+
+
+def _selftest_statistic_matcher():
+    """The control must fail on each thing it claims to catch. Asserted, not asserted-about."""
+    good = STAT_BEGIN + " x -->\n10,000 20260818 account levels and paired movements\n" + STAT_END
+    assert _stat_verdict(good, good) == [], "selftest: identical valid blocks must pass"
+    assert _stat_verdict(good, good.replace("account", "show")), "selftest: a mismatch must fail"
+    assert _stat_verdict(good, good.replace("10,000", "4,000")), "selftest: a changed B must fail"
+    assert _stat_verdict(good.replace(STAT_END, ""), good), "selftest: a missing marker must fail"
+    assert _stat_verdict("", ""), "selftest: two ABSENT blocks must fail, not compare equal"
+
+
+def _stat_verdict(a, b):
+    """Pure form of scan_statistic_declaration's logic, for the selftest above."""
+    fails, blocks = [], {}
+    for name, t in (("a", a), ("b", b)):
+        i, j = t.find(STAT_BEGIN), t.find(STAT_END)
+        if i < 0 or j < 0 or j < i:
+            fails.append(f"{name}: marker absent")
+            continue
+        blocks[name] = t[i:j + len(STAT_END)]
+    if len(blocks) == 2:
+        if blocks["a"] != blocks["b"]:
+            fails.append("differ")
+        for _, (needle, _r) in STAT_REQUIRED.items():
+            for name, blk in blocks.items():
+                if needle not in blk:
+                    fails.append(f"{name}: missing {needle}")
+    return fails
+
+
 def scan_step8_register():
     """Exercise the Step 8 trap register, and FAIL on a row that matches nothing.
 
@@ -506,6 +606,20 @@ if __name__ == "__main__":
         print(f"        {text}")
     print()
 
+    _selftest_statistic_matcher()
+    stat_fails, stat_cov = scan_statistic_declaration()
+    print("BOOTSTRAP STATISTIC -- 0118, closing reviewer-engineering's E11 (surfaces 2 and 3):")
+    print(f"  coverage: {stat_cov['files']}/{len(STAT_WRITERS)} writer files read, "
+          f"{stat_cov['chars']} characters compared byte for byte, "
+          f"{stat_cov['elements']} fixed elements asserted in each copy")
+    if stat_fails:
+        for m in stat_fails:
+            print(f"  FAIL: {m}")
+    else:
+        print("  the two arms' declarations are byte-identical and name all four fixed elements: "
+              "B = 10,000, seed 20260818, unit = account (0103), statistic = BOTH (0118)")
+    print()
+
     s8_hits, s8_cov = scan_step8_register()
     s8_dead = sorted(v for v, n in s8_hits.items() if n == 0)
     print("STEP 8 TRAP REGISTER -- 0101, closing R3 (these lived only in second-brain's memory):")
@@ -601,7 +715,8 @@ if __name__ == "__main__":
                 mark = "  UNUSED: exempts nothing that occurs"
         print(f"  {v}: {why}{mark}")
 
-    if neg or missing or miss_in or phrase_hits or READ_FAILURES or legit_conflicts or missing_d or s8_dead:
+    if (neg or missing or miss_in or phrase_hits or READ_FAILURES or legit_conflicts
+            or missing_d or s8_dead or stat_fails):
         print("\nFAIL")
         sys.exit(1)
     print("\nPASS -- all halves, all EIGHT surfaces.")

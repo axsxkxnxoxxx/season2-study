@@ -46,8 +46,9 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
   RULE, 9–15 found propagation and control defects in figures derived from an unchanged rule.** **The
   approval is UNCONDITIONAL and the residual publishes with the result** — nine items,
   `artifacts/step7-gate-approval.md` §4, including that **Step 9's CIs are not diffable until the
-  bootstrap `B`, seed and levels-vs-movements are fixed identically for both arms** ***— of which
-  `0103` fixed the first two, leaving levels-vs-movements (`0105`).*** ***AND "Step 8 is the remaining
+  bootstrap `B`, seed and levels-vs-movements are fixed identically for both arms** ***— ALL THREE
+  ARE NOW FIXED: `0103` fixed `B` and the seed, and `0118` fixed the statistic as BOTH levels and
+  paired movements.*** ***AND "Step 8 is the remaining
   gate" is SUPERSEDED: Step 8 was APPROVED 2026-08-17 (`0098`), gate 5 of 5, and ALL FIVE GATES ARE
   APPROVED.***
     - **A pair is NOT LIVE iff BOTH: no insertion instant after that pair's `τ1`, AND NOT Continued.**
@@ -134,10 +135,12 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
   step13.** **You cannot see the other arm, so you could only fabricate its search record.** **Omit
   it**; Step 13b fills it with a real one. **Do not write `$.limitations` either** (`human_lead_only`).
   **One slot per figure forces nothing in YOUR file, because there is no second arm's figure in it.**
-- **THE BOOTSTRAP IS FIXED — 10,000 RESAMPLES, ACCOUNT-LEVEL, SEED 20260818** (`0103`). **This
-  unblocks Step 9**, which could not write anything while `ci.bootstrap_ref` was required against an
-  unspecified bootstrap. **EVERY INTERVAL RECORDS ITS SEED, RESAMPLE COUNT AND RESAMPLING UNIT AT THE
-  POINT OF USE**, so an unfixed spec is visible rather than silent.
+- **THE BOOTSTRAP IS FIXED — 10,000 RESAMPLES, ACCOUNT-LEVEL, SEED 20260818** (`0103`) **AND THE
+  STATISTIC IS BOTH LEVELS AND PAIRED MOVEMENTS** (`0118`). ***ALL FOUR ELEMENTS, IDENTICAL FOR BOTH
+  ARMS. NOTHING ABOUT THE BOOTSTRAP IS UNFIXED.*** **This unblocks Step 9**, which could not write
+  anything while `ci.bootstrap_ref` was required against an unspecified bootstrap. **EVERY INTERVAL
+  RECORDS ITS SEED, RESAMPLE COUNT, RESAMPLING UNIT AND STATISTIC AT THE POINT OF USE**, so the
+  settings are visible rather than silent — **and both statistics must be findable there.**
   **ACCOUNT LEVEL because pairs are NOT independent — one account contributes many — and pair-level
   resampling understates the interval.** **Measured on this build**: Step 7's threshold interval is
   account-clustered **[528, 787]** against an i.i.d. **[632, 645]** that **overstates precision by
@@ -195,8 +198,9 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
   inapplicable one; **Continued's floor accepts only an absence record, never a number**; **the three
   ceilings cannot all hold**, and `simultaneous` is `const false`; **every bound must reference
   `$.scope_qualifiers`** so the covering qualifier cannot be stripped; **every CI must reference
-  `$.bootstrap_settings`**. ***PARTLY SUPERSEDED by `0103`, which FIXED `B` = 10,000, the seed = 20260818 and the resampling unit = account.*** ***LEVELS-VS-MOVEMENTS IS STILL UNFIXED, and this file requires all THREE fixed identically — so Step 9 REMAINS BLOCKED on that third element alone*** (`0104`, found by arm `a` on the Step 8b rerun). **The reference stays**, because
-  **an unfixed spec must be VISIBLE in the output rather than silent.**
+  `$.bootstrap_settings`**. ***SUPERSEDED by `0103` and `0118`, which between them FIXED all four: `B` = 10,000, the seed = 20260818, the resampling unit = account, and the statistic = BOTH levels and paired movements.*** ***NO BOOTSTRAP ELEMENT REMAINS UNFIXED, so Step 9 is no longer blocked on any of them*** (`0104` recorded the gap; `0118` closes it). **The reference stays**, because
+  **the settings must be VISIBLE in the output at the point of use rather than silent** — and because
+  **both statistics now have to be findable there.**
   **`p_at_bound` carries TWO required objects, not one** — `column_cardinalities` (TRUE / FALSE / null,
   all three, plus `total_rows`) and `coextensivity_gap` (the empty class). ***They are different
   classes and one of them is not empty*** (`0099` §2): **a consumer that reads "the FALSE class is
@@ -210,23 +214,57 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
   hit most often (`0058`, `0061`, `0062`). **If Step 8's output does not carry DERIV or D4, say so and
   stop — do not reconstruct them.** A reconstruction that agrees today is still a second definition
   tomorrow, and the dual diff cannot see it, because both instances would rebuild the same way.
-  ~~**THE BOOTSTRAP IS UNSPECIFIED AND THIS BLOCKS STEP 9**~~ ***PARTLY SUPERSEDED by `0103`
-  (`0105`, found by `reviewer-engineering` as E11): `B` = 10,000, seed = 20260818 and the resampling
-  unit = ACCOUNT are FIXED. ONLY levels-vs-movements remains unfixed — and because this file requires
-  all THREE fixed identically, STEP 9 IS STILL BLOCKED, on that one element.*** ***My propagation of
-  `0103` reached two of four sites and I reported it as corrected at the point of use; this file then
-  carried two contradictory statements about whether Step 9 was unblocked, ten lines apart — the exact
-  shape `CLAUDE.md`'s read-back-plus-grep rule exists for.*** **The instruction below is UNCHANGED and
-  still correct — say so and stop — but for ONE unfixed element, not three.** (`0056`.) The two Step 7
-  arms diverged on all
-  three of `B`, seed and statistic — **A: 4,000 / 20260813 / movements; B: 2,000 / 20260814 / levels** —
-  so CIs built three ways **prove nothing when diffed.** **`0052` §6's "unreconciled and now specified"
-  is struck: "bootstrap" appears ZERO times in any file an agent reads.** The resampling unit **is the
-  account** (clustered, `0044`) ***and `0103` has now FIXED that unit, `B` = 10,000 and the seed
-  = 20260818***; **levels-vs-movements must STILL be fixed identically for both arms in the spec before
-  Step 9 runs.** **If it is still unfixed when you read this, say so and stop** rather than choosing.
-  ***And when it IS fixed, a check must assert both arms' `statistic` agree*** — the way `S23` asserts
-  the inline restatement — **or the fix will be recorded and unpoliced** (`reviewer-engineering`, E11).
+  ~~**THE BOOTSTRAP IS UNSPECIFIED AND THIS BLOCKS STEP 9**~~ ***WHOLLY SUPERSEDED. `0103` fixed
+  `B` = 10,000, the seed = 20260818 and the resampling unit = ACCOUNT; `0118` fixed the STATISTIC.
+  NO BOOTSTRAP ELEMENT REMAINS UNFIXED AND STEP 9 IS NOT BLOCKED ON ANY OF THEM.*** ***My
+  propagation of `0103` reached two of four sites and I reported it as corrected at the point of
+  use; this file then carried two contradictory statements about whether Step 9 was unblocked, ten
+  lines apart — the exact shape `CLAUDE.md`'s read-back-plus-grep rule exists for.*** **The
+  say-so-and-stop instruction is RETIRED for the bootstrap: there is nothing left to stop on.**
+  (`0056`.) The two Step 7 arms diverged on `B` and the seed —
+  ~~**A: 4,000 / 20260813 / movements; B: 2,000 / 20260814 / levels**~~ ***THE STATISTIC HALF OF
+  THAT PAIRING WAS NEVER TRUE AND IS CORRECTED, NOT MARKED*** (`0118` §2): **arm `a` published BOTH
+  levels and paired movements, on the gate-closing run and on the ALT-MATCHED run alike.** The
+  surviving true statement is that **`B` and the seed differed**, so CIs built two ways **prove
+  nothing when diffed.** **`0052` §6's "unreconciled and now specified" is struck: "bootstrap"
+  appeared ZERO times in any file an agent reads at the time it was written.** The resampling unit
+  **is the account** (clustered, `0044`).
+
+<!-- BOOTSTRAP-STATISTIC-BEGIN. This block is BYTE-IDENTICAL in data-scientist.md and
+     data-scientist-b.md. src/check_surfaces.py::scan_statistic_declaration() FAILS if the two
+     copies differ, if either marker is missing, or if the block does not name all four fixed
+     elements. NEVER edit one file's copy alone. -->
+- ***THE BOOTSTRAP STATISTIC IS FIXED: BOTH LEVELS AND PAIRED MOVEMENTS.*** Human Lead ruling,
+  2026-08-19 (`0118`), closing the third and last unfixed bootstrap element. **Both arms produce
+  BOTH objects. Both objects are LABELLED. NEITHER is presented as *the* design.**
+
+  ***ALL THREE ELEMENTS ARE NOW FIXED AND IDENTICAL FOR BOTH ARMS:*** `B` = **10,000**, seed =
+  **20260818**, resampling unit = **account** for the outcome shares (`0103`), and **statistic =
+  BOTH levels and paired movements** (`0118`). ***STEP 9 IS NO LONGER BLOCKED ON THE BOOTSTRAP.***
+
+  **Why both rather than one.** The requirement exists **so the diff compares like with like.**
+  Both arms producing both objects satisfies that **fully** — a divergence on either object is then
+  **a real divergence rather than a design difference.** Fixing on a single object would have
+  discarded the other and bought no comparability that both does not already buy.
+
+  **Why neither may be dropped.** ***THEY ARE DIFFERENT OBJECTS.*** On APPLY the never-started
+  **level** is **1.09 pp** wide while its **movement** is **0.098 pp** wide — **a factor of 11** —
+  so a reader who is not told which one they are reading is wrong by an order of magnitude. **This
+  is the same reasoning as publishing the floor and the ceiling rather than a point.** *(The ground
+  is recorded in `0118`; `CLAUDE.md`'s launch-instruction rule is why it is stated here as a ruled
+  spec input and not attributed to an arm.)*
+
+  **What this requires of your output.** Every interval declares its `statistic` at the point of
+  use, **and both statistics appear.** A run that emits only one is **incomplete**, not merely
+  differently designed. ***A LEVEL AND A MOVEMENT ARE NEVER COMPARED TO EACH OTHER.***
+<!-- BOOTSTRAP-STATISTIC-END -->
+
+  ***THE CHECK EXISTS AND IS NAMED.*** `reviewer-engineering`'s E11 required that **when the
+  statistic is fixed, a control assert both arms' declarations agree, or the fix is recorded and
+  unpoliced.** It is `src/check_surfaces.py::scan_statistic_declaration()`, it runs on every
+  `check_surfaces.py` invocation, and it **fails on a missing marker as loudly as on a mismatch** —
+  an empty result and a clean result are the same value, and only the control knows which it
+  produced.
   **Compute the bound on PAIRS, not users.** **NOT every liveness exclusion is never-started** — 703 on APPLY is **604 never-started + 99
   started-and-left** (`0050`). Taken over the 604 only, the **never-started** bound on a **single denominator** is
   **THE BOUND'S SCOPE, PUBLISHED WITH THE BOUND** (`0062`). **Covering with respect to

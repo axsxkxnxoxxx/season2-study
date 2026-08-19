@@ -284,9 +284,12 @@ sufficiency only); the calibration residual tail and its `W = 108`-only scope; a
 stability; Step 8's position-6 population reconstruction; and the population mismatch, on which the
 DERIV point estimate lies outside its own bound.
 
-**Still unspecified and reported, not reconciled:** the two bootstraps differ in `B`, seed and
-statistic — A at 4,000 / 20260813 / movements, B at 2,000 / 20260814 / levels — and **the spec fixes
-none of the three** while Step 9 must attach confidence intervals. `0052` §6 called this *"unreconciled
+**Still unspecified and reported, not reconciled:** the two bootstraps differ in `B` and seed —
+A at 4,000 / 20260813, B at 2,000 / 20260814 — and **the spec fixes neither** while Step 9 must
+attach confidence intervals.
+
+> ***CORRECTED, NOT MARKED, 2026-08-19 (`0118` §2): the STATISTIC half of this pairing was NEVER TRUE. Arm `a` published BOTH levels and paired movements — on the `bb` gate-closing run and on the `mm` run alike. A mark is for a claim that was true and got superseded; this one was wrong when written. The arms diverged on TWO elements, `B` and the seed.*** **All are now fixed** — `B` = 10,000, seed 20260818 (`0103`), statistic = BOTH
+> (`0118`). `0052` §6 called this *"unreconciled
 and now specified"*; **it is not specified in any file.**
 
 **Also carried:** the robustness-survival divergence **792 (A) against 791 (B)** from a `τ_pull`

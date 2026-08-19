@@ -119,8 +119,12 @@ the adopted bound the ratio is 0.3575 / 0.7922 = 45%**, which is A's figure.
 implementation diff."** Recorded here as the divergence it is.
 
 **Also recorded, unreconciled and now specified:** the two bootstraps are not diffable — A used
-B = 4,000, seed 20260813, on the **movements**; B used 2,000, seed 20260814, on the **levels**. The
-spec fixes neither and Step 9 must attach confidence intervals.
+B = 4,000, seed 20260813; B used 2,000, seed 20260814. The spec fixes neither and Step 9 must attach
+confidence intervals.
+
+> ***CORRECTED, NOT MARKED, 2026-08-19 (`0118` §2): the STATISTIC half of this pairing was NEVER TRUE. Arm `a` published BOTH levels and paired movements — on the `bb` gate-closing run and on the `mm` run alike. A mark is for a claim that was true and got superseded; this one was wrong when written. The arms diverged on TWO elements, `B` and the seed.*** **Both are now fixed** — `B` = 10,000, seed 20260818 (`0103`) — **and so is the
+> statistic: BOTH levels and paired movements, both labelled, neither presented as the design**
+> (`0118`).
 
 ## 7. Recorded as a Step 14 limitation: the bounds and the shares are on different populations
 

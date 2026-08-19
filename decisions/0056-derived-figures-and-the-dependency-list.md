@@ -146,9 +146,11 @@ who has seen the started-and-left widening reopens this bound.**
 
 ## 8. The bootstrap is a Step 9 blocker
 
-**The two Step 7 arms diverged on all three of `B`, seed and statistic** — A at 4,000 / 20260813 /
-movements, B at 2,000 / 20260814 / levels — **and a dual step whose confidence intervals are built three
-different ways produces a divergence that proves nothing.**
+**The two Step 7 arms diverged on `B` and seed** — A at 4,000 / 20260813, B at 2,000 / 20260814 —
+**and a dual step whose confidence intervals are built two different ways produces a divergence that
+proves nothing.**
+
+> ***CORRECTED, NOT MARKED, 2026-08-19 (`0118` §2): the STATISTIC half of this pairing was NEVER TRUE. Arm `a` published BOTH levels and paired movements — on the `bb` gate-closing run and on the `mm` run alike. A mark is for a claim that was true and got superseded; this one was wrong when written. The arms diverged on TWO elements, `B` and the seed.*** **Both are now fixed by `0103`, and the statistic by `0118`.**
 
 **`0052` §6 recorded this as "unreconciled and now specified." It was never specified: the string
 "bootstrap" appears ZERO times in `task-sheet.md`, `CLAUDE.md` and all four pipeline agent files.**
@@ -159,6 +161,13 @@ different ways produces a divergence that proves nothing.**
 `0044`); `B`, the seed and levels-versus-movements **must be fixed identically for both arms in the spec
 before Step 9 runs**, and both `data-scientist` files now instruct an instance to **say so and stop**
 rather than choose.
+
+> ***SATISFIED IN FULL, 2026-08-19 (`0118`).*** **All three are fixed identically for both arms:**
+> `B` = 10,000, seed = 20260818, unit = account (`0103`), **statistic = BOTH levels and paired
+> movements, both labelled, neither presented as the design** (`0118`). ***The Human Lead's ruling
+> is that "both, explicitly labelled" SATISFIES this sentence*** — the requirement exists so the
+> diff compares like with like, and both arms producing both objects satisfies it fully. **The
+> say-so-and-stop instruction is retired for the bootstrap; there is nothing left to stop on.**
 
 ## 9. What Red Team clears, and what it added
 
