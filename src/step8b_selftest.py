@@ -16,8 +16,17 @@ case is asserted as a REQUIRED NON-FAILURE with its own note: the fully
 relabelled false merge, which passes -- it is the residual this build publishes,
 and asserting it here stops the published limit drifting from the behaviour.
 
+One case is not a mutation at all: the STATISTIC VOCABULARY LINK, added at v1.6.0
+(decisions/0118). It reads the canonical bootstrap-statistic block off both writer
+files, asserts the two copies are byte-identical, asserts the block names all four
+fixed elements BY VALUE, and asserts this schema's bootstrap_statistic enum is
+exactly the set the block names. It exists because the schema's tokens were typed
+here and agreed with the spec by inspection only. A missing marker FAILS -- two
+nothings compare equal, and a clean report over zero characters is the shape
+CLAUDE.md names.
+
 Writes its record to logs/step8b/selftest-<stamp>.json. Exit 0 iff every check
-was shown to have force.
+was shown to have force AND the vocabulary link holds.
 
     python3 src/step8b_selftest.py
 """
@@ -288,6 +297,21 @@ MUTATIONS = {
     # THE SHIPPED PLACEHOLDERS WERE OCCUPIED BY THIS -- the window-W percentile
     # attributed to `step11`, which does not compute W.
     "S38": lambda i: _set(i["declared_intervals"][0], "produced_by_step", "step10"),
+    # v1.6.0 -- decisions/0118.
+    #
+    # S40 IS THE STALE STATE ITSELF, reconstructed: the registry recording ONE
+    # statistic per arm, which is what every emitted artifact carried until this
+    # version. It is the shape the ruling removed -- a per-arm choice where the
+    # spec now fixes a value.
+    "S40": lambda i: _set(i["bootstrap_settings"]["a_default"], "statistics", ["movements"]),
+    # S41: a file that DECLARES both objects and EMITS one. The registry is
+    # untouched, so S40 still passes and only S41 can catch it -- which is the
+    # whole reason the two are separate checks. This is "a run that emits only
+    # one", the state decisions/0118 calls INCOMPLETE rather than differently
+    # designed.
+    "S41": lambda i: [
+        _set(e["ci"], "statistic", "levels")
+        for e in i["declared_intervals"] if isinstance(e.get("ci"), dict)],
 }
 
 
@@ -295,9 +319,21 @@ def _relabel_arm(node, level: int):
     """Relabel a copied arm-a payload as arm b, at three degrees of effort.
 
     level 1 relabels the arm only; level 2 also relabels the bootstrap
-    references, the statistic and the sampling-width convention labels; level 3
-    also relabels the merge provenance. The three are the M1 forgery ladder, and
-    the point of running all three is to show WHICH rung the check stops at.
+    references and the sampling-width convention labels; level 3 also relabels
+    the merge provenance. The three are the M1 forgery ladder, and the point of
+    running all three is to show WHICH rung the check stops at.
+
+    THE STATISTIC LEFT THE LADDER AT v1.6.0 (decisions/0118), and it left because
+    the ruling took it out rather than because the ladder was wrong. Level 2 used
+    to rewrite `statistic` to "levels", because arm a's statistic was "movements"
+    and arm b's was "levels" and a coherent forgery had to change it. The
+    statistic is now fixed as BOTH for every arm, so it is no longer an
+    arm-distinguishing label and rewriting it would CHANGE THE OBJECT rather than
+    relabel the arm -- turning a movement interval into a levels one. THE FORGERY
+    IS ONE FIELD CHEAPER THAN IT WAS: the arms' bootstrap records now differ only
+    in `producing_arm`. That is a real consequence of fixing the statistic and it
+    is recorded here rather than left to be inferred from a ladder that still
+    passes.
     """
     if isinstance(node, dict):
         out = {}
@@ -306,8 +342,6 @@ def _relabel_arm(node, level: int):
                 out[k] = "b"
             elif k == "bootstrap_ref" and level >= 2 and isinstance(v, str):
                 out[k] = v.replace("a_", "b_", 1)
-            elif k == "statistic" and level >= 2:
-                out[k] = "levels"
             elif k == "convention_label" and level >= 2 and isinstance(v, str):
                 out[k] = v.replace("arm_a", "arm_b")
             elif k == "merged_from" and level >= 3 and isinstance(v, str):
@@ -391,6 +425,22 @@ def _mention_only(inst: dict) -> dict:
     return inst
 
 
+def _narrow_registry(inst: dict) -> dict:
+    """Report a MOVEMENT against a registry entry that declares only levels.
+
+    S23's statistic clause is a MEMBERSHIP test since v1.6.0 (decisions/0118), so
+    the mutation that breaks it has to shrink the referenced entry -- there is no
+    single registry statistic left to disagree with. Both edits are needed
+    together: an interval labelled `movements` and an entry that does not declare
+    it. S40 fails on the same file, which is expected and irrelevant: the runner
+    reads only the target check's status.
+    """
+    ci = _first_ci(inst)
+    ci["statistic"] = "movements"
+    inst["bootstrap_settings"][ci["bootstrap_ref"]]["statistics"] = ["levels"]
+    return inst
+
+
 # Extra mutations that target a SECOND clause of a check whose first clause is
 # already exercised above. Keyed by the check they must break.
 EXTRA_MUTATIONS = {
@@ -402,6 +452,33 @@ EXTRA_MUTATIONS = {
         _set(i["cross_arm_divergences"], "entries", []),
         "search", dict(i["cross_arm_divergences"]["search"], performed=False))),
     "S18/inline_settings": ("S18", "placeholder", lambda i: _first_ci(i).pop("seed")),
+    # v1.6.0, decisions/0118: the statistic is required AT THE POINT OF USE, so
+    # an interval that carries a bootstrap_ref and no statistic must fail. It
+    # could not before -- S18 did not ask for the field, because until the
+    # statistic was fixed there was nothing to hold a writer to.
+    "S18/inline_statistic": ("S18", "placeholder", lambda i: _first_ci(i).pop("statistic")),
+    # S23's SECOND clause, added at v1.6.0: the comparison is MEMBERSHIP now, so
+    # the mutation that breaks it is a statistic the referenced entry does not
+    # declare -- not a mismatch with a single registry value, which no longer
+    # exists.
+    "S23/statistic_not_in_registry": ("S23", "placeholder", lambda i: _narrow_registry(i)),
+    # S40's PARTITION clause, which is the half that makes an EMPTY
+    # fields_not_fixed_in_spec mean something. Dropping `statistics` from the
+    # fixed list leaves it in neither list, so the two no longer cover the
+    # declared universe.
+    "S40/partition_of_fields_considered": ("S40", "placeholder", lambda i: _set(
+        i["bootstrap_spec"], "fields_fixed_in_spec", ["B", "seed", "resampling_unit"])),
+    # S40's THIRD clause: the statistic listed as UNFIXED after it was fixed --
+    # the exact string this rerun exists to remove from seven artifact lines.
+    "S40/statistic_listed_as_unfixed": ("S40", "placeholder", lambda i: _set(
+        i["bootstrap_spec"], "fields_not_fixed_in_spec",
+        ["statistic (levels vs movements)"])),
+    # S40's RENAME clause: a writer emitting the old singular key. The schema's
+    # additionalProperties: false catches it structurally; this asserts the
+    # SEMANTIC check names it too, so the diagnosis is the rename rather than
+    # "unexpected property".
+    "S40/singular_statistic_key_survives": ("S40", "placeholder", lambda i: _set(
+        i["bootstrap_settings"]["a_default"], "statistic", "movements")),
     # THE SINGLE-ARM BRANCH IS NOT LOOSENED BY THE SPLIT (decisions/0107 §4). A
     # single-arm step's block claiming two arms is the mirror defect of the one
     # v1.2.0 fixes, and it must fail rather than validate silently.
@@ -730,6 +807,129 @@ def _synthetic_step13_arm_file() -> dict:
     return G.build_placeholder(provenance, G._read_grid(), "arm_file", "a", "step13")
 
 
+# ---------------------------------------------------------------------------
+# The schema's statistic vocabulary, CHECKED AGAINST THE WRITERS' SPEC
+# ---------------------------------------------------------------------------
+#
+# decisions/0118 puts the canonical wording of the bootstrap-statistic
+# requirement in ONE place: the block between BOOTSTRAP-STATISTIC-BEGIN and
+# BOOTSTRAP-STATISTIC-END in the two writer files, byte-identical in both.
+# src/check_surfaces.py::scan_statistic_declaration() polices THE SPEC. Nothing
+# policed the relation between that block and THIS SCHEMA -- the schema's enum
+# tokens were typed here and agreed with the block by inspection.
+#
+# THIS IS NOT A CONST ASSERTING AGREEMENT. It reads the block off disk and
+# compares. A const in the schema saying "the statistic is both" would be the
+# shape this schema already retired once (`diff_precedes_merge`): not a fact the
+# file records, a sentence the schema requires the file to contain. What is left
+# open after this runs -- whether a writer's arithmetic actually produced both
+# objects -- is published as a known limit rather than closed by decoration.
+WRITER_FILES = (
+    os.path.join(ROOT, ".claude", "agents", "data-scientist.md"),
+    os.path.join(ROOT, ".claude", "agents", "data-scientist-b.md"),
+)
+BEGIN_MARKER = "<!-- BOOTSTRAP-STATISTIC-BEGIN"
+END_MARKER = "<!-- BOOTSTRAP-STATISTIC-END -->"
+# The four fixed elements, asserted BY VALUE in the block rather than by prose.
+BLOCK_MUST_NAME = ("10,000", "20260818", "account", "levels and paired movements")
+
+
+def _extract_block(path: str) -> tuple[str | None, str | None]:
+    """The canonical block, or (None, why not). A MISSING MARKER FAILS LOUDLY.
+
+    Two nothings compare equal, so an extraction that quietly returns "" would
+    let a deleted marker read as agreement over zero characters -- the exact
+    shape of the controls that reported clean while checking zero rows.
+    """
+    if not os.path.exists(path):
+        return None, f"{path} does not exist"
+    with open(path, encoding="utf-8") as fh:
+        text = fh.read()
+    i = text.find(BEGIN_MARKER)
+    if i < 0:
+        return None, f"{path} has no {BEGIN_MARKER} marker"
+    j = text.find(END_MARKER, i)
+    if j < 0:
+        return None, f"{path} has no {END_MARKER} marker after the begin marker"
+    block = text[i:j + len(END_MARKER)]
+    if len(block) < 200:
+        return None, f"{path}: the block is {len(block)} characters, which is not a requirement"
+    return block, None
+
+
+def _enum_tokens(node, want: str, out: set) -> set:
+    """Every `enum` carried by a node tagged with this x-enum-id, anywhere."""
+    if isinstance(node, dict):
+        if node.get("x-enum-id") == want and isinstance(node.get("enum"), list):
+            out |= set(node["enum"])
+        for v in node.values():
+            _enum_tokens(v, want, out)
+    elif isinstance(node, list):
+        for v in node:
+            _enum_tokens(v, want, out)
+    return out
+
+
+def _statistic_vocabulary_link(schema: dict) -> dict:
+    """Tie this schema's statistic vocabulary to the writers' canonical block."""
+    failures = []
+    blocks = {}
+    for path in WRITER_FILES:
+        block, why = _extract_block(path)
+        if block is None:
+            failures.append(why)
+        else:
+            blocks[path] = block
+
+    identical = None
+    chars = 0
+    if len(blocks) == len(WRITER_FILES):
+        values = list(blocks.values())
+        identical = values[0] == values[1]
+        chars = len(values[0])
+        if not identical:
+            failures.append(
+                "the two writer files' canonical blocks are NOT byte-identical, so the "
+                "requirement has two definitions and this schema cannot be checked against "
+                "'the' one"
+            )
+        for token in BLOCK_MUST_NAME:
+            if token not in values[0]:
+                failures.append(
+                    f"the canonical block does not name {token!r} by value. All four bootstrap "
+                    f"elements are asserted as VALUES, not as prose"
+                )
+
+    tokens = sorted(_enum_tokens(schema, "bootstrap_statistic", set()))
+    expected = ["levels", "movements"]
+    if tokens != expected:
+        failures.append(
+            f"this schema's bootstrap_statistic enum is {tokens!r}, not {expected!r}"
+        )
+    if blocks:
+        block = next(iter(blocks.values()))
+        for tok in tokens:
+            if tok not in block:
+                failures.append(
+                    f"the schema's enum token {tok!r} does not appear in the canonical block: "
+                    f"the schema's vocabulary and the writers' requirement have drifted"
+                )
+    return {
+        "what": "the schema's statistic vocabulary, compared against the canonical block in "
+                "the two writer files (decisions/0118)",
+        "files_read": len(blocks),
+        "files_expected": len(WRITER_FILES),
+        "characters_compared": chars,
+        "byte_identical": identical,
+        "elements_asserted_by_value": list(BLOCK_MUST_NAME),
+        "schema_enum_tokens": tokens,
+        "failures": failures,
+        # A MISSING BLOCK IS A FAILURE, NOT A SKIP: coverage is asserted, so this
+        # cannot report clean over zero characters.
+        "ok": not failures and chars > 0 and len(blocks) == len(WRITER_FILES),
+    }
+
+
 def _status_of(report: dict, cid: str) -> str:
     for c in report["semantic_checks"]:
         if c["id"] == cid:
@@ -975,6 +1175,8 @@ def main() -> int:
             "has_force": _status_of(run(mutated), cid) == "FAIL",
         })
 
+    vocab_link = _statistic_vocabulary_link(schema)
+
     without_force = [r["check"] for r in results if not r["has_force"]]
     na_on_real = [c["id"] for c in baseline_real["semantic_checks"] if c["status"] == "N/A"]
 
@@ -1014,6 +1216,7 @@ def main() -> int:
             "statuses": {c["id"]: c["status"] for c in baseline_sole["semantic_checks"]},
         },
         "step13_arm_file_fixture": step13_record,
+        "statistic_vocabulary_link": vocab_link,
         "mutations": results,
         "required_non_failures": non_failures,
         "required_non_failures_violated": non_failure_failures,
@@ -1034,7 +1237,7 @@ def main() -> int:
         "checks_without_force": without_force,
         "checks_na_on_the_real_copy": na_on_real,
         "ok": (not without_force and not non_failure_failures and not unexercised
-               and step13_ok),
+               and step13_ok and vocab_link["ok"]),
     }
 
     os.makedirs(LOG_DIR, exist_ok=True)
@@ -1052,6 +1255,14 @@ def main() -> int:
         "checks_defined_but_never_exercised": unexercised,
         "step13_arm_file_fixture_ok": step13_ok,
         "step13_arm_file_failures": step13_record["failures"],
+        "statistic_vocabulary_link": {
+            "ok": vocab_link["ok"],
+            "files_read": f"{vocab_link['files_read']}/{vocab_link['files_expected']}",
+            "characters_compared": vocab_link["characters_compared"],
+            "byte_identical": vocab_link["byte_identical"],
+            "schema_enum_tokens": vocab_link["schema_enum_tokens"],
+            "failures": vocab_link["failures"],
+        },
         "required_non_failures_violated": non_failure_failures,
         "baseline_placeholder_failures": [
             k for k, v in record["baseline_placeholder"]["statuses"].items()

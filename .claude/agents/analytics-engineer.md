@@ -580,9 +580,15 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
       RECONCILED** (`0058`, `0063`). **One slot per figure would force a reconciliation the spec
       forbids — IN THE MERGED DOCUMENT. In a single arm's file it forces nothing, because there is no
       second arm's figure in it** (E3, closed by E2 rather than separately).
-    - **Record which bootstrap settings produced each CI.** `B`, seed and levels-vs-movements differ
-      between the arms and **the spec fixes none of them**, so an unfixed spec must be visible in the
-      output rather than silent.
+    - **Record which bootstrap settings produced each CI.** ~~`B`, seed and levels-vs-movements differ
+      between the arms and **the spec fixes none of them**~~ ***ALL THREE CLAUSES ARE FALSE. CORRECTED
+      2026-08-19 (`0119`).*** **The spec fixes ALL FOUR elements and they are IDENTICAL for both arms:**
+      `B` = **10,000**, seed = **20260818**, resampling unit = **account** (`0103`), and the statistic =
+      ***BOTH levels and paired movements, both labelled, neither presented as the design*** (`0118`).
+      **And the statistic NEVER differed between the arms** — `0118` §2 corrects that pairing rather
+      than marking it, because it was wrong when written. **The requirement SURVIVES for the reason it
+      always had:** the settings are recorded **at the point of use** so they are visible rather than
+      silent, **and both statistics must be findable there.**
     - **Deliver:** schema definition, placeholder file. **Review: Engineering**, on whether Steps 9–13
       can write into it without restructuring their outputs.
 

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:season2-study:step8b-output-schema:1.5.0",
+  "$id": "urn:season2-study:step8b-output-schema:1.6.0",
   "title": "Season 2 abandonment study -- Step 16 results schema",
   "description": "The single output schema. Steps 9 through 13 write into it DIRECTLY, each ARM into its own file, and STEP 16 RENDERS FROM THE MERGED DOCUMENT that Step 13b builds from those files after the Human Lead has diffed the dual pairs (decisions/0107). Both kinds of file are instances of this one schema; $.document_scope says which kind a file is, and it is the first thing to read. There is no conversion layer: a conversion layer is a second definition of every figure. Validate with src/step8b_validate.py, which implements the JSON Schema subset used here plus the cross-field checks the schema language cannot express.",
   "type": "object",
@@ -29,10 +29,10 @@
   ],
   "properties": {
     "schema_version": {
-      "const": "1.5.0"
+      "const": "1.6.0"
     },
     "schema_id": {
-      "const": "urn:season2-study:step8b-output-schema:1.5.0"
+      "const": "urn:season2-study:step8b-output-schema:1.6.0"
     },
     "placeholder": {
       "type": "boolean",
@@ -655,13 +655,15 @@
     },
     "bootstrap_spec": {
       "type": "object",
-      "description": "WHAT THE SPEC FIXES, IN ONE PLACE. Human Lead ruling, 2026-08-18 (decisions/0103 §1): 10,000 resamples, resampled at the ACCOUNT level for the outcome shares, seed 20260818, identical for both arms. The seed's VALUE is arbitrary and its FIXITY is the point -- without a fixed seed a difference between the arms could be sampling noise rather than a divergence, and the dual control rests on that distinction. LEVELS-VS-MOVEMENTS IS NOT FIXED BY THAT RULING and is recorded here as still unfixed, per arm in $.bootstrap_settings, so an unfixed spec stays visible rather than silent.",
+      "description": "WHAT THE SPEC FIXES, IN ONE PLACE. Human Lead rulings, 2026-08-18 (decisions/0103 §1) and 2026-08-19 (decisions/0118): 10,000 resamples, resampled at the ACCOUNT level for the outcome shares, seed 20260818, and the statistic BOTH levels and paired movements -- identical for both arms. ALL FOUR ELEMENTS ARE NOW FIXED; none is recorded as a per-arm choice. The seed's VALUE is arbitrary and its FIXITY is the point -- without a fixed seed a difference between the arms could be sampling noise rather than a divergence, and the dual control rests on that distinction. THE STATISTIC IS RECORDED THE WAY B AND THE SEED ARE, AS A VALUE, in `statistics` below -- not as a declaration that a choice exists. `fields_considered` names the universe the two lists partition, so that an EMPTY `fields_not_fixed_in_spec` is established rather than merely empty.",
       "additionalProperties": false,
       "required": [
         "B",
         "seed",
         "resampling_unit_for_outcome_shares",
+        "statistics",
         "identical_for_both_arms",
+        "fields_considered",
         "fields_fixed_in_spec",
         "fields_not_fixed_in_spec",
         "source"
@@ -682,26 +684,56 @@
           ],
           "x-enum-id": "resampling_unit"
         },
+        "statistics": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "levels",
+              "movements"
+            ],
+            "x-enum-id": "bootstrap_statistic"
+          },
+          "minItems": 2,
+          "maxItems": 2,
+          "uniqueItems": true,
+          "description": "THE STATISTIC, AS A VALUE. It is BOTH objects (decisions/0118), so the value is the pair and the shape here requires both to be present -- a file cannot record one and call the other a design choice. ORDER IS NOT MEANINGFUL and is not asserted: neither object is presented as *the* design. The pair is a SET constraint rather than a const on an ordered array, so a writer that lists them the other way round is correct rather than wrong."
+        },
         "identical_for_both_arms": {
           "const": true
         },
         "seed_value_is_arbitrary_its_fixity_is_the_point": {
           "const": true
         },
+        "fields_considered": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "uniqueItems": true,
+          "description": "The bootstrap elements this record ranges over. The fixed and not-fixed lists must PARTITION it -- disjoint, and together equal to it -- which is what check S40 asserts. Without it, an empty not-fixed list is indistinguishable from an unfilled one."
+        },
         "fields_fixed_in_spec": {
           "type": "array",
           "items": {
             "type": "string"
-          }
+          },
+          "uniqueItems": true
         },
         "fields_not_fixed_in_spec": {
           "type": "array",
           "items": {
             "type": "string"
-          }
+          },
+          "uniqueItems": true,
+          "description": "Which elements the spec leaves open. IT IS EMPTY AS OF v1.6.0 (decisions/0118) and the emptiness is checked, not assumed: S40 asserts it against `fields_considered` and asserts by name that the statistic is not in it. The array is kept rather than removed because a future element could reopen it, and a slot that exists and is empty is readable where a deleted slot is not."
         },
         "why_account_level": {
           "type": "string"
+        },
+        "why_both_statistics": {
+          "type": "string",
+          "description": "Why BOTH rather than one. Recorded because the ruling's ground is what makes the requirement legible: the two objects differ by an order of magnitude, so a reader not told which one they hold is wrong by that much."
         },
         "source": {
           "type": "string"
@@ -739,14 +771,14 @@
     },
     "bootstrap_settings": {
       "type": "object",
-      "description": "A registry of bootstrap settings, keyed by id, referenced from every CI AND restated inline at each one, because the ruling requires the seed, the resample count and the resampling unit AT THE POINT OF USE. B, the seed and the unit are now fixed by the spec (decisions/0103); levels-vs-movements is not, and differs between the arms, so it stays visible here.",
+      "description": "A registry of bootstrap settings, keyed by id, referenced from every CI AND restated inline at each one, because the ruling requires the seed, the resample count, the resampling unit AND THE STATISTIC at the point of use. ALL FOUR ELEMENTS ARE FIXED BY THE SPEC (decisions/0103 for the first three, decisions/0118 for the statistic), so no entry records a per-arm choice on any of them. RENAMED AT v1.6.0: the entry field was `statistic`, a single value the arms differed on; it is now `statistics`, an array that must hold BOTH. The rename is deliberate and loud -- `additionalProperties: false` at the entry level means a writer still emitting the old singular key FAILS rather than being silently accepted with a per-arm choice nobody reads.",
       "additionalProperties": {
         "type": "object",
         "additionalProperties": false,
         "required": [
           "B",
           "seed",
-          "statistic",
+          "statistics",
           "resampling_unit",
           "producing_arm",
           "spec_status",
@@ -760,12 +792,19 @@
           "seed": {
             "type": "integer"
           },
-          "statistic": {
-            "enum": [
-              "levels",
-              "movements"
-            ],
-            "x-enum-id": "bootstrap_statistic"
+          "statistics": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "levels",
+                "movements"
+              ],
+              "x-enum-id": "bootstrap_statistic"
+            },
+            "minItems": 2,
+            "maxItems": 2,
+            "uniqueItems": true,
+            "description": "BOTH OBJECTS THIS BOOTSTRAP PRODUCES (decisions/0118). Plural here and singular at each interval: the run produces both, and each interval is one of them and says which. Check S40 asserts both are present in every entry; check S23 asserts each interval's single value is one of them."
           },
           "resampling_unit": {
             "enum": [
@@ -797,7 +836,7 @@
             "items": {
               "type": "string"
             },
-            "description": "Which of this entry's fields the spec fixes. `spec_status` alone cannot say that B is fixed while the statistic is not."
+            "description": "Which of this entry's fields the spec fixes. It existed because `spec_status` alone could not say that B was fixed while the statistic was not. All four are fixed as of decisions/0118, so the list is now full rather than partial -- and it is kept, because a list that says WHICH is readable where a status that says `fixed_in_spec` is not, and because a future element would reopen the split."
           },
           "note": {
             "type": "string",
@@ -1622,14 +1661,14 @@
   },
   "x-generated-by": {
     "generator": "src/step8b_schema.py",
-    "generator_sha256_12": "42ddef7cdbc3",
-    "generated_at_utc": "2026-08-19T01:33:26Z",
+    "generator_sha256_12": "b4b56bd028d3",
+    "generated_at_utc": "2026-08-19T20:05:49Z",
     "build_tag": "step8b/a/2026-08-19",
-    "git_head_short": "984c344",
+    "git_head_short": "33d1b55",
     "host_step": "Step 8b, output schema",
     "written_by": "Analytics Engineer, instance a",
     "validator": "src/step8b_validate.py",
-    "validator_sha256_12": "5b71eb12d658",
+    "validator_sha256_12": "97d69f1b9595",
     "selftest": "src/step8b_selftest.py",
     "note": "This schema is generated. Correct it in the generator and rewrite both artifacts together; do not hand-edit either file."
   },
@@ -1919,7 +1958,7 @@
     },
     "ci": {
       "type": "object",
-      "description": "A confidence interval. THE BOOTSTRAP IS FIXED -- 10,000 resamples, account level for the outcome shares, seed 20260818 (decisions/0103) -- and EVERY INTERVAL RECORDS ITS SEED, RESAMPLE COUNT AND RESAMPLING UNIT AT THE POINT OF USE. They are written here as well as referenced, because the ruling says at the point of use and a reference is not that; check S23 asserts the inline values equal the referenced registry entry, so the redundancy is checked rather than trusted. Levels-vs-movements is NOT fixed by that ruling and stays visible per arm.",
+      "description": "A confidence interval. THE BOOTSTRAP IS FIXED IN ALL FOUR OF ITS ELEMENTS -- 10,000 resamples, account level for the outcome shares, seed 20260818 (decisions/0103), and the statistic BOTH levels and paired movements (decisions/0118) -- and EVERY INTERVAL RECORDS ITS SEED, RESAMPLE COUNT, RESAMPLING UNIT AND STATISTIC AT THE POINT OF USE. They are written here as well as referenced, because the ruling says at the point of use and a reference is not that; check S23 asserts the inline values against the referenced registry entry, so the redundancy is checked rather than trusted. An interval is ONE of the two objects and says which; check S41 asserts that BOTH appear, per producing arm, because a run that emits only one is INCOMPLETE rather than differently designed.",
       "additionalProperties": false,
       "required": [
         "level_pct",
@@ -1965,7 +2004,7 @@
             "movements"
           ],
           "x-enum-id": "bootstrap_statistic",
-          "description": "LEVELS OR MOVEMENTS, AT THE POINT OF USE. Added to the required set at v1.3.0 (reviewer-engineering M6). B, the seed and the unit are fixed by decisions/0103 and are therefore the same in both arms; THIS is the bootstrap field the arms actually differ on, and it was the only one with no point-of-use restatement and no binding to the arm that produced the interval. Check S23 asserts it against the referenced registry entry and check S32 asserts that entry belongs to the arm that owns this payload -- so an interval cannot point at the other arm's settings and pass. Neither check decides levels versus movements, which is still open."
+          "description": "WHICH OF THE TWO OBJECTS THIS INTERVAL IS, AT THE POINT OF USE. The statistic is FIXED AS BOTH (decisions/0118): a run produces levels AND paired movements, and this field says which one the reader is looking at. It is single-valued HERE and plural in the registry, and that is the distinction the ruling turns on -- A LEVEL AND A MOVEMENT ARE NEVER COMPARED TO EACH OTHER, so an interval that did not say which it was would be off by an order of magnitude with nothing to warn the reader. Check S23 asserts this value is one the referenced registry entry declares; check S41 asserts both values appear in the file, per producing arm; check S32 asserts the referenced entry belongs to the arm that owns this payload. NOTE THE CONSEQUENCE OF THE RULING FOR S32: with all four elements now identical across the arms, two registry entries differ only in `producing_arm` and `resampling_unit`, so a cross-arm reference misreports the ARM and no longer misreports the settings."
         },
         "resampling_unit": {
           "enum": [

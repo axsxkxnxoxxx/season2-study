@@ -108,8 +108,8 @@ the failure `0095` records.***
 | **1 `task-sheet.md`** | **REACHED — 3 sites** (:914, :960, and the "specify all three" tail) |
 | **2 `data-scientist.md`** | **REACHED — 4 sites** (:49, :138, :199, and the canonical block replacing :215–231) |
 | **3 `data-scientist-b.md`** | **REACHED — the same 4. The two files now differ ONLY in `name:`, verified by `diff`** |
-| **4 `analytics-engineer.md`** | **NOT APPLICABLE — 0 occurrences, verified by grep, not assumed** |
-| **5 `analytics-engineer-b.md`** | **NOT APPLICABLE — 0 occurrences, verified** |
+| **4 `analytics-engineer.md`** | ***WRONG. NOT REACHED — 1 stale line at :583.*** ~~0 occurrences, verified by grep, not assumed~~ ***THE GREP NEVER RAN*** — see `0119`. **Corrected 2026-08-19** |
+| **5 `analytics-engineer-b.md`** | ***WRONG — the same 1 line, byte-identical. Corrected 2026-08-19*** (`0119`) |
 | **6 `artifacts/`** | ***NOT REACHED. 4 files, 7 lines*** — `step8b-output-schema.json:658,742` and the three placeholders — **still say levels-vs-movements is unfixed.** ***PENDING A STEP 8b RERUN*** |
 | **7 `second-brain/`** | **REACHED — 1 site** |
 | **8 `processed/`** | **NOT APPLICABLE — 0 occurrences, verified** |

@@ -53,6 +53,21 @@ DROPS an entire declared source no longer validates clean, and the list records
 SOURCES rather than only arm files. S35 -- widened from one container to the
 family of six, and its root-side scan, which was dead code, fixed.
 
+TWO CHECKS ADDED AND THREE CHANGED AT v1.6.0, against decisions/0118, which fixes
+the bootstrap STATISTIC as BOTH levels and paired movements and closes the third
+and last unfixed bootstrap element. S40 -- THE REGISTRY RECORDS THE STATISTIC AS A
+VALUE, not as a declaration that a choice exists: both objects in
+$.bootstrap_spec and in every settings entry, listed as fixed, with the fixed and
+not-fixed lists partitioning a DECLARED universe so that an empty not-fixed list
+is established rather than merely empty. S41 -- BOTH OBJECTS ACTUALLY APPEAR
+among the intervals of every producing arm, because S40 checks what a file
+declares and this checks what it emits. S23 -- the statistic is compared by
+MEMBERSHIP rather than by equality, the registry now holding both objects while
+an interval is one of them. S18 -- `statistic` joined the point-of-use set. S32 --
+unchanged in code and NARROWER IN FORCE: with all four elements fixed and
+identical across the arms, two registry entries differ only in `producing_arm`,
+so a cross-arm reference misreports the arm and no longer misreports a setting.
+
 SCOPED BY DOCUMENT ROLE at v1.2.0 (decisions/0107). ONE FILE PER ARM: an arm file
 is written by an isolated instance, the merged document is Step 13b's, and
 $.document_scope says which a file is. Two checks are role-aware -- S17, which no
@@ -1276,13 +1291,17 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
     #        and a reference alone is not that.
     c = Check(
         "S18",
-        "every confidence interval carries a bootstrap_ref AND states its B, seed and "
-        "resampling unit at the point of use",
+        "every confidence interval carries a bootstrap_ref AND states its B, seed, resampling "
+        "unit and statistic at the point of use",
     )
     for path, node in _walk(inst):
         if isinstance(node, dict) and "lower" in node and "upper" in node and "level_pct" in node:
             c.sites += 1
-            for field in ("bootstrap_ref", "B", "seed", "resampling_unit", "quantity_class"):
+            # `statistic` joined this list at v1.6.0 (decisions/0118): the ruling
+            # says "every interval declares its statistic at the point of use",
+            # and until the statistic was fixed this check did not ask for it.
+            for field in ("bootstrap_ref", "B", "seed", "resampling_unit", "quantity_class",
+                          "statistic"):
                 if field not in node:
                     c.failures.append(f"{path}: confidence interval with no {field}")
     checks.append(c)
@@ -1574,8 +1593,8 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
     #        what stops the restatement drifting from what it restates.
     c = Check(
         "S23",
-        "every interval's inline B, seed, statistic and resampling unit equal the registry "
-        "entry it references",
+        "every interval's inline B, seed and resampling unit equal the registry entry it "
+        "references, and its statistic is one the entry declares",
     )
     registry = inst.get("bootstrap_settings", {})
     for path, node in _walk(inst):
@@ -1586,16 +1605,33 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
         if not isinstance(entry, dict):
             continue
         c.sites += 1
-        # `statistic` added at v1.3.0 (reviewer-engineering M6): B, the seed and
-        # the unit are fixed by decisions/0103 and are identical in both arms, so
-        # the one bootstrap field the arms actually differ on was the one field
-        # this check did not compare.
-        for field in ("B", "seed", "statistic", "resampling_unit"):
+        for field in ("B", "seed", "resampling_unit"):
             if field in node and field in entry and node[field] != entry[field]:
                 c.failures.append(
                     f"{path}: inline {field} {node[field]!r} != registry "
                     f"{entry[field]!r} at $.bootstrap_settings.{node['bootstrap_ref']}"
                 )
+        # THE STATISTIC IS COMPARED BY MEMBERSHIP, NOT BY EQUALITY (v1.6.0,
+        # decisions/0118). It was an equality until v1.5.0, when the registry
+        # held ONE statistic per arm and the arms differed on it. The registry now
+        # holds BOTH objects and an interval is one of them, so equality would be
+        # a type error and the relation that carries the meaning is: the object
+        # this interval reports is one the referenced bootstrap actually produced.
+        if "statistic" in node and isinstance(entry.get("statistics"), list):
+            if node["statistic"] not in entry["statistics"]:
+                c.failures.append(
+                    f"{path}: inline statistic {node['statistic']!r} is not among the "
+                    f"statistics {entry['statistics']!r} declared at "
+                    f"$.bootstrap_settings.{node['bootstrap_ref']}"
+                )
+        elif "statistic" in node and "statistics" not in entry:
+            c.failures.append(
+                f"$.bootstrap_settings.{node['bootstrap_ref']}: no `statistics` list, so "
+                f"{path}'s statistic {node['statistic']!r} is restated against nothing. The "
+                f"entry field was RENAMED from `statistic` to `statistics` at v1.6.0 "
+                f"(decisions/0118) because it now holds both objects rather than an arm's "
+                f"choice of one"
+            )
     checks.append(c)
 
     # S24 -- a quantity's resampling unit is the binding cluster the record states
@@ -2236,14 +2272,23 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
         # counts is a residual nobody sees.
         #
         # AND THE SIGNAL IS WEAKER THAN v1.3.0 PUBLISHED (decisions/0111 §4).
-        # The five keys normalised below do NOT include `convention_definition`
+        # The keys normalised below do NOT include `convention_definition`
         # -- arm a's convention in arm a's own words -- and a forger making the
         # copy internally coherent rewrites that sentence anyway. THE MOMENT THEY
         # DO, THIS COUNT INVERTS TO 0 OF N, which is exactly what a GENUINE merge
         # of two differing arms produces. So the count separates nothing past
         # that rung, and the note below says so rather than implying a signal it
         # does not have.
-        _ARM_LABELS = ("producing_arm", "merged_from", "bootstrap_ref", "statistic",
+        #
+        # `statistic` LEFT THIS TUPLE AT v1.6.0 (decisions/0118). It was here
+        # because it was an ARM LABEL -- arm a reported movements, arm b levels,
+        # and normalising it away was right for a comparison meant to ignore
+        # which arm a payload belongs to. The statistic is now fixed as BOTH for
+        # every arm, so two payloads differing on it differ on WHICH OBJECT they
+        # report, which is a real divergence and not a label. Normalising it
+        # would hide exactly what the merged document exists to publish. FOUR
+        # KEYS NOW, NOT FIVE.
+        _ARM_LABELS = ("producing_arm", "merged_from", "bootstrap_ref",
                        "convention_label")
 
         def _normalise(node):
@@ -2392,9 +2437,20 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
     #        M6). Nothing checked that a CI's bootstrap_ref belonged to the arm
     #        that produced the payload, so in the merged document arm a's
     #        interval could point at `b_default` and pass S3, S23 and S24 in
-    #        silence -- the arms' settings differ on the one field the spec does
-    #        not fix, so the wrong reference misreports which statistic produced
-    #        a published interval.
+    #        silence.
+    #
+    #        WHAT THIS CHECK NOW CATCHES IS NARROWER THAN WHAT IT USED TO CATCH,
+    #        and the narrowing is a CONSEQUENCE OF decisions/0118 rather than a
+    #        weakening of the code. Its original ground was that the arms' entries
+    #        differed on the one field the spec did not fix, so a wrong reference
+    #        misreported WHICH STATISTIC produced a published interval. All four
+    #        elements are now fixed and identical across the arms, so two default
+    #        entries differ ONLY in `producing_arm`: a cross-arm reference now
+    #        misreports the ARM and misreports no setting, because there is no
+    #        differing setting left to misreport. The check keeps its force on
+    #        attribution -- which is what the merged document's diff rests on --
+    #        and the ruling has removed one observable difference between the arms.
+    #        Reported rather than left to be inferred from a passing check.
     c = Check(
         "S32",
         "every interval references bootstrap settings produced by the arm that owns it",
@@ -2886,6 +2942,166 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
         f"exempted as identity or headline slots, by name in this module: "
         f"{sorted(ARM_ENTRY_NON_BLOCK_PROPERTIES & props)}"
     )
+    checks.append(c)
+
+    # S40 -- THE STATISTIC IS RECORDED AS A VALUE, NOT AS A DECLARATION THAT A
+    #        CHOICE EXISTS (decisions/0118). Until v1.5.0 $.bootstrap_spec listed
+    #        "statistic (levels vs movements)" under `fields_not_fixed_in_spec`
+    #        and each registry entry carried ONE statistic, per arm. The Human
+    #        Lead fixed it as BOTH, so the registry must hold BOTH the way it
+    #        holds B, the seed and the unit.
+    #
+    #        The partition leg is the half that stops an EMPTY
+    #        `fields_not_fixed_in_spec` reading as a list nobody filled in:
+    #        `fields_considered` names the universe, and the two lists must be
+    #        disjoint and cover it. CLAUDE.md -- an empty result and a clean
+    #        result are the same value, and only the control knows which it
+    #        produced.
+    c = Check(
+        "S40",
+        "the bootstrap registry records the statistic as a VALUE -- both objects present in "
+        "$.bootstrap_spec and in every settings entry, listed as fixed, and the fixed and "
+        "not-fixed lists partition the declared universe",
+    )
+    expected_statistics = {"levels", "movements"}
+    spec = inst.get("bootstrap_spec")
+    if not isinstance(spec, dict):
+        c.failures.append(
+            "$.bootstrap_spec is absent: the one place the spec-fixed bootstrap is stated"
+        )
+    else:
+        c.sites += 1
+        got = spec.get("statistics")
+        if not isinstance(got, list) or set(got) != expected_statistics:
+            c.failures.append(
+                f"$.bootstrap_spec.statistics is {got!r}; decisions/0118 fixes the statistic "
+                f"as BOTH levels and paired movements, so the value is the pair and both "
+                f"members must be present. Recording one is recording a per-arm choice the "
+                f"ruling removed"
+            )
+        fixed = spec.get("fields_fixed_in_spec") or []
+        notfixed = spec.get("fields_not_fixed_in_spec")
+        considered = spec.get("fields_considered")
+        if "statistics" not in fixed:
+            c.failures.append(
+                f"$.bootstrap_spec.fields_fixed_in_spec is {fixed!r} and does not name "
+                f"`statistics`. It is fixed (decisions/0118) and must be listed with B, the "
+                f"seed and the unit"
+            )
+        if not isinstance(notfixed, list):
+            c.failures.append(
+                "$.bootstrap_spec.fields_not_fixed_in_spec is absent or not a list. It is "
+                "EMPTY as of decisions/0118, and the empty list is the record; deleting it "
+                "makes the emptiness unreadable"
+            )
+        else:
+            for item in notfixed:
+                if "statistic" in str(item).lower():
+                    c.failures.append(
+                        f"$.bootstrap_spec.fields_not_fixed_in_spec still names the statistic "
+                        f"({item!r}). decisions/0118 fixed it; a field listed as unfixed after "
+                        f"it was fixed is the stale half of a propagation, not a caveat"
+                    )
+        if not isinstance(considered, list) or not considered:
+            c.failures.append(
+                "$.bootstrap_spec.fields_considered is absent or empty: without a declared "
+                "universe, an empty fields_not_fixed_in_spec cannot be distinguished from an "
+                "unfilled one"
+            )
+        elif isinstance(notfixed, list):
+            uni, f_set, n_set = set(considered), set(fixed), set(notfixed)
+            if f_set & n_set:
+                c.failures.append(
+                    f"$.bootstrap_spec: {sorted(f_set & n_set)} appear in BOTH the fixed and "
+                    f"the not-fixed list. A field cannot be both"
+                )
+            if f_set | n_set != uni:
+                c.failures.append(
+                    f"$.bootstrap_spec: the fixed and not-fixed lists do not partition "
+                    f"fields_considered. Missing from both: {sorted(uni - (f_set | n_set))}; "
+                    f"named but not considered: {sorted((f_set | n_set) - uni)}"
+                )
+            c.notes.append(
+                f"partition checked over {len(uni)} declared bootstrap element(s): "
+                f"{sorted(uni)}"
+            )
+    registry = inst.get("bootstrap_settings") or {}
+    for key in sorted(registry):
+        entry = registry[key]
+        if not isinstance(entry, dict):
+            continue
+        c.sites += 1
+        if "statistic" in entry:
+            c.failures.append(
+                f"$.bootstrap_settings.{key}: carries the SINGULAR `statistic` key, which was "
+                f"an arm's choice of one object. It was renamed to `statistics` at v1.6.0 and "
+                f"holds both (decisions/0118)"
+            )
+        got = entry.get("statistics")
+        if not isinstance(got, list) or set(got) != expected_statistics:
+            c.failures.append(
+                f"$.bootstrap_settings.{key}.statistics is {got!r}; both levels and paired "
+                f"movements must be present. A run that produces only one is INCOMPLETE, not "
+                f"differently designed"
+            )
+        if "statistics" not in (entry.get("fields_fixed_in_spec") or []):
+            c.failures.append(
+                f"$.bootstrap_settings.{key}.fields_fixed_in_spec does not name `statistics`. "
+                f"The statistic is fixed for every entry, including the show-clustered ones "
+                f"whose UNIT is not fixed by decisions/0103"
+            )
+    c.notes.append(f"registry entries examined: {len(registry)}")
+    checks.append(c)
+
+    # S41 -- BOTH OBJECTS ACTUALLY APPEAR, PER PRODUCING ARM (decisions/0118).
+    #        S40 checks what the registry DECLARES; this checks what the file
+    #        EMITS. "Every interval declares its statistic at the point of use,
+    #        AND BOTH STATISTICS APPEAR. A run that emits only one is INCOMPLETE,
+    #        not merely differently designed."
+    #
+    #        The arm an interval belongs to is taken from the payload it sits in
+    #        or the declared-intervals entry that names it -- the same attribution
+    #        S32 uses -- so a merged document is checked arm by arm rather than in
+    #        aggregate, where one arm's movement could cover for the other's
+    #        absence.
+    c = Check(
+        "S41",
+        "both bootstrap statistics -- levels and paired movements -- appear among the "
+        "intervals of every producing arm in this file",
+    )
+    by_arm: dict = {}
+    for path, arm, ci in _iter_cis_with_arm(inst):
+        c.sites += 1
+        stat = ci.get("statistic")
+        if stat is None:
+            c.failures.append(
+                f"{path}: no statistic. Every interval declares which of the two objects it "
+                f"is, at the point of use -- a level and a movement are never compared to "
+                f"each other"
+            )
+            continue
+        by_arm.setdefault(arm, {}).setdefault(stat, []).append(path)
+    for arm in sorted(by_arm, key=lambda a: (a is None, a)):
+        seen = set(by_arm[arm])
+        missing = expected_statistics - seen
+        if missing:
+            c.failures.append(
+                f"arm {arm!r} declares {sorted(seen)} and none of {sorted(missing)} across "
+                f"{sum(len(v) for v in by_arm[arm].values())} interval(s). Both arms produce "
+                f"BOTH objects (decisions/0118); a file emitting one is incomplete"
+            )
+    c.notes.append(
+        "intervals examined per arm and statistic: "
+        + json.dumps({str(a): {s: len(p) for s, p in sorted(m.items())}
+                      for a, m in sorted(by_arm.items(), key=lambda kv: (kv[0] is None, kv[0]))},
+                     sort_keys=True)
+    )
+    if not by_arm:
+        c.failures.append(
+            "this file carries no interval whose owning arm is knowable, so the "
+            "both-objects requirement was checked against nothing. An empty result and a "
+            "clean result are the same value"
+        )
     checks.append(c)
 
     _declare_scope_emptiness(inst, checks)

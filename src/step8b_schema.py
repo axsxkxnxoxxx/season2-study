@@ -54,8 +54,8 @@ ARM_PLACEHOLDER_PATH = os.path.join(ROOT, "artifacts", "step8b-placeholder-arm-f
 SOLE_PLACEHOLDER_PATH = os.path.join(ROOT, "artifacts", "step8b-placeholder-sole-file.json")
 LOG_DIR = os.path.join(ROOT, "logs", "step8b")
 
-SCHEMA_VERSION = "1.5.0"
-SCHEMA_ID = "urn:season2-study:step8b-output-schema:1.5.0"
+SCHEMA_VERSION = "1.6.0"
+SCHEMA_ID = "urn:season2-study:step8b-output-schema:1.6.0"
 
 # WHERE THE ADOPTED-RULE REVISION IS READ FROM (decisions/0114 E14). It is the
 # fourth identity dimension, and the ruling asks where the value is READ rather
@@ -184,12 +184,34 @@ STEP_DUALITY_SOURCE = {
     "step12": "CLAUDE.md, Dual implementation -- Step 12 is not in the dual list",
     "step13": "decisions/0103 §3, which resolved a live CLAUDE.md / task-sheet.md conflict",
 }
-# Which bootstrap statistic each arm used. LEVELS-VS-MOVEMENTS IS THE ONE
-# BOOTSTRAP FIELD THE SPEC DOES NOT FIX (decisions/0103 §1 fixes B, the seed and
-# the unit and leaves this open), so it is the field the arms actually differ on.
-# Recording it per arm does not pre-empt the open ruling: it makes the unfixed
-# half visible, which is what the spec asks for.
-ARM_STATISTIC = {"a": "movements", "b": "levels", "sole": "levels"}
+# THE BOOTSTRAP STATISTIC IS FIXED AS BOTH (decisions/0118). Human Lead ruling,
+# 2026-08-19, closing the THIRD AND LAST unfixed bootstrap element: both arms
+# produce BOTH objects, both are LABELLED, and neither is presented as *the*
+# design. All four elements are now fixed and identical for both arms -- B =
+# 10,000, seed = 20260818, resampling unit = account for the outcome shares
+# (decisions/0103), statistic = BOTH (decisions/0118).
+#
+# WHAT REPLACED WHAT, because the shape of the change matters more than the
+# value. Until v1.5.0 this module held ARM_STATISTIC = {"a": "movements", "b":
+# "levels", "sole": "levels"} -- A PER-ARM CHOICE, recorded because the spec did
+# not fix it. There is no per-arm choice to record any more. The statistic is a
+# VALUE THE SPEC FIXES, recorded the way B, the seed and the unit are recorded:
+# at the point of use, in $.bootstrap_spec and in every $.bootstrap_settings
+# entry.
+#
+# THE ORDER OF THIS TUPLE IS NOT MEANINGFUL AND IS NOT ASSERTED. The schema
+# constrains the SET (two members, unique, both from the enum); checks S40 and
+# S41 compare as sets. A ranked pair would say one is primary, and the ruling
+# says NEITHER is presented as the design.
+BOOTSTRAP_STATISTICS = ["levels", "movements"]
+
+# The two names of the bootstrap elements the spec ranges over, so that
+# $.bootstrap_spec's fixed and not-fixed lists can be checked as a PARTITION of
+# a declared universe rather than read as two free-form arrays. An empty
+# `fields_not_fixed_in_spec` is otherwise indistinguishable from a list nobody
+# filled in -- CLAUDE.md, "an empty result and a clean result are the same value,
+# and only the control knows which it produced". Check S40 asserts the partition.
+BOOTSTRAP_FIELDS_CONSIDERED = ["B", "seed", "resampling_unit", "statistics"]
 
 # WHICH STEP PUBLISHES EACH PER-ARM BLOCK. It is not always the step that owns
 # the figure -- Step 8 owns the waterfall and Step 9 publishes it -- and under one
@@ -486,13 +508,16 @@ def build_schema(provenance: dict | None = None) -> dict:
     d["ci"] = {
         "type": "object",
         "description": (
-            "A confidence interval. THE BOOTSTRAP IS FIXED -- 10,000 resamples, account level "
-            "for the outcome shares, seed 20260818 (decisions/0103) -- and EVERY INTERVAL "
-            "RECORDS ITS SEED, RESAMPLE COUNT AND RESAMPLING UNIT AT THE POINT OF USE. They "
-            "are written here as well as referenced, because the ruling says at the point of "
-            "use and a reference is not that; check S23 asserts the inline values equal the "
-            "referenced registry entry, so the redundancy is checked rather than trusted. "
-            "Levels-vs-movements is NOT fixed by that ruling and stays visible per arm."
+            "A confidence interval. THE BOOTSTRAP IS FIXED IN ALL FOUR OF ITS ELEMENTS -- "
+            "10,000 resamples, account level for the outcome shares, seed 20260818 "
+            "(decisions/0103), and the statistic BOTH levels and paired movements "
+            "(decisions/0118) -- and EVERY INTERVAL RECORDS ITS SEED, RESAMPLE COUNT, "
+            "RESAMPLING UNIT AND STATISTIC AT THE POINT OF USE. They are written here as well "
+            "as referenced, because the ruling says at the point of use and a reference is not "
+            "that; check S23 asserts the inline values against the referenced registry entry, "
+            "so the redundancy is checked rather than trusted. An interval is ONE of the two "
+            "objects and says which; check S41 asserts that BOTH appear, per producing arm, "
+            "because a run that emits only one is INCOMPLETE rather than differently designed."
         ),
         "additionalProperties": False,
         "required": [
@@ -519,18 +544,23 @@ def build_schema(provenance: dict | None = None) -> dict:
                                "FIXITY is the point: it is what makes the two arms comparable.",
             },
             "statistic": {
-                "enum": ["levels", "movements"],
+                "enum": BOOTSTRAP_STATISTICS,
                 "x-enum-id": "bootstrap_statistic",
                 "description": (
-                    "LEVELS OR MOVEMENTS, AT THE POINT OF USE. Added to the required set at "
-                    "v1.3.0 (reviewer-engineering M6). B, the seed and the unit are fixed by "
-                    "decisions/0103 and are therefore the same in both arms; THIS is the "
-                    "bootstrap field the arms actually differ on, and it was the only one with "
-                    "no point-of-use restatement and no binding to the arm that produced the "
-                    "interval. Check S23 asserts it against the referenced registry entry and "
-                    "check S32 asserts that entry belongs to the arm that owns this payload -- "
-                    "so an interval cannot point at the other arm's settings and pass. Neither "
-                    "check decides levels versus movements, which is still open."
+                    "WHICH OF THE TWO OBJECTS THIS INTERVAL IS, AT THE POINT OF USE. The "
+                    "statistic is FIXED AS BOTH (decisions/0118): a run produces levels AND "
+                    "paired movements, and this field says which one the reader is looking at. "
+                    "It is single-valued HERE and plural in the registry, and that is the "
+                    "distinction the ruling turns on -- A LEVEL AND A MOVEMENT ARE NEVER "
+                    "COMPARED TO EACH OTHER, so an interval that did not say which it was "
+                    "would be off by an order of magnitude with nothing to warn the reader. "
+                    "Check S23 asserts this value is one the referenced registry entry "
+                    "declares; check S41 asserts both values appear in the file, per producing "
+                    "arm; check S32 asserts the referenced entry belongs to the arm that owns "
+                    "this payload. NOTE THE CONSEQUENCE OF THE RULING FOR S32: with all four "
+                    "elements now identical across the arms, two registry entries differ only "
+                    "in `producing_arm` and `resampling_unit`, so a cross-arm reference "
+                    "misreports the ARM and no longer misreports the settings."
                 ),
             },
             "resampling_unit": {
@@ -2568,31 +2598,85 @@ def build_schema(provenance: dict | None = None) -> dict:
             "bootstrap_spec": {
                 "type": "object",
                 "description": (
-                    "WHAT THE SPEC FIXES, IN ONE PLACE. Human Lead ruling, 2026-08-18 "
-                    "(decisions/0103 §1): 10,000 resamples, resampled at the ACCOUNT level for "
-                    "the outcome shares, seed 20260818, identical for both arms. The seed's "
-                    "VALUE is arbitrary and its FIXITY is the point -- without a fixed seed a "
-                    "difference between the arms could be sampling noise rather than a "
-                    "divergence, and the dual control rests on that distinction. "
-                    "LEVELS-VS-MOVEMENTS IS NOT FIXED BY THAT RULING and is recorded here as "
-                    "still unfixed, per arm in $.bootstrap_settings, so an unfixed spec stays "
-                    "visible rather than silent."
+                    "WHAT THE SPEC FIXES, IN ONE PLACE. Human Lead rulings, 2026-08-18 "
+                    "(decisions/0103 §1) and 2026-08-19 (decisions/0118): 10,000 resamples, "
+                    "resampled at the ACCOUNT level for the outcome shares, seed 20260818, and "
+                    "the statistic BOTH levels and paired movements -- identical for both arms. "
+                    "ALL FOUR ELEMENTS ARE NOW FIXED; none is recorded as a per-arm choice. The "
+                    "seed's VALUE is arbitrary and its FIXITY is the point -- without a fixed "
+                    "seed a difference between the arms could be sampling noise rather than a "
+                    "divergence, and the dual control rests on that distinction. THE STATISTIC "
+                    "IS RECORDED THE WAY B AND THE SEED ARE, AS A VALUE, in `statistics` below "
+                    "-- not as a declaration that a choice exists. `fields_considered` names "
+                    "the universe the two lists partition, so that an EMPTY "
+                    "`fields_not_fixed_in_spec` is established rather than merely empty."
                 ),
                 "additionalProperties": False,
-                "required": ["B", "seed", "resampling_unit_for_outcome_shares",
-                             "identical_for_both_arms", "fields_fixed_in_spec",
-                             "fields_not_fixed_in_spec", "source"],
+                "required": ["B", "seed", "resampling_unit_for_outcome_shares", "statistics",
+                             "identical_for_both_arms", "fields_considered",
+                             "fields_fixed_in_spec", "fields_not_fixed_in_spec", "source"],
                 "properties": {
                     "B": {"type": "integer", "minimum": 1},
                     "seed": {"type": "integer"},
                     "resampling_unit_for_outcome_shares": {
                         "enum": RESAMPLING_UNITS, "x-enum-id": "resampling_unit"
                     },
+                    "statistics": {
+                        "type": "array",
+                        "items": {"enum": BOOTSTRAP_STATISTICS,
+                                  "x-enum-id": "bootstrap_statistic"},
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "uniqueItems": True,
+                        "description": (
+                            "THE STATISTIC, AS A VALUE. It is BOTH objects (decisions/0118), so "
+                            "the value is the pair and the shape here requires both to be "
+                            "present -- a file cannot record one and call the other a design "
+                            "choice. ORDER IS NOT MEANINGFUL and is not asserted: neither "
+                            "object is presented as *the* design. The pair is a SET constraint "
+                            "rather than a const on an ordered array, so a writer that lists "
+                            "them the other way round is correct rather than wrong."
+                        ),
+                    },
                     "identical_for_both_arms": {"const": True},
                     "seed_value_is_arbitrary_its_fixity_is_the_point": {"const": True},
-                    "fields_fixed_in_spec": {"type": "array", "items": {"type": "string"}},
-                    "fields_not_fixed_in_spec": {"type": "array", "items": {"type": "string"}},
+                    "fields_considered": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "minItems": 1,
+                        "uniqueItems": True,
+                        "description": (
+                            "The bootstrap elements this record ranges over. The fixed and "
+                            "not-fixed lists must PARTITION it -- disjoint, and together equal "
+                            "to it -- which is what check S40 asserts. Without it, an empty "
+                            "not-fixed list is indistinguishable from an unfilled one."
+                        ),
+                    },
+                    "fields_fixed_in_spec": {"type": "array", "items": {"type": "string"},
+                                             "uniqueItems": True},
+                    "fields_not_fixed_in_spec": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "uniqueItems": True,
+                        "description": (
+                            "Which elements the spec leaves open. IT IS EMPTY AS OF v1.6.0 "
+                            "(decisions/0118) and the emptiness is checked, not assumed: S40 "
+                            "asserts it against `fields_considered` and asserts by name that "
+                            "the statistic is not in it. The array is kept rather than removed "
+                            "because a future element could reopen it, and a slot that exists "
+                            "and is empty is readable where a deleted slot is not."
+                        ),
+                    },
                     "why_account_level": {"type": "string"},
+                    "why_both_statistics": {
+                        "type": "string",
+                        "description": (
+                            "Why BOTH rather than one. Recorded because the ruling's ground is "
+                            "what makes the requirement legible: the two objects differ by an "
+                            "order of magnitude, so a reader not told which one they hold is "
+                            "wrong by that much."
+                        ),
+                    },
                     "source": {"type": "string"},
                 },
             },
@@ -2632,21 +2716,39 @@ def build_schema(provenance: dict | None = None) -> dict:
                 "description": (
                     "A registry of bootstrap settings, keyed by id, referenced from every CI "
                     "AND restated inline at each one, because the ruling requires the seed, "
-                    "the resample count and the resampling unit AT THE POINT OF USE. B, the "
-                    "seed and the unit are now fixed by the spec (decisions/0103); "
-                    "levels-vs-movements is not, and differs between the arms, so it stays "
-                    "visible here."
+                    "the resample count, the resampling unit AND THE STATISTIC at the point of "
+                    "use. ALL FOUR ELEMENTS ARE FIXED BY THE SPEC (decisions/0103 for the "
+                    "first three, decisions/0118 for the statistic), so no entry records a "
+                    "per-arm choice on any of them. RENAMED AT v1.6.0: the entry field was "
+                    "`statistic`, a single value the arms differed on; it is now `statistics`, "
+                    "an array that must hold BOTH. The rename is deliberate and loud -- "
+                    "`additionalProperties: false` at the entry level means a writer still "
+                    "emitting the old singular key FAILS rather than being silently accepted "
+                    "with a per-arm choice nobody reads."
                 ),
                 "additionalProperties": {
                     "type": "object",
                     "additionalProperties": False,
-                    "required": ["B", "seed", "statistic", "resampling_unit", "producing_arm",
+                    "required": ["B", "seed", "statistics", "resampling_unit", "producing_arm",
                                  "spec_status", "fields_fixed_in_spec"],
                     "properties": {
                         "B": {"type": "integer", "minimum": 1},
                         "seed": {"type": "integer"},
-                        "statistic": {"enum": ["levels", "movements"],
+                        "statistics": {
+                            "type": "array",
+                            "items": {"enum": BOOTSTRAP_STATISTICS,
                                       "x-enum-id": "bootstrap_statistic"},
+                            "minItems": 2,
+                            "maxItems": 2,
+                            "uniqueItems": True,
+                            "description": (
+                                "BOTH OBJECTS THIS BOOTSTRAP PRODUCES (decisions/0118). Plural "
+                                "here and singular at each interval: the run produces both, and "
+                                "each interval is one of them and says which. Check S40 asserts "
+                                "both are present in every entry; check S23 asserts each "
+                                "interval's single value is one of them."
+                            ),
+                        },
                         "resampling_unit": {
                             "enum": RESAMPLING_UNITS,
                             "x-enum-id": "resampling_unit",
@@ -2664,9 +2766,14 @@ def build_schema(provenance: dict | None = None) -> dict:
                         "fields_fixed_in_spec": {
                             "type": "array",
                             "items": {"type": "string"},
-                            "description": "Which of this entry's fields the spec fixes. "
-                                           "`spec_status` alone cannot say that B is fixed "
-                                           "while the statistic is not.",
+                            "description": "Which of this entry's fields the spec fixes. It "
+                                           "existed because `spec_status` alone could not say "
+                                           "that B was fixed while the statistic was not. All "
+                                           "four are fixed as of decisions/0118, so the list "
+                                           "is now full rather than partial -- and it is kept, "
+                                           "because a list that says WHICH is readable where a "
+                                           "status that says `fixed_in_spec` is not, and "
+                                           "because a future element would reopen the split.",
                         },
                         "note": _text("A note from the writer."),
                     },
@@ -3230,19 +3337,27 @@ BOOTSTRAP_SEED = 20260818
 
 
 def _ci(ref: str, unit: str = "account", quantity_class: str = "outcome_shares",
-        disagreement: bool = False, binding: str = "show") -> dict:
+        disagreement: bool = False, binding: str = "show",
+        statistic: str = "levels") -> dict:
     ci = {
         "level_pct": 95,
         "lower": SENT_P,
         "upper": SENT_P,
         "method": "percentile_bootstrap",
         "bootstrap_ref": ref,
-        # At the point of use, per decisions/0103: the seed, the resample count
-        # and the resampling unit are written HERE as well as referenced -- and
-        # since v1.3.0 the STATISTIC too, which is the one the arms differ on.
+        # At the point of use, per decisions/0103 and decisions/0118: the seed,
+        # the resample count, the resampling unit AND THE STATISTIC are written
+        # HERE as well as referenced.
+        #
+        # THE STATISTIC IS NO LONGER DERIVED FROM THE ARM. Until v1.5.0 this line
+        # read `ARM_STATISTIC[ref.split("_", 1)[0]]` -- the arm chose, and the
+        # interval inherited. It is now a property of the INTERVAL: a run
+        # produces both objects and each interval says which one it is. The
+        # default is `levels` because a share is a level; a movement is passed
+        # explicitly, at the one place a movement is declared.
         "B": BOOTSTRAP_B,
         "seed": BOOTSTRAP_SEED,
-        "statistic": ARM_STATISTIC[ref.split("_", 1)[0]],
+        "statistic": statistic,
         "resampling_unit": unit,
         "quantity_class": quantity_class,
         "note": ph(
@@ -4491,10 +4606,42 @@ def _declared_intervals(role: str, step: str, arms_held: tuple) -> list:
     step that may publish a window-W interval declares that pair, and a step that
     may not declares the same pair on its own outcome-shares quantity, which is
     account-bound and so disagrees in the other direction.
+
+    A THIRD ENTRY PER ARM AT v1.6.0 (decisions/0118): THE PAIRED MOVEMENT. The
+    statistic is fixed as BOTH, so a file that declared only levels would be
+    INCOMPLETE rather than differently designed -- and a branch described in prose
+    and never emitted cannot be checked. Every arm therefore declares one movement
+    interval as well as its levels, which is what makes check S41 non-vacuous on
+    all three placeholders.
     """
     out = []
     for a in arms_held:
         istep = _interval_step_for(role, step, a)
+        # THE PAIRED MOVEMENT, one per arm, on a class every publisher may hold.
+        # It is emitted BEFORE the branch split so that no branch can drop it:
+        # the requirement is a property of the run, not of which quantities a
+        # step happens to publish.
+        out.append({
+            "interval_id": f"paired_movement_{a}",
+            "quantity": ph(
+                "a PAIRED MOVEMENT -- the difference between two configurations of the same "
+                "share, resampled as a paired delta rather than as two independent levels. "
+                "Which two configurations is the writer's to state; the schema requires that "
+                "the object exists and is labelled"
+            ),
+            "produced_by_step": istep,
+            "producing_arm": a,
+            "ci": _ci(f"{a}_default", unit="account", quantity_class="outcome_shares",
+                      statistic="movements"),
+            "note": ph(
+                "THE SECOND OF THE TWO OBJECTS THE SPEC FIXES (decisions/0118). A level and a "
+                "movement are NEVER compared to each other: on APPLY the never-started level "
+                "is an order of magnitude wider than its movement, so an unlabelled interval "
+                "misleads by that much. This entry is what stops the movement branch being a "
+                "shape the schema allows and nothing exercises"
+            ),
+            "source": "decisions/0118",
+        })
         if istep in INTERVAL_CLASS_PUBLISHERS["window_w_percentile"]:
             out.append({
                 "interval_id": f"window_w_percentile_{a}",
@@ -4758,17 +4905,30 @@ def build_placeholder(provenance: dict, grid: list[int],
             "B": BOOTSTRAP_B,
             "seed": BOOTSTRAP_SEED,
             "resampling_unit_for_outcome_shares": "account",
+            "statistics": list(BOOTSTRAP_STATISTICS),
             "identical_for_both_arms": True,
             "seed_value_is_arbitrary_its_fixity_is_the_point": True,
-            "fields_fixed_in_spec": ["B", "seed", "resampling_unit"],
-            "fields_not_fixed_in_spec": ["statistic (levels vs movements)"],
+            "fields_considered": list(BOOTSTRAP_FIELDS_CONSIDERED),
+            "fields_fixed_in_spec": list(BOOTSTRAP_FIELDS_CONSIDERED),
+            "fields_not_fixed_in_spec": [],
+            "why_both_statistics": (
+                "The requirement exists so the diff compares like with like, and both arms "
+                "producing both objects satisfies that fully: a divergence on either object is "
+                "then a real divergence rather than a design difference. Neither may be "
+                "dropped, because they are DIFFERENT OBJECTS -- on APPLY the never-started "
+                "level is an order of magnitude wider than its movement -- so a reader who is "
+                "not told which one they are reading is wrong by that much. Same reasoning as "
+                "publishing the floor and the ceiling rather than a point. The magnitudes are "
+                "cited to decisions/0118 rather than restated here, because a figure copied "
+                "into a schema is a second place that figure lives."
+            ),
             "why_account_level": (
                 "Pairs are not independent -- one account contributes many -- so pair-level "
                 "resampling understates the interval. The clustering has been measured on "
                 "this build and the measurement is cited rather than restated here, because a "
                 "figure copied into a schema is a second place that figure lives."
             ),
-            "source": "decisions/0103 §1; task-sheet.md Step 9",
+            "source": "decisions/0103 §1; decisions/0118; task-sheet.md Step 9",
         },
         "binding_clusters": {
             "outcome_shares": {
@@ -4803,38 +4963,45 @@ def build_placeholder(provenance: dict, grid: list[int],
             "a_default": {
                 "B": BOOTSTRAP_B,
                 "seed": BOOTSTRAP_SEED,
-                "statistic": "movements",
+                "statistics": list(BOOTSTRAP_STATISTICS),
                 "resampling_unit": "account",
                 "producing_arm": "a",
-                "spec_status": "partly_fixed_in_spec",
-                "fields_fixed_in_spec": ["B", "seed", "resampling_unit"],
+                "spec_status": "fixed_in_spec",
+                "fields_fixed_in_spec": list(BOOTSTRAP_FIELDS_CONSIDERED),
                 "note": ph(
-                    "B, the seed and the unit are fixed by decisions/0103 and are real here; "
-                    "levels-vs-movements is NOT fixed by it and still differs between the "
-                    "arms, so it stays visible rather than silent"
+                    "all four elements are fixed by the spec -- decisions/0103 for B, the seed "
+                    "and the unit, decisions/0118 for the statistic -- and all four are real "
+                    "here rather than sentinels. This entry no longer records a per-arm choice "
+                    "on any of them"
                 ),
             },
             "b_default": {
                 "B": BOOTSTRAP_B,
                 "seed": BOOTSTRAP_SEED,
-                "statistic": "levels",
+                "statistics": list(BOOTSTRAP_STATISTICS),
                 "resampling_unit": "account",
                 "producing_arm": "b",
-                "spec_status": "partly_fixed_in_spec",
-                "fields_fixed_in_spec": ["B", "seed", "resampling_unit"],
-                "note": ph("as above, for the other arm; the statistic differs and that is "
-                           "the unfixed part of the spec showing through"),
+                "spec_status": "fixed_in_spec",
+                "fields_fixed_in_spec": list(BOOTSTRAP_FIELDS_CONSIDERED),
+                "note": ph(
+                    "as above, for the other arm. It is IDENTICAL to a_default except for "
+                    "producing_arm, and that is what decisions/0118 did: with all four "
+                    "elements fixed, two entries differ only in the arm that produced them, so "
+                    "check S32 now catches an arm mislabel and no longer catches a settings "
+                    "mismatch, because there is none left to catch"
+                ),
             },
             "sole_default": {
                 "B": BOOTSTRAP_B,
                 "seed": BOOTSTRAP_SEED,
-                "statistic": "levels",
+                "statistics": list(BOOTSTRAP_STATISTICS),
                 "resampling_unit": "account",
                 "producing_arm": "sole",
-                "spec_status": "partly_fixed_in_spec",
-                "fields_fixed_in_spec": ["B", "seed", "resampling_unit"],
+                "spec_status": "fixed_in_spec",
+                "fields_fixed_in_spec": list(BOOTSTRAP_FIELDS_CONSIDERED),
                 "note": ph("the single-arm steps, 10 to 12, which have no second arm to "
-                           "diff against"),
+                           "diff against. The statistic is fixed for them too: it is a "
+                           "property of the spec, not of having a counterpart arm"),
             },
             # SHOW-CLUSTERED SETTINGS, one per arm. The binding cluster is NOT
             # the same for every quantity (decisions/0103 §2): W's interval is
@@ -4844,11 +5011,18 @@ def build_placeholder(provenance: dict, grid: list[int],
                 f"{a}_show_clustered": {
                     "B": BOOTSTRAP_B,
                     "seed": BOOTSTRAP_SEED,
-                    "statistic": ARM_STATISTIC[a],
+                    "statistics": list(BOOTSTRAP_STATISTICS),
                     "resampling_unit": "show",
                     "producing_arm": a,
                     "spec_status": "partly_fixed_in_spec",
-                    "fields_fixed_in_spec": ["B", "seed"],
+                    # THE UNIT IS THE ONE FIELD THIS ENTRY DOES NOT INHERIT FROM
+                    # THE SPEC. decisions/0103 fixes `account` for the OUTCOME
+                    # SHARES specifically, so a show-bound quantity's unit is
+                    # settled by its binding cluster rather than by that ruling
+                    # -- which is why `spec_status` stays partly_fixed_in_spec
+                    # here while the default entries became fixed_in_spec. B,
+                    # the seed and the statistic are fixed for every entry.
+                    "fields_fixed_in_spec": ["B", "seed", "statistics"],
                     "note": ph(
                         "the show-clustered settings for a show-bound quantity; the unit is "
                         "NOT the account here, and the ruling's per-interval unit field is "
@@ -5865,25 +6039,62 @@ def build_placeholder(provenance: dict, grid: list[int],
                 "choice": "A CI slot accepts an explicit absence, and every CI names a quantity "
                           "class whose binding cluster is declared.",
                 "spec_gap": (
-                    "The bootstrap is now fixed at 10,000 resamples, account level, seed "
-                    "20260818. The record also states that the binding cluster is NOT the same "
-                    "for every quantity, and the spec does not say which quantities must carry "
-                    "an interval at all: Step 12 lists candidate cuts and Step 13's per-arm "
-                    "series are shares."
+                    "The bootstrap is fixed in all four elements -- 10,000 resamples, account "
+                    "level for the outcome shares, seed 20260818, statistic BOTH. The record "
+                    "also states that the binding cluster is NOT the same for every quantity, "
+                    "and the spec does not say which quantities must carry an interval at all: "
+                    "Step 12 lists candidate cuts and Step 13's per-arm series are shares."
                 ),
                 "what_was_done": (
                     "resampling_unit is an enum rather than the constant `account`; every CI "
-                    "restates B, the seed and the unit at the point of use and names a "
-                    "quantity class resolved against $.binding_clusters; and a CI slot may "
-                    "hold an absence with the not_required_by_spec status. Checks S23 and S24 "
-                    "assert the restatement matches the registry and that a unit differing "
+                    "restates B, the seed, the unit and the statistic at the point of use and "
+                    "names a quantity class resolved against $.binding_clusters; and a CI slot "
+                    "may hold an absence with the not_required_by_spec status. Checks S23 and "
+                    "S24 assert the restatement matches the registry and that a unit differing "
                     "from its binding cluster carries an unreconciled disagreement record."
                 ),
                 "if_ruled_otherwise": (
-                    "If levels-vs-movements is fixed later, bootstrap_spec's "
-                    "fields_not_fixed_in_spec shrinks and the per-arm statistic stops varying. "
-                    "It is recorded as unfixed because the ruling that fixed the other three "
-                    "did not fix it."
+                    "If the spec ever names a quantity that MUST carry an interval, the "
+                    "absence branch narrows from 'not asked for' to a list, and S18's site set "
+                    "stops being 'whatever the file wrote'. THE PREVIOUS TEXT HERE WAS RETIRED "
+                    "AT v1.6.0: it read 'if levels-vs-movements is fixed later, "
+                    "fields_not_fixed_in_spec shrinks and the per-arm statistic stops varying', "
+                    "and its antecedent OCCURRED -- decisions/0118 fixed it, the list is empty "
+                    "and there is no per-arm statistic left to vary. A conditional whose "
+                    "condition has happened reads as an open question and is not one."
+                ),
+            },
+            {
+                "choice": (
+                    "THE STATISTIC IS A VALUE IN THE REGISTRY, PLURAL THERE AND SINGULAR AT "
+                    "EACH INTERVAL, and the schema requires both objects rather than recording "
+                    "which one an arm chose."
+                ),
+                "spec_gap": (
+                    "decisions/0118 fixes the statistic as BOTH levels and paired movements "
+                    "and says a run emitting only one is incomplete. It does not say how a "
+                    "document records that, and the two obvious encodings differ: a per-entry "
+                    "pair, or a per-interval label with a document-level completeness rule."
+                ),
+                "what_was_done": (
+                    "Both. $.bootstrap_spec.statistics and every $.bootstrap_settings entry's "
+                    "`statistics` hold the pair -- a set constraint, two unique members from "
+                    "the enum, order not asserted because neither object is the design. Each "
+                    "interval's `statistic` stays single-valued, because a level and a movement "
+                    "are never compared to each other and an interval that did not say which "
+                    "it was would mislead by an order of magnitude. Check S40 asserts the "
+                    "registry side and the partition of `fields_considered`; check S41 asserts "
+                    "both objects actually appear, per producing arm, with its coverage count. "
+                    "The entry field was RENAMED from `statistic` to `statistics` so that a "
+                    "writer still emitting the singular key fails against "
+                    "additionalProperties: false rather than being accepted silently."
+                ),
+                "if_ruled_otherwise": (
+                    "If a run were ever permitted to emit one object -- for a quantity with no "
+                    "meaningful paired counterpart, say -- S41 gains an absence branch naming "
+                    "the quantity and its reason, and `statistics` loses its minItems of 2 in "
+                    "favour of minItems 1 plus a stated reason. Nothing else moves: the "
+                    "per-interval label is required either way."
                 ),
             },
             {
@@ -5928,6 +6139,54 @@ def build_placeholder(provenance: dict, grid: list[int],
             },
         ],
         "known_limits_of_this_schema": [
+            {
+                "limit": (
+                    "A DECLARATION IS NOT A COMPUTATION: THIS SCHEMA CANNOT ESTABLISH THAT A "
+                    "RUN ACTUALLY BOOTSTRAPPED BOTH OBJECTS. It requires the pair in every "
+                    "registry entry, requires each interval to label itself, and requires both "
+                    "labels to appear per producing arm (S40, S41). A writer that computed "
+                    "levels only, wrote the pair into its registry and attached the "
+                    "`movements` label to a levels interval satisfies every one of those and "
+                    "validates clean. THE SCHEMA SEES WHAT A FILE SAYS ABOUT ITSELF."
+                ),
+                "consequence": (
+                    "The requirement in decisions/0118 -- both arms produce both objects -- is "
+                    "enforced here as a SHAPE, not as a fact. It is stated as a gap rather "
+                    "than papered over with a const: a const asserting agreement with the "
+                    "writers' canonical block would be the shape this schema already retired "
+                    "once, `diff_precedes_merge`, which was not a fact the file recorded but a "
+                    "sentence the schema required the file to contain."
+                ),
+                "mitigation": (
+                    "The half that CAN be established is: src/step8b_selftest.py reads the "
+                    "canonical block from both writer files, asserts the two copies are "
+                    "byte-identical, asserts the block names both objects, and asserts this "
+                    "schema's bootstrap_statistic enum is exactly the set the block names -- so "
+                    "the schema's vocabulary is checked against the spec rather than typed "
+                    "beside it. What remains open is the writer's arithmetic, which only the "
+                    "Human Lead's diff of the two arms' intervals can reach."
+                ),
+            },
+            {
+                "limit": (
+                    "S41 ASKS WHETHER BOTH OBJECTS APPEAR, NOT WHETHER THE RIGHT QUANTITIES "
+                    "HAVE BOTH. One movement interval anywhere in an arm satisfies it, even if "
+                    "every substantive quantity in that arm is levels-only. The schema has no "
+                    "notion of which quantities must carry a paired counterpart, because the "
+                    "spec names none."
+                ),
+                "consequence": (
+                    "A file can be complete in the sense S41 checks and incomplete in the "
+                    "sense a reader cares about."
+                ),
+                "mitigation": (
+                    "Each interval names its quantity and its quantity class, and a movement "
+                    "states in `quantity` which two configurations it is a movement between, "
+                    "so the pairing is READABLE even though it is not machine-checked. If the "
+                    "spec later names the quantities that must carry both, S41 gains that list "
+                    "and stops being a per-arm existence test."
+                ),
+            },
             {
                 "limit": (
                     "THE MERGE'S EXPECTED SOURCE LIST IS DERIVED FROM THE DUALITY TABLE, WHICH "
@@ -6192,10 +6451,13 @@ def build_placeholder(provenance: dict, grid: list[int],
                 "Check $.placeholder before reading anything else. This file's flag is true."
             ),
             "bootstrap_is_fixed": (
-                "The resample count, the resampling unit for the outcome shares and the seed "
-                "are fixed by the spec and are stated at $.bootstrap_spec, restated at every "
-                "interval, and checked against each other. The statistic -- levels versus "
-                "movements -- is NOT fixed, and differs between the arms."
+                "ALL FOUR ELEMENTS ARE FIXED BY THE SPEC: the resample count, the seed, the "
+                "resampling unit for the outcome shares (decisions/0103) and the statistic "
+                "(decisions/0118). They are stated at $.bootstrap_spec, restated at every "
+                "interval, and checked against each other. THE STATISTIC IS BOTH LEVELS AND "
+                "PAIRED MOVEMENTS: a run produces both objects, the registry holds the pair, "
+                "and each interval says which of the two it is. A level and a movement are "
+                "never compared to each other."
             ),
             "which_steps_are_dual": (
                 "Steps 9 and 13 are dual and nest their payloads per producing arm. Steps 10, "
