@@ -59,3 +59,59 @@ lines apart** — reaching **the right outcome for the wrong reason**. Fixed at 
 - **Working tree clean. `5a7341b` pushed to `main`.** All three controls pass.
 - **Nothing is running.** No agent, no rerun, **Step 9 not begun.**
 - ***RESUME BY RULING E2.***
+
+---
+
+## APPENDED 2026-08-19 — the state at `aa4a996`, and what Step 9 is now waiting on
+
+***THE PICTURE HAS CHANGED SINCE THIS NOTE WAS WRITTEN.*** **E1, E2, E3 are closed.** **Step 8b has run
+six times and is at schema v1.5.0.** **Step 13b exists as a task-sheet step, owned by the Human Lead,
+sitting AFTER Step 14.**
+
+### Levels-vs-movements is Step 9's LAST blocker
+
+**Everything else that blocked Step 9 has been ruled or fixed.** ***This one is untouched, and it is the
+Human Lead's alone.***
+
+`0103` fixed **`B` = 10,000**, **seed `20260818`**, **unit = account**. ***It did not fix the
+STATISTIC***, and **both `data-scientist` files require all three fixed identically for both arms.**
+**Step 7's arms diverged on it in fact, not in theory.**
+
+### Arm B's justification is verbatim in `0116` §5 — NOT in `0115`
+
+`artifacts/step7-liveness-bb-b.json`, at `/bootstrap`:
+
+> *"nonparametric bootstrap, clusters = ACCOUNTS, unit = pair. Accounts resampled with replacement from
+> the accounts present in the position-5 population; **the liveness rule is RE-APPLIED inside each
+> replicate, so the exclusion count is itself random**."* — `replicates: 2000`, `seed: 20260814`
+
+*(`0115` is arm `a`'s own record of Step 8b v1.5.0 and carries none of this.)*
+
+### Arm A's justification is PENDING ITS OWN REPORT
+
+***Arm A has no `bootstrap` block at that path in `artifacts/step7-liveness-bb-a.json`***, and every
+occurrence of *"movement"* in its deliverables is about **share movements between rules, not the
+bootstrap statistic.** **Arm A has been asked to report what it ran — reporting only, forbidden to
+defend or rule, and forbidden to read arm B's output or any decision entry characterising the
+divergence.** **Its answer is not in yet.**
+
+### ***THE DECISION-LOG ACCOUNT OF ARM A IS UNRELIABLE ON THE SEED***
+
+**`0052` §122 records `20260813`. `0053` §107 records `20260815`.** ***The record disagrees with
+itself***, which is why arm A was asked for the seed **as it appears in its own artifact** rather than
+as recorded. ***Do not take arm A's configuration from `decisions/` without checking it against arm A's
+artifact.***
+
+### Also live
+
+- **`reviewer-engineering` has v1.5.0** and has been aimed at whether the **four-field arm key is stated
+  IDENTICALLY everywhere**, after `0114`'s propagation left the three-field key standing on four
+  surfaces — **twice now, a stale arm key has been invisible to `check_surfaces.py` because it is a
+  STRUCTURAL CLAIM**, and both times an arm found it.
+- **The adopted-rule revision is read by PARSING KEY NAMES** in `processed/step5/adopted_rule.json`. **A
+  first-class field there would remove the inference; that file is Step 5's.**
+- ***An arm wrote `decisions/0115`.*** **Retained — accurate, and records no ruling — but `decisions/` is
+  a surface every arm reads, and an entry written by one arm and read by the other routes around the
+  Human Lead's diff** (`0116` §2).
+
+***RESUME BY RULING LEVELS-VS-MOVEMENTS, once arm A's report is in. Step 9 is not begun.***
