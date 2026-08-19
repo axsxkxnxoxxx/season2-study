@@ -303,6 +303,29 @@ GROUNDS_WITHDRAWN = {
                                 "independent evidence. Withdrawn 0094 SS2, Red Team eighth pass F8",
     },
 
+    "0106 SS7.3": {
+        "argument": "the decision log 'disagrees with itself' on arm a's bootstrap seed, "
+                    "because 0052 SS122 records 20260813 and 0053 SS107 records 20260815 -- "
+                    "therefore arm a's configuration cannot be taken from decisions/",
+        "still_true": [20260813, 20260814, 20260815],
+        "why_not_load_bearing": "ALL THREE SEEDS ARE CORRECT WHERE THEY APPEAR, and the two "
+                                "entries were never in conflict: they label two DIFFERENT RUNS "
+                                "and neither says which. 0053 SS107's pair (20260813, 20260815) "
+                                "is the mm / ALT-MATCHED run -- mm_a at 4000/20260813, mm_b at "
+                                "4000/20260815, both confirmed on disk, and git log -S puts "
+                                "20260815's first appearance in fafb443, the same commit that "
+                                "created step7-liveness-mm-b.json and 0053 itself. 0052 SS122 / "
+                                "0055 SS288 / 0056 SS150 describe the bb / ALT-BROAD gate-closing "
+                                "run, where bb_b is 2000/20260814. The real defect is an "
+                                "UNLABELLED RUN, not a contradiction. Also withdrawn with it: "
+                                "'20260815 appears exactly once in the repository' -- it appears "
+                                "8 times. The surviving true claim is that ZERO namespace-a files "
+                                "carry it. Withdrawn 0106 SS7.3, verified against disk "
+                                "2026-08-18. NOTE: the paired claim at 0116 SS5 -- that "
+                                "'A: movements, B: levels' exists in decisions/ and not in arm "
+                                "a's deliverable -- STANDS and is unaffected",
+    },
+
     "0055 SS2": {
         "argument": "the widened S&L floor is warranted because the 90 channel pairs had "
                     "full opportunity to produce evidence (p5 margin 1.7 days, minimum 0.13)",

@@ -94,8 +94,14 @@ object at that path**, and every occurrence of *"movement"* in arm A's deliverab
 SHARE MOVEMENTS BETWEEN RULES, not the bootstrap statistic.**
 
 ***So the pairing "A: movements, B: levels" exists in `decisions/` and not in arm A's deliverable***:
-`0052` §122, `0055` §288, `0056` §150. **And those entries disagree on the seed** — `0053` §107 reads
-*"and movements, seeds stated (20260813 and 20260815)"* against `0052`'s `20260813`.
+`0052` §122, `0055` §288, `0056` §150. ~~**And those entries disagree on the seed** — `0053` §107 reads
+*"and movements, seeds stated (20260813 and 20260815)"* against `0052`'s `20260813`.~~
+
+> ***THE SEED HALF IS WITHDRAWN, 2026-08-18, `0106` §7.*** **`0053` §107's pair is `(20260813,
+> 20260815)` for the `mm` run and is CORRECT on disk; `0052` §122's `(20260813, 20260814)` is the `bb`
+> run and is also correct.** **Different runs, not a contradiction.** ***The first half of this
+> paragraph — that "A: movements, B: levels" exists in `decisions/` and not in arm A's deliverable —
+> STANDS, and is now stronger: arm A reports BOTH on both runs.***
 
 **Arm A's actual configuration and reasoning would have to come from arm A reporting what it ran**,
 which is a measurement of its own past work rather than a ruling — **and `0095` makes a launch
