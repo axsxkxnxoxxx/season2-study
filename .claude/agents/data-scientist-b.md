@@ -240,7 +240,7 @@ strings — closing `-->` included — so prose naming them cannot be mistaken f
   2026-08-19 (`0118`), closing the third and last unfixed bootstrap element. **Both arms produce
   BOTH objects. Both objects are LABELLED. NEITHER is presented as *the* design.**
 
-  ***ALL THREE ELEMENTS ARE NOW FIXED AND IDENTICAL FOR BOTH ARMS:*** `B` = **10,000**, seed =
+  ***ALL FOUR ELEMENTS ARE NOW FIXED AND IDENTICAL FOR BOTH ARMS:*** `B` = **10,000**, seed =
   **20260818**, resampling unit = **account** for the outcome shares (`0103`), and **statistic =
   BOTH levels and paired movements** (`0118`). ***STEP 9 IS NO LONGER BLOCKED ON THE BOOTSTRAP.***
 

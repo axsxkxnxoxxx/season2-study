@@ -68,6 +68,22 @@ unchanged in code and NARROWER IN FORCE: with all four elements fixed and
 identical across the arms, two registry entries differ only in `producing_arm`,
 so a cross-arm reference misreports the arm and no longer misreports a setting.
 
+THREE CHECKS CHANGED AT v1.7.0, against the Human Lead's ruling of 2026-08-19 on
+reviewer-engineering's v1.6.0 review. S41 -- ITS EMPTY BRANCH IS SCOPE-AWARE:
+Step 12 is EXEMPT from the paired-movement requirement, on the schema's own
+warrant that "Step 12 lists every candidate cut and mandates intervals nowhere",
+because requiring it to carry intervals would force it to manufacture two figures
+it was never asked to compute -- a fabrication to satisfy a control, which is the
+defect E1 was -- and would make the schema's own warrant text false. THE EXEMPTION
+IS STEP 12'S ALONE and the selftest asserts Steps 9, 10, 11 and 13 still fail that
+branch. S40 -- IT POLICES `spec_status`, THE FIELD THAT CARRIES THE CLAIM: the
+v1.6.0 form checked `fields_not_fixed_in_spec` by name and never read
+`spec_status`, so an entry could declare itself `unfixed_at_time_of_writing` while
+listing all four elements as fixed and validate at 41 checks, 0 failures. And each
+ENTRY's fixed list gained the partition anchor $.bootstrap_spec got one level up,
+so an entry that silently drops B, the seed and the unit from its fixed list is no
+longer indistinguishable from one that declares them.
+
 SCOPED BY DOCUMENT ROLE at v1.2.0 (decisions/0107). ONE FILE PER ARM: an arm file
 is written by an isolated instance, the merged document is Step 13b's, and
 $.document_scope says which a file is. Two checks are role-aware -- S17, which no
@@ -391,6 +407,63 @@ INTERVAL_CLASS_PUBLISHERS = {
     "window_w_percentile": ("step9", "step13"),
 }
 
+# THE KEYS S30 NORMALISES AWAY BEFORE COMPARING TWO ARMS' PAYLOADS -- ONE
+# DEFINITION, AND ITS ARITY IS DERIVED FROM IT (reviewer-engineering E3 on the
+# v1.6.0 review). These are ARM LABELS: fields whose whole content is which arm a
+# payload belongs to, so a comparison meant to ignore that must ignore them.
+#
+# `statistic` LEFT THIS TUPLE AT v1.6.0 (decisions/0118) -- the statistic is now
+# fixed as BOTH for every arm, so two payloads differing on it differ on WHICH
+# OBJECT they report, which is a real divergence and not a label. THE WORD "FIVE"
+# WAS LEFT TYPED INTO THE SENTENCE THE CHECK EMITS and travelled from there into
+# src/step8b_schema.py and into all three placeholders. Nothing here states the
+# count; everything that needs it reads ARM_LABELS_ARITY_WORD.
+ARM_LABELS_NORMALISED = ("producing_arm", "merged_from", "bootstrap_ref",
+                         "convention_label")
+_ARITY_WORDS = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six",
+                7: "seven", 8: "eight", 9: "nine", 10: "ten"}
+ARM_LABELS_ARITY = len(ARM_LABELS_NORMALISED)
+ARM_LABELS_ARITY_WORD = _ARITY_WORDS.get(ARM_LABELS_ARITY, str(ARM_LABELS_ARITY))
+
+
+# WHICH PRODUCING STEPS THE SPEC DOES NOT ASK FOR INTERVALS FROM AT ALL.
+# Human Lead ruling, 2026-08-19, on reviewer-engineering's v1.6.0 review of S41.
+#
+# S41 required BOTH bootstrap objects among every producing arm's intervals, and
+# failed unconditionally where an arm had none. decisions/0118 fixes the statistic
+# as BOTH for every step that PRODUCES intervals; it does not create an obligation
+# to produce them. Step 12 has none: this schema's own warrant, at
+# $defs.ci_or_absence, says "Step 12 lists every candidate cut and mandates
+# intervals nowhere."
+#
+# THE RULING'S GROUND, RECORDED AS GIVEN: requiring Step 12 to carry intervals
+# would force it to manufacture two figures it was never asked to compute, one a
+# paired movement between configurations the spec does not name -- a fabrication
+# to satisfy a control, which is the defect E1 was. And it would make the schema's
+# own warrant text false, which is fixing a control by breaking a statement of
+# fact.
+#
+# THE EXEMPTION IS ONE STEP'S AND MUST NOT WIDEN. Steps 9, 10, 11 and 13 all
+# publish outcome-share intervals -- INTERVAL_CLASS_PUBLISHERS above names Steps
+# 9, 11, 12 and 13 on `outcome_shares`, and Step 10 charts the headline arm -- so
+# an arm file of any of those carrying no interval at all is INCOMPLETE, not
+# out of scope, and still fails. src/step8b_selftest.py asserts the four failures
+# and the one pass, because an exemption that quietly covers five steps when it
+# was granted to one is the shape this study keeps finding.
+#
+# The same warrant names Step 13's per-arm SENSITIVITY SERIES as a series of
+# shares rather than of intervals. That is NOT a step-level exemption: Step 13
+# also writes the headline, where the intervals are mandated, so its arm file
+# still owes both objects and is not listed here.
+INTERVALS_NOT_MANDATED_BY_STEP = {
+    "step12": (
+        "the schema's own warrant at $defs.ci_or_absence -- \"Step 12 lists every candidate "
+        "cut and mandates intervals nowhere\" -- so requiring intervals here would make the "
+        "writing step manufacture two figures the spec never asked it to compute, one of them "
+        "a paired movement between configurations the spec does not name"
+    ),
+}
+
 # THE PER-ARM BLOCKS THAT HAVE NO PRODUCER AT A PREMIERE-ANCHORED ARM
 # (decisions/0114 E13). PUBLISHER ROWS KEY ON ARM IDENTITY, NOT PRODUCING STEP
 # ALONE: BLOCK_PUBLISHER says WHICH STEP publishes a block, and S22 read that
@@ -682,6 +755,61 @@ def _iter_abandonment(inst: dict):
             for j, blk in enumerate(blocks):
                 if isinstance(blk, dict) and not _is_block_absence(blk):
                     yield (f"$.arms[{i}].abandonment_distribution.{pop}[{j}]", pop, blk)
+
+
+# THE PARTITION RULE, WRITTEN ONCE AND APPLIED AT BOTH LEVELS (v1.7.0,
+# reviewer-engineering E2). $.bootstrap_spec got `fields_considered` at v1.6.0 so
+# that an empty `fields_not_fixed_in_spec` would be ESTABLISHED rather than merely
+# empty; each registry ENTRY's own fixed list had no anchor at all. Restating the
+# rule at the second level would be two definitions of one rule, which is this
+# study's most-repeated defect, so it is one function called twice.
+def _partition_failures(where: str, considered, fixed, notfixed) -> list[str]:
+    out: list[str] = []
+    if not isinstance(considered, list) or not considered:
+        out.append(
+            f"{where}.fields_considered is absent or empty: without a declared universe, an "
+            f"empty fields_not_fixed_in_spec cannot be distinguished from an unfilled one"
+        )
+    if not isinstance(fixed, list):
+        out.append(f"{where}.fields_fixed_in_spec is absent or not a list")
+    if not isinstance(notfixed, list):
+        out.append(
+            f"{where}.fields_not_fixed_in_spec is absent or not a list. It is EMPTY as of "
+            f"decisions/0118 on the account-clustered entries, and the empty list is the "
+            f"record; deleting it makes the emptiness unreadable"
+        )
+    if out:
+        return out
+    uni, f_set, n_set = set(considered), set(fixed), set(notfixed)
+    if f_set & n_set:
+        out.append(
+            f"{where}: {sorted(f_set & n_set)} appear in BOTH the fixed and the not-fixed "
+            f"list. A field cannot be both"
+        )
+    if f_set | n_set != uni:
+        out.append(
+            f"{where}: the fixed and not-fixed lists do not partition fields_considered. "
+            f"Missing from both: {sorted(uni - (f_set | n_set))}; named but not considered: "
+            f"{sorted((f_set | n_set) - uni)}"
+        )
+    return out
+
+
+# THE STATUS IS DERIVED, NOT DECLARED (v1.7.0, reviewer-engineering E1).
+# `unfixed_at_time_of_writing` was RETIRED from the enum in the same change: B,
+# the seed and the statistic are fixed for every entry by decisions/0103 and
+# decisions/0118, so no entry can have an empty fixed list and the token had no
+# reachable referent. It is named here so a file still carrying it fails with a
+# message that says WHY rather than with a bare enum error.
+_RETIRED_SPEC_STATUS = "unfixed_at_time_of_writing"
+
+
+def _derive_spec_status(fixed, notfixed) -> str | None:
+    if not isinstance(fixed, list) or not isinstance(notfixed, list):
+        return None
+    if not fixed:
+        return None
+    return "fixed_in_spec" if not notfixed else "partly_fixed_in_spec"
 
 
 def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
@@ -2287,9 +2415,13 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
         # every arm, so two payloads differing on it differ on WHICH OBJECT they
         # report, which is a real divergence and not a label. Normalising it
         # would hide exactly what the merged document exists to publish. FOUR
-        # KEYS NOW, NOT FIVE.
-        _ARM_LABELS = ("producing_arm", "merged_from", "bootstrap_ref",
-                       "convention_label")
+        # KEYS NOW, NOT FIVE -- and the arity below is DERIVED FROM THIS TUPLE
+        # rather than restated. v1.6.0 dropped `statistic` from it and left the
+        # word "five" typed into the sentence the check emits, which propagated
+        # into the schema generator and from there into all three placeholders'
+        # `known_limits_of_this_schema` (reviewer-engineering E3). A count typed
+        # beside the list it counts is a second definition of the list.
+        _ARM_LABELS = ARM_LABELS_NORMALISED
 
         def _normalise(node):
             if isinstance(node, dict):
@@ -2312,7 +2444,8 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
         if pairs:
             c.notes.append(
                 f"residual: {identical} of {pairs} two-arm payload pairs are byte-identical "
-                f"once these five keys are normalised: {', '.join(_ARM_LABELS)}. This is NOT a "
+                f"once these {ARM_LABELS_ARITY_WORD} keys are normalised: "
+                f"{', '.join(_ARM_LABELS)}. This is NOT a "
                 f"failure -- the arms may agree on every figure, and in a placeholder every "
                 f"measurement is a sentinel so identity is expected. AND IT IS NOT A SIGNAL "
                 f"EITHER, PAST ONE MORE RUNG: `convention_definition` is NOT normalised, a "
@@ -2451,6 +2584,17 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
     #        attribution -- which is what the merged document's diff rests on --
     #        and the ruling has removed one observable difference between the arms.
     #        Reported rather than left to be inferred from a passing check.
+    #
+    #        AND WHAT IT CATCHES IS AN INCOHERENT REFERENCE, NOT A MISLABEL
+    #        (reviewer-engineering, v1.6.0 review; this arm agrees). decisions/0119
+    #        §5 wrote "S32 catches an arm MISLABEL", which is one notch too strong:
+    #        BOTH sides of this comparison are the writer's own declarations -- the
+    #        arm a payload sits under, and the arm the referenced entry says
+    #        produced it -- so a writer that labels both with the same wrong arm is
+    #        internally coherent and unobservable here. What fails is a payload
+    #        under one arm pointing at another arm's entry. THE COHERENT MISLABEL
+    #        IS THE HUMAN LEAD'S DIFF TO CATCH, and it is published as a limit
+    #        rather than left implied by a passing check.
     c = Check(
         "S32",
         "every interval references bootstrap settings produced by the arm that owns it",
@@ -2957,11 +3101,33 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
     #        disjoint and cover it. CLAUDE.md -- an empty result and a clean
     #        result are the same value, and only the control knows which it
     #        produced.
+    #
+    #        TWO THINGS ADDED AT v1.7.0 (reviewer-engineering E1 and E2 on the
+    #        v1.6.0 review, ruled on by the Human Lead 2026-08-19).
+    #
+    #        E1 -- IT POLICED THE WRONG FIELD. Everything above reads
+    #        `fields_not_fixed_in_spec` BY NAME. `spec_status` -- the field that
+    #        actually carries the claim, and whose enum still offered
+    #        `unfixed_at_time_of_writing` -- appeared ZERO times in this module, so
+    #        an entry could declare itself unfixed while listing all four elements
+    #        as fixed and validate at 41 checks, 0 failures. The status is now
+    #        DERIVED from the two lists and the declaration asserted against the
+    #        derivation.
+    #
+    #        E2 -- THE ENTRY-LEVEL FIXED LIST HAD NO PARTITION ANCHOR. One level up
+    #        `fields_considered` names the universe so an empty not-fixed list is
+    #        established rather than merely empty; one level down there was no such
+    #        list and the only assertion was membership of `statistics`, so
+    #        `fields_fixed_in_spec: ["statistics"]` -- B, the seed and the unit
+    #        silently dropped -- passed. THE SAME REASONING, APPLIED ONE LEVEL
+    #        DOWN: each entry declares its own universe and the two lists partition
+    #        it.
     c = Check(
         "S40",
         "the bootstrap registry records the statistic as a VALUE -- both objects present in "
-        "$.bootstrap_spec and in every settings entry, listed as fixed, and the fixed and "
-        "not-fixed lists partition the declared universe",
+        "$.bootstrap_spec and in every settings entry, listed as fixed, with the fixed and "
+        "not-fixed lists partitioning a declared universe at BOTH levels and each entry's "
+        "`spec_status` derived from its own lists rather than declared freely",
     )
     expected_statistics = {"levels", "movements"}
     spec = inst.get("bootstrap_spec")
@@ -2988,13 +3154,7 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
                 f"`statistics`. It is fixed (decisions/0118) and must be listed with B, the "
                 f"seed and the unit"
             )
-        if not isinstance(notfixed, list):
-            c.failures.append(
-                "$.bootstrap_spec.fields_not_fixed_in_spec is absent or not a list. It is "
-                "EMPTY as of decisions/0118, and the empty list is the record; deleting it "
-                "makes the emptiness unreadable"
-            )
-        else:
+        if isinstance(notfixed, list):
             for item in notfixed:
                 if "statistic" in str(item).lower():
                     c.failures.append(
@@ -3002,30 +3162,15 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
                         f"({item!r}). decisions/0118 fixed it; a field listed as unfixed after "
                         f"it was fixed is the stale half of a propagation, not a caveat"
                     )
-        if not isinstance(considered, list) or not considered:
-            c.failures.append(
-                "$.bootstrap_spec.fields_considered is absent or empty: without a declared "
-                "universe, an empty fields_not_fixed_in_spec cannot be distinguished from an "
-                "unfilled one"
-            )
-        elif isinstance(notfixed, list):
-            uni, f_set, n_set = set(considered), set(fixed), set(notfixed)
-            if f_set & n_set:
-                c.failures.append(
-                    f"$.bootstrap_spec: {sorted(f_set & n_set)} appear in BOTH the fixed and "
-                    f"the not-fixed list. A field cannot be both"
-                )
-            if f_set | n_set != uni:
-                c.failures.append(
-                    f"$.bootstrap_spec: the fixed and not-fixed lists do not partition "
-                    f"fields_considered. Missing from both: {sorted(uni - (f_set | n_set))}; "
-                    f"named but not considered: {sorted((f_set | n_set) - uni)}"
-                )
+        c.failures.extend(
+            _partition_failures("$.bootstrap_spec", considered, fixed, notfixed))
+        if isinstance(considered, list) and considered:
             c.notes.append(
-                f"partition checked over {len(uni)} declared bootstrap element(s): "
-                f"{sorted(uni)}"
+                f"partition checked over {len(considered)} declared bootstrap element(s) at "
+                f"$.bootstrap_spec: {sorted(set(considered))}"
             )
     registry = inst.get("bootstrap_settings") or {}
+    entry_universes: list[int] = []
     for key in sorted(registry):
         entry = registry[key]
         if not isinstance(entry, dict):
@@ -3044,13 +3189,59 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
                 f"movements must be present. A run that produces only one is INCOMPLETE, not "
                 f"differently designed"
             )
-        if "statistics" not in (entry.get("fields_fixed_in_spec") or []):
+        e_fixed = entry.get("fields_fixed_in_spec")
+        e_notfixed = entry.get("fields_not_fixed_in_spec")
+        e_considered = entry.get("fields_considered")
+        if "statistics" not in (e_fixed or []):
             c.failures.append(
                 f"$.bootstrap_settings.{key}.fields_fixed_in_spec does not name `statistics`. "
                 f"The statistic is fixed for every entry, including the show-clustered ones "
                 f"whose UNIT is not fixed by decisions/0103"
             )
-    c.notes.append(f"registry entries examined: {len(registry)}")
+        # E2 -- the anchor one level down. Membership of `statistics` was the ONLY
+        # assertion on this list, so an entry naming `statistics` and nothing else
+        # passed while silently dropping B, the seed and the unit.
+        c.failures.extend(_partition_failures(
+            f"$.bootstrap_settings.{key}", e_considered, e_fixed, e_notfixed))
+        if isinstance(e_considered, list) and e_considered:
+            entry_universes.append(len(set(e_considered)))
+        # E1 -- the field that carries the claim. Derived from this entry's own
+        # two lists and asserted against what the entry declares, so the two
+        # cannot disagree in silence.
+        declared = entry.get("spec_status")
+        derived = _derive_spec_status(e_fixed, e_notfixed)
+        if declared == _RETIRED_SPEC_STATUS:
+            c.failures.append(
+                f"$.bootstrap_settings.{key}.spec_status is {_RETIRED_SPEC_STATUS!r}, which was "
+                f"RETIRED at v1.7.0: B, the seed and the statistic are fixed for every entry by "
+                f"decisions/0103 and decisions/0118, so no entry can have an empty fixed list "
+                f"and the token has no reachable referent. It was reachable in practice only as "
+                f"a contradiction of this entry's own lists"
+            )
+        elif derived is None:
+            c.failures.append(
+                f"$.bootstrap_settings.{key}: spec_status cannot be derived -- the entry's "
+                f"fixed list is absent or empty, and no entry can have an empty fixed list "
+                f"(decisions/0103, decisions/0118)"
+            )
+        elif declared != derived:
+            c.failures.append(
+                f"$.bootstrap_settings.{key}.spec_status is {declared!r}, but this entry's own "
+                f"lists derive {derived!r}: fixed={sorted(e_fixed)}, "
+                f"not_fixed={sorted(e_notfixed)}. The status is a SUMMARY of the lists, and a "
+                f"summary that disagrees with what it summarises is the half of a propagation "
+                f"nobody checked -- `spec_status` appeared zero times in this module until "
+                f"v1.7.0"
+            )
+        c.notes.append(
+            f"$.bootstrap_settings.{key}: spec_status {declared!r} derived from "
+            f"{len(e_notfixed or [])} unfixed of "
+            f"{len(set(e_considered)) if isinstance(e_considered, list) else 0} considered"
+        )
+    c.notes.append(
+        f"registry entries examined: {len(registry)}; entry-level partitions checked: "
+        f"{len(entry_universes)}"
+    )
     checks.append(c)
 
     # S41 -- BOTH OBJECTS ACTUALLY APPEAR, PER PRODUCING ARM (decisions/0118).
@@ -3064,10 +3255,23 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
     #        S32 uses -- so a merged document is checked arm by arm rather than in
     #        aggregate, where one arm's movement could cover for the other's
     #        absence.
+    #
+    #        SCOPE-AWARE SINCE v1.7.0 (Human Lead ruling, 2026-08-19). The empty
+    #        branch failed unconditionally, which made a Step 12 arm file fail for
+    #        not carrying intervals the spec never asks it for. The exemption is
+    #        INTERVALS_NOT_MANDATED_BY_STEP, it is read from the FILE'S OWN
+    #        producing step, and it is one step's. A merged document is never
+    #        exempt: it holds every arm's intervals and Step 12's silence there is
+    #        covered by the steps that do publish.
     c = Check(
         "S41",
         "both bootstrap statistics -- levels and paired movements -- appear among the "
         "intervals of every producing arm in this file",
+    )
+    s41_step = _producing_step(inst)
+    s41_exempt = (
+        None if _is_merged_document(inst)
+        else INTERVALS_NOT_MANDATED_BY_STEP.get(s41_step)
     )
     by_arm: dict = {}
     for path, arm, ci in _iter_cis_with_arm(inst):
@@ -3084,24 +3288,42 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
     for arm in sorted(by_arm, key=lambda a: (a is None, a)):
         seen = set(by_arm[arm])
         missing = expected_statistics - seen
-        if missing:
-            c.failures.append(
-                f"arm {arm!r} declares {sorted(seen)} and none of {sorted(missing)} across "
-                f"{sum(len(v) for v in by_arm[arm].values())} interval(s). Both arms produce "
-                f"BOTH objects (decisions/0118); a file emitting one is incomplete"
+        if not missing:
+            continue
+        n_ivl = sum(len(v) for v in by_arm[arm].values())
+        if s41_exempt is not None:
+            # The exemption reaches here as well as the empty branch: an interval
+            # this step volunteered does not create an obligation to produce its
+            # paired counterpart, which is the fabrication the ruling forbids.
+            # REPORTED, never silent -- a restricted pass that says nothing is
+            # indistinguishable from a full one.
+            c.notes.append(
+                f"RESTRICTED, NOT FULL: arm {arm!r} declares {sorted(seen)} and none of "
+                f"{sorted(missing)} across {n_ivl} interval(s), and this is NOT failed because "
+                f"the file's producing step is {s41_step!r}, which is exempt -- {s41_exempt}"
             )
+            continue
+        c.failures.append(
+            f"arm {arm!r} declares {sorted(seen)} and none of {sorted(missing)} across "
+            f"{n_ivl} interval(s). Both arms produce BOTH objects (decisions/0118); a file "
+            f"emitting one is incomplete"
+        )
     c.notes.append(
         "intervals examined per arm and statistic: "
         + json.dumps({str(a): {s: len(p) for s, p in sorted(m.items())}
                       for a, m in sorted(by_arm.items(), key=lambda kv: (kv[0] is None, kv[0]))},
                      sort_keys=True)
     )
-    if not by_arm:
+    if not by_arm and s41_exempt is None:
         c.failures.append(
             "this file carries no interval whose owning arm is knowable, so the "
             "both-objects requirement was checked against nothing. An empty result and a "
             "clean result are the same value"
         )
+    # An exempt step with no intervals is scope-empty rather than vacuous, and
+    # _declare_scope_emptiness() names the restriction -- reached through
+    # CHECK_SUBJECT below, the same route every other scope-empty check takes,
+    # rather than through a second emptiness idiom written here.
     checks.append(c)
 
     _declare_scope_emptiness(inst, checks)
@@ -3120,12 +3342,27 @@ CHECK_SUBJECT = {
     "S10": "abandonment_distribution", "S25": "abandonment_distribution",
     "S26": "abandonment_distribution",
     "S14": "waterfall",
+    # S41 JOINED AT v1.7.0 (Human Lead ruling, 2026-08-19). Its subject is not a
+    # block but the INTERVALS a file carries, and its warrant is not the publisher
+    # table but INTERVALS_NOT_MANDATED_BY_STEP -- a step the spec asks for no
+    # interval at all. Routed through here rather than declared inside the check
+    # so there is one emptiness idiom in this module and not two.
+    "S41": "intervals",
 }
 
 
 def _absence_records_for(inst: dict, subject: str) -> list[tuple[str, dict]]:
     """The explicit absence records this file carries for `subject`."""
     out: list[tuple[str, dict]] = []
+    if subject == "intervals":
+        # Every `ci_or_absence` slot the file filled with an ABSENCE rather than an
+        # interval. This is the coverage count for S41's scope-empty branch: it is
+        # what distinguishes a file that considered each interval slot and recorded
+        # why there is none from a file that carries no interval slots at all.
+        for path, node in _walk(inst):
+            if isinstance(node, dict) and path.endswith(".ci") and _is_absence(node):
+                out.append((path, node))
+        return out
     if subject == "bounds":
         for base, pop, block in _iter_payloads(inst):
             for key, payload in ((block.get("by_producing_arm") or {}).get("arms") or {}).items():
@@ -3164,6 +3401,32 @@ def _declare_scope_emptiness(inst: dict, checks: list) -> None:
     for c in checks:
         subject = CHECK_SUBJECT.get(c.cid)
         if subject is None or c.sites or c.failures or c.skipped_reason or c.declared_empty:
+            continue
+        if subject == "intervals":
+            # THE WARRANT IS A STEP-LEVEL EXEMPTION, NOT A PUBLISHER ROW. The
+            # block is not another step's; the spec asks THIS step for no interval
+            # at all (Human Lead ruling, 2026-08-19). A step not in the table falls
+            # through with no declaration and stays VACUOUS -- which, for S41, is
+            # already a FAIL raised in the check itself, so an unlisted step cannot
+            # reach a passing state by this route.
+            reason = None if merged else INTERVALS_NOT_MANDATED_BY_STEP.get(file_step)
+            if reason is None:
+                continue
+            records = _absence_records_for(inst, "intervals")
+            c.coverage = len(records)
+            c.declared_empty = (
+                f"this file carries no interval, and is not asked for one: it is "
+                f"{file_step!r}'s output, and {reason}. The requirement decisions/0118 fixes "
+                f"is that a step which PRODUCES intervals produces BOTH objects; it creates "
+                f"no obligation to produce any. {len(records)} interval slot(s) in this file "
+                f"carry an explicit absence record rather than an interval, so the emptiness "
+                f"was searched for rather than assumed. THE EXEMPTION IS THIS STEP'S ALONE -- "
+                f"Steps 9, 10, 11 and 13 publish outcome-share intervals and still FAIL this "
+                f"branch."
+            )
+            c.notes.append(
+                f"scope-empty by the step-level interval exemption: {file_step!r} is asked for "
+                f"no interval; {len(records)} explicit interval-absence record(s) examined")
             continue
         records = _absence_records_for(inst, subject)
         if records:

@@ -1,6 +1,6 @@
 {
-  "schema_version": "1.6.0",
-  "schema_id": "urn:season2-study:step8b-output-schema:1.6.0",
+  "schema_version": "1.7.0",
+  "schema_id": "urn:season2-study:step8b-output-schema:1.7.0",
   "placeholder": true,
   "placeholder_notice": {
     "banner": "############  THIS FILE IS A PLACEHOLDER. IT CONTAINS NO MEASUREMENTS.  ############  Every number in it is the sentinel -999 or -999.0 and every writer-supplied string is prefixed 'PLACEHOLDER — NOT A MEASUREMENT'. It exists so Step 16 can be built before results exist. DO NOT PUBLISH, DO NOT CHART, DO NOT QUOTE. A consumer that renders it will show -999% bars, which is the point.  ############",
@@ -12,10 +12,10 @@
   },
   "generated_by": {
     "generator": "src/step8b_schema.py",
-    "generator_sha256_12": "b4b56bd028d3",
-    "generated_at_utc": "2026-08-19T20:05:49Z",
+    "generator_sha256_12": "0ceddd50d2a8",
+    "generated_at_utc": "2026-08-19T20:53:01Z",
     "build_tag": "step8b/a/2026-08-19",
-    "git_head_short": "33d1b55",
+    "git_head_short": "9ac4259",
     "host_step": "Step 8b, output schema",
     "written_by": "Analytics Engineer, instance a",
     "inputs": [
@@ -150,12 +150,19 @@
       "resampling_unit": "account",
       "producing_arm": "a",
       "spec_status": "fixed_in_spec",
+      "fields_considered": [
+        "B",
+        "seed",
+        "resampling_unit",
+        "statistics"
+      ],
       "fields_fixed_in_spec": [
         "B",
         "seed",
         "resampling_unit",
         "statistics"
       ],
+      "fields_not_fixed_in_spec": [],
       "note": "PLACEHOLDER — NOT A MEASUREMENT: all four elements are fixed by the spec -- decisions/0103 for B, the seed and the unit, decisions/0118 for the statistic -- and all four are real here rather than sentinels. This entry no longer records a per-arm choice on any of them"
     },
     "a_show_clustered": {
@@ -168,10 +175,19 @@
       "resampling_unit": "show",
       "producing_arm": "a",
       "spec_status": "partly_fixed_in_spec",
+      "fields_considered": [
+        "B",
+        "seed",
+        "resampling_unit",
+        "statistics"
+      ],
       "fields_fixed_in_spec": [
         "B",
         "seed",
         "statistics"
+      ],
+      "fields_not_fixed_in_spec": [
+        "resampling_unit"
       ],
       "note": "PLACEHOLDER — NOT A MEASUREMENT: the show-clustered settings for a show-bound quantity; the unit is NOT the account here, and the ruling's per-interval unit field is exactly what makes that visible"
     }
@@ -3358,6 +3374,12 @@
       "spec_gap": "CLAUDE.md requires a control that finds nothing to say whether it found nothing or looked at nothing. The spec does not say how a file declares that a list is empty.",
       "what_was_done": "cross_arm_divergences carries a search record with a coverage count and an empty_reason, and the validator reports EMPTY_DECLARED rather than VACUOUS for that case only. D9's complementary_pairs, half_a and half_b are required properties, so its check cannot examine an empty map.",
       "if_ruled_otherwise": "If a fourth D9 quantity acquires both key forms it is added by name. The alternative -- an open map -- is what let an empty one look like a pass."
+    },
+    {
+      "choice": "decisions/0118'S BOTH-OBJECTS REQUIREMENT IS APPLIED TO EVERY WRITING STEP, INCLUDING THE SINGLE-ARM STEPS 10, 11 AND 12 -- and Step 12 is then EXEMPTED FROM CARRYING INTERVALS AT ALL by a Human Lead ruling.",
+      "spec_gap": "decisions/0118 is recorded in the two data-scientist files, which own Steps 6, 7, 9 and 13. Steps 10, 11 and 12 are single-arm and their writers never received the canonical block, so nothing in the spec says the requirement reaches them. Extending it was an inference.",
+      "what_was_done": "The requirement is applied to every writing step: checks S40 and S41 do not branch on which step wrote the file. The GROUND is that decisions/0118 calls a run emitting one object INCOMPLETE rather than differently designed, and incompleteness is a property of a bootstrap rather than of having a counterpart arm -- the same reasoning by which B, the seed and the unit already reach the single-arm steps under decisions/0103, which is recorded in the same two files. THE ONE EXEMPTION IS STEP 12'S AND IT IS A RULING RATHER THAN THIS STEP'S CHOICE: the Human Lead ruled on 2026-08-19 that Step 12 mandates intervals nowhere -- this schema's own warrant at $defs.ci_or_absence -- so S41's empty branch reports a declared emptiness for a Step 12 file and still fails for Steps 9, 10, 11 and 13. src/step8b_selftest.py asserts those four failures beside the one pass, against an expectation written from the ruling rather than read from the validator's own table.",
+      "if_ruled_otherwise": "If the requirement is meant to reach only the steps whose writers hold the canonical block, S40 and S41 gain a producing-step guard and Steps 10 to 12 record a per-arm choice again. Nothing else moves. The reverse -- widening the Step 12 exemption to another step -- would fail the selftest fixture, which is the point of holding its expectation independently."
     }
   ],
   "known_limits_of_this_schema": [
@@ -3369,7 +3391,12 @@
     {
       "limit": "S41 ASKS WHETHER BOTH OBJECTS APPEAR, NOT WHETHER THE RIGHT QUANTITIES HAVE BOTH. One movement interval anywhere in an arm satisfies it, even if every substantive quantity in that arm is levels-only. The schema has no notion of which quantities must carry a paired counterpart, because the spec names none.",
       "consequence": "A file can be complete in the sense S41 checks and incomplete in the sense a reader cares about.",
-      "mitigation": "Each interval names its quantity and its quantity class, and a movement states in `quantity` which two configurations it is a movement between, so the pairing is READABLE even though it is not machine-checked. If the spec later names the quantities that must carry both, S41 gains that list and stops being a per-arm existence test."
+      "mitigation": "Each interval names its quantity and its quantity class. If the spec later names the quantities that must carry both, S41 gains that list and stops being a per-arm existence test. NOTHING HERE MAKES THE PAIRING MACHINE-CHECKABLE, and the limit below says why the readable half is weaker than this bullet used to claim."
+    },
+    {
+      "limit": "A `paired_movement_<arm>` ENTRY IS NOT ESTABLISHED TO BE A MOVEMENT OF ANYTHING IN PARTICULAR. The schema requires the object to exist, to be labelled `movements`, and to reference its own arm's settings. It does NOT require it to name the two configurations it is a difference between: `quantity` is free writer text, and this schema's own note on that field says which two configurations is the writer's to state. So a movement interval that names neither endpoint validates.",
+      "consequence": "S41's per-arm existence test can be satisfied by a movement whose endpoints are unstated, and no reader can reconstruct what moved. This is the SECOND-ORDER form of the limit above: that one says the right QUANTITIES need not carry both objects; this one says the movement that does appear need not say what it is a movement OF.",
+      "mitigation": "NONE IN THIS SCHEMA, stated rather than papered over. Requiring two named configurations would need a vocabulary of configurations the spec does not define, and inventing one here would make every writer name a pair this schema chose -- the fabrication decisions/0118's own scope forbids. It is published so a consumer treats an endpoint-less movement as unreadable rather than as a measurement."
     },
     {
       "limit": "THE MERGE'S EXPECTED SOURCE LIST IS DERIVED FROM THE DUALITY TABLE, WHICH IS ITSELF A COPY OF THE SPEC. Check S30's external anchor knows that seven arm files and two non-arm sources are expected because STEP_DUALITY and NON_ARM_MERGE_SOURCES in src/step8b_validate.py say so. If the spec adds a writing step and those tables are not updated, the anchor will expect the old set.",
@@ -3420,8 +3447,8 @@
       "mitigation": "The diff between the two arm files is the control, and it is the Human Lead's. Nothing in this file substitutes for it."
     },
     {
-      "limit": "THE MERGE-ARITY RESIDUAL, MEASURED -- AND NARROWER THAN v1.3.0 PUBLISHED. Check S30 rejects a merged document whose second arm is a copy of the first when the copy keeps the first arm's merge provenance, bootstrap references or sampling-width convention label -- three independent legs, each of which a copy-and-relabel trips. It does NOT reject a copy in which all of those are relabelled as well, because at that point the file asserts that a second input file exists and nothing inside the file can contradict it. THE PUBLISHED LIMIT STOPPED THERE, AND THE ACTUAL LIMIT IS ONE RUNG LOWER (decisions/0111 §4): S30 normalises FIVE keys and NOT `convention_definition` -- one arm's sampling-width convention in that arm's own words -- and a forger making the copy internally coherent rewrites that sentence anyway. THE MOMENT THEY DO, the identical-payload signal inverts to 0 of N, WHICH IS WHAT A GENUINE MERGE PRODUCES.",
-      "consequence": "The remaining signal is that the two payloads are identical once those five keys are normalised. S30 counts and reports that rather than failing it, because two arms may legitimately agree on every figure -- and in a placeholder every measurement is a sentinel, so identity is expected. Past the rung above, the count separates nothing: SO S30 RAISES THE COST OF A FALSE MERGE TO A FABRICATED INPUT FILE PLUS ONE REWRITTEN SENTENCE, AND PAST THAT THERE IS NO IN-FILE SIGNAL AT ALL.",
+      "limit": "THE MERGE-ARITY RESIDUAL, MEASURED -- AND NARROWER THAN v1.3.0 PUBLISHED. Check S30 rejects a merged document whose second arm is a copy of the first when the copy keeps the first arm's merge provenance, bootstrap references or sampling-width convention label -- three independent legs, each of which a copy-and-relabel trips. It does NOT reject a copy in which all of those are relabelled as well, because at that point the file asserts that a second input file exists and nothing inside the file can contradict it. THE PUBLISHED LIMIT STOPPED THERE, AND THE ACTUAL LIMIT IS ONE RUNG LOWER (decisions/0111 §4): S30 normalises FOUR keys (producing_arm, merged_from, bootstrap_ref, convention_label) and NOT `convention_definition` -- one arm's sampling-width convention in that arm's own words -- and a forger making the copy internally coherent rewrites that sentence anyway. THE MOMENT THEY DO, the identical-payload signal inverts to 0 of N, WHICH IS WHAT A GENUINE MERGE PRODUCES.",
+      "consequence": "The remaining signal is that the two payloads are identical once those four keys are normalised. S30 counts and reports that rather than failing it, because two arms may legitimately agree on every figure -- and in a placeholder every measurement is a sentinel, so identity is expected. Past the rung above, the count separates nothing: SO S30 RAISES THE COST OF A FALSE MERGE TO A FABRICATED INPUT FILE PLUS ONE REWRITTEN SENTENCE, AND PAST THAT THERE IS NO IN-FILE SIGNAL AT ALL.",
       "mitigation": "THE DIFF REMAINS THE CONTROL PAST THAT RUNG. It is the Human Lead's, it is between two files, and it happens before this document is built. Nothing in this file substitutes for it, and the selftest asserts the fully relabelled copy as a NON-failure so this limit cannot drift from the behaviour."
     },
     {

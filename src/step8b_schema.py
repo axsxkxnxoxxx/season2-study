@@ -54,8 +54,20 @@ ARM_PLACEHOLDER_PATH = os.path.join(ROOT, "artifacts", "step8b-placeholder-arm-f
 SOLE_PLACEHOLDER_PATH = os.path.join(ROOT, "artifacts", "step8b-placeholder-sole-file.json")
 LOG_DIR = os.path.join(ROOT, "logs", "step8b")
 
-SCHEMA_VERSION = "1.6.0"
-SCHEMA_ID = "urn:season2-study:step8b-output-schema:1.6.0"
+# THE ARM LABELS S30 NORMALISES, IMPORTED RATHER THAN RESTATED
+# (reviewer-engineering E3 on the v1.6.0 review). The count was typed as "five"
+# in three places -- the check's own sentence and the two limit strings below --
+# after v1.6.0 dropped `statistic` and left the tuple at four, and it propagated
+# into all three placeholders. CLAUDE.md: one register, imported by every script
+# that checks. The validator holds the tuple; this module reads it.
+sys.path.insert(0, os.path.join(ROOT, "src"))
+from step8b_validate import (  # noqa: E402
+    ARM_LABELS_ARITY_WORD as _ARM_LABELS_ARITY_WORD,
+    ARM_LABELS_NORMALISED as _ARM_LABELS_NORMALISED,
+)
+
+SCHEMA_VERSION = "1.7.0"
+SCHEMA_ID = "urn:season2-study:step8b-output-schema:1.7.0"
 
 # WHERE THE ADOPTED-RULE REVISION IS READ FROM (decisions/0114 E14). It is the
 # fourth identity dimension, and the ruling asks where the value is READ rather
@@ -517,7 +529,11 @@ def build_schema(provenance: dict | None = None) -> dict:
             "that; check S23 asserts the inline values against the referenced registry entry, "
             "so the redundancy is checked rather than trusted. An interval is ONE of the two "
             "objects and says which; check S41 asserts that BOTH appear, per producing arm, "
-            "because a run that emits only one is INCOMPLETE rather than differently designed."
+            "because a run that emits only one is INCOMPLETE rather than differently designed. "
+            "ONE STEP IS EXEMPT AND THE EXEMPTION IS NAMED HERE RATHER THAN LEFT TO BE "
+            "DISCOVERED: a Step 12 file mandates intervals nowhere (see $defs.ci_or_absence), so "
+            "S41 reports a DECLARED EMPTINESS for it and still fails for Steps 9, 10, 11 and 13. "
+            "Human Lead ruling, 2026-08-19."
         ),
         "additionalProperties": False,
         "required": [
@@ -556,11 +572,15 @@ def build_schema(provenance: dict | None = None) -> dict:
                     "would be off by an order of magnitude with nothing to warn the reader. "
                     "Check S23 asserts this value is one the referenced registry entry "
                     "declares; check S41 asserts both values appear in the file, per producing "
-                    "arm; check S32 asserts the referenced entry belongs to the arm that owns "
-                    "this payload. NOTE THE CONSEQUENCE OF THE RULING FOR S32: with all four "
-                    "elements now identical across the arms, two registry entries differ only "
-                    "in `producing_arm` and `resampling_unit`, so a cross-arm reference "
-                    "misreports the ARM and no longer misreports the settings."
+                    "arm -- except in a Step 12 file, which the spec asks for no interval at "
+                    "all (Human Lead ruling, 2026-08-19); check S32 asserts the referenced "
+                    "entry belongs to the arm that owns this payload. NOTE THE CONSEQUENCE OF "
+                    "THE RULING FOR S32: with all four elements now identical across the arms, "
+                    "two registry entries differ only in `producing_arm` and `resampling_unit`, "
+                    "so a cross-arm reference misreports the ARM and no longer misreports the "
+                    "settings -- and what it catches is an INCOHERENT reference rather than a "
+                    "mislabel, because both sides are the writer's own declarations and a "
+                    "coherent mislabel is unobservable to it."
                 ),
             },
             "resampling_unit": {
@@ -2730,7 +2750,8 @@ def build_schema(provenance: dict | None = None) -> dict:
                     "type": "object",
                     "additionalProperties": False,
                     "required": ["B", "seed", "statistics", "resampling_unit", "producing_arm",
-                                 "spec_status", "fields_fixed_in_spec"],
+                                 "spec_status", "fields_considered", "fields_fixed_in_spec",
+                                 "fields_not_fixed_in_spec"],
                     "properties": {
                         "B": {"type": "integer", "minimum": 1},
                         "seed": {"type": "integer"},
@@ -2759,21 +2780,70 @@ def build_schema(provenance: dict | None = None) -> dict:
                         "producing_arm": {"enum": ["a", "b", "sole"],
                                           "x-enum-id": "producing_arm"},
                         "spec_status": {
-                            "enum": ["fixed_in_spec", "unfixed_at_time_of_writing",
-                                     "partly_fixed_in_spec"],
+                            "enum": ["fixed_in_spec", "partly_fixed_in_spec"],
                             "x-enum-id": "spec_status",
+                            "description": (
+                                "WHETHER THE SPEC FIXES EVERY ELEMENT OF THIS ENTRY, and it is "
+                                "no longer a free label: check S40 derives it from the two "
+                                "lists below and asserts the declared value against the "
+                                "derivation. It was unpoliced until v1.7.0 -- `spec_status` "
+                                "appeared ZERO times in the validator, which polices "
+                                "`fields_not_fixed_in_spec` by name -- so an entry could "
+                                "declare itself unfixed while listing all four elements as "
+                                "fixed and validate clean. THE FIELD THAT CARRIES THE CLAIM IS "
+                                "THE FIELD THAT MUST BE CHECKED.\n"
+                                "RETIRED AT v1.7.0: `unfixed_at_time_of_writing`. Its "
+                                "antecedent has occurred and it retains no legitimate referent "
+                                "-- B, the seed and the statistic are fixed for EVERY entry by "
+                                "decisions/0103 and decisions/0118, so no entry can have an "
+                                "empty fixed list, and the token could only ever have been "
+                                "written by a writer contradicting its own lists. Same "
+                                "disposition `if_ruled_otherwise` took at v1.6.0: quoted here, "
+                                "removed there. `partly_fixed_in_spec` STAYS and is not to be "
+                                "removed -- it has a live referent in the show-clustered entry, "
+                                "whose UNIT is not fixed by decisions/0103 §2."
+                            ),
+                        },
+                        "fields_considered": {
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "minItems": 1,
+                            "uniqueItems": True,
+                            "description": (
+                                "THE PARTITION ANCHOR, ONE LEVEL DOWN. $.bootstrap_spec got one "
+                                "at v1.6.0 so that an empty not-fixed list would be ESTABLISHED "
+                                "rather than merely empty; each entry's own fixed list had no "
+                                "such anchor, and the only assertion on it was membership of "
+                                "`statistics` -- so an entry could carry "
+                                "`fields_fixed_in_spec: [\"statistics\"]`, silently dropping B, "
+                                "the seed and the unit, and pass. Same reasoning, same shape: "
+                                "the fixed and not-fixed lists must partition THIS list."
+                            ),
                         },
                         "fields_fixed_in_spec": {
                             "type": "array",
                             "items": {"type": "string"},
+                            "uniqueItems": True,
                             "description": "Which of this entry's fields the spec fixes. It "
                                            "existed because `spec_status` alone could not say "
                                            "that B was fixed while the statistic was not. All "
-                                           "four are fixed as of decisions/0118, so the list "
-                                           "is now full rather than partial -- and it is kept, "
+                                           "four are fixed as of decisions/0118 for the "
+                                           "account-clustered entries -- and it is kept, "
                                            "because a list that says WHICH is readable where a "
                                            "status that says `fixed_in_spec` is not, and "
                                            "because a future element would reopen the split.",
+                        },
+                        "fields_not_fixed_in_spec": {
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "uniqueItems": True,
+                            "description": (
+                                "Which of this entry's fields the spec leaves open. EMPTY on "
+                                "every account-clustered entry and holding `resampling_unit` on "
+                                "a show-clustered one (decisions/0103 §2). Required rather than "
+                                "optional: an omitted list and an empty one are the same value "
+                                "to a reader, and only one of them is a record."
+                            ),
                         },
                         "note": _text("A note from the writer."),
                     },
@@ -4967,7 +5037,9 @@ def build_placeholder(provenance: dict, grid: list[int],
                 "resampling_unit": "account",
                 "producing_arm": "a",
                 "spec_status": "fixed_in_spec",
+                "fields_considered": list(BOOTSTRAP_FIELDS_CONSIDERED),
                 "fields_fixed_in_spec": list(BOOTSTRAP_FIELDS_CONSIDERED),
+                "fields_not_fixed_in_spec": [],
                 "note": ph(
                     "all four elements are fixed by the spec -- decisions/0103 for B, the seed "
                     "and the unit, decisions/0118 for the statistic -- and all four are real "
@@ -4982,13 +5054,28 @@ def build_placeholder(provenance: dict, grid: list[int],
                 "resampling_unit": "account",
                 "producing_arm": "b",
                 "spec_status": "fixed_in_spec",
+                "fields_considered": list(BOOTSTRAP_FIELDS_CONSIDERED),
                 "fields_fixed_in_spec": list(BOOTSTRAP_FIELDS_CONSIDERED),
+                "fields_not_fixed_in_spec": [],
+                # THE CLAIM IS CORRECTED, NOT MARKED. decisions/0119 §5 said S32
+                # "catches an arm MISLABEL"; reviewer-engineering called that one
+                # notch too strong on the v1.6.0 review and this arm agrees. S32
+                # compares TWO OF THE WRITER'S OWN DECLARATIONS -- which arm a
+                # payload sits under, and which arm the referenced registry entry
+                # says produced it -- so what it catches is an INCOHERENT pair. A
+                # writer that mislabels BOTH consistently is unobservable to it,
+                # and with all four elements fixed there is no longer any settings
+                # difference to expose the inconsistency either.
                 "note": ph(
                     "as above, for the other arm. It is IDENTICAL to a_default except for "
                     "producing_arm, and that is what decisions/0118 did: with all four "
                     "elements fixed, two entries differ only in the arm that produced them, so "
-                    "check S32 now catches an arm mislabel and no longer catches a settings "
-                    "mismatch, because there is none left to catch"
+                    "check S32 catches an INCOHERENT arm reference -- a payload under one arm "
+                    "pointing at the other arm's entry -- and no longer catches a settings "
+                    "mismatch, because there is none left to catch. It does NOT catch a "
+                    "COHERENT mislabel: both sides are the writer's own declarations, so a file "
+                    "that labels a payload and its settings entry with the same wrong arm is "
+                    "unobservable here and only the Human Lead's diff reaches it"
                 ),
             },
             "sole_default": {
@@ -4998,7 +5085,9 @@ def build_placeholder(provenance: dict, grid: list[int],
                 "resampling_unit": "account",
                 "producing_arm": "sole",
                 "spec_status": "fixed_in_spec",
+                "fields_considered": list(BOOTSTRAP_FIELDS_CONSIDERED),
                 "fields_fixed_in_spec": list(BOOTSTRAP_FIELDS_CONSIDERED),
+                "fields_not_fixed_in_spec": [],
                 "note": ph("the single-arm steps, 10 to 12, which have no second arm to "
                            "diff against. The statistic is fixed for them too: it is a "
                            "property of the spec, not of having a counterpart arm"),
@@ -5022,7 +5111,9 @@ def build_placeholder(provenance: dict, grid: list[int],
                     # -- which is why `spec_status` stays partly_fixed_in_spec
                     # here while the default entries became fixed_in_spec. B,
                     # the seed and the statistic are fixed for every entry.
+                    "fields_considered": list(BOOTSTRAP_FIELDS_CONSIDERED),
                     "fields_fixed_in_spec": ["B", "seed", "statistics"],
+                    "fields_not_fixed_in_spec": ["resampling_unit"],
                     "note": ph(
                         "the show-clustered settings for a show-bound quantity; the unit is "
                         "NOT the account here, and the ruling's per-interval unit field is "
@@ -6137,6 +6228,46 @@ def build_placeholder(provenance: dict, grid: list[int],
                     "alternative -- an open map -- is what let an empty one look like a pass."
                 ),
             },
+            {
+                # reviewer-engineering, v1.6.0 review: assessed and AGREED. This
+                # WAS a spec choice and it was unrecorded, which is exactly what
+                # this block exists to stop. Half of it has since been ruled on
+                # and that half is recorded as a ruling, not as a choice.
+                "choice": (
+                    "decisions/0118'S BOTH-OBJECTS REQUIREMENT IS APPLIED TO EVERY WRITING "
+                    "STEP, INCLUDING THE SINGLE-ARM STEPS 10, 11 AND 12 -- and Step 12 is then "
+                    "EXEMPTED FROM CARRYING INTERVALS AT ALL by a Human Lead ruling."
+                ),
+                "spec_gap": (
+                    "decisions/0118 is recorded in the two data-scientist files, which own "
+                    "Steps 6, 7, 9 and 13. Steps 10, 11 and 12 are single-arm and their writers "
+                    "never received the canonical block, so nothing in the spec says the "
+                    "requirement reaches them. Extending it was an inference."
+                ),
+                "what_was_done": (
+                    "The requirement is applied to every writing step: checks S40 and S41 do "
+                    "not branch on which step wrote the file. The GROUND is that decisions/0118 "
+                    "calls a run emitting one object INCOMPLETE rather than differently "
+                    "designed, and incompleteness is a property of a bootstrap rather than of "
+                    "having a counterpart arm -- the same reasoning by which B, the seed and "
+                    "the unit already reach the single-arm steps under decisions/0103, which is "
+                    "recorded in the same two files. THE ONE EXEMPTION IS STEP 12'S AND IT IS A "
+                    "RULING RATHER THAN THIS STEP'S CHOICE: the Human Lead ruled on 2026-08-19 "
+                    "that Step 12 mandates intervals nowhere -- this schema's own warrant at "
+                    "$defs.ci_or_absence -- so S41's empty branch reports a declared emptiness "
+                    "for a Step 12 file and still fails for Steps 9, 10, 11 and 13. "
+                    "src/step8b_selftest.py asserts those four failures beside the one pass, "
+                    "against an expectation written from the ruling rather than read from the "
+                    "validator's own table."
+                ),
+                "if_ruled_otherwise": (
+                    "If the requirement is meant to reach only the steps whose writers hold the "
+                    "canonical block, S40 and S41 gain a producing-step guard and Steps 10 to "
+                    "12 record a per-arm choice again. Nothing else moves. The reverse -- "
+                    "widening the Step 12 exemption to another step -- would fail the selftest "
+                    "fixture, which is the point of holding its expectation independently."
+                ),
+            },
         ],
         "known_limits_of_this_schema": [
             {
@@ -6180,11 +6311,45 @@ def build_placeholder(provenance: dict, grid: list[int],
                     "sense a reader cares about."
                 ),
                 "mitigation": (
-                    "Each interval names its quantity and its quantity class, and a movement "
-                    "states in `quantity` which two configurations it is a movement between, "
-                    "so the pairing is READABLE even though it is not machine-checked. If the "
+                    "Each interval names its quantity and its quantity class. If the "
                     "spec later names the quantities that must carry both, S41 gains that list "
-                    "and stops being a per-arm existence test."
+                    "and stops being a per-arm existence test. NOTHING HERE MAKES THE PAIRING "
+                    "MACHINE-CHECKABLE, and the limit below says why the readable half is "
+                    "weaker than this bullet used to claim."
+                ),
+            },
+            {
+                # reviewer-engineering, v1.6.0 review: assessed and AGREED. The
+                # bullet above used to close with "a movement states in `quantity`
+                # which two configurations it is a movement between, so the
+                # pairing is READABLE even though it is not machine-checked" --
+                # which is a control asserted to exist. `quantity` is free writer
+                # text and the schema's own note says "Which two configurations is
+                # the writer's to state", so a movement naming neither endpoint
+                # validates and reads as a movement of nothing in particular.
+                "limit": (
+                    "A `paired_movement_<arm>` ENTRY IS NOT ESTABLISHED TO BE A MOVEMENT OF "
+                    "ANYTHING IN PARTICULAR. The schema requires the object to exist, to be "
+                    "labelled `movements`, and to reference its own arm's settings. It does NOT "
+                    "require it to name the two configurations it is a difference between: "
+                    "`quantity` is free writer text, and this schema's own note on that field "
+                    "says which two configurations is the writer's to state. So a movement "
+                    "interval that names neither endpoint validates."
+                ),
+                "consequence": (
+                    "S41's per-arm existence test can be satisfied by a movement whose "
+                    "endpoints are unstated, and no reader can reconstruct what moved. This is "
+                    "the SECOND-ORDER form of the limit above: that one says the right "
+                    "QUANTITIES need not carry both objects; this one says the movement that "
+                    "does appear need not say what it is a movement OF."
+                ),
+                "mitigation": (
+                    "NONE IN THIS SCHEMA, stated rather than papered over. Requiring two named "
+                    "configurations would need a vocabulary of configurations the spec does not "
+                    "define, and inventing one here would make every writer name a pair this "
+                    "schema chose -- the fabrication decisions/0118's own scope forbids. It is "
+                    "published so a consumer treats an endpoint-less movement as unreadable "
+                    "rather than as a measurement."
                 ),
             },
             {
@@ -6367,7 +6532,9 @@ def build_placeholder(provenance: dict, grid: list[int],
                     "which all of those are relabelled as well, because at that point the file "
                     "asserts that a second input file exists and nothing inside the file can "
                     "contradict it. THE PUBLISHED LIMIT STOPPED THERE, AND THE ACTUAL LIMIT IS "
-                    "ONE RUNG LOWER (decisions/0111 §4): S30 normalises FIVE keys and NOT "
+                    "ONE RUNG LOWER (decisions/0111 §4): S30 normalises "
+                    + _ARM_LABELS_ARITY_WORD.upper() + " keys ("
+                    + ", ".join(_ARM_LABELS_NORMALISED) + ") and NOT "
                     "`convention_definition` -- one arm's sampling-width convention in that "
                     "arm's own words -- and a forger making the copy internally coherent "
                     "rewrites that sentence anyway. THE MOMENT THEY DO, the identical-payload "
@@ -6375,7 +6542,8 @@ def build_placeholder(provenance: dict, grid: list[int],
                 ),
                 "consequence": (
                     "The remaining signal is that the two payloads are identical once those "
-                    "five keys are normalised. S30 counts and reports that rather than failing "
+                    + _ARM_LABELS_ARITY_WORD + " keys are normalised. S30 counts and reports "
+                    "that rather than failing "
                     "it, because two arms may legitimately agree on every figure -- and in a "
                     "placeholder every measurement is a sentinel, so identity is expected. "
                     "Past the rung above, the count separates nothing: SO S30 RAISES THE COST "

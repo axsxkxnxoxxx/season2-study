@@ -404,8 +404,12 @@ STAT_REQUIRED = {
     "B = 10,000": (re.compile(r"`B` = \*\*10,000\*\*"), "0103"),
     "seed = 20260818": (re.compile(r"seed = \*\*20260818\*\*"), "0103"),
     "unit = account": (re.compile(r"resampling unit = \*\*account\*\*"), "0103"),
+    # ANCHORED ON ITS CLOSING **, found by the arm on the v1.7.0 run: the unanchored form
+    # matched "levels and paired movements AND RATIOS", so a THIRD object appended to the ruling
+    # passed both this control and the arm's derived-token check. An open-ended pattern tests that
+    # the ruling's words APPEAR, not that they are the whole of it.
     "statistic = BOTH levels and paired movements":
-        (re.compile(r"statistic = BOTH levels and paired movements"), "0118"),
+        (re.compile(r"statistic = BOTH levels and paired movements\*\*"), "0118"),
 }
 # And the assertion can be reversed by ADDING a sentence rather than by removing one, which no
 # positive test can see. These are the reversals; `unfixed` alone is NOT forbidden, because the
@@ -543,6 +547,9 @@ def _selftest_statistic_matcher():
                      "levels-vs-movements remains unfixed.", "the spec fixes none of them."):
         bad = good.replace(STAT_END, reversal + "\n" + STAT_END)
         assert stat_verdict(bad, bad)[0], f"selftest: {reversal!r} must fail"
+    # the arm's probe on v1.7.0: a THIRD object appended to the clause, identical in both copies
+    third = good.replace("paired movements**", "paired movements and ratios**")
+    assert stat_verdict(third, third)[0], "selftest: an appended third object must fail"
     # RESIDUAL, STATED RATHER THAN ASSERTED AWAY. A pattern match still cannot read a sentence:
     # "not `B` = **10,000** but 4,000" satisfies the B pattern. STAT_FORBIDDEN covers the reversals
     # seen in this study's own history, not the set of all reversals -- that would be a prose

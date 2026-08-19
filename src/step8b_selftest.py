@@ -44,6 +44,16 @@ sys.path.insert(0, os.path.join(ROOT, "src"))
 
 import step8b_validate as V  # noqa: E402
 import step8b_schema as G  # noqa: E402
+# THE BLOCK EXTRACTION AND THE FOUR REQUIRED ELEMENTS ARE IMPORTED, NOT COPIED
+# (reviewer-engineering H2/E5 on the v1.6.0 review). This module used to hold its
+# own _extract_block(), its own BEGIN/END markers and its own BLOCK_MUST_NAME
+# tuple -- a second and third copy of one rule, and they ALREADY DISAGREED with
+# check_surfaces.py on where the END marker is searched from: a quoted END marker
+# in prose made one control report "END precedes BEGIN" and exit 1 while this one
+# found the real block and reported ok. TWO CONTROLS, OPPOSITE VERDICTS, ONE FILE.
+# CLAUDE.md: one register, imported by every script that checks -- and the fix for
+# a duplicated-register finding must not introduce another.
+import check_surfaces as CS  # noqa: E402
 
 # THE SIX BLOCKS decisions/0111 E1 GAVE PER-ARM NESTING. Their ONE-ARM form is
 # what decisions/0114 ratifies as closing HERE rather than in a fourth
@@ -479,6 +489,30 @@ EXTRA_MUTATIONS = {
     # "unexpected property".
     "S40/singular_statistic_key_survives": ("S40", "placeholder", lambda i: _set(
         i["bootstrap_settings"]["a_default"], "statistic", "movements")),
+    # v1.7.0 -- reviewer-engineering E1 and E2 on the v1.6.0 review.
+    #
+    # E1, THE FINDING ITSELF: `spec_status` carried the claim and NOTHING READ IT.
+    # An entry declaring itself unfixed while listing all four elements as fixed
+    # validated at 41 checks, 0 failures. The retired token is asserted separately
+    # from a merely wrong one, because the schema enum catches the first
+    # structurally and this asserts the SEMANTIC check names it too -- so the
+    # diagnosis is the retirement rather than "not one of the allowed values".
+    "S40/spec_status_retired_token": ("S40", "placeholder", lambda i: _set(
+        i["bootstrap_settings"]["a_default"], "spec_status", "unfixed_at_time_of_writing")),
+    "S40/spec_status_contradicts_its_own_lists": ("S40", "placeholder", lambda i: _set(
+        i["bootstrap_settings"]["a_default"], "spec_status", "partly_fixed_in_spec")),
+    # And the mirror: an entry whose lists say partly while it declares fixed.
+    "S40/spec_status_fixed_while_a_field_is_open": ("S40", "placeholder", lambda i: _set(
+        i["bootstrap_settings"]["a_show_clustered"], "spec_status", "fixed_in_spec")),
+    # E2, THE FINDING ITSELF: the ENTRY-level fixed list had no partition anchor,
+    # so `["statistics"]` -- B, the seed and the unit silently dropped -- passed on
+    # the one assertion there was, membership of `statistics`.
+    "S40/entry_fixed_list_drops_three_elements": ("S40", "placeholder", lambda i: _set(
+        i["bootstrap_settings"]["a_default"], "fields_fixed_in_spec", ["statistics"])),
+    # The anchor itself removed: without it the entry declares no universe, and an
+    # empty not-fixed list is indistinguishable from an unfilled one.
+    "S40/entry_universe_not_declared": ("S40", "placeholder", lambda i: _set(
+        i["bootstrap_settings"]["a_default"], "fields_considered", [])),
     # THE SINGLE-ARM BRANCH IS NOT LOOSENED BY THE SPLIT (decisions/0107 §4). A
     # single-arm step's block claiming two arms is the mirror defect of the one
     # v1.2.0 fixes, and it must fail rather than validate silently.
@@ -824,37 +858,26 @@ def _synthetic_step13_arm_file() -> dict:
 # file records, a sentence the schema requires the file to contain. What is left
 # open after this runs -- whether a writer's arithmetic actually produced both
 # objects -- is published as a known limit rather than closed by decoration.
-WRITER_FILES = (
-    os.path.join(ROOT, ".claude", "agents", "data-scientist.md"),
-    os.path.join(ROOT, ".claude", "agents", "data-scientist-b.md"),
-)
-BEGIN_MARKER = "<!-- BOOTSTRAP-STATISTIC-BEGIN"
-END_MARKER = "<!-- BOOTSTRAP-STATISTIC-END -->"
-# The four fixed elements, asserted BY VALUE in the block rather than by prose.
-BLOCK_MUST_NAME = ("10,000", "20260818", "account", "levels and paired movements")
+# IMPORTED, NOT RESTATED. src/check_surfaces.py holds THE definition of the writer
+# file list, the markers, the extraction and the four required elements; this
+# module had a second copy of the middle three and a third of the last.
+WRITER_FILES = tuple(os.path.join(ROOT, f) for f in CS.STAT_WRITERS)
 
 
 def _extract_block(path: str) -> tuple[str | None, str | None]:
-    """The canonical block, or (None, why not). A MISSING MARKER FAILS LOUDLY.
+    """The canonical block off disk, via check_surfaces.extract_block().
 
-    Two nothings compare equal, so an extraction that quietly returns "" would
-    let a deleted marker read as agreement over zero characters -- the exact
-    shape of the controls that reported clean while checking zero rows.
+    THE RULE IS NOT RESTATED HERE. Marker arity, marker exactness, the search
+    origin of the END marker and the minimum-length floor all live in the one
+    implementation; this wrapper only supplies the bytes and prefixes the path to
+    whatever that implementation says went wrong.
     """
     if not os.path.exists(path):
         return None, f"{path} does not exist"
     with open(path, encoding="utf-8") as fh:
         text = fh.read()
-    i = text.find(BEGIN_MARKER)
-    if i < 0:
-        return None, f"{path} has no {BEGIN_MARKER} marker"
-    j = text.find(END_MARKER, i)
-    if j < 0:
-        return None, f"{path} has no {END_MARKER} marker after the begin marker"
-    block = text[i:j + len(END_MARKER)]
-    if len(block) < 200:
-        return None, f"{path}: the block is {len(block)} characters, which is not a requirement"
-    return block, None
+    block, err = CS.extract_block(text)
+    return (None, f"{path}: {err}") if err else (block, None)
 
 
 def _enum_tokens(node, want: str, out: set) -> set:
@@ -870,8 +893,96 @@ def _enum_tokens(node, want: str, out: set) -> set:
     return out
 
 
+_STAT_CLAUSE_LABEL = "statistic = BOTH levels and paired movements"
+
+
+def _tokens_named_by_the_block(block: str) -> tuple[list[str], str | None]:
+    """The statistic vocabulary the CANONICAL BLOCK names, derived from the block.
+
+    The expectation used to be typed here as `["levels", "movements"]` -- a third
+    copy of a rule that already had two (reviewer-engineering E5). It is now read
+    off the block's own assertion, via the pattern check_surfaces.py holds: the
+    clause `statistic = BOTH levels and paired movements` is split on " and " and
+    the qualifier `paired` stripped, which is exactly how the enum tokens relate
+    to the writers' words.
+
+    A DERIVATION THAT YIELDS NOTHING MUST FAIL, NOT PASS: if the block is reworded
+    the parse returns an error rather than an empty set, because an empty expected
+    set would make every enum agree with it.
+    """
+    pat = CS.STAT_REQUIRED[_STAT_CLAUSE_LABEL][0]
+    m = pat.search(CS.WS.sub(" ", block))
+    if m is None:
+        return [], ("the canonical block does not carry the statistic clause, so this schema's "
+                    "enum has nothing to be checked against")
+    tail = m.group(0).split("BOTH", 1)[1]
+    toks = sorted({p.strip().removeprefix("paired ").strip() for p in tail.split(" and ")} - {""})
+    if len(toks) != 2:
+        return toks, (f"the statistic clause parsed to {toks!r}, which is not the two objects "
+                      f"decisions/0118 fixes -- the block has been reworded and this derivation "
+                      f"no longer reads it")
+    return toks, None
+
+
+# WHICH STEPS THE 2026-08-19 RULING EXEMPTS FROM S41'S EMPTY BRANCH -- WRITTEN
+# FROM THE RULING, NOT READ FROM THE VALIDATOR. The exemption is Step 12's alone,
+# on the schema's own warrant that Step 12 mandates intervals nowhere. Held here
+# so that widening V.INTERVALS_NOT_MANDATED_BY_STEP FAILS this selftest instead of
+# moving the expectation with the behaviour, which is what the first form of this
+# fixture did.
+S41_EXEMPT_BY_RULING = {"step12"}
+
+_NO_INTERVAL_ABSENCE = {
+    "status": "not_required_by_spec",
+    "reason": "SELFTEST FIXTURE: this writing step is not asked for an interval at this slot.",
+    "source": "src/step8b_selftest.py, the S41 scope fixture",
+}
+
+
+def _file_with_no_intervals(base: dict, step: str) -> dict:
+    """An arm file of `step` in which every interval is an explicit absence.
+
+    Built from the single-arm placeholder rather than typed, so the fixture is
+    the shipped shape with one thing changed. Every `ci` holding a bootstrap_ref
+    becomes an absence record and $.declared_intervals empties, which is exactly
+    the state S41's empty branch judges.
+    """
+    inst = copy.deepcopy(base)
+    inst["document_scope"]["producing_step"] = step
+
+    def walk(node):
+        if isinstance(node, dict):
+            for k, v in list(node.items()):
+                if k == "ci" and isinstance(v, dict) and "bootstrap_ref" in v:
+                    node[k] = dict(_NO_INTERVAL_ABSENCE)
+                else:
+                    walk(v)
+        elif isinstance(node, list):
+            for v in node:
+                walk(v)
+
+    walk(inst)
+    inst["declared_intervals"] = []
+    for fam in ("arms", "variants", "subpopulation_cuts"):
+        for e in inst.get(fam) or []:
+            if "producing_step" in e:
+                e["producing_step"] = step
+    for _, bpa in V._iter_containers(inst):
+        if "producing_step" in bpa:
+            bpa["producing_step"] = step
+        for payload in (bpa.get("arms") or {}).values():
+            if isinstance(payload, dict) and "producing_step" in payload:
+                payload["producing_step"] = step
+    return inst
+
+
 def _statistic_vocabulary_link(schema: dict) -> dict:
-    """Tie this schema's statistic vocabulary to the writers' canonical block."""
+    """Tie this schema's statistic vocabulary to the writers' canonical block.
+
+    THE RULE ITSELF IS check_surfaces.stat_verdict(). This function supplies the
+    two files' bytes to it and adds the one thing that control cannot see: whether
+    THIS SCHEMA's enum is the vocabulary the block names.
+    """
     failures = []
     blocks = {}
     for path in WRITER_FILES:
@@ -881,48 +992,48 @@ def _statistic_vocabulary_link(schema: dict) -> dict:
         else:
             blocks[path] = block
 
+    # Byte-identity, the four elements by value and the forbidden reversals: ONE
+    # implementation, called with the file contents rather than restated.
+    texts = []
+    for path in WRITER_FILES:
+        try:
+            with open(path, encoding="utf-8") as fh:
+                texts.append(fh.read())
+        except OSError:
+            texts.append("")
+    verdict, chars = CS.stat_verdict(*texts) if len(texts) == 2 else (["fewer than two writer "
+                                                                      "files"], 0)
+    failures.extend(verdict)
     identical = None
-    chars = 0
     if len(blocks) == len(WRITER_FILES):
         values = list(blocks.values())
         identical = values[0] == values[1]
-        chars = len(values[0])
-        if not identical:
-            failures.append(
-                "the two writer files' canonical blocks are NOT byte-identical, so the "
-                "requirement has two definitions and this schema cannot be checked against "
-                "'the' one"
-            )
-        for token in BLOCK_MUST_NAME:
-            if token not in values[0]:
-                failures.append(
-                    f"the canonical block does not name {token!r} by value. All four bootstrap "
-                    f"elements are asserted as VALUES, not as prose"
-                )
 
     tokens = sorted(_enum_tokens(schema, "bootstrap_statistic", set()))
-    expected = ["levels", "movements"]
-    if tokens != expected:
-        failures.append(
-            f"this schema's bootstrap_statistic enum is {tokens!r}, not {expected!r}"
-        )
+    expected: list[str] = []
     if blocks:
         block = next(iter(blocks.values()))
-        for tok in tokens:
-            if tok not in block:
-                failures.append(
-                    f"the schema's enum token {tok!r} does not appear in the canonical block: "
-                    f"the schema's vocabulary and the writers' requirement have drifted"
-                )
+        expected, why = _tokens_named_by_the_block(block)
+        if why:
+            failures.append(why)
+        elif tokens != expected:
+            failures.append(
+                f"this schema's bootstrap_statistic enum is {tokens!r}, but the canonical block "
+                f"names {expected!r}: the schema's vocabulary and the writers' requirement have "
+                f"drifted"
+            )
     return {
         "what": "the schema's statistic vocabulary, compared against the canonical block in "
-                "the two writer files (decisions/0118)",
+                "the two writer files (decisions/0118). The extraction, the byte-identity rule "
+                "and the four required elements are IMPORTED from src/check_surfaces.py; "
+                "nothing here restates them",
         "files_read": len(blocks),
         "files_expected": len(WRITER_FILES),
         "characters_compared": chars,
         "byte_identical": identical,
-        "elements_asserted_by_value": list(BLOCK_MUST_NAME),
+        "elements_asserted_by_value": sorted(CS.STAT_REQUIRED),
         "schema_enum_tokens": tokens,
+        "tokens_derived_from_the_block": expected,
         "failures": failures,
         # A MISSING BLOCK IS A FAILURE, NOT A SKIP: coverage is asserted, so this
         # cannot report clean over zero characters.
@@ -999,6 +1110,54 @@ def main() -> int:
                 for v in one_arm_form.values())
     )
     step13_record["ok"] = step13_ok
+
+    # THE STEP 12 INTERVAL EXEMPTION, AND THAT IT DOES NOT WIDEN. Human Lead
+    # ruling, 2026-08-19. S41's empty branch failed unconditionally, so a Step 12
+    # arm file failed for not carrying intervals the spec never asks it for -- the
+    # schema's own warrant says "Step 12 lists every candidate cut and mandates
+    # intervals nowhere", and requiring them would make the writing step
+    # manufacture two figures, one a paired movement between configurations the
+    # spec does not name.
+    #
+    # AN EXEMPTION THAT QUIETLY COVERS FIVE STEPS WHEN IT WAS GRANTED TO ONE IS
+    # THE SHAPE THIS STUDY KEEPS FINDING, so the four steps that must STILL fail
+    # are asserted here beside the one that must pass. This is the demonstration,
+    # committed rather than reported: a check nobody can see is not a check
+    # (CLAUDE.md, decisions/0082).
+    #
+    # THE EXPECTATION IS HELD HERE, NOT READ FROM THE TABLE UNDER TEST. Written
+    # from the ruling: Step 12 alone. Deriving it from
+    # V.INTERVALS_NOT_MANDATED_BY_STEP was the first form of this fixture and it
+    # was a NO-OP -- adding `step9` to that table moved the expectation with the
+    # behaviour and the selftest still reported ok, which is decisions/0111 E4's
+    # "a table read from the file under test could only agree with itself",
+    # reached through code rather than through a file. Found by probing the
+    # control live rather than by reading it.
+    s41_scope = {}
+    for step in ("step9", "step10", "step11", "step12", "step13"):
+        fixture = _file_with_no_intervals(sole_file, step)
+        st = _status_of(run(fixture), "S41")
+        must_fail = step not in S41_EXEMPT_BY_RULING
+        s41_scope[step] = {
+            "S41_status": st,
+            "must_fail": must_fail,
+            "ok": (st in ("FAIL", "VACUOUS")) == must_fail,
+        }
+    s41_record = {
+        "what": "S41's empty branch, per producing step, on a file whose every interval has been "
+                "replaced by an explicit absence record. Step 12 is exempt; the other four are "
+                "not, and an exemption that widens is the defect",
+        "exempt_by_the_ruling": sorted(S41_EXEMPT_BY_RULING),
+        "exempt_in_the_validator": sorted(V.INTERVALS_NOT_MANDATED_BY_STEP),
+        "tables_agree": set(V.INTERVALS_NOT_MANDATED_BY_STEP) == S41_EXEMPT_BY_RULING,
+        "by_step": s41_scope,
+        "steps_that_must_fail_and_do": sorted(
+            s for s, v in s41_scope.items() if v["must_fail"] and v["ok"]),
+        "steps_that_must_pass_and_do": sorted(
+            s for s, v in s41_scope.items() if not v["must_fail"] and v["ok"]),
+        "ok": (all(v["ok"] for v in s41_scope.values()) and len(s41_scope) == 5
+               and set(V.INTERVALS_NOT_MANDATED_BY_STEP) == S41_EXEMPT_BY_RULING),
+    }
 
     results = []
     for cid, mutate in MUTATIONS.items():
@@ -1216,6 +1375,7 @@ def main() -> int:
             "statuses": {c["id"]: c["status"] for c in baseline_sole["semantic_checks"]},
         },
         "step13_arm_file_fixture": step13_record,
+        "s41_interval_exemption_scope": s41_record,
         "statistic_vocabulary_link": vocab_link,
         "mutations": results,
         "required_non_failures": non_failures,
@@ -1237,7 +1397,7 @@ def main() -> int:
         "checks_without_force": without_force,
         "checks_na_on_the_real_copy": na_on_real,
         "ok": (not without_force and not non_failure_failures and not unexercised
-               and step13_ok and vocab_link["ok"]),
+               and step13_ok and vocab_link["ok"] and s41_record["ok"]),
     }
 
     os.makedirs(LOG_DIR, exist_ok=True)
@@ -1255,6 +1415,15 @@ def main() -> int:
         "checks_defined_but_never_exercised": unexercised,
         "step13_arm_file_fixture_ok": step13_ok,
         "step13_arm_file_failures": step13_record["failures"],
+        "s41_interval_exemption_scope": {
+            "ok": s41_record["ok"],
+            "exempt_by_the_ruling": s41_record["exempt_by_the_ruling"],
+            "exempt_in_the_validator": s41_record["exempt_in_the_validator"],
+            "tables_agree": s41_record["tables_agree"],
+            "still_fail_the_empty_branch": s41_record["steps_that_must_fail_and_do"],
+            "exempted_and_passes": s41_record["steps_that_must_pass_and_do"],
+            "statuses": {k: v["S41_status"] for k, v in s41_record["by_step"].items()},
+        },
         "statistic_vocabulary_link": {
             "ok": vocab_link["ok"],
             "files_read": f"{vocab_link['files_read']}/{vocab_link['files_expected']}",

@@ -31,8 +31,8 @@ labelled. Neither is presented as the design.***
   unstated convention that happened to be right** — ***the shape this build has been bitten by
   repeatedly.*** **Both `data-scientist` files state the requirement in the same words.**
 
-***ALL THREE BOOTSTRAP ELEMENTS ARE NOW FIXED AND IDENTICAL FOR BOTH ARMS:*** `B` = **10,000**,
-seed = **20260818**, resampling unit = **account** (`0103`), **statistic = BOTH** (`0118`).
+***ALL FOUR BOOTSTRAP ELEMENTS ARE NOW FIXED AND IDENTICAL FOR BOTH ARMS:*** `B` = **10,000**,
+seed = **20260818**, resampling unit = **account** (`0103`), **statistic = BOTH** (`0118`). *(**FOUR listed, and `0056` §159's list named THREE** — `B`, the seed and the statistic; **the unit was fixed separately by `0044`/`0103` §2.** The count is stated as four because four are enumerated. Corrected 2026-08-19, `0120`, found by the arm on the v1.7.0 run — **E3's own class, in the sentence `0118` made canonical.**)*
 
 ## 2. "A: movements, B: levels" was never true, and is CORRECTED rather than marked
 

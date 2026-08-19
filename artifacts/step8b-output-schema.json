@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:season2-study:step8b-output-schema:1.6.0",
+  "$id": "urn:season2-study:step8b-output-schema:1.7.0",
   "title": "Season 2 abandonment study -- Step 16 results schema",
   "description": "The single output schema. Steps 9 through 13 write into it DIRECTLY, each ARM into its own file, and STEP 16 RENDERS FROM THE MERGED DOCUMENT that Step 13b builds from those files after the Human Lead has diffed the dual pairs (decisions/0107). Both kinds of file are instances of this one schema; $.document_scope says which kind a file is, and it is the first thing to read. There is no conversion layer: a conversion layer is a second definition of every figure. Validate with src/step8b_validate.py, which implements the JSON Schema subset used here plus the cross-field checks the schema language cannot express.",
   "type": "object",
@@ -29,10 +29,10 @@
   ],
   "properties": {
     "schema_version": {
-      "const": "1.6.0"
+      "const": "1.7.0"
     },
     "schema_id": {
-      "const": "urn:season2-study:step8b-output-schema:1.6.0"
+      "const": "urn:season2-study:step8b-output-schema:1.7.0"
     },
     "placeholder": {
       "type": "boolean",
@@ -782,7 +782,9 @@
           "resampling_unit",
           "producing_arm",
           "spec_status",
-          "fields_fixed_in_spec"
+          "fields_considered",
+          "fields_fixed_in_spec",
+          "fields_not_fixed_in_spec"
         ],
         "properties": {
           "B": {
@@ -826,17 +828,35 @@
           "spec_status": {
             "enum": [
               "fixed_in_spec",
-              "unfixed_at_time_of_writing",
               "partly_fixed_in_spec"
             ],
-            "x-enum-id": "spec_status"
+            "x-enum-id": "spec_status",
+            "description": "WHETHER THE SPEC FIXES EVERY ELEMENT OF THIS ENTRY, and it is no longer a free label: check S40 derives it from the two lists below and asserts the declared value against the derivation. It was unpoliced until v1.7.0 -- `spec_status` appeared ZERO times in the validator, which polices `fields_not_fixed_in_spec` by name -- so an entry could declare itself unfixed while listing all four elements as fixed and validate clean. THE FIELD THAT CARRIES THE CLAIM IS THE FIELD THAT MUST BE CHECKED.\nRETIRED AT v1.7.0: `unfixed_at_time_of_writing`. Its antecedent has occurred and it retains no legitimate referent -- B, the seed and the statistic are fixed for EVERY entry by decisions/0103 and decisions/0118, so no entry can have an empty fixed list, and the token could only ever have been written by a writer contradicting its own lists. Same disposition `if_ruled_otherwise` took at v1.6.0: quoted here, removed there. `partly_fixed_in_spec` STAYS and is not to be removed -- it has a live referent in the show-clustered entry, whose UNIT is not fixed by decisions/0103 §2."
+          },
+          "fields_considered": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "uniqueItems": true,
+            "description": "THE PARTITION ANCHOR, ONE LEVEL DOWN. $.bootstrap_spec got one at v1.6.0 so that an empty not-fixed list would be ESTABLISHED rather than merely empty; each entry's own fixed list had no such anchor, and the only assertion on it was membership of `statistics` -- so an entry could carry `fields_fixed_in_spec: [\"statistics\"]`, silently dropping B, the seed and the unit, and pass. Same reasoning, same shape: the fixed and not-fixed lists must partition THIS list."
           },
           "fields_fixed_in_spec": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "Which of this entry's fields the spec fixes. It existed because `spec_status` alone could not say that B was fixed while the statistic was not. All four are fixed as of decisions/0118, so the list is now full rather than partial -- and it is kept, because a list that says WHICH is readable where a status that says `fixed_in_spec` is not, and because a future element would reopen the split."
+            "uniqueItems": true,
+            "description": "Which of this entry's fields the spec fixes. It existed because `spec_status` alone could not say that B was fixed while the statistic was not. All four are fixed as of decisions/0118 for the account-clustered entries -- and it is kept, because a list that says WHICH is readable where a status that says `fixed_in_spec` is not, and because a future element would reopen the split."
+          },
+          "fields_not_fixed_in_spec": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true,
+            "description": "Which of this entry's fields the spec leaves open. EMPTY on every account-clustered entry and holding `resampling_unit` on a show-clustered one (decisions/0103 §2). Required rather than optional: an omitted list and an empty one are the same value to a reader, and only one of them is a record."
           },
           "note": {
             "type": "string",
@@ -1661,14 +1681,14 @@
   },
   "x-generated-by": {
     "generator": "src/step8b_schema.py",
-    "generator_sha256_12": "b4b56bd028d3",
-    "generated_at_utc": "2026-08-19T20:05:49Z",
+    "generator_sha256_12": "0ceddd50d2a8",
+    "generated_at_utc": "2026-08-19T20:53:01Z",
     "build_tag": "step8b/a/2026-08-19",
-    "git_head_short": "33d1b55",
+    "git_head_short": "9ac4259",
     "host_step": "Step 8b, output schema",
     "written_by": "Analytics Engineer, instance a",
     "validator": "src/step8b_validate.py",
-    "validator_sha256_12": "97d69f1b9595",
+    "validator_sha256_12": "ac351fc4b9bd",
     "selftest": "src/step8b_selftest.py",
     "note": "This schema is generated. Correct it in the generator and rewrite both artifacts together; do not hand-edit either file."
   },
@@ -1958,7 +1978,7 @@
     },
     "ci": {
       "type": "object",
-      "description": "A confidence interval. THE BOOTSTRAP IS FIXED IN ALL FOUR OF ITS ELEMENTS -- 10,000 resamples, account level for the outcome shares, seed 20260818 (decisions/0103), and the statistic BOTH levels and paired movements (decisions/0118) -- and EVERY INTERVAL RECORDS ITS SEED, RESAMPLE COUNT, RESAMPLING UNIT AND STATISTIC AT THE POINT OF USE. They are written here as well as referenced, because the ruling says at the point of use and a reference is not that; check S23 asserts the inline values against the referenced registry entry, so the redundancy is checked rather than trusted. An interval is ONE of the two objects and says which; check S41 asserts that BOTH appear, per producing arm, because a run that emits only one is INCOMPLETE rather than differently designed.",
+      "description": "A confidence interval. THE BOOTSTRAP IS FIXED IN ALL FOUR OF ITS ELEMENTS -- 10,000 resamples, account level for the outcome shares, seed 20260818 (decisions/0103), and the statistic BOTH levels and paired movements (decisions/0118) -- and EVERY INTERVAL RECORDS ITS SEED, RESAMPLE COUNT, RESAMPLING UNIT AND STATISTIC AT THE POINT OF USE. They are written here as well as referenced, because the ruling says at the point of use and a reference is not that; check S23 asserts the inline values against the referenced registry entry, so the redundancy is checked rather than trusted. An interval is ONE of the two objects and says which; check S41 asserts that BOTH appear, per producing arm, because a run that emits only one is INCOMPLETE rather than differently designed. ONE STEP IS EXEMPT AND THE EXEMPTION IS NAMED HERE RATHER THAN LEFT TO BE DISCOVERED: a Step 12 file mandates intervals nowhere (see $defs.ci_or_absence), so S41 reports a DECLARED EMPTINESS for it and still fails for Steps 9, 10, 11 and 13. Human Lead ruling, 2026-08-19.",
       "additionalProperties": false,
       "required": [
         "level_pct",
@@ -2004,7 +2024,7 @@
             "movements"
           ],
           "x-enum-id": "bootstrap_statistic",
-          "description": "WHICH OF THE TWO OBJECTS THIS INTERVAL IS, AT THE POINT OF USE. The statistic is FIXED AS BOTH (decisions/0118): a run produces levels AND paired movements, and this field says which one the reader is looking at. It is single-valued HERE and plural in the registry, and that is the distinction the ruling turns on -- A LEVEL AND A MOVEMENT ARE NEVER COMPARED TO EACH OTHER, so an interval that did not say which it was would be off by an order of magnitude with nothing to warn the reader. Check S23 asserts this value is one the referenced registry entry declares; check S41 asserts both values appear in the file, per producing arm; check S32 asserts the referenced entry belongs to the arm that owns this payload. NOTE THE CONSEQUENCE OF THE RULING FOR S32: with all four elements now identical across the arms, two registry entries differ only in `producing_arm` and `resampling_unit`, so a cross-arm reference misreports the ARM and no longer misreports the settings."
+          "description": "WHICH OF THE TWO OBJECTS THIS INTERVAL IS, AT THE POINT OF USE. The statistic is FIXED AS BOTH (decisions/0118): a run produces levels AND paired movements, and this field says which one the reader is looking at. It is single-valued HERE and plural in the registry, and that is the distinction the ruling turns on -- A LEVEL AND A MOVEMENT ARE NEVER COMPARED TO EACH OTHER, so an interval that did not say which it was would be off by an order of magnitude with nothing to warn the reader. Check S23 asserts this value is one the referenced registry entry declares; check S41 asserts both values appear in the file, per producing arm -- except in a Step 12 file, which the spec asks for no interval at all (Human Lead ruling, 2026-08-19); check S32 asserts the referenced entry belongs to the arm that owns this payload. NOTE THE CONSEQUENCE OF THE RULING FOR S32: with all four elements now identical across the arms, two registry entries differ only in `producing_arm` and `resampling_unit`, so a cross-arm reference misreports the ARM and no longer misreports the settings -- and what it catches is an INCOHERENT reference rather than a mislabel, because both sides are the writer's own declarations and a coherent mislabel is unobservable to it."
         },
         "resampling_unit": {
           "enum": [
