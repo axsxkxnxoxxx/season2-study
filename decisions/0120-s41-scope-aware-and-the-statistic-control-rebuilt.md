@@ -6,7 +6,8 @@
 | **Decided by** | **Human Lead** (ruling 1); the rest implemented on `reviewer-engineering`'s v1.6.0 review |
 | **Date** | 2026-08-19 |
 | **Amends** | `0118` §1 and §3; `0119` §5; `task-sheet.md` Step 9 |
-| **Verified by** | `check_surfaces.py` **exit 0**, 8 surfaces, 260 files; selftest **exit 0**, mutations **90 → 95**, `checks_without_force: []`; three placeholders at **41 checks, 0 failures** |
+| **Verified by** | `check_surfaces.py` **exit 0**, 8 surfaces, 260 files; ~~selftest **exit 0**~~ ***FALSE OF THE BUILD THIS ENTRY SHIPPED — see the correction below***; mutations **90 → 95**, `checks_without_force: []`; three placeholders at **41 checks, 0 failures** |
+| **CORRECTION, 2026-08-19** | ***THE SELFTEST EXITED 1, NOT 0, ON THE COMMITTED BUILD.*** **§4(b)'s anchoring was the last edit and the selftest was NOT rerun after it.** The anchor **consumed** the closing `**`, and `step8b_selftest.py` derives the expected enum by splitting that same match — so the token became `movements**`, the comparison could never hold, and the selftest emitted *"the schema's vocabulary and the writers' requirement have drifted"*, **blaming the schema for a defect in the parser.** ***An assertion that CANNOT PASS — H3 inverted — and the shared-implementation fix for H2 is what coupled the two files.*** **Found by `reviewer-engineering` on the v1.7.0 pass; reproduced by running it.** **Fixed by making the anchor a LOOKAHEAD, which asserts without consuming**: the valid block passes, *"movements and ratios"* is still rejected, and `group(0)` is clean again. ***Selftest now exit 0, `statistic_vocabulary_link.ok: true`, verified after the fix rather than before it.*** |
 | **Status** | Open. **v1.7.0 returns to `reviewer-engineering`. Step 9 NOT begun.** |
 
 ---

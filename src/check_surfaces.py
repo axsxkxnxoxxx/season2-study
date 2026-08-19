@@ -409,7 +409,14 @@ STAT_REQUIRED = {
     # passed both this control and the arm's derived-token check. An open-ended pattern tests that
     # the ruling's words APPEAR, not that they are the whole of it.
     "statistic = BOTH levels and paired movements":
-        (re.compile(r"statistic = BOTH levels and paired movements\*\*"), "0118"),
+        # LOOKAHEAD, not a consumed suffix. reviewer-engineering, v1.7.0 E1: consuming the `**`
+        # put it inside group(0), and step8b_selftest.py derives the expected enum by splitting
+        # group(0) -- so the token became "movements**", the comparison could never hold, and the
+        # selftest emitted "the schema's vocabulary and the writers' requirement have drifted",
+        # blaming the schema for a defect in the parser. AN ASSERTION THAT CANNOT PASS, which is
+        # H3 inverted -- and the shared-implementation fix for H2 is what coupled them.
+        # A lookahead anchors WITHOUT consuming: "movements and ratios**" still fails.
+        (re.compile(r"statistic = BOTH levels and paired movements(?=\*\*)"), "0118"),
 }
 # And the assertion can be reversed by ADDING a sentence rather than by removing one, which no
 # positive test can see. These are the reversals; `unfixed` alone is NOT forbidden, because the
