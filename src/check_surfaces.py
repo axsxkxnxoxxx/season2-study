@@ -284,7 +284,24 @@ _selftest_phrase_matcher()
 # 0092 and 0094 cited before their entries existed -- would have been missed entirely in that
 # form. "Prints its coverage count" was satisfied to the letter while the count was blind to
 # the class it could not see. Leading-zero anchor kept: 2206 and 2329 are counts, not entries.
-CITE = re.compile(r"decisions/(0\d{3})|`(0\d{3})`|\b(0\d{3})\s*(?:\u00a7|SS\d|Sec\b|ruling\b)")
+# 0122 SS6 (E5). THE FORM-SHAPED HOLE. My own WITHDRAWN_PHRASES rows cited "Withdrawn 0121"
+# while decisions/ ran to 0120, and this resolver EXITED 0 over it: the old pattern required
+# decisions/NNNN, or a BACKTICKED `NNNN`, or NNNN followed by SS/Sec/ruling. A bare
+# "Withdrawn 0121" matched none of them. FIFTH cite-before-write in this study and the FIRST
+# inside the register built to catch that class -- so the resolver was blind to the citation
+# form its own register uses. A resolver that only recognises the citation forms someone
+# happened to think of is a resolver for those forms, not for citations.
+#
+# Added: the WITHDRAWAL/CORRECTION verbs that this log actually writes, bare and unbackticked.
+# Deliberately NOT a bare \b(0\d{3})\b -- that matches years, counts and W values, and a
+# resolver that flags every four-digit token would be withdrawn within a day.
+CITE = re.compile(
+    r"decisions/(0\d{3})"
+    r"|`(0\d{3})`"
+    r"|\b(0\d{3})\s*(?:\u00a7|SS\d|Sec\b|ruling\b)"
+    r"|(?:withdrawn|struck|superseded|corrected|amended|retired|ruled|recorded|filed|per)\s+"
+    r"(?:at\s+|in\s+|by\s+)?(0\d{3})\b",
+    re.I)
 
 
 def scan_citations():
@@ -299,7 +316,22 @@ def scan_citations():
     """
     have = {f.name[:4] for f in Path("decisions").glob("[0-9][0-9][0-9][0-9]*.md")}
     seen, missing = {}, {}
-    for surface, files in SURFACES.items():
+    # 0122 SS6 (E5). THE SCOPE HOLE, and it is the operative one -- the FORM hole above was real
+    # and was NOT why the control passed. This scan walked SURFACES, and src/ IS NOT A SURFACE,
+    # so a citation in src/step7_register.py was invisible whatever the regex said.
+    #
+    # That is exactly backwards for the register: CLAUDE.md requires "the decision entry that adds
+    # or withdraws a row CITES it", so the register's citations are WARRANTS -- the one place a
+    # dangling cite disarms a control rather than merely confusing a reader. The rows citing 0121
+    # were the fifth cite-before-write in this study and the first inside the register built to
+    # catch that class, and BOTH halves of this scan were blind to them.
+    #
+    # src/ is not promoted to a propagation surface here -- that is a CLAUDE.md change and the
+    # Human Lead's. It is added to THIS scan, whose subject is citations rather than figures.
+    cite_scope = dict(SURFACES)
+    cite_scope["src (citations only, not a propagation surface)"] = sorted(
+        str(q) for q in Path("src").rglob("*.py") if q.is_file())
+    for surface, files in cite_scope.items():
         for f in files:
             if f.endswith((".gz", ".npz", ".npy")):
                 continue

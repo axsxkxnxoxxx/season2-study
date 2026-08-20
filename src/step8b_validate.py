@@ -409,6 +409,39 @@ TOP_LEVEL_PUBLISHER = {
 }
 # The steps that publish a headline payload of their own.
 HEADLINE_PUBLISHERS = ("step9", "step13")
+
+# WHICH STEPS MAY WRITE EACH NAMED BLOCK -- SET-VALUED, and held outside the file
+# under test for the reason every other table here is (check S31: "a table read
+# from the file under test could only agree with itself").
+#
+# It is not BLOCK_PUBLISHER with a different shape. BLOCK_PUBLISHER answers "whose
+# file does this per-arm block appear in" and is single-valued by construction;
+# this answers "may a writer of step X name this block as its own work", and
+# `subpopulation_cuts` HAS TWO ANSWERS -- Steps 11 and 12 both write cuts into
+# it, which is exactly why it carries no row in TOP_LEVEL_PUBLISHER.
+#
+# ADDED AT v1.9.1 for check S43 (reviewer-engineering E1 on v1.9.0). A block not
+# named here is UNRESOLVED rather than forbidden: S43 counts it, reports it, and
+# does not fail on it, because a table that guesses would fail files over blocks
+# whose ownership the spec has not fixed.
+BLOCK_WRITERS = {
+    "waterfall": ("step9",),
+    "abandonment_distribution": ("step10",),
+    "liveness_exclusions": ("step9",),
+    "d3_prime": ("step13",),
+    "retained_by_air_period": ("step9",),
+    "action_type_counts": ("step13",),
+    "tested_ranges": ("step13",),
+    "variants": ("step13",),
+    "channel_classes": ("step13b",),
+    "discovery_channel_overlap": ("step13b",),
+    "subpopulation_cuts": ("step11", "step12"),
+    "cross_arm_divergences": ("step13b",),
+    "limitations": ("human_lead",),
+}
+# The container prefixes a dotted reference may carry before the block name:
+# `$.arms[].abandonment_distribution` names `abandonment_distribution`.
+_REFERENCE_CONTAINERS = ("arms", "variants", "subpopulation_cuts")
 # The entry families whose entries name their own producing step.
 ENTRY_FAMILIES = ("arms", "variants", "subpopulation_cuts")
 
@@ -3620,6 +3653,117 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
         f"version identifiers compared: schema_version.const={s42_version!r}, "
         f"schema_id.const={s42_id_const!r}, $id={s42_dollar_id!r}"
     )
+    checks.append(c)
+
+    # S43 -- A PAYLOAD ABSENCE'S REASON NAMES ONLY BLOCKS ITS OWN STEP WRITES
+    #        (v1.9.1, reviewer-engineering E1 on v1.9.0).
+    #
+    #        WHAT IT CATCHES, REPRODUCED ON THE SHIPPED FILES. The generator's
+    #        `_payload_absent(step)` TOOK THE STEP AND NEVER USED IT: one
+    #        hardcoded reason served Steps 10, 11 and 12, and the sentence was
+    #        Step 11's -- "this step recomputes it on subpopulations, which is
+    #        written under $.subpopulation_cuts". STEP 10 WRITES NO
+    #        SUBPOPULATION CUTS; that block's writers are Steps 11 and 12. So
+    #        three steps' headline absences pointed at one step's block, and the
+    #        two that were wrong were wrong in the MACHINE-READABLE field -- the
+    #        one the schema polices at minLength 20, the one a consumer reads,
+    #        and the one inside the record decisions/0109 §1 named. The prose,
+    #        the owners table and the intervals had all been corrected around it.
+    #
+    #        SCOPE, STATED RATHER THAN INFERRED FROM A PASS. Only PAYLOAD
+    #        absences -- the records at `...by_producing_arm.arms.<key>`. A
+    #        payload absence's job is to say where THIS step's own figure goes,
+    #        so a block reference in it is a claim about this step's work. Block
+    #        absences elsewhere have the opposite job -- they explain that
+    #        ANOTHER step owns the block -- so a reference to another step's
+    #        block is legitimate there and this check does not reach them.
+    #
+    #        A reference whose block is in no external table is UNRESOLVED: it is
+    #        counted and reported, never failed on. A guess here would fail files
+    #        over blocks the spec has not assigned.
+    c = Check(
+        "S43",
+        "a headline-payload absence's reason names only blocks its own producing step writes, "
+        "so no step's absence is explained by another step's work",
+    )
+    _ref = re.compile(r"\$\.([A-Za-z_][A-Za-z0-9_\.\[\]]*)")
+    s43_refs = s43_unresolved = s43_reasons_naming_nothing = 0
+    s43_slots = 0
+    for base, pop, block in _iter_payloads(inst):
+        entry_step = None
+        m = re.match(r"^\$\.(arms|variants|subpopulation_cuts)\[(\d+)\]", base)
+        if m:
+            fam = inst.get(m.group(1)) or []
+            idx = int(m.group(2))
+            if idx < len(fam) and isinstance(fam[idx], dict):
+                entry_step = fam[idx].get("producing_step")
+        if entry_step is None:
+            entry_step = _producing_step(inst)
+        # THE CONTAINER IS WALKED DIRECTLY, not through _iter_arm_payloads,
+        # which FILTERS ABSENCES OUT -- it exists to hand real payloads to checks
+        # about figures, and this check is about the absences it drops. Reading
+        # it through that iterator gave S43 zero sites and a VACUOUS status on
+        # the two files that carry the very records it was written for.
+        for arm_key, payload in (((block.get("by_producing_arm") or {}).get("arms")) or {}).items():
+            s43_slots += 1
+            ppath = f"{base}.by_producing_arm.arms.{arm_key}"
+            if not (isinstance(payload, dict) and _is_absence(payload)):
+                continue
+            reason = payload.get("reason")
+            if not isinstance(reason, str):
+                continue          # S19 owns the missing-reason case
+            c.sites += 1
+            named_own = False
+            found_any = False
+            for token in _ref.findall(reason):
+                segments = [seg for seg in token.rstrip(".,;:").split(".") if seg]
+                segments = [seg for seg in segments
+                            if seg.rstrip("[]") not in _REFERENCE_CONTAINERS
+                            or len(segments) == 1]
+                if not segments:
+                    continue
+                blockname = segments[0].split("[")[0]
+                found_any = True
+                s43_refs += 1
+                writers = BLOCK_WRITERS.get(blockname)
+                if writers is None:
+                    s43_unresolved += 1
+                    continue
+                if entry_step in writers:
+                    named_own = True
+                else:
+                    c.failures.append(
+                        f"{ppath}: this is {entry_step}'s headline absence, and its reason "
+                        f"names $.{blockname} -- a block {entry_step} does not write "
+                        f"(writers: {list(writers)}). AN ABSENCE EXPLAINED BY ANOTHER STEP'S "
+                        f"BLOCK IS A FALSE GROUND: a writer copying this idiom publishes a "
+                        f"reason pointing at work it does not do. The reason is a function of "
+                        f"the step and each step states its own"
+                    )
+            if not found_any:
+                s43_reasons_naming_nothing += 1
+            elif named_own:
+                pass
+    c.coverage = s43_slots
+    c.notes.append(
+        f"payload slots walked: {s43_slots}; absence reasons examined: {c.sites}; block "
+        f"references found: {s43_refs}; references to blocks no external table assigns "
+        f"(counted, not failed): {s43_unresolved}; reasons naming no block at all: "
+        f"{s43_reasons_naming_nothing}"
+    )
+    if c.sites == 0:
+        # SCOPE-EMPTY, ON AN EXTERNAL WARRANT rather than on the file's own word.
+        # A file whose producing step publishes its own headline carries no
+        # payload absence to examine, and that is a fact about HEADLINE_PUBLISHERS
+        # -- held here, outside the file -- not a check that looked nowhere.
+        file_step = _producing_step(inst)
+        if file_step in HEADLINE_PUBLISHERS and s43_slots:
+            c.declared_empty = (
+                f"this file's producing step is {file_step}, which publishes its own headline "
+                f"(HEADLINE_PUBLISHERS, held outside the file), so no payload slot is an "
+                f"absence. {s43_slots} payload slots were walked and every one carried a "
+                f"payload"
+            )
     checks.append(c)
 
     _declare_scope_emptiness(inst, checks)

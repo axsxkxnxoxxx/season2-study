@@ -12,10 +12,10 @@
   },
   "generated_by": {
     "generator": "src/step8b_schema.py",
-    "generator_sha256_12": "2d32fa25ecde",
-    "generated_at_utc": "2026-08-20T17:58:43Z",
+    "generator_sha256_12": "9fe2e8822afa",
+    "generated_at_utc": "2026-08-20T18:30:57Z",
     "build_tag": "step8b/a/2026-08-20",
-    "git_head_short": "8a7b17f",
+    "git_head_short": "03da73b = HEAD WHEN THIS FILE WAS GENERATED, which is NOT the commit that ships it: the file is written before it is committed, so the shipping commit is this one's child and has no id yet. The link runs the other way -- the shipping commit's diff contains this file, and the run record under logs/step8b/ carries a per-path content digest recomputable with `git cat-file blob <commit>:<path> | shasum -a 256`",
     "host_step": "Step 8b, output schema",
     "written_by": "Analytics Engineer, instance a",
     "inputs": [
@@ -2881,8 +2881,8 @@
             "arms": {
               "sole": {
                 "status": "not_required_by_spec",
-                "reason": "This file is a single-arm step's own file. The unconditional headline belongs to Step 9 and is published in Step 9's files; this step recomputes it on subpopulations, which is written under $.subpopulation_cuts. Restating Step 9's figure here would be a second definition of one figure, which is the defect the no-conversion-layer rule exists to prevent.",
-                "source": "task-sheet.md Steps 9 and 11; decisions/0109 §1; reviewer-engineering M9"
+                "reason": "This file is a single-arm step's own file. The unconditional headline belongs to Step 9 and is published in Step 9's files; this step publishes the abandonment distribution -- where in season 2 the leavers left -- which is written under $.arms[].abandonment_distribution. It recomputes no headline of its own. Restating Step 9's figure here would be a second definition of one figure, which is the defect the no-conversion-layer rule exists to prevent.",
+                "source": "task-sheet.md Steps 9 and 10; decisions/0109 §1; reviewer-engineering M9, E1"
               }
             },
             "arm_held": "sole"
@@ -2902,8 +2902,8 @@
             "arms": {
               "sole": {
                 "status": "not_required_by_spec",
-                "reason": "This file is a single-arm step's own file. The unconditional headline belongs to Step 9 and is published in Step 9's files; this step recomputes it on subpopulations, which is written under $.subpopulation_cuts. Restating Step 9's figure here would be a second definition of one figure, which is the defect the no-conversion-layer rule exists to prevent.",
-                "source": "task-sheet.md Steps 9 and 11; decisions/0109 §1; reviewer-engineering M9"
+                "reason": "This file is a single-arm step's own file. The unconditional headline belongs to Step 9 and is published in Step 9's files; this step publishes the abandonment distribution -- where in season 2 the leavers left -- which is written under $.arms[].abandonment_distribution. It recomputes no headline of its own. Restating Step 9's figure here would be a second definition of one figure, which is the defect the no-conversion-layer rule exists to prevent.",
+                "source": "task-sheet.md Steps 9 and 10; decisions/0109 §1; reviewer-engineering M9, E1"
               }
             },
             "arm_held": "sole"
@@ -4855,8 +4855,8 @@
             "arms": {
               "sole": {
                 "status": "not_required_by_spec",
-                "reason": "This file is a single-arm step's own file. The unconditional headline belongs to Step 9 and is published in Step 9's files; this step recomputes it on subpopulations, which is written under $.subpopulation_cuts. Restating Step 9's figure here would be a second definition of one figure, which is the defect the no-conversion-layer rule exists to prevent.",
-                "source": "task-sheet.md Steps 9 and 11; decisions/0109 §1; reviewer-engineering M9"
+                "reason": "This file is a single-arm step's own file. The unconditional headline belongs to Step 9 and is published in Step 9's files; this step recomputes the headline ON SUBPOPULATIONS -- the two discovery channels and their overlap -- which is written under $.subpopulation_cuts. Restating Step 9's figure here would be a second definition of one figure, which is the defect the no-conversion-layer rule exists to prevent.",
+                "source": "task-sheet.md Steps 9 and 11; decisions/0109 §1; reviewer-engineering M9, E1"
               }
             },
             "arm_held": "sole"
@@ -4876,8 +4876,8 @@
             "arms": {
               "sole": {
                 "status": "not_required_by_spec",
-                "reason": "This file is a single-arm step's own file. The unconditional headline belongs to Step 9 and is published in Step 9's files; this step recomputes it on subpopulations, which is written under $.subpopulation_cuts. Restating Step 9's figure here would be a second definition of one figure, which is the defect the no-conversion-layer rule exists to prevent.",
-                "source": "task-sheet.md Steps 9 and 11; decisions/0109 §1; reviewer-engineering M9"
+                "reason": "This file is a single-arm step's own file. The unconditional headline belongs to Step 9 and is published in Step 9's files; this step recomputes the headline ON SUBPOPULATIONS -- the two discovery channels and their overlap -- which is written under $.subpopulation_cuts. Restating Step 9's figure here would be a second definition of one figure, which is the defect the no-conversion-layer rule exists to prevent.",
+                "source": "task-sheet.md Steps 9 and 11; decisions/0109 §1; reviewer-engineering M9, E1"
               }
             },
             "arm_held": "sole"
@@ -4911,8 +4911,8 @@
             "arms": {
               "sole": {
                 "status": "not_required_by_spec",
-                "reason": "This file is a single-arm step's own file. The unconditional headline belongs to Step 9 and is published in Step 9's files; this step recomputes it on subpopulations, which is written under $.subpopulation_cuts. Restating Step 9's figure here would be a second definition of one figure, which is the defect the no-conversion-layer rule exists to prevent.",
-                "source": "task-sheet.md Steps 9 and 11; decisions/0109 §1; reviewer-engineering M9"
+                "reason": "This file is a single-arm step's own file. The unconditional headline belongs to Step 9 and is published in Step 9's files; this step recomputes the headline INSIDE THE SEGMENT CUTS it proposes, which are written under $.subpopulation_cuts. The Human Lead selects one of them; none of them is the unconditional figure. Restating Step 9's figure here would be a second definition of one figure, which is the defect the no-conversion-layer rule exists to prevent.",
+                "source": "task-sheet.md Steps 9 and 12; decisions/0109 §1; reviewer-engineering M9, E1"
               }
             },
             "arm_held": "sole"
@@ -4932,8 +4932,8 @@
             "arms": {
               "sole": {
                 "status": "not_required_by_spec",
-                "reason": "This file is a single-arm step's own file. The unconditional headline belongs to Step 9 and is published in Step 9's files; this step recomputes it on subpopulations, which is written under $.subpopulation_cuts. Restating Step 9's figure here would be a second definition of one figure, which is the defect the no-conversion-layer rule exists to prevent.",
-                "source": "task-sheet.md Steps 9 and 11; decisions/0109 §1; reviewer-engineering M9"
+                "reason": "This file is a single-arm step's own file. The unconditional headline belongs to Step 9 and is published in Step 9's files; this step recomputes the headline INSIDE THE SEGMENT CUTS it proposes, which are written under $.subpopulation_cuts. The Human Lead selects one of them; none of them is the unconditional figure. Restating Step 9's figure here would be a second definition of one figure, which is the defect the no-conversion-layer rule exists to prevent.",
+                "source": "task-sheet.md Steps 9 and 12; decisions/0109 §1; reviewer-engineering M9, E1"
               }
             },
             "arm_held": "sole"

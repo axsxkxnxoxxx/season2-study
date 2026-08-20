@@ -364,6 +364,41 @@ GROUNDS_WITHDRAWN = {
                                 "a's deliverable -- STANDS and is unaffected",
     },
 
+    # 0122, filed 2026-08-20. A WITHDRAWN GROUND, and it is deliberately NOT in WITHDRAWN_PHRASES:
+    # a phrase row would flag step11's legitimate and current use of this same sentence on every
+    # surface. What is withdrawn is the USE of it as STEP 10's ground, not the sentence.
+    #
+    # HUMAN LEAD RULING, 2026-08-20, on `still_true` staying NUMERIC and this row's list staying
+    # EMPTY: GROUNDS_WITHDRAWN is built around STATISTICS that survive their argument, and A NUMBER
+    # IS WHAT MAKES A ROW GREPPABLE. A sentence true of a different step is a DIFFERENT KIND of
+    # survival, and widening the field to hold prose would make every future row ambiguous about
+    # which kind it records. THE PROSE CARRIES IT.
+    # ==> AN EMPTY still_true IS A SHAPE DECISION, NOT AN OMISSION. Read it that way here and next
+    #     time; a row whose survival is a sentence records that survival in why_not_load_bearing.
+    "v1.9.0 borrowed ground": {
+        "argument": "the headline-absence ground 'this step recomputes it on subpopulations, which "
+                    "is written under $.subpopulation_cuts' published as STEP 10's reason for "
+                    "having no headline of its own",
+        "still_true": [],
+        "why_not_load_bearing": "TRUE OF STEP 11, FALSE OF STEP 10 -- the survival is a SENTENCE "
+                                "about another step, not a statistic, which is why still_true is "
+                                "empty by ruling rather than by oversight. _payload_absent(step) "
+                                "took `step` and never used it, so ONE hardcoded reason served "
+                                "steps 10, 11 and 12 and step10's records pointed at a block it "
+                                "does not write. The prose was corrected and this machine-readable "
+                                "field was not -- the field a first writer copies. Withdrawn 0122; "
+                                "S43 now asserts an absence reason names no block its producing "
+                                "step does not own, reading BLOCK_WRITERS, a set-valued table held "
+                                "OUTSIDE the file under test. NOTE FOR THE NEXT AUDITOR: "
+                                "src/step8b_selftest.py QUOTES THIS SENTENCE VERBATIM as the "
+                                "fixture _V1_9_0_BORROWED_GROUND, which is what gives S43 its "
+                                "force. src/ is not one of the eight surfaces, so nothing conflicts "
+                                "today -- but IF src/ IS EVER PROMOTED TO A SURFACE, that fixture "
+                                "is a LEGITIMATE occurrence and needs a NAMED EXEMPTION, not "
+                                "deletion. Deleting it would disarm S43 by removing its own test "
+                                "input",
+    },
+
     "0055 SS2": {
         "argument": "the widened S&L floor is warranted because the 90 channel pairs had "
                     "full opportunity to produce evidence (p5 margin 1.7 days, minimum 0.13)",

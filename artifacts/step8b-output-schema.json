@@ -1689,14 +1689,14 @@
   },
   "x-generated-by": {
     "generator": "src/step8b_schema.py",
-    "generator_sha256_12": "2d32fa25ecde",
-    "generated_at_utc": "2026-08-20T17:58:43Z",
+    "generator_sha256_12": "9fe2e8822afa",
+    "generated_at_utc": "2026-08-20T18:30:57Z",
     "build_tag": "step8b/a/2026-08-20",
-    "git_head_short": "8a7b17f",
+    "git_head_short": "03da73b = HEAD WHEN THIS FILE WAS GENERATED, which is NOT the commit that ships it: the file is written before it is committed, so the shipping commit is this one's child and has no id yet. The link runs the other way -- the shipping commit's diff contains this file, and the run record under logs/step8b/ carries a per-path content digest recomputable with `git cat-file blob <commit>:<path> | shasum -a 256`",
     "host_step": "Step 8b, output schema",
     "written_by": "Analytics Engineer, instance a",
     "validator": "src/step8b_validate.py",
-    "validator_sha256_12": "63853a49a51e",
+    "validator_sha256_12": "ada5966d3825",
     "selftest": "src/step8b_selftest.py",
     "note": "This schema is generated. Correct it in the generator and rewrite both artifacts together; do not hand-edit either file."
   },

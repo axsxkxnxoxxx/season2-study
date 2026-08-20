@@ -589,6 +589,16 @@ You are the Analytics Engineer on the Season 2 abandonment study. You build the 
       than marking it, because it was wrong when written. **The requirement SURVIVES for the reason it
       always had:** the settings are recorded **at the point of use** so they are visible rather than
       silent, **and both statistics must be findable there.**
+    - ***TWO STEP-LEVEL RULINGS THE SCHEMA ENFORCES, and a writer of Steps 9–13 must know both.***
+      **`0121`: STEP 12 IS EXEMPT** from the paired-movement interval requirement — it lists every
+      candidate cut and **mandates intervals nowhere**, so a Step 12 file carrying no interval
+      **DECLARES that emptiness** rather than failing to fill it, and requiring otherwise would make
+      it **manufacture figures it was never asked to compute.** ***The exemption is from PRODUCING
+      intervals, not from producing them COMPLETELY: a Step 12 file that publishes ANY interval owes
+      BOTH objects.*** **`0122`: STEP 10 IS NOT EXEMPT** — it measures outcome shares on the primary
+      arm under a fixed bootstrap, joins `INTERVAL_CLASS_PUBLISHERS["outcome_shares"]`, and owes both
+      objects; **`window_w_percentile` is NOT reached, because Step 10 does not vary `W`.**
+      ***No step other than Step 12 is exempt.***
     - **Deliver:** schema definition, placeholder file. **Review: Engineering**, on whether Steps 9–13
       can write into it without restructuring their outputs.
 

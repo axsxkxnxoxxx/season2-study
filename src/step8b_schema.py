@@ -3768,25 +3768,78 @@ def _payload(pop: str, arm: str, degenerate_ns: bool, coincides: bool,
     return payload
 
 
+# THE GROUND FOR A HEADLINE ABSENCE IS A FUNCTION OF THE STEP (v1.9.1,
+# reviewer-engineering E1 on v1.9.0). `_payload_absent` TOOK `step` AND NEVER
+# USED IT: one hardcoded reason served Steps 10, 11 and 12, and it was STEP 11's
+# -- "this step recomputes it on subpopulations, which is written under
+# $.subpopulation_cuts". Step 10 writes no subpopulation cuts; that block's
+# publisher is Step 11 and Step 12. So the shipped placeholder told a Step 10
+# writer that its headline absence is explained by a block it does not write.
+#
+# WHY IT MATTERED MORE THAN THE PROSE DID. The v1.9.0 fix corrected the prose,
+# the owners table and the intervals, and left THIS field -- the machine-readable
+# one, the one the schema polices at `minLength: 20`, the one a consumer reads,
+# and the one inside the record decisions/0109 §1's ruling actually named. A
+# Step 10 writer copying the idiom publishes a reason pointing at a block it does
+# not own.
+#
+# EACH STEP'S GROUND IS ITS OWN, AND IT NAMES ONLY A BLOCK THAT STEP WRITES.
+# Check S43 is the machine half: a payload absence whose reason names a block its
+# producing step does not write FAILS.
+_HEADLINE_ABSENCE_GROUND = {
+    "step10": (
+        "this step publishes the abandonment distribution -- where in season 2 the leavers "
+        "left -- which is written under $.arms[].abandonment_distribution. It recomputes no "
+        "headline of its own",
+        "task-sheet.md Steps 9 and 10; decisions/0109 §1; reviewer-engineering M9, E1",
+    ),
+    "step11": (
+        "this step recomputes the headline ON SUBPOPULATIONS -- the two discovery channels and "
+        "their overlap -- which is written under $.subpopulation_cuts",
+        "task-sheet.md Steps 9 and 11; decisions/0109 §1; reviewer-engineering M9, E1",
+    ),
+    "step12": (
+        "this step recomputes the headline INSIDE THE SEGMENT CUTS it proposes, which are "
+        "written under $.subpopulation_cuts. The Human Lead selects one of them; none of them "
+        "is the unconditional figure",
+        "task-sheet.md Steps 9 and 12; decisions/0109 §1; reviewer-engineering M9, E1",
+    ),
+}
+
+
 def _payload_absent(step: str) -> dict:
-    """A payload slot that is present and says why it holds no payload.
+    """A payload slot that is present and says why THIS STEP holds no payload.
 
     A single-arm step's own file needs a legal spine (reviewer-engineering M9).
-    Step 11 recomputes the headline ON SUBPOPULATIONS, under $.subpopulation_cuts;
-    the unconditional headline is Step 9's, and a Step 11 file that restated it
-    would be a second definition of one figure. So the slot is present and
-    records that, rather than the file carrying a copy or omitting the spine.
+    The unconditional headline is Step 9's, and a file that restated it would be
+    a second definition of one figure. So the slot is present and records that --
+    and records THIS step's own ground for not carrying one, from
+    `_HEADLINE_ABSENCE_GROUND`, rather than one step's ground standing for three.
+
+    A step with no row here gets a reason that names NO BLOCK. That is the safe
+    direction: a missing row costs a reader some detail, where a borrowed row
+    costs them a false statement about who writes what. The selftest asserts the
+    table covers every non-headline writing step, so the fallback is a backstop
+    rather than a resting place.
     """
+    ground = _HEADLINE_ABSENCE_GROUND.get(step)
+    if ground is None:
+        clause = (
+            "this step is not among the headline publishers, and no ground specific to it is "
+            "recorded here. It names no block rather than borrowing another step's ground"
+        )
+        source = "task-sheet.md Step 9; decisions/0109 §1; reviewer-engineering M9, E1"
+    else:
+        clause, source = ground
     return {
         "status": "not_required_by_spec",
         "reason": (
             "This file is a single-arm step's own file. The unconditional headline belongs to "
-            "Step 9 and is published in Step 9's files; this step recomputes it on "
-            "subpopulations, which is written under $.subpopulation_cuts. Restating Step 9's "
+            "Step 9 and is published in Step 9's files; " + clause + ". Restating Step 9's "
             "figure here would be a second definition of one figure, which is the defect the "
             "no-conversion-layer rule exists to prevent."
         ),
-        "source": "task-sheet.md Steps 9 and 11; decisions/0109 §1; reviewer-engineering M9",
+        "source": source,
     }
 
 
@@ -6452,12 +6505,27 @@ def build_placeholder(provenance: dict, grid: list[int],
                     "answered NO by the Human Lead."
                 ),
                 # THE TWO RETIRED SENTENCES, QUOTED UNDER A KEY THAT MARKS THEM
-                # (v1.9.0, reviewer-engineering F7). Neither is registered in
+                # (v1.9.0, reviewer-engineering F7).
+                #
+                # WHAT THIS COMMENT MAY ATTEST, AND IT IS ONLY THIS GENERATOR'S
+                # OUTPUT (v1.9.1, reviewer-engineering on v1.9.0). The previous
+                # version said the two sentences were "not registered in
                 # src/check_surfaces.py's WITHDRAWN_PHRASES -- that register is
                 # the Human Lead's file and this arm does not edit it -- so both
-                # are REPORTED for registration, and this is the shape that lets
-                # them be registered without failing the three placeholders that
-                # legitimately quote them.
+                # are REPORTED for registration". Every clause of that was a
+                # claim about ANOTHER FILE'S DISK STATE, and a claim of that kind
+                # goes stale without anything here changing -- CLAUDE.md's 0096
+                # mechanism, inside a source comment rather than a deliverable.
+                #
+                # SO: what this generator emits is that the retired text sits
+                # under `withdrawn_sentences`, WHERE THE KEY IS THE MARKER
+                # (decisions/0094), and that the paragraphs which replaced them
+                # no longer quote them. That is the shape that lets a phrase be
+                # registered anywhere without failing the three placeholders that
+                # legitimately quote it -- which is a property of THIS output.
+                # Whether any register currently holds them is not this arm's to
+                # state: this arm does not edit the register, and a reader who
+                # needs that fact reads the register.
                 "withdrawn_sentences": [
                     "checks S40 and S41 do not branch on which step wrote the file",
                     "S40 and S41 gain a producing-step guard",
@@ -6904,13 +6972,42 @@ def _sha12(path: str) -> str:
 
 
 def _git_head() -> str:
+    """HEAD AT GENERATION TIME, SAID AS THAT AND NOT AS THE SHIPPING COMMIT.
+
+    v1.9.1, reviewer-engineering on v1.9.0. The field used to carry a bare short
+    sha, and a bare sha in a provenance block reads as "the commit of this file".
+    It is NECESSARILY NOT: the artifact is written before it is committed, so the
+    commit that ships it is this one's CHILD and has no id at generation time.
+    The shipped v1.9.0 schema stamped `8a7b17f` and was committed at `03da73b`.
+
+    IT CANNOT BE FIXED BY STAMPING THE RIGHT SHA -- there is no right sha to
+    stamp yet. It is fixed by SAYING WHICH COMMIT THIS IS, which costs nothing
+    and cannot be misread. Same shape as the run stamp's
+    `commit_produced_by_this_run: null` (src/step8b_run_stamp.py): the side that
+    cannot be known is named as unknowable rather than filled with the other.
+
+    THE VALUE STAYS IN THIS ONE STRING FIELD ON PURPOSE. A companion field would
+    change the schema's shape, and a shape change owes a version bump -- which is
+    held while reviewer-engineering's E2 (nothing compares the generator's
+    version against the artifact's) is carried open.
+    """
     try:
-        return subprocess.run(
+        head = subprocess.run(
             ["git", "-C", ROOT, "rev-parse", "--short", "HEAD"],
             capture_output=True, text=True, check=True,
         ).stdout.strip()
     except Exception:
-        return "unavailable"
+        return (
+            "unavailable: git could not be read at generation time. An absent value is "
+            "reported, never substituted"
+        )
+    return (
+        f"{head} = HEAD WHEN THIS FILE WAS GENERATED, which is NOT the commit that ships it: "
+        f"the file is written before it is committed, so the shipping commit is this one's "
+        f"child and has no id yet. The link runs the other way -- the shipping commit's diff "
+        f"contains this file, and the run record under logs/step8b/ carries a per-path content "
+        f"digest recomputable with `git cat-file blob <commit>:<path> | shasum -a 256`"
+    )
 
 
 def _read_adopted_rule_revision() -> dict:

@@ -998,6 +998,18 @@ outputs.
 **Owner:** Data Scientist
 **Mode:** Chained
 
+- [ ] **STEP 10 PUBLISHES OUTCOME-SHARE INTERVALS AND OWES BOTH OBJECTS.** Human Lead ruling,
+      2026-08-20 (`0122`). **Step 10 measures outcome shares on the primary arm under a fixed
+      bootstrap, so it is a quantity with a REAL INTERVAL** — it joins
+      `INTERVAL_CLASS_PUBLISHERS["outcome_shares"]` and ***IS NOT EXEMPTED.*** **Exempting it would
+      assert that Step 10 mandates intervals nowhere, which is false — and `0121`'s Step 12
+      exemption rests on that clause being TRUE of Step 12.** **Before this ruling Step 10 could not
+      write a valid file at all**: with no intervals it failed `S41`, and publishing outcome-shares
+      it failed `S38`. ***The worked example was corrected, not the check.***
+      ***`window_w_percentile` is NOT reached*** — Step 10 charts the headline arm **without varying
+      `W`**, and the table is a PERMISSION, so a row there would license attributing a quantity it
+      does not compute (`0114` E11).
+
 - [ ] Plot the distribution of abandonment points across the season for the started-and-left group
 - [ ] Separate first-episode drops, mid-season drops, and near-finale drops
 - [ ] Do not claim a specific episode. Progress is self-reported and approximate.
@@ -1030,6 +1042,17 @@ outputs.
 
 **Owner:** Data Scientist proposes, Human Lead selects
 **Mode:** Chained
+
+- [ ] ***STEP 12 IS EXEMPT FROM THE PAIRED-MOVEMENT INTERVAL REQUIREMENT.*** Human Lead ruling,
+      2026-08-19, filed 2026-08-20 (`0121`). **Step 12 lists every candidate cut and mandates
+      intervals nowhere**, so **a Step 12 file that carries no interval DECLARES that emptiness
+      rather than failing to fill it.** **Requiring intervals would force Step 12 to MANUFACTURE two
+      figures it was never asked to compute** — a fabrication to satisfy a control — **and would make
+      the schema's own warrant text false, which is fixing a control by breaking a statement of
+      fact.** ***THE EXEMPTION IS FROM PRODUCING INTERVALS, NOT FROM PRODUCING THEM COMPLETELY: a
+      Step 12 file that publishes ANY interval owes BOTH objects like any other file.*** **No other
+      step is exempt** (`0122`). **This is the one exception to `0118`'s "a run that emits only one
+      is incomplete", and both `data-scientist` files carry it inside the canonical block.**
 
 - [ ] Do not look at any cut before the headline is final
 - [ ] List every candidate considered: origin, gap length between seasons, S1 episode count, user tenure

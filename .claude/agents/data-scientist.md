@@ -259,6 +259,14 @@ strings — closing `-->` included — so prose naming them cannot be mistaken f
   **What this requires of your output.** Every interval declares its `statistic` at the point of
   use, **and both statistics appear.** A run that emits only one is **incomplete**, not merely
   differently designed. ***A LEVEL AND A MOVEMENT ARE NEVER COMPARED TO EACH OTHER.***
+
+  ***THE ONE EXCEPTION, AND IT IS A RULING.*** **"A run that emits only one is incomplete" applies
+  to a step the spec ASKS for intervals. STEP 12 IS ASKED FOR NONE** — it lists every candidate cut
+  and mandates intervals nowhere (`0121`). **A Step 12 file that carries no interval DECLARES that
+  emptiness and is COMPLETE.** ***But the exemption is from PRODUCING intervals, not from producing
+  them COMPLETELY: if a Step 12 file publishes ANY interval, it owes BOTH objects like any other
+  file*** — a step that has already computed them is manufacturing nothing. **No other step is
+  exempt** (`0122`: Step 10 publishes outcome-share intervals and owes both).
 <!-- BOOTSTRAP-STATISTIC-END -->
 
   ***THE CHECK EXISTS AND IS NAMED.*** `reviewer-engineering`'s E11 required that **when the

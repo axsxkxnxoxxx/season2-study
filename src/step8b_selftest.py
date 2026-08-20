@@ -37,6 +37,7 @@ import copy
 import datetime as dt
 import json
 import os
+import re
 import sys
 import tempfile
 
@@ -336,7 +337,54 @@ MUTATIONS = {
     "S41": lambda i: [
         _set(e["ci"], "statistic", "levels")
         for e in i["declared_intervals"] if isinstance(e.get("ci"), dict)],
+    # S43: THE DEFECT ITSELF, RECONSTRUCTED (v1.9.1, reviewer-engineering E1 on
+    # v1.9.0). Put STEP 11's ground back into STEP 10's headline absence -- the
+    # sentence every one of the three single-arm steps shipped, because
+    # `_payload_absent(step)` took the step and never used it. Step 10 writes no
+    # subpopulation cuts, so this reason points a Step 10 writer at a block whose
+    # writers are Steps 11 and 12.
+    #
+    # WHY THE MUTATION IS A VERBATIM RESTORATION AND NOT AN INVENTED BREAKAGE:
+    # the state it recreates is the state that SHIPPED, in three artifacts, in
+    # the machine-readable field, through a review that corrected the prose
+    # around it. A fixture that broke the field some other way would prove the
+    # check fires; this proves it fires on what actually happened.
+    "S43": lambda i: _set(
+        _step_headline_absence(i, "step10"), "reason", _V1_9_0_BORROWED_GROUND),
 }
+
+# The v1.9.0 sentence, quoted once and used by both S43 fixtures. It is STEP
+# 11's ground; it shipped under Steps 10, 11 and 12 alike.
+_V1_9_0_BORROWED_GROUND = (
+    "This file is a single-arm step's own file. The unconditional headline belongs to Step 9 "
+    "and is published in Step 9's files; this step recomputes it on subpopulations, which is "
+    "written under $.subpopulation_cuts. Restating Step 9's figure here would be a second "
+    "definition of one figure, which is the defect the no-conversion-layer rule exists to "
+    "prevent."
+)
+
+
+def _step_headline_absence(inst: dict, step: str) -> dict:
+    """The headline PAYLOAD ABSENCE of the arm entry produced by `step`.
+
+    BY PREDICATE, NOT BY INDEX. The arm carrying a given step moves whenever the
+    grid or the entry set changes, and a fixture pinned to `arms[3]` silently
+    starts mutating a different step's record -- which is how the reproduction of
+    this very defect had to be re-derived by hand.
+    """
+    for arm in inst.get("arms", []):
+        if arm.get("producing_step") != step:
+            continue
+        for pop in ("APPLY", "DERIV"):
+            arms = (((arm.get("headline") or {}).get(pop) or {})
+                    .get("by_producing_arm") or {}).get("arms") or {}
+            for payload in arms.values():
+                if isinstance(payload, dict) and "reason" in payload and "status" in payload:
+                    return payload
+    raise AssertionError(
+        f"no headline payload absence found for {step}: the S43 fixture would mutate nothing, "
+        f"and a mutation that changes nothing reports a check as forceless when it is untested"
+    )
 
 
 # WHAT THE REGISTRY COMPARISON LEAVES OUT, AND WHY (v1.9.0,
@@ -545,6 +593,25 @@ EXTRA_MUTATIONS = {
     # declare -- not a mismatch with a single registry value, which no longer
     # exists.
     "S23/statistic_not_in_registry": ("S23", "placeholder", lambda i: _narrow_registry(i)),
+    # S43'S OTHER DIRECTION (v1.9.1). The primary fixture borrows Step 11's
+    # ground for Step 10; this borrows STEP 10's for STEP 11, so the check is
+    # shown to fire on the reference rather than on one particular sentence. A
+    # check exercised in one direction only is half a check -- the reason
+    # SCHEMA_MUTATIONS carries both halves of S42's version bump.
+    "S43/step11_names_step10s_block": ("S43", "placeholder", lambda i: _set(
+        _step_headline_absence(i, "step11"), "reason",
+        "This file is a single-arm step's own file. The unconditional headline belongs to "
+        "Step 9; this step publishes the abandonment distribution, which is written under "
+        "$.arms[].abandonment_distribution.")),
+    # AND THE PASSING SIDE, which is what stops the check being satisfied by any
+    # reason that mentions no block at all: a reason naming the step's OWN block
+    # must PASS. Without it, a future "fix" that simply deleted every reference
+    # would look like a green check.
+    "S43/step10_names_its_own_block_PASSES": ("S43", "placeholder", lambda i: _set(
+        _step_headline_absence(i, "step10"), "reason",
+        "This file is a single-arm step's own file. The unconditional headline belongs to "
+        "Step 9; this step publishes the abandonment distribution, which is written under "
+        "$.arms[].abandonment_distribution."), False),
     # S40's PARTITION clause, which is the half that makes an EMPTY
     # fields_not_fixed_in_spec mean something. Dropping `statistics` from the
     # fixed list leaves it in neither list, so the two no longer cover the
@@ -1313,6 +1380,56 @@ def _statistic_vocabulary_link(schema: dict) -> dict:
     }
 
 
+def _headline_absence_ground_coverage() -> dict:
+    """EVERY NON-HEADLINE WRITING STEP HAS ITS OWN GROUND (v1.9.1, E1).
+
+    `_payload_absent`'s docstring says the fallback is a backstop rather than a
+    resting place, and says the selftest asserts it. THIS IS THAT ASSERTION -- a
+    control asserted to exist and not built is the shape this project has spent
+    entries on, and the docstring would otherwise be a claim about a check that
+    does not run.
+
+    The universe is the generator's OWN duality table minus its OWN headline
+    publishers, so a sixth writing step added tomorrow joins this comparison by
+    existing rather than by someone remembering to list it here.
+    """
+    universe = sorted(st for st in G.STEP_DUALITY if st not in G.HEADLINE_PUBLISHERS)
+    covered = sorted(G._HEADLINE_ABSENCE_GROUND)
+    missing = [st for st in universe if st not in covered]
+    stray = [st for st in covered if st not in universe]
+    # AND EACH GROUND NAMES A BLOCK ITS OWN STEP WRITES -- the generator side of
+    # check S43, asserted against the VALIDATOR's external table rather than
+    # against another copy in this file.
+    wrong_block: list[str] = []
+    refs_examined = 0
+    for step, (clause, _src) in G._HEADLINE_ABSENCE_GROUND.items():
+        for token in re.findall(r"\$\.([A-Za-z_][A-Za-z0-9_\.\[\]]*)", clause):
+            segments = [seg for seg in token.rstrip(".,;:").split(".") if seg]
+            segments = [seg for seg in segments
+                        if seg.rstrip("[]") not in V._REFERENCE_CONTAINERS
+                        or len(segments) == 1]
+            if not segments:
+                continue
+            block = segments[0].split("[")[0]
+            refs_examined += 1
+            writers = V.BLOCK_WRITERS.get(block)
+            if writers is not None and step not in writers:
+                wrong_block.append(f"{step} names $.{block}, written by {list(writers)}")
+    return {
+        "ok": not missing and not stray and not wrong_block and refs_examined > 0,
+        "what": "every writing step that does not publish a headline has its own absence "
+                "ground, and each ground names only a block that step writes",
+        "universe_non_headline_writing_steps": universe,
+        "steps_with_a_ground": covered,
+        "steps_missing_a_ground": missing,
+        "grounds_for_steps_not_in_the_universe": stray,
+        "block_references_examined": refs_examined,
+        "grounds_naming_another_steps_block": wrong_block,
+        "coverage_note": "refs_examined is printed so a clean result is distinguishable from "
+                         "a run that looked at no reference at all",
+    }
+
+
 def _status_of(report: dict, cid: str) -> str:
     for c in report["semantic_checks"]:
         if c["id"] == cid:
@@ -1487,6 +1604,8 @@ def main() -> int:
     # or V.INTERVALS_NOT_MANDATED_BY_STEP would make the fixture agree with
     # whatever those tables say -- decisions/0111 E4, which this build has
     # reinstalled twice and which a third time would be inexcusable.
+    ground_record = _headline_absence_ground_coverage()
+
     step10_record = {
         "what": "Step 10's interval obligation under the Human Lead ruling of 2026-08-20, "
                 "with the expectations written FROM the ruling and the validator's two tables "
@@ -1762,7 +1881,17 @@ def main() -> int:
         })
 
     # Second clauses of checks whose first clause is already exercised.
-    for label, (cid, base_name, mutate) in EXTRA_MUTATIONS.items():
+    #
+    # AN ENTRY MAY DECLARE THAT IT MUST **PASS** (v1.9.1). A table of breakages
+    # alone cannot distinguish a check with force from a check that fails on
+    # anything -- and for S43 that distinction is the whole question, since a
+    # "fix" that deleted every block reference from every reason would satisfy a
+    # breakage-only table while removing the ground the record exists to state.
+    # The optional fourth element is `must_fail`, default True; when it is False
+    # the edit is a LEGAL variant and `has_force` means the check left it alone.
+    for label, spec in EXTRA_MUTATIONS.items():
+        cid, base_name, mutate = spec[0], spec[1], spec[2]
+        must_fail = spec[3] if len(spec) > 3 else True
         base = real if base_name == "real" else placeholder
         before = _status_of(baseline_real if base_name == "real" else baseline_ph, cid)
         mutated = copy.deepcopy(base)
@@ -1776,9 +1905,10 @@ def main() -> int:
         results.append({
             "check": label,
             "applied_to": base_name,
+            "must_fail": must_fail,
             "status_before": before,
             "status_after": after,
-            "has_force": after in ("FAIL", "VACUOUS"),
+            "has_force": (after in ("FAIL", "VACUOUS")) if must_fail else (after == "PASS"),
         })
 
     # The arm-file cases (decisions/0107).
@@ -1971,6 +2101,7 @@ def main() -> int:
         "s41_owner_key": s41_owner_record,
         "s41_owner_key_discriminating_fixture": s41_keying_record,
         "step10_interval_obligation": step10_record,
+        "headline_absence_ground_coverage": ground_record,
         "malformed_headline_shapes": malformed_record,
         "bootstrap_partition_anchor": anchor_record,
         "registry_arm_difference_fact": registry_fact_record,
@@ -1998,7 +2129,8 @@ def main() -> int:
                and step13_ok and vocab_link["ok"] and s41_record["ok"]
                and s41_owner_record["ok"] and s41_keying_record["ok"]
                and step10_record["ok"] and malformed_record["ok"]
-               and anchor_record["ok"] and registry_fact_record["ok"]),
+               and anchor_record["ok"] and registry_fact_record["ok"]
+               and ground_record["ok"]),
     }
 
     os.makedirs(LOG_DIR, exist_ok=True)
@@ -2043,6 +2175,7 @@ def main() -> int:
             "expected_s41_status": s41_keying_record["expected_s41_status"],
             "s41_status": s41_keying_record["s41_status"],
         },
+        "headline_absence_ground_coverage": ground_record,
         "step10_interval_obligation": {
             "ok": step10_record["ok"],
             "ruling": step10_record["ruling"],

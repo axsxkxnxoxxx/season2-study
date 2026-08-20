@@ -1483,6 +1483,32 @@ Verified after the Step 6 gate:
   indicated. The 238-within-three-days figure is not the right one: 220 of those are same-day drops
   whose distance is exactly 2 by construction.
 
+## Two step-level interval rulings, filed 2026-08-20 — and their FIRST spec-surface propagation
+
+- ***`0121` — STEP 12 IS EXEMPT from the paired-movement interval requirement.*** Human Lead ruling
+  2026-08-19. **Step 12 lists every candidate cut and mandates intervals nowhere**, so a Step 12 file
+  carrying no interval **DECLARES that emptiness** rather than failing to fill it. **Requiring
+  intervals would force it to MANUFACTURE two figures it was never asked to compute** — a fabrication
+  to satisfy a control — **and would make the schema's own warrant text false, which is fixing a
+  control by breaking a statement of fact.** ***THE EXEMPTION IS FROM PRODUCING INTERVALS, NOT FROM
+  PRODUCING THEM COMPLETELY: a Step 12 file that publishes ANY interval owes BOTH objects.***
+- ***`0122` — STEP 10 IS NOT EXEMPT and joins `INTERVAL_CLASS_PUBLISHERS`.*** Ruling 2026-08-20.
+  Step 10 measures outcome shares on the primary arm under a fixed bootstrap — **a quantity with a
+  real interval** — so exempting it **would assert something false about Step 10, and `0121`'s
+  exemption rests on that same clause being TRUE of Step 12.** **Before the ruling Step 10 could not
+  write a valid file at all.** ***The worked example was corrected, not the check.***
+  **`window_w_percentile` is NOT reached** — Step 10 does not vary `W`, and the table is a
+  PERMISSION, so a row would license attributing a quantity it does not compute (`0114` E11).
+- ***BOTH SAT IN `artifacts/` AND ON NO SPEC SURFACE UNTIL 2026-08-20.*** `0120` implemented them in
+  the schema and the controls; **the producing arm declined to propagate them and was RIGHT TO** —
+  its only source was its launch instruction, and ***a launch instruction is not a citable source***.
+  **The entry is the citable source, which is why the entries exist.** **This is the `0093` window
+  seen from the other end: the artifacts carried the ruling and the spec did not.**
+- **Carried, not closed:** ***the table-under-test class, THIRD occurrence*** — `S42` reads all three
+  version identifiers from the file under test, so it catches disagreement and **can never catch a
+  schema uniformly one version behind its generator.** **Each occurrence arrived inside the fix for a
+  prior finding.** To close before the next version bump.
+
 Related: [[glossary-terms-and-thresholds]], [[gate-step1-outcome-definition]],
 [[gate-step5-contamination]], [[population-chain-steps-2-3-4]], [[decision-log-step18]],
 [[withdrawn-claims-register]], [[step1-open-questions]].
