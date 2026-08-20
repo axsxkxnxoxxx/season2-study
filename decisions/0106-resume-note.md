@@ -242,4 +242,51 @@ before Step 9 runs" — and if it does, whether the three sites in §7.2 are cor
 > movements, both arms, both labelled, neither presented as the design.** **All three bootstrap
 > elements are now fixed and identical, and Step 9 is no longer blocked on the bootstrap.**
 
-***STEP 9 IS NOT BEGUN. NOTHING ELSE STARTED.***
+~~***STEP 9 IS NOT BEGUN. NOTHING ELSE STARTED.***~~ ***STEP 9 HAS RUN. BOTH ARMS WRITTEN AND
+UNDIFFED, `220b6e4`.*** See §8.
+
+---
+
+## 8. Appended 2026-08-20 — where the `W091_s2_premiere` diff stands
+
+***SOURCED FROM THE ARMS' OWN WORKING OUTPUT, EACH READ SEPARATELY. NO CROSS-ARM COMPARISON WAS
+PERFORMED AND NO VALUE WAS CONVERTED FROM ONE ARM'S PREDICATE TO THE OTHER'S. The diff is the Human
+Lead's.***
+
+- ***Both arms took the same population reading and the same `T0` definition. NEITHER IS THE CAUSE.***
+  Both read *"both arms run on the same right-censored population, `max(W, 91) + H`"* as the adopted
+  arm's position-5 row set — **196,654 on APPLY in both** — and both define the origin as the later of
+  the **S2 PREMIERE** air date and the first-pass S1 completion date. **The population ambiguity is
+  ruled out as the cause and is NOT ruled on here.**
+- **Never-started at that arm, APPLY.** Arm a **35,584 / 196,048**; arm b **84,037 / 196,494**.
+  **At position 5, BEFORE liveness: arm a 36,117; arm b 84,145.**
+  ***THE GAP IS IN THE NUMERATOR AT POSITION 5, UPSTREAM OF LIVENESS.***
+- ***Neither arm wrote a numeric `tau1` or `tau2` at that arm*** — not in its deliverable and not in
+  its working output. Arm a's only τ-valued field anywhere is `tau_pull_utc`; every other `tau1`/`tau2`
+  occurrence in both arms is a **key name on a count**, not an instant. **How τ was computed from `T0`
+  is stated by neither.**
+- ***The arms measured `T0` movement ON DIFFERENT PREDICATES, and the two are NOT converted here.***
+  Arm a recorded **`pairs_where_the_two_clocks_coincide: 152,370`**; arm b recorded
+  **`pairs_where_t0_moves: 87,441`**. **One counts coincidence, the other counts movement.**
+- **Liveness exclusions at that arm.** Arm a **606 APPLY / 73 DERIV**; arm b **160 / 52**. **Neither
+  arm writes a `liveness_exclusions` block at this arm** — both emit the absence idiom, so these come
+  from working output only.
+- ***THE WORKING OUTPUT IS LOCAL ONLY AND GITIGNORED*** (`.gitignore:223`, per `CLAUDE.md`'s folder
+  table: `processed/` never leaves this machine). **`processed/step9/a/measured.json` and
+  `processed/step9/b/stage1_counts.json` ARE NOT RECOVERABLE FROM A CLONE.** Every figure in this
+  section was read from them on this machine. *(`processed/step9/b/pairs.npz` is pair-level data and
+  must not be committed.)*
+
+### Resume by reading each arm's premiere-arm `T0` and classification code from `src/`
+
+***THE SOURCE IS COMMITTED EVEN THOUGH THE WORKING OUTPUT IS NOT*** — `src/step9_a_1_compute.py`,
+`step9_a_2_emit.py`, `step9_a_3_md.py`, `step9_b_1_compute.py`, `step9_b_2_bootstrap.py`,
+`step9_b_3_emit.py`, `step9_b_4_md.py`, all at `220b6e4`. **The position-5 never-started numerator is
+computed there, which is where the gap is.**
+
+> ***THE HUMAN LEAD'S INSTRUCTION ENDED MID-SENTENCE: "since neither arm's prose or" — THE REMAINDER
+> WAS NOT RECEIVED AND IS NOT RECONSTRUCTED HERE.*** What is recorded above is what was given. **The
+> unfinished clause is flagged rather than completed, because guessing it would put words in the
+> ruling.**
+
+***STEP 10 NOT BEGUN.***
