@@ -1,6 +1,6 @@
 {
-  "schema_version": "1.8.0",
-  "schema_id": "urn:season2-study:step8b-output-schema:1.8.0",
+  "schema_version": "1.9.0",
+  "schema_id": "urn:season2-study:step8b-output-schema:1.9.0",
   "placeholder": true,
   "placeholder_notice": {
     "banner": "############  THIS FILE IS A PLACEHOLDER. IT CONTAINS NO MEASUREMENTS.  ############  Every number in it is the sentinel -999 or -999.0 and every writer-supplied string is prefixed 'PLACEHOLDER — NOT A MEASUREMENT'. It exists so Step 16 can be built before results exist. DO NOT PUBLISH, DO NOT CHART, DO NOT QUOTE. A consumer that renders it will show -999% bars, which is the point.  ############",
@@ -12,10 +12,10 @@
   },
   "generated_by": {
     "generator": "src/step8b_schema.py",
-    "generator_sha256_12": "e28a944d53ee",
-    "generated_at_utc": "2026-08-19T21:29:52Z",
-    "build_tag": "step8b/a/2026-08-19",
-    "git_head_short": "9e6f993",
+    "generator_sha256_12": "2d32fa25ecde",
+    "generated_at_utc": "2026-08-20T17:58:43Z",
+    "build_tag": "step8b/a/2026-08-20",
+    "git_head_short": "8a7b17f",
     "host_step": "Step 8b, output schema",
     "written_by": "Analytics Engineer, instance a",
     "inputs": [
@@ -3378,8 +3378,12 @@
     {
       "choice": "decisions/0118'S BOTH-OBJECTS REQUIREMENT IS APPLIED TO EVERY WRITING STEP, INCLUDING THE SINGLE-ARM STEPS 10, 11 AND 12 -- and Step 12 is then EXEMPTED FROM CARRYING INTERVALS AT ALL by a Human Lead ruling.",
       "spec_gap": "decisions/0118 is recorded in the two data-scientist files, which own Steps 6, 7, 9 and 13. Steps 10, 11 and 12 are single-arm and their writers never received the canonical block, so nothing in the spec says the requirement reaches them. Extending it was an inference.",
-      "what_was_done": "The requirement is applied to every writing step. The GROUND is that decisions/0118 calls a run emitting one object INCOMPLETE rather than differently designed, and incompleteness is a property of a bootstrap rather than of having a counterpart arm -- the same reasoning by which B, the seed and the unit already reach the single-arm steps under decisions/0103, which is recorded in the same two files. THE ONE EXEMPTION IS STEP 12'S AND IT IS A RULING RATHER THAN THIS STEP'S CHOICE: the Human Lead ruled on 2026-08-19 that Step 12 mandates intervals nowhere -- this schema's own warrant at $defs.ci_or_absence -- so a Step 12 file carrying no interval declares that emptiness instead of failing to fill it. AND THE EXEMPTION IS FROM PRODUCING INTERVALS, NOT FROM PRODUCING THEM COMPLETELY: a Step 12 file that HAS published intervals owes both objects like any other file, because the ruling's ground is that requiring them would make the step MANUFACTURE two figures, and a step that has already computed them is manufacturing nothing. THE PREVIOUS VERSION OF THIS RECORD SAID \"checks S40 and S41 do not branch on which step wrote the file\", WHICH IS NOW FALSE OF S41 AND WAS ALREADY FALSE WHEN WRITTEN -- the step-level exemption in the same paragraph is exactly such a branch.",
-      "if_ruled_otherwise": "RETIRED AT v1.8.0, and quoted rather than deleted so the retirement is readable: this field used to offer \"S40 and S41 gain a producing-step guard\" as the counterfactual remedy, WHICH IS HALF-IMPLEMENTED ALREADY -- S41 branches on the producing step for the Step 12 exemption. A counterfactual that describes the current build is not a counterfactual, which is the disposition `if_ruled_otherwise` took at v1.6.0 for the same reason. What remains true and is not a counterfactual: widening the Step 12 exemption to another step is a ruling, not an implementation choice."
+      "what_was_done": "The requirement is applied to every writing step. The GROUND is that decisions/0118 calls a run emitting one object INCOMPLETE rather than differently designed, and incompleteness is a property of a bootstrap rather than of having a counterpart arm -- the same reasoning by which B, the seed and the unit already reach the single-arm steps under decisions/0103, which is recorded in the same two files. THE ONE EXEMPTION IS STEP 12'S AND IT IS A RULING RATHER THAN THIS STEP'S CHOICE: the Human Lead ruled on 2026-08-19 that Step 12 mandates intervals nowhere -- this schema's own warrant at $defs.ci_or_absence -- so a Step 12 file carrying no interval declares that emptiness instead of failing to fill it. AND THE EXEMPTION IS FROM PRODUCING INTERVALS, NOT FROM PRODUCING THEM COMPLETELY: a Step 12 file that HAS published intervals owes both objects like any other file, because the ruling's ground is that requiring them would make the step MANUFACTURE two figures, and a step that has already computed them is manufacturing nothing. THE PREVIOUS VERSION OF THIS RECORD CLAIMED THAT NEITHER CHECK BRANCHED ON THE WRITING STEP -- retired at v1.8.0, quoted verbatim in this entry's retirement field, and it did not hold when it was written either: the step-level exemption in this same paragraph is exactly such a branch. AND A SECOND RULING LANDS HERE, 2026-08-20: STEP 10 IS NOT EXEMPT. It measures outcome shares on the primary arm under the fixed bootstrap, so it publishes real intervals and owes both objects; it also joined the outcome-shares publisher table, which it had been missing from. The exemption still has exactly one member.",
+      "if_ruled_otherwise": "The counterfactual this field used to offer was retired at v1.8.0 and is quoted verbatim in this entry's retirement field: it named a remedy that was already half-implemented, since S41 branches on the producing step for the Step 12 exemption, and a counterfactual that describes the current build is not a counterfactual -- the disposition `if_ruled_otherwise` took at v1.6.0 for the same reason. What remains true and is not a counterfactual: widening the Step 12 exemption to another step is a ruling, not an implementation choice, and on 2026-08-20 exactly that question was put for Step 10 and answered NO by the Human Lead.",
+      "withdrawn_sentences": [
+        "checks S40 and S41 do not branch on which step wrote the file",
+        "S40 and S41 gain a producing-step guard"
+      ]
     }
   ],
   "known_limits_of_this_schema": [

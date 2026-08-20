@@ -67,8 +67,29 @@ from step8b_validate import (  # noqa: E402
     REGISTRY_ARM_DIFFERENCE_FACT as _REGISTRY_ARM_DIFFERENCE_FACT,
 )
 
-SCHEMA_VERSION = "1.8.0"
-SCHEMA_ID = "urn:season2-study:step8b-output-schema:1.8.0"
+SCHEMA_VERSION = "1.9.0"
+
+# THE URN IS DERIVED FROM THE VERSION, NEVER TYPED BESIDE IT (v1.9.0, found by
+# the coordinator on this build). `SCHEMA_ID` used to be a literal with the
+# version spelled out inside it, so ONE VERSION HAD TWO DEFINITIONS -- and the
+# v1.9.0 bump moved one of them. The schema then carried
+# `schema_version.const = "1.9.0"` beside `schema_id.const =
+# "urn:...:1.8.0"` and `$id = "urn:...:1.8.0"`, and all three placeholders
+# carried the same pair.
+#
+# EVERY CONTROL PASSED, and the reason is worth writing down: the placeholders
+# agree with the schema on each field INDEPENDENTLY -- `1.9.0` matches the
+# version const, `...:1.8.0` matches the id const -- so the two identifiers were
+# internally consistent and disagreed only with EACH OTHER. Nothing compared
+# them, and `schema_id` is the field a consumer keys on.
+#
+# This is the same move as ARM_LABELS_ARITY_WORD under decisions/0120 §2 E3,
+# where the word "five" was typed into a sentence beside a four-element tuple:
+# a quantity that restates another quantity is derived from it, or it drifts.
+# Check S42 asserts the derivation on the SCHEMA AS BUILT, so a future literal
+# reintroduced here fails rather than shipping.
+SCHEMA_URN_STEM = "urn:season2-study:step8b-output-schema"
+SCHEMA_ID = f"{SCHEMA_URN_STEM}:{SCHEMA_VERSION}"
 
 # WHERE THE ADOPTED-RULE REVISION IS READ FROM (decisions/0114 E14). It is the
 # fourth identity dimension, and the ruling asks where the value is READ rather
@@ -3365,6 +3386,42 @@ def build_schema(provenance: dict | None = None) -> dict:
                         "spec_gap": {"type": "string"},
                         "what_was_done": {"type": "string"},
                         "if_ruled_otherwise": {"type": "string"},
+                        # A SENTENCE THIS RECORD ONCE ASSERTED AND HAS SINCE
+                        # RETIRED, QUOTED VERBATIM AND MARKED BY THE KEY IT SITS
+                        # UNDER (v1.9.0, reviewer-engineering F7). A retirement
+                        # used to be written INTO the paragraph that replaced it,
+                        # quoting the retired sentence in running prose. Two
+                        # consequences, both bad: the sentence could be written
+                        # back onto any of the eight propagation surfaces and
+                        # nothing would fire, because src/check_surfaces.py's
+                        # WITHDRAWN_PHRASES cannot hold a phrase that its own
+                        # STRUCK marker does not exempt where it legitimately
+                        # appears -- and the obvious repair, dropping the word
+                        # WITHDRAWN into the paragraph, exempts EVERY phrase in
+                        # that paragraph, since the marker's scope in a JSON
+                        # string leaf is the whole value.
+                        #
+                        # A KEY IS A NARROWER MARKER THAN A WORD. decisions/0094
+                        # already established that a field NAMED for a withdrawal
+                        # IS the point-of-use marker -- structure, not prose -- so
+                        # the retired sentence lives here, alone, and the
+                        # paragraphs that replaced it stop quoting it.
+                        "withdrawn_sentences": {
+                            "type": "array",
+                            "minItems": 1,
+                            "items": {"type": "string"},
+                            "description": (
+                                "Sentences this record previously asserted and has retired, "
+                                "quoted verbatim. THE KEY IS THE MARKER: a retired sentence "
+                                "is quoted here rather than inside the paragraph that "
+                                "replaced it, so the marker exempts the retired sentence and "
+                                "NOTHING ELSE. A marker word dropped into a paragraph would "
+                                "exempt every phrase in that paragraph, since its scope in a "
+                                "JSON string leaf is the whole value -- which is why the "
+                                "paragraphs here name this field by description rather than "
+                                "by key."
+                            ),
+                        },
                     },
                 },
             },
@@ -4565,7 +4622,13 @@ ARM_ENTRIES = [
     ("W108_s2_finale", 108, "s2_finale", True, True, "step10",
      "the adopted setting again, as STEP 10's entry: it publishes the abandonment "
      "distribution here and no headline of its own, which is why its headline payload slot "
-     "carries an explicit absence rather than a copy of Step 9's figure",
+     "carries an explicit absence rather than a copy of Step 9's figure. THAT ABSENCE IS "
+     "ABOUT THE HEADLINE BLOCK AND NOTHING ELSE. Step 10 measures outcome shares on this, "
+     "the primary arm, under the fixed bootstrap, so it DOES publish intervals -- both "
+     "objects, at $.declared_intervals -- and is held to the pair by check S41 like every "
+     "other producing step (Human Lead ruling, 2026-08-20). The previous worked example "
+     "showed Step 10 through the absence alone, from which a reader could only conclude that "
+     "Step 10 mandates intervals nowhere, WHICH IS FALSE",
      False, False),
     ("W108_s2_finale", 108, "s2_finale", True, True, "step13",
      "the adopted setting again, as STEP 13's measurement. Step 9's W = 108 and Step 13's "
@@ -4642,8 +4705,14 @@ def _arms_for(role: str, arm: str | None, step: str, dual_arms: tuple) -> list:
 # src/step8b_validate.py, where check S38 reads it -- the validator's copy is the
 # one that decides, for the reason S31 records: a table read from the file under
 # test could only agree with itself.
+#
+# STEP 10 JOINED `outcome_shares` ON A HUMAN LEAD RULING, 2026-08-20: it measures
+# outcome shares on the primary arm under a fixed bootstrap, which is a quantity
+# with a real interval. It did NOT join `window_w_percentile` -- the ruling's
+# ground is the outcome shares and Step 10 does not vary W. The reasoning is
+# written out at the validator's copy, which is the one that decides.
 INTERVAL_CLASS_PUBLISHERS = {
-    "outcome_shares": ("step9", "step11", "step12", "step13"),
+    "outcome_shares": ("step9", "step10", "step11", "step12", "step13"),
     "window_w_percentile": ("step9", "step13"),
 }
 
@@ -4656,16 +4725,26 @@ INTERVAL_CLASS_PUBLISHERS = {
 # OWNER, not per arm.
 #
 # WHO IS ABSENT AND WHY, because an owner missing from a list reads as an
-# oversight: STEP 10's headline payload in this placeholder is an absence record
-# -- it charts the headline arm rather than publishing its own -- so it carries no
-# interval and owes no movement. STEP 12 lists candidate cuts and mandates
-# intervals nowhere ($defs.ci_or_absence; Human Lead ruling, 2026-08-19), so its
-# cut's shares carry the CI-ABSENCE form and it likewise owes none. An owner that
-# published a level and no movement WOULD fail S41, exemption or not.
+# oversight: STEP 12 lists candidate cuts and mandates intervals nowhere
+# ($defs.ci_or_absence; Human Lead ruling, 2026-08-19), so its cut's shares carry
+# the CI-ABSENCE form and it owes none. An owner that published a level and no
+# movement WOULD fail S41, exemption or not.
+#
+# STEP 10 JOINED THIS LIST ON A HUMAN LEAD RULING, 2026-08-20, AND ITS PREVIOUS
+# ABSENCE WAS THE DEFECT. This comment used to excuse it: "Step 10's headline
+# payload in this placeholder is an absence record -- it charts the headline arm
+# rather than publishing its own -- so it carries no interval and owes no
+# movement." WITHDRAWN. The headline absence is about the HEADLINE BLOCK; it says
+# nothing about intervals, and Step 10 measures outcome shares on the primary arm
+# under the fixed bootstrap, which is a quantity with a real interval. The worked
+# example showed Step 10 through that absence alone, so the only Step 10 a reader
+# could see here was one that publishes no interval anywhere -- which would make
+# "Step 10 mandates intervals nowhere" true of the placeholder while being false
+# of Step 10.
 MERGED_INTERVAL_OWNERS = (
     ("step9", "a"), ("step9", "b"),
     ("step13", "a"), ("step13", "b"),
-    ("step11", "sole"),
+    ("step10", "sole"), ("step11", "sole"),
 )
 
 
@@ -4751,6 +4830,41 @@ def _declared_intervals(role: str, step: str, arms_held: tuple) -> list:
                 "shape the schema allows and nothing exercises"
             ),
             "source": "decisions/0118",
+        })
+    # STEP 10'S LEVELS, IN THE MERGED DOCUMENT (Human Lead ruling, 2026-08-20).
+    # The movement above is emitted for every owner in MERGED_INTERVAL_OWNERS,
+    # which Step 10 has now joined; this is its counterpart level, so the owner
+    # `step10/sole` carries BOTH objects and S41 reaches it like any other.
+    #
+    # IT IS NOT REACHED BY THE `arms_held` LOOP BELOW: that loop maps an ARM to a
+    # step, and in the merged document `sole` maps to Step 11 -- one arm label,
+    # three single-arm steps, which is the collision S41's owner key exists for.
+    # So Step 10's own quantity is written here rather than inferred from an arm.
+    #
+    # THE QUANTITY IS THE ONE THE RULING NAMES: the outcome shares at the primary
+    # arm, account-bound, resampled at the account, so the unit agrees with the
+    # binding cluster and no disagreement record is present.
+    if role == "merged_document":
+        out.append({
+            "interval_id": "outcome_shares_step10_sole",
+            "quantity": ph(
+                "the outcome shares Step 10 measures at the primary arm, whose binding "
+                "cluster is the ACCOUNT. Step 10 charts the headline arm and does not restate "
+                "Step 9's headline figure -- but the shares it charts are measured under the "
+                "fixed bootstrap and carry a real interval, which is why its headline-block "
+                "absence record does not mean it publishes no interval"
+            ),
+            "produced_by_step": "step10",
+            "producing_arm": "sole",
+            "ci": _ci("sole_default", unit="account", quantity_class="outcome_shares"),
+            "note": ph(
+                "THE FIRST OF THE TWO OBJECTS, for an owner that used to appear in this "
+                "document only as a headline absence (Human Lead ruling, 2026-08-20). Step 10 "
+                "is a publisher of `outcome_shares` and is NOT exempt from the both-objects "
+                "requirement; it is not a publisher of the window-W percentile, which it does "
+                "not compute"
+            ),
+            "source": "Human Lead ruling 2026-08-20; decisions/0118; decisions/0114 E11",
         })
     for a in arms_held:
         istep = _interval_step_for(role, step, a)
@@ -6316,21 +6430,38 @@ def build_placeholder(provenance: dict, grid: list[int],
                     "a Step 12 file that HAS published intervals owes both objects like any "
                     "other file, because the ruling's ground is that requiring them would make "
                     "the step MANUFACTURE two figures, and a step that has already computed "
-                    "them is manufacturing nothing. THE PREVIOUS VERSION OF THIS RECORD SAID "
-                    "\"checks S40 and S41 do not branch on which step wrote the file\", WHICH "
-                    "IS NOW FALSE OF S41 AND WAS ALREADY FALSE WHEN WRITTEN -- the step-level "
-                    "exemption in the same paragraph is exactly such a branch."
+                    "them is manufacturing nothing. THE PREVIOUS VERSION OF THIS RECORD "
+                    "CLAIMED THAT NEITHER CHECK BRANCHED ON THE WRITING STEP -- retired at "
+                    "v1.8.0, quoted verbatim in this entry's retirement field, and it did not "
+                    "hold when it was written either: the step-level exemption in this same "
+                    "paragraph is exactly such a branch. AND A SECOND RULING LANDS HERE, "
+                    "2026-08-20: STEP 10 IS NOT EXEMPT. It measures outcome shares on the primary arm under the fixed "
+                    "bootstrap, so it publishes real intervals and owes both objects; it also "
+                    "joined the outcome-shares publisher table, which it had been missing from. "
+                    "The exemption still has exactly one member."
                 ),
                 "if_ruled_otherwise": (
-                    "RETIRED AT v1.8.0, and quoted rather than deleted so the retirement is "
-                    "readable: this field used to offer \"S40 and S41 gain a producing-step "
-                    "guard\" as the counterfactual remedy, WHICH IS HALF-IMPLEMENTED ALREADY -- "
-                    "S41 branches on the producing step for the Step 12 exemption. A "
-                    "counterfactual that describes the current build is not a counterfactual, "
-                    "which is the disposition `if_ruled_otherwise` took at v1.6.0 for the same "
-                    "reason. What remains true and is not a counterfactual: widening the Step "
-                    "12 exemption to another step is a ruling, not an implementation choice."
+                    "The counterfactual this field used to offer was retired at v1.8.0 and is "
+                    "quoted verbatim in this entry's retirement field: it named a remedy that "
+                    "was already half-implemented, since S41 branches on the producing step for the Step 12 "
+                    "exemption, and a counterfactual that describes the current build is not a "
+                    "counterfactual -- the disposition `if_ruled_otherwise` took at v1.6.0 for "
+                    "the same reason. What remains true and is not a counterfactual: widening "
+                    "the Step 12 exemption to another step is a ruling, not an implementation "
+                    "choice, and on 2026-08-20 exactly that question was put for Step 10 and "
+                    "answered NO by the Human Lead."
                 ),
+                # THE TWO RETIRED SENTENCES, QUOTED UNDER A KEY THAT MARKS THEM
+                # (v1.9.0, reviewer-engineering F7). Neither is registered in
+                # src/check_surfaces.py's WITHDRAWN_PHRASES -- that register is
+                # the Human Lead's file and this arm does not edit it -- so both
+                # are REPORTED for registration, and this is the shape that lets
+                # them be registered without failing the three placeholders that
+                # legitimately quote them.
+                "withdrawn_sentences": [
+                    "checks S40 and S41 do not branch on which step wrote the file",
+                    "S40 and S41 gain a producing-step guard",
+                ],
             },
         ],
         "known_limits_of_this_schema": [

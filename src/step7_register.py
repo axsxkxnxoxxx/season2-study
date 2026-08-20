@@ -262,6 +262,24 @@ WITHDRAWN_PHRASES = {
         "the generator's fields_not_fixed_in_spec entry, v1.5.0. The statistic is FIXED and the "
         "list is empty with its universe declared. Withdrawn 0119 SS1"),
 
+    # F7, reviewer-engineering on v1.8.0: the E6 retirements were withdrawn in the artifacts and
+    # registered NOWHERE, so the sentences could be written back onto any of the eight surfaces and
+    # nothing would fire. Registering them was blocked until v1.9.0 because the retirement notes
+    # QUOTED the sentences without carrying a STRUCK token -- "WAS ALREADY FALSE" is not "was false"
+    # and there is no colon after FALSE -- so a registration would have failed three artifacts on
+    # their own withdrawal notes. The generator now carries the retired text under a
+    # `withdrawn_sentences` key, where THE KEY IS THE MARKER (0094), and the replacing paragraphs
+    # no longer quote them. Registered with the arm's live probe behind it, both directions.
+    "checks s40 and s41 do not branch on which step wrote the file": (
+        "spec choice #29's claim about the controls, FALSIFIED by the v1.7.0 change that made S41 "
+        "branch on the producing step for the Step 12 exemption -- and already false when written, "
+        "the step-level exemption in the same paragraph being exactly such a branch. Withdrawn 0121"),
+    "s40 and s41 gain a producing-step guard": (
+        "spec choice #29's if_ruled_otherwise, offering as a COUNTERFACTUAL a remedy that is "
+        "half-implemented in the build it ships with. A counterfactual that describes the current "
+        "build is not a counterfactual -- the disposition if_ruled_otherwise already took at "
+        "v1.6.0 for the same reason. Withdrawn 0121"),
+
     "everything else in this file stands": (
         "a stamp that affirmatively certified superseded figures. Withdrawn 0056 SS4"),
     "cannot enter the list": (

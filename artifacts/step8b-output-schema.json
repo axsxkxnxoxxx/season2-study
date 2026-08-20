@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:season2-study:step8b-output-schema:1.8.0",
+  "$id": "urn:season2-study:step8b-output-schema:1.9.0",
   "title": "Season 2 abandonment study -- Step 16 results schema",
   "description": "The single output schema. Steps 9 through 13 write into it DIRECTLY, each ARM into its own file, and STEP 16 RENDERS FROM THE MERGED DOCUMENT that Step 13b builds from those files after the Human Lead has diffed the dual pairs (decisions/0107). Both kinds of file are instances of this one schema; $.document_scope says which kind a file is, and it is the first thing to read. There is no conversion layer: a conversion layer is a second definition of every figure. Validate with src/step8b_validate.py, which implements the JSON Schema subset used here plus the cross-field checks the schema language cannot express.",
   "type": "object",
@@ -29,10 +29,10 @@
   ],
   "properties": {
     "schema_version": {
-      "const": "1.8.0"
+      "const": "1.9.0"
     },
     "schema_id": {
-      "const": "urn:season2-study:step8b-output-schema:1.8.0"
+      "const": "urn:season2-study:step8b-output-schema:1.9.0"
     },
     "placeholder": {
       "type": "boolean",
@@ -1623,6 +1623,14 @@
           },
           "if_ruled_otherwise": {
             "type": "string"
+          },
+          "withdrawn_sentences": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            },
+            "description": "Sentences this record previously asserted and has retired, quoted verbatim. THE KEY IS THE MARKER: a retired sentence is quoted here rather than inside the paragraph that replaced it, so the marker exempts the retired sentence and NOTHING ELSE. A marker word dropped into a paragraph would exempt every phrase in that paragraph, since its scope in a JSON string leaf is the whole value -- which is why the paragraphs here name this field by description rather than by key."
           }
         }
       }
@@ -1681,14 +1689,14 @@
   },
   "x-generated-by": {
     "generator": "src/step8b_schema.py",
-    "generator_sha256_12": "e28a944d53ee",
-    "generated_at_utc": "2026-08-19T21:29:52Z",
-    "build_tag": "step8b/a/2026-08-19",
-    "git_head_short": "9e6f993",
+    "generator_sha256_12": "2d32fa25ecde",
+    "generated_at_utc": "2026-08-20T17:58:43Z",
+    "build_tag": "step8b/a/2026-08-20",
+    "git_head_short": "8a7b17f",
     "host_step": "Step 8b, output schema",
     "written_by": "Analytics Engineer, instance a",
     "validator": "src/step8b_validate.py",
-    "validator_sha256_12": "68b0e083c4eb",
+    "validator_sha256_12": "63853a49a51e",
     "selftest": "src/step8b_selftest.py",
     "note": "This schema is generated. Correct it in the generator and rewrite both artifacts together; do not hand-edit either file."
   },

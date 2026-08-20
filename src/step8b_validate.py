@@ -422,8 +422,27 @@ ENTRY_FAMILIES = ("arms", "variants", "subpopulation_cuts")
 # `other_declared` is open to every writer by construction -- it is the class for
 # a quantity the record has not ruled on -- so it names no publisher here and the
 # arm-identity clause is the only one that applies to it.
+#
+# STEP 10 JOINED `outcome_shares` ON A HUMAN LEAD RULING, 2026-08-20. THE GROUND,
+# RECORDED AS GIVEN: Step 10 measures outcome shares on the primary arm under a
+# fixed bootstrap, and that is a quantity with a real interval. Its absence from
+# this row was noticed while asking whether Step 10 belonged in
+# INTERVALS_NOT_MANDATED_BY_STEP; the ruling is that it belongs in THIS table and
+# NOT in that one -- Step 10 publishes intervals and is held to both objects like
+# any other step.
+#
+# STEP 10 DID NOT JOIN `window_w_percentile`, AND THAT IS THE ARM'S ASSESSMENT
+# REPORTED TO THE HUMAN LEAD RATHER THAN A SECOND READING OF THE RULING. The
+# ruling's ground is that Step 10 measures OUTCOME SHARES; it says nothing about
+# W. W is derived at Step 6 and reported at Step 9's two window arms and across
+# Step 13's grid, and Step 10 charts the headline arm at the adopted W without
+# varying it, so it computes no window-W percentile. This table is a PERMISSION,
+# so adding a step here licenses it to attribute a quantity -- and licensing Step
+# 10 to attribute W is exactly the state decisions/0114 E11 closed, where the
+# shipped single-arm placeholder attributed the window-W percentile to `step11`,
+# which does not compute W either.
 INTERVAL_CLASS_PUBLISHERS = {
-    "outcome_shares": ("step9", "step11", "step12", "step13"),
+    "outcome_shares": ("step9", "step10", "step11", "step12", "step13"),
     "window_w_percentile": ("step9", "step13"),
 }
 
@@ -511,13 +530,20 @@ ARM_LABELS_ARITY_WORD = _ARITY_WORDS.get(ARM_LABELS_ARITY, str(ARM_LABELS_ARITY)
 #
 # THE GROUND IS NOT THE PUBLISHER TABLE, AND SAYING SO WAS A DEFECT (v1.8.0,
 # reviewer-engineering E6). This comment used to read "Steps 9, 10, 11 and 13 all
-# publish outcome-share intervals", which INTERVAL_CLASS_PUBLISHERS does not
-# support: it names Steps 9, 11, 12 and 13 on `outcome_shares` and does NOT name
-# Step 10. The table is a PERMISSION -- who may attribute an interval on a class
-# -- and this one is a MANDATE, and neither implies the other. What actually
-# holds: this table has ONE member because ONE step was ruled on. WHETHER STEP 10
-# BELONGS IN IT IS UNRULED AND IS REPORTED TO THE HUMAN LEAD RATHER THAN DECIDED
-# HERE; an arm may not widen a ruling to make its own comment true.
+# publish outcome-share intervals". WITHDRAWN as a GROUND and it stays withdrawn:
+# the table is a PERMISSION -- who may attribute an interval on a class -- and
+# this one is a MANDATE, and neither implies the other, so no membership of the
+# publisher table could have established who must produce intervals. What holds:
+# this table has ONE member because ONE step was ruled on.
+#
+# STEP 10 IS NOW RULED, AND IT IS RULED OUT OF THIS TABLE (Human Lead ruling,
+# 2026-08-20). THE GROUND, RECORDED AS GIVEN: Step 10 measures outcome shares on
+# the primary arm under a fixed bootstrap, so it is a step with a real interval,
+# and exempting it would assert that Step 10 mandates intervals nowhere, which is
+# FALSE -- while the Step 12 exemption rests on that same clause being TRUE of
+# Step 12, in the schema's own warrant. Step 10 joined
+# INTERVAL_CLASS_PUBLISHERS["outcome_shares"] in the same ruling and is held to
+# both objects like any other step. The table still has one member.
 #
 # THE PERMISSION AND THE MANDATE ARE NOT IN CONFLICT. Step 12 MAY attribute an
 # outcome-shares interval (INTERVAL_CLASS_PUBLISHERS) and is REQUIRED to produce
@@ -539,6 +565,23 @@ INTERVALS_NOT_MANDATED_BY_STEP = {
         "a paired movement between configurations the spec does not name"
     ),
 }
+
+
+def _interval_exemption_reason(inst: dict) -> str | None:
+    """The step-level interval exemption for THIS file, or None. WRITTEN ONCE.
+
+    v1.9.0, reviewer-engineering F6. The rule -- a merged document is never
+    exempt, and otherwise the file's own producing step is looked up in
+    INTERVALS_NOT_MANDATED_BY_STEP -- had two independent renderings, in S41 and
+    in _declare_scope_emptiness(). They agree today. Two renderings of one rule
+    is this study's most-repeated defect and _partition_failures() is written
+    once and called twice for exactly this reason, so this one is too: a future
+    narrowing applied to one site and not the other would put the check and its
+    emptiness idiom on opposite sides of the same ruling.
+    """
+    if _is_merged_document(inst):
+        return None
+    return INTERVALS_NOT_MANDATED_BY_STEP.get(_producing_step(inst))
 
 # THE PER-ARM BLOCKS THAT HAVE NO PRODUCER AT A PREMIERE-ANCHORED ARM
 # (decisions/0114 E13). PUBLISHER ROWS KEY ON ARM IDENTITY, NOT PRODUCING STEP
@@ -727,8 +770,43 @@ def _is_block_absence(node: Any) -> bool:
     return isinstance(node, dict) and node.get("block_is_absent") is True
 
 
+def _iter_headline_blocks(entry: Any, base: str):
+    """Yield (path, population, block) for each WELL-FORMED population block.
+
+    GUARDED, AND WRITTEN ONCE (v1.9.0, reviewer-engineering F1 and F6). Two
+    iterators walked the headline and only one of them checked the shapes it
+    found: `_iter_cis_with_arm` guarded both levels, `_iter_payloads` guarded
+    neither. Reproduced through the real entry point on the shipped merged
+    placeholder, three ways -- `headline` set to a block-absence record, whose
+    `.items()` yields the BOOL `True` as a population block; `headline.APPLY` set
+    to a string; `headline` set to a non-empty list, which has no `.items()` at
+    all. Each raised an AttributeError out of validate_file(), so the REPORT was
+    replaced by a traceback -- and the schema errors are computed on the line
+    above the semantic checks, so three real structural errors were computed and
+    thrown away with it. A malformed file must be REPORTED on, not crashed on.
+
+    Both iterators now come through here, so the guard cannot be added to one
+    walk and forgotten on the other: two renderings of one rule is this study's
+    most-repeated defect, and this was already two.
+
+    A non-dict block is SKIPPED rather than reported: the schema's own type
+    constraints are what say a headline is an object of population blocks, and
+    that half of the report survives precisely because this half no longer
+    raises.
+    """
+    if not isinstance(entry, dict):
+        return
+    headline = entry.get("headline")
+    if not isinstance(headline, dict) or _is_block_absence(headline):
+        return
+    for pop, block in headline.items():
+        if not isinstance(block, dict):
+            continue
+        yield f"{base}.headline.{pop}", pop, block
+
+
 def _iter_payloads(inst: dict):
-    """Yield (path, population_block) for every population block in the file."""
+    """Yield (path, population, population_block) for every population block."""
     containers = []
     for i, arm in enumerate(inst.get("arms", [])):
         containers.append((f"$.arms[{i}]", arm))
@@ -737,8 +815,7 @@ def _iter_payloads(inst: dict):
     for i, cut in enumerate(inst.get("subpopulation_cuts", [])):
         containers.append((f"$.subpopulation_cuts[{i}]", cut))
     for base, node in containers:
-        for pop, block in (node.get("headline") or {}).items():
-            yield f"{base}.headline.{pop}", pop, block
+        yield from _iter_headline_blocks(node, base)
 
 
 def _iter_containers(inst: dict):
@@ -825,13 +902,7 @@ def _iter_cis_with_arm(inst: dict):
             if not isinstance(entry, dict):
                 continue
             entry_step = entry.get("producing_step")
-            headline = entry.get("headline")
-            if not isinstance(headline, dict):
-                continue
-            for pop, block in headline.items():
-                if not isinstance(block, dict):
-                    continue
-                base = f"$.{fam}[{i}].headline.{pop}"
+            for base, pop, block in _iter_headline_blocks(entry, f"$.{fam}[{i}]"):
                 bpa = block.get("by_producing_arm")
                 block_step = bpa.get("producing_step") if isinstance(bpa, dict) else None
                 for ppath, akey, payload in _iter_arm_payloads(block, base):
@@ -3155,11 +3226,40 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
                     f"for one arm, and an interval is a measurement like any other"
                 )
     if not (inst.get("declared_intervals") or []):
-        c.declared_empty = (
-            "this file declares no intervals. The block is optional and the emptiness is "
-            "reported rather than passed over."
-        )
-        c.coverage = 0
+        # ZERO COVERAGE IS NOT A DECLARED EMPTINESS -- THE SAME SHAPE E5 FIXED AT
+        # S41, FIXED HERE TOO (v1.9.0, reviewer-engineering F3). This branch set
+        # `declared_empty` with `coverage = 0` on the warrant "the block is
+        # optional", which is a statement about the SCHEMA and not about a search:
+        # it awarded a clean status for having looked nowhere, which CLAUDE.md
+        # names in as many words. It was UNOCCUPIED -- all three placeholders
+        # carry declarations -- and reachable by any writer that omits the
+        # optional array, which is what E5's site was too.
+        #
+        # THE COVERAGE IS WHAT THE FILE SAYS ABOUT ITS INTERVALS ELSEWHERE. A file
+        # may legitimately declare none at the top level and carry them inside its
+        # payloads, or carry none at all and record where each would have been.
+        # Either establishes the emptiness. Neither, and nothing here was
+        # established, so the check stays VACUOUS and still fails.
+        inline = sum(1 for _ in _iter_cis_with_arm(inst))
+        absences = _absence_records_for(inst, "intervals")
+        c.coverage = inline + len(absences)
+        if c.coverage:
+            c.declared_empty = (
+                f"this file declares no interval at $.declared_intervals, and the block is "
+                f"optional -- but the emptiness is ESTABLISHED rather than assumed: "
+                f"{inline} interval(s) carried inside this file's own payloads and "
+                f"{len(absences)} explicit interval-absence record(s) were examined, and "
+                f"every one of them is attributed by the payload or the record it sits in "
+                f"rather than by a top-level declaration. A file that carried NEITHER would "
+                f"have established nothing and stays VACUOUS."
+            )
+        else:
+            c.notes.append(
+                "$.declared_intervals is empty or absent, and this file carries no interval "
+                "inside a payload and no interval-absence record either: nothing was "
+                "examined, so the emptiness is not established and this check stays VACUOUS. "
+                "An empty result and a clean result are the same value (CLAUDE.md)"
+            )
     checks.append(c)
 
     # S39 -- THE PUBLISHER TABLE COVERS EVERY PER-ARM BLOCK THE SCHEMA DEFINES
@@ -3382,8 +3482,10 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
     #        SCOPE-AWARE SINCE v1.7.0 (Human Lead ruling, 2026-08-19): a Step 12
     #        file is not asked for intervals at all, and failing it for having none
     #        would make it manufacture two figures the spec never asked it to
-    #        compute. NARROWED AT v1.8.0 TO THE EMPTY BRANCH ALONE (E4 of the same
-    #        review): the exemption used to gate the per-owner missing-object
+    #        compute. NARROWED AT v1.8.0 TO THE EMPTY BRANCH ALONE (E2 of the same
+    #        review, which is the finding src/step8b_selftest.py's
+    #        _file_with_levels_only() names; this comment said E4, which is the
+    #        partition anchor -- v1.9.0, reviewer-engineering F4): the exemption used to gate the per-owner missing-object
     #        branch as well, so a Step 12 file emitting forty levels-only intervals
     #        passed with a note. THE RULING'S GROUND DOES NOT REACH THAT STATE -- a
     #        file that has already computed intervals is being asked to manufacture
@@ -3402,10 +3504,7 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
         "intervals of every (producing step, arm) in this file",
     )
     s41_step = _producing_step(inst)
-    s41_exempt = (
-        None if _is_merged_document(inst)
-        else INTERVALS_NOT_MANDATED_BY_STEP.get(s41_step)
-    )
+    s41_exempt = _interval_exemption_reason(inst)
     by_owner: dict = {}
     for path, istep, arm, ci in _iter_cis_with_arm(inst):
         c.sites += 1
@@ -3454,6 +3553,73 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
     # _declare_scope_emptiness() names the restriction -- reached through
     # CHECK_SUBJECT below, the same route every other scope-empty check takes,
     # rather than through a second emptiness idiom written here.
+    checks.append(c)
+
+    # S42 -- THE SCHEMA'S TWO VERSION IDENTIFIERS AGREE (v1.9.0, found by the
+    #        coordinator on this build). The version was written twice: once as
+    #        `schema_version.const` and once spelled out inside
+    #        `schema_id.const` and `$id`. The v1.9.0 bump moved the first and left
+    #        the other two at 1.8.0.
+    #
+    #        WHY EVERY OTHER CONTROL PASSED, AND WHY THIS ONE IS SCHEMA-LEVEL. An
+    #        instance is checked against each const SEPARATELY, so a placeholder
+    #        carrying `1.9.0` and `urn:...:1.8.0` satisfies both: the two
+    #        identifiers were internally consistent and disagreed only with each
+    #        other. Nothing compared them, because nothing had any reason to --
+    #        which is precisely the state CLAUDE.md's one-definition rule exists
+    #        to prevent, and `schema_id` is the field a consumer keys on.
+    #
+    #        THE SUBJECT IS THE SCHEMA, NOT THE FILE. Breaking an instance could
+    #        never exercise this, so its fixture lives in SCHEMA_MUTATIONS
+    #        alongside S35's -- bump one identifier and not the other, and this
+    #        must fail.
+    #
+    #        THE GENERATOR NOW DERIVES THE URN FROM THE VERSION, so the defect is
+    #        unreachable from that side. This check is the other side: it holds on
+    #        the SCHEMA AS BUILT, so a literal typed back in, or a hand-edited
+    #        artifact, fails here rather than shipping.
+    c = Check(
+        "S42",
+        "the schema's version identifiers agree: $id and schema_id.const carry the version "
+        "in schema_version.const, so one version cannot have two values",
+    )
+    s42_version = ((ev.root.get("properties") or {}).get("schema_version") or {}).get("const")
+    s42_id_const = ((ev.root.get("properties") or {}).get("schema_id") or {}).get("const")
+    s42_dollar_id = ev.root.get("$id")
+    for label, value in (("$.properties.schema_version.const", s42_version),
+                         ("$.properties.schema_id.const", s42_id_const),
+                         ("$.$id", s42_dollar_id)):
+        if not isinstance(value, str) or not value:
+            c.failures.append(
+                f"{label} is absent or not a string: the agreement of the version identifiers "
+                f"cannot be established, and an emptiness here is not a pass"
+            )
+    if not c.failures:
+        for label, urn in (("$.properties.schema_id.const", s42_id_const),
+                           ("$.$id", s42_dollar_id)):
+            c.sites += 1
+            if not urn.endswith(f":{s42_version}"):
+                c.failures.append(
+                    f"{label} is {urn!r} and does not carry the version "
+                    f"{s42_version!r} declared at $.properties.schema_version.const. ONE "
+                    f"VERSION, TWO DEFINITIONS: an instance is checked against each const "
+                    f"separately, so a file agreeing with both is still carrying two "
+                    f"different version identifiers -- and `schema_id` is the field a "
+                    f"consumer keys on. The generator derives this URN from the version "
+                    f"constant; a literal typed back in reaches here"
+                )
+        c.sites += 1
+        if s42_id_const != s42_dollar_id:
+            c.failures.append(
+                f"$.$id is {s42_dollar_id!r} and $.properties.schema_id.const is "
+                f"{s42_id_const!r}: the document's own identifier and the identifier it "
+                f"requires its instances to carry are the same string or they are two "
+                f"schemas"
+            )
+    c.notes.append(
+        f"version identifiers compared: schema_version.const={s42_version!r}, "
+        f"schema_id.const={s42_id_const!r}, $id={s42_dollar_id!r}"
+    )
     checks.append(c)
 
     _declare_scope_emptiness(inst, checks)
@@ -3539,7 +3705,7 @@ def _declare_scope_emptiness(inst: dict, checks: list) -> None:
             # through with no declaration and stays VACUOUS -- which, for S41, is
             # already a FAIL raised in the check itself, so an unlisted step cannot
             # reach a passing state by this route.
-            reason = None if merged else INTERVALS_NOT_MANDATED_BY_STEP.get(file_step)
+            reason = _interval_exemption_reason(inst)
             if reason is None:
                 continue
             records = _absence_records_for(inst, "intervals")

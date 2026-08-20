@@ -38,12 +38,14 @@ import datetime as dt
 import json
 import os
 import sys
+import tempfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "src"))
 
 import step8b_validate as V  # noqa: E402
 import step8b_schema as G  # noqa: E402
+import step8b_run_stamp as RS  # noqa: E402
 # THE BLOCK EXTRACTION AND THE FOUR REQUIRED ELEMENTS ARE IMPORTED, NOT COPIED
 # (reviewer-engineering H2/E5 on the v1.6.0 review). This module used to hold its
 # own _extract_block(), its own BEGIN/END markers and its own BLOCK_MUST_NAME
@@ -306,7 +308,19 @@ MUTATIONS = {
     # E11: an interval attributed to a step that does not produce that quantity.
     # THE SHIPPED PLACEHOLDERS WERE OCCUPIED BY THIS -- the window-W percentile
     # attributed to `step11`, which does not compute W.
-    "S38": lambda i: _set(i["declared_intervals"][0], "produced_by_step", "step10"),
+    #
+    # THE CLASS MOVED TO `window_w_percentile` AT v1.9.0, AND THE CONTROL IS WHAT
+    # FOUND IT. This mutation used to attribute an OUTCOME-SHARES interval to
+    # `step10`; the Human Lead ruling of 2026-08-20 makes Step 10 a legal
+    # publisher of that class, so the mutation stopped failing and the selftest
+    # reported S38 in `checks_without_force`. The window-W percentile is the class
+    # Step 10 did NOT join -- it does not vary W -- so this is the same finding on
+    # the row that is still false, and it now exercises the asymmetry the ruling
+    # created rather than the one it removed. The entry is located by PREDICATE:
+    # an index would move with the placeholder, and a mutation that cannot be
+    # applied is itself a finding here.
+    "S38": lambda i: _set(_first_interval_of_class(i, "window_w_percentile"),
+                          "produced_by_step", "step10"),
     # v1.6.0 -- decisions/0118.
     #
     # S40 IS THE STALE STATE ITSELF, reconstructed: the registry recording ONE
@@ -323,6 +337,65 @@ MUTATIONS = {
         _set(e["ci"], "statistic", "levels")
         for e in i["declared_intervals"] if isinstance(e.get("ci"), dict)],
 }
+
+
+# WHAT THE REGISTRY COMPARISON LEAVES OUT, AND WHY (v1.9.0,
+# reviewer-engineering F5). Declared with a reason rather than implied by a
+# whitelist of what to include: an exclusion has to be argued for, and a field
+# nobody thought about must join the comparison rather than fall out of it.
+REGISTRY_FIELDS_EXCLUDED_FROM_THE_COMPARISON = {
+    "note": "free writer prose at the point of use. Two entries of one class carry different "
+            "sentences about themselves and that is not a settings difference -- it is the "
+            "only field in the registry whose content is expected to vary per entry",
+}
+
+# WHAT MAY DIFFER BETWEEN TWO ENTRIES OF ONE QUANTITY CLASS. Written from
+# decisions/0118 and V.REGISTRY_ARM_DIFFERENCE_FACT's own claim: with all four
+# bootstrap elements fixed and identical across the arms, two entries of one
+# class differ ONLY in which arm they belong to. Held here rather than derived,
+# so that a registry drifting apart on any other field fails this selftest.
+REGISTRY_FIELDS_THAT_MAY_DIFFER_WITHIN_A_CLASS = {"producing_arm"}
+
+
+# THE MALFORMED HEADLINE SHAPES (v1.9.0, reviewer-engineering F1). Not mutations
+# in the has-force sense -- they break the file's TYPES rather than its content,
+# so what they exercise is the validator's ability to report at all. All three
+# were reproduced through validate_file() on the shipped merged placeholder
+# before the guard was written; all three raised.
+#
+# A FOURTH SHAPE IS DELIBERATELY ABSENT: `headline` set to an EMPTY list never
+# raised, because `node.get("headline") or {}` treats it as falsy. Recorded so
+# the omission is a finding rather than a gap.
+MALFORMED_HEADLINES = {
+    # `.items()` on a block-absence record yields the BOOL `True` as a block.
+    "headline_is_a_block_absence_record":
+        lambda i: i["arms"][0].__setitem__("headline", {"block_is_absent": True}),
+    # one population block replaced by a string.
+    "headline_population_is_a_string":
+        lambda i: i["arms"][0]["headline"].__setitem__("APPLY", "PLACEHOLDER"),
+    # a non-empty list has no `.items()` at all.
+    "headline_is_a_nonempty_list":
+        lambda i: i["arms"][0].__setitem__("headline", [{"APPLY": {}}]),
+}
+
+
+def _first_interval_of_class(inst: dict, quantity_class: str) -> dict:
+    """The first `$.declared_intervals` entry on a given quantity class.
+
+    BY PREDICATE, NOT BY INDEX (v1.9.0). A mutation that names
+    `declared_intervals[0]` mutates whatever the generator happens to emit first,
+    so the CLASS it exercises drifts with the placeholder rather than being
+    chosen. Raises when there is none: the harness records an unapplied mutation
+    as a finding, which is the right answer for a fixture whose subject has
+    vanished.
+    """
+    for entry in inst.get("declared_intervals") or []:
+        if (entry.get("ci") or {}).get("quantity_class") == quantity_class:
+            return entry
+    raise AssertionError(
+        f"no $.declared_intervals entry on quantity class {quantity_class!r}: this mutation "
+        f"has no subject in the fixture"
+    )
 
 
 def _relabel_arm(node, level: int):
@@ -740,6 +813,29 @@ SOLE_MUTATIONS = {
 # `dual_status` rename fails loudly -- and a constraint about the schema can only
 # be shown to have force by breaking the schema.
 SCHEMA_MUTATIONS = {
+    # v1.9.0 -- A HALF-DONE VERSION BUMP, found by the coordinator on this build.
+    # `SCHEMA_ID` was a literal with the version spelled out inside it, so one
+    # version had two definitions and the v1.9.0 bump moved only one: the schema
+    # shipped `schema_version.const = "1.9.0"` beside `schema_id.const` and `$id`
+    # at `...:1.8.0`, and all three placeholders carried the same pair.
+    #
+    # NO CONTROL SAW IT, and that is the point of this fixture. An instance is
+    # checked against each const SEPARATELY, so the placeholders agreed with the
+    # schema on both fields; the two identifiers were internally consistent and
+    # disagreed only with EACH OTHER. The subject is therefore the SCHEMA -- and
+    # like S35's, breaking the instance could never show this check has force.
+    #
+    # THE MUTATION IS THE DEFECT ITSELF, RECONSTRUCTED: bump one identifier and
+    # leave the other. The generator now derives the URN from the version, so
+    # this state is unreachable from that side; this asserts the other side.
+    "S42/version_bumped_in_one_identifier_only": (
+        "S42",
+        lambda s: s["properties"]["schema_version"].__setitem__("const", "9.9.9")),
+    # And the mirror: the URN moved while the version const stayed. Both halves,
+    # because a check that catches a bump in one direction only is half a check.
+    "S42/urn_bumped_while_the_version_const_stayed": (
+        "S42",
+        lambda s: s.__setitem__("$id", s["$id"].rsplit(":", 1)[0] + ":9.9.9")),
     "S35/absence_branch_added_above_the_renamed_key": ("S35", lambda s: s["$defs"].__setitem__(
         "headline",
         {"oneOf": [dict(s["$defs"]["headline"]), {"$ref": "#/$defs/block_absence"}]})),
@@ -966,6 +1062,39 @@ S41_EMPTY_BRANCH_EXPECTED = {
 S41_EXEMPT_BY_RULING = {s for s, v in S41_EMPTY_BRANCH_EXPECTED.items()
                         if v == "EMPTY_DECLARED"}
 
+# A FILE THAT PUBLISHES BOTH OBJECTS PASSES S41, FOR EVERY PRODUCING STEP.
+# Written from the requirement, not from the behaviour: decisions/0118 fixes the
+# statistic as BOTH, and S41 asks only that both appear per (producing step, arm).
+# The exempt step is no exception in this direction either -- Step 12 MAY publish
+# and, having published completely, passes like anyone else. Without this row the
+# fixture asserted only the failing states, and a check that only ever fails is
+# indistinguishable from one that always fails.
+S41_PUBLISHES_BOTH_EXPECTED = {s: "PASS" for s in S41_EMPTY_BRANCH_EXPECTED}
+
+# STEP 10'S INTERVAL OBLIGATION -- WRITTEN FROM THE HUMAN LEAD'S RULING OF
+# 2026-08-20, NOT DERIVED FROM EITHER TABLE.
+#
+# THE RULING, RECORDED AS GIVEN: Step 10 measures outcome shares on the primary
+# arm under a fixed bootstrap, which is a quantity with a real interval, so
+# exempting it would assert that Step 10 mandates intervals nowhere -- FALSE --
+# while the Step 12 exemption rests on that same clause being TRUE of Step 12.
+# Step 10 therefore JOINS V.INTERVAL_CLASS_PUBLISHERS["outcome_shares"] and does
+# NOT join V.INTERVALS_NOT_MANDATED_BY_STEP.
+#
+# THESE ARE PINS, NOT DERIVATIONS. The expectations below are typed from the
+# ruling; the validator's tables are then read and compared against them, so
+# removing `step10` from the publisher table or adding it to the exemption table
+# FAILS this selftest instead of moving the expectation along with the behaviour.
+# That is decisions/0111 E4 -- a table read from the file under test could only
+# agree with itself -- and this build has reinstalled it twice.
+STEP10_BY_THE_RULING = {
+    "publishes_outcome_shares": True,
+    "exempt_from_intervals": False,
+    "omits_intervals": "FAIL",
+    "publishes_both_objects": "PASS",
+    "publishes_levels_only": "FAIL",
+}
+
 _NO_INTERVAL_ABSENCE = {
     "status": "not_required_by_spec",
     "reason": "SELFTEST FIXTURE: this writing step is not asked for an interval at this slot.",
@@ -1074,6 +1203,49 @@ def _file_with_levels_only(base: dict, step: str) -> dict:
 
     walk(inst)
     return _relabel_producing_step(inst, step)
+
+
+def _file_publishing_both_objects(base: dict, step: str) -> dict:
+    """An arm file of `step` that publishes intervals and labels both objects.
+
+    THE PASSING SIDE (v1.9.0, Human Lead ruling 2026-08-20). Every S41 fixture
+    before this one drove the check to a FAILING state, so nothing established
+    that a step CAN satisfy it -- and the ruling that put Step 10 under the
+    requirement is owed a demonstration that Step 10 can discharge it, not only
+    that it can breach it. The single-arm placeholder already carries both
+    objects, so this is the shipped shape with one thing changed: whose it is.
+    """
+    return _relabel_producing_step(copy.deepcopy(base), step)
+
+
+def _one_steps_intervals_levels_only(base: dict, step: str) -> dict:
+    """The MERGED document with ONE step's intervals relabelled `levels`.
+
+    THE FIXTURE THAT DISCRIMINATES THE OWNER KEY (v1.9.0, reviewer-engineering
+    F2). Nothing committed distinguished keying S41 on (producing step, arm) from
+    keying it on the arm: MUTATIONS["S41"] strips movements from EVERY owner, so
+    it fails identically under both, and reverting the owner key -- undoing E3
+    entirely -- left this selftest at exit 0. The discriminating shape existed and
+    was measured, but it lived in a run record under logs/, which never leaves
+    this machine. A check nobody can see is not a check (CLAUDE.md,
+    decisions/0082).
+
+    THE SHAPE, AND WHY IT DISCRIMINATES: in the merged document one arm label
+    covers several producing steps -- `a` is Step 9 AND Step 13 -- so stripping
+    the movements from Step 13 alone leaves arm `a` still carrying Step 9's
+    movement. Aggregated by ARM the file reads complete; aggregated by (STEP,
+    ARM) Step 13 has published twelve levels and no movement. The fixture asserts
+    BOTH halves, so it fails if the file stops being discriminating as well as if
+    the check stops discriminating.
+    """
+    inst = copy.deepcopy(base)
+    targets = [ci for _p, istep, _a, ci in V._iter_cis_with_arm(inst)
+               if istep == step and "statistic" in ci]
+    if not targets:
+        raise AssertionError(f"no interval is attributed to {step!r} in this fixture")
+    for ci in targets:
+        ci["statistic"] = "levels"
+    return inst
 
 
 def _statistic_vocabulary_link(schema: dict) -> dict:
@@ -1256,6 +1428,12 @@ def main() -> int:
         # A FILE THAT PUBLISHED INTERVALS AND LABELLED THEM ALL `levels`: the
         # exemption does not reach this, for any step.
         levels_only = _status_of(run(_file_with_levels_only(sole_file, step)), "S41")
+        # THE PASSING SIDE (v1.9.0). A file that published both objects must PASS,
+        # for every step. Every other shape here drives S41 to a failing state, so
+        # without this row the fixture could not tell a check that discriminates
+        # from one that always fails.
+        want_both = S41_PUBLISHES_BOTH_EXPECTED[step]
+        both = _status_of(run(_file_publishing_both_objects(sole_file, step)), "S41")
         s41_scope[step] = {
             "no_intervals_absences_recorded": {"expected": want, "got": declared,
                                                "ok": declared == want},
@@ -1263,18 +1441,22 @@ def main() -> int:
                                            "ok": unsearched == want_unsearched},
             "levels_only_intervals": {"expected": "FAIL", "got": levels_only,
                                       "ok": levels_only == "FAIL"},
+            "publishes_both_objects": {"expected": want_both, "got": both,
+                                       "ok": both == want_both},
             "exempt_by_the_ruling": step in S41_EXEMPT_BY_RULING,
         }
         s41_scope[step]["ok"] = all(
             s41_scope[step][k]["ok"] for k in
             ("no_intervals_absences_recorded", "no_intervals_zero_coverage",
-             "levels_only_intervals"))
+             "levels_only_intervals", "publishes_both_objects"))
     s41_record = {
-        "what": "S41 per producing step, on THREE fixtures: a file whose every interval is an "
-                "explicit absence record, the same file with the slots simply gone, and a file "
-                "that published intervals and labelled every one of them `levels`. Step 12 is "
-                "exempt from CARRYING intervals; it is exempt from neither of the other two "
-                "states, and an exemption that widens is the defect",
+        "what": "S41 per producing step, on FOUR fixtures: a file whose every interval is an "
+                "explicit absence record, the same file with the slots simply gone, a file "
+                "that published intervals and labelled every one of them `levels`, and a file "
+                "that published both objects. Step 12 is exempt from CARRYING intervals; it is "
+                "exempt from neither of the failing states, and an exemption that widens is "
+                "the defect. The fourth fixture is the passing side: without it every shape "
+                "here drives S41 to a failing state",
         "expected_statuses": dict(S41_EMPTY_BRANCH_EXPECTED),
         "exempt_by_the_ruling": sorted(S41_EXEMPT_BY_RULING),
         "exempt_in_the_validator": sorted(V.INTERVALS_NOT_MANDATED_BY_STEP),
@@ -1286,9 +1468,67 @@ def main() -> int:
                                    for s, v in s41_scope.items()},
         "levels_only_statuses": {s: v["levels_only_intervals"]["got"]
                                  for s, v in s41_scope.items()},
+        "publishes_both_objects_statuses": {s: v["publishes_both_objects"]["got"]
+                                            for s, v in s41_scope.items()},
         "ok": (all(v["ok"] for v in s41_scope.values()) and len(s41_scope) == 5
                and set(V.INTERVALS_NOT_MANDATED_BY_STEP) == S41_EXEMPT_BY_RULING),
     }
+
+    # STEP 10'S INTERVAL OBLIGATION, DEMONSTRATED IN BOTH DIRECTIONS (Human Lead
+    # ruling, 2026-08-20). The ruling puts Step 10 under the both-objects
+    # requirement and into the outcome-shares publisher table, on the ground that
+    # it measures outcome shares on the primary arm under a fixed bootstrap. A
+    # ruling that only ever made a file FAIL would be half-demonstrated, so both
+    # sides are asserted: Step 10 omitting intervals FAILS, Step 10 publishing
+    # both objects PASSES.
+    #
+    # THE EXPECTATIONS ARE TYPED FROM THE RULING, ABOVE, AND THE TABLES ARE READ
+    # AND COMPARED AGAINST THEM. Deriving them from V.INTERVAL_CLASS_PUBLISHERS
+    # or V.INTERVALS_NOT_MANDATED_BY_STEP would make the fixture agree with
+    # whatever those tables say -- decisions/0111 E4, which this build has
+    # reinstalled twice and which a third time would be inexcusable.
+    step10_record = {
+        "what": "Step 10's interval obligation under the Human Lead ruling of 2026-08-20, "
+                "with the expectations written FROM the ruling and the validator's two tables "
+                "read and compared against them. Both directions: a Step 10 file that omits "
+                "intervals must FAIL, and one that publishes both objects must PASS",
+        "ruling": dict(STEP10_BY_THE_RULING),
+        "publisher_table_outcome_shares": list(
+            V.INTERVAL_CLASS_PUBLISHERS.get("outcome_shares", ())),
+        "publisher_table_window_w_percentile": list(
+            V.INTERVAL_CLASS_PUBLISHERS.get("window_w_percentile", ())),
+        "exempt_in_the_validator": sorted(V.INTERVALS_NOT_MANDATED_BY_STEP),
+        "publishes_outcome_shares":
+            "step10" in V.INTERVAL_CLASS_PUBLISHERS.get("outcome_shares", ()),
+        "exempt_from_intervals": "step10" in V.INTERVALS_NOT_MANDATED_BY_STEP,
+        # NOT A SECOND READING OF THE RULING -- REPORTED, NOT ASSERTED. The ruling
+        # names the OUTCOME SHARES; whether it reaches the window-W percentile is
+        # the arm's assessment, reported to the Human Lead, and Step 10 is left
+        # out of that class because it does not vary W. Recorded here so the
+        # asymmetry is visible rather than inferred from a table.
+        "window_w_percentile_membership_is_reported_not_ruled": {
+            "step10_in_window_w_percentile":
+                "step10" in V.INTERVAL_CLASS_PUBLISHERS.get("window_w_percentile", ()),
+            "why": "the ruling's ground is the outcome shares; W is derived at Step 6 and "
+                   "reported at Step 9's window arms and across Step 13's grid, and Step 10 "
+                   "charts the headline arm without varying W. Reported to the Human Lead, "
+                   "not decided here",
+        },
+        "omits_intervals": s41_scope["step10"]["no_intervals_absences_recorded"]["got"],
+        "publishes_both_objects": s41_scope["step10"]["publishes_both_objects"]["got"],
+        "publishes_levels_only": s41_scope["step10"]["levels_only_intervals"]["got"],
+    }
+    step10_record["ok"] = (
+        step10_record["publishes_outcome_shares"]
+        == STEP10_BY_THE_RULING["publishes_outcome_shares"]
+        and step10_record["exempt_from_intervals"]
+        == STEP10_BY_THE_RULING["exempt_from_intervals"]
+        and step10_record["omits_intervals"] == STEP10_BY_THE_RULING["omits_intervals"]
+        and step10_record["publishes_both_objects"]
+        == STEP10_BY_THE_RULING["publishes_both_objects"]
+        and step10_record["publishes_levels_only"]
+        == STEP10_BY_THE_RULING["publishes_levels_only"]
+    )
 
     # THE OWNER KEY IS (PRODUCING STEP, ARM) (v1.8.0, reviewer-engineering E3).
     # In the merged document `sole` is Steps 10, 11 and 12 together and `a` is
@@ -1320,6 +1560,99 @@ def main() -> int:
                and all(v == {"levels", "movements"} for v in owners.values())),
     }
 
+    # THE OWNER KEY, DISCRIMINATED (v1.9.0, reviewer-engineering F2). The record
+    # above measures the owners and asserts that each carries both objects; it
+    # does NOT distinguish the two keyings, because it builds its own owner map
+    # and never runs S41 on a file where the keyings disagree. Reverting
+    # `by_owner.setdefault((istep, arm), ...)` to `(None, arm)` -- undoing E3 --
+    # left the whole selftest at exit 0.
+    #
+    # This is the file where they disagree: Step 13's intervals relabelled
+    # `levels`, Step 9's left alone. Under the arm key, arm `a` carries Step 9's
+    # movement and reads complete; under the (step, arm) key, Step 13 published
+    # twelve levels and no movement and FAILS. BOTH HALVES ARE ASSERTED -- that
+    # the file is discriminating (every ARM still carries both objects) and that
+    # S41 fails it anyway -- so this cannot pass by the fixture quietly ceasing to
+    # discriminate.
+    keyed = _one_steps_intervals_levels_only(placeholder, "step13")
+    by_arm: dict = {}
+    for _p, _istep, arm, ci in V._iter_cis_with_arm(keyed):
+        by_arm.setdefault(arm, set()).add(ci.get("statistic"))
+    by_step_arm: dict = {}
+    for _p, istep, arm, ci in V._iter_cis_with_arm(keyed):
+        by_step_arm.setdefault((istep, arm), set()).add(ci.get("statistic"))
+    arm_keyed_would_pass = all(v == {"levels", "movements"} for v in by_arm.values())
+    step_arm_keyed_sees_a_gap = any(v != {"levels", "movements"}
+                                    for v in by_step_arm.values())
+    s41_keying_record = {
+        "what": "the fixture on which the two candidate owner keys DISAGREE: one step's "
+                "intervals relabelled `levels` inside the merged document, where one arm "
+                "label covers several producing steps. Keying on the arm alone cannot see it; "
+                "keying on (producing step, arm) fails it",
+        "step_relabelled_levels_only": "step13",
+        "aggregated_by_arm": {str(a): sorted(v) for a, v in sorted(by_arm.items(), key=str)},
+        "aggregated_by_step_and_arm": {f"{k[0]}/{k[1]}": sorted(v) for k, v in
+                                       sorted(by_step_arm.items(), key=str)},
+        "every_arm_still_carries_both_objects": arm_keyed_would_pass,
+        "some_step_arm_owner_carries_one": step_arm_keyed_sees_a_gap,
+        "expected_s41_status": "FAIL",
+        "s41_status": _status_of(run(keyed), "S41"),
+        "note": "the arm-keyed aggregation is computed here to establish that the fixture is "
+                "DISCRIMINATING, not to re-implement the check: it is what an arm-keyed S41 "
+                "would have seen, and it carries both objects for every arm",
+    }
+    s41_keying_record["ok"] = (
+        s41_keying_record["s41_status"] == "FAIL"
+        and arm_keyed_would_pass
+        and step_arm_keyed_sees_a_gap
+    )
+
+    # A MALFORMED FILE IS REPORTED ON, NOT CRASHED ON (v1.9.0,
+    # reviewer-engineering F1). `_iter_payloads` walked the headline unguarded
+    # while the other two iterators guarded theirs, so three shapes raised an
+    # AttributeError out of validate_file() -- and the schema errors are computed
+    # on the line above the semantic checks, so real structural findings were
+    # computed and thrown away with the report. Each shape must now come back as a
+    # REPORT that fails on the schema.
+    # THROUGH THE REAL ENTRY POINT, on a temporary file: V.validate_file() is
+    # where the traceback replaced the report, and the shorter run() helper above
+    # would exercise the same walk without exercising the entry point that has to
+    # survive it.
+    malformed = {}
+    for label, mutate in MALFORMED_HEADLINES.items():
+        broken = copy.deepcopy(placeholder)
+        fh = tempfile.NamedTemporaryFile("w", suffix=".json", delete=False)
+        try:
+            mutate(broken)
+            json.dump(broken, fh)
+            fh.close()
+            rep = V.validate_file(fh.name, SCHEMA_PATH)
+            malformed[label] = {
+                "raised": None,
+                "schema_errors": rep["schema_validation"]["error_count"],
+                "schema_passed": rep["schema_validation"]["passed"],
+                "semantic_checks_run": rep["checks_total"],
+            }
+        except Exception as exc:  # noqa: BLE001 -- the finding IS the exception
+            malformed[label] = {"raised": f"{type(exc).__name__}: {exc}"}
+        finally:
+            fh.close()
+            os.unlink(fh.name)
+        malformed[label]["ok"] = (
+            malformed[label].get("raised") is None
+            and (malformed[label].get("schema_errors") or 0) > 0
+            and malformed[label].get("schema_passed") is False
+            and (malformed[label].get("semantic_checks_run") or 0) > 0
+        )
+    malformed_record = {
+        "what": "three malformed headline shapes, run through validate_file() -- the real "
+                "entry point, on a temporary file. Each must return a REPORT naming schema "
+                "errors, not raise: the structural errors are computed on the line above the "
+                "semantic checks, so a traceback throws away findings already made",
+        "shapes": malformed,
+        "ok": bool(malformed) and all(v["ok"] for v in malformed.values()),
+    }
+
     # THE PARTITION UNIVERSE IS ANCHORED OUTSIDE THE FILE (v1.8.0,
     # reviewer-engineering E4), and the anchor has two copies by design: the
     # validator's, written from decisions/0103 and decisions/0118, decides; the
@@ -1344,25 +1677,66 @@ def main() -> int:
     # than quoted: entries of the same quantity class must differ from each other
     # in `producing_arm` alone, and the unit must vary between classes and not
     # between arms.
+    #
+    # TWO DEFECTS IN THIS FIXTURE, FIXED AT v1.9.0 (reviewer-engineering F5).
+    #
+    # (a) IT COMPARED FOUR FIELDS AND CLAIMED TO COMPARE ALL OF THEM. The tuple
+    # was ("B", "seed", "resampling_unit", "statistics"), so a differing
+    # `spec_status` -- or `fields_fixed_in_spec`, or any field added later --
+    # reported `[]` and `ok: true` under a `what` that said it measured which
+    # fields ACTUALLY differ. Reproduced: setting `b_default.spec_status` to
+    # `partly_fixed_in_spec` left the record clean. The comparison is now over the
+    # UNION of the keys the entries carry, minus an EXCLUSION LIST DECLARED WITH
+    # ITS REASON -- a new field joins the comparison by existing, which is the
+    # only version of this check that stays true as the registry grows.
+    #
+    # (b) `ok` NEVER REQUIRED A COMPARISON TO HAVE HAPPENED. On a registry with
+    # one entry per class the loops run zero comparisons and every clause holds
+    # vacuously -- reproduced by deleting the `b_` and `sole_` entries, which left
+    # `ok: true`. That is the H3 shape decisions/0120 §3 names: an assertion that
+    # cannot fail. The comparison count is now computed, reported and required to
+    # be non-zero.
+    #
+    # AND THE EXPECTED ANSWER CHANGES WITH THE WIDENING: entries of one class
+    # differ in `producing_arm` and in nothing else, so the differing set is
+    # {"producing_arm"} rather than empty. That IS the fact
+    # V.REGISTRY_ARM_DIFFERENCE_FACT states; the old empty answer only looked like
+    # agreement because the field the fact is about was outside the comparison.
     reg = placeholder.get("bootstrap_settings") or {}
-    fields = ("B", "seed", "resampling_unit", "statistics")
     by_class: dict = {}
     for key, entry in reg.items():
         by_class.setdefault(key.split("_", 1)[1], {})[key] = entry
+    compared_fields = sorted(
+        {f for cls in by_class.values() for e in cls.values() for f in e}
+        - set(REGISTRY_FIELDS_EXCLUDED_FROM_THE_COMPARISON))
+    classes_with_two_or_more = sorted(c for c, e in by_class.items() if len(e) > 1)
+    comparisons = sum(len(cls) for c, cls in by_class.items()
+                      if len(cls) > 1) * len(compared_fields)
     differing_within_class = sorted({
-        f for cls in by_class.values() for f in fields
+        f for cls in by_class.values() if len(cls) > 1 for f in compared_fields
         if len({json.dumps(e.get(f), sort_keys=True) for e in cls.values()}) > 1})
     units_by_class = {cls: sorted({e.get("resampling_unit") for e in entries.values()})
                       for cls, entries in by_class.items()}
     registry_fact_record = {
         "what": "the registry fact, measured on the merged placeholder rather than restated: "
-                "which fields actually differ between two entries of one quantity class",
+                "which fields actually differ between the entries of one quantity class. The "
+                "comparison is over the UNION of the keys the entries carry, less a declared "
+                "exclusion list, so a field added to the registry joins it by existing",
         "classes": {c: sorted(e) for c, e in by_class.items()},
+        "fields_compared": compared_fields,
+        "fields_excluded_from_the_comparison":
+            dict(REGISTRY_FIELDS_EXCLUDED_FROM_THE_COMPARISON),
+        "classes_with_two_or_more_entries": classes_with_two_or_more,
+        "field_comparisons_made": comparisons,
         "fields_differing_between_arms_within_a_class": differing_within_class,
+        "expected_fields_differing": sorted(REGISTRY_FIELDS_THAT_MAY_DIFFER_WITHIN_A_CLASS),
         "resampling_unit_by_class": units_by_class,
         "the_one_rendering": V.REGISTRY_ARM_DIFFERENCE_FACT,
-        "ok": (differing_within_class == []
+        "ok": (set(differing_within_class)
+               == REGISTRY_FIELDS_THAT_MAY_DIFFER_WITHIN_A_CLASS
                and len(by_class) > 1
+               and len(classes_with_two_or_more) > 1
+               and comparisons > 0
                and len({tuple(u) for u in units_by_class.values()}) > 1),
     }
 
@@ -1561,6 +1935,17 @@ def main() -> int:
     record = {
         "generated_at_utc": stamp,
         "generator": "src/step8b_selftest.py",
+        # A RUN RECORD NAMES THE BUILD IT RAN ON (v1.9.0, reviewer-engineering F4
+        # on the rerun record). Every selftest log until now carried a timestamp
+        # and no commit, and `logs/` is gitignored, so nothing placed a result in
+        # the history. The stamp names both sides of the run and leaves the side
+        # it cannot know NULL rather than repeating the other.
+        "build": RS.build_stamp(
+            os.environ.get("STEP8B_REPRODUCED_ON") or RS.head_short(),
+            "the build this selftest ran on. STEP8B_REPRODUCED_ON carries the pre-edit HEAD "
+            "when a run sets it; otherwise both sides are the same commit and "
+            "`head_equals_reproduced_on` says so",
+        ),
         "schema": SCHEMA_PATH,
         "instance": PLACEHOLDER_PATH,
         "baseline_placeholder": {
@@ -1584,6 +1969,9 @@ def main() -> int:
         "step13_arm_file_fixture": step13_record,
         "s41_interval_exemption_scope": s41_record,
         "s41_owner_key": s41_owner_record,
+        "s41_owner_key_discriminating_fixture": s41_keying_record,
+        "step10_interval_obligation": step10_record,
+        "malformed_headline_shapes": malformed_record,
         "bootstrap_partition_anchor": anchor_record,
         "registry_arm_difference_fact": registry_fact_record,
         "statistic_vocabulary_link": vocab_link,
@@ -1608,8 +1996,9 @@ def main() -> int:
         "checks_na_on_the_real_copy": na_on_real,
         "ok": (not without_force and not non_failure_failures and not unexercised
                and step13_ok and vocab_link["ok"] and s41_record["ok"]
-               and s41_owner_record["ok"] and anchor_record["ok"]
-               and registry_fact_record["ok"]),
+               and s41_owner_record["ok"] and s41_keying_record["ok"]
+               and step10_record["ok"] and malformed_record["ok"]
+               and anchor_record["ok"] and registry_fact_record["ok"]),
     }
 
     os.makedirs(LOG_DIR, exist_ok=True)
@@ -1636,12 +2025,42 @@ def main() -> int:
             "statuses": s41_record["statuses"],
             "zero_coverage_statuses": s41_record["zero_coverage_statuses"],
             "levels_only_statuses": s41_record["levels_only_statuses"],
+            "publishes_both_objects_statuses":
+                s41_record["publishes_both_objects_statuses"],
         },
         "s41_owner_key": {
             "ok": s41_owner_record["ok"],
             "owners": s41_owner_record["owners"],
             "arm_labels_covering_more_than_one_step":
                 s41_owner_record["arm_labels_covering_more_than_one_step"],
+        },
+        "s41_owner_key_discriminating_fixture": {
+            "ok": s41_keying_record["ok"],
+            "step_relabelled_levels_only": s41_keying_record["step_relabelled_levels_only"],
+            "aggregated_by_arm": s41_keying_record["aggregated_by_arm"],
+            "every_arm_still_carries_both_objects":
+                s41_keying_record["every_arm_still_carries_both_objects"],
+            "expected_s41_status": s41_keying_record["expected_s41_status"],
+            "s41_status": s41_keying_record["s41_status"],
+        },
+        "step10_interval_obligation": {
+            "ok": step10_record["ok"],
+            "ruling": step10_record["ruling"],
+            "publisher_table_outcome_shares":
+                step10_record["publisher_table_outcome_shares"],
+            "publisher_table_window_w_percentile":
+                step10_record["publisher_table_window_w_percentile"],
+            "exempt_in_the_validator": step10_record["exempt_in_the_validator"],
+            "omits_intervals": step10_record["omits_intervals"],
+            "publishes_both_objects": step10_record["publishes_both_objects"],
+            "publishes_levels_only": step10_record["publishes_levels_only"],
+        },
+        "malformed_headline_shapes": {
+            "ok": malformed_record["ok"],
+            "shapes": {k: {"raised": v.get("raised"),
+                           "schema_errors": v.get("schema_errors"),
+                           "semantic_checks_run": v.get("semantic_checks_run")}
+                       for k, v in malformed_record["shapes"].items()},
         },
         "bootstrap_partition_anchor": {
             "ok": anchor_record["ok"],
@@ -1650,8 +2069,13 @@ def main() -> int:
         },
         "registry_arm_difference_fact": {
             "ok": registry_fact_record["ok"],
+            "fields_compared": registry_fact_record["fields_compared"],
+            "field_comparisons_made": registry_fact_record["field_comparisons_made"],
+            "classes_with_two_or_more_entries":
+                registry_fact_record["classes_with_two_or_more_entries"],
             "fields_differing_between_arms_within_a_class":
                 registry_fact_record["fields_differing_between_arms_within_a_class"],
+            "expected_fields_differing": registry_fact_record["expected_fields_differing"],
             "resampling_unit_by_class": registry_fact_record["resampling_unit_by_class"],
         },
         "statistic_vocabulary_link": {
