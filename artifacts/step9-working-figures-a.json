@@ -1,0 +1,1174 @@
+{
+ "what_this_file_is": "An EVIDENCE EXTRACT of Step 9 arm a's own working figures, emitted by arm a. It is NOT a Step 8b schema arm file and does not validate against that schema; arm a's schema arm file is artifacts/step9-headline-a.json. It contains counts and account totals only.",
+ "why_it_exists": "processed/ is gitignored per CLAUDE.md's folder table, so these counts exist in one place and are not recoverable from a clone. Human Lead ruling, 2026-08-21: a transcription assembled by another party is not an attestation (0092), so the producing arm emits its own figures under its own sign-off.",
+ "produced_by": {
+  "step": 9,
+  "arm": "a",
+  "generator": "src/step9_a_4_working_figures.py",
+  "generator_sha256_12": "3c0c864490d2",
+  "generated_at_utc": "2026-08-21T19:57:16Z",
+  "api_calls_made": {
+   "value": 0,
+   "key": "$.api_calls"
+  },
+  "method": "Mechanical copy out of one input file, with the source key attached to every figure. No arithmetic is performed on any transcribed value."
+ },
+ "source": {
+  "working_file": "processed/step9/a/measured.json",
+  "working_file_sha256": "8c4762379afb7414c918e156711d7dbb0d4095efc0d0662ea83f8330767ecd45",
+  "working_file_sha256_12": "8c4762379afb",
+  "working_file_mtime_utc": "2026-08-20T19:28:14Z",
+  "produced_by_script": "src/step9_a_1_compute.py",
+  "produced_by_script_sha256_12": "09110720b26d",
+  "step": {
+   "value": 9,
+   "key": "$.step"
+  },
+  "instance": {
+   "value": "a",
+   "key": "$.instance"
+  },
+  "stage": {
+   "value": 1,
+   "key": "$.stage"
+  },
+  "tau_pull_utc": {
+   "value": "2026-08-11T00:00:00Z",
+   "key": "$.tau_pull_utc"
+  },
+  "H_days": {
+   "value": 91,
+   "key": "$.H_days"
+  },
+  "step8_inputs_consumed": {
+   "outcomes.json": {
+    "value": "f55fa08b7df7",
+    "key": "$.consumed_from_step8.outcomes.json"
+   },
+   "arms.json": {
+    "value": "14fcad45adb3",
+    "key": "$.consumed_from_step8.arms.json"
+   },
+   "positions.json": {
+    "value": "f20b27ef7d37",
+    "key": "$.consumed_from_step8.positions.json"
+   },
+   "diagnostics.json": {
+    "value": "7cff95845035",
+    "key": "$.consumed_from_step8.diagnostics.json"
+   },
+   "scan.npz": {
+    "value": "61f52598831e",
+    "key": "$.consumed_from_step8.scan.npz"
+   },
+   "positions.npz": {
+    "value": "fb2e0e2c2e4e",
+    "key": "$.consumed_from_step8.positions.npz"
+   },
+   "position5_table.npz": {
+    "value": "602d0303cc9d",
+    "key": "$.consumed_from_step8.position5_table.npz"
+   },
+   "step8_a_lib.py": {
+    "value": "1fcabc70c6d6",
+    "key": "$.consumed_from_step8.step8_a_lib.py"
+   }
+  },
+  "reading_key": "Every figure below is an object {value, key}. `key` is the JSON path in the working file named above; `value` is byte-for-byte what is at that path."
+ },
+ "isolation_and_privacy": {
+  "pairs_npz_read": false,
+  "other_arm_namespace_read": false,
+  "statement": "processed/step9/b/ was not opened, artifacts/step9-headline-b.* was not opened, and pairs.npz was not read by this extract or by anything it reports. No field in this file is derived from any of them. Every figure is a count of pairs, a count of accounts, a setting, or a boolean; there are no pair-level rows, no usernames, no user IDs and no individual histories.",
+  "account_totals_published_under": "Human Lead ruling, 2026-08-21: the account counts publish -- they are counts of accounts, not accounts, and the method section needs them checkable."
+ },
+ "scope_of_this_extract": {
+  "arm_settings_carried": [
+   {
+    "arm_key_fragment": "W108_s2_finale",
+    "W_days": 108,
+    "clock_origin": "s2_finale",
+    "producing_step": 9,
+    "adopted_rule_revision": "ABSENT -- see absent_fields"
+   },
+   {
+    "arm_key_fragment": "W091_s2_finale",
+    "W_days": 91,
+    "clock_origin": "s2_finale",
+    "producing_step": 9,
+    "adopted_rule_revision": "ABSENT -- see absent_fields"
+   },
+   {
+    "arm_key_fragment": "W091_s2_premiere",
+    "W_days": 91,
+    "clock_origin": "s2_premiere",
+    "producing_step": 9,
+    "adopted_rule_revision": "ABSENT -- see absent_fields"
+   }
+  ],
+  "populations_carried": [
+   "APPLY",
+   "DERIV"
+  ],
+  "not_done_here": "No comparison, no reconciliation, no merge. This arm has no knowledge of any other arm's figures and sought none."
+ },
+ "arms": {
+  "W108_s2_finale": {
+   "label": {
+    "value": "W=108, finale",
+    "key": "$.arms_measured.W108_s2_finale.label"
+   },
+   "W_days": {
+    "value": 108,
+    "key": "$.arms_measured.W108_s2_finale.W_days"
+   },
+   "H_days": {
+    "value": 91,
+    "key": "$.arms_measured.W108_s2_finale.H_days"
+   },
+   "clock_origin": {
+    "value": "s2_finale",
+    "key": "$.arms_measured.W108_s2_finale (arm key string) and $.arms_measured.W108_s2_finale.label",
+    "note": "The working output carries NO separate clock_origin field. The origin is encoded in the arm key and repeated in `label`; it is transcribed from those, not supplied from another file."
+   },
+   "right_censoring_two_lines": {
+    "APPLY": {
+     "n_in_position_4": {
+      "value": 201900,
+      "key": "$.arms_measured.W108_s2_finale.right_censoring_two_lines.APPLY.n_in_position_4"
+     },
+     "removed_by_max_W_91_term": {
+      "value": 3684,
+      "key": "$.arms_measured.W108_s2_finale.right_censoring_two_lines.APPLY.removed_by_max_W_91_term"
+     },
+     "removed_incrementally_by_the_plus_H_term": {
+      "value": 1562,
+      "key": "$.arms_measured.W108_s2_finale.right_censoring_two_lines.APPLY.removed_incrementally_by_the_plus_H_term"
+     }
+    },
+    "DERIV": {
+     "n_in_position_4": {
+      "value": 152126,
+      "key": "$.arms_measured.W108_s2_finale.right_censoring_two_lines.DERIV.n_in_position_4"
+     },
+     "removed_by_max_W_91_term": {
+      "value": 3352,
+      "key": "$.arms_measured.W108_s2_finale.right_censoring_two_lines.DERIV.removed_by_max_W_91_term"
+     },
+     "removed_incrementally_by_the_plus_H_term": {
+      "value": 1404,
+      "key": "$.arms_measured.W108_s2_finale.right_censoring_two_lines.DERIV.removed_incrementally_by_the_plus_H_term"
+     }
+    }
+   },
+   "APPLY": {
+    "n_position_5": {
+     "value": 196654,
+     "key": "$.arms_measured.W108_s2_finale.APPLY.n_position_5"
+    },
+    "n_post_liveness": {
+     "value": 195951,
+     "key": "$.arms_measured.W108_s2_finale.APPLY.n_post_liveness"
+    },
+    "accounts_position_5": {
+     "value": 2422,
+     "key": "$.arms_measured.W108_s2_finale.APPLY.accounts_position_5"
+    },
+    "position_5_counts": {
+     "never_started": {
+      "value": 33373,
+      "key": "$.arms_measured.W108_s2_finale.APPLY.position_5_counts.never_started"
+     },
+     "started_and_left": {
+      "value": 19141,
+      "key": "$.arms_measured.W108_s2_finale.APPLY.position_5_counts.started_and_left"
+     },
+     "continued": {
+      "value": 144140,
+      "key": "$.arms_measured.W108_s2_finale.APPLY.position_5_counts.continued"
+     },
+     "total": {
+      "value": 196654,
+      "key": "$.arms_measured.W108_s2_finale.APPLY.position_5_counts.total"
+     }
+    },
+    "post_liveness_counts": {
+     "never_started": {
+      "value": 32769,
+      "key": "$.arms_measured.W108_s2_finale.APPLY.post_liveness_counts.never_started"
+     },
+     "started_and_left": {
+      "value": 19042,
+      "key": "$.arms_measured.W108_s2_finale.APPLY.post_liveness_counts.started_and_left"
+     },
+     "continued": {
+      "value": 144140,
+      "key": "$.arms_measured.W108_s2_finale.APPLY.post_liveness_counts.continued"
+     },
+     "total": {
+      "value": 195951,
+      "key": "$.arms_measured.W108_s2_finale.APPLY.post_liveness_counts.total"
+     }
+    },
+    "exclusion_breakdown": {
+     "total": {
+      "value": 703,
+      "key": "$.arms_measured.W108_s2_finale.APPLY.exclusions.total"
+     },
+     "never_started_component": {
+      "value": 604,
+      "key": "$.arms_measured.W108_s2_finale.APPLY.exclusions.never_started_component"
+     },
+     "started_and_left_component": {
+      "value": 99,
+      "key": "$.arms_measured.W108_s2_finale.APPLY.exclusions.started_and_left_component"
+     },
+     "continued_component": {
+      "value": 0,
+      "key": "$.arms_measured.W108_s2_finale.APPLY.exclusions.continued_component"
+     },
+     "accounts": {
+      "value": 216,
+      "key": "$.arms_measured.W108_s2_finale.APPLY.exclusions.accounts"
+     },
+     "accounts_never_started_component": {
+      "value": 191,
+      "key": "$.arms_measured.W108_s2_finale.APPLY.exclusions.accounts_never_started_component"
+     },
+     "accounts_started_and_left_component": {
+      "value": 73,
+      "key": "$.arms_measured.W108_s2_finale.APPLY.exclusions.accounts_started_and_left_component"
+     },
+     "account_components_note": "The two account components are counts of DISTINCT ACCOUNTS within each outcome component and are not required to sum to `accounts`: one account can contribute pairs to both components. No de-overlap figure was computed by this arm and none is computed here."
+    },
+    "silence_test_alone": {
+     "value": 1355,
+     "key": "$.arms_measured.W108_s2_finale.APPLY.exclusions.silence_test_alone"
+    },
+    "spared_by_not_continued": {
+     "value": 652,
+     "key": "$.arms_measured.W108_s2_finale.APPLY.exclusions.spared_by_not_continued"
+    },
+    "channel_pairs_last_insertion_in_tau1_tau2": {
+     "total": {
+      "value": 297,
+      "key": "$.arms_measured.W108_s2_finale.APPLY.channel_pairs_last_insertion_in_tau1_tau2.total"
+     },
+     "started_and_left": {
+      "value": 90,
+      "key": "$.arms_measured.W108_s2_finale.APPLY.channel_pairs_last_insertion_in_tau1_tau2.started_and_left"
+     },
+     "never_started": {
+      "value": 207,
+      "key": "$.arms_measured.W108_s2_finale.APPLY.channel_pairs_last_insertion_in_tau1_tau2.never_started"
+     },
+     "accounts": {
+      "value": 199,
+      "key": "$.arms_measured.W108_s2_finale.APPLY.channel_pairs_last_insertion_in_tau1_tau2.accounts"
+     }
+    },
+    "conjunct_ladder": {
+     "status": "NO_EXPLICIT_LADDER_FIELD_IN_WORKING_OUTPUT",
+     "what_the_working_output_has_instead": "Two rungs, taken in the order conjunct-1-first. `silence_test_alone` is the position-5 rows failing conjunct 1 alone (no insertion instant after that pair's tau1), source expression `(p5m & res['silent']).sum()`. `spared_by_not_continued` is the subset of those that ARE Continued and are therefore retained, source expression `(p5m & res['silent'] & res['continued']).sum()`. Both at src/step9_a_1_compute.py lines 208-209.",
+     "rungs_present": [
+      "n_position_5",
+      "silence_test_alone",
+      "spared_by_not_continued",
+      "exclusion_breakdown.total"
+     ],
+     "rung_NOT_present": "The conjunct-2-first rung -- the count of position-5 rows that are NOT Continued, before conjunct 1 narrows them -- was not computed by this arm and is NOT computed here."
+    }
+   },
+   "DERIV": {
+    "n_position_5": {
+     "value": 147370,
+     "key": "$.arms_measured.W108_s2_finale.DERIV.n_position_5"
+    },
+    "n_post_liveness": {
+     "value": 147271,
+     "key": "$.arms_measured.W108_s2_finale.DERIV.n_post_liveness"
+    },
+    "accounts_position_5": {
+     "value": 2402,
+     "key": "$.arms_measured.W108_s2_finale.DERIV.accounts_position_5"
+    },
+    "position_5_counts": {
+     "never_started": {
+      "value": 9145,
+      "key": "$.arms_measured.W108_s2_finale.DERIV.position_5_counts.never_started"
+     },
+     "started_and_left": {
+      "value": 16843,
+      "key": "$.arms_measured.W108_s2_finale.DERIV.position_5_counts.started_and_left"
+     },
+     "continued": {
+      "value": 121382,
+      "key": "$.arms_measured.W108_s2_finale.DERIV.position_5_counts.continued"
+     },
+     "total": {
+      "value": 147370,
+      "key": "$.arms_measured.W108_s2_finale.DERIV.position_5_counts.total"
+     }
+    },
+    "post_liveness_counts": {
+     "never_started": {
+      "value": 9145,
+      "key": "$.arms_measured.W108_s2_finale.DERIV.post_liveness_counts.never_started"
+     },
+     "started_and_left": {
+      "value": 16744,
+      "key": "$.arms_measured.W108_s2_finale.DERIV.post_liveness_counts.started_and_left"
+     },
+     "continued": {
+      "value": 121382,
+      "key": "$.arms_measured.W108_s2_finale.DERIV.post_liveness_counts.continued"
+     },
+     "total": {
+      "value": 147271,
+      "key": "$.arms_measured.W108_s2_finale.DERIV.post_liveness_counts.total"
+     }
+    },
+    "exclusion_breakdown": {
+     "total": {
+      "value": 99,
+      "key": "$.arms_measured.W108_s2_finale.DERIV.exclusions.total"
+     },
+     "never_started_component": {
+      "value": 0,
+      "key": "$.arms_measured.W108_s2_finale.DERIV.exclusions.never_started_component"
+     },
+     "started_and_left_component": {
+      "value": 99,
+      "key": "$.arms_measured.W108_s2_finale.DERIV.exclusions.started_and_left_component"
+     },
+     "continued_component": {
+      "value": 0,
+      "key": "$.arms_measured.W108_s2_finale.DERIV.exclusions.continued_component"
+     },
+     "accounts": {
+      "value": 73,
+      "key": "$.arms_measured.W108_s2_finale.DERIV.exclusions.accounts"
+     },
+     "accounts_never_started_component": {
+      "value": 0,
+      "key": "$.arms_measured.W108_s2_finale.DERIV.exclusions.accounts_never_started_component"
+     },
+     "accounts_started_and_left_component": {
+      "value": 73,
+      "key": "$.arms_measured.W108_s2_finale.DERIV.exclusions.accounts_started_and_left_component"
+     },
+     "account_components_note": "The two account components are counts of DISTINCT ACCOUNTS within each outcome component and are not required to sum to `accounts`: one account can contribute pairs to both components. No de-overlap figure was computed by this arm and none is computed here."
+    },
+    "silence_test_alone": {
+     "value": 751,
+     "key": "$.arms_measured.W108_s2_finale.DERIV.exclusions.silence_test_alone"
+    },
+    "spared_by_not_continued": {
+     "value": 652,
+     "key": "$.arms_measured.W108_s2_finale.DERIV.exclusions.spared_by_not_continued"
+    },
+    "channel_pairs_last_insertion_in_tau1_tau2": {
+     "total": {
+      "value": 92,
+      "key": "$.arms_measured.W108_s2_finale.DERIV.channel_pairs_last_insertion_in_tau1_tau2.total"
+     },
+     "started_and_left": {
+      "value": 89,
+      "key": "$.arms_measured.W108_s2_finale.DERIV.channel_pairs_last_insertion_in_tau1_tau2.started_and_left"
+     },
+     "never_started": {
+      "value": 3,
+      "key": "$.arms_measured.W108_s2_finale.DERIV.channel_pairs_last_insertion_in_tau1_tau2.never_started"
+     },
+     "accounts": {
+      "value": 73,
+      "key": "$.arms_measured.W108_s2_finale.DERIV.channel_pairs_last_insertion_in_tau1_tau2.accounts"
+     }
+    },
+    "conjunct_ladder": {
+     "status": "NO_EXPLICIT_LADDER_FIELD_IN_WORKING_OUTPUT",
+     "what_the_working_output_has_instead": "Two rungs, taken in the order conjunct-1-first. `silence_test_alone` is the position-5 rows failing conjunct 1 alone (no insertion instant after that pair's tau1), source expression `(p5m & res['silent']).sum()`. `spared_by_not_continued` is the subset of those that ARE Continued and are therefore retained, source expression `(p5m & res['silent'] & res['continued']).sum()`. Both at src/step9_a_1_compute.py lines 208-209.",
+     "rungs_present": [
+      "n_position_5",
+      "silence_test_alone",
+      "spared_by_not_continued",
+      "exclusion_breakdown.total"
+     ],
+     "rung_NOT_present": "The conjunct-2-first rung -- the count of position-5 rows that are NOT Continued, before conjunct 1 narrows them -- was not computed by this arm and is NOT computed here."
+    }
+   }
+  },
+  "W091_s2_finale": {
+   "label": {
+    "value": "W=91, finale",
+    "key": "$.arms_measured.W091_s2_finale.label"
+   },
+   "W_days": {
+    "value": 91,
+    "key": "$.arms_measured.W091_s2_finale.W_days"
+   },
+   "H_days": {
+    "value": 91,
+    "key": "$.arms_measured.W091_s2_finale.H_days"
+   },
+   "clock_origin": {
+    "value": "s2_finale",
+    "key": "$.arms_measured.W091_s2_finale (arm key string) and $.arms_measured.W091_s2_finale.label",
+    "note": "The working output carries NO separate clock_origin field. The origin is encoded in the arm key and repeated in `label`; it is transcribed from those, not supplied from another file."
+   },
+   "right_censoring_two_lines": {
+    "APPLY": {
+     "n_in_position_4": {
+      "value": 201900,
+      "key": "$.arms_measured.W091_s2_finale.right_censoring_two_lines.APPLY.n_in_position_4"
+     },
+     "removed_by_max_W_91_term": {
+      "value": 3384,
+      "key": "$.arms_measured.W091_s2_finale.right_censoring_two_lines.APPLY.removed_by_max_W_91_term"
+     },
+     "removed_incrementally_by_the_plus_H_term": {
+      "value": 1509,
+      "key": "$.arms_measured.W091_s2_finale.right_censoring_two_lines.APPLY.removed_incrementally_by_the_plus_H_term"
+     }
+    },
+    "DERIV": {
+     "n_in_position_4": {
+      "value": 152126,
+      "key": "$.arms_measured.W091_s2_finale.right_censoring_two_lines.DERIV.n_in_position_4"
+     },
+     "removed_by_max_W_91_term": {
+      "value": 3083,
+      "key": "$.arms_measured.W091_s2_finale.right_censoring_two_lines.DERIV.removed_by_max_W_91_term"
+     },
+     "removed_incrementally_by_the_plus_H_term": {
+      "value": 1358,
+      "key": "$.arms_measured.W091_s2_finale.right_censoring_two_lines.DERIV.removed_incrementally_by_the_plus_H_term"
+     }
+    }
+   },
+   "APPLY": {
+    "n_position_5": {
+     "value": 197007,
+     "key": "$.arms_measured.W091_s2_finale.APPLY.n_position_5"
+    },
+    "n_post_liveness": {
+     "value": 196343,
+     "key": "$.arms_measured.W091_s2_finale.APPLY.n_post_liveness"
+    },
+    "accounts_position_5": {
+     "value": 2423,
+     "key": "$.arms_measured.W091_s2_finale.APPLY.accounts_position_5"
+    },
+    "position_5_counts": {
+     "never_started": {
+      "value": 34184,
+      "key": "$.arms_measured.W091_s2_finale.APPLY.position_5_counts.never_started"
+     },
+     "started_and_left": {
+      "value": 19323,
+      "key": "$.arms_measured.W091_s2_finale.APPLY.position_5_counts.started_and_left"
+     },
+     "continued": {
+      "value": 143500,
+      "key": "$.arms_measured.W091_s2_finale.APPLY.position_5_counts.continued"
+     },
+     "total": {
+      "value": 197007,
+      "key": "$.arms_measured.W091_s2_finale.APPLY.position_5_counts.total"
+     }
+    },
+    "post_liveness_counts": {
+     "never_started": {
+      "value": 33609,
+      "key": "$.arms_measured.W091_s2_finale.APPLY.post_liveness_counts.never_started"
+     },
+     "started_and_left": {
+      "value": 19234,
+      "key": "$.arms_measured.W091_s2_finale.APPLY.post_liveness_counts.started_and_left"
+     },
+     "continued": {
+      "value": 143500,
+      "key": "$.arms_measured.W091_s2_finale.APPLY.post_liveness_counts.continued"
+     },
+     "total": {
+      "value": 196343,
+      "key": "$.arms_measured.W091_s2_finale.APPLY.post_liveness_counts.total"
+     }
+    },
+    "exclusion_breakdown": {
+     "total": {
+      "value": 664,
+      "key": "$.arms_measured.W091_s2_finale.APPLY.exclusions.total"
+     },
+     "never_started_component": {
+      "value": 575,
+      "key": "$.arms_measured.W091_s2_finale.APPLY.exclusions.never_started_component"
+     },
+     "started_and_left_component": {
+      "value": 89,
+      "key": "$.arms_measured.W091_s2_finale.APPLY.exclusions.started_and_left_component"
+     },
+     "continued_component": {
+      "value": 0,
+      "key": "$.arms_measured.W091_s2_finale.APPLY.exclusions.continued_component"
+     },
+     "accounts": {
+      "value": 207,
+      "key": "$.arms_measured.W091_s2_finale.APPLY.exclusions.accounts"
+     },
+     "accounts_never_started_component": {
+      "value": 183,
+      "key": "$.arms_measured.W091_s2_finale.APPLY.exclusions.accounts_never_started_component"
+     },
+     "accounts_started_and_left_component": {
+      "value": 68,
+      "key": "$.arms_measured.W091_s2_finale.APPLY.exclusions.accounts_started_and_left_component"
+     },
+     "account_components_note": "The two account components are counts of DISTINCT ACCOUNTS within each outcome component and are not required to sum to `accounts`: one account can contribute pairs to both components. No de-overlap figure was computed by this arm and none is computed here."
+    },
+    "silence_test_alone": {
+     "value": 1281,
+     "key": "$.arms_measured.W091_s2_finale.APPLY.exclusions.silence_test_alone"
+    },
+    "spared_by_not_continued": {
+     "value": 617,
+     "key": "$.arms_measured.W091_s2_finale.APPLY.exclusions.spared_by_not_continued"
+    },
+    "channel_pairs_last_insertion_in_tau1_tau2": {
+     "total": {
+      "value": 283,
+      "key": "$.arms_measured.W091_s2_finale.APPLY.channel_pairs_last_insertion_in_tau1_tau2.total"
+     },
+     "started_and_left": {
+      "value": 91,
+      "key": "$.arms_measured.W091_s2_finale.APPLY.channel_pairs_last_insertion_in_tau1_tau2.started_and_left"
+     },
+     "never_started": {
+      "value": 192,
+      "key": "$.arms_measured.W091_s2_finale.APPLY.channel_pairs_last_insertion_in_tau1_tau2.never_started"
+     },
+     "accounts": {
+      "value": 188,
+      "key": "$.arms_measured.W091_s2_finale.APPLY.channel_pairs_last_insertion_in_tau1_tau2.accounts"
+     }
+    },
+    "conjunct_ladder": {
+     "status": "NO_EXPLICIT_LADDER_FIELD_IN_WORKING_OUTPUT",
+     "what_the_working_output_has_instead": "Two rungs, taken in the order conjunct-1-first. `silence_test_alone` is the position-5 rows failing conjunct 1 alone (no insertion instant after that pair's tau1), source expression `(p5m & res['silent']).sum()`. `spared_by_not_continued` is the subset of those that ARE Continued and are therefore retained, source expression `(p5m & res['silent'] & res['continued']).sum()`. Both at src/step9_a_1_compute.py lines 208-209.",
+     "rungs_present": [
+      "n_position_5",
+      "silence_test_alone",
+      "spared_by_not_continued",
+      "exclusion_breakdown.total"
+     ],
+     "rung_NOT_present": "The conjunct-2-first rung -- the count of position-5 rows that are NOT Continued, before conjunct 1 narrows them -- was not computed by this arm and is NOT computed here."
+    }
+   },
+   "DERIV": {
+    "n_position_5": {
+     "value": 147685,
+     "key": "$.arms_measured.W091_s2_finale.DERIV.n_position_5"
+    },
+    "n_post_liveness": {
+     "value": 147596,
+     "key": "$.arms_measured.W091_s2_finale.DERIV.n_post_liveness"
+    },
+    "accounts_position_5": {
+     "value": 2407,
+     "key": "$.arms_measured.W091_s2_finale.DERIV.accounts_position_5"
+    },
+    "position_5_counts": {
+     "never_started": {
+      "value": 9863,
+      "key": "$.arms_measured.W091_s2_finale.DERIV.position_5_counts.never_started"
+     },
+     "started_and_left": {
+      "value": 16995,
+      "key": "$.arms_measured.W091_s2_finale.DERIV.position_5_counts.started_and_left"
+     },
+     "continued": {
+      "value": 120827,
+      "key": "$.arms_measured.W091_s2_finale.DERIV.position_5_counts.continued"
+     },
+     "total": {
+      "value": 147685,
+      "key": "$.arms_measured.W091_s2_finale.DERIV.position_5_counts.total"
+     }
+    },
+    "post_liveness_counts": {
+     "never_started": {
+      "value": 9863,
+      "key": "$.arms_measured.W091_s2_finale.DERIV.post_liveness_counts.never_started"
+     },
+     "started_and_left": {
+      "value": 16906,
+      "key": "$.arms_measured.W091_s2_finale.DERIV.post_liveness_counts.started_and_left"
+     },
+     "continued": {
+      "value": 120827,
+      "key": "$.arms_measured.W091_s2_finale.DERIV.post_liveness_counts.continued"
+     },
+     "total": {
+      "value": 147596,
+      "key": "$.arms_measured.W091_s2_finale.DERIV.post_liveness_counts.total"
+     }
+    },
+    "exclusion_breakdown": {
+     "total": {
+      "value": 89,
+      "key": "$.arms_measured.W091_s2_finale.DERIV.exclusions.total"
+     },
+     "never_started_component": {
+      "value": 0,
+      "key": "$.arms_measured.W091_s2_finale.DERIV.exclusions.never_started_component"
+     },
+     "started_and_left_component": {
+      "value": 89,
+      "key": "$.arms_measured.W091_s2_finale.DERIV.exclusions.started_and_left_component"
+     },
+     "continued_component": {
+      "value": 0,
+      "key": "$.arms_measured.W091_s2_finale.DERIV.exclusions.continued_component"
+     },
+     "accounts": {
+      "value": 68,
+      "key": "$.arms_measured.W091_s2_finale.DERIV.exclusions.accounts"
+     },
+     "accounts_never_started_component": {
+      "value": 0,
+      "key": "$.arms_measured.W091_s2_finale.DERIV.exclusions.accounts_never_started_component"
+     },
+     "accounts_started_and_left_component": {
+      "value": 68,
+      "key": "$.arms_measured.W091_s2_finale.DERIV.exclusions.accounts_started_and_left_component"
+     },
+     "account_components_note": "The two account components are counts of DISTINCT ACCOUNTS within each outcome component and are not required to sum to `accounts`: one account can contribute pairs to both components. No de-overlap figure was computed by this arm and none is computed here."
+    },
+    "silence_test_alone": {
+     "value": 706,
+     "key": "$.arms_measured.W091_s2_finale.DERIV.exclusions.silence_test_alone"
+    },
+    "spared_by_not_continued": {
+     "value": 617,
+     "key": "$.arms_measured.W091_s2_finale.DERIV.exclusions.spared_by_not_continued"
+    },
+    "channel_pairs_last_insertion_in_tau1_tau2": {
+     "total": {
+      "value": 92,
+      "key": "$.arms_measured.W091_s2_finale.DERIV.channel_pairs_last_insertion_in_tau1_tau2.total"
+     },
+     "started_and_left": {
+      "value": 91,
+      "key": "$.arms_measured.W091_s2_finale.DERIV.channel_pairs_last_insertion_in_tau1_tau2.started_and_left"
+     },
+     "never_started": {
+      "value": 1,
+      "key": "$.arms_measured.W091_s2_finale.DERIV.channel_pairs_last_insertion_in_tau1_tau2.never_started"
+     },
+     "accounts": {
+      "value": 69,
+      "key": "$.arms_measured.W091_s2_finale.DERIV.channel_pairs_last_insertion_in_tau1_tau2.accounts"
+     }
+    },
+    "conjunct_ladder": {
+     "status": "NO_EXPLICIT_LADDER_FIELD_IN_WORKING_OUTPUT",
+     "what_the_working_output_has_instead": "Two rungs, taken in the order conjunct-1-first. `silence_test_alone` is the position-5 rows failing conjunct 1 alone (no insertion instant after that pair's tau1), source expression `(p5m & res['silent']).sum()`. `spared_by_not_continued` is the subset of those that ARE Continued and are therefore retained, source expression `(p5m & res['silent'] & res['continued']).sum()`. Both at src/step9_a_1_compute.py lines 208-209.",
+     "rungs_present": [
+      "n_position_5",
+      "silence_test_alone",
+      "spared_by_not_continued",
+      "exclusion_breakdown.total"
+     ],
+     "rung_NOT_present": "The conjunct-2-first rung -- the count of position-5 rows that are NOT Continued, before conjunct 1 narrows them -- was not computed by this arm and is NOT computed here."
+    }
+   }
+  },
+  "W091_s2_premiere": {
+   "label": {
+    "value": "W=91, premiere",
+    "key": "$.arms_measured.W091_s2_premiere.label"
+   },
+   "W_days": {
+    "value": 91,
+    "key": "$.arms_measured.W091_s2_premiere.W_days"
+   },
+   "H_days": {
+    "value": 91,
+    "key": "$.arms_measured.W091_s2_premiere.H_days"
+   },
+   "clock_origin": {
+    "value": "s2_premiere",
+    "key": "$.arms_measured.W091_s2_premiere (arm key string) and $.arms_measured.W091_s2_premiere.label",
+    "note": "The working output carries NO separate clock_origin field. The origin is encoded in the arm key and repeated in `label`; it is transcribed from those, not supplied from another file."
+   },
+   "right_censoring_two_lines": {
+    "APPLY": {
+     "n_in_position_4": {
+      "value": 201900,
+      "key": "$.arms_measured.W091_s2_premiere.right_censoring_two_lines.APPLY.n_in_position_4"
+     },
+     "removed_by_max_W_91_term": {
+      "value": 3384,
+      "key": "$.arms_measured.W091_s2_premiere.right_censoring_two_lines.APPLY.removed_by_max_W_91_term"
+     },
+     "removed_incrementally_by_the_plus_H_term": {
+      "value": 1509,
+      "key": "$.arms_measured.W091_s2_premiere.right_censoring_two_lines.APPLY.removed_incrementally_by_the_plus_H_term"
+     }
+    },
+    "DERIV": {
+     "n_in_position_4": {
+      "value": 152126,
+      "key": "$.arms_measured.W091_s2_premiere.right_censoring_two_lines.DERIV.n_in_position_4"
+     },
+     "removed_by_max_W_91_term": {
+      "value": 3083,
+      "key": "$.arms_measured.W091_s2_premiere.right_censoring_two_lines.DERIV.removed_by_max_W_91_term"
+     },
+     "removed_incrementally_by_the_plus_H_term": {
+      "value": 1358,
+      "key": "$.arms_measured.W091_s2_premiere.right_censoring_two_lines.DERIV.removed_incrementally_by_the_plus_H_term"
+     }
+    }
+   },
+   "APPLY": {
+    "n_position_5": {
+     "value": 196654,
+     "key": "$.arms_measured.W091_s2_premiere.APPLY.n_position_5"
+    },
+    "n_post_liveness": {
+     "value": 196048,
+     "key": "$.arms_measured.W091_s2_premiere.APPLY.n_post_liveness"
+    },
+    "accounts_position_5": {
+     "value": 2422,
+     "key": "$.arms_measured.W091_s2_premiere.APPLY.accounts_position_5"
+    },
+    "position_5_counts": {
+     "never_started": {
+      "value": 36117,
+      "key": "$.arms_measured.W091_s2_premiere.APPLY.position_5_counts.never_started"
+     },
+     "started_and_left": {
+      "value": 25847,
+      "key": "$.arms_measured.W091_s2_premiere.APPLY.position_5_counts.started_and_left"
+     },
+     "continued": {
+      "value": 134690,
+      "key": "$.arms_measured.W091_s2_premiere.APPLY.position_5_counts.continued"
+     },
+     "total": {
+      "value": 196654,
+      "key": "$.arms_measured.W091_s2_premiere.APPLY.position_5_counts.total"
+     }
+    },
+    "post_liveness_counts": {
+     "never_started": {
+      "value": 35584,
+      "key": "$.arms_measured.W091_s2_premiere.APPLY.post_liveness_counts.never_started"
+     },
+     "started_and_left": {
+      "value": 25774,
+      "key": "$.arms_measured.W091_s2_premiere.APPLY.post_liveness_counts.started_and_left"
+     },
+     "continued": {
+      "value": 134690,
+      "key": "$.arms_measured.W091_s2_premiere.APPLY.post_liveness_counts.continued"
+     },
+     "total": {
+      "value": 196048,
+      "key": "$.arms_measured.W091_s2_premiere.APPLY.post_liveness_counts.total"
+     }
+    },
+    "exclusion_breakdown": {
+     "total": {
+      "value": 606,
+      "key": "$.arms_measured.W091_s2_premiere.APPLY.exclusions.total"
+     },
+     "never_started_component": {
+      "value": 533,
+      "key": "$.arms_measured.W091_s2_premiere.APPLY.exclusions.never_started_component"
+     },
+     "started_and_left_component": {
+      "value": 73,
+      "key": "$.arms_measured.W091_s2_premiere.APPLY.exclusions.started_and_left_component"
+     },
+     "continued_component": {
+      "value": 0,
+      "key": "$.arms_measured.W091_s2_premiere.APPLY.exclusions.continued_component"
+     },
+     "accounts": {
+      "value": 196,
+      "key": "$.arms_measured.W091_s2_premiere.APPLY.exclusions.accounts"
+     },
+     "accounts_never_started_component": {
+      "value": 175,
+      "key": "$.arms_measured.W091_s2_premiere.APPLY.exclusions.accounts_never_started_component"
+     },
+     "accounts_started_and_left_component": {
+      "value": 56,
+      "key": "$.arms_measured.W091_s2_premiere.APPLY.exclusions.accounts_started_and_left_component"
+     },
+     "account_components_note": "The two account components are counts of DISTINCT ACCOUNTS within each outcome component and are not required to sum to `accounts`: one account can contribute pairs to both components. No de-overlap figure was computed by this arm and none is computed here."
+    },
+    "silence_test_alone": {
+     "value": 1191,
+     "key": "$.arms_measured.W091_s2_premiere.APPLY.exclusions.silence_test_alone"
+    },
+    "spared_by_not_continued": {
+     "value": 585,
+     "key": "$.arms_measured.W091_s2_premiere.APPLY.exclusions.spared_by_not_continued"
+    },
+    "channel_pairs_last_insertion_in_tau1_tau2": {
+     "total": {
+      "value": 254,
+      "key": "$.arms_measured.W091_s2_premiere.APPLY.channel_pairs_last_insertion_in_tau1_tau2.total"
+     },
+     "started_and_left": {
+      "value": 74,
+      "key": "$.arms_measured.W091_s2_premiere.APPLY.channel_pairs_last_insertion_in_tau1_tau2.started_and_left"
+     },
+     "never_started": {
+      "value": 180,
+      "key": "$.arms_measured.W091_s2_premiere.APPLY.channel_pairs_last_insertion_in_tau1_tau2.never_started"
+     },
+     "accounts": {
+      "value": 173,
+      "key": "$.arms_measured.W091_s2_premiere.APPLY.channel_pairs_last_insertion_in_tau1_tau2.accounts"
+     }
+    },
+    "conjunct_ladder": {
+     "status": "NO_EXPLICIT_LADDER_FIELD_IN_WORKING_OUTPUT",
+     "what_the_working_output_has_instead": "Two rungs, taken in the order conjunct-1-first. `silence_test_alone` is the position-5 rows failing conjunct 1 alone (no insertion instant after that pair's tau1), source expression `(p5m & res['silent']).sum()`. `spared_by_not_continued` is the subset of those that ARE Continued and are therefore retained, source expression `(p5m & res['silent'] & res['continued']).sum()`. Both at src/step9_a_1_compute.py lines 208-209.",
+     "rungs_present": [
+      "n_position_5",
+      "silence_test_alone",
+      "spared_by_not_continued",
+      "exclusion_breakdown.total"
+     ],
+     "rung_NOT_present": "The conjunct-2-first rung -- the count of position-5 rows that are NOT Continued, before conjunct 1 narrows them -- was not computed by this arm and is NOT computed here."
+    }
+   },
+   "DERIV": {
+    "n_position_5": {
+     "value": 147370,
+     "key": "$.arms_measured.W091_s2_premiere.DERIV.n_position_5"
+    },
+    "n_post_liveness": {
+     "value": 147297,
+     "key": "$.arms_measured.W091_s2_premiere.DERIV.n_post_liveness"
+    },
+    "accounts_position_5": {
+     "value": 2402,
+     "key": "$.arms_measured.W091_s2_premiere.DERIV.accounts_position_5"
+    },
+    "position_5_counts": {
+     "never_started": {
+      "value": 11780,
+      "key": "$.arms_measured.W091_s2_premiere.DERIV.position_5_counts.never_started"
+     },
+     "started_and_left": {
+      "value": 23369,
+      "key": "$.arms_measured.W091_s2_premiere.DERIV.position_5_counts.started_and_left"
+     },
+     "continued": {
+      "value": 112221,
+      "key": "$.arms_measured.W091_s2_premiere.DERIV.position_5_counts.continued"
+     },
+     "total": {
+      "value": 147370,
+      "key": "$.arms_measured.W091_s2_premiere.DERIV.position_5_counts.total"
+     }
+    },
+    "post_liveness_counts": {
+     "never_started": {
+      "value": 11780,
+      "key": "$.arms_measured.W091_s2_premiere.DERIV.post_liveness_counts.never_started"
+     },
+     "started_and_left": {
+      "value": 23296,
+      "key": "$.arms_measured.W091_s2_premiere.DERIV.post_liveness_counts.started_and_left"
+     },
+     "continued": {
+      "value": 112221,
+      "key": "$.arms_measured.W091_s2_premiere.DERIV.post_liveness_counts.continued"
+     },
+     "total": {
+      "value": 147297,
+      "key": "$.arms_measured.W091_s2_premiere.DERIV.post_liveness_counts.total"
+     }
+    },
+    "exclusion_breakdown": {
+     "total": {
+      "value": 73,
+      "key": "$.arms_measured.W091_s2_premiere.DERIV.exclusions.total"
+     },
+     "never_started_component": {
+      "value": 0,
+      "key": "$.arms_measured.W091_s2_premiere.DERIV.exclusions.never_started_component"
+     },
+     "started_and_left_component": {
+      "value": 73,
+      "key": "$.arms_measured.W091_s2_premiere.DERIV.exclusions.started_and_left_component"
+     },
+     "continued_component": {
+      "value": 0,
+      "key": "$.arms_measured.W091_s2_premiere.DERIV.exclusions.continued_component"
+     },
+     "accounts": {
+      "value": 56,
+      "key": "$.arms_measured.W091_s2_premiere.DERIV.exclusions.accounts"
+     },
+     "accounts_never_started_component": {
+      "value": 0,
+      "key": "$.arms_measured.W091_s2_premiere.DERIV.exclusions.accounts_never_started_component"
+     },
+     "accounts_started_and_left_component": {
+      "value": 56,
+      "key": "$.arms_measured.W091_s2_premiere.DERIV.exclusions.accounts_started_and_left_component"
+     },
+     "account_components_note": "The two account components are counts of DISTINCT ACCOUNTS within each outcome component and are not required to sum to `accounts`: one account can contribute pairs to both components. No de-overlap figure was computed by this arm and none is computed here."
+    },
+    "silence_test_alone": {
+     "value": 658,
+     "key": "$.arms_measured.W091_s2_premiere.DERIV.exclusions.silence_test_alone"
+    },
+    "spared_by_not_continued": {
+     "value": 585,
+     "key": "$.arms_measured.W091_s2_premiere.DERIV.exclusions.spared_by_not_continued"
+    },
+    "channel_pairs_last_insertion_in_tau1_tau2": {
+     "total": {
+      "value": 77,
+      "key": "$.arms_measured.W091_s2_premiere.DERIV.channel_pairs_last_insertion_in_tau1_tau2.total"
+     },
+     "started_and_left": {
+      "value": 74,
+      "key": "$.arms_measured.W091_s2_premiere.DERIV.channel_pairs_last_insertion_in_tau1_tau2.started_and_left"
+     },
+     "never_started": {
+      "value": 3,
+      "key": "$.arms_measured.W091_s2_premiere.DERIV.channel_pairs_last_insertion_in_tau1_tau2.never_started"
+     },
+     "accounts": {
+      "value": 61,
+      "key": "$.arms_measured.W091_s2_premiere.DERIV.channel_pairs_last_insertion_in_tau1_tau2.accounts"
+     }
+    },
+    "conjunct_ladder": {
+     "status": "NO_EXPLICIT_LADDER_FIELD_IN_WORKING_OUTPUT",
+     "what_the_working_output_has_instead": "Two rungs, taken in the order conjunct-1-first. `silence_test_alone` is the position-5 rows failing conjunct 1 alone (no insertion instant after that pair's tau1), source expression `(p5m & res['silent']).sum()`. `spared_by_not_continued` is the subset of those that ARE Continued and are therefore retained, source expression `(p5m & res['silent'] & res['continued']).sum()`. Both at src/step9_a_1_compute.py lines 208-209.",
+     "rungs_present": [
+      "n_position_5",
+      "silence_test_alone",
+      "spared_by_not_continued",
+      "exclusion_breakdown.total"
+     ],
+     "rung_NOT_present": "The conjunct-2-first rung -- the count of position-5 rows that are NOT Continued, before conjunct 1 narrows them -- was not computed by this arm and is NOT computed here."
+    }
+   },
+   "population_reading": {
+    "value": "reading_a_shared_population",
+    "source": "src/step9_a_1_compute.py lines 223-226 (arm_block(r91p, r108['pos5'], r108['pos5_deriv']))",
+    "note": "This arm's outcome and exclusion counts are measured ON THE W=108 FINALE ARM'S POSITION-5 ROW SET, per reading (a) of 'both arms run on the same right-censored population' (D10). Its `right_censoring_two_lines` sub-block, however, is computed from the arm's OWN W=91 run, so the two lines in that sub-block do not reduce position 4 to this arm's `n_position_5`. Both readings are measured -- see `d10_reading_ambiguity` below. Recorded as a defect of this arm's working output in `defects_found_while_transcribing`."
+   }
+  }
+ },
+ "t0_movement": {
+  "what_this_is": "This arm's measurement of what moving T0 from the S2 finale to the S2 premiere does. Transcribed ON THE PREDICATE THIS ARM USED and NOT converted to any other predicate.",
+  "predicate_used": {
+   "expression": "t0_premiere == t0_finale",
+   "reading": "the two clocks COINCIDE on the pair",
+   "source": "src/step9_a_1_compute.py line 242",
+   "both_sides_are": "floor-day epoch seconds; t0_finale from Step 8's positions.npz ['t0'], t0_premiere = max(floor_day(s2_premiere_date), s1_date), src/step9_a_1_compute.py lines 75-81"
+  },
+  "pairs_where_the_two_clocks_coincide": {
+   "value": 152370,
+   "key": "$.d10_reading_ambiguity.pairs_where_the_two_clocks_coincide"
+  },
+  "premiere_t0_never_later_than_finale_t0": {
+   "value": true,
+   "key": "$.d10_reading_ambiguity.premiere_t0_never_later_than_finale_t0"
+  },
+  "NOT_CONVERTED": "The complement -- 'pairs on which T0 moves' -- is NOT stated. It is not in this arm's working output, and its denominator is not either (see the population record below), so any complement would be a new measurement. Per the ruling, none is made.",
+  "population_of_the_two_figures_above": {
+   "status": "ABSENT_FROM_WORKING_OUTPUT",
+   "field": "population label for `pairs_where_the_two_clocks_coincide` and `premiere_t0_never_later_than_finale_t0`",
+   "why": "The working output records no population for these two. Their source expressions run over the FULL pair vector loaded from Step 8's scan.npz, before any position filter -- so the base is neither APPLY (196,654) nor DERIV (147,370). The size of that base is not recorded in the working output and is NOT computed here."
+  },
+  "d10_reading_counts": {
+   "reading_a_shared_population_APPLY": {
+    "value": 196654,
+    "key": "$.d10_reading_ambiguity.reading_a_shared_population_APPLY"
+   },
+   "reading_b_premiere_anchored_d10_APPLY": {
+    "value": 197007,
+    "key": "$.d10_reading_ambiguity.reading_b_premiere_anchored_d10_APPLY"
+   },
+   "in_b_not_in_a_APPLY": {
+    "value": 353,
+    "key": "$.d10_reading_ambiguity.in_b_not_in_a_APPLY"
+   },
+   "in_a_not_in_b_APPLY": {
+    "value": 0,
+    "key": "$.d10_reading_ambiguity.in_a_not_in_b_APPLY"
+   },
+   "reading_a_shared_population_DERIV": {
+    "value": 147370,
+    "key": "$.d10_reading_ambiguity.reading_a_shared_population_DERIV"
+   },
+   "reading_b_premiere_anchored_d10_DERIV": {
+    "value": 147685,
+    "key": "$.d10_reading_ambiguity.reading_b_premiere_anchored_d10_DERIV"
+   },
+   "in_b_not_in_a_DERIV": {
+    "value": 315,
+    "key": "$.d10_reading_ambiguity.in_b_not_in_a_DERIV"
+   },
+   "in_a_not_in_b_DERIV": {
+    "value": 0,
+    "key": "$.d10_reading_ambiguity.in_a_not_in_b_DERIV"
+   }
+  },
+  "censoring_set_identical_premiere_vs_finale_at_W91": {
+   "APPLY": {
+    "value": true,
+    "key": "$.d10_reading_ambiguity.censoring_set_identical_premiere_vs_finale_at_W91_APPLY"
+   },
+   "DERIV": {
+    "value": true,
+    "key": "$.d10_reading_ambiguity.censoring_set_identical_premiere_vs_finale_at_W91_DERIV"
+   }
+  },
+  "so_the_353_and_315_are_the_W_term_not_the_origin": {
+   "value": true,
+   "key": "$.d10_reading_ambiguity.so_the_353_and_315_are_the_W_term_not_the_origin",
+   "WARNING": "NOT A MEASUREMENT. This key is a hardcoded `True` literal in src/step9_a_1_compute.py line 251. Its measured support is the two `censoring_set_identical_*` booleans above, which ARE computed. Transcribed as it stands, marked as an asserted constant."
+  }
+ },
+ "bootstrap": {
+  "settings": {
+   "B": {
+    "value": 10000,
+    "key": "$.bootstrap_settings.B"
+   },
+   "seed": {
+    "value": 20260818,
+    "key": "$.bootstrap_settings.seed"
+   },
+   "resampling_unit": {
+    "value": "account",
+    "key": "$.bootstrap_settings.resampling_unit"
+   },
+   "statistics": {
+    "value": [
+     "levels",
+     "movements"
+    ],
+    "key": "$.bootstrap_settings.statistics"
+   },
+   "frame_accounts": {
+    "value": 2481,
+    "key": "$.bootstrap_settings.frame_accounts"
+   },
+   "frame_definition": {
+    "value": "accounts with at least one pair in the position-4 output; arm-independent, since positions 1-4 do not contain W",
+    "key": "$.bootstrap_settings.frame_definition"
+   },
+   "movement_configurations": {
+    "value": "post-liveness (position 7) MINUS outcome-conditional position 5, the same share under the two configurations the liveness filter separates",
+    "key": "$.bootstrap_settings.movement_configurations"
+   },
+   "ci_level_pct": {
+    "value": 95,
+    "key": "$.bootstrap_settings.ci_level_pct"
+   },
+   "method": {
+    "value": "percentile_bootstrap",
+    "key": "$.bootstrap_settings.method"
+   }
+  },
+  "intervals_not_copied_here": {
+   "status": "PRESENT_IN_WORKING_OUTPUT_BUT_DELIBERATELY_NOT_RE-EMITTED",
+   "where_they_are_in_the_working_output": "$.bootstrap, keyed '<arm>|<population>|<outcome>', each carrying level.lower, level.upper, movement.lower, movement.upper, point_level, point_movement.",
+   "why_not_here": "They are already published, by this arm, in artifacts/step9-headline-a.json, which is not gitignored. The ruling's rescue reason -- figures recoverable from nowhere but this machine -- does not apply to them, and re-emitting them would create a second slot for a figure that already has one."
+  }
+ },
+ "absent_fields": [
+  {
+   "status": "ABSENT_FROM_WORKING_OUTPUT",
+   "field": "conjunct_ladder (as a named field)",
+   "why": "No key of that name exists at any path in the working output. The two rungs that do exist are transcribed per population under `conjunct_ladder` in each arm block. The missing rung -- position-5 rows that are NOT Continued, taken before conjunct 1 -- was never computed by this arm and is not computed here."
+  },
+  {
+   "status": "ABSENT_FROM_WORKING_OUTPUT",
+   "field": "adopted_rule_revision",
+   "why": "The fourth component of the arm key (W_days, clock_origin, producing_step, adopted_rule_revision) is not in the working output, so the arm key cannot be completed from this file alone.",
+   "not_filled_from": "artifacts/step9-headline-a.json at $.adopted_rule_revision, where this arm recorded it -- READ, not typed, via step8b_schema._read_adopted_rule_revision() at src/step9_a_2_emit.py line 33. Pointed at, deliberately NOT copied across, because the ruling forbids filling an absent field from elsewhere."
+  },
+  {
+   "status": "ABSENT_FROM_WORKING_OUTPUT",
+   "field": "clock_origin (as a field)",
+   "why": "Encoded in the arm key string and in `label`. Transcribed from those into each arm block, with that provenance stated at the point of use."
+  },
+  {
+   "status": "ABSENT_FROM_WORKING_OUTPUT",
+   "field": "population label on the two T0-movement booleans/counts",
+   "why": "See t0_movement.population_of_the_two_figures_above."
+  },
+  {
+   "status": "ABSENT_FROM_WORKING_OUTPUT",
+   "field": "base size of the T0-movement predicate",
+   "why": "The count of pairs the `t0_premiere == t0_finale` comparison ran over is not recorded. Not computed here."
+  },
+  {
+   "status": "ABSENT_FROM_WORKING_OUTPUT",
+   "field": "outcome-level counts for the liveness-EXCLUDED set beyond the three components",
+   "why": "The working output carries total / never_started / started_and_left / continued components and two account components, and nothing further -- no per-show, per-channel or per-episode breakdown of the excluded set exists in it."
+  }
+ ],
+ "defects_found_while_transcribing": [
+  {
+   "id": "A-WF-1",
+   "severity": "labelling, material to a reader",
+   "where": "$.arms_measured.W091_s2_premiere.right_censoring_two_lines",
+   "what": "Inside one arm block, the censoring lines and the population counts describe DIFFERENT row sets. The two lines are computed from the arm's own W=91 premiere run (APPLY 3,384 + 1,509 off 201,900 -> 197,007), while `n_position_5` for the same arm is 196,654, the W=108 finale row set, because the arm is measured under reading (a). Neither number is wrong for its own reading; the block does not say they are different readings, so a reader who subtracts the two lines from position 4 does not land on the arm's own n_position_5. Same shape on DERIV: 3,083 + 1,358 off 152,126 -> 147,685, against n_position_5 = 147,370.",
+   "not_fixed_here": "This extract transcribes; it does not correct. The correction is a rerun of the arm, per 0092. Flagged in the arm block itself as `population_reading`."
+  },
+  {
+   "id": "A-WF-2",
+   "severity": "control coverage",
+   "where": "$.import_gate.mismatches",
+   "what": "The import gate emits an empty mismatch list and NO coverage count, so from the file alone a clean result and a result that compared nothing are the same value -- the condition CLAUDE.md requires every such path to distinguish."
+  },
+  {
+   "id": "A-WF-3",
+   "severity": "control coverage",
+   "where": "src/step9_a_1_compute.py lines 150-157, the import-gate comparison loop",
+   "what": "The comparison is ONE-DIRECTIONAL: it iterates this arm's keys and tests `if kk in theirs`, so keys Step 8 published that this arm did not reproduce are never compared and never reported as uncovered. Concretely uncompared: liveness_exclusions_APPLY.continued, liveness_exclusions_DERIV.continued, right_censoring_two_lines_APPLY.total, right_censoring_two_lines_DERIV.total. Visible in the working output as an asymmetry between $.import_gate.reproduced and $.import_gate.step8_published."
+  },
+  {
+   "id": "A-WF-4",
+   "severity": "asserted-not-measured",
+   "where": "$.d10_reading_ambiguity.so_the_353_and_315_are_the_W_term_not_the_origin",
+   "what": "A hardcoded `True` in the source sits in a measurement block among measured booleans, and is indistinguishable from one on inspection of the JSON. Its grounds are measured; the field is not."
+  },
+  {
+   "id": "A-WF-5",
+   "severity": "labelling",
+   "where": "$.d10_reading_ambiguity.pairs_where_the_two_clocks_coincide and .premiere_t0_never_later_than_finale_t0",
+   "what": "Every other count in this arm's working output is population-scoped; these two are not, and their base is a third row set (the full scan pair vector) that the file never names or sizes."
+  },
+  {
+   "id": "A-WF-6",
+   "severity": "carried text, not this arm's measurement",
+   "where": "$.import_gate.step8_published.right_censoring_two_lines_*.direction_on_the_headline",
+   "what": "Prose copied from Step 8's artifact sits inside this arm's working output. It is Step 8's claim, not a measurement of this arm, and it is not transcribed into this extract."
+  }
+ ],
+ "sign_off": {
+  "by": "data-scientist, arm a -- the arm that produced the figures",
+  "attests": "Every value in this file was copied by the named generator out of the named working file at the named hash. Nothing was typed from memory, nothing was recomputed, and nothing was supplied from another file.",
+  "does_not_attest": "Anything about another arm, another step, the shared controls, or the state of any surface this arm does not own."
+ }
+}

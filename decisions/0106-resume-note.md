@@ -277,16 +277,17 @@ Lead's.***
   section was read from them on this machine. *(`processed/step9/b/pairs.npz` is pair-level data and
   must not be committed.)*
 
-### Resume by reading each arm's premiere-arm `T0` and classification code from `src/`
+### Resume by reading each arm's premiere-arm `T0` and classification code from `src/`, since neither arm's prose or counts settle it
 
 ***THE SOURCE IS COMMITTED EVEN THOUGH THE WORKING OUTPUT IS NOT*** — `src/step9_a_1_compute.py`,
 `step9_a_2_emit.py`, `step9_a_3_md.py`, `step9_b_1_compute.py`, `step9_b_2_bootstrap.py`,
 `step9_b_3_emit.py`, `step9_b_4_md.py`, all at `220b6e4`. **The position-5 never-started numerator is
 computed there, which is where the gap is.**
 
-> ***THE HUMAN LEAD'S INSTRUCTION ENDED MID-SENTENCE: "since neither arm's prose or" — THE REMAINDER
-> WAS NOT RECEIVED AND IS NOT RECONSTRUCTED HERE.*** What is recorded above is what was given. **The
-> unfinished clause is flagged rather than completed, because guessing it would put words in the
-> ruling.**
+> ~~***THE HUMAN LEAD'S INSTRUCTION ENDED MID-SENTENCE: "since neither arm's prose or" — THE REMAINDER
+> WAS NOT RECEIVED AND IS NOT RECONSTRUCTED HERE.***~~ ***CLOSED 2026-08-21: the Human Lead supplied
+> the remainder — "counts settle it" — and it is appended to the heading above verbatim. The clause
+> was flagged rather than guessed while it stood open, because completing it would have put words in
+> the ruling.***
 
 ***STEP 10 NOT BEGUN.***
