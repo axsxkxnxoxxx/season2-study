@@ -993,6 +993,21 @@ outputs.
 
 ---
 
+### Two control-design rules that bind every step, `0123`
+
+- ***A FIGURE IS ANOTHER STEP'S ONLY IF YOU CONSUMED IT WITHOUT RECOMPUTING IT*** (`0123` §6d).
+  **Anything downstream of your own liveness filter is YOURS, whatever it derived from.** A population
+  size is the upstream step's **only when it still holds that step's figure** — checked against the
+  `n_position_5` on **its own enclosing `headline.<POPULATION>`, read from the file**, never a typed
+  constant. ***A field NAME cannot answer it:*** `denominator_pairs` is Step 8's under `bounds` and the
+  arm's own **post-liveness** denominator under `shares`, **four levels apart in one file.**
+- ***A PRECONDITION THAT CANNOT FAIL ON THE VECTOR IT POLICES IS NOT A CHECK*** (`0123` §3) — **it is
+  worse than none, because it occupies the slot a real one would fill.** **A calendar window is the
+  example**: on an epoch vector wrong in every entry, `0 <= v <= τ_pull` returned **zero** implausible.
+  ***A range check tests that a number is not absurd; it cannot test that it is the RIGHT one.***
+  **Compare against the true values in the source, and SHOW THE CHECK REJECTING THE WRONG VECTOR before
+  trusting it to pass on the right one.**
+
 ## Step 10: Where they leave
 
 **Owner:** Data Scientist

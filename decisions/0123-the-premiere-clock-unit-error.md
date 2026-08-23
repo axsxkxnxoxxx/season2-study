@@ -1,14 +1,12 @@
-# Decision 0123 — DRAFT — the premiere-clock unit error; why two vacuous preconditions passed on a wrong vector; and the first divergence a reading agent could not have found
-
-> ***DRAFT FOR THE HUMAN LEAD. NOT FILED.*** Written at the Human Lead's instruction, 2026-08-21.
+# Decision 0123 — the premiere-clock unit error; why two vacuous preconditions passed on a wrong vector; and the first divergence a reading agent could not have found
 
 | | |
 | :--- | :--- |
 | **Decision** | **Arm `b`'s `W91_s2_premiere` premiere-clock vector was wrong in ALL 278,452 entries by a factor of 1000** — a **unit** error, `10 ** 9` against a `datetime64[us, UTC]` dtype. **The premiere term was inert: `T0'` equalled the S1 completion date on 193,940 of the 196,654 retained APPLY pairs.** ***BOTH PRECONDITIONS GUARDING IT PASSED, AND COULD NOT HAVE FAILED.*** **Corrected by the producing arm; the superseded figures are STAMPED, NOT DELETED.** **An isolation lapse is logged with the arm's own account.** |
 | **Found by** | ***Arm `b`, on its own code, on the Human Lead's question*** |
-| **Date** | 2026-08-21 |
+| **Date** | 2026-08-23 |
 | **Amends** | `artifacts/step9-headline-b.json` and `artifacts/step9-working-figures-b.json` at `c790f3a`, `W91_s2_premiere` only; both `data-scientist` files |
-| **Status** | ***DRAFT.*** **The `$defs/ci` percent-vs-pp typing is NOT ruled here and remains the Human Lead's.** |
+| **Status** | **FILED 2026-08-23 and PROPAGATED** — §9. **The `$defs/ci` percent-vs-pp typing is NOT ruled here and remains the Human Lead's.** |
 
 ---
 

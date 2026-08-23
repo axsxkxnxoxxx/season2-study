@@ -86,3 +86,27 @@ to defend if anyone asks for a number there.
 
 Related: [[open-items-and-contradictions]], [[decision-log-step18]],
 [[glossary-terms-and-thresholds]].
+
+## `0123` — the premiere-clock unit error, and two rules it produced
+
+***THE FIRST DIVERGENCE IN THIS BUILD A READING AGENT COULD NOT HAVE FOUND.*** Arm `b`'s premiere `T0`
+vector was wrong in **all 278,452 entries by a factor of 1000** — `// 10 ** 9` against a
+`datetime64[us, UTC]` dtype. **The line is idiomatic and reads correctly to anyone sharing its
+assumption; the artifacts it produced were internally consistent.** *"Consistently wrong, not
+divergent."* **It took two implementations to trip over it** — 42.77% never-started against 18.15% at
+the same arm is not something a reader can adjudicate.
+
+- ***BOTH GUARDS WERE VACUOUS, AND THAT IS WHY NOTHING ELSE COULD CATCH IT.*** `T0' ≈ 0` makes
+  *"earlier than the finale"* and *"τ2 observable"* **unfailable** — **a check whose passing is CAUSED
+  by the defect it is meant to detect.** Had either been set-membership-shaped, the arm would have
+  hard-stopped on its own first run.
+- ***A calendar window is not a check:*** `0 <= v <= τ_pull` returned **zero implausible** on a vector
+  wrong in every entry. **A range test says a number is not absurd, not that it is right.**
+- ***A figure is another step's only if you consumed it without recomputing it.*** `denominator_pairs`
+  had **two readings in one file** and a name-keyed classifier called them alike; **12 superseded
+  figures published unmarked, found only by the shared register.**
+- **Superseded figures are STAMPED, NOT DELETED** — *the record of what the defect produced is the
+  evidence for the finding.*
+- **Two isolation lapses self-reported by the arm, logged not fatal.** ***Agreement between the arms is
+  NOT the test of whether a breach occurred*** — a breach that imported the other arm's figure would
+  produce agreement. **A namespace-wide search IS a read**, so search patterns are now arm-scoped.

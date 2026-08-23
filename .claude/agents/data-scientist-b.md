@@ -167,6 +167,28 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
   right for the outcome shares and would UNDERSTATE a show-bound quantity.** **State `resampling_unit`
   per interval; a show-bound quantity says `show`, and must not inherit `account` silently. Report a
   material disagreement between the two units — do not reconcile it.**
+- ***A FIGURE IS ANOTHER STEP'S ONLY IF YOU CONSUMED IT WITHOUT RECOMPUTING IT.*** Human Lead ruling,
+  2026-08-23 (`0123` §6d). ***Anything downstream of your own liveness filter is YOURS, whatever it
+  was derived from.*** **A population size counts as the upstream step's only when IT STILL HOLDS THAT
+  STEP'S FIGURE** — compare it against the `n_position_5` declared on **its own enclosing
+  `headline.<POPULATION>`, READ FROM THE FILE**, never against a typed constant: *a hardcoded 196,654
+  is a second definition of Step 8's figure inside your arm.* **No enclosing population is a HARD STOP,
+  not a default.**
+  ***A FIELD NAME CANNOT ANSWER THE QUESTION.*** `denominator_pairs` has **two readings in one file**:
+  under `bounds` it is 196,654, Step 8's, consumed unchanged; under `shares` it is the **post-liveness**
+  denominator, which moves when your filter moves. **They sat four levels apart and a classifier keyed
+  on the last path component alone called them alike** — 12 superseded figures published unmarked, and
+  **only the shared register found them.**
+- ***A PRECONDITION THAT CANNOT FAIL ON THE VECTOR IT POLICES IS NOT A CHECK.*** Human Lead ruling,
+  2026-08-23 (`0123` §3). **It is worse than no check: it occupies the slot where a real one would sit.**
+  **A CALENDAR WINDOW IS THE EXAMPLE.** Asked which entries of a wrong epoch vector were implausible, a
+  range test `0 <= v <= τ_pull` returned **ZERO** — ***"every value lands inside `[1970-01-01, τ_pull]`
+  and a window check PASSES CLEAN ON A VECTOR THAT IS WRONG IN EVERY ENTRY."***
+  ***A range check tests that a number is not absurd. It cannot test that it is the RIGHT one.***
+  **Set membership against the source can:** compare the values against **the true values in the source
+  they were derived from**, and **show the check REJECTING the wrong vector before you trust it passing
+  on the right one.** **A guard whose passing is CAUSED by the defect it is meant to detect is how two
+  preconditions certified a premiere clock that was wrong by a factor of 1000.**
 - **STEP 13 IS DUAL** (`0103`). **`CLAUDE.md`'s dual list omitted it while `task-sheet.md` argued the
   `W` grid must be fixed because two instances on different grids produce tables that **cannot be
   diffed at all** — presupposing the duality. **Resolved in favour of dual**: Step 13 varies `W` across
