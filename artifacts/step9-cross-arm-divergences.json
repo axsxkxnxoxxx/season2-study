@@ -1,0 +1,66 @@
+{
+ "what_this_file_is": "THE HUMAN LEAD'S DIFF OF STEP 9's W091_s2_premiere ARM. It is the only block in this study that may contain a cross-arm statement: $.cross_arm_divergences is human_lead_only and forbidden_to_compute_here for step9. NEITHER ARM WROTE OR READ IT.",
+ "authored_by": "Human Lead, ruling of 2026-08-23; transcribed by the orchestrator on that ruling",
+ "not_an_arm_deliverable": "No arm signed this and no arm may. It is not corrected by rerunning an arm (0092 does not apply); it is corrected by the Human Lead re-diffing.",
+ "arm_setting": {
+  "W_days": 91,
+  "clock_origin": "s2_premiere",
+  "producing_step": "step9"
+ },
+ "inputs_diffed": [
+  {
+   "arm": "a",
+   "path": "artifacts/step9-headline-a.json",
+   "sha256_12": "5aecdf90d137",
+   "note": "arm a's committed figures"
+  },
+  {
+   "arm": "b",
+   "path": "artifacts/step9-headline-corrected-2026-08-21-b.json",
+   "sha256_12": "c125cf13865f",
+   "note": "arm b's CORRECTED emission, NOT its superseded originals (0123)"
+  }
+ ],
+ "coverage_of_this_diff": {
+  "_why_stated": "A diff that reports only what it found does not say what it covered. An empty result and a clean result are the same value unless the coverage is printed.",
+  "point_count_and_bound_figures_compared": 50,
+  "point_count_and_bound_figures_agreeing_to_6dp": 50,
+  "point_count_and_bound_figures_differing": 0,
+  "slots_absent_on_BOTH_arms_not_a_disagreement": 4,
+  "_absent_slots": "Continued floor and Continued width_pp, both populations -- structurally absent in both files",
+  "confidence_interval_endpoints_compared": 12,
+  "confidence_interval_endpoints_differing": 12,
+  "movement_endpoints_compared": 12,
+  "movement_endpoints_differing": 12,
+  "what_agreed": "every point estimate, numerator, denominator, on_population_n, bound floor, bound ceiling, bound width, conditional sub-interval width, Continued ceiling, three-ceiling sum, excess_pp and excess_pairs -- on BOTH populations, IDENTICAL TO SIX DECIMALS"
+ },
+ "cross_arm_divergences": {
+  "block_owner": "human_lead",
+  "searched": true,
+  "search_record": "Every published figure of the W091_s2_premiere arm compared on both populations: 50 point/count/bound figures, 12 level-CI endpoints, 12 movement endpoints. 4 further slots are absent on both arms and are not disagreements.",
+  "divergence_count": 1,
+  "divergences": [
+   {
+    "id": "step9-W091_s2_premiere-ci-endpoints",
+    "what": "The confidence interval endpoints differ between the arms, in the last digits, on EVERY interval and EVERY movement: 12 of 12 level-CI endpoints and 12 of 12 movement endpoints. Maximum absolute difference 0.026934 pp on the level CIs and 0.000513 pp on the movements. No point estimate, count, bound, width, ceiling, sum or excess differs at all.",
+    "does_not_affect": "Any point estimate or bound. The movement SIGN CLASS is the same on all 12 endpoints, so no conclusion that turns on the sign of a movement moves.",
+    "cause": "ARM a's D3, and it is a SPEC GAP, NOT AN IMPLEMENTATION DEFECT. decisions/0103 and 0118 fix B = 10,000, the seed = 20260818, the resampling unit = account and the statistic = BOTH levels and paired movements. THEY DO NOT FIX THE RESAMPLING FRAME OR THE DRAW ORDER. Two implementations under one seed therefore draw different replicate sets, and the intervals differ by sampling noise alone.",
+    "neither_arm_did_anything_wrong": "The spec does not say what they should have done. Arm a named its frame and draw order as a spec choice it was making; the divergence is the spec's silence made visible, which is what a dual control is for.",
+    "classification": "SPEC GAP",
+    "resolution": "PENDING",
+    "resolved_by": null,
+    "reported_not_reconciled": true,
+    "_why_not_reconciled": "CLAUDE.md: any divergence is either a bug or an ambiguity in the spec -- report it, do not reconcile it. Reconciling would pick one arm's frame and draw order and call it the answer, which is a spec decision and must be visible as one.",
+    "NOT_RULED_HERE": "The draw order and resampling frame are NOT ruled by this entry. That remains the Human Lead's."
+   }
+  ]
+ },
+ "not_ruled_by_this_document": [
+  "the resampling frame",
+  "the draw order",
+  "the $defs/ci percent-vs-pp typing",
+  "the Step 13b merge input contract"
+ ],
+ "generated_at_utc": "2026-08-23T18:44:41Z",
+ "git_head_at_write_time": "cf5a243"
+}
