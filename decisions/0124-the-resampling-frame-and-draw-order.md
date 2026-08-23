@@ -71,6 +71,38 @@ question about publication shape, not about the bootstrap, and it is the Human L
 movements paired **by reproducing published endpoints from the recorded weights**, and those weights
 change.
 
+## 5b. ***A STAMP IS A CLAIM, AND A CLAIM ABOUT WHAT DID NOT CHANGE GOES STALE***
+
+**Human Lead ruling, 2026-08-23, on `b-stamp-1`.**
+
+***`0123`'s stamps on arm `b`'s originals asserted that the ADOPTED ARM was NOT superseded.*** **That
+was true when written and this entry made it false:** under `0124` the adopted arm's **CI endpoints**
+are superseded too. **The arm found it, correctly did not act unasked, and published the fact in the
+new emission — which is not enough**, because ***the reader who checks the ORIGINALS is told the
+opposite of what is true, AT THE POINT OF USE.***
+
+> ***A STAMP ASSERTING SOMETHING UNTRUE IS WORSE THAN NO STAMP — A READER TRUSTS IT PRECISELY WHERE IT
+> MISLEADS.***
+
+***THE GENERAL SHAPE, and it reaches every stamp in this study:*** **a stamp is a CLAIM.** A stamp
+naming what IS superseded is a claim about a defect that has already happened and **cannot go stale.**
+**A stamp naming what is NOT superseded is a claim about the ABSENCE of a defect — and that claim goes
+stale the moment a later ruling creates one in that scope.**
+
+> ***ANY STAMP NAMING WHAT WAS NOT SUPERSEDED MUST BE REVISITED WHEN A SUBSEQUENT RULING TOUCHES THAT
+> SCOPE.***
+
+**This is `CLAUDE.md`'s *"stamps are negative only"* rule reaching a case it did not anticipate.** That
+rule exists so a stamp cannot certify a figure as correct; **it did not foresee a stamp certifying a
+figure as UNAFFECTED, which is the same certification one level out.** **`W108_s2_finale` was
+exempted from `0123`'s marks on evidence that was sound at the time — 664 leaves verified unmoved —
+and `0124` moved 48 of its CI endpoints.**
+
+**Disposition: the adopted arm's CI endpoints are marked in the originals on `0124`'s ground, pointing
+at the collapsed emission. Point estimates, numerators, denominators, bounds, widths, ceilings, sums
+and pair counts STAY UNMARKED — they did not move, and marking them would assert a defect they do not
+have.**
+
 ## 6. Scope
 
 - ***The `$defs/ci` percent-vs-pp typing is NOT ruled here.*** Still open, still the Human Lead's.

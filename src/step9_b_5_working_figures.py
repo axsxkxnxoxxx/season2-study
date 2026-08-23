@@ -318,7 +318,23 @@ supplementary = {
         "_why": "the exclusion account counts (e.g. 216) are only checkable against a "
                 "denominator. These are the resampling-unit totals recorded by the "
                 "bootstrap stage. Counts of accounts, not accounts.",
-        **{sk: {p: ref("stage2", sk, p, "n_accounts") for p in POPS}
+        "_the_draw_is_not_the_support": (
+            "TWO DIFFERENT ACCOUNT TOTALS ARE RECORDED HERE AND THEY ARE NOT INTERCHANGEABLE "
+            "(decisions/0124 SS4(1)). `resampling_frame` is THE DRAW -- every account with at "
+            "least one pair in the position-4 output, built once and drawn for every quantity "
+            "regardless of how much it contributes. It is arm-independent in MEMBERSHIP. "
+            "`contributing` is THE SUPPORT -- the accounts that actually hold a pair in this "
+            "population at this arm -- and it is NOT arm-independent, because keep_d10 contains "
+            "max(W, 91). The difference is the accounts drawn with zero contribution. A reader "
+            "taking the frame total as the number of accounts carrying a population would be "
+            "wrong by that difference."),
+        **{sk: {p: {"resampling_frame": ref("stage2", sk, p,
+                                            "n_accounts_resampling_frame"),
+                    "contributing": ref("stage2", sk, p,
+                                        "n_accounts_contributing_to_this_group"),
+                    "drawn_contributing_zero": ref("stage2", sk, p,
+                                                   "n_accounts_drawn_contributing_zero")}
+                for p in POPS}
            for sk, _, _, _ in SETTINGS},
     },
 }

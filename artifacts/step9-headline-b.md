@@ -40,11 +40,13 @@ THE ADOPTED ARM. T0 = max(S2 finale air date, first-pass S1 completion date) -- 
 
 **APPLY** — position-5 row set **196,654**, post-liveness row set **195,951**.
 
+> **SUPERSEDED — 2026-08-23 (`decisions/0124`).** Every CELL in the table below marked `·SUPERSEDED-0124` was produced under a resampling design `decisions/0124` has since fixed against: this arm drew its bootstrap frame **per mask** — the accounts contributing to each group — and **re-seeded** the generator per group. `0124` fixes the frame as every account with at least one pair in the position-4 output, built once and drawn for every quantity, and fixes the draw order as one RNG seeded once per file whose stream is consumed continuously. The marked cells are correctly computed under the superseded design and are kept as the record of what it produced. The corrected figures are at the same section of `artifacts/step9-headline-corrected-2026-08-21-b.md`. **THIS STAMP COVERS ONLY THE CELLS MARKED `·SUPERSEDED-0124`; it exempts nothing else in this file AND IT ASSERTS NOTHING ABOUT ANY CELL IT DOES NOT MARK.**
+
 | outcome | share (post-liveness) | pairs | 95% CI, **LEVEL** | width | horizon |
 | :--- | ---: | ---: | :--- | ---: | ---: |
-| never started | **16.7231%** | 32,769 | [16.1650%, 17.2912%] | 1.1262 pp | 108 d |
-| started and left | **9.7177%** | 19,042 | [9.3485%, 10.0934%] | 0.7449 pp | 199 d |
-| continued | **73.5592%** | 144,140 | [72.8442%, 74.2875%] | 1.4433 pp | 199 d |
+| never started | **16.7231%** | 32,769 | [16.1650%, 17.2912%] ·**SUPERSEDED-0124** | 1.1262 pp ·**SUPERSEDED-0124** | 108 d |
+| started and left | **9.7177%** | 19,042 | [9.3485%, 10.0934%] ·**SUPERSEDED-0124** | 0.7449 pp ·**SUPERSEDED-0124** | 199 d |
+| continued | **73.5592%** | 144,140 | [72.8442%, 74.2875%] ·**SUPERSEDED-0124** | 1.4433 pp ·**SUPERSEDED-0124** | 199 d |
 
 | bound | floor | ceiling | width | on |
 | :--- | ---: | ---: | ---: | :--- |
@@ -60,11 +62,13 @@ THE ADOPTED ARM. T0 = max(S2 finale air date, first-pass S1 completion date) -- 
 
 **DERIV** — position-5 row set **147,370**, post-liveness row set **147,271**.
 
+> **SUPERSEDED — 2026-08-23 (`decisions/0124`).** Every CELL in the table below marked `·SUPERSEDED-0124` was produced under a resampling design `decisions/0124` has since fixed against: this arm drew its bootstrap frame **per mask** — the accounts contributing to each group — and **re-seeded** the generator per group. `0124` fixes the frame as every account with at least one pair in the position-4 output, built once and drawn for every quantity, and fixes the draw order as one RNG seeded once per file whose stream is consumed continuously. The marked cells are correctly computed under the superseded design and are kept as the record of what it produced. The corrected figures are at the same section of `artifacts/step9-headline-corrected-2026-08-21-b.md`. **THIS STAMP COVERS ONLY THE CELLS MARKED `·SUPERSEDED-0124`; it exempts nothing else in this file AND IT ASSERTS NOTHING ABOUT ANY CELL IT DOES NOT MARK.**
+
 | outcome | share (post-liveness) | pairs | 95% CI, **LEVEL** | width | horizon |
 | :--- | ---: | ---: | :--- | ---: | ---: |
-| never started | **6.2096%** | 9,145 | [5.8415%, 6.6054%] | 0.7639 pp | 108 d |
-| started and left | **11.3695%** | 16,744 | [10.8961%, 11.8583%] | 0.9621 pp | 199 d |
-| continued | **82.4208%** | 121,382 | [81.7944%, 83.0360%] | 1.2416 pp | 199 d |
+| never started | **6.2096%** | 9,145 | [5.8415%, 6.6054%] ·**SUPERSEDED-0124** | 0.7639 pp ·**SUPERSEDED-0124** | 108 d |
+| started and left | **11.3695%** | 16,744 | [10.8961%, 11.8583%] ·**SUPERSEDED-0124** | 0.9621 pp ·**SUPERSEDED-0124** | 199 d |
+| continued | **82.4208%** | 121,382 | [81.7944%, 83.0360%] ·**SUPERSEDED-0124** | 1.2416 pp ·**SUPERSEDED-0124** | 199 d |
 
 | bound | floor | ceiling | width | on |
 | :--- | ---: | ---: | ---: | :--- |
@@ -87,7 +91,7 @@ THE SECOND HEADLINE, at Netflix's own 91-day reporting window, so the result is 
 
 **APPLY** — position-5 row set **196,654**, post-liveness row set **196,494**.
 
-> **SUPERSEDED — 2026-08-21.** Every row of the table below that is marked `·SUPERSEDED` was produced under a defective `T0` vector: `src/step9_b_1_compute.py` divided a `datetime64[us, UTC]` column by `10 ** 9`, so every premiere-anchored `T0` was epoch-**seconds ÷ 1000** — a 1970 date — instead of epoch seconds. They are correctly computed from that vector and are kept as the record of what the defect produced. The corrected figures are at the same section of `artifacts/step9-headline-corrected-2026-08-21-b.md`. **Rows WITHOUT that mark are not superseded and this defect does not reach them.** This stamp covers only the marked rows; it exempts nothing else in this file.
+> **SUPERSEDED — 2026-08-21.** Every row of the table below that is marked `·SUPERSEDED` was produced under a defective `T0` vector: `src/step9_b_1_compute.py` divided a `datetime64[us, UTC]` column by `10 ** 9`, so every premiere-anchored `T0` was epoch-**seconds ÷ 1000** — a 1970 date — instead of epoch seconds. They are correctly computed from that vector and are kept as the record of what the defect produced. The corrected figures are at the same section of `artifacts/step9-headline-corrected-2026-08-21-b.md`. **This unit defect does not reach rows without that mark. THAT IS A STATEMENT ABOUT THIS DEFECT AND NOTHING ELSE — it is NOT a claim that such a row is not superseded on some other ground.** A stamp naming what is *not* superseded is a claim about the ABSENCE of a defect, and it goes stale the moment a later ruling creates one in that scope (`decisions/0124` §5b). This stamp's earlier wording did exactly that, and `0124` then superseded the adopted arm's CI cells. Cells superseded on that ruling's ground carry their own `·SUPERSEDED-0124` mark. This stamp covers only the marked rows; it exempts nothing else in this file.
 
 | outcome | share (post-liveness) | pairs | 95% CI, **LEVEL** | width | horizon |
 | :--- | ---: | ---: | :--- | ---: | ---: |
@@ -95,7 +99,7 @@ THE SECOND HEADLINE, at Netflix's own 91-day reporting window, so the result is 
 | started and left | **6.6628%** | 13,092 | [6.3953%, 6.9390%] | 0.5437 pp | 182 d ·**SUPERSEDED** |
 | continued | **50.5690%** | 99,365 | [49.6377%, 51.5199%] | 1.8822 pp | 182 d ·**SUPERSEDED** |
 
-> **SUPERSEDED — 2026-08-21.** Every row of the table below that is marked `·SUPERSEDED` was produced under a defective `T0` vector: `src/step9_b_1_compute.py` divided a `datetime64[us, UTC]` column by `10 ** 9`, so every premiere-anchored `T0` was epoch-**seconds ÷ 1000** — a 1970 date — instead of epoch seconds. They are correctly computed from that vector and are kept as the record of what the defect produced. The corrected figures are at the same section of `artifacts/step9-headline-corrected-2026-08-21-b.md`. **Rows WITHOUT that mark are not superseded and this defect does not reach them.** This stamp covers only the marked rows; it exempts nothing else in this file.
+> **SUPERSEDED — 2026-08-21.** Every row of the table below that is marked `·SUPERSEDED` was produced under a defective `T0` vector: `src/step9_b_1_compute.py` divided a `datetime64[us, UTC]` column by `10 ** 9`, so every premiere-anchored `T0` was epoch-**seconds ÷ 1000** — a 1970 date — instead of epoch seconds. They are correctly computed from that vector and are kept as the record of what the defect produced. The corrected figures are at the same section of `artifacts/step9-headline-corrected-2026-08-21-b.md`. **This unit defect does not reach rows without that mark. THAT IS A STATEMENT ABOUT THIS DEFECT AND NOTHING ELSE — it is NOT a claim that such a row is not superseded on some other ground.** A stamp naming what is *not* superseded is a claim about the ABSENCE of a defect, and it goes stale the moment a later ruling creates one in that scope (`decisions/0124` §5b). This stamp's earlier wording did exactly that, and `0124` then superseded the adopted arm's CI cells. Cells superseded on that ruling's ground carry their own `·SUPERSEDED-0124` mark. This stamp covers only the marked rows; it exempts nothing else in this file.
 
 | bound | floor | ceiling | width | on |
 | :--- | ---: | ---: | ---: | :--- |
@@ -119,7 +123,7 @@ THE SECOND HEADLINE, at Netflix's own 91-day reporting window, so the result is 
 
 **DERIV** — position-5 row set **147,370**, post-liveness row set **147,318**.
 
-> **SUPERSEDED — 2026-08-21.** Every row of the table below that is marked `·SUPERSEDED` was produced under a defective `T0` vector: `src/step9_b_1_compute.py` divided a `datetime64[us, UTC]` column by `10 ** 9`, so every premiere-anchored `T0` was epoch-**seconds ÷ 1000** — a 1970 date — instead of epoch seconds. They are correctly computed from that vector and are kept as the record of what the defect produced. The corrected figures are at the same section of `artifacts/step9-headline-corrected-2026-08-21-b.md`. **Rows WITHOUT that mark are not superseded and this defect does not reach them.** This stamp covers only the marked rows; it exempts nothing else in this file.
+> **SUPERSEDED — 2026-08-21.** Every row of the table below that is marked `·SUPERSEDED` was produced under a defective `T0` vector: `src/step9_b_1_compute.py` divided a `datetime64[us, UTC]` column by `10 ** 9`, so every premiere-anchored `T0` was epoch-**seconds ÷ 1000** — a 1970 date — instead of epoch seconds. They are correctly computed from that vector and are kept as the record of what the defect produced. The corrected figures are at the same section of `artifacts/step9-headline-corrected-2026-08-21-b.md`. **This unit defect does not reach rows without that mark. THAT IS A STATEMENT ABOUT THIS DEFECT AND NOTHING ELSE — it is NOT a claim that such a row is not superseded on some other ground.** A stamp naming what is *not* superseded is a claim about the ABSENCE of a defect, and it goes stale the moment a later ruling creates one in that scope (`decisions/0124` §5b). This stamp's earlier wording did exactly that, and `0124` then superseded the adopted arm's CI cells. Cells superseded on that ruling's ground carry their own `·SUPERSEDED-0124` mark. This stamp covers only the marked rows; it exempts nothing else in this file.
 
 | outcome | share (post-liveness) | pairs | 95% CI, **LEVEL** | width | horizon |
 | :--- | ---: | ---: | :--- | ---: | ---: |
@@ -127,7 +131,7 @@ THE SECOND HEADLINE, at Netflix's own 91-day reporting window, so the result is 
 | started and left | **7.4098%** | 10,916 | [7.0829%, 7.7530%] | 0.6701 pp | 182 d ·**SUPERSEDED** |
 | continued | **52.5177%** | 77,368 | [51.2909%, 53.7015%] | 2.4106 pp | 182 d ·**SUPERSEDED** |
 
-> **SUPERSEDED — 2026-08-21.** Every row of the table below that is marked `·SUPERSEDED` was produced under a defective `T0` vector: `src/step9_b_1_compute.py` divided a `datetime64[us, UTC]` column by `10 ** 9`, so every premiere-anchored `T0` was epoch-**seconds ÷ 1000** — a 1970 date — instead of epoch seconds. They are correctly computed from that vector and are kept as the record of what the defect produced. The corrected figures are at the same section of `artifacts/step9-headline-corrected-2026-08-21-b.md`. **Rows WITHOUT that mark are not superseded and this defect does not reach them.** This stamp covers only the marked rows; it exempts nothing else in this file.
+> **SUPERSEDED — 2026-08-21.** Every row of the table below that is marked `·SUPERSEDED` was produced under a defective `T0` vector: `src/step9_b_1_compute.py` divided a `datetime64[us, UTC]` column by `10 ** 9`, so every premiere-anchored `T0` was epoch-**seconds ÷ 1000** — a 1970 date — instead of epoch seconds. They are correctly computed from that vector and are kept as the record of what the defect produced. The corrected figures are at the same section of `artifacts/step9-headline-corrected-2026-08-21-b.md`. **This unit defect does not reach rows without that mark. THAT IS A STATEMENT ABOUT THIS DEFECT AND NOTHING ELSE — it is NOT a claim that such a row is not superseded on some other ground.** A stamp naming what is *not* superseded is a claim about the ABSENCE of a defect, and it goes stale the moment a later ruling creates one in that scope (`decisions/0124` §5b). This stamp's earlier wording did exactly that, and `0124` then superseded the adopted arm's CI cells. Cells superseded on that ruling's ground carry their own `·SUPERSEDED-0124` mark. This stamp covers only the marked rows; it exempts nothing else in this file.
 
 | bound | floor | ceiling | width | on |
 | :--- | ---: | ---: | ---: | :--- |
@@ -156,16 +160,18 @@ THE SECOND HEADLINE, at Netflix's own 91-day reporting window, so the result is 
 
 **PAIRED MOVEMENTS**, the second object: the change in each share caused by the liveness filter — post-liveness level minus position-5 level — differenced **inside each replicate**, so the same account weights produce both terms.
 
-> **SUPERSEDED — 2026-08-21.** Every row of the table below that is marked `·SUPERSEDED` was produced under a defective `T0` vector: `src/step9_b_1_compute.py` divided a `datetime64[us, UTC]` column by `10 ** 9`, so every premiere-anchored `T0` was epoch-**seconds ÷ 1000** — a 1970 date — instead of epoch seconds. They are correctly computed from that vector and are kept as the record of what the defect produced. The corrected figures are at the same section of `artifacts/step9-headline-corrected-2026-08-21-b.md`. **Rows WITHOUT that mark are not superseded and this defect does not reach them.** This stamp covers only the marked rows; it exempts nothing else in this file.
+> **SUPERSEDED — 2026-08-21.** Every row of the table below that is marked `·SUPERSEDED` was produced under a defective `T0` vector: `src/step9_b_1_compute.py` divided a `datetime64[us, UTC]` column by `10 ** 9`, so every premiere-anchored `T0` was epoch-**seconds ÷ 1000** — a 1970 date — instead of epoch seconds. They are correctly computed from that vector and are kept as the record of what the defect produced. The corrected figures are at the same section of `artifacts/step9-headline-corrected-2026-08-21-b.md`. **This unit defect does not reach rows without that mark. THAT IS A STATEMENT ABOUT THIS DEFECT AND NOTHING ELSE — it is NOT a claim that such a row is not superseded on some other ground.** A stamp naming what is *not* superseded is a claim about the ABSENCE of a defect, and it goes stale the moment a later ruling creates one in that scope (`decisions/0124` §5b). This stamp's earlier wording did exactly that, and `0124` then superseded the adopted arm's CI cells. Cells superseded on that ruling's ground carry their own `·SUPERSEDED-0124` mark. This stamp covers only the marked rows; it exempts nothing else in this file.
+
+> **SUPERSEDED — 2026-08-23 (`decisions/0124`).** Every CELL in the table below marked `·SUPERSEDED-0124` was produced under a resampling design `decisions/0124` has since fixed against: this arm drew its bootstrap frame **per mask** — the accounts contributing to each group — and **re-seeded** the generator per group. `0124` fixes the frame as every account with at least one pair in the position-4 output, built once and drawn for every quantity, and fixes the draw order as one RNG seeded once per file whose stream is consumed continuously. The marked cells are correctly computed under the superseded design and are kept as the record of what it produced. The corrected figures are at the same section of `artifacts/step9-headline-corrected-2026-08-21-b.md`. **THIS STAMP COVERS ONLY THE CELLS MARKED `·SUPERSEDED-0124`; it exempts nothing else in this file AND IT ASSERTS NOTHING ABOUT ANY CELL IT DOES NOT MARK.**
 
 | arm | population | outcome | 95% CI, **MOVEMENT** | width | level width | ratio |
 | :--- | :--- | :--- | :--- | ---: | ---: | ---: |
-| W108_s2_finale__step9__r6 | APPLY | never started | [-0.2986, -0.2011] pp | 0.0975 pp | 1.1262 pp | **12×** |
-| W108_s2_finale__step9__r6 | APPLY | started and left | [-0.0272, -0.0048] pp | 0.0224 pp | 0.7449 pp | **33×** |
-| W108_s2_finale__step9__r6 | APPLY | continued | [+0.2165, +0.3146] pp | 0.0981 pp | 1.4433 pp | **15×** |
-| W108_s2_finale__step9__r6 | DERIV | never started | [+0.0031, +0.0054] pp | 0.0023 pp | 0.7639 pp | **337×** |
-| W108_s2_finale__step9__r6 | DERIV | started and left | [-0.0763, -0.0444] pp | 0.0318 pp | 0.9621 pp | **30×** |
-| W108_s2_finale__step9__r6 | DERIV | continued | [+0.0412, +0.0709] pp | 0.0297 pp | 1.2416 pp | **42×** |
+| W108_s2_finale__step9__r6 | APPLY | never started | [-0.2986, -0.2011] pp ·**SUPERSEDED-0124** | 0.0975 pp ·**SUPERSEDED-0124** | 1.1262 pp ·**SUPERSEDED-0124** | **12×** ·**SUPERSEDED-0124** |
+| W108_s2_finale__step9__r6 | APPLY | started and left | [-0.0272, -0.0048] pp ·**SUPERSEDED-0124** | 0.0224 pp | 0.7449 pp ·**SUPERSEDED-0124** | **33×** ·**SUPERSEDED-0124** |
+| W108_s2_finale__step9__r6 | APPLY | continued | [+0.2165, +0.3146] pp ·**SUPERSEDED-0124** | 0.0981 pp ·**SUPERSEDED-0124** | 1.4433 pp ·**SUPERSEDED-0124** | **15×** ·**SUPERSEDED-0124** |
+| W108_s2_finale__step9__r6 | DERIV | never started | [+0.0031, +0.0054] pp | 0.0023 pp | 0.7639 pp ·**SUPERSEDED-0124** | **337×** ·**SUPERSEDED-0124** |
+| W108_s2_finale__step9__r6 | DERIV | started and left | [-0.0763, -0.0444] pp ·**SUPERSEDED-0124** | 0.0318 pp | 0.9621 pp ·**SUPERSEDED-0124** | **30×** |
+| W108_s2_finale__step9__r6 | DERIV | continued | [+0.0412, +0.0709] pp ·**SUPERSEDED-0124** | 0.0297 pp ·**SUPERSEDED-0124** | 1.2416 pp ·**SUPERSEDED-0124** | **42×** ·**SUPERSEDED-0124** |
 | W091_s2_premiere__step9__r6 | APPLY | never started | [-0.0318, -0.0103] pp | 0.0215 pp | 1.9029 pp | **89×** ·**SUPERSEDED** |
 | W091_s2_premiere__step9__r6 | APPLY | started and left | [-0.0302, -0.0130] pp | 0.0172 pp | 0.5437 pp | **32×** ·**SUPERSEDED** |
 | W091_s2_premiere__step9__r6 | APPLY | continued | [+0.0291, +0.0555] pp | 0.0264 pp | 1.8822 pp | **71×** ·**SUPERSEDED** |
@@ -208,7 +214,7 @@ THE SECOND HEADLINE, at Netflix's own 91-day reporting window, so the result is 
 
 **W091_s2_premiere__step9__r6 · APPLY**
 
-> **SUPERSEDED — 2026-08-21.** Every row of the table below that is marked `·SUPERSEDED` was produced under a defective `T0` vector: `src/step9_b_1_compute.py` divided a `datetime64[us, UTC]` column by `10 ** 9`, so every premiere-anchored `T0` was epoch-**seconds ÷ 1000** — a 1970 date — instead of epoch seconds. They are correctly computed from that vector and are kept as the record of what the defect produced. The corrected figures are at the same section of `artifacts/step9-headline-corrected-2026-08-21-b.md`. **Rows WITHOUT that mark are not superseded and this defect does not reach them.** This stamp covers only the marked rows; it exempts nothing else in this file.
+> **SUPERSEDED — 2026-08-21.** Every row of the table below that is marked `·SUPERSEDED` was produced under a defective `T0` vector: `src/step9_b_1_compute.py` divided a `datetime64[us, UTC]` column by `10 ** 9`, so every premiere-anchored `T0` was epoch-**seconds ÷ 1000** — a 1970 date — instead of epoch seconds. They are correctly computed from that vector and are kept as the record of what the defect produced. The corrected figures are at the same section of `artifacts/step9-headline-corrected-2026-08-21-b.md`. **This unit defect does not reach rows without that mark. THAT IS A STATEMENT ABOUT THIS DEFECT AND NOTHING ELSE — it is NOT a claim that such a row is not superseded on some other ground.** A stamp naming what is *not* superseded is a claim about the ABSENCE of a defect, and it goes stale the moment a later ruling creates one in that scope (`decisions/0124` §5b). This stamp's earlier wording did exactly that, and `0124` then superseded the adopted arm's CI cells. Cells superseded on that ruling's ground carry their own `·SUPERSEDED-0124` mark. This stamp covers only the marked rows; it exempts nothing else in this file.
 
 | corner | never started | started and left | continued |
 | :--- | ---: | ---: | ---: |
@@ -218,7 +224,7 @@ THE SECOND HEADLINE, at Netflix's own 91-day reporting window, so the result is 
 
 **W091_s2_premiere__step9__r6 · DERIV**
 
-> **SUPERSEDED — 2026-08-21.** Every row of the table below that is marked `·SUPERSEDED` was produced under a defective `T0` vector: `src/step9_b_1_compute.py` divided a `datetime64[us, UTC]` column by `10 ** 9`, so every premiere-anchored `T0` was epoch-**seconds ÷ 1000** — a 1970 date — instead of epoch seconds. They are correctly computed from that vector and are kept as the record of what the defect produced. The corrected figures are at the same section of `artifacts/step9-headline-corrected-2026-08-21-b.md`. **Rows WITHOUT that mark are not superseded and this defect does not reach them.** This stamp covers only the marked rows; it exempts nothing else in this file.
+> **SUPERSEDED — 2026-08-21.** Every row of the table below that is marked `·SUPERSEDED` was produced under a defective `T0` vector: `src/step9_b_1_compute.py` divided a `datetime64[us, UTC]` column by `10 ** 9`, so every premiere-anchored `T0` was epoch-**seconds ÷ 1000** — a 1970 date — instead of epoch seconds. They are correctly computed from that vector and are kept as the record of what the defect produced. The corrected figures are at the same section of `artifacts/step9-headline-corrected-2026-08-21-b.md`. **This unit defect does not reach rows without that mark. THAT IS A STATEMENT ABOUT THIS DEFECT AND NOTHING ELSE — it is NOT a claim that such a row is not superseded on some other ground.** A stamp naming what is *not* superseded is a claim about the ABSENCE of a defect, and it goes stale the moment a later ruling creates one in that scope (`decisions/0124` §5b). This stamp's earlier wording did exactly that, and `0124` then superseded the adopted arm's CI cells. Cells superseded on that ruling's ground carry their own `·SUPERSEDED-0124` mark. This stamp covers only the marked rows; it exempts nothing else in this file.
 
 | corner | never started | started and left | continued |
 | :--- | ---: | ---: | ---: |
@@ -229,16 +235,18 @@ THE SECOND HEADLINE, at Netflix's own 91-day reporting window, so the result is 
 
 **The convention is NAMED, because the two arms' sampling-width conventions are named inputs and reconciling them is a spec decision, not an arm's.** `arm_b_convention`: the denominator is the width of the 95% percentile-bootstrap interval on the corresponding **post-liveness level** for the same outcome state, arm and population, account-clustered at the fixed settings. **`reconciled_with_other_arm: false` at every point of use.**
 
-> **SUPERSEDED — 2026-08-21.** Every row of the table below that is marked `·SUPERSEDED` was produced under a defective `T0` vector: `src/step9_b_1_compute.py` divided a `datetime64[us, UTC]` column by `10 ** 9`, so every premiere-anchored `T0` was epoch-**seconds ÷ 1000** — a 1970 date — instead of epoch seconds. They are correctly computed from that vector and are kept as the record of what the defect produced. The corrected figures are at the same section of `artifacts/step9-headline-corrected-2026-08-21-b.md`. **Rows WITHOUT that mark are not superseded and this defect does not reach them.** This stamp covers only the marked rows; it exempts nothing else in this file.
+> **SUPERSEDED — 2026-08-21.** Every row of the table below that is marked `·SUPERSEDED` was produced under a defective `T0` vector: `src/step9_b_1_compute.py` divided a `datetime64[us, UTC]` column by `10 ** 9`, so every premiere-anchored `T0` was epoch-**seconds ÷ 1000** — a 1970 date — instead of epoch seconds. They are correctly computed from that vector and are kept as the record of what the defect produced. The corrected figures are at the same section of `artifacts/step9-headline-corrected-2026-08-21-b.md`. **This unit defect does not reach rows without that mark. THAT IS A STATEMENT ABOUT THIS DEFECT AND NOTHING ELSE — it is NOT a claim that such a row is not superseded on some other ground.** A stamp naming what is *not* superseded is a claim about the ABSENCE of a defect, and it goes stale the moment a later ruling creates one in that scope (`decisions/0124` §5b). This stamp's earlier wording did exactly that, and `0124` then superseded the adopted arm's CI cells. Cells superseded on that ruling's ground carry their own `·SUPERSEDED-0124` mark. This stamp covers only the marked rows; it exempts nothing else in this file.
+
+> **SUPERSEDED — 2026-08-23 (`decisions/0124`).** Every CELL in the table below marked `·SUPERSEDED-0124` was produced under a resampling design `decisions/0124` has since fixed against: this arm drew its bootstrap frame **per mask** — the accounts contributing to each group — and **re-seeded** the generator per group. `0124` fixes the frame as every account with at least one pair in the position-4 output, built once and drawn for every quantity, and fixes the draw order as one RNG seeded once per file whose stream is consumed continuously. The marked cells are correctly computed under the superseded design and are kept as the record of what it produced. The corrected figures are at the same section of `artifacts/step9-headline-corrected-2026-08-21-b.md`. **THIS STAMP COVERS ONLY THE CELLS MARKED `·SUPERSEDED-0124`; it exempts nothing else in this file AND IT ASSERTS NOTHING ABOUT ANY CELL IT DOES NOT MARK.**
 
 | arm | population | quantity | ratio |
 | :--- | :--- | :--- | ---: |
-| W108_s2_finale__step9__r6 | APPLY | never started | 0.2727 |
-| W108_s2_finale__step9__r6 | APPLY | started and left | 0.5414 |
-| W108_s2_finale__step9__r6 | APPLY | started and left sub interval | 0.1290 |
+| W108_s2_finale__step9__r6 | APPLY | never started | 0.2727 ·**SUPERSEDED-0124** |
+| W108_s2_finale__step9__r6 | APPLY | started and left | 0.5414 ·**SUPERSEDED-0124** |
+| W108_s2_finale__step9__r6 | APPLY | started and left sub interval | 0.1290 ·**SUPERSEDED-0124** |
 | W108_s2_finale__step9__r6 | DERIV | never started | 0.0000 |
-| W108_s2_finale__step9__r6 | DERIV | started and left | 0.1326 |
-| W108_s2_finale__step9__r6 | DERIV | started and left sub interval | 0.1326 |
+| W108_s2_finale__step9__r6 | DERIV | started and left | 0.1326 ·**SUPERSEDED-0124** |
+| W108_s2_finale__step9__r6 | DERIV | started and left sub interval | 0.1326 ·**SUPERSEDED-0124** |
 | W091_s2_premiere__step9__r6 | APPLY | never started | 0.0289 ·**SUPERSEDED** |
 | W091_s2_premiere__step9__r6 | APPLY | started and left | 0.1983 ·**SUPERSEDED** |
 | W091_s2_premiere__step9__r6 | APPLY | started and left sub interval | 0.0973 ·**SUPERSEDED** |

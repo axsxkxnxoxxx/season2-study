@@ -32,6 +32,17 @@ w8a = json.load(open(os.path.join(ROOT, "artifacts/step8-waterfall-a.json")))
 w8b = json.load(open(os.path.join(ROOT, "artifacts/step8-waterfall-b.json")))
 
 B, SEED = 10000, 20260818
+# THE FRAME AND THE DRAW ORDER ARE READ FROM THE STAGE THAT DREW THEM, NEVER TYPED HERE. A typed
+# 2481 or a typed digest would be a second definition of what the bootstrap actually did, and it
+# would go stale silently the first time the frame moved. NO DEFAULT: a missing key is a hard
+# stop, because an absent frame declaration and a declared one are not the same record.
+BOOT_DESIGN = s2["design"]
+for _k in ("resampling_frame", "resampling_frame_n", "draw_order",
+           "replicate_set_digest_sha256_12", "quantities_sharing_the_replicate_set"):
+    if _k not in BOOT_DESIGN:
+        raise SystemExit("HARD STOP: stage2_bootstrap.json carries no `%s`. decisions/0124 "
+                         "fixes the frame and the draw order, and a file that cannot state "
+                         "them at the point of use must not be emitted." % _k)
 REF = "b_default"
 NPOP = {"APPLY": 196654, "DERIV": 147370}
 NPOST = {"APPLY": 195951, "DERIV": 147271}
@@ -349,11 +360,18 @@ def payload(arm_key, pop):
                 "resampling_unit": "account", "quantity_class": "outcome_shares",
                 "note": ("A LEVEL, on the post-liveness row set (%d). Account-clustered "
                          "because pairs are not independent -- one account contributes many -- "
-                         "so pair-level resampling would understate it. %d accounts carry this "
-                         "population. THIS IS NOT COMPARABLE WITH A PAIRED MOVEMENT: the "
-                         "movement on the same quantity is in $.declared_intervals and is "
-                         "narrower by an order of magnitude."
-                         % (n7, boot["n_accounts"]))}
+                         "so pair-level resampling would understate it. THE FRAME DRAWN IS %d "
+                         "ACCOUNTS, every account with at least one pair in the position-4 "
+                         "output, built once and drawn for every quantity (decisions/0124); %d "
+                         "of them contribute to this population and %d are drawn and contribute "
+                         "zero. THE DECLARED FRAME DESCRIBES THE DRAW AND NOT THE SUPPORT: "
+                         "membership is arm-independent, the contributing subset is not, "
+                         "because keep_d10 contains max(W, 91). THIS IS NOT COMPARABLE WITH A "
+                         "PAIRED MOVEMENT: the movement on the same quantity is in "
+                         "$.declared_intervals and is narrower by an order of magnitude."
+                         % (n7, boot["n_accounts_resampling_frame"],
+                            boot["n_accounts_contributing_to_this_group"],
+                            boot["n_accounts_drawn_contributing_zero"]))}
 
     def share(state, num, horizon, note):
         return {"value_percent": pct(num, n7), "numerator_pairs": num,
@@ -668,14 +686,29 @@ doc = {
             "B": B, "seed": SEED, "statistics": ["levels", "movements"],
             "resampling_unit": "account", "producing_arm": ARM,
             "spec_status": "fixed_in_spec",
-            "fields_considered": ["B", "seed", "resampling_unit", "statistics"],
-            "fields_fixed_in_spec": ["B", "seed", "resampling_unit", "statistics"],
+            "fields_considered": ["B", "seed", "resampling_unit", "statistics",
+                                  "resampling_frame", "draw_order"],
+            "fields_fixed_in_spec": ["B", "seed", "resampling_unit", "statistics",
+                                     "resampling_frame", "draw_order"],
             "fields_not_fixed_in_spec": [],
-            "note": ("ALL FOUR ELEMENTS ARE FIXED BY THE SPEC AND NONE IS THIS ARM'S CHOICE -- "
+            "note": ("ALL SIX ELEMENTS ARE FIXED BY THE SPEC AND NONE IS THIS ARM'S CHOICE -- "
                      "decisions/0103 for B, the seed and the unit, decisions/0118 for the "
-                     "statistic. The fixed seed is what makes the two arms comparable: without "
-                     "it a difference between them could be sampling noise rather than a "
-                     "divergence. The seed VALUE is arbitrary; its FIXITY is the point."),
+                     "statistic, decisions/0124 for the FRAME and the DRAW ORDER. The frame is "
+                     "every account with at least one pair in the position-4 output (%d), built "
+                     "once and drawn for every quantity regardless of how much it contributes; "
+                     "the draw order is one RNG seeded once per file, its stream consumed "
+                     "continuously, with all %d intervals in this file evaluated against ONE "
+                     "replicate set (digest %s). THE FRAME FIELD DESCRIBES THE DRAW AND NOT THE "
+                     "SUPPORT (decisions/0124 SS4(1)): membership is arm-independent, the "
+                     "contributing subset is not, because keep_d10 contains max(W, 91) -- the "
+                     "per-population contributing counts are stated at each interval. The fixed "
+                     "seed is what makes the two arms comparable: without it a difference "
+                     "between them could be sampling noise rather than a divergence. The seed "
+                     "VALUE is arbitrary; its FIXITY is the point -- and an unfixed draw order "
+                     "makes a fixed seed decorative, which is why decisions/0124 fixes it."
+                     % (BOOT_DESIGN["resampling_frame_n"],
+                        BOOT_DESIGN["quantities_sharing_the_replicate_set"],
+                        BOOT_DESIGN["replicate_set_digest_sha256_12"])),
         },
     },
     "step_duality": tpl["step_duality"],
@@ -704,6 +737,37 @@ doc = {
     "spec_choices_made_by_step_8b": tpl["spec_choices_made_by_step_8b"],
     "known_limits_of_this_schema": tpl["known_limits_of_this_schema"],
     "notes": dict(tpl["notes"], **{
+        "step9_b_resampling_frame_and_draw_order": (
+            "THE FRAME IS %d ACCOUNTS -- every account with at least one pair in the POSITION-4 "
+            "output, built ONCE, and DRAWN FOR EVERY QUANTITY regardless of how much it "
+            "contributes (decisions/0124). It is NOT the contributing subset: accounts the "
+            "censoring rule excludes are part of the population the uncertainty is about, and "
+            "drawing only contributors conditions the variance on the censoring outcome and "
+            "treats survivorship as fixed. At the adopted arm %d accounts are drawn and "
+            "contribute zero on APPLY and %d on DERIV; every one of them held position-4 pairs "
+            "and every one of those pairs was removed by D10. "
+            "THE DRAW ORDER IS ONE RNG, SEEDED ONCE PER FILE, its stream consumed CONTINUOUSLY, "
+            "with all %d intervals in this file evaluated against THE SAME REPLICATE SET "
+            "(digest %s) -- NOT re-seeded per group, because a per-group restart pairs a "
+            "between-setting movement only WITHIN a group and Step 13 varies W across eight "
+            "arms. "
+            "THE FRAME DECLARATION DESCRIBES THE DRAW AND NOT THE SUPPORT (decisions/0124 "
+            "SS4(1)): membership is %d at every arm and on both populations, while the "
+            "contributing subset is %d on APPLY and %d on DERIV and moves with W, because "
+            "keep_d10 contains max(W, 91). "
+            "ONE FRAME SERVES BOTH POPULATIONS here, since the position-4 DERIV rows are a "
+            "subset of the position-4 APPLY rows; decisions/0124 SS4(2)'s constraint -- that an "
+            "APPLY-minus-DERIV delta cannot be paired at the account level where the two "
+            "populations have different frames -- is recorded, and NO SUCH DELTA IS PUBLISHED "
+            "IN THIS FILE."
+            % (BOOT_DESIGN["resampling_frame_n"],
+               s2["W108_s2_finale"]["APPLY"]["n_accounts_drawn_contributing_zero"],
+               s2["W108_s2_finale"]["DERIV"]["n_accounts_drawn_contributing_zero"],
+               BOOT_DESIGN["quantities_sharing_the_replicate_set"],
+               BOOT_DESIGN["replicate_set_digest_sha256_12"],
+               BOOT_DESIGN["resampling_frame_n"],
+               s2["W108_s2_finale"]["APPLY"]["n_accounts_contributing_to_this_group"],
+               s2["W108_s2_finale"]["DERIV"]["n_accounts_contributing_to_this_group"])),
         "step9_b_arm_grid_days_is_not_this_arms_block": (
             "$.arm_grid_days IS STEP 13's BLOCK. It is required at the root of every file and "
             "block_ownership marks it may_first_writer_fill, so THIS ARM FILLED IT AS FIRST "

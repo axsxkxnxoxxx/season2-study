@@ -134,10 +134,15 @@ for i, a in enumerate(d["arms"]):
 w("## 3. Both bootstrap objects — and a level is never compared with a movement")
 w("")
 bs = d["bootstrap_settings"]["b_default"]
-w("**ALL FOUR ELEMENTS ARE FIXED BY THE SPEC AND NONE IS THIS ARM'S CHOICE:** `B` = **%s**, "
-  "seed = **%d**, resampling unit = **%s**, statistic = **both %s**. Every interval in this "
-  "file restates them at the point of use."
-  % (format(bs["B"], ","), bs["seed"], bs["resampling_unit"], " and ".join(bs["statistics"])))
+w("**ALL SIX ELEMENTS ARE FIXED BY THE SPEC AND NONE IS THIS ARM'S CHOICE:** `B` = **%s**, "
+  "seed = **%d**, resampling unit = **%s**, statistic = **both %s**, and — since "
+  "`decisions/0124` — the **resampling frame** and the **draw order**. Every interval in this "
+  "file restates them at the point of use. Values as fixed: `%s`."
+  % (format(bs["B"], ","), bs["seed"], bs["resampling_unit"], " and ".join(bs["statistics"]),
+     ", ".join(sorted(bs["fields_fixed_in_spec"]))))
+w("")
+_bd = d["notes"]["step9_b_resampling_frame_and_draw_order"]
+w("**The frame and the draw order, stated once here and restated at every interval.** %s" % _bd)
 w("")
 w("**ACCOUNT LEVEL because pairs are not independent** — one account contributes many, and "
   "pair-level resampling understates the interval.")
@@ -172,10 +177,17 @@ w("***A LEVEL AND A MOVEMENT ARE NEVER COMPARED TO EACH OTHER.*** The level and 
   "they are reading is wrong by that much. **Both objects are labelled at the point of use and "
   "neither is presented as *the* design.**")
 w("")
+# MEASURED, NOT TYPED. This sentence used to assert "Six of the twelve" as a literal, which was
+# carried as open defect b-md-1: it was true of the figures it described but could not follow
+# them if they moved. decisions/0124 moved every CI endpoint in this file, which is exactly the
+# case the defect was reserved for, so the count is now counted off the emitted intervals.
+_mv = [e for e in d["declared_intervals"] if e["ci"]["statistic"] == "movements"]
+_neg = [e for e in _mv if e["ci"]["lower"] < 0 or e["ci"]["upper"] < 0]
 w("**A property of these measurements, stated because it bears on how they may be read: a "
   "paired movement is a quantity in PERCENTAGE POINTS and it is negative wherever the liveness "
-  "filter lowers a share. Six of the twelve movements this arm measured have negative "
-  "endpoints.** A movement is not a percentage and must not be rendered as one.")
+  "filter lowers a share. %d of the %d movements this arm measured have negative endpoints** "
+  "— counted off the emitted intervals in this file, not asserted. A movement is not a "
+  "percentage and must not be rendered as one." % (len(_neg), len(_mv)))
 w("")
 w("**Every interval here is an outcome-share quantity, whose binding cluster is the ACCOUNT**, "
   "so every one of them says `account` and none inherits it silently. **No window-`W` "

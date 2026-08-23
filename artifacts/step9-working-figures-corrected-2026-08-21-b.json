@@ -10,7 +10,7 @@
   "adopts": "nothing",
   "api_calls": 0,
   "generated_by": "src/step9_b_5_working_figures.py",
-  "generated_at_utc": "2026-08-21T21:56:18Z",
+  "generated_at_utc": "2026-08-23T19:28:18Z",
   "sources": [
     {
       "path": "processed/step9/b/stage1_counts.json",
@@ -18,7 +18,7 @@
     },
     {
       "path": "processed/step9/b/stage2_bootstrap.json",
-      "sha256_12": "cef66bb5ab84"
+      "sha256_12": "1f93cecadc7d"
     }
   ],
   "privacy": {
@@ -815,28 +815,77 @@
     },
     "account_totals_of_the_populations": {
       "_why": "the exclusion account counts (e.g. 216) are only checkable against a denominator. These are the resampling-unit totals recorded by the bootstrap stage. Counts of accounts, not accounts.",
+      "_the_draw_is_not_the_support": "TWO DIFFERENT ACCOUNT TOTALS ARE RECORDED HERE AND THEY ARE NOT INTERCHANGEABLE (decisions/0124 SS4(1)). `resampling_frame` is THE DRAW -- every account with at least one pair in the position-4 output, built once and drawn for every quantity regardless of how much it contributes. It is arm-independent in MEMBERSHIP. `contributing` is THE SUPPORT -- the accounts that actually hold a pair in this population at this arm -- and it is NOT arm-independent, because keep_d10 contains max(W, 91). The difference is the accounts drawn with zero contribution. A reader taking the frame total as the number of accounts carrying a population would be wrong by that difference.",
       "W108_s2_finale": {
         "APPLY": {
-          "value": 2422,
-          "source_file": "processed/step9/b/stage2_bootstrap.json",
-          "key": "$.W108_s2_finale.APPLY.n_accounts"
+          "resampling_frame": {
+            "value": 2481,
+            "source_file": "processed/step9/b/stage2_bootstrap.json",
+            "key": "$.W108_s2_finale.APPLY.n_accounts_resampling_frame"
+          },
+          "contributing": {
+            "value": 2422,
+            "source_file": "processed/step9/b/stage2_bootstrap.json",
+            "key": "$.W108_s2_finale.APPLY.n_accounts_contributing_to_this_group"
+          },
+          "drawn_contributing_zero": {
+            "value": 59,
+            "source_file": "processed/step9/b/stage2_bootstrap.json",
+            "key": "$.W108_s2_finale.APPLY.n_accounts_drawn_contributing_zero"
+          }
         },
         "DERIV": {
-          "value": 2402,
-          "source_file": "processed/step9/b/stage2_bootstrap.json",
-          "key": "$.W108_s2_finale.DERIV.n_accounts"
+          "resampling_frame": {
+            "value": 2481,
+            "source_file": "processed/step9/b/stage2_bootstrap.json",
+            "key": "$.W108_s2_finale.DERIV.n_accounts_resampling_frame"
+          },
+          "contributing": {
+            "value": 2402,
+            "source_file": "processed/step9/b/stage2_bootstrap.json",
+            "key": "$.W108_s2_finale.DERIV.n_accounts_contributing_to_this_group"
+          },
+          "drawn_contributing_zero": {
+            "value": 79,
+            "source_file": "processed/step9/b/stage2_bootstrap.json",
+            "key": "$.W108_s2_finale.DERIV.n_accounts_drawn_contributing_zero"
+          }
         }
       },
       "W91_s2_premiere": {
         "APPLY": {
-          "value": 2422,
-          "source_file": "processed/step9/b/stage2_bootstrap.json",
-          "key": "$.W91_s2_premiere.APPLY.n_accounts"
+          "resampling_frame": {
+            "value": 2481,
+            "source_file": "processed/step9/b/stage2_bootstrap.json",
+            "key": "$.W91_s2_premiere.APPLY.n_accounts_resampling_frame"
+          },
+          "contributing": {
+            "value": 2422,
+            "source_file": "processed/step9/b/stage2_bootstrap.json",
+            "key": "$.W91_s2_premiere.APPLY.n_accounts_contributing_to_this_group"
+          },
+          "drawn_contributing_zero": {
+            "value": 59,
+            "source_file": "processed/step9/b/stage2_bootstrap.json",
+            "key": "$.W91_s2_premiere.APPLY.n_accounts_drawn_contributing_zero"
+          }
         },
         "DERIV": {
-          "value": 2402,
-          "source_file": "processed/step9/b/stage2_bootstrap.json",
-          "key": "$.W91_s2_premiere.DERIV.n_accounts"
+          "resampling_frame": {
+            "value": 2481,
+            "source_file": "processed/step9/b/stage2_bootstrap.json",
+            "key": "$.W91_s2_premiere.DERIV.n_accounts_resampling_frame"
+          },
+          "contributing": {
+            "value": 2402,
+            "source_file": "processed/step9/b/stage2_bootstrap.json",
+            "key": "$.W91_s2_premiere.DERIV.n_accounts_contributing_to_this_group"
+          },
+          "drawn_contributing_zero": {
+            "value": 79,
+            "source_file": "processed/step9/b/stage2_bootstrap.json",
+            "key": "$.W91_s2_premiere.DERIV.n_accounts_drawn_contributing_zero"
+          }
         }
       }
     }
@@ -947,21 +996,147 @@
     "document_instance": "step9-b-corrected-2026-08-21",
     "document_instance_note": "THIS IS NOT A SECOND ARM FILE. It is arm b's corrected emission of arm b's own document, and $.document_scope.arm is 'b' in both it and the file it supersedes. A merge that globbed artifacts/step9-headline-*.json on the arm field alone would pick up BOTH and could read them as two arms. THIS DOCUMENT THEREFORE CARRIES A DISTINCT INSTANCE VALUE -- 'DOCUMENT INSTANCE: step9-b-corrected-2026-08-21', at $.document_scope.note -- so the superseded file and this one are DISTINGUISHABLE rather than interchangeable. THAT IS ALL IT DOES: it makes the two tellable apart and states nothing about which a merge takes. The merge's input contract is Step 13b's, and Step 13b is the Human Lead's; an arm does not decide what the merge reads. Human Lead ruling 2, 2026-08-21.",
     "supersedes": "artifacts/step9-working-figures-b.json",
-    "what_it_supersedes": "This emission supersedes the PREMIERE-ANCHORED 91-day arm of artifacts/step9-headline-b.json, artifacts/step9-headline-b.md and artifacts/step9-working-figures-b.json -- and ONLY that arm. The adopted W108_s2_finale arm is unchanged: it was verified leaf-for-leaf identical and its harness control reproduces, so nothing about it is superseded and it is not marked in those files.",
+    "what_it_supersedes": "THIS EMISSION SUPERSEDES artifacts/step9-headline-b.json, artifacts/step9-headline-b.md and artifacts/step9-working-figures-b.json ON TWO INDEPENDENT GROUNDS FOUND IN ONE STEP 9 PASS, and the two have DIFFERENT SCOPES. GROUND 1, decisions/0123 -- THE PREMIERE-CLOCK UNIT ERROR. It reaches the PREMIERE-ANCHORED 91-day arm and only that arm: every figure of that arm is superseded. GROUND 2, decisions/0124 -- THE RESAMPLING FRAME AND THE DRAW ORDER. It reaches EVERY CONFIDENCE INTERVAL IN THE FILE, on BOTH arms, INCLUDING the adopted W108_s2_finale arm, whose CI endpoints are therefore superseded too. NOTHING ELSE OF THE ADOPTED ARM MOVES: every point estimate, numerator, denominator, bound floor and ceiling, width, sub-interval, ceiling, three-ceiling sum, excess and pair count is not bootstrap-dependent, and each was verified unchanged leaf by leaf against the previous corrected emission. THE READER GETS TWO GENERATIONS AND NOT THREE: the stamped originals, and this one corrected emission naming both causes. It is a COLLAPSE, ruled by the Human Lead on 2026-08-23, of what would otherwise have been a second supersession layer.",
     "why": "src/step9_b_1_compute.py converted the premiere-anchored T0 column to epoch seconds with prem.astype('int64') // 10 ** 9. The column's dtype is datetime64[us, UTC], so its integer view is MICROseconds; dividing by 10 ** 9 produced epoch-seconds / 1000 -- a 1970 date -- for every pair, in every entry, on both populations. The superseded figures were CORRECTLY COMPUTED from that vector and are kept, marked at each point of use, as the record of what the defect produced. src/step9_b_0_clock.py now reads the resolution off the dtype and cross-checks the cast elementwise; an unrecognised resolution is a hard stop, not a default.",
+    "why_ground_2_frame_and_draw_order": "decisions/0124 fixed the two bootstrap elements decisions/0103 and decisions/0118 had left open. THE FRAME is every account with at least one pair in the POSITION-4 output, built ONCE, and drawn for every quantity regardless of how much it contributes -- NOT the contributing subset, because accounts the censoring rule excludes are part of the population the uncertainty is about, and drawing only contributors conditions the variance on the censoring outcome and treats survivorship as fixed. THE DRAW ORDER is ONE RNG, SEEDED ONCE PER FILE, its stream consumed continuously, with every quantity evaluated against THE SAME REPLICATE SET, not re-seeded per group -- because a per-group restart pairs a between-setting movement only WITHIN a group, and Step 13 varies W across eight arms. THIS ARM DID NEITHER: it built the frame per mask, 2,422 accounts on APPLY and 2,402 on DERIV, and constructed the RNG inside the per-group function. Both of this arm's mechanisms solved the order-independence hazard and decisions/0124 SS3 records that neither was wrong and that the spec named neither; the ruling chose between them. The before and after are MEASURED, not asserted, in src/step9_b_9_frame_repro.py -- the RNG construction site is located by parsing the module and the frames are recomputed from the masks -- run record logs/step9_b_frame_repro.txt.",
+    "leaf_verification_against_the_previous_emission_at_this_path": {
+      "status": "VERIFIED",
+      "compared_against": "artifacts/step9-working-figures-corrected-2026-08-21-b.json",
+      "compared_against_sha256_12": "9a5dfcaba0eb",
+      "compared_against_generated_at_utc": null,
+      "leaves_in_previous": 545,
+      "leaves_in_this_emission": 570,
+      "leaves_compared": 533,
+      "numeric_leaves_compared": 122,
+      "numeric_leaves_moved": 0,
+      "moved_that_are_ci_endpoints": 0,
+      "moved_that_are_ratios_derived_from_a_ci_width": 0,
+      "moved_that_are_neither": 0,
+      "every_moved_numeric_leaf_is_a_ci_endpoint_or_derived_from_one": true,
+      "protected_families": {
+        "point_estimates": {
+          "leaves_examined": 0,
+          "leaves_moved": 0,
+          "moved_paths": []
+        },
+        "numerators": {
+          "leaves_examined": 0,
+          "leaves_moved": 0,
+          "moved_paths": []
+        },
+        "denominators": {
+          "leaves_examined": 0,
+          "leaves_moved": 0,
+          "moved_paths": []
+        },
+        "population_sizes": {
+          "leaves_examined": 0,
+          "leaves_moved": 0,
+          "moved_paths": []
+        },
+        "bound_endpoints": {
+          "leaves_examined": 0,
+          "leaves_moved": 0,
+          "moved_paths": []
+        },
+        "widths": {
+          "leaves_examined": 0,
+          "leaves_moved": 0,
+          "moved_paths": []
+        },
+        "sub_interval": {
+          "leaves_examined": 0,
+          "leaves_moved": 0,
+          "moved_paths": []
+        },
+        "three_ceiling_sum_and_excess": {
+          "leaves_examined": 0,
+          "leaves_moved": 0,
+          "moved_paths": []
+        },
+        "pair_counts": {
+          "leaves_examined": 0,
+          "leaves_moved": 0,
+          "moved_paths": []
+        },
+        "account_counts": {
+          "leaves_examined": 4,
+          "leaves_moved": 0,
+          "moved_paths": []
+        }
+      },
+      "protected_families_matching_no_leaf_in_this_document": [
+        "point_estimates",
+        "numerators",
+        "denominators",
+        "population_sizes",
+        "bound_endpoints",
+        "widths",
+        "sub_interval",
+        "three_ceiling_sum_and_excess",
+        "pair_counts"
+      ],
+      "protected_families_matching_no_leaf_note": "NAMED, NOT PASSED OVER. A family with no leaf in this document is a family this document does not carry -- the working-figures extract holds a different selection of figures from the headline -- and it is listed so the coverage is readable rather than inferred from a total. Every family matching zero would be a hard stop.",
+      "protected_numeric_leaves_examined": 4,
+      "protected_numeric_leaves_moved": 0,
+      "string_leaves_moved": 2,
+      "string_leaves_moved_paths": [
+        "$.generated_at_utc",
+        "$.sources[1].sha256_12"
+      ],
+      "leaves_present_in_the_previous_emission_and_absent_here": 12,
+      "leaves_present_here_and_absent_from_the_previous_emission": 37,
+      "subtrees_excluded_from_this_comparison": [
+        "$._emission"
+      ],
+      "subtrees_excluded_why": "DECLARED, not silent. A subtree is excluded only where this check runs before that subtree is built -- the working-figures `_emission` block -- so its leaves would otherwise be counted as losses that did not happen. No prefix under which a FIGURE lives is excluded.",
+      "leaves_absent_here_paths": [
+        "$.supplementary.account_totals_of_the_populations.W108_s2_finale.APPLY.key",
+        "$.supplementary.account_totals_of_the_populations.W108_s2_finale.APPLY.source_file",
+        "$.supplementary.account_totals_of_the_populations.W108_s2_finale.APPLY.value",
+        "$.supplementary.account_totals_of_the_populations.W108_s2_finale.DERIV.key",
+        "$.supplementary.account_totals_of_the_populations.W108_s2_finale.DERIV.source_file",
+        "$.supplementary.account_totals_of_the_populations.W108_s2_finale.DERIV.value",
+        "$.supplementary.account_totals_of_the_populations.W91_s2_premiere.APPLY.key",
+        "$.supplementary.account_totals_of_the_populations.W91_s2_premiere.APPLY.source_file",
+        "$.supplementary.account_totals_of_the_populations.W91_s2_premiere.APPLY.value",
+        "$.supplementary.account_totals_of_the_populations.W91_s2_premiere.DERIV.key",
+        "$.supplementary.account_totals_of_the_populations.W91_s2_premiere.DERIV.source_file",
+        "$.supplementary.account_totals_of_the_populations.W91_s2_premiere.DERIV.value"
+      ],
+      "leaves_added_here_numeric_paths": [
+        "$.supplementary.account_totals_of_the_populations.W108_s2_finale.APPLY.contributing.value",
+        "$.supplementary.account_totals_of_the_populations.W108_s2_finale.APPLY.drawn_contributing_zero.value",
+        "$.supplementary.account_totals_of_the_populations.W108_s2_finale.APPLY.resampling_frame.value",
+        "$.supplementary.account_totals_of_the_populations.W108_s2_finale.DERIV.contributing.value",
+        "$.supplementary.account_totals_of_the_populations.W108_s2_finale.DERIV.drawn_contributing_zero.value",
+        "$.supplementary.account_totals_of_the_populations.W108_s2_finale.DERIV.resampling_frame.value",
+        "$.supplementary.account_totals_of_the_populations.W91_s2_premiere.APPLY.contributing.value",
+        "$.supplementary.account_totals_of_the_populations.W91_s2_premiere.APPLY.drawn_contributing_zero.value",
+        "$.supplementary.account_totals_of_the_populations.W91_s2_premiere.APPLY.resampling_frame.value",
+        "$.supplementary.account_totals_of_the_populations.W91_s2_premiere.DERIV.contributing.value",
+        "$.supplementary.account_totals_of_the_populations.W91_s2_premiere.DERIV.drawn_contributing_zero.value",
+        "$.supplementary.account_totals_of_the_populations.W91_s2_premiere.DERIV.resampling_frame.value"
+      ],
+      "what_the_added_and_absent_leaves_are": "A COMPARISON THAT WALKS ONLY THE INTERSECTION CANNOT SEE A FIGURE THAT DISAPPEARS, so they are counted here rather than left out. In this emission they are ONE STRUCTURAL CHANGE plus this run's own added records. THE STRUCTURAL CHANGE: `account_totals_of_the_populations.<arm>.<population>` used to hold ONE account number and now holds THREE -- `resampling_frame` (the DRAW, 2,481), `contributing` (the SUPPORT, which is the number the single slot used to hold) and `drawn_contributing_zero` (their difference). decisions/0124 SS4(1) requires it: one slot cannot carry two account totals that differ, and the old slot's value is preserved unchanged as `contributing`. NO FIGURE MOVED; a figure was disambiguated and two were added beside it.",
+      "what_the_moved_strings_are": "PROSE AND PROVENANCE, not figures. They are (i) interval notes and `quantity` sentences that RESTATE a CI width inside their text, which moves when the endpoint does; (ii) `denominator_definition`, which prints the account-clustered sampling width; (iii) the generator sha, timestamp and git head; and (iv) the frame and draw-order text this rerun adds at the point of use. Every numeric leaf they restate is itself in the moved-endpoint list above.",
+      "not_established_here": "This compares THIS FILE against ITS OWN PREVIOUS EMISSION. It says nothing about the other arm, which this arm does not see, and nothing about the stamped originals, which are settled and untouched."
+    },
     "arm_signature": "SIGNED OFF BY THE PRODUCING ARM. This arm attests that every figure in this file was produced by its own pipeline at the settings recorded beside it, and that this emission is byte-identical in every measurement to processed/step9/b/preview/, which is what this arm's corrected run wrote. No figure in this file was hand-entered and none was edited after emission.",
     "promoted_from": "processed/step9/b/preview/step9-working-figures-b.json",
-    "promoted_from_sha256_12": "4053dfffd4c8",
+    "promoted_from_sha256_12": "2b2b800cc492",
     "promoted_by": "src/step9_b_7_emit_corrected.py",
-    "promoted_by_sha256_12": "84415309ebb8",
-    "promoted_at_utc": "2026-08-21T21:56:18Z",
-    "git_head_short": "c790f3a",
+    "promoted_by_sha256_12": "1a7159f94d21",
+    "promoted_at_utc": "2026-08-23T19:36:59Z",
+    "git_head_short": "eba1735",
     "promotion_changed_no_measurement": "asserted numerically, not claimed: every leaf of the source is present here with the same value, and the only added key is this one.",
     "open_defects_in_this_emission": {
-      "b-md-1": "A TYPED COUNT IN THE .md. src/step9_b_4_md.py asserts 'Six of the twelve movements this arm measured have negative endpoints' as a literal. It is true of the figures in this emission, but it is ASSERTED rather than measured, so it cannot follow the figures if they move. Same class as the carried finding b-wf-1. STILL NOT FIXED: the rerun of 2026-08-21 was authorised for b-emit-1, and an arm does not widen the scope of an authorised rerun on its own. REPORTED so the count is not read as measured.",
+      "b-stamp-1": "THE STAMPS ON THE SUPERSEDED ORIGINALS NAME ONE GROUND AND THERE ARE NOW TWO. src/step9_b_6_stamp_superseded.py marked the premiere-anchored arm of artifacts/step9-headline-b.json and its two companions, and recorded that the adopted W108_s2_finale arm was NOT superseded. Under decisions/0124 the adopted arm's CI ENDPOINTS in those files are superseded too, on the second ground, and their stamps do not say so. THIS EMISSION DOES NOT FIX IT: the stamped originals were ruled SETTLED by the Human Lead on 2026-08-23 and this arm does not touch them; and a deliverable is corrected by rerunning its producing arm, never by hand-editing a sentence into it. REPORTED rather than repaired, and reported HERE because this file is where a reader of those originals is sent. It moves no number in this emission.",
       "how_to_read_these": "This arm's own defects in this arm's own files, published with the figures rather than held back. It moves no number in this emission."
     },
     "resolved_in_this_emission": {
+      "b-boot-1": "THE RESAMPLING FRAME AND THE DRAW ORDER, corrected under decisions/0124. decisions/0124 fixed the two bootstrap elements decisions/0103 and decisions/0118 had left open. THE FRAME is every account with at least one pair in the POSITION-4 output, built ONCE, and drawn for every quantity regardless of how much it contributes -- NOT the contributing subset, because accounts the censoring rule excludes are part of the population the uncertainty is about, and drawing only contributors conditions the variance on the censoring outcome and treats survivorship as fixed. THE DRAW ORDER is ONE RNG, SEEDED ONCE PER FILE, its stream consumed continuously, with every quantity evaluated against THE SAME REPLICATE SET, not re-seeded per group -- because a per-group restart pairs a between-setting movement only WITHIN a group, and Step 13 varies W across eight arms. THIS ARM DID NEITHER: it built the frame per mask, 2,422 accounts on APPLY and 2,402 on DERIV, and constructed the RNG inside the per-group function. Both of this arm's mechanisms solved the order-independence hazard and decisions/0124 SS3 records that neither was wrong and that the spec named neither; the ruling chose between them. The before and after are MEASURED, not asserted, in src/step9_b_9_frame_repro.py -- the RNG construction site is located by parsing the module and the frames are recomputed from the masks -- run record logs/step9_b_frame_repro.txt. WHAT MOVED: the CI endpoints, and only the CI endpoints. All 24 intervals in this file moved -- 48 endpoints -- including the adopted W108_s2_finale arm's, which is expected under a ruling that changes the draw for every quantity in the file and is REPORTED here rather than left to pass as noise. Verified leaf by leaf against the previous corrected emission: the counts are in $.notes.step9_b_leaf_verification_of_this_emission.",
+      "b-md-1": "A TYPED COUNT IN THE .md, NOW MEASURED. src/step9_b_4_md.py asserted 'Six of the twelve movements this arm measured have negative endpoints' as a literal. It was true of the figures it described but could not follow them if they moved -- and decisions/0124 moved every movement endpoint in this file, which is exactly the case the defect was reserved for. The sentence now COUNTS the negative-endpoint movements off the emitted $.declared_intervals rather than asserting a number, and says that it does. It was carried as open in the previous emission because an arm does not widen the scope of an authorised rerun on its own; this rerun is the one that moves the figures the sentence describes.",
       "b-emit-1": "A WARRANT THIS EMISSION NOW CARRIES. The previous corrected emission stated, at $.arms[1].note and in section 9 of the .md, that the un-re-censored row set was 'CHECKED rather than assumed: T0 prime <= T0 holds for every pair' -- after the boolean that checked it, t0_is_earlier_or_equal_for_every_pair, had been removed as vacuous. A CLAIM OF HAVING CHECKED IS EITHER TRUE OR IT IS REMOVED, so on the Human Lead's ruling of 2026-08-21 this arm RECOMPUTED IT rather than softening the sentence. The check is T0PRIME-ORDER, src/step9_b_0_clock.py::verify_t0_prime_order; it runs in this pipeline, it RAISES, and the sentence now names it, states what each part compares and gives its coverage. IT IS NOT THE REMOVED BOOLEAN RESTORED: the bare inequality is true for the wrong reason on a collapsed T0' and cannot fail, so part 1 reconstructs T0' from the frame's own date STRINGS, which the epoch conversion never touches. DEMONSTRATED FAILING ON THE DEFECTIVE VECTOR at logs/step9_b_premiere_clock_repro.txt section 5 -- part 1 rejects it on 155,556 of 278,452 pairs, while part 2 run alone on that same vector passes, which is the whole of the case that part 1 is what makes the replacement failable. NO FIGURE IN THIS EMISSION MOVED: the recomputation added a check and rewrote three prose fields, and every numeric leaf is unchanged."
     },
     "privacy": "COUNTS AND ACCOUNT TOTALS ONLY. processed/step9/b/pairs.npz was not read."

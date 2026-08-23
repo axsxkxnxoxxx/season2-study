@@ -770,24 +770,40 @@
         "APPLY": {
           "value": 2422,
           "source_file": "processed/step9/b/stage2_bootstrap.json",
-          "key": "$.W108_s2_finale.APPLY.n_accounts"
+          "key": "$.W108_s2_finale.APPLY.n_accounts",
+          "_superseded": {
+            "key": "[SUPERSEDED 2026-08-23 :: step9-b resampling frame and draw order :: RESTRUCTURED, NOT CORRECTED :: fields: key] This field has NO counterpart in the corrected emission. decisions/0124 fixed the resampling frame as every account with at least one pair in the position-4 output, drawn for every quantity, and fixed the draw order as one continuously-consumed stream; the account-total block was rebuilt to record THE DRAW and THE SUPPORT as two separate figures, so this pointer addresses a key the bootstrap stage no longer writes. The corrected block is at the same section of artifacts/step9-working-figures-corrected-2026-08-21-b.json. THIS MARK COVERS ONLY THE FIELDS IT NAMES AND ASSERTS NOTHING ABOUT ANY FIELD IT DOES NOT NAME.",
+            "source_file": "[SUPERSEDED 2026-08-23 :: step9-b resampling frame and draw order :: RESTRUCTURED, NOT CORRECTED :: fields: source_file] This field has NO counterpart in the corrected emission. decisions/0124 fixed the resampling frame as every account with at least one pair in the position-4 output, drawn for every quantity, and fixed the draw order as one continuously-consumed stream; the account-total block was rebuilt to record THE DRAW and THE SUPPORT as two separate figures, so this pointer addresses a key the bootstrap stage no longer writes. The corrected block is at the same section of artifacts/step9-working-figures-corrected-2026-08-21-b.json. THIS MARK COVERS ONLY THE FIELDS IT NAMES AND ASSERTS NOTHING ABOUT ANY FIELD IT DOES NOT NAME."
+          }
         },
         "DERIV": {
           "value": 2402,
           "source_file": "processed/step9/b/stage2_bootstrap.json",
-          "key": "$.W108_s2_finale.DERIV.n_accounts"
+          "key": "$.W108_s2_finale.DERIV.n_accounts",
+          "_superseded": {
+            "key": "[SUPERSEDED 2026-08-23 :: step9-b resampling frame and draw order :: RESTRUCTURED, NOT CORRECTED :: fields: key] This field has NO counterpart in the corrected emission. decisions/0124 fixed the resampling frame as every account with at least one pair in the position-4 output, drawn for every quantity, and fixed the draw order as one continuously-consumed stream; the account-total block was rebuilt to record THE DRAW and THE SUPPORT as two separate figures, so this pointer addresses a key the bootstrap stage no longer writes. The corrected block is at the same section of artifacts/step9-working-figures-corrected-2026-08-21-b.json. THIS MARK COVERS ONLY THE FIELDS IT NAMES AND ASSERTS NOTHING ABOUT ANY FIELD IT DOES NOT NAME.",
+            "source_file": "[SUPERSEDED 2026-08-23 :: step9-b resampling frame and draw order :: RESTRUCTURED, NOT CORRECTED :: fields: source_file] This field has NO counterpart in the corrected emission. decisions/0124 fixed the resampling frame as every account with at least one pair in the position-4 output, drawn for every quantity, and fixed the draw order as one continuously-consumed stream; the account-total block was rebuilt to record THE DRAW and THE SUPPORT as two separate figures, so this pointer addresses a key the bootstrap stage no longer writes. The corrected block is at the same section of artifacts/step9-working-figures-corrected-2026-08-21-b.json. THIS MARK COVERS ONLY THE FIELDS IT NAMES AND ASSERTS NOTHING ABOUT ANY FIELD IT DOES NOT NAME."
+          }
         }
       },
       "W91_s2_premiere": {
         "APPLY": {
           "value": 2422,
           "source_file": "processed/step9/b/stage2_bootstrap.json",
-          "key": "$.W91_s2_premiere.APPLY.n_accounts"
+          "key": "$.W91_s2_premiere.APPLY.n_accounts",
+          "_superseded": {
+            "key": "[SUPERSEDED 2026-08-23 :: step9-b resampling frame and draw order :: RESTRUCTURED, NOT CORRECTED :: fields: key] This field has NO counterpart in the corrected emission. decisions/0124 fixed the resampling frame as every account with at least one pair in the position-4 output, drawn for every quantity, and fixed the draw order as one continuously-consumed stream; the account-total block was rebuilt to record THE DRAW and THE SUPPORT as two separate figures, so this pointer addresses a key the bootstrap stage no longer writes. The corrected block is at the same section of artifacts/step9-working-figures-corrected-2026-08-21-b.json. THIS MARK COVERS ONLY THE FIELDS IT NAMES AND ASSERTS NOTHING ABOUT ANY FIELD IT DOES NOT NAME.",
+            "source_file": "[SUPERSEDED 2026-08-23 :: step9-b resampling frame and draw order :: RESTRUCTURED, NOT CORRECTED :: fields: source_file] This field has NO counterpart in the corrected emission. decisions/0124 fixed the resampling frame as every account with at least one pair in the position-4 output, drawn for every quantity, and fixed the draw order as one continuously-consumed stream; the account-total block was rebuilt to record THE DRAW and THE SUPPORT as two separate figures, so this pointer addresses a key the bootstrap stage no longer writes. The corrected block is at the same section of artifacts/step9-working-figures-corrected-2026-08-21-b.json. THIS MARK COVERS ONLY THE FIELDS IT NAMES AND ASSERTS NOTHING ABOUT ANY FIELD IT DOES NOT NAME."
+          }
         },
         "DERIV": {
           "value": 2402,
           "source_file": "processed/step9/b/stage2_bootstrap.json",
-          "key": "$.W91_s2_premiere.DERIV.n_accounts"
+          "key": "$.W91_s2_premiere.DERIV.n_accounts",
+          "_superseded": {
+            "key": "[SUPERSEDED 2026-08-23 :: step9-b resampling frame and draw order :: RESTRUCTURED, NOT CORRECTED :: fields: key] This field has NO counterpart in the corrected emission. decisions/0124 fixed the resampling frame as every account with at least one pair in the position-4 output, drawn for every quantity, and fixed the draw order as one continuously-consumed stream; the account-total block was rebuilt to record THE DRAW and THE SUPPORT as two separate figures, so this pointer addresses a key the bootstrap stage no longer writes. The corrected block is at the same section of artifacts/step9-working-figures-corrected-2026-08-21-b.json. THIS MARK COVERS ONLY THE FIELDS IT NAMES AND ASSERTS NOTHING ABOUT ANY FIELD IT DOES NOT NAME.",
+            "source_file": "[SUPERSEDED 2026-08-23 :: step9-b resampling frame and draw order :: RESTRUCTURED, NOT CORRECTED :: fields: source_file] This field has NO counterpart in the corrected emission. decisions/0124 fixed the resampling frame as every account with at least one pair in the position-4 output, drawn for every quantity, and fixed the draw order as one continuously-consumed stream; the account-total block was rebuilt to record THE DRAW and THE SUPPORT as two separate figures, so this pointer addresses a key the bootstrap stage no longer writes. The corrected block is at the same section of artifacts/step9-working-figures-corrected-2026-08-21-b.json. THIS MARK COVERS ONLY THE FIELDS IT NAMES AND ASSERTS NOTHING ABOUT ANY FIELD IT DOES NOT NAME."
+          }
         }
       }
     }

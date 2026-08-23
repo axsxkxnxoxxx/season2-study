@@ -39,13 +39,27 @@ CONTROLS = [
      "what": "this arm's own reproduction: both corrected checks run against the DEFECTIVE "
              "vector and then against the corrected one. A non-zero exit means the "
              "reproduction did not complete as stated."},
+    {"id": "step9_b_frame_and_draw_order_reproduction",
+     "cmd": ["python3", "src/step9_b_9_frame_repro.py"],
+     "what": "decisions/0124: the CURRENT frame and draw order measured off the committed "
+             "source, then the RULED ones, then both designs run and the change shown. It "
+             "ASSERTS that no point estimate and no per-account pair total moves between the "
+             "two designs, so a non-zero exit means the ruling moved more than an interval."},
+    {"id": "step9_b_pairing_evidence",
+     "cmd": ["python3", "src/step9_b_10_pairing_evidence.py"],
+     "what": "decisions/0124 SS5: the pairing evidence RE-TAKEN on the new weights. It "
+             "reproduces all 48 published endpoints from the recorded replicate set and then "
+             "runs the same comparison against a deliberately UNPAIRED construction, which it "
+             "must reject on every interval. A non-zero exit means either the reproduction "
+             "failed or the probe passed -- and a probe that passes is not a test."},
 ]
 
 FILES = [
     "src/step9_b_0_clock.py", "src/step9_b_0b_reproduce.py", "src/step9_b_1_compute.py",
     "src/step9_b_2_bootstrap.py", "src/step9_b_3_emit.py", "src/step9_b_4_md.py",
     "src/step9_b_5_working_figures.py", "src/step9_b_7_emit_corrected.py",
-    "src/step9_b_8_controls.py",
+    "src/step9_b_8_controls.py", "src/step9_b_9_frame_repro.py",
+    "src/step9_b_10_pairing_evidence.py",
     "processed/step9/b/stage1_counts.json", "processed/step9/b/stage2_bootstrap.json",
     "artifacts/step9-headline-corrected-2026-08-21-b.json",
     "artifacts/step9-headline-corrected-2026-08-21-b.md",
@@ -62,7 +76,8 @@ def sha12(rel):
 
 def main():
     rec = {
-        "run": "Step 9, arm b -- controls run AFTER the last edit of the 2026-08-21 rerun",
+        "run": "Step 9, arm b -- controls run AFTER the last edit of the 2026-08-23 rerun "
+               "under decisions/0124 (the resampling frame and the draw order)",
         "generator": "src/step9_b_8_controls.py",
         "generator_sha256_12": sha12("src/step9_b_8_controls.py"),
         "recorded_at_utc": datetime.datetime.now(datetime.timezone.utc).strftime(

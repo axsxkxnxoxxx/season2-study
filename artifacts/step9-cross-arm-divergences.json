@@ -16,9 +16,12 @@
   },
   {
    "arm": "b",
-   "path": "artifacts/step9-headline-corrected-2026-08-21-b.json",
+   "path": "7c94bc9:artifacts/step9-headline-corrected-2026-08-21-b.json",
    "sha256_12": "c125cf13865f",
-   "note": "arm b's CORRECTED emission, NOT its superseded originals (0123)"
+   "note": "arm b's CORRECTED emission, NOT its superseded originals (0123)",
+   "path_form": "COMMIT-QUALIFIED",
+   "bare_path_at_time_of_diff": "artifacts/step9-headline-corrected-2026-08-21-b.json",
+   "_amended": "AMENDED 2026-08-23 on Human Lead ruling. The recorded sha256_12 c125cf13865f IS UNCHANGED and remains what was diffed: the amendment makes the reference RESOLVABLE, it does not change the finding. The bare path was about to be reused by the collapsed emission (0123 + 0124), which would have left this record naming a file whose content is not what it diffed."
   }
  ],
  "coverage_of_this_diff": {
@@ -94,5 +97,20 @@
   "measured_at_head": "8ce894d",
   "measured_at_utc": "2026-08-23T18:58:01Z",
   "_status": "PRESERVED. The frame and draw order are NOT ruled by this document."
+ },
+ "why_the_reference_is_commit_qualified": {
+  "_ruling": "Human Lead, 2026-08-23.",
+  "the_rule": "A BARE PATH PLUS HASH IS RESOLVABLE ONLY UNTIL SOMETHING ELSE OCCUPIES THE PATH. A COMMIT-QUALIFIED PATH RESOLVES FOREVER.",
+  "it_generalises": "EVERY CROSS-FILE REFERENCE IN THIS BUILD THAT NAMES A PATH AND A HASH HAS THE SAME WEAKNESS. This one surfaced ONLY because the path was about to be reused -- which is to say the weakness is invisible until the moment it bites, and the others have not been tested.",
+  "what_the_amendment_does_not_do": "It does not change the hash, the coverage counts, the divergence, its cause, or its classification. Nothing measured moves."
+ },
+ "status_of_this_diff": {
+  "superseded": true,
+  "why": "Arm b's premiere figures are being re-emitted as a COLLAPSED correction superseding the originals on TWO independent grounds -- the premiere-clock unit error (0123) and the frame and draw-order ruling (0124). The CI endpoints this diff compared will move.",
+  "being_redone_against": "the collapsed emission, at artifacts/step9-headline-corrected-2026-08-21-b.json",
+  "who_redoes_it": "the Human Lead; a diff is not an arm's to perform",
+  "_why_stated_here": "So a reader is NOT left comparing an amended record against a file it no longer describes. The amendment fixes the REFERENCE; this field states the RECORD is superseded.",
+  "what_survives_supersession": "The preserved measurement of implementation sensitivity below. It was taken BEFORE 0124 fixed the frame and draw order and is unreproducible after it.",
+  "amended_at_utc": "2026-08-23T19:19:34Z"
  }
 }
