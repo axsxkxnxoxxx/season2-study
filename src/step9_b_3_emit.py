@@ -36,6 +36,13 @@ REF = "b_default"
 NPOP = {"APPLY": 196654, "DERIV": 147370}
 NPOST = {"APPLY": 195951, "DERIV": 147271}
 
+# THE ARM KEY'S REVISION DIMENSION IS READ, NEVER TYPED (decisions/0114 E14). It is the same
+# value as $.adopted_rule_revision.revision because it is THE SAME READ: a typed `6` here would
+# be a second definition of the rule's version, and it would go stale silently the moment an
+# amendment landed, because the validator checks that a writer DECLARED read_not_typed, not that
+# it did.
+ADOPTED_RULE_REVISION = G._read_adopted_rule_revision()["revision"]
+
 CONSUMED = ("CONSUMED FROM STEP 8's APPROVED ARTIFACTS, not rebuilt here: Step 9 is "
             "forbidden to rebuild DERIV or to compute D4, because a reconstruction that "
             "agrees today is still a second definition tomorrow and the dual diff cannot "
@@ -50,6 +57,44 @@ def sha12(path):
 def pct(num, den):
     return 100.0 * num / den
 
+
+# ---------------------------------------------------------------------------------------------
+# THE ORDERING WARRANT, NAMED WITH ITS OWN MEASUREMENT.
+#
+# A CLAIM OF HAVING CHECKED IS EITHER TRUE OR IT IS REMOVED. The earlier build of this file said
+# the un-re-censored row set "was CHECKED rather than assumed" after the boolean that checked it
+# had been removed as vacuous -- a warrant the emission no longer carried. The check now exists
+# and runs in this pipeline, and the sentence NAMES IT: where it lives, what each part compares,
+# how many rows it covered, and which part is the one that can fail. Every figure below is read
+# out of the check's own record in stage1_counts.json; none is typed here.
+# ---------------------------------------------------------------------------------------------
+_T0P = s1["premiere_arm_preconditions"]["t0_prime_order_verification"]
+_P1, _P2, _P3 = (_T0P["part_1_reconstruction"], _T0P["part_2_ordering"],
+                 _T0P["part_3_observability"])
+_T0P_WHERE = "src/step9_b_0_clock.py::verify_t0_prime_order, id T0PRIME-ORDER"
+_T0P_SUMMARY = (
+    "PART 1 reconstructs T0' from the frame's own s2_premiere_date STRINGS -- a source the epoch "
+    "conversion never touches -- and compares it elementwise against the decoded T0' on {p1:,} "
+    "pairs: {m1} mismatches. PARTS 1 AND 2 ARE ON THE FULL SCAN PAIR SET, {p1:,} pairs, which is "
+    "a SUPERSET of the position-5 row sets the figures in this file are on -- {na:,} on APPLY "
+    "and {nd:,} on DERIV, part 3's own coverage -- so their coverage is not an APPLY or a DERIV "
+    "count and must not be "
+    "read as one. PART 2 asserts T0' <= T0 elementwise on {p2:,} pairs: {v2} "
+    "violations, {e:,} strictly earlier and {q:,} equal. PART 3 asserts tau2' < tau2 and "
+    "tau2' <= tau_pull on the retained rows of BOTH populations -- {na:,} on APPLY and {nd:,} on "
+    "DERIV, 0 violations, minimum margin {ma:.1f} days from tau2' to tau2 and {mb:.1f} days from "
+    "tau2' to tau_pull on APPLY. PART 1 IS WHAT MAKES THE CHECK FAILABLE: the bare inequality is "
+    "TRUE FOR THE WRONG REASON on a collapsed T0' -- max(premiere, S1 completion) is the S1 "
+    "completion date for every pair when the premiere epoch decodes to 1970, and that is <= T0 "
+    "unconditionally -- which is exactly what the removed boolean was. The check RAISES rather "
+    "than returning a flag, and it is demonstrated FAILING on the defective vector at "
+    "logs/step9_b_premiere_clock_repro.txt"
+).format(p1=_P1["rows_compared"], m1=_P1["mismatches"], p2=_P2["rows_compared"],
+         v2=_P2["violations"], e=_P2["pairs_strictly_earlier"], q=_P2["pairs_equal"],
+         na=_P3["populations"]["APPLY"]["rows_compared"],
+         nd=_P3["populations"]["DERIV"]["rows_compared"],
+         ma=_P3["populations"]["APPLY"]["min_margin_days_tau2_to_tau2_prime"],
+         mb=_P3["populations"]["APPLY"]["min_margin_days_tau2_prime_to_tau_pull"])
 
 # ---------------------------------------------------------------------------------------------
 # arm-level inputs
@@ -84,7 +129,9 @@ ARM_SPECS = {
               "The row set is the adopted arm's position-5 population and is NOT re-censored: "
               "task-sheet.md Step 9 states that both arms run on the same right-censored "
               "population, max(W, 91) + H, and T0' <= T0 for every pair, so tau2' < tau2 <= "
-              "tau_pull and every retained pair is fully observable at this arm.")),
+              "tau_pull and every retained pair is fully observable at this arm. THAT WARRANT "
+              "IS CHECKED IN THIS RUN, BY T0PRIME-ORDER (%s), WHICH RAISES: %s."
+              % (_T0P_WHERE, _T0P_SUMMARY))),
 }
 
 
@@ -373,9 +420,10 @@ SPEC_CHOICES = {
         "THE ROW SET IS NOT RE-CENSORED AT THIS ARM. task-sheet.md Step 9 states that both "
         "headline arms run on the same right-censored population, max(W, 91) + H. This arm "
         "reads that as the adopted arm's position-5 row set rather than a D10 re-derived at the "
-        "premiere origin, and the reading was CHECKED rather than assumed: T0' <= T0 holds for "
-        "every pair, so tau2' <= T0 + 182 d < tau2 <= tau_pull and every retained pair is fully "
-        "observable at this arm. THE ALTERNATIVE READING -- re-deriving D10 at the premiere "
+        "premiere origin, and the reading is CHECKED rather than assumed BY A NAMED CHECK THAT "
+        "RUNS IN THIS PIPELINE AND RAISES -- " + _T0P_WHERE + ". " + _T0P_SUMMARY + ". The "
+        "warrant it establishes: T0' <= T0 on every pair, so tau2' < tau2 <= tau_pull and every "
+        "retained pair is fully observable at this arm. THE ALTERNATIVE READING -- re-deriving D10 at the premiere "
         "origin, which would ADMIT pairs the adopted arm censors -- IS REPORTED, NOT "
         "RECONCILED: it would put the two headlines on different denominators, which is what "
         "the sentence appears to forbid.",
@@ -479,7 +527,7 @@ for key, spec in ARM_SPECS.items():
     entry = {
         "arm_id": spec["arm_id"], "W_days": spec["W"], "H_days": 91,
         "clock_origin": spec["origin"], "clock_origin_note": spec["origin_note"],
-        "producing_step": STEP, "adopted_rule_revision": 6,
+        "producing_step": STEP, "adopted_rule_revision": ADOPTED_RULE_REVISION,
         "in_arm_grid": spec["in_grid"], "is_primary_headline": spec["primary"],
         "headline": {},
         "note": spec["note"],
@@ -688,7 +736,14 @@ doc = {
     }),
 }
 
-out = os.path.join(ROOT, "artifacts/step9-headline-b.json")
+# OUTPUT DIRECTORY, OVERRIDABLE. Default is artifacts/, which is where a signed run writes.
+# A CORRECTION RUN whose figures have not yet been seen by the Human Lead sets STEP9_B_OUTDIR to
+# a working directory, so a committed deliverable is never overwritten by a run nobody has
+# looked at. The file NAME never changes, so the preview and the deliverable are the same object
+# written to two places rather than two objects.
+OUTDIR = os.environ.get("STEP9_B_OUTDIR", os.path.join(ROOT, "artifacts"))
+os.makedirs(OUTDIR, exist_ok=True)
+out = os.path.join(OUTDIR, "step9-headline-b.json")
 with open(out, "w") as fh:
     json.dump(doc, fh, indent=1, ensure_ascii=True)
 print("wrote", out, os.path.getsize(out), "bytes")

@@ -1,0 +1,969 @@
+{
+  "document": "Step 9 working-figures extract -- ARM b",
+  "producing_agent": "data-scientist-b",
+  "arm": "b",
+  "step": 9,
+  "authorised_by": "Human Lead ruling, 2026-08-21",
+  "why_this_file_exists": "processed/ is gitignored, so this arm's Step 9 counts exist in exactly one place and are not recoverable from a clone. Under 0092 a transcription assembled by another party is not an attestation, so the producing arm emits its own figures and signs them.",
+  "signed_off_by_producing_arm": true,
+  "sign_off_means": "this arm attests that every figure below was read from its own working output at the key named beside it, by the generator named below, and that it matches what this arm's pipeline computed.",
+  "adopts": "nothing",
+  "api_calls": 0,
+  "generated_by": "src/step9_b_5_working_figures.py",
+  "generated_at_utc": "2026-08-21T21:56:18Z",
+  "sources": [
+    {
+      "path": "processed/step9/b/stage1_counts.json",
+      "sha256_12": "5729a4cd8717"
+    },
+    {
+      "path": "processed/step9/b/stage2_bootstrap.json",
+      "sha256_12": "cef66bb5ab84"
+    }
+  ],
+  "privacy": {
+    "contents": "COUNTS AND ACCOUNT TOTALS ONLY.",
+    "no_pair_level_rows": true,
+    "no_usernames_no_user_ids_no_individual_histories": true,
+    "pairs_npz_was_not_read": true,
+    "pairs_npz_statement": "processed/step9/b/pairs.npz is pair-level data. This generator never opens it and NO FIELD IN THIS FILE IS DERIVED FROM IT, directly or transitively. Every value was read from stage1_counts.json or stage2_bootstrap.json by key.",
+    "account_counts_published_under": "Human Lead ruling, 2026-08-21: the account counts publish -- they are counts of accounts, not accounts, and the method section needs them checkable."
+  },
+  "scope": {
+    "this_is": "a labelled transcription of this arm's own measurements, with provenance.",
+    "this_is_not": "a new measurement run, a headline, a comparison or a merge.",
+    "nothing_was_computed": "no study figure in this file was computed by this generator. Every one was read from a working file at the key printed beside it.",
+    "no_cross_arm_content": "this arm has no knowledge of any other Step 9 arm's figures and sought none. processed/step9/a/ and artifacts/step9-*-a.* were not opened, and no comparison, reconciliation or merge appears anywhere in this file. $.cross_arm_divergences and $.limitations are Human-Lead-owned and are not written here.",
+    "deliberately_not_included": {
+      "bootstrap_confidence_intervals": "stage2_bootstrap.json carries this arm's levels and paired-movement intervals and its bootstrap design block. They exist and are NOT absent; they are outside the scope this extract was asked for. Only the account totals were taken from that file."
+    },
+    "arm_settings_carried": [
+      {
+        "working_file_key": "W108_s2_finale",
+        "W_days": 108,
+        "clock_origin": "s2_finale"
+      },
+      {
+        "working_file_key": "W91_s2_premiere",
+        "W_days": 91,
+        "clock_origin": "s2_premiere"
+      }
+    ],
+    "populations_carried": {
+      "APPLY": "Step 5 line 1 less D10 -- what Step 8 filters.",
+      "DERIV": "Step 5 line 4 less D10 -- requires S2 evidence.",
+      "note": "the population sizes are transcribed per setting above; they are not restated here as free-standing figures."
+    }
+  },
+  "figures": {
+    "W108_s2_finale": {
+      "_working_file_key_name": "W108_s2_finale",
+      "_reading_of_that_key_name": {
+        "W_days": 108,
+        "clock_origin": "s2_finale",
+        "gloss": "the adopted arm: W = 108 days, T0 = max(S2 FINALE air date, S1 completion date)"
+      },
+      "_W_days_and_clock_origin_are_not_stored_fields": "they are encoded in the working file's key name, quoted verbatim above. The reading is labelled as a reading of the name, not as a stored figure.",
+      "APPLY": {
+        "n_position_5": {
+          "value": 196654,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.W108_s2_finale.APPLY.n_position_5"
+        },
+        "n_post_liveness": {
+          "value": 195951,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.W108_s2_finale.APPLY.n_post_liveness"
+        },
+        "position_5": {
+          "never_started": {
+            "value": 33373,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W108_s2_finale.APPLY.position_5.never_started"
+          },
+          "started_and_left": {
+            "value": 19141,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W108_s2_finale.APPLY.position_5.started_and_left"
+          },
+          "continued": {
+            "value": 144140,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W108_s2_finale.APPLY.position_5.continued"
+          }
+        },
+        "position_7_post_liveness": {
+          "never_started": {
+            "value": 32769,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W108_s2_finale.APPLY.position_7.never_started"
+          },
+          "started_and_left": {
+            "value": 19042,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W108_s2_finale.APPLY.position_7.started_and_left"
+          },
+          "continued": {
+            "value": 144140,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W108_s2_finale.APPLY.position_7.continued"
+          }
+        },
+        "_position_7_naming_note": "the working output names the post-liveness counts `position_7`; they are the post-liveness counts asked for, transcribed under the name they were stored with.",
+        "exclusions": {
+          "total_pairs": {
+            "value": 703,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W108_s2_finale.APPLY.exclusions.total_pairs"
+          },
+          "never_started_component": {
+            "value": 604,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W108_s2_finale.APPLY.exclusions.never_started_component"
+          },
+          "started_and_left_component": {
+            "value": 99,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W108_s2_finale.APPLY.exclusions.started_and_left_component"
+          },
+          "continued_component": {
+            "value": 0,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W108_s2_finale.APPLY.exclusions.continued_component"
+          },
+          "accounts": {
+            "value": 216,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W108_s2_finale.APPLY.exclusions.accounts"
+          },
+          "_accounts_note": "a count of DISTINCT ACCOUNTS in the excluded set, not accounts. Published under the Human Lead's 2026-08-21 ruling that the account counts publish because the method section needs them checkable. No identifier is carried.",
+          "silence_test_alone": {
+            "value": 1355,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W108_s2_finale.APPLY.exclusions.silence_test_alone"
+          },
+          "spared_by_not_continued": {
+            "value": 652,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W108_s2_finale.APPLY.exclusions.spared_by_not_continued"
+          },
+          "_what_those_two_fields_COUNT": {
+            "silence_test_alone": "coded `int((mask & r['silent']).sum())` in src/step9_b_1_compute.py -- pairs on this population's position-5 mask that meet CONJUNCT 1 ALONE (no insertion instant after their own tau1), IRRESPECTIVE of Continued. It is NOT the count of pairs excluded by the silence test alone; the field name invites that misreading and the misreading is wrong.",
+            "spared_by_not_continued": "coded `int((mask & r['silent'] & r['continued']).sum())` -- pairs that meet conjunct 1 but are Continued, so conjunct 2 spares them from the NOT-LIVE verdict."
+          }
+        },
+        "conjunct_ladder": {
+          "_present": true,
+          "_stored_as": "$.W108_s2_finale.APPLY.conjunct_selection",
+          "_ordering": "conjunct 2 (NOT Continued) first, then conjunct 1 (silent at tau1). The working output stores this ONE ordering only.",
+          "start": {
+            "value": 196654,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W108_s2_finale.APPLY.conjunct_selection.start"
+          },
+          "after_conjunct_2_not_continued": {
+            "value": 52514,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W108_s2_finale.APPLY.conjunct_selection.after_conjunct_2_not_continued"
+          },
+          "after_conjunct_1_silent_at_tau1": {
+            "value": 703,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W108_s2_finale.APPLY.conjunct_selection.after_conjunct_1_silent_at_tau1"
+          }
+        }
+      },
+      "DERIV": {
+        "n_position_5": {
+          "value": 147370,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.W108_s2_finale.DERIV.n_position_5"
+        },
+        "n_post_liveness": {
+          "value": 147271,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.W108_s2_finale.DERIV.n_post_liveness"
+        },
+        "position_5": {
+          "never_started": {
+            "value": 9145,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W108_s2_finale.DERIV.position_5.never_started"
+          },
+          "started_and_left": {
+            "value": 16843,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W108_s2_finale.DERIV.position_5.started_and_left"
+          },
+          "continued": {
+            "value": 121382,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W108_s2_finale.DERIV.position_5.continued"
+          }
+        },
+        "position_7_post_liveness": {
+          "never_started": {
+            "value": 9145,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W108_s2_finale.DERIV.position_7.never_started"
+          },
+          "started_and_left": {
+            "value": 16744,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W108_s2_finale.DERIV.position_7.started_and_left"
+          },
+          "continued": {
+            "value": 121382,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W108_s2_finale.DERIV.position_7.continued"
+          }
+        },
+        "_position_7_naming_note": "the working output names the post-liveness counts `position_7`; they are the post-liveness counts asked for, transcribed under the name they were stored with.",
+        "exclusions": {
+          "total_pairs": {
+            "value": 99,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W108_s2_finale.DERIV.exclusions.total_pairs"
+          },
+          "never_started_component": {
+            "value": 0,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W108_s2_finale.DERIV.exclusions.never_started_component"
+          },
+          "started_and_left_component": {
+            "value": 99,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W108_s2_finale.DERIV.exclusions.started_and_left_component"
+          },
+          "continued_component": {
+            "value": 0,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W108_s2_finale.DERIV.exclusions.continued_component"
+          },
+          "accounts": {
+            "value": 73,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W108_s2_finale.DERIV.exclusions.accounts"
+          },
+          "_accounts_note": "a count of DISTINCT ACCOUNTS in the excluded set, not accounts. Published under the Human Lead's 2026-08-21 ruling that the account counts publish because the method section needs them checkable. No identifier is carried.",
+          "silence_test_alone": {
+            "value": 751,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W108_s2_finale.DERIV.exclusions.silence_test_alone"
+          },
+          "spared_by_not_continued": {
+            "value": 652,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W108_s2_finale.DERIV.exclusions.spared_by_not_continued"
+          },
+          "_what_those_two_fields_COUNT": {
+            "silence_test_alone": "coded `int((mask & r['silent']).sum())` in src/step9_b_1_compute.py -- pairs on this population's position-5 mask that meet CONJUNCT 1 ALONE (no insertion instant after their own tau1), IRRESPECTIVE of Continued. It is NOT the count of pairs excluded by the silence test alone; the field name invites that misreading and the misreading is wrong.",
+            "spared_by_not_continued": "coded `int((mask & r['silent'] & r['continued']).sum())` -- pairs that meet conjunct 1 but are Continued, so conjunct 2 spares them from the NOT-LIVE verdict."
+          }
+        },
+        "conjunct_ladder": {
+          "_present": true,
+          "_stored_as": "$.W108_s2_finale.DERIV.conjunct_selection",
+          "_ordering": "conjunct 2 (NOT Continued) first, then conjunct 1 (silent at tau1). The working output stores this ONE ordering only.",
+          "start": {
+            "value": 147370,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W108_s2_finale.DERIV.conjunct_selection.start"
+          },
+          "after_conjunct_2_not_continued": {
+            "value": 25988,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W108_s2_finale.DERIV.conjunct_selection.after_conjunct_2_not_continued"
+          },
+          "after_conjunct_1_silent_at_tau1": {
+            "value": 99,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W108_s2_finale.DERIV.conjunct_selection.after_conjunct_1_silent_at_tau1"
+          }
+        }
+      }
+    },
+    "W91_s2_premiere": {
+      "_working_file_key_name": "W91_s2_premiere",
+      "_reading_of_that_key_name": {
+        "W_days": 91,
+        "clock_origin": "s2_premiere",
+        "gloss": "the second headline arm: W = 91 days (Netflix's own reporting window), T0' = max(S2 PREMIERE date, first-pass S1 completion date). D5: this arm has a SEPARATE ORIGIN, which is stated here and not smoothed over."
+      },
+      "_W_days_and_clock_origin_are_not_stored_fields": "they are encoded in the working file's key name, quoted verbatim above. The reading is labelled as a reading of the name, not as a stored figure.",
+      "APPLY": {
+        "n_position_5": {
+          "value": 196654,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.W91_s2_premiere.APPLY.n_position_5"
+        },
+        "n_post_liveness": {
+          "value": 196048,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.W91_s2_premiere.APPLY.n_post_liveness"
+        },
+        "position_5": {
+          "never_started": {
+            "value": 36117,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W91_s2_premiere.APPLY.position_5.never_started"
+          },
+          "started_and_left": {
+            "value": 25847,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W91_s2_premiere.APPLY.position_5.started_and_left"
+          },
+          "continued": {
+            "value": 134690,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W91_s2_premiere.APPLY.position_5.continued"
+          }
+        },
+        "position_7_post_liveness": {
+          "never_started": {
+            "value": 35584,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W91_s2_premiere.APPLY.position_7.never_started"
+          },
+          "started_and_left": {
+            "value": 25774,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W91_s2_premiere.APPLY.position_7.started_and_left"
+          },
+          "continued": {
+            "value": 134690,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W91_s2_premiere.APPLY.position_7.continued"
+          }
+        },
+        "_position_7_naming_note": "the working output names the post-liveness counts `position_7`; they are the post-liveness counts asked for, transcribed under the name they were stored with.",
+        "exclusions": {
+          "total_pairs": {
+            "value": 606,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W91_s2_premiere.APPLY.exclusions.total_pairs"
+          },
+          "never_started_component": {
+            "value": 533,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W91_s2_premiere.APPLY.exclusions.never_started_component"
+          },
+          "started_and_left_component": {
+            "value": 73,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W91_s2_premiere.APPLY.exclusions.started_and_left_component"
+          },
+          "continued_component": {
+            "value": 0,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W91_s2_premiere.APPLY.exclusions.continued_component"
+          },
+          "accounts": {
+            "value": 196,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W91_s2_premiere.APPLY.exclusions.accounts"
+          },
+          "_accounts_note": "a count of DISTINCT ACCOUNTS in the excluded set, not accounts. Published under the Human Lead's 2026-08-21 ruling that the account counts publish because the method section needs them checkable. No identifier is carried.",
+          "silence_test_alone": {
+            "value": 1191,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W91_s2_premiere.APPLY.exclusions.silence_test_alone"
+          },
+          "spared_by_not_continued": {
+            "value": 585,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W91_s2_premiere.APPLY.exclusions.spared_by_not_continued"
+          },
+          "_what_those_two_fields_COUNT": {
+            "silence_test_alone": "coded `int((mask & r['silent']).sum())` in src/step9_b_1_compute.py -- pairs on this population's position-5 mask that meet CONJUNCT 1 ALONE (no insertion instant after their own tau1), IRRESPECTIVE of Continued. It is NOT the count of pairs excluded by the silence test alone; the field name invites that misreading and the misreading is wrong.",
+            "spared_by_not_continued": "coded `int((mask & r['silent'] & r['continued']).sum())` -- pairs that meet conjunct 1 but are Continued, so conjunct 2 spares them from the NOT-LIVE verdict."
+          }
+        },
+        "conjunct_ladder": {
+          "_present": true,
+          "_stored_as": "$.W91_s2_premiere.APPLY.conjunct_selection",
+          "_ordering": "conjunct 2 (NOT Continued) first, then conjunct 1 (silent at tau1). The working output stores this ONE ordering only.",
+          "start": {
+            "value": 196654,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W91_s2_premiere.APPLY.conjunct_selection.start"
+          },
+          "after_conjunct_2_not_continued": {
+            "value": 61964,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W91_s2_premiere.APPLY.conjunct_selection.after_conjunct_2_not_continued"
+          },
+          "after_conjunct_1_silent_at_tau1": {
+            "value": 606,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W91_s2_premiere.APPLY.conjunct_selection.after_conjunct_1_silent_at_tau1"
+          }
+        }
+      },
+      "DERIV": {
+        "n_position_5": {
+          "value": 147370,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.W91_s2_premiere.DERIV.n_position_5"
+        },
+        "n_post_liveness": {
+          "value": 147297,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.W91_s2_premiere.DERIV.n_post_liveness"
+        },
+        "position_5": {
+          "never_started": {
+            "value": 11780,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W91_s2_premiere.DERIV.position_5.never_started"
+          },
+          "started_and_left": {
+            "value": 23369,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W91_s2_premiere.DERIV.position_5.started_and_left"
+          },
+          "continued": {
+            "value": 112221,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W91_s2_premiere.DERIV.position_5.continued"
+          }
+        },
+        "position_7_post_liveness": {
+          "never_started": {
+            "value": 11780,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W91_s2_premiere.DERIV.position_7.never_started"
+          },
+          "started_and_left": {
+            "value": 23296,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W91_s2_premiere.DERIV.position_7.started_and_left"
+          },
+          "continued": {
+            "value": 112221,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W91_s2_premiere.DERIV.position_7.continued"
+          }
+        },
+        "_position_7_naming_note": "the working output names the post-liveness counts `position_7`; they are the post-liveness counts asked for, transcribed under the name they were stored with.",
+        "exclusions": {
+          "total_pairs": {
+            "value": 73,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W91_s2_premiere.DERIV.exclusions.total_pairs"
+          },
+          "never_started_component": {
+            "value": 0,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W91_s2_premiere.DERIV.exclusions.never_started_component"
+          },
+          "started_and_left_component": {
+            "value": 73,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W91_s2_premiere.DERIV.exclusions.started_and_left_component"
+          },
+          "continued_component": {
+            "value": 0,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W91_s2_premiere.DERIV.exclusions.continued_component"
+          },
+          "accounts": {
+            "value": 56,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W91_s2_premiere.DERIV.exclusions.accounts"
+          },
+          "_accounts_note": "a count of DISTINCT ACCOUNTS in the excluded set, not accounts. Published under the Human Lead's 2026-08-21 ruling that the account counts publish because the method section needs them checkable. No identifier is carried.",
+          "silence_test_alone": {
+            "value": 658,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W91_s2_premiere.DERIV.exclusions.silence_test_alone"
+          },
+          "spared_by_not_continued": {
+            "value": 585,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W91_s2_premiere.DERIV.exclusions.spared_by_not_continued"
+          },
+          "_what_those_two_fields_COUNT": {
+            "silence_test_alone": "coded `int((mask & r['silent']).sum())` in src/step9_b_1_compute.py -- pairs on this population's position-5 mask that meet CONJUNCT 1 ALONE (no insertion instant after their own tau1), IRRESPECTIVE of Continued. It is NOT the count of pairs excluded by the silence test alone; the field name invites that misreading and the misreading is wrong.",
+            "spared_by_not_continued": "coded `int((mask & r['silent'] & r['continued']).sum())` -- pairs that meet conjunct 1 but are Continued, so conjunct 2 spares them from the NOT-LIVE verdict."
+          }
+        },
+        "conjunct_ladder": {
+          "_present": true,
+          "_stored_as": "$.W91_s2_premiere.DERIV.conjunct_selection",
+          "_ordering": "conjunct 2 (NOT Continued) first, then conjunct 1 (silent at tau1). The working output stores this ONE ordering only.",
+          "start": {
+            "value": 147370,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W91_s2_premiere.DERIV.conjunct_selection.start"
+          },
+          "after_conjunct_2_not_continued": {
+            "value": 35149,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W91_s2_premiere.DERIV.conjunct_selection.after_conjunct_2_not_continued"
+          },
+          "after_conjunct_1_silent_at_tau1": {
+            "value": 73,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.W91_s2_premiere.DERIV.conjunct_selection.after_conjunct_1_silent_at_tau1"
+          }
+        }
+      }
+    }
+  },
+  "t0_movement": {
+    "figure": {
+      "value": 63814,
+      "source_file": "processed/step9/b/stage1_counts.json",
+      "key": "$.premiere_arm_preconditions.pairs_where_t0_moves"
+    },
+    "predicate_as_coded": "int((t0_prem < t0_finale)[pos5].sum())   # src/step9_b_1_compute.py line 161",
+    "predicate_in_words": "the number of pairs whose premiere-anchored T0' is STRICTLY EARLIER than their finale-anchored T0. t0_prem = max(S2 premiere date, first-pass S1 completion date); t0_finale = the adopted T0 = max(S2 finale air date, S1 completion date). Both at midnight UTC, compared as epoch seconds.",
+    "strictness": "STRICT `<`. Pairs where the two origins coincide are NOT counted.",
+    "population_of_the_mask": {
+      "population": "APPLY, position 5",
+      "how_it_is_known": "the mask applied in the code is `pos5`, which is the APPLY position-5 mask (r108['pos5']).",
+      "defect": "the working file does NOT record this population beside the figure; it is recoverable only from the source line. Stated here from the code, and reported as a defect of the working output."
+    },
+    "not_converted": "transcribed exactly as measured. It is NOT restated as a share, NOT restated as a count of pairs whose T0 does not move, and NOT restated on DERIV.",
+    "companions_stored_with_it": {
+      "_what_replaced_the_three_booleans": "The build this file previously described stored three booleans here -- t0_is_earlier_or_equal_for_every_pair and tau2_observable_on_every_retained_pair on each population. All three were guaranteed by a DEFECTIVE T0' vector and returned True on it, so none of them could fail and none of them checked anything. They are GONE, not restated. TWO CHECKS STAND IN THEIR PLACE, and both raise rather than returning a flag: DEF-A, below, which decodes the premiere epoch vector back to calendar dates and compares it elementwise against the frame's own s2_premiere_date; and T0PRIME-ORDER, below that, which verifies the ORDERING WARRANT the deliverable claims -- T0' <= T0, and tau2' < tau2 <= tau_pull on the retained rows. T0PRIME-ORDER IS NOT THE REMOVED BOOLEAN RESTORED: its part 1 reconstructs T0' from the frame's own date STRINGS, so it FAILS on the vector that made the boolean vacuous, which the boolean could not.",
+      "clock_vector_verification": {
+        "check": {
+          "value": "DEF-A, elementwise against the frame's own s2_premiere_date",
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.clock_vector_verification.check"
+        },
+        "rows_compared_by_show": {
+          "value": 1138,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.clock_vector_verification.by_show.rows_compared"
+        },
+        "mismatches_by_show": {
+          "value": 0,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.clock_vector_verification.by_show.mismatches"
+        },
+        "rows_compared_by_pair": {
+          "value": 278452,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.clock_vector_verification.by_pair.rows_compared"
+        },
+        "mismatches_by_pair": {
+          "value": 0,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.clock_vector_verification.by_pair.mismatches"
+        },
+        "total_rows_compared": {
+          "value": 279590,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.clock_vector_verification.total_rows_compared"
+        },
+        "resolution_read_off_the_dtype": {
+          "value": "us",
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.clock_vector_verification.epoch_conversion.resolution_read_off_the_dtype"
+        },
+        "ticks_per_second_selected": {
+          "value": 1000000,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.clock_vector_verification.epoch_conversion.ticks_per_second_selected"
+        },
+        "divisor_hardcoded": {
+          "value": false,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.clock_vector_verification.epoch_conversion.divisor_hardcoded"
+        },
+        "t0_restored_after_the_substituted_run": {
+          "value": true,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.clock_vector_verification.t0_restored_after_the_substituted_run"
+        }
+      },
+      "t0_prime_order_verification": {
+        "_what_this_is": "THE CHECK BEHIND THE DELIVERABLE'S ORDERING CLAIM. The arm file states that the row set is not re-censored because T0' <= T0 on every pair; this is what establishes it, and it raises. Three parts, because the bare inequality cannot fail on a collapsed T0'.",
+        "check": {
+          "value": "T0PRIME-ORDER",
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.t0_prime_order_verification.check"
+        },
+        "raises_on_failure": {
+          "value": true,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.t0_prime_order_verification.raises_on_failure"
+        },
+        "why_the_inequality_alone_is_not_enough": {
+          "value": "T0' = max(premiere, S1 completion), so a premiere epoch that decodes to 1970 gives T0' = the S1 completion date on every pair, which is <= T0 unconditionally. The inequality is then TRUE FOR THE WRONG REASON and cannot fail. Part 1 pins T0' against a source the epoch conversion never touched, and is what fails on the defective vector.",
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.t0_prime_order_verification.why_the_inequality_alone_is_not_enough"
+        },
+        "part_1_rows_compared": {
+          "value": 278452,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.t0_prime_order_verification.part_1_reconstruction.rows_compared"
+        },
+        "part_1_mismatches": {
+          "value": 0,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.t0_prime_order_verification.part_1_reconstruction.mismatches"
+        },
+        "part_2_rows_compared": {
+          "value": 278452,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.t0_prime_order_verification.part_2_ordering.rows_compared"
+        },
+        "part_2_violations": {
+          "value": 0,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.t0_prime_order_verification.part_2_ordering.violations"
+        },
+        "part_2_pairs_strictly_earlier": {
+          "value": 126082,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.t0_prime_order_verification.part_2_ordering.pairs_strictly_earlier"
+        },
+        "part_2_pairs_equal": {
+          "value": 152370,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.t0_prime_order_verification.part_2_ordering.pairs_equal"
+        },
+        "part_3_apply_rows_compared": {
+          "value": 196654,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.t0_prime_order_verification.part_3_observability.populations.APPLY.rows_compared"
+        },
+        "part_3_apply_tau2_prime_not_before_tau2_violations": {
+          "value": 0,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.t0_prime_order_verification.part_3_observability.populations.APPLY.tau2_prime_not_before_tau2_violations"
+        },
+        "part_3_apply_tau2_prime_after_tau_pull_violations": {
+          "value": 0,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.t0_prime_order_verification.part_3_observability.populations.APPLY.tau2_prime_after_tau_pull_violations"
+        },
+        "part_3_apply_min_margin_days_tau2_to_tau2_prime": {
+          "value": 17.0,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.t0_prime_order_verification.part_3_observability.populations.APPLY.min_margin_days_tau2_to_tau2_prime"
+        },
+        "part_3_apply_min_margin_days_tau2_prime_to_tau_pull": {
+          "value": 17.0,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.t0_prime_order_verification.part_3_observability.populations.APPLY.min_margin_days_tau2_prime_to_tau_pull"
+        },
+        "part_3_deriv_rows_compared": {
+          "value": 147370,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.t0_prime_order_verification.part_3_observability.populations.DERIV.rows_compared"
+        },
+        "part_3_deriv_tau2_prime_not_before_tau2_violations": {
+          "value": 0,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.t0_prime_order_verification.part_3_observability.populations.DERIV.tau2_prime_not_before_tau2_violations"
+        },
+        "part_3_deriv_tau2_prime_after_tau_pull_violations": {
+          "value": 0,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.t0_prime_order_verification.part_3_observability.populations.DERIV.tau2_prime_after_tau_pull_violations"
+        },
+        "part_3_deriv_min_margin_days_tau2_to_tau2_prime": {
+          "value": 17.0,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.t0_prime_order_verification.part_3_observability.populations.DERIV.min_margin_days_tau2_to_tau2_prime"
+        },
+        "part_3_deriv_min_margin_days_tau2_prime_to_tau_pull": {
+          "value": 17.0,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.t0_prime_order_verification.part_3_observability.populations.DERIV.min_margin_days_tau2_prime_to_tau_pull"
+        },
+        "total_rows_compared": {
+          "value": 900928,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.t0_prime_order_verification.total_rows_compared"
+        }
+      },
+      "measured_properties_of_the_corrected_clock": {
+        "_what_these_are": "counts, not the check. The same two comparisons are ASSERTED elementwise, and raise, in T0PRIME-ORDER part 3 above; these are the counts restated where a reader can see them. ON THEIR OWN the two tau2 counts cannot detect a wrong premiere vector -- they are implied by T0' <= T0 and D10, and T0' <= T0 is itself implied by any collapsed T0'. DEF-A and T0PRIME-ORDER part 1 are what can fail on such a vector.",
+        "shows_where_premiere_precedes_finale": {
+          "value": 932,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.shows_where_premiere_precedes_finale"
+        },
+        "shows_where_premiere_equals_finale": {
+          "value": 206,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.shows_where_premiere_equals_finale"
+        },
+        "shows_where_premiere_follows_finale": {
+          "value": 0,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.shows_where_premiere_follows_finale"
+        },
+        "shows_total": {
+          "value": 1138,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.shows_total"
+        },
+        "pairs_where_t0_prime_is_the_premiere_date": {
+          "value": 81028,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.pairs_where_t0_prime_is_the_premiere_date"
+        },
+        "pairs_where_t0_prime_is_the_s1_completion_date": {
+          "value": 115847,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.pairs_where_t0_prime_is_the_s1_completion_date"
+        },
+        "retained_pairs_with_tau2_after_tau_pull_APPLY": {
+          "value": 0,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.retained_pairs_with_tau2_after_tau_pull_APPLY"
+        },
+        "retained_pairs_with_tau2_after_tau_pull_DERIV": {
+          "value": 0,
+          "source_file": "processed/step9/b/stage1_counts.json",
+          "key": "$.premiere_arm_preconditions.retained_pairs_with_tau2_after_tau_pull_DERIV"
+        }
+      }
+    }
+  },
+  "supplementary": {
+    "_why_included": "counts only, measured by this arm, directly adjacent to the exclusion breakdown. Segregated from the required fields so a reader can see what was asked for and what was added.",
+    "channel_pairs_conceded_by_the_floor": {
+      "_what_these_are": "RETAINED pairs (not exclusions): live only because they inserted after tau1, NOT Continued, with last insertion inside (tau1, tau2). They could produce no evidence dated after that instant, so they may in truth be Continued and the started-and-left floor concedes them.",
+      "_stored_as": "$.channel_pairs_conceded_by_the_floor",
+      "W108_s2_finale": {
+        "APPLY": {
+          "all": {
+            "value": 297,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.channel_pairs_conceded_by_the_floor.W108_s2_finale.APPLY.all"
+          },
+          "started_and_left_component": {
+            "value": 90,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.channel_pairs_conceded_by_the_floor.W108_s2_finale.APPLY.started_and_left_component"
+          },
+          "never_started_component": {
+            "value": 207,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.channel_pairs_conceded_by_the_floor.W108_s2_finale.APPLY.never_started_component"
+          }
+        },
+        "DERIV": {
+          "all": {
+            "value": 92,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.channel_pairs_conceded_by_the_floor.W108_s2_finale.DERIV.all"
+          },
+          "started_and_left_component": {
+            "value": 89,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.channel_pairs_conceded_by_the_floor.W108_s2_finale.DERIV.started_and_left_component"
+          },
+          "never_started_component": {
+            "value": 3,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.channel_pairs_conceded_by_the_floor.W108_s2_finale.DERIV.never_started_component"
+          }
+        }
+      },
+      "W91_s2_premiere": {
+        "APPLY": {
+          "all": {
+            "value": 254,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.channel_pairs_conceded_by_the_floor.W91_s2_premiere.APPLY.all"
+          },
+          "started_and_left_component": {
+            "value": 74,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.channel_pairs_conceded_by_the_floor.W91_s2_premiere.APPLY.started_and_left_component"
+          },
+          "never_started_component": {
+            "value": 180,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.channel_pairs_conceded_by_the_floor.W91_s2_premiere.APPLY.never_started_component"
+          }
+        },
+        "DERIV": {
+          "all": {
+            "value": 77,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.channel_pairs_conceded_by_the_floor.W91_s2_premiere.DERIV.all"
+          },
+          "started_and_left_component": {
+            "value": 74,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.channel_pairs_conceded_by_the_floor.W91_s2_premiere.DERIV.started_and_left_component"
+          },
+          "never_started_component": {
+            "value": 3,
+            "source_file": "processed/step9/b/stage1_counts.json",
+            "key": "$.channel_pairs_conceded_by_the_floor.W91_s2_premiere.DERIV.never_started_component"
+          }
+        }
+      },
+      "_account_counts": {
+        "status": "ABSENT",
+        "field": "account counts for the conceded-channel sets",
+        "would_live_at": "$.channel_pairs_conceded_by_the_floor.*.*",
+        "why_absent": "only pair counts were stored. Deriving accounts would require reading pairs.npz, which is forbidden, and would be a new measurement.",
+        "note": "Recorded as absent. No value was supplied from elsewhere."
+      }
+    },
+    "account_totals_of_the_populations": {
+      "_why": "the exclusion account counts (e.g. 216) are only checkable against a denominator. These are the resampling-unit totals recorded by the bootstrap stage. Counts of accounts, not accounts.",
+      "W108_s2_finale": {
+        "APPLY": {
+          "value": 2422,
+          "source_file": "processed/step9/b/stage2_bootstrap.json",
+          "key": "$.W108_s2_finale.APPLY.n_accounts"
+        },
+        "DERIV": {
+          "value": 2402,
+          "source_file": "processed/step9/b/stage2_bootstrap.json",
+          "key": "$.W108_s2_finale.DERIV.n_accounts"
+        }
+      },
+      "W91_s2_premiere": {
+        "APPLY": {
+          "value": 2422,
+          "source_file": "processed/step9/b/stage2_bootstrap.json",
+          "key": "$.W91_s2_premiere.APPLY.n_accounts"
+        },
+        "DERIV": {
+          "value": 2402,
+          "source_file": "processed/step9/b/stage2_bootstrap.json",
+          "key": "$.W91_s2_premiere.DERIV.n_accounts"
+        }
+      }
+    }
+  },
+  "absent_fields": [
+    {
+      "status": "ABSENT",
+      "field": "pairs_where_t0_moves, on DERIV",
+      "would_live_at": "$.premiere_arm_preconditions",
+      "why_absent": "the measurement was taken on the APPLY position-5 mask ONLY (`[pos5]`). No DERIV counterpart was ever computed. Producing one would be a new measurement, which this extract is forbidden to make.",
+      "note": "Recorded as absent. No value was supplied from elsewhere."
+    },
+    {
+      "status": "ABSENT",
+      "field": "a T0-movement figure for the W108 finale arm",
+      "would_live_at": "$.W108_s2_finale",
+      "why_absent": "the measurement is defined premiere-against-finale and is stored ONCE, under $.premiere_arm_preconditions, rather than per arm setting. There is no per-arm field to transcribe.",
+      "note": "Recorded as absent. No value was supplied from elsewhere."
+    },
+    {
+      "status": "ABSENT",
+      "field": "adopted_rule_revision",
+      "would_live_at": "anywhere in either working file",
+      "why_absent": "NOT RECORDED BY THIS ARM'S STEP 9 RUN. The arm key is (W_days, clock_origin, producing_step, adopted_rule_revision) per 0111 E2 and 0114 E14, and the fourth component is missing from this arm's working output, so the key is INCOMPLETE as stored. It is not read in from processed/step5/adopted_rule.json here: the ruling directs that an absent field be recorded absent, not filled from elsewhere. Reported as a defect.",
+      "note": "Recorded as absent. No value was supplied from elsewhere."
+    },
+    {
+      "status": "ABSENT",
+      "field": "producing_step, as a stored field",
+      "would_live_at": "anywhere in either working file",
+      "why_absent": "the working file records `step: 9` at its root but does not carry it into the per-arm entries, so the third arm-key component is not stored per arm either.",
+      "note": "Recorded as absent. No value was supplied from elsewhere."
+    },
+    {
+      "status": "ABSENT",
+      "field": "account counts for the silence_test_alone and spared_by_not_continued sets",
+      "would_live_at": "$.<setting>.<population>.exclusions",
+      "why_absent": "only pair counts were stored for those two sets. The `accounts` field covers the EXCLUDED set only.",
+      "note": "Recorded as absent. No value was supplied from elsewhere."
+    },
+    {
+      "status": "ABSENT",
+      "field": "a conjunct-1-first ordering of the conjunct ladder",
+      "would_live_at": "$.<setting>.<population>.conjunct_selection",
+      "why_absent": "the ladder was stored in one ordering only (conjunct 2 first). The conjunct-1-alone quantity does exist separately as `silence_test_alone`, and is transcribed above under its own name; it is NOT re-presented here as a ladder rung, because assembling a second ladder is a construction this extract is not authorised to make.",
+      "note": "Recorded as absent. No value was supplied from elsewhere."
+    },
+    {
+      "status": "ABSENT",
+      "field": "position-5 and post-liveness counts at any other W arm",
+      "would_live_at": "the working file root",
+      "why_absent": "this arm's Step 9 run carries exactly the two settings listed. The eight-arm W grid belongs to Step 13 and is not in this file.",
+      "note": "Recorded as absent. No value was supplied from elsewhere."
+    },
+    {
+      "status": "ABSENT",
+      "field": "D4 (S3-without-S2) and D9 (split-artifact) figures",
+      "would_live_at": "the working file root",
+      "why_absent": "Step 8 owns them and Step 9 CONSUMES them (0070 rulings 1 and 7). This arm did not compute D4 and must not; there is nothing of its own to transcribe.",
+      "note": "Recorded as absent. No value was supplied from elsewhere."
+    },
+    {
+      "status": "ABSENT",
+      "field": "channel_classes and discovery_channel_overlap",
+      "would_live_at": "the working file root",
+      "why_absent": "0114 E8: this arm does not write them. They hold Step 8's D4 and D9 figures and the merged document carries them once, filled at Step 13b from Step 8's artifact. Emitted here as the absence idiom.",
+      "note": "Recorded as absent. No value was supplied from elsewhere."
+    }
+  ],
+  "defects_found_while_transcribing": [
+    {
+      "id": "b-wf-1",
+      "severity": "reportable",
+      "where": "src/step9_b_1_compute.py, the `EXPECTED` dict",
+      "what": "the harness control's expected values are TYPED AS LITERALS. The comment on the dict claims they come from artifacts/step8-waterfall-{a,b}.json, but the script NEVER OPENS EITHER FILE.",
+      "why_it_matters": "this is the read-never-typed class that 0114 E14 rules against, and the same limit this arm's own spec names: a typed value validates identically to a read one, so the honesty of the field is the author's, not the control's. If Step 8's artifact is ever amended, this control passes against a stale transcription and reports `agrees: true`.",
+      "not_claimed": "this extract does NOT claim the typed literals match Step 8's artifacts. No keyed comparison was performed. A substring presence check would be near-vacuous for small integers such as 99 and 703 and is not evidence.",
+      "affects_the_figures_in_this_file": "no. The control block is not transcribed here; the figures above come from the measured per-arm blocks."
+    },
+    {
+      "id": "b-wf-2",
+      "severity": "reportable",
+      "where": "$.premiere_arm_preconditions.pairs_where_t0_moves",
+      "what": "the figure DOES NOT STATE ITS POPULATION in the working file. It was measured on the APPLY position-5 mask, knowable only by reading the source line.",
+      "why_it_matters": "EVERY FIGURE STATES ITS POPULATION is a standing requirement of this step. A reader of the JSON alone would not know whether 63,814 is an APPLY figure, a DERIV figure, or a whole-frame figure.",
+      "handled_here": "the population is stated in this extract, sourced from the code line and labelled as such."
+    },
+    {
+      "id": "b-wf-3",
+      "severity": "naming, not numeric",
+      "where": "$.<setting>.<population>.exclusions.silence_test_alone",
+      "what": "the name reads as `pairs excluded by the silence test alone`. It is not that. It is `mask & silent`: every pair meeting conjunct 1, Continued ones included.",
+      "why_it_matters": "a reader who takes the name at face value reads it as an exclusion subtotal and gets a number larger than the total exclusions, which looks like a contradiction and is not one.",
+      "handled_here": "the coded expression is transcribed beside the figure."
+    },
+    {
+      "id": "b-wf-4",
+      "severity": "look-alike, NOT a defect",
+      "where": "$.<setting>.<population>.exclusions.spared_by_not_continued",
+      "what": "the value is IDENTICAL on APPLY and DERIV at both settings.",
+      "why_it_is_not_a_defect": "it is forced by the definitions. A spared pair is Continued; Continued requires S2 evidence; DERIV is APPLY restricted to pairs with S2 evidence. So every spared APPLY pair is in DERIV and the two counts cannot differ.",
+      "recorded_because": "it looks like a copy-paste error and a reader should not have to chase it."
+    }
+  ],
+  "scope_of_the_defect_list": "these are defects in THIS ARM'S OWN working output and its own generator only. Anything observed on a surface this arm does not own was reported to the Human Lead and is not published here.",
+  "_emission": {
+    "document": "Step 9 working-figures extract -- ARM b -- CORRECTED EMISSION",
+    "document_instance": "step9-b-corrected-2026-08-21",
+    "document_instance_note": "THIS IS NOT A SECOND ARM FILE. It is arm b's corrected emission of arm b's own document, and $.document_scope.arm is 'b' in both it and the file it supersedes. A merge that globbed artifacts/step9-headline-*.json on the arm field alone would pick up BOTH and could read them as two arms. THIS DOCUMENT THEREFORE CARRIES A DISTINCT INSTANCE VALUE -- 'DOCUMENT INSTANCE: step9-b-corrected-2026-08-21', at $.document_scope.note -- so the superseded file and this one are DISTINGUISHABLE rather than interchangeable. THAT IS ALL IT DOES: it makes the two tellable apart and states nothing about which a merge takes. The merge's input contract is Step 13b's, and Step 13b is the Human Lead's; an arm does not decide what the merge reads. Human Lead ruling 2, 2026-08-21.",
+    "supersedes": "artifacts/step9-working-figures-b.json",
+    "what_it_supersedes": "This emission supersedes the PREMIERE-ANCHORED 91-day arm of artifacts/step9-headline-b.json, artifacts/step9-headline-b.md and artifacts/step9-working-figures-b.json -- and ONLY that arm. The adopted W108_s2_finale arm is unchanged: it was verified leaf-for-leaf identical and its harness control reproduces, so nothing about it is superseded and it is not marked in those files.",
+    "why": "src/step9_b_1_compute.py converted the premiere-anchored T0 column to epoch seconds with prem.astype('int64') // 10 ** 9. The column's dtype is datetime64[us, UTC], so its integer view is MICROseconds; dividing by 10 ** 9 produced epoch-seconds / 1000 -- a 1970 date -- for every pair, in every entry, on both populations. The superseded figures were CORRECTLY COMPUTED from that vector and are kept, marked at each point of use, as the record of what the defect produced. src/step9_b_0_clock.py now reads the resolution off the dtype and cross-checks the cast elementwise; an unrecognised resolution is a hard stop, not a default.",
+    "arm_signature": "SIGNED OFF BY THE PRODUCING ARM. This arm attests that every figure in this file was produced by its own pipeline at the settings recorded beside it, and that this emission is byte-identical in every measurement to processed/step9/b/preview/, which is what this arm's corrected run wrote. No figure in this file was hand-entered and none was edited after emission.",
+    "promoted_from": "processed/step9/b/preview/step9-working-figures-b.json",
+    "promoted_from_sha256_12": "4053dfffd4c8",
+    "promoted_by": "src/step9_b_7_emit_corrected.py",
+    "promoted_by_sha256_12": "84415309ebb8",
+    "promoted_at_utc": "2026-08-21T21:56:18Z",
+    "git_head_short": "c790f3a",
+    "promotion_changed_no_measurement": "asserted numerically, not claimed: every leaf of the source is present here with the same value, and the only added key is this one.",
+    "open_defects_in_this_emission": {
+      "b-md-1": "A TYPED COUNT IN THE .md. src/step9_b_4_md.py asserts 'Six of the twelve movements this arm measured have negative endpoints' as a literal. It is true of the figures in this emission, but it is ASSERTED rather than measured, so it cannot follow the figures if they move. Same class as the carried finding b-wf-1. STILL NOT FIXED: the rerun of 2026-08-21 was authorised for b-emit-1, and an arm does not widen the scope of an authorised rerun on its own. REPORTED so the count is not read as measured.",
+      "how_to_read_these": "This arm's own defects in this arm's own files, published with the figures rather than held back. It moves no number in this emission."
+    },
+    "resolved_in_this_emission": {
+      "b-emit-1": "A WARRANT THIS EMISSION NOW CARRIES. The previous corrected emission stated, at $.arms[1].note and in section 9 of the .md, that the un-re-censored row set was 'CHECKED rather than assumed: T0 prime <= T0 holds for every pair' -- after the boolean that checked it, t0_is_earlier_or_equal_for_every_pair, had been removed as vacuous. A CLAIM OF HAVING CHECKED IS EITHER TRUE OR IT IS REMOVED, so on the Human Lead's ruling of 2026-08-21 this arm RECOMPUTED IT rather than softening the sentence. The check is T0PRIME-ORDER, src/step9_b_0_clock.py::verify_t0_prime_order; it runs in this pipeline, it RAISES, and the sentence now names it, states what each part compares and gives its coverage. IT IS NOT THE REMOVED BOOLEAN RESTORED: the bare inequality is true for the wrong reason on a collapsed T0' and cannot fail, so part 1 reconstructs T0' from the frame's own date STRINGS, which the epoch conversion never touches. DEMONSTRATED FAILING ON THE DEFECTIVE VECTOR at logs/step9_b_premiere_clock_repro.txt section 5 -- part 1 rejects it on 155,556 of 278,452 pairs, while part 2 run alone on that same vector passes, which is the whole of the case that part 1 is what makes the replacement failable. NO FIGURE IN THIS EMISSION MOVED: the recomputation added a check and rewrote three prose fields, and every numeric leaf is unchanged."
+    },
+    "privacy": "COUNTS AND ACCOUNT TOTALS ONLY. processed/step9/b/pairs.npz was not read."
+  }
+}

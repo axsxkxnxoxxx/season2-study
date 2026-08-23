@@ -61,6 +61,114 @@ SUPERSEDED_IN = {
     ("bb-a", 0.2813): "computed on arm b's convention (under-the-rule CI 1.092). Arm a's is 0.2818",
 }
 
+
+# ---------------------------------------------------- 0123: ARM b's PREMIERE-CLOCK FIGURES
+# Human Lead ruling, 2026-08-21: "The register gap is mine. Add the ~180 superseded figures."
+#
+# These are arm b's W91_s2_premiere figures produced under the defective T0 vector -- the
+# 10 ** 9 divisor against a datetime64[us, UTC] dtype, every value epoch-seconds / 1000. They
+# are SUPERSEDED_IN rather than SUPERSEDED: they are wrong in arm b's three W91_s2_premiere
+# blocks and say nothing about any other arm, step or file.
+#
+# THE COMMITTED ORIGINALS STILL CARRY THEM, CORRECTLY -- stamped, because the Human Lead ruled
+# "the record of what the defect produced is the evidence for the finding". The stamps are
+# FIELD-SCOPED sibling notes, and check_surfaces.stamped_field_paths() honours exactly the
+# fields each stamp names. So these rows do NOT fire on the marked originals; they fire if a
+# superseded value is REINTRODUCED anywhere unmarked.
+#
+# EVERY ROW IS LIVE. Each (file, value) pair was verified to occur in that file before being
+# written; a row matching nothing is inert and CLAUDE.md forbids it.
+#
+# SEVEN SUPERSEDED VALUES ARE DELIBERATELY NOT REGISTERED, and this is the gap, stated rather
+# than left silent: 41, 52, 83, 104, 108, 160, 320. They are small integers that collide with
+# unrelated legitimate figures across the study -- measured occurrences: 108 appears 644 times
+# in 123 files (it is W), 52 appears 219 times, 41 appears 52 times. Registering them would
+# flag hundreds of correct readings and the register would be withdrawn within a day. They are
+# superseded and they are UNPOLICED; nothing else in this file can see them.
+SUPERSEDED_IN.update({
+    ("step9-headline-b", -0.045762): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", -0.031786): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", -0.030188): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", -0.021439): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", -0.012958): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", -0.010294): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 0.009282): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 0.012108): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 0.019788): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 0.02603): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 0.02886): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 0.029092): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 0.052885): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 0.054919): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 0.05553): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 0.070571): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 0.070571): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 0.097271): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 0.105321): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 0.107804): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 0.162722): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 0.198283): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 6.395342): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 6.630936): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 6.662799): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 6.68382): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 6.738739): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 6.939027): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 7.08294): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 7.371921): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 7.409821): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 7.442492): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 7.752991): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 38.864474): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 40.058357): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 40.072496): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 41.294709): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 41.805535): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 42.73343): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 42.768227): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 42.788349): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 43.708479): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 49.637717): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 50.527831): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 50.568974): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 50.635634): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 51.290946): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 51.519889): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 52.499152): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 52.517683): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 52.569722): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 53.701547): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 100.070571): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 100.162722): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 10864): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 10916): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 10968): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 13040): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 13092): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 13144): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 13252): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 59034): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 77368): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 77472): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 84037): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 84145): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 99365): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 99577): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 147318): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-headline-b", 196494): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-working-figures-b", 10916): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-working-figures-b", 10968): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-working-figures-b", 13092): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-working-figures-b", 13144): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-working-figures-b", 59034): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-working-figures-b", 77368): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-working-figures-b", 84037): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-working-figures-b", 84145): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-working-figures-b", 99365): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-working-figures-b", 147318): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+    ("step9-working-figures-b", 196494): "arm b W91_s2_premiere, produced under the 10**9 divisor against datetime64[us]; corrected value in step9-*-corrected-2026-08-21-b (0123)",
+})
+
 # ------------------------------------------------------------------------------- adopted
 SPEC = ["1 task-sheet", "2 ds", "3 ds-b", "4 ae", "5 ae-b"]
 # ae / ae-b deliberately hold NO Step 9 bound figures (0055 SS5a), so they are not owners.

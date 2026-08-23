@@ -7,8 +7,12 @@ import json
 import os
 
 ROOT = "/Users/alyanashantel/Documents/season2-study"
-J = os.path.join(ROOT, "artifacts/step9-headline-b.json")
-M = os.path.join(ROOT, "artifacts/step9-headline-b.md")
+# See src/step9_b_3_emit.py: STEP9_B_OUTDIR redirects a correction run away from the committed
+# deliverables. The .md is rendered from whichever .json this run produced, never from a
+# different one.
+OUTDIR = os.environ.get("STEP9_B_OUTDIR", os.path.join(ROOT, "artifacts"))
+J = os.path.join(OUTDIR, "step9-headline-b.json")
+M = os.path.join(OUTDIR, "step9-headline-b.md")
 
 d = json.load(open(J))
 L = []

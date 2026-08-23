@@ -130,6 +130,19 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
   exists to do.** ~~*"A dual step is diffed IN this schema"*~~ ***is RETIRED (`0066` §5): it had no
   writer.*** **A dual step is diffed BETWEEN TWO ARM FILES, BY THE HUMAN LEAD, BEFORE THE MERGE** —
   **and it is the DIFF, not the merge, that is the dual control.**
+  ***AND IT REACHES YOUR SEARCHES, NOT ONLY YOUR READS.*** **`0123`, on arm `b`'s self-reported lapse.**
+  ***A NAMESPACE-WIDE SEARCH IS A READ OF THE OTHER ARM.*** A `grep`, `glob`, `find` or `rglob` scoped
+  to `src/*.py`, `artifacts/*`, `processed/**` or the repository root **returns the other arm's lines
+  into your context**, and it does so **without you opening a single one of its files** — which is why
+  it can be written by accident and why the file-level rule does not catch it.
+  ***SCOPE EVERY SEARCH TO YOUR OWN ARM'S NAMESPACE, IN THE PATTERN ITSELF, BEFORE YOU RUN IT.***
+  Use `src/step9_<your-arm>_*`, `processed/step9/<your-arm>/`, `artifacts/step9-*-<your-arm>.*` —
+  **never a bare directory and never a wildcard that spans arms.** **`decisions/`, `task-sheet.md`,
+  `CLAUDE.md` and your own definition file are shared spec and may be searched whole.**
+  **If a search returns a path belonging to another arm, you have already breached: do not read the
+  hit, and REPORT IT.** ***Arm `b` disclosed exactly that and the disclosure is what the rule exists
+  to produce*** — **a silent breach is undetectable, so the lapse that gets reported is the one the
+  study can price.**
   **What this means for you concretely.** **Do NOT write `$.cross_arm_divergences`** — it is
   `human_lead`, `may_first_writer_fill: false`, and **`forbidden_to_compute_here` for step9 and
   step13.** **You cannot see the other arm, so you could only fabricate its search record.** **Omit

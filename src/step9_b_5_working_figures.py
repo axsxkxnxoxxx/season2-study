@@ -33,8 +33,14 @@ import os
 
 ROOT = "/Users/alyanashantel/Documents/season2-study"
 WORK = os.path.join(ROOT, "processed/step9/b")
-OUT = os.path.join(ROOT, "artifacts/step9-working-figures-b.json")
-RUNLOG = os.path.join(ROOT, "logs/step9-b-working-figures-run.txt")
+# See src/step9_b_3_emit.py: STEP9_B_OUTDIR redirects a correction run away from the committed
+# deliverables. The run record follows the output, so a preview run cannot overwrite the record
+# of the file that is actually on disk in artifacts/.
+OUTDIR = os.environ.get("STEP9_B_OUTDIR", os.path.join(ROOT, "artifacts"))
+OUT = os.path.join(OUTDIR, "step9-working-figures-b.json")
+RUNLOG = os.path.join(ROOT, os.environ.get("STEP9_B_WF_RUNLOG",
+                                           "logs/step9-b-working-figures-run.txt"))
+os.makedirs(OUTDIR, exist_ok=True)
 
 FORBIDDEN = "pairs.npz"
 
@@ -157,7 +163,7 @@ for key, w, origin, gloss in SETTINGS:
 t0_movement = {
     "figure": ref("stage1", "premiere_arm_preconditions", "pairs_where_t0_moves"),
     "predicate_as_coded":
-        "int((t0_prem < t0_finale)[pos5].sum())   # src/step9_b_1_compute.py line 97",
+        "int((t0_prem < t0_finale)[pos5].sum())   # src/step9_b_1_compute.py line 161",
     "predicate_in_words":
         "the number of pairs whose premiere-anchored T0' is STRICTLY EARLIER than their "
         "finale-anchored T0. t0_prem = max(S2 premiere date, first-pass S1 completion date); "
@@ -175,16 +181,108 @@ t0_movement = {
     "not_converted":
         "transcribed exactly as measured. It is NOT restated as a share, NOT restated as a "
         "count of pairs whose T0 does not move, and NOT restated on DERIV.",
-    "companion_booleans_stored_with_it": {
-        "t0_is_earlier_or_equal_for_every_pair":
-            ref("stage1", "premiere_arm_preconditions",
-                "t0_is_earlier_or_equal_for_every_pair"),
-        "tau2_observable_on_every_retained_pair_APPLY":
-            ref("stage1", "premiere_arm_preconditions",
-                "tau2_observable_on_every_retained_pair_APPLY"),
-        "tau2_observable_on_every_retained_pair_DERIV":
-            ref("stage1", "premiere_arm_preconditions",
-                "tau2_observable_on_every_retained_pair_DERIV"),
+    "companions_stored_with_it": {
+        "_what_replaced_the_three_booleans":
+            "The build this file previously described stored three booleans here -- "
+            "t0_is_earlier_or_equal_for_every_pair and tau2_observable_on_every_retained_pair "
+            "on each population. All three were guaranteed by a DEFECTIVE T0' vector and "
+            "returned True on it, so none of them could fail and none of them checked "
+            "anything. They are GONE, not restated. TWO CHECKS STAND IN THEIR PLACE, and both "
+            "raise rather than returning a flag: DEF-A, below, which decodes the premiere epoch "
+            "vector back to calendar dates and compares it elementwise against the frame's own "
+            "s2_premiere_date; and T0PRIME-ORDER, below that, which verifies the ORDERING "
+            "WARRANT the deliverable claims -- T0' <= T0, and tau2' < tau2 <= tau_pull on the "
+            "retained rows. T0PRIME-ORDER IS NOT THE REMOVED BOOLEAN RESTORED: its part 1 "
+            "reconstructs T0' from the frame's own date STRINGS, so it FAILS on the vector that "
+            "made the boolean vacuous, which the boolean could not.",
+        "clock_vector_verification": {
+            "check": ref("stage1", "premiere_arm_preconditions",
+                         "clock_vector_verification", "check"),
+            "rows_compared_by_show": ref("stage1", "premiere_arm_preconditions",
+                                         "clock_vector_verification", "by_show",
+                                         "rows_compared"),
+            "mismatches_by_show": ref("stage1", "premiere_arm_preconditions",
+                                      "clock_vector_verification", "by_show", "mismatches"),
+            "rows_compared_by_pair": ref("stage1", "premiere_arm_preconditions",
+                                         "clock_vector_verification", "by_pair",
+                                         "rows_compared"),
+            "mismatches_by_pair": ref("stage1", "premiere_arm_preconditions",
+                                      "clock_vector_verification", "by_pair", "mismatches"),
+            "total_rows_compared": ref("stage1", "premiere_arm_preconditions",
+                                       "clock_vector_verification", "total_rows_compared"),
+            "resolution_read_off_the_dtype":
+                ref("stage1", "premiere_arm_preconditions", "clock_vector_verification",
+                    "epoch_conversion", "resolution_read_off_the_dtype"),
+            "ticks_per_second_selected":
+                ref("stage1", "premiere_arm_preconditions", "clock_vector_verification",
+                    "epoch_conversion", "ticks_per_second_selected"),
+            "divisor_hardcoded":
+                ref("stage1", "premiere_arm_preconditions", "clock_vector_verification",
+                    "epoch_conversion", "divisor_hardcoded"),
+            "t0_restored_after_the_substituted_run":
+                ref("stage1", "premiere_arm_preconditions", "clock_vector_verification",
+                    "t0_restored_after_the_substituted_run"),
+        },
+        "t0_prime_order_verification": {
+            "_what_this_is":
+                "THE CHECK BEHIND THE DELIVERABLE'S ORDERING CLAIM. The arm file states that "
+                "the row set is not re-censored because T0' <= T0 on every pair; this is what "
+                "establishes it, and it raises. Three parts, because the bare inequality cannot "
+                "fail on a collapsed T0'.",
+            "check": ref("stage1", "premiere_arm_preconditions",
+                         "t0_prime_order_verification", "check"),
+            "raises_on_failure": ref("stage1", "premiere_arm_preconditions",
+                                     "t0_prime_order_verification", "raises_on_failure"),
+            "why_the_inequality_alone_is_not_enough":
+                ref("stage1", "premiere_arm_preconditions", "t0_prime_order_verification",
+                    "why_the_inequality_alone_is_not_enough"),
+            "part_1_rows_compared": ref("stage1", "premiere_arm_preconditions",
+                                        "t0_prime_order_verification", "part_1_reconstruction",
+                                        "rows_compared"),
+            "part_1_mismatches": ref("stage1", "premiere_arm_preconditions",
+                                     "t0_prime_order_verification", "part_1_reconstruction",
+                                     "mismatches"),
+            "part_2_rows_compared": ref("stage1", "premiere_arm_preconditions",
+                                        "t0_prime_order_verification", "part_2_ordering",
+                                        "rows_compared"),
+            "part_2_violations": ref("stage1", "premiere_arm_preconditions",
+                                     "t0_prime_order_verification", "part_2_ordering",
+                                     "violations"),
+            "part_2_pairs_strictly_earlier": ref("stage1", "premiere_arm_preconditions",
+                                                 "t0_prime_order_verification",
+                                                 "part_2_ordering", "pairs_strictly_earlier"),
+            "part_2_pairs_equal": ref("stage1", "premiere_arm_preconditions",
+                                      "t0_prime_order_verification", "part_2_ordering",
+                                      "pairs_equal"),
+            **{"part_3_%s_%s" % (pop.lower(), k):
+               ref("stage1", "premiere_arm_preconditions", "t0_prime_order_verification",
+                   "part_3_observability", "populations", pop, k)
+               for pop in ("APPLY", "DERIV")
+               for k in ("rows_compared", "tau2_prime_not_before_tau2_violations",
+                         "tau2_prime_after_tau_pull_violations",
+                         "min_margin_days_tau2_to_tau2_prime",
+                         "min_margin_days_tau2_prime_to_tau_pull")},
+            "total_rows_compared": ref("stage1", "premiere_arm_preconditions",
+                                       "t0_prime_order_verification", "total_rows_compared"),
+        },
+        "measured_properties_of_the_corrected_clock": {
+            "_what_these_are":
+                "counts, not the check. The same two comparisons are ASSERTED elementwise, and "
+                "raise, in T0PRIME-ORDER part 3 above; these are the counts restated where a "
+                "reader can see them. ON THEIR OWN the two tau2 counts cannot detect a wrong "
+                "premiere vector -- they are implied by T0' <= T0 and D10, and T0' <= T0 is "
+                "itself implied by any collapsed T0'. DEF-A and T0PRIME-ORDER part 1 are what "
+                "can fail on such a vector.",
+            **{k: ref("stage1", "premiere_arm_preconditions", k) for k in [
+                "shows_where_premiere_precedes_finale",
+                "shows_where_premiere_equals_finale",
+                "shows_where_premiere_follows_finale",
+                "shows_total",
+                "pairs_where_t0_prime_is_the_premiere_date",
+                "pairs_where_t0_prime_is_the_s1_completion_date",
+                "retained_pairs_with_tau2_after_tau_pull_APPLY",
+                "retained_pairs_with_tau2_after_tau_pull_DERIV"]},
+        },
     },
 }
 
@@ -299,8 +397,10 @@ defects = [
      "what": "the figure DOES NOT STATE ITS POPULATION in the working file. It was measured on "
              "the APPLY position-5 mask, knowable only by reading the source line.",
      "why_it_matters": "EVERY FIGURE STATES ITS POPULATION is a standing requirement of this "
-                       "step. A reader of the JSON alone would not know whether 87,441 is an "
-                       "APPLY figure, a DERIV figure, or a whole-frame figure.",
+                       "step. A reader of the JSON alone would not know whether {:,} is an "
+                       "APPLY figure, a DERIV figure, or a whole-frame figure.".format(
+                           ref("stage1", "premiere_arm_preconditions",
+                               "pairs_where_t0_moves")["value"]),
      "handled_here": "the population is stated in this extract, sourced from the code line and "
                      "labelled as such."},
     {"id": "b-wf-3",
@@ -456,7 +556,7 @@ if __name__ == "__main__":
         fh.write("step9 arm b -- working-figures extract\n")
         fh.write("generated_at_utc: %s\n" % stamp)
         fh.write("generator: src/step9_b_5_working_figures.py\n")
-        fh.write("output: artifacts/step9-working-figures-b.json\n")
+        fh.write("output: %s\n" % os.path.relpath(OUT, ROOT))
         for k, v in SRC.items():
             fh.write("source %s: %s sha256_12=%s\n" % (k, v, _sha12(v)))
         fh.write("pairs.npz opened: NO\n")

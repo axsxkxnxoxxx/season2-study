@@ -304,6 +304,58 @@ CITE = re.compile(
     re.I)
 
 
+# ------------------------------------------------- 0123: FIELD-SCOPED STAMPS IN JSON
+# The JSON half exempts a numeric leaf only when its own PATH carries a MARK token. Arm b's
+# 0123 stamps are at the point of use in the CLAUDE.md sense -- a sibling `note` beside the
+# figure -- so the leaf's path is clean and the stamp is invisible to that test.
+#
+# AND THE STAMP NAMES ITS FIELDS: "[SUPERSEDED ... :: fields: numerator_pairs, value_percent]".
+# So this honours EXACTLY the named fields and nothing else. It is deliberately NOT an
+# object-level exemption: CLAUDE.md's "a file-level stamp declares a file's STATUS, never its
+# individual values" is the same defect one level down, and a stamp that exempted every sibling
+# would let a corrected figure sit unflagged beside a superseded one.
+STAMP_FIELDS = re.compile(r"\bfields:\s*([A-Za-z0-9_,\s\.]+?)\]")
+
+
+def stamped_field_paths(path):
+    """JSON paths a sibling stamp explicitly names. Empty set for non-JSON or unreadable files."""
+    if not path.endswith(".json"):
+        return set()
+    try:
+        root = json.load(open(path))
+    except Exception:                                               # noqa: BLE001
+        return set()
+    out = set()
+
+    def walk(o, p):
+        if isinstance(o, dict):
+            stamped = set()
+            # A stamp may be a sibling STRING or a sibling OBJECT holding the string one level
+            # down -- arm b used `_superseded: {value: "[SUPERSEDED ... fields: value] ..."}`.
+            # Reading only same-level strings missed 14 correctly-stamped leaves and reported them
+            # as unmarked: a checker's own false positive, found by probing a live register.
+            cands = []
+            for v in o.values():
+                if isinstance(v, str):
+                    cands.append(v)
+                elif isinstance(v, dict):
+                    cands += [s for s in v.values() if isinstance(s, str)]
+            for v in cands:
+                if MARK.search(v):
+                    for m in STAMP_FIELDS.finditer(v):
+                        stamped |= {f.strip() for f in m.group(1).split(",") if f.strip()}
+            for k in stamped:
+                if k in o:
+                    out.add(f"{p}.{k}")
+            for k, v in o.items():
+                walk(v, f"{p}.{k}")
+        elif isinstance(o, list):
+            for i, v in enumerate(o):
+                walk(v, f"{p}[{i}]")
+    walk(root, "")
+    return out
+
+
 def scan_citations():
     """Every decision citation on the eight surfaces must resolve to a file in decisions/.
 
@@ -632,11 +684,16 @@ def scan_step8_register():
     return hits, cov
 
 
+STAMPED: dict = {}
+
+
 def scan():
     neg, pos, pos_in, allowed, legit_seen = [], {v: set() for v in ADOPTED}, set(), set(), set()
     for surface, files in SURFACES.items():
         for f in files:
             is_json = f.endswith(".json")
+            if is_json and f not in STAMPED:
+                STAMPED[f] = stamped_field_paths(f)
             items = ([(v, p, p, p) for v, p in json_numbers(f)] if is_json
                      else text_numbers(f))
             # A file whose head carries a supersession stamp declares its whole body.
@@ -658,6 +715,10 @@ def scan():
                         # a marker, which is exactly why review 11 found six of them there.
                         # MARK may open one line above, so it reads the context block.
                         labelled = bool(line and MARK.search(line))
+                        # 0123: a sibling stamp that NAMES this field exempts it. Field-scoped,
+                        # never object-scoped -- see stamped_field_paths().
+                        if is_json and where in STAMPED.get(f, frozenset()):
+                            labelled = True
                         # B6: declared only where the register scopes it, by file AND value.
                         declared = False
                         if is_json and DECLARE_PATH.search(where):
