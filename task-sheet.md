@@ -993,6 +993,29 @@ outputs.
 
 ---
 
+- ***THE RESAMPLING FRAME AND THE DRAW ORDER ARE FIXED*** (`0124`). **`0103` and `0118` fixed `B`, the
+  seed, the unit and the statistic and LEFT THESE TWO OPEN; an unfixed draw order makes the fixed seed
+  DECORATIVE** — two arms used seed `20260818` and drew different replicate sets, **which is the failure
+  fixing the seed exists to prevent.**
+  ***THE FRAME:*** **every account with at least one pair in the POSITION-4 output, built ONCE, and
+  DRAWN FOR EVERY QUANTITY regardless of how much it contributes.** ***Not the contributing subset:***
+  **accounts the censoring rule excludes are part of the population the uncertainty is ABOUT, and
+  drawing only contributors conditions the variance on the censoring outcome and treats survivorship as
+  fixed.** *(Measured at `W` = 108: 59 accounts on APPLY and 79 on DERIV are drawn and contribute zero.)*
+  ***THE DRAW ORDER:*** **ONE RNG, SEEDED ONCE PER FILE, its stream consumed CONTINUOUSLY, with every
+  quantity evaluated against THE SAME REPLICATE SET. NOT re-seeded per group.** **A per-group restart
+  makes a difference between two settings paired only WITHIN a group; the shared stream is what makes a
+  BETWEEN-SETTING movement paired at the account level, and Step 13 varies `W` across eight arms.**
+  ***AND TWO CONSTRAINTS THAT COME WITH IT:***
+  **(i) A frame that is arm-independent in MEMBERSHIP is not arm-independent in SUPPORT.** `keep_d10`
+  contains `max(W, 91)`, so **the contributing subset moves with `W` even when the drawn frame does
+  not** — membership 2,481 at every arm against a contributing subset of 2,422/2,423/2,422 on APPLY.
+  ***Any field declaring the frame arm-independent MUST say it describes the DRAW and not the SUPPORT.***
+  **(ii) AN APPLY-MINUS-DERIV DELTA CANNOT BE PAIRED AT THE ACCOUNT LEVEL** under any design where the
+  two populations have different frames: different `n_acc`, different-shaped weights, **and the same
+  replicate index does not denote the same resampled accounts.** **Nothing published crosses that line.
+  It is a CONSTRAINT ON STEP 13**, which is dual and nests per arm.
+
 ### Two control-design rules that bind every step, `0123`
 
 - ***A FIGURE IS ANOTHER STEP'S ONLY IF YOU CONSUMED IT WITHOUT RECOMPUTING IT*** (`0123` §6d).

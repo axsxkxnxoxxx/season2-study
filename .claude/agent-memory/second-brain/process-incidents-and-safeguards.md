@@ -110,3 +110,27 @@ the same arm is not something a reader can adjudicate.
 - **Two isolation lapses self-reported by the arm, logged not fatal.** ***Agreement between the arms is
   NOT the test of whether a breach occurred*** — a breach that imported the other arm's figure would
   produce agreement. **A namespace-wide search IS a read**, so search patterns are now arm-scoped.
+
+## `0124` — the resampling frame and draw order fixed
+
+***THE LAST TWO UNFIXED BOOTSTRAP ELEMENTS.*** `0103` and `0118` fixed `B`, seed, unit and statistic;
+**an unfixed draw order made the fixed seed decorative** — both arms used `20260818` and drew different
+replicate sets, **24 CI endpoints differing under one fixed seed** (`0123`).
+
+- **FRAME:** every account with ≥1 pair in the **position-4** output, built **once**, **drawn for every
+  quantity regardless of contribution.** ***Not the contributing subset*** — accounts the censoring rule
+  excludes are part of the population the uncertainty is about, and drawing only contributors
+  **conditions the variance on the censoring outcome and treats survivorship as fixed.**
+- **DRAW ORDER:** **one RNG seeded once per file, stream consumed continuously, every quantity against
+  one replicate set.** **Not re-seeded per group** — a restart pairs only *within* a group, and Step 13
+  varies `W` across eight arms.
+- **Both arms had already solved the order-independence hazard by opposite mechanisms and neither was
+  wrong** — the spec named neither. **The ruling picks the design that supports a between-setting
+  movement.**
+- ***Arm-independent in MEMBERSHIP is not arm-independent in SUPPORT*** — `keep_d10` carries
+  `max(W, 91)`, so the contributing subset moves with `W` while the drawn frame does not.
+- ***An APPLY-minus-DERIV delta can never be account-paired*** where the two populations have different
+  frames. **A constraint on Step 13.**
+- **One arm is obliged to rerun; the cost is a SECOND supersession layer on a file that is itself a
+  correction. The rerun was not authorised with the ruling.**
+

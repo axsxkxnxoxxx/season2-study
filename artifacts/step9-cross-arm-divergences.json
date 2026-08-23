@@ -62,5 +62,37 @@
   "the Step 13b merge input contract"
  ],
  "generated_at_utc": "2026-08-23T18:44:41Z",
- "git_head_at_write_time": "cf5a243"
+ "git_head_at_write_time": "cf5a243",
+ "preserved_measurement_of_implementation_sensitivity": {
+  "_why_preserved": "HUMAN LEAD, 2026-08-23: once the resampling frame and draw order are fixed in the spec THIS BECOMES UNREPRODUCIBLE, and it is the ONLY quantification of implementation sensitivity this build will ever have. Recorded as a measurement in its own right, not merely as the evidence for a divergence.",
+  "what_was_held_constant": {
+   "B": 10000,
+   "seed": 20260818,
+   "resampling_unit": "account",
+   "statistics": [
+    "levels",
+    "movements"
+   ],
+   "source": "decisions/0103; decisions/0118",
+   "_note": "All four spec-fixed elements identical in both arms, verified in each arm's own record."
+  },
+  "what_was_free": "the resampling FRAME and the DRAW ORDER -- fixed by no ruling at the time of measurement. This is what the measurement isolates.",
+  "measured": {
+   "ci_endpoints_differing": 24,
+   "level_ci_endpoints_differing": 12,
+   "movement_endpoints_differing": 12,
+   "ci_endpoints_agreeing_to_6dp": 0,
+   "max_abs_difference_pp_levels": 0.026934,
+   "max_abs_difference_pp_movements": 0.000513,
+   "movement_sign_classes_identical": 12,
+   "movement_sign_classes_compared": 12,
+   "point_count_and_bound_figures_differing": 0,
+   "point_count_and_bound_figures_agreeing_to_6dp": 50
+  },
+  "what_it_shows": "Under one fixed seed and one fixed B, two independent implementations of an account-clustered bootstrap produced intervals differing on EVERY endpoint, while every point estimate, count and bound was identical to six decimals. The divergence is bounded at 0.026934 pp on levels and 0.000513 pp on movements, and NO movement changed sign class.",
+  "what_it_does_NOT_show": "It does not measure the sensitivity of any OTHER quantity, any other arm, or any other step. It is one arm setting, W091_s2_premiere, on two populations.",
+  "measured_at_head": "8ce894d",
+  "measured_at_utc": "2026-08-23T18:58:01Z",
+  "_status": "PRESERVED. The frame and draw order are NOT ruled by this document."
+ }
 }
