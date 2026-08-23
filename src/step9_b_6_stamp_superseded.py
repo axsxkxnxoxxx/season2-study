@@ -33,6 +33,14 @@ consumed unchanged, is NOT marked; those did not pass through the vector. The
 classification is explicit below and coverage is asserted: an unclassified
 numeric leaf is a hard stop, never a default.
 
+THE OWNERSHIP RULE governs that second exclusion and lives at the branch in
+classify_numeric(), not here: A FIGURE IS STEP 8's ONLY IF THIS ARM CONSUMED IT
+WITHOUT RECOMPUTING IT; ANYTHING DOWNSTREAM OF THIS ARM'S OWN LIVENESS FILTER IS
+THIS ARM'S, WHATEVER IT WAS DERIVED FROM. Read it there. This paragraph is where
+the first pass recorded its reasoning, and a rule recorded away from the branch
+is a rule the classifier does not read: `denominator_pairs` was excluded BY NAME
+and twelve post-liveness denominators published unmarked as a result.
+
 A string is marked when its text differs from the corrected emission's text at
 the same path, or when it has no counterpart there at all. That second case is
 how the three vacuous preconditions -- removed, not corrected -- get marked.
@@ -61,6 +69,7 @@ import difflib
 import hashlib
 import json
 import os
+import re
 import subprocess
 import sys
 
@@ -92,11 +101,46 @@ THE_ERROR = (
 
 # ---------------------------------------------------------------------------
 # Classification. Explicit, with the reason, and asserted to be exhaustive.
+#
+# *** THE OWNERSHIP RULE. Human Lead ruling, 2026-08-23. ***
+#
+#   A FIGURE IS STEP 8's ONLY IF THIS ARM CONSUMED IT WITHOUT RECOMPUTING IT.
+#   ANYTHING DOWNSTREAM OF THIS ARM'S OWN LIVENESS FILTER IS THIS ARM'S,
+#   WHATEVER IT WAS DERIVED FROM.
+#
+# This is stated HERE and again at the branch in classify_numeric(), which is
+# where the classifier actually reads it. A note in a module docstring far from
+# the branch is not where the call gets made, and that is how the first pass
+# went wrong.
+#
+# WHAT THE FIRST PASS GOT WRONG, named so the next pass cannot repeat it. It
+# classified by FIELD NAME alone and listed `denominator_pairs`, `population_n`
+# and `on_population_n` flatly as "STEP 8's population size, consumed
+# unchanged". That reading is TRUE under `bounds`, whose denominator IS the
+# position-5 population (decisions/0052: the bounds and the shares are on
+# DIFFERENT populations). It is FALSE under `shares`, whose denominator is
+# POST-LIVENESS -- produced by THIS ARM'S OWN liveness filter over the
+# defective T0 vector. Its INPUT was Step 8's; its OUTPUT is not. And it MOVED:
+# 196,494 -> 196,048 on APPLY, 147,318 -> 147,297 on DERIV.
+#
+#   n_position_5   = 196,654 IS Step 8's -- consumed unchanged.
+#   n_post_liveness / shares denominators ARE NOT -- this arm's filter made them.
+#
+# The two sat side by side under one field name and were classified alike, so
+# twelve figures published unmarked. The shared register found them; this
+# classifier did not.
+#
+# So a population size is NO LONGER TRUSTED BY ITS NAME. It counts as Step 8's
+# only when it still HOLDS Step 8's figure -- the `n_position_5` declared on the
+# enclosing `headline.<POPULATION>` object, which this arm consumed unchanged.
+# Any population size that differs from that anchor was recomputed here and is
+# THIS ARM'S.
 # ---------------------------------------------------------------------------
 
-# Numeric leaves whose LAST path component is one of these did not pass through
-# the T0 vector, so marking them would assert a defect that is not there.
-NOT_THIS_ARMS_OUTPUT = {
+# Numeric leaves whose LAST path component is one of these are SPEC INPUTS
+# restated. They did not pass through the T0 vector under any nesting, so
+# marking them would assert a defect that is not there.
+SPEC_INPUT_FIELDS = {
     "W_days": "spec input -- the window, decisions/0026 and task-sheet.md Step 9",
     "H_days": "spec input -- the horizon, held constant across arms",
     "adopted_rule_revision": "READ from processed/step5/adopted_rule.json, not computed here",
@@ -104,19 +148,64 @@ NOT_THIS_ARMS_OUTPUT = {
     "B": "spec input -- the resample count, decisions/0103",
     "seed": "spec input -- the bootstrap seed, decisions/0103",
     "horizon_days": "a function of W and H alone, both spec inputs",
-    "n_position_5": "STEP 8's population size, consumed unchanged; not rebuilt here",
-    "denominator_pairs": "STEP 8's population size, consumed unchanged; not rebuilt here",
-    "population_n": "STEP 8's population size, consumed unchanged; not rebuilt here",
-    "on_population_n": "STEP 8's population size, consumed unchanged; not rebuilt here",
 }
+
+# Population sizes. NAME ALONE DECIDES NOTHING HERE -- see the ownership rule
+# above. Each is tested against Step 8's anchor at its own point of use.
+POPULATION_SIZE_FIELDS = {
+    "n_position_5", "denominator_pairs", "population_n", "on_population_n",
+}
+
+# The anchor is read from the enclosing `$.arms[i].headline.<POPULATION>`, never
+# hardcoded: a hardcoded 196,654 would be a SECOND definition of Step 8's figure
+# inside this arm, which is the defect class this study has hit most often.
+POP_ANCHOR_RE = re.compile(r"^(\$\.arms\[\d+\]\.headline\.(?:APPLY|DERIV))\.")
+
+
+def classify_numeric(root, path, field, value):
+    """Return the REASON this numeric leaf is NOT marked, or None to MARK it.
+
+    *** A FIGURE IS STEP 8's ONLY IF THIS ARM CONSUMED IT WITHOUT RECOMPUTING
+    *** IT. ANYTHING DOWNSTREAM OF THIS ARM'S OWN LIVENESS FILTER IS THIS
+    *** ARM'S, WHATEVER IT WAS DERIVED FROM.
+
+    `denominator_pairs` under `bounds` is Step 8's; the same field name under
+    `shares` is a POST-LIVENESS denominator this arm computed. The test is
+    therefore not the name but whether the leaf still holds Step 8's own figure.
+    """
+    if field in SPEC_INPUT_FIELDS:
+        return SPEC_INPUT_FIELDS[field]
+    if field in POPULATION_SIZE_FIELDS:
+        m = POP_ANCHOR_RE.match(path)
+        if not m:
+            sys.exit("HARD STOP: population-size field %r at %s has no enclosing "
+                     "headline.<POPULATION> object to read Step 8's n_position_5 from, so "
+                     "its ownership cannot be established. NO MATCH IS A HARD STOP, NEVER "
+                     "A DEFAULT." % (field, path))
+        anchor = resolve(root, m.group(1) + ".n_position_5")
+        if value == anchor:
+            return ("STEP 8's position-5 population size, consumed unchanged -- equal to "
+                    "n_position_5 = %s on the enclosing population" % anchor)
+        # Downstream of this arm's own liveness filter. MARK IT.
+        return None
+    return None
 
 # The same idea for the working-figures file, which nests every figure as
 # {value, source_file, key}, so the FIGURE NAME is the parent key.
+#
+# THE SAME OWNERSHIP RULE APPLIES HERE and is enforced the same way: the two
+# population-size figures below are trusted only while they still HOLD Step 8's
+# n_position_5 for their own population. This file happens to give the
+# post-liveness denominator its own name -- `n_post_liveness` -- which is why
+# the defect did not reach it; the guard is here so that naming is not what
+# protects it.
 WF_NOT_THIS_ARMS_OUTPUT = {
     "W_days": "spec input -- the window",
     "n_position_5": "STEP 8's population size, consumed unchanged",
     "start": "conjunct_ladder.start is the position-5 population size, STEP 8's",
 }
+WF_POPULATION_SIZE_FIGURES = {"n_position_5", "start"}
+WF_POP_ANCHOR_RE = re.compile(r"^(\$\.figures\.[A-Za-z0-9_]+\.(?:APPLY|DERIV))\.")
 WF_NOT_OUTPUT_PREFIXES = (
     "$.supplementary.account_totals_of_the_populations",
 )
@@ -175,6 +264,43 @@ def resolve(root, path):
     return cur
 
 
+def strip_stamps(text):
+    """Remove every stamp a previous run of THIS script prepended to a slot.
+
+    Stamping must be REGENERATIVE, not additive. The old code skipped any slot
+    that already held a token, so a site whose FIELD LIST had grown was never
+    revisited -- which is precisely how the twelve stayed unmarked through a
+    rerun. Rebuilding the slot from the classification on every run makes the
+    written text a pure function of the classification, and idempotent.
+    """
+    while text.startswith(TOKEN):
+        _head, sep, tail = text.partition(SEP)
+        if not sep:
+            sys.exit("HARD STOP: a stamp with no closing separator was found; refusing to "
+                     "guess where it ends. Text begins: %r" % text[:120])
+        text = tail
+    return text
+
+
+def field_name_for_stamp(name):
+    """Render a field name so the SHARED checker can parse the stamp it sits in.
+
+    `src/check_surfaces.py::STAMP_FIELDS` reads a stamp's field list with
+    `fields:\\s*([A-Za-z0-9_,\\s\\.]+?)\\]` -- a grammar with NO array-index
+    form. A single `[0]` in one name does not merely drop that name: the regex
+    then finds no closing `]` before the bracket, THE WHOLE MATCH FAILS, and
+    every OTHER field the stamp names loses its exemption too. That is a silent
+    widening of the control's output, and it is measurable here -- one hoisted
+    list-element name unexempted `n_post_liveness` on both populations.
+
+    So a list index is rendered `x.0` rather than `x[0]`. The pointer is
+    unchanged in meaning and the stamp stays machine-readable. REPORTED to the
+    Human Lead as a limitation of the shared checker; not worked around inside
+    it, because that file is not this arm's to edit.
+    """
+    return name.replace("[", ".").replace("]", "")
+
+
 def stamp_text(fields, corrected_path, sep=SEP):
     return ("%s :: fields: %s] %s The corrected value of each named field is at the SAME "
             "JSON path in %s. THIS MARK COVERS ONLY THE FIELDS IT NAMES; it exempts nothing "
@@ -230,6 +356,7 @@ def stamp_headline(report):
     marked_fields = {}      # container path -> [field names]
     classified, unclassified = 0, []
     n_numeric_marked = n_string_marked = 0
+    not_marked_reasons = {}     # path -> why this arm did not mark it
 
     for rp in regions:
         o_sub, n_sub = resolve(old, rp), resolve(new, rp)
@@ -239,7 +366,15 @@ def stamp_headline(report):
             container, _, field = path.rpartition(".")
             if is_number(val):
                 classified += 1
-                if field in NOT_THIS_ARMS_OUTPUT:
+                # *** THE BRANCH. A FIGURE IS STEP 8's ONLY IF THIS ARM
+                # *** CONSUMED IT WITHOUT RECOMPUTING IT. ANYTHING DOWNSTREAM
+                # *** OF THIS ARM'S OWN LIVENESS FILTER IS THIS ARM'S, WHATEVER
+                # *** IT WAS DERIVED FROM.
+                # A field NAME is not an answer to that question: this file
+                # carries `denominator_pairs` in both classes, side by side.
+                reason = classify_numeric(old, path, field, val)
+                if reason is not None:
+                    not_marked_reasons[path] = reason
                     continue
                 marked_fields.setdefault(container, []).append(field)
                 n_numeric_marked += 1
@@ -247,8 +382,14 @@ def stamp_headline(report):
                 # Text, flags and explicit nulls. A superseded FIGURE can sit
                 # inside a string, where the numeric controls cannot see it, so
                 # a string whose text moved is marked exactly like a number.
+                #
+                # A stamp a previous run wrote into a slot is NOT a movement of
+                # the figure; it is this script's own output. Comparing the
+                # stamped text would mark every slot it has ever written and
+                # grow the marks on every rerun.
+                base = strip_stamps(val) if isinstance(val, str) else val
                 gone = path not in new_leaves
-                moved = (not gone) and new_leaves[path] != val
+                moved = (not gone) and new_leaves[path] != base
                 if gone or moved:
                     marked_fields.setdefault(container, []).append(field)
                     n_string_marked += 1
@@ -280,34 +421,44 @@ def stamp_headline(report):
             hops += 1
         if hops:
             hoisted += 1
-        names = [(rel + "." + f) if rel else f for f in sorted(set(marked_fields[container]))]
+        names = [field_name_for_stamp((rel + "." + f) if rel else f)
+                 for f in sorted(set(marked_fields[container]))]
         sites.setdefault((target, slot), []).extend(names)
 
-    changed = 0
+    # Every slot's final text, built from the classification alone.
+    prefix_of = {}
     for (target, slot), names in sorted(sites.items()):
-        tobj = resolve(old, target)
-        cur = tobj[slot]
-        if TOKEN in cur:
-            already += 1
-            continue
-        tobj[slot] = stamp_text(sorted(set(names)), EMITTED_HEADLINE) + cur
-        changed += 1
+        prefix_of[(target, slot)] = stamp_text(sorted(set(names)), EMITTED_HEADLINE)
 
     # One ORIENTATION mark on the arm entry itself. It is not a figure mark and
     # it exempts nothing: it says so, and every superseded figure below it
     # carries its own.
-    arm = resolve(old, regions[0])
+    arm_slot = (regions[0], "note")
     orientation_token = TOKEN + " :: ORIENTATION, NOT AN EXEMPTION]"
     orientation = (
         "%s Every figure this arm measured is superseded and EACH ONE CARRIES ITS OWN MARK at "
         "its own point of use; this note exempts nothing and stands in for no individual "
         "value. %s The corrected emission is %s.%s"
         % (orientation_token, THE_ERROR, EMITTED_HEADLINE, SEP))
-    if orientation_token not in arm["note"]:
-        arm["note"] = orientation + arm["note"]
-        changed += 1
-    else:
-        already += 1
+    prefix_of[arm_slot] = orientation + prefix_of.get(arm_slot, "")
+
+    changed = rewritten = 0
+    rewrites = []
+    for (target, slot), prefix in sorted(prefix_of.items()):
+        tobj = resolve(old, target)
+        cur = tobj[slot]
+        want = prefix + strip_stamps(cur)
+        if cur == want:
+            already += 1
+            continue
+        if TOKEN in cur:
+            # The site was stamped, but for a DIFFERENT field list than the
+            # classification now yields. Rewritten, not left alone.
+            rewritten += 1
+            rewrites.append(target + "." + slot)
+        else:
+            changed += 1
+        tobj[slot] = want
 
     with open(COMMITTED_HEADLINE, "w") as fh:
         json.dump(old, fh, indent=2, ensure_ascii=False)
@@ -318,15 +469,29 @@ def stamp_headline(report):
         "numeric_leaves_examined_in_region": classified,
         "numeric_figures_marked": n_numeric_marked,
         "numeric_leaves_not_marked": classified - n_numeric_marked,
-        "why_some_are_not_marked": NOT_THIS_ARMS_OUTPUT,
+        "ownership_rule": (
+            "A FIGURE IS STEP 8's ONLY IF THIS ARM CONSUMED IT WITHOUT RECOMPUTING IT. "
+            "ANYTHING DOWNSTREAM OF THIS ARM'S OWN LIVENESS FILTER IS THIS ARM'S, WHATEVER "
+            "IT WAS DERIVED FROM. Human Lead ruling, 2026-08-23. Recorded at the branch in "
+            "classify_numeric(), not only in the module docstring."),
+        "why_some_are_not_marked": dict(SPEC_INPUT_FIELDS, **{
+            "<population sizes>": (
+                "n_position_5 / denominator_pairs / population_n / on_population_n are NOT "
+                "classified by name. Each is compared with the n_position_5 declared on its "
+                "own enclosing headline.<POPULATION>; equal means consumed unchanged from "
+                "Step 8, different means recomputed downstream of this arm's liveness "
+                "filter and MARKED. No enclosing population is a HARD STOP.")}),
+        "not_marked_reason_by_path": not_marked_reasons,
         "string_fields_marked": n_string_marked,
         "figures_and_fields_marked_total": n_numeric_marked + n_string_marked,
         "stamp_sites_written": changed,
+        "stamp_sites_rewritten_for_a_changed_field_list": rewritten,
+        "stamp_sites_rewritten_paths": sorted(rewrites),
         "stamp_sites_already_present": already,
         "hoists_to_an_ancestor_slot": hoisted,
         "containers_holding_a_marked_field": len(marked_fields),
     }
-    return changed
+    return changed + rewritten
 
 
 # ---------------------------------------------------------------------------
@@ -345,6 +510,7 @@ def stamp_working(report):
     marked = {}
     n_num = n_str = n_gone = 0
     examined = 0
+    wf_reclassified = []   # population sizes the ownership rule pulled back in
     for path, val in old_leaves.items():
         # A stamp this script wrote on an earlier run is not a figure. Without
         # this the second run marks its own marks -- they have no counterpart
@@ -371,6 +537,24 @@ def stamp_working(report):
             else:
                 figure_name = field
             if figure_name in WF_NOT_THIS_ARMS_OUTPUT:
+                # *** A FIGURE IS STEP 8's ONLY IF THIS ARM CONSUMED IT WITHOUT
+                # *** RECOMPUTING IT. Verified, not assumed: a population size
+                # *** that no longer equals its population's n_position_5 was
+                # *** rebuilt downstream of this arm's liveness filter, and it
+                # *** is MARKED however it is named.
+                if figure_name in WF_POPULATION_SIZE_FIGURES:
+                    m = WF_POP_ANCHOR_RE.match(path)
+                    if not m:
+                        sys.exit("HARD STOP: working-figures population size %r at %s has no "
+                                 "enclosing figures.<arm>.<POPULATION> to read Step 8's "
+                                 "n_position_5 from. NO MATCH IS A HARD STOP, NEVER A "
+                                 "DEFAULT." % (figure_name, path))
+                    anchor = resolve(old, m.group(1) + ".n_position_5.value")
+                    if val != anchor:
+                        wf_reclassified.append("%s (%s != n_position_5 %s)" % (path, val, anchor))
+                        marked.setdefault(container, {})[field] = "superseded"
+                        n_num += 1
+                        continue
                 continue
             if any(container.startswith(p) for p in WF_NOT_OUTPUT_PREFIXES):
                 continue
@@ -420,6 +604,12 @@ def stamp_working(report):
                                         **{"account_totals_of_the_populations":
                                            "STEP 8's account totals of the position-5 "
                                            "populations; clock-independent"}),
+        "ownership_rule_reclassified_population_sizes": wf_reclassified,
+        "ownership_rule_note": (
+            "A FIGURE IS STEP 8's ONLY IF THIS ARM CONSUMED IT WITHOUT RECOMPUTING IT. The "
+            "two population-size figures above are checked against their own population's "
+            "n_position_5 rather than trusted by name; an empty list means both still hold "
+            "Step 8's figure, not that the check was skipped."),
         "the_three_removed_booleans": (
             "t0_is_earlier_or_equal_for_every_pair and the two tau2_observable_* booleans have "
             "NO counterpart in the corrected emission: they were removed, not corrected, "

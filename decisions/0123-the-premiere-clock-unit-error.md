@@ -191,12 +191,61 @@ the negative half returns **0** hits.
    unmarked, because `stamped_field_paths()` read only **same-level** sibling strings and arm `b`'s
    working-figures stamps sit **one level down**, in a `_superseded` object. **The checker's own blind
    spot, found by running a live register against real stamps.** Fixed; those 14 now resolve.
-2. ***A misclassification in the stamping, arm `b`'s, and it is OPEN.*** **12 paths remain flagged** —
-   `denominator_pairs` and `on_population_n` in all six premiere shares blocks, `196,494` on APPLY and
-   `147,318` on DERIV. The arm classified them as *"Step 8's, consumed unchanged"* and left them
-   unmarked. ***They are not Step 8's: they are the POST-LIVENESS denominators, this arm's own output,
-   and they moved*** — 196,494 → 196,048 and 147,318 → 147,297. **Reported, not corrected: re-stamping
-   is the producing arm's under `0092`.**
+2. ***A misclassification in the stamping, arm `b`'s — RULED AND CLOSED, §6d.*** 12 paths flagged:
+   `denominator_pairs` and `on_population_n` in all six premiere shares blocks. ***They are the
+   POST-LIVENESS denominators, this arm's own output, and they moved*** — 196,494 → 196,048 and
+   147,318 → 147,297.
+
+## 6d. ***The classification rule, named because the instance was not the defect***
+
+**Human Lead ruling, 2026-08-23: arm `b` re-stamps the 12** — *"Mark them as superseded at their points
+of use, pointing at the corrected values, same form as the other 197."* **Done: 12 marks, verified with
+`check_surfaces.py`'s OWN exemption reader rather than the arm's, 12/12 covered. `check_surfaces.py`
+now exits 0, and the register rows still fire** — probed both ways: **stripping the two names from one
+stamp drives exit 1 at exactly those paths; writing `196,494` into an unstamped region drives exit 1
+there.** ***The row still fires; the stamp is what silences it.***
+
+***BUT THE INSTANCE WAS NOT THE DEFECT.*** The stamper keyed `NOT_THIS_ARMS_OUTPUT` on **the last path
+component alone**, so `denominator_pairs` was excluded **by name, in both of its readings** — and it has
+two. **Under `bounds` it is 196,654: Step 8's position-5 population, consumed unchanged, correctly
+unmarked. Under `shares` it is the post-liveness denominator, which moved.** ***The same name, in one
+file, four levels apart, meaning two different things.***
+
+***THE RULE THE HUMAN LEAD NAMED:***
+
+> ***A figure is Step 8's ONLY IF THIS ARM CONSUMED IT WITHOUT RECOMPUTING IT. Anything downstream of
+> this arm's own liveness filter is THIS ARM'S, whatever it was derived from.***
+
+**Recorded where the classifier reads it — at the branch, in `classify_numeric()`, not in a docstring
+away from it.** ***And it is not enforced by a list:*** a population size counts as Step 8's **only when
+it still holds Step 8's figure**, compared against the `n_position_5` declared on its own enclosing
+`headline.<POPULATION>` and **read from the file** — *"a hardcoded 196654 would be a second definition
+of Step 8's figure inside this arm."* **No enclosing population is a hard stop, not a default.**
+
+**`n_position_5` and `n_post_liveness` sat side by side and were classified alike.** ***That adjacency
+is why the call looked safe, and it is the whole lesson: a field NAME cannot answer whether this arm
+recomputed the figure.***
+
+## 6e. Two more, both found by acting on the ruling
+
+***(i) THE COMMITTED ARTIFACT WAS NOT THE COMMITTED GENERATOR'S OUTPUT.*** Replaying `7c94bc9`'s
+stamper against the pre-stamp file yields **200 marks; the committed file carried 197.** The three
+missing were **string** marks the numeric half cannot see. ***This is `0093`'s artifacts-lag-the-ruling
+window occurring INSIDE A SINGLE ARM, between one of its own runs and the next.*** The arm made its
+stamper **regenerative** — strip and rebuild — rather than skip-if-token-present, *"which is the
+mechanism that let a grown field list go unwritten."*
+
+***(ii) A `[` IN A STAMPED FIELD NAME VOIDED THE ENTIRE STAMP — my control, reported by the arm.***
+`STAMP_FIELDS` excluded `[` and `]` and terminated on a bare `]`, so a name like
+`spec_choices_this_arm_made[0]` **made the whole match fail and dropped every other name in that stamp
+with it.** ***The failure surfaces as a fresh exit-1 row on an UNRELATED figure — it reads like a false
+positive rather than like a voided stamp.*** **The arm worked around it inside its own namespace and
+correctly did not edit the shared control; the fix is mine and is done**, indices accepted, terminator
+now `]` followed by whitespace or end, probed on all three forms.
+
+***Both of these were found only because the register was made live and then acted on.*** **A register
+that had stayed empty would have left all four defects — the 12, the 3, the voided stamp and the
+nested-stamp blind spot — invisible and passing.**
 
 ## 7. ***What this episode is: the first divergence a reading agent could not have found***
 

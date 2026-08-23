@@ -314,7 +314,14 @@ CITE = re.compile(
 # object-level exemption: CLAUDE.md's "a file-level stamp declares a file's STATUS, never its
 # individual values" is the same defect one level down, and a stamp that exempted every sibling
 # would let a corrected figure sit unflagged beside a superseded one.
-STAMP_FIELDS = re.compile(r"\bfields:\s*([A-Za-z0-9_,\s\.]+?)\]")
+# 0123, reported by arm b against MY control. The old class excluded `[` and `]`, and the
+# terminator was a bare `]` -- so a field name carrying an ARRAY INDEX, e.g.
+# "fields: spec_choices_this_arm_made[0], value]", made the whole match FAIL and dropped
+# EVERY OTHER NAME in that stamp with it. The failure surfaces as a fresh exit-1 row on an
+# UNRELATED figure, which reads like a false positive rather than like a voided stamp.
+# The arm worked around it inside its own namespace and did not edit this file; the fix is mine.
+# Indices are now accepted, and the list terminates at a `]` followed by whitespace or end.
+STAMP_FIELDS = re.compile(r"\bfields:\s*([A-Za-z0-9_,\s\.\[\]]+?)\](?=\s|$)")
 
 
 def stamped_field_paths(path):
