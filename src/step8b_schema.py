@@ -67,7 +67,17 @@ from step8b_validate import (  # noqa: E402
     REGISTRY_ARM_DIFFERENCE_FACT as _REGISTRY_ARM_DIFFERENCE_FACT,
 )
 
-SCHEMA_VERSION = "1.9.0"
+# v1.10.0 -- HUMAN LEAD RULING ON THE `ci` TYPING, 2026-08-24. A CI ENDPOINT'S
+# TYPE FOLLOWS ITS STATISTIC: a LEVEL interval's endpoints are percentages and
+# keep $defs/percent; a MOVEMENT interval's endpoints are percentage-point
+# DIFFERENCES and take $defs/pp, which already exists and already permits
+# negatives. `percent` was NOT widened: widening it would let a LEVEL interval
+# carry a negative endpoint, which is not a possible measurement, and would trade
+# a defect that fails loudly for one that CANNOT FAIL AT ALL.
+#
+# The same bump closes E2 (check S44) and puts a REAL NEGATIVE MOVEMENT in every
+# placeholder, because a branch no fixture occupies is not covered.
+SCHEMA_VERSION = "1.10.0"
 
 # THE URN IS DERIVED FROM THE VERSION, NEVER TYPED BESIDE IT (v1.9.0, found by
 # the coordinator on this build). `SCHEMA_ID` used to be a literal with the
@@ -390,6 +400,30 @@ def build_schema(provenance: dict | None = None) -> dict:
     d["count"] = _count("A count of pairs, accounts or records.")
     d["percent"] = _percent("A percentage on [0, 100].")
     d["pp"] = _pp("A quantity in percentage points; may be zero or negative.")
+
+    # A CI ENDPOINT'S TYPE FOLLOWS ITS STATISTIC (Human Lead ruling, 2026-08-24).
+    # This def is the UNNARROWED slot: the real typing is the conditional inside
+    # $defs/ci, which sends a `movements` interval to $defs/pp and every other to
+    # $defs/percent. It exists because `properties` in a base schema and in a
+    # `then` branch BOTH apply -- so a base pinned to `percent` would reject a
+    # negative movement no matter what the branch said, and a base pinned to `pp`
+    # would be the widening the ruling forbids.
+    #
+    # THE SLOT IS STILL x-measurement, so S5's sentinel discipline reaches it.
+    d["ci_endpoint"] = {
+        "description": (
+            "A confidence-interval endpoint, BEFORE the typing that follows its statistic. "
+            "THE TYPE IS NARROWED CONDITIONALLY IN $defs/ci: a LEVEL interval's endpoints are "
+            "percentages on [0, 100] ($defs/percent) and a MOVEMENT interval's are "
+            "percentage-point differences that may be negative ($defs/pp). `percent` was NOT "
+            "widened to admit negatives: that would let a LEVEL interval carry a negative "
+            "endpoint, which is not a possible measurement, and would trade a defect that "
+            "fails loudly for one that cannot fail at all (Human Lead ruling, 2026-08-24)."
+            "  [measurement slot: -999.0 in a placeholder, EXCEPT in a declared type fixture]"
+        ),
+        "anyOf": [{"type": "number"}, {"const": SENT_P}],
+        "x-measurement": True,
+    }
     d["ratio"] = _pp("A dimensionless ratio.")
     d["integer_setting"] = {
         "description": "An integer run setting, e.g. a random seed."
@@ -559,7 +593,16 @@ def build_schema(provenance: dict | None = None) -> dict:
             "no interval declares that emptiness rather than failing to fill it. Human Lead "
             "ruling, 2026-08-19. THE EXEMPTION IS FROM PRODUCING INTERVALS, NOT FROM PRODUCING "
             "THEM COMPLETELY: a step that HAS published an interval owes both objects like any "
-            "other, because it is then manufacturing nothing."
+            "other, because it is then manufacturing nothing. "
+            "AN ENDPOINT'S TYPE FOLLOWS ITS STATISTIC (Human Lead ruling, 2026-08-24): a "
+            "`levels` interval's endpoints are PERCENTAGES on [0, 100] and a `movements` "
+            "interval's are PERCENTAGE-POINT DIFFERENCES, which may be negative. The "
+            "conditional in `allOf` below is that rule; $defs/percent was NOT widened to "
+            "admit negatives, because that would let a level interval carry a negative "
+            "endpoint and would trade a defect that fails loudly for one that cannot fail at "
+            "all. The statistic field is therefore LOAD-BEARING ON THE TYPE and not only on "
+            "the reading: an interval that mislabels itself is now rejected by the endpoint "
+            "constraint wherever the two forms disagree in sign or magnitude."
         ),
         "additionalProperties": False,
         "required": [
@@ -568,8 +611,9 @@ def build_schema(provenance: dict | None = None) -> dict:
         ],
         "properties": {
             "level_pct": {"type": "number"},
-            "lower": {"$ref": "#/$defs/percent"},
-            "upper": {"$ref": "#/$defs/percent"},
+            # UNNARROWED HERE, NARROWED BY THE CONDITIONAL BELOW. See $defs/ci_endpoint.
+            "lower": {"$ref": "#/$defs/ci_endpoint"},
+            "upper": {"$ref": "#/$defs/ci_endpoint"},
             "method": {"type": "string"},
             "bootstrap_ref": {
                 "type": "string",
@@ -644,8 +688,58 @@ def build_schema(provenance: dict | None = None) -> dict:
                     "note": _text("What the disagreement is and how large."),
                 },
             },
+            # A DECLARED TYPE FIXTURE (Human Lead ruling, 2026-08-24). Present
+            # ONLY in a placeholder, and only on an interval whose endpoints hold
+            # a REAL value rather than the sentinel, so that the branch the
+            # conditional below selects is actually occupied by something the
+            # type constraint has to accept or reject.
+            #
+            # WHY IT EXISTS: -999.0 satisfies $defs/percent through the `const`
+            # sentinel branch, not through the numeric one, so every check in
+            # every build so far passed OVER the endpoints without the range ever
+            # being applied. A BRANCH NO FIXTURE OCCUPIES IS NOT COVERED -- which
+            # is why neither the schema nor the validator caught the percent/pp
+            # mistyping until an arm published a negative movement.
+            #
+            # It is a marker, not an escape hatch: the schema gives a fixture
+            # endpoint NO special value and NO relaxed type. Checks S5 and S45
+            # hold the discipline -- a fixture may not appear in a file whose
+            # `placeholder` flag is false, and a placeholder must carry at least
+            # one real NEGATIVE movement endpoint.
+            "is_type_fixture": {
+                "const": True,
+                "description": (
+                    "TRUE on an interval whose endpoints carry a real illustrative value "
+                    "instead of the sentinel, so that the endpoint type this interval's "
+                    "statistic selects is exercised by a fixture rather than described in "
+                    "prose. Placeholder files only; check S45."
+                ),
+            },
             "note": _text("A note from the writer."),
         },
+        # THE TYPING THE RULING FIXES. `properties` in this schema and in the
+        # branch below BOTH apply, so the branch is a NARROWING of
+        # $defs/ci_endpoint and never a widening of anything.
+        "allOf": [
+            {
+                "if": {
+                    "required": ["statistic"],
+                    "properties": {"statistic": {"const": "movements"}},
+                },
+                "then": {
+                    "properties": {
+                        "lower": {"$ref": "#/$defs/pp"},
+                        "upper": {"$ref": "#/$defs/pp"},
+                    },
+                },
+                "else": {
+                    "properties": {
+                        "lower": {"$ref": "#/$defs/percent"},
+                        "upper": {"$ref": "#/$defs/percent"},
+                    },
+                },
+            },
+        ],
     }
 
     d["ci_or_absence"] = {
@@ -2227,12 +2321,29 @@ def build_schema(provenance: dict | None = None) -> dict:
                 "description": "Present iff `placeholder` is true; forbidden otherwise.",
                 "additionalProperties": False,
                 "required": ["banner", "is_placeholder", "do_not_publish",
-                             "every_measurement_slot_is_a_sentinel"],
+                             "every_measurement_slot_is_a_sentinel_or_a_declared_type_fixture",
+                             "type_fixture_count"],
                 "properties": {
                     "banner": {"type": "string"},
                     "is_placeholder": {"const": True},
                     "do_not_publish": {"const": True},
-                    "every_measurement_slot_is_a_sentinel": {"const": True},
+                    # RENAMED AT v1.10.0, AND THE OLD KEY IS GONE RATHER THAN
+                    # DEPRECATED. `every_measurement_slot_is_a_sentinel: true`
+                    # became FALSE the moment the ruling put a real negative
+                    # movement in the placeholder, and a const asserting a
+                    # falsehood is worse than no assertion. Under
+                    # additionalProperties: false a writer emitting the old key
+                    # fails loudly, which is the only reason the rename is safe
+                    # (CLAUDE.md, the oneOf constraint recorded at 0109).
+                    "every_measurement_slot_is_a_sentinel_or_a_declared_type_fixture": {
+                        "const": True,
+                    },
+                    # HOW MANY FIXTURES, so the exception is COUNTED rather than
+                    # merely permitted. An emptiness here and a clean file are
+                    # the same value otherwise: minimum 1 means a placeholder
+                    # that has quietly reverted to all-sentinels fails, which is
+                    # the state the ruling exists to end.
+                    "type_fixture_count": {"type": "integer", "minimum": 1},
                     "how_to_tell": {"type": "string"},
                     "generated_for": {"type": "string"},
                 },
@@ -2527,12 +2638,25 @@ def build_schema(provenance: dict | None = None) -> dict:
                 "type": "object",
                 "description": "Reserved values. They may appear only in a placeholder.",
                 "additionalProperties": False,
+                # `type_fixture_rule` IS REQUIRED IN A PLACEHOLDER AND OPTIONAL
+                # ELSEWHERE, and the requirement is written into the root's
+                # existing placeholder branch rather than here. A fixture may
+                # appear only in a placeholder, so that is the only file where
+                # the exception has to be declared -- and a schema change already
+                # costs every existing instance its two version identifiers, so
+                # a third break chosen by the schema author, for a string no
+                # check reads, would be a migration cost with no force behind it.
                 "required": ["count", "percent", "string_prefix", "rule"],
                 "properties": {
                     "count": {"const": SENT_C},
                     "percent": {"const": SENT_P},
                     "string_prefix": {"const": PH},
                     "rule": {"type": "string"},
+                    # THE ONE DECLARED EXCEPTION TO "structure is real,
+                    # measurements are sentinels", written into the reserved-value
+                    # declaration itself rather than left to be discovered in a
+                    # check's source (Human Lead ruling, 2026-08-24).
+                    "type_fixture_rule": {"type": "string"},
                 },
             },
             "arm_key": {
@@ -3445,7 +3569,13 @@ def build_schema(provenance: dict | None = None) -> dict:
             "notes": {"type": "object", "additionalProperties": {"type": "string"}},
         },
         "if": {"properties": {"placeholder": {"const": True}}, "required": ["placeholder"]},
-        "then": {"required": ["placeholder_notice"]},
+        # A PLACEHOLDER OWES THE NOTICE AND THE FIXTURE RULE. The fixture rule is
+        # the one declared exception to "structure is real, measurements are
+        # sentinels", and a placeholder is the only file a fixture may appear in.
+        "then": {
+            "required": ["placeholder_notice"],
+            "properties": {"sentinels": {"required": ["type_fixture_rule"]}},
+        },
         "else": {"not": {"required": ["placeholder_notice"]}},
         "x-generated-by": provenance or {},
         "$defs": d,
@@ -3476,14 +3606,35 @@ def _endpoint(pop: str, label: str, note: str) -> dict:
 BOOTSTRAP_B = 10000
 BOOTSTRAP_SEED = 20260818
 
+# THE PLACEHOLDER'S REAL NEGATIVE MOVEMENT (Human Lead ruling, 2026-08-24).
+#
+# Every check in every build so far passed over SENTINEL endpoints, so the
+# movement branch never held a measured number and the percent/pp mistyping
+# survived five reviews. A BRANCH NO FIXTURE OCCUPIES IS NOT COVERED, so the
+# movement intervals in all three placeholders carry a real pair.
+#
+# WHY THESE TWO VALUES. They must be REAL -- i.e. not the sentinel, so that
+# validation reaches the numeric branch and the range constraint actually
+# applies; that is the whole point, and a second reserved constant with a
+# schema escape hatch would reproduce the defect under a new name. They must
+# also be unmistakable as measurements, because a placeholder that reads as
+# data is the failure mode. A movement of -99.9 pp is at the outer edge of what
+# a percentage-point difference can be and three orders of magnitude away from
+# anything this study measures, so it reads as reserved while being an ordinary
+# number to the validator. The schema gives it no special treatment whatever.
+FIXTURE_MOVEMENT_LOWER = -99.9
+FIXTURE_MOVEMENT_UPPER = -9.9
+
 
 def _ci(ref: str, unit: str = "account", quantity_class: str = "outcome_shares",
         disagreement: bool = False, binding: str = "show",
-        statistic: str = "levels") -> dict:
+        statistic: str = "levels",
+        lower: float = SENT_P, upper: float = SENT_P,
+        is_type_fixture: bool = False) -> dict:
     ci = {
         "level_pct": 95,
-        "lower": SENT_P,
-        "upper": SENT_P,
+        "lower": lower,
+        "upper": upper,
         "method": "percentile_bootstrap",
         "bootstrap_ref": ref,
         # At the point of use, per decisions/0103 and decisions/0118: the seed,
@@ -3504,8 +3655,18 @@ def _ci(ref: str, unit: str = "account", quantity_class: str = "outcome_shares",
         "note": ph(
             "the interval is a sentinel; the bootstrap settings, the unit and the quantity "
             "class are real, because the ruling requires them at the point of use"
+            if not is_type_fixture else
+            "A DECLARED TYPE FIXTURE. The two endpoints are REAL numbers rather than the "
+            "sentinel -999.0, and they are real for one reason: -999.0 satisfies an endpoint "
+            "slot through the sentinel branch, never through the numeric one, so a sentinel "
+            "endpoint exercises no type at all. These occupy the `movements` branch, whose "
+            "endpoints are percentage-point differences and may be negative. THEY ARE NOT "
+            "MEASUREMENTS -- -99.9 pp is at the outer edge of what a movement can be and "
+            "three orders of magnitude from anything this study measures"
         ),
     }
+    if is_type_fixture:
+        ci["is_type_fixture"] = True
     if disagreement:
         ci["unit_disagreement"] = {
             # THE BINDING CLUSTER IS A PROPERTY OF THE QUANTITY CLASS, NOT A
@@ -4873,8 +5034,14 @@ def _declared_intervals(role: str, step: str, arms_held: tuple) -> list:
             ),
             "produced_by_step": istep,
             "producing_arm": a,
+            # THE ENDPOINTS ARE REAL AND NEGATIVE (Human Lead ruling,
+            # 2026-08-24). This is the one slot in the file where a measurement
+            # slot does not hold a sentinel, and it is the slot that makes the
+            # `movements` endpoint branch COVERED rather than merely allowed.
             "ci": _ci(f"{a}_default", unit="account", quantity_class="outcome_shares",
-                      statistic="movements"),
+                      statistic="movements",
+                      lower=FIXTURE_MOVEMENT_LOWER, upper=FIXTURE_MOVEMENT_UPPER,
+                      is_type_fixture=True),
             "note": ph(
                 "THE SECOND OF THE TWO OBJECTS THE SPEC FIXES (decisions/0118). A level and a "
                 "movement are NEVER compared to each other: on APPLY the never-started level "
@@ -5074,19 +5241,31 @@ def build_placeholder(provenance: dict, grid: list[int],
         "placeholder_notice": {
             "banner": (
                 "############  THIS FILE IS A PLACEHOLDER. IT CONTAINS NO MEASUREMENTS.  "
-                "############  Every number in it is the sentinel -999 or -999.0 and every "
-                "writer-supplied string is prefixed 'PLACEHOLDER — NOT A MEASUREMENT'. It "
-                "exists so Step 16 can be built before results exist. DO NOT PUBLISH, DO NOT "
-                "CHART, DO NOT QUOTE. A consumer that renders it will show -999% bars, which "
-                "is the point.  ############"
+                "############  Every number in it is the sentinel -999 or -999.0, EXCEPT the "
+                "declared type fixtures counted at $.placeholder_notice.type_fixture_count, "
+                "which carry a real -99.9/-9.9 percentage-point movement so that the "
+                "movement endpoint branch is exercised by something rather than described "
+                "in prose. Every writer-supplied string is prefixed 'PLACEHOLDER — NOT A "
+                "MEASUREMENT'. It exists so Step 16 can be built before results exist. DO "
+                "NOT PUBLISH, DO NOT CHART, DO NOT QUOTE. A consumer that renders it will "
+                "show -999% bars, which is the point.  ############"
             ),
             "is_placeholder": True,
             "do_not_publish": True,
-            "every_measurement_slot_is_a_sentinel": True,
+            # v1.10.0: THE CLAIM MOVED BECAUSE THE FACT DID. `every_measurement_
+            # slot_is_a_sentinel` was true until the ruling put a real negative
+            # movement in this file; it is now false, and a const asserting a
+            # falsehood is worse than no assertion at all. The count below is
+            # DERIVED from the assembled instance, never typed -- a quantity that
+            # restates another quantity is derived from it or it drifts.
+            "every_measurement_slot_is_a_sentinel_or_a_declared_type_fixture": True,
+            "type_fixture_count": 0,  # rewritten from the assembled instance below
             "how_to_tell": (
-                "Read $.placeholder. If it is true, nothing in this file is a measurement. "
-                "The sentinel scheme is at $.sentinels and is enforced by check S5 of "
-                "src/step8b_validate.py."
+                "Read $.placeholder. If it is true, nothing in this file is a measurement -- "
+                "not even the declared type fixtures, whose values are chosen to be "
+                "impossible to mistake for one. The sentinel scheme is at $.sentinels and is "
+                "enforced by check S5 of src/step8b_validate.py; the fixture discipline is "
+                "check S45."
             ),
             "generated_for": (
                 "Step 16, so the visualization can be built before results exist"
@@ -5101,11 +5280,25 @@ def build_placeholder(provenance: dict, grid: list[int],
             "count": SENT_C,
             "percent": SENT_P,
             "string_prefix": PH,
+            "type_fixture_rule": (
+                "THE ONE DECLARED EXCEPTION, and it is declared here rather than left in a "
+                "check's source (Human Lead ruling, 2026-08-24). An interval marked "
+                "`is_type_fixture` carries REAL endpoints instead of the sentinel, because "
+                "-999.0 satisfies an endpoint slot through the reserved-value branch and "
+                "never through the numeric one -- so a sentinel endpoint exercises no type, "
+                "and the percent/pp mistyping in $defs/ci survived five reviews behind one. "
+                "A fixture may appear ONLY in a file whose `placeholder` flag is true, its "
+                "values are given no special treatment by the schema, and check S45 requires "
+                "a placeholder to carry at least one real NEGATIVE movement endpoint. "
+                "-99.9 and -9.9 percentage points are the values used: real to the "
+                "validator, impossible as a measurement of this study."
+            ),
             "rule": (
                 "Structure is real, measurements are sentinels. Identifiers, keys, enum "
                 "values, booleans, refs, definitions and the provenance block are written as "
                 "they would really appear, so every branch can be built against. Every slot "
-                "the schema marks x-measurement holds -999 or -999.0, and every slot it marks "
+                "the schema marks x-measurement holds -999 or -999.0 -- except a declared "
+                "type fixture, for which see `type_fixture_rule` -- and every slot it marks "
                 "x-writer-text carries the string prefix. Both are reserved: neither may "
                 "appear in a file whose `placeholder` flag is false, which is what stops a "
                 "leftover placeholder value surviving into a published file."
@@ -6891,6 +7084,22 @@ def build_placeholder(provenance: dict, grid: list[int],
                 "and each interval says which of the two it is. A level and a movement are "
                 "never compared to each other."
             ),
+            "a_ci_endpoints_type_follows_its_statistic": (
+                "v1.10.0, Human Lead ruling 2026-08-24, AND A WRITER OF STEPS 9 THROUGH 13 "
+                "NEEDS IT. A `levels` interval's endpoints are PERCENTAGES on [0, 100]. A "
+                "`movements` interval's endpoints are PERCENTAGE-POINT DIFFERENCES and MAY BE "
+                "NEGATIVE -- a paired movement is a difference between two configurations of "
+                "one share, and the sign is the direction. The two forms are the same field "
+                "under different types, selected by $.declared_intervals[].ci.statistic, so "
+                "THE STATISTIC LABEL IS LOAD-BEARING ON THE TYPE and not only on the reading. "
+                "$defs/percent was NOT widened to admit negatives: that would let a level "
+                "interval carry a negative endpoint, which is not a possible measurement, and "
+                "would trade a defect that fails loudly for one that cannot fail at all. "
+                "The movement branch is occupied in this file by a DECLARED TYPE FIXTURE -- "
+                "see $.sentinels.type_fixture_rule -- because every check in every build "
+                "before this one passed over sentinel endpoints, and a branch no fixture "
+                "occupies is not covered."
+            ),
             "which_steps_are_dual": (
                 "Steps 9 and 13 are dual and nest their payloads per producing arm. Steps 10, "
                 "11 and 12 are single-arm and write one payload under `sole`. Which of the two "
@@ -6930,7 +7139,24 @@ def build_placeholder(provenance: dict, grid: list[int],
             ),
         },
     }
+    # THE FIXTURE COUNT IS DERIVED FROM THE ASSEMBLED FILE, NEVER TYPED. A
+    # quantity that restates another quantity is derived from it or it drifts,
+    # and this one restates how many intervals actually carry the marker. The
+    # schema requires it to be at least 1, so a future edit that quietly reverts
+    # the fixtures to sentinels fails here rather than shipping a placeholder in
+    # which no branch is covered.
+    inst["placeholder_notice"]["type_fixture_count"] = _count_type_fixtures(inst)
     return inst
+
+
+def _count_type_fixtures(node) -> int:
+    """How many `ci` objects in this instance declare themselves type fixtures."""
+    if isinstance(node, dict):
+        n = 1 if node.get("is_type_fixture") is True else 0
+        return n + sum(_count_type_fixtures(v) for v in node.values())
+    if isinstance(node, list):
+        return sum(_count_type_fixtures(v) for v in node)
+    return 0
 
 
 def _d9_quantity() -> dict:

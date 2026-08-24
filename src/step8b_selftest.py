@@ -145,6 +145,15 @@ def _make_real(inst: dict) -> dict:
     real["placeholder"] = False
     real.pop("placeholder_notice", None)
     real["sentinels"] = inst["sentinels"]  # the reserved-value declaration stays literal
+    # A DECLARED TYPE FIXTURE MAY NOT APPEAR IN A FILE FLAGGED AS REAL DATA
+    # (Human Lead ruling, 2026-08-24; check S45's first clause). The marker comes
+    # off; the ENDPOINTS STAY, because -99.9/-9.9 is a perfectly legal
+    # percentage-point movement and a real file is entitled to negative ones --
+    # which is the whole point of the typing this build fixes. Stripping the
+    # values as well would give the de-sentinelled copy no negative movement at
+    # all, and the copy is where the real-file half of every check is exercised.
+    for _p, _ci in list(V._type_fixture_cis(real)):
+        _ci.pop("is_type_fixture", None)
     # _desentinel maps every count to 0, and 0 is exactly what two of the v1.3.0
     # checks exist to reject: a search that ran and examined nothing, and a diff
     # that compared nothing. A real file has real counts, so they are set here --
@@ -351,6 +360,23 @@ MUTATIONS = {
     # check fires; this proves it fires on what actually happened.
     "S43": lambda i: _set(
         _step_headline_absence(i, "step10"), "reason", _V1_9_0_BORROWED_GROUND),
+    # S45: THE STATE THE RULING ENDED, RECONSTRUCTED -- every endpoint in the
+    # file a sentinel. It is not an invented breakage: it is what all three
+    # placeholders carried through five reviews, and it is why the percent/pp
+    # mistyping was never caught. -999.0 satisfies an endpoint slot through the
+    # reserved-value branch and never through the numeric one, so a placeholder
+    # in this state exercises no endpoint type at all and the `movements` branch
+    # is occupied by nothing.
+    #
+    # NOTE WHAT THIS MUTATION DOES NOT DO: it leaves the marker in place and
+    # takes the values back to the sentinel, so the file still SAYS it carries a
+    # fixture. That is the failure mode worth catching -- a declaration with
+    # nothing behind it -- rather than a file that has plainly dropped the field.
+    "S45": lambda i: [
+        (_set(e["ci"], "lower", V.SENTINEL_PERCENT),
+         _set(e["ci"], "upper", V.SENTINEL_PERCENT))
+        for e in i["declared_intervals"]
+        if isinstance(e.get("ci"), dict) and e["ci"].get("is_type_fixture")],
 }
 
 # The v1.9.0 sentence, quoted once and used by both S43 fixtures. It is STEP
@@ -612,6 +638,26 @@ EXTRA_MUTATIONS = {
         "This file is a single-arm step's own file. The unconditional headline belongs to "
         "Step 9; this step publishes the abandonment distribution, which is written under "
         "$.arms[].abandonment_distribution."), False),
+    # S45's FIRST CLAUSE, on the REAL copy: a declared type fixture in a file
+    # whose `placeholder` flag is false. That is a placeholder value surviving
+    # into a published file, which is the failure mode the whole sentinel scheme
+    # exists to prevent -- and it cannot be exercised on a placeholder, because
+    # there the marker is legal.
+    "S45/fixture_marker_in_a_real_file": ("S45", "real", lambda i: _set(
+        _first_ci(i), "is_type_fixture", True)),
+    # S45's THIRD CLAUSE ON ITS OWN: the fixtures keep real endpoints but stop
+    # being movements, so clauses 1 and 2 pass and the `movements` branch is
+    # again occupied by nothing. Without this, a placeholder could satisfy S45
+    # with a fixture that covers the branch the ruling did NOT name.
+    #
+    # It relabels the STATISTIC and leaves the values, so the same numbers that
+    # pass as a movement are now a level -- which the endpoint typing itself
+    # rejects structurally. The semantic check must name the uncovered branch
+    # rather than leave the diagnosis to a structural error.
+    "S45/no_fixture_covers_the_movements_branch": ("S45", "placeholder", lambda i: [
+        _set(e["ci"], "statistic", "levels")
+        for e in i["declared_intervals"]
+        if isinstance(e.get("ci"), dict) and e["ci"].get("is_type_fixture")]),
     # S40's PARTITION clause, which is the half that makes an EMPTY
     # fields_not_fixed_in_spec mean something. Dropping `statistics` from the
     # fixed list leaves it in neither list, so the two no longer cover the
@@ -874,6 +920,21 @@ SOLE_MUTATIONS = {
                            "ranges": {"W_days": {"values": [108]}}}}}})),
 }
 
+def _one_version_behind(s: dict, older: str = "0.0.1") -> dict:
+    """Take a schema BACK a version, in all three identifiers at once.
+
+    The point is the CONSISTENCY: `schema_version.const`, `schema_id.const` and
+    `$id` all carry `older`, so the document is internally coherent and disagrees
+    only with the generator that built it. S42's two fixtures break the agreement
+    BETWEEN the identifiers; this one preserves it.
+    """
+    stem = s["$id"].rsplit(":", 1)[0]
+    s["properties"]["schema_version"]["const"] = older
+    s["properties"]["schema_id"]["const"] = f"{stem}:{older}"
+    s["$id"] = f"{stem}:{older}"
+    return s
+
+
 # Mutations applied to the SCHEMA rather than to an instance. S35 exists to
 # machine-check the constraint decisions/0109 §4 records -- that no oneOf or
 # anyOf sits above $defs/by_producing_arm, because that is the only reason the
@@ -903,6 +964,30 @@ SCHEMA_MUTATIONS = {
     "S42/urn_bumped_while_the_version_const_stayed": (
         "S42",
         lambda s: s.__setitem__("$id", s["$id"].rsplit(":", 1)[0] + ":9.9.9")),
+    # v1.10.0 -- E2, CLOSED. THE STATE S42 CANNOT SEE.
+    #
+    # S42 reads all three version identifiers FROM THE FILE UNDER TEST, so it
+    # catches them disagreeing WITH EACH OTHER. It can never catch a schema whose
+    # three identifiers agree perfectly and are all one version behind the
+    # generator -- which is the ordinary accident: bump the constant, edit the
+    # shape, forget to rewrite the artifact. Every instance then validates
+    # happily against a shape that has moved.
+    #
+    # THE MUTATION IS THEREFORE INTERNALLY CONSISTENT. All three identifiers move
+    # together, so S42 still PASSES on it -- asserted beside this, in
+    # $.e2_generator_vs_artifact, because a fixture that only shows the new check
+    # firing does not show that the old one could not have.
+    "S44/schema_uniformly_one_version_behind_the_generator": (
+        "S44", lambda s: _one_version_behind(s)),
+    # S44'S SECOND CLAUSE, WHICH THE FIRST CANNOT REACH: the SHAPE moved and the
+    # VERSION did not. Both sides then read the same constant and agree, and the
+    # artifact is still not the document the generator builds -- E2's class one
+    # level down. The mutation touches no identifier, so the constant clause is
+    # satisfied throughout and only the shape comparison can fire.
+    "S44/schema_shape_moved_under_an_unchanged_version": (
+        "S44",
+        lambda s: s["$defs"]["percent"].__setitem__(
+            "description", "a description the generator does not write")),
     "S35/absence_branch_added_above_the_renamed_key": ("S35", lambda s: s["$defs"].__setitem__(
         "headline",
         {"oneOf": [dict(s["$defs"]["headline"]), {"$ref": "#/$defs/block_absence"}]})),
@@ -2047,6 +2132,170 @@ def main() -> int:
 
     vocab_link = _statistic_vocabulary_link(schema)
 
+    # E2, CLOSED AND DEMONSTRATED (v1.10.0). The mutation table above shows S44
+    # FIRING on a schema one version behind its generator. That alone does not
+    # close E2: E2's claim is that S42 CANNOT SEE that state, and a fixture which
+    # only shows the new check working leaves the claim untested. So the same
+    # mutated schema is run here and BOTH statuses are recorded -- S42 must PASS
+    # on it and S44 must FAIL on it. If a future edit made S42 catch this, this
+    # record would say so rather than quietly duplicating a check.
+    behind = _one_version_behind(copy.deepcopy(schema))
+    behind_run = run(placeholder, behind)
+    half_bumped = copy.deepcopy(schema)
+    half_bumped["properties"]["schema_version"]["const"] = "9.9.9"
+    half_run = run(placeholder, half_bumped)
+    # THE SHAPE CLAUSE, ON ITS OWN. Every identifier is left alone, so the
+    # version constant agrees on both sides and only the shape comparison can
+    # fire -- and S42, which reads identifiers, is blind to it as well.
+    shape_moved = copy.deepcopy(schema)
+    shape_moved["$defs"]["percent"]["description"] = "a description the generator does not write"
+    shape_run = run(placeholder, shape_moved)
+    e2_record = {
+        "what": "E2 -- S42 reads all three version identifiers FROM THE FILE UNDER TEST, so it "
+                "catches them disagreeing with each other and can never catch a schema "
+                "uniformly one version behind its generator. S44 compares the GENERATOR's "
+                "constant against the ARTIFACT's, which is the comparison neither the schema "
+                "nor any instance can make from inside itself",
+        "generator_version": V._generator_schema_version()[0],
+        "generator_version_read_from": V._generator_schema_version()[1],
+        "shipped_schema_version": schema["properties"]["schema_version"]["const"],
+        "one_version_behind_consistently": {
+            "identifiers": {
+                "schema_version.const": behind["properties"]["schema_version"]["const"],
+                "schema_id.const": behind["properties"]["schema_id"]["const"],
+                "$id": behind["$id"],
+            },
+            "S42": _status_of(behind_run, "S42"),
+            "S44": _status_of(behind_run, "S44"),
+        },
+        "one_identifier_bumped_only": {
+            "S42": _status_of(half_run, "S42"),
+            "S44": _status_of(half_run, "S44"),
+        },
+        "shape_moved_under_an_unchanged_version": {
+            "identifiers_untouched": True,
+            "S42": _status_of(shape_run, "S42"),
+            "S44": _status_of(shape_run, "S44"),
+        },
+        "shipped": {
+            "S42": _status_of(baseline_ph, "S42"),
+            "S44": _status_of(baseline_ph, "S44"),
+        },
+    }
+    e2_record["ok"] = (
+        # the state E2 names: consistent, one version behind. S42 blind, S44 fires.
+        e2_record["one_version_behind_consistently"]["S42"] == "PASS"
+        and e2_record["one_version_behind_consistently"]["S44"] == "FAIL"
+        # and the state S42 was built for is still S42's: it fires there.
+        and e2_record["one_identifier_bumped_only"]["S42"] == "FAIL"
+        # the same class one level down: shape moved, version did not. Both the
+        # identifier check and S44's own constant clause agree here; only the
+        # shape clause can see it.
+        and e2_record["shape_moved_under_an_unchanged_version"]["S42"] == "PASS"
+        and e2_record["shape_moved_under_an_unchanged_version"]["S44"] == "FAIL"
+        # and neither fires on the schema as shipped.
+        and e2_record["shipped"]["S42"] == "PASS"
+        and e2_record["shipped"]["S44"] == "PASS"
+    )
+
+    # THE SAME CLASS, ONE OBJECT OVER. S44 compares the SCHEMA artifact against
+    # the document its generator builds. It cannot compare the three PLACEHOLDER
+    # artifacts against theirs, because a placeholder is an instance and S44 runs
+    # on the schema -- so an edit to the placeholder-building code, with no
+    # schema shape change, leaves three artifacts stale and every control green.
+    #
+    # THAT IS E2's CLASS, and it is checked here rather than published as a
+    # limit. The provenance block is passed in from the file under test, because
+    # it is run-specific by design -- a generator hash and a timestamp -- and is
+    # the one part that cannot agree.
+    placeholder_freshness = []
+    for path, inst, role, arm, step in (
+        (PLACEHOLDER_PATH, placeholder, "merged_document", None, "step13b"),
+        (ARM_PLACEHOLDER_PATH, arm_file, "arm_file", "a", "step9"),
+        (SOLE_PLACEHOLDER_PATH, sole_file, "arm_file", "sole", "step11"),
+    ):
+        built = G.build_placeholder(inst["generated_by"], G._read_grid(), role, arm, step)
+        if role == "merged_document":
+            G._stamp_merged_from(built)
+        same = json.dumps(built, sort_keys=True) == json.dumps(inst, sort_keys=True)
+        placeholder_freshness.append({
+            "path": os.path.relpath(path, ROOT),
+            "role": role,
+            "arm": arm,
+            "matches_what_the_generator_builds": same,
+        })
+    freshness_record = {
+        "what": "each emitted placeholder equals the instance its generator builds today. S44 "
+                "does this for the SCHEMA; a placeholder is an instance, so S44 cannot reach "
+                "it, and an edit to the placeholder-building code with no schema shape change "
+                "would leave three artifacts stale with every control green",
+        "files_compared": len(placeholder_freshness),
+        "per_file": placeholder_freshness,
+    }
+    # THE NEGATIVE CONTROL, and it is not optional: a comparison that has never
+    # been shown REJECTING is indistinguishable from one that cannot reject
+    # (decisions/0123 §3 -- show the check rejecting the wrong object before
+    # trusting it passing on the right one). One field of the shipped arm file is
+    # perturbed and the same comparison must report a mismatch.
+    _perturbed = copy.deepcopy(arm_file)
+    _perturbed["notes"]["reading_a_placeholder"] = "a sentence the generator does not write"
+    _rebuilt = G.build_placeholder(arm_file["generated_by"], G._read_grid(),
+                                   "arm_file", "a", "step9")
+    freshness_record["negative_control"] = {
+        "what": "one note string altered in a copy of the shipped arm file; the comparison "
+                "must report a mismatch",
+        "reports_a_mismatch": json.dumps(_rebuilt, sort_keys=True)
+        != json.dumps(_perturbed, sort_keys=True),
+    }
+    freshness_record["ok"] = (
+        len(placeholder_freshness) == 3
+        and all(f["matches_what_the_generator_builds"] for f in placeholder_freshness)
+        and freshness_record["negative_control"]["reports_a_mismatch"]
+    )
+
+    # THE ENDPOINT TYPING, IN BOTH DIRECTIONS (Human Lead ruling, 2026-08-24).
+    # A fix that accepts everything is not a fix, so the record carries the
+    # rejection as well as the acceptance -- ON THE SAME NUMBERS. The fixture's
+    # endpoints are relabelled `levels` and nothing else changes, so the only
+    # thing that can move the verdict is the statistic.
+    def _structural(inst: dict) -> int:
+        ev = V.SchemaEvaluator(schema)
+        ev.validate(inst, schema)
+        return len(ev.errors), [e for e in ev.errors if ".ci.lower" in e or ".ci.upper" in e]
+
+    as_movement = copy.deepcopy(arm_file)
+    as_level = copy.deepcopy(arm_file)
+    for e in as_level["declared_intervals"]:
+        if isinstance(e.get("ci"), dict) and e["ci"].get("is_type_fixture"):
+            e["ci"]["statistic"] = "levels"
+    neg_level = copy.deepcopy(arm_file)
+    _levels = [e for e in neg_level["declared_intervals"]
+               if isinstance(e.get("ci"), dict) and e["ci"].get("statistic") == "levels"]
+    if _levels:
+        _levels[0]["ci"]["lower"] = -3.25
+    mv_errs, mv_ci = _structural(as_movement)
+    lv_errs, lv_ci = _structural(as_level)
+    nl_errs, nl_ci = _structural(neg_level)
+    typing_record = {
+        "what": "a CI endpoint's type follows its statistic: `movements` endpoints are "
+                "percentage-point differences and may be negative ($defs/pp); `levels` "
+                "endpoints are percentages on [0, 100] ($defs/percent). $defs/percent was NOT "
+                "widened, because that would let a level interval carry a negative endpoint -- "
+                "trading a defect that fails loudly for one that cannot fail at all",
+        "fixture_endpoints": [G.FIXTURE_MOVEMENT_LOWER, G.FIXTURE_MOVEMENT_UPPER],
+        "negative_movement_accepted": {"errors": mv_errs, "ci_endpoint_errors": len(mv_ci)},
+        "same_endpoints_relabelled_levels_rejected": {
+            "errors": lv_errs, "ci_endpoint_errors": len(lv_ci), "first": lv_ci[:2]},
+        "level_interval_given_a_negative_endpoint_rejected": {
+            "errors": nl_errs, "ci_endpoint_errors": len(nl_ci), "first": nl_ci[:2]},
+        "levels_intervals_available_to_break": len(_levels),
+    }
+    typing_record["ok"] = (
+        mv_errs == 0
+        and len(lv_ci) > 0
+        and len(_levels) > 0 and len(nl_ci) > 0
+    )
+
     without_force = [r["check"] for r in results if not r["has_force"]]
     na_on_real = [c["id"] for c in baseline_real["semantic_checks"] if c["status"] == "N/A"]
 
@@ -2106,6 +2355,9 @@ def main() -> int:
         "bootstrap_partition_anchor": anchor_record,
         "registry_arm_difference_fact": registry_fact_record,
         "statistic_vocabulary_link": vocab_link,
+        "e2_generator_vs_artifact": e2_record,
+        "placeholder_freshness": freshness_record,
+        "ci_endpoint_typing": typing_record,
         "mutations": results,
         "required_non_failures": non_failures,
         "required_non_failures_violated": non_failure_failures,
@@ -2130,7 +2382,9 @@ def main() -> int:
                and s41_owner_record["ok"] and s41_keying_record["ok"]
                and step10_record["ok"] and malformed_record["ok"]
                and anchor_record["ok"] and registry_fact_record["ok"]
-               and ground_record["ok"]),
+               and ground_record["ok"]
+               and e2_record["ok"] and typing_record["ok"]
+               and freshness_record["ok"]),
     }
 
     os.makedirs(LOG_DIR, exist_ok=True)
@@ -2146,6 +2400,40 @@ def main() -> int:
         "checks_total_exercised": record["checks_total_exercised"],
         "checks_without_force": without_force,
         "checks_defined_but_never_exercised": unexercised,
+        "e2_generator_vs_artifact": {
+            "ok": e2_record["ok"],
+            "generator_version": e2_record["generator_version"],
+            "shipped_schema_version": e2_record["shipped_schema_version"],
+            "one_version_behind_consistently":
+                {k: v for k, v in e2_record["one_version_behind_consistently"].items()
+                 if k in ("S42", "S44")},
+            "one_identifier_bumped_only": e2_record["one_identifier_bumped_only"],
+            "shape_moved_under_an_unchanged_version":
+                {k: v for k, v in
+                 e2_record["shape_moved_under_an_unchanged_version"].items() if k != "what"},
+            "shipped": e2_record["shipped"],
+        },
+        "placeholder_freshness": {
+            "ok": freshness_record["ok"],
+            "files_compared": freshness_record["files_compared"],
+            "stale": [f["path"] for f in freshness_record["per_file"]
+                      if not f["matches_what_the_generator_builds"]],
+            "negative_control_reports_a_mismatch":
+                freshness_record["negative_control"]["reports_a_mismatch"],
+        },
+        "ci_endpoint_typing": {
+            "ok": typing_record["ok"],
+            "fixture_endpoints": typing_record["fixture_endpoints"],
+            "negative_movement_accepted": typing_record["negative_movement_accepted"],
+            "same_endpoints_relabelled_levels_rejected":
+                {k: v for k, v in
+                 typing_record["same_endpoints_relabelled_levels_rejected"].items()
+                 if k != "first"},
+            "level_interval_given_a_negative_endpoint_rejected":
+                {k: v for k, v in
+                 typing_record["level_interval_given_a_negative_endpoint_rejected"].items()
+                 if k != "first"},
+        },
         "step13_arm_file_fixture_ok": step13_ok,
         "step13_arm_file_failures": step13_record["failures"],
         "s41_interval_exemption_scope": {

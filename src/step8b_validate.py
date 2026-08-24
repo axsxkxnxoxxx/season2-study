@@ -120,6 +120,7 @@ Exit 0 if every check passes, 1 otherwise.
 from __future__ import annotations
 
 import json
+import os
 import re
 import sys
 from typing import Any
@@ -788,6 +789,32 @@ def _get(node: Any, path: str) -> Any:
 _MISSING = object()
 
 
+# THE DECLARED TYPE FIXTURE (Human Lead ruling, 2026-08-24). The two helpers are
+# here rather than inside a check because S5 and S45 both need them, and two
+# copies of one predicate is the shape this study spends its entries on.
+CI_ENDPOINT_KEYS = ("lower", "upper")
+_CI_ENDPOINT_SUFFIXES = tuple(f".{k}" for k in CI_ENDPOINT_KEYS)
+
+
+def _type_fixture_cis(inst: Any):
+    """Yield (path, ci) for every interval that declares itself a type fixture."""
+    for path, node in _walk(inst):
+        if isinstance(node, dict) and node.get("is_type_fixture") is True:
+            yield path, node
+
+
+def _is_type_fixture_endpoint(inst: Any, path: str) -> bool:
+    """Is this measurement-slot path an endpoint of a declared type fixture?
+
+    The path is an evaluator path such as `$.declared_intervals[0].ci.lower`, so
+    the test is on the PARENT node, which is the interval itself.
+    """
+    if not path.endswith(_CI_ENDPOINT_SUFFIXES):
+        return False
+    parent = _get(inst, path.rsplit(".", 1)[0])
+    return isinstance(parent, dict) and parent.get("is_type_fixture") is True
+
+
 ABSENCE_STATUSES = (
     "structurally_absent", "not_published", "not_yet_written", "unruled",
     "no_producer_in_spec", "superseded_for_this_purpose", "not_a_dual_step",
@@ -1138,11 +1165,28 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
     # S5 -- sentinel discipline over the measurement slots the schema marked.
     c = Check(
         "S5",
-        "every x-measurement slot holds a sentinel in a placeholder, and none does in a real file",
+        "every x-measurement slot holds a sentinel in a placeholder, and none does in a real "
+        "file -- EXCEPT the endpoints of a declared type fixture, which are counted here and "
+        "asserted by S45",
     )
+    s5_fixture_sites = 0
     for path in sorted(ev.measurement_sites):
         value = _get(inst, path)
         if value is _MISSING:
+            continue
+        # THE ONE DECLARED EXCEPTION (Human Lead ruling, 2026-08-24). A fixture
+        # endpoint holds a REAL value on purpose, because -999.0 satisfies an
+        # endpoint slot through the reserved-value branch and never through the
+        # numeric one -- so a sentinel endpoint exercises no type at all.
+        #
+        # IT IS COUNTED, NOT SKIPPED SILENTLY. An exemption that vanishes from
+        # the coverage is how an empty result and a clean result become the same
+        # value, and S45 is where the fixture's own discipline is asserted. In a
+        # file flagged as real data the marker is not an exemption at all: S45
+        # fails it, and the sentinel clause below still runs on the value.
+        if is_placeholder and _is_type_fixture_endpoint(inst, path):
+            s5_fixture_sites += 1
+            c.sites += 1
             continue
         c.sites += 1
         is_sentinel = value in (SENTINEL_COUNT, SENTINEL_PERCENT)
@@ -1150,6 +1194,10 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
             c.failures.append(f"{path} = {value!r} is not a sentinel in a placeholder file")
         if not is_placeholder and is_sentinel:
             c.failures.append(f"{path} = {value!r} is a sentinel in a file flagged as real data")
+    c.notes.append(
+        f"{c.sites} measurement slot(s) examined, of which {s5_fixture_sites} are declared "
+        f"type-fixture endpoints exempted from the sentinel clause and asserted by S45"
+    )
     checks.append(c)
 
     # S6 -- writer-supplied text. In a placeholder every such slot carries the
@@ -3766,8 +3814,256 @@ def run_semantic_checks(inst: dict, ev: SchemaEvaluator) -> list[Check]:
             )
     checks.append(c)
 
+    # S44 -- THE SCHEMA UNDER TEST IS THE ONE THIS GENERATOR BUILDS (v1.10.0,
+    #        closing reviewer-engineering E2, carried open with "close before the
+    #        next version bump").
+    #
+    #        WHAT S42 CANNOT SEE. S42 reads all three version identifiers FROM
+    #        THE FILE UNDER TEST, so it catches them DISAGREEING WITH EACH OTHER
+    #        and can never catch a schema whose three identifiers agree perfectly
+    #        and are all one version behind the generator. That state is
+    #        reachable by the ordinary route: bump SCHEMA_VERSION, edit the
+    #        shape, forget to rerun the generator. Every instance still validates
+    #        -- against the OLD shape -- and every control passes.
+    #
+    #        SO THE COMPARISON IS ACROSS THE TWO OBJECTS: the GENERATOR'S
+    #        constant against the ARTIFACT'S. Neither S42 nor any instance check
+    #        can do it, because both live inside one of the two.
+    #
+    #        THE GENERATOR IS IMPORTED, NOT PARSED. A regex over its source would
+    #        be a second reader of the version, which is the defect one level
+    #        down. It is imported lazily, because the generator imports THIS
+    #        module at load time and a module-level import here would be
+    #        circular; and it is looked up in sys.modules first, so that a run
+    #        started AS the generator compares against the module already loaded
+    #        rather than a second copy of it.
+    #
+    #        AN UNREADABLE GENERATOR IS A FAILURE, NOT A SKIP. A check that
+    #        cannot reach one of its two operands has looked nowhere, and an
+    #        empty result and a clean result are the same value.
+    c = Check(
+        "S44",
+        "the schema artifact under test carries the version its GENERATOR declares, so a "
+        "schema uniformly one version behind the generator is caught -- the state S42 cannot "
+        "see, because S42 reads every identifier from the file under test",
+    )
+    gen_version, gen_source = _generator_schema_version()
+    schema_version = ((ev.root.get("properties") or {}).get("schema_version") or {}).get("const")
+    if gen_version is None:
+        c.failures.append(
+            f"the generator's SCHEMA_VERSION could not be read ({gen_source}): this check has "
+            f"two operands and reached only one, which is a check that looked nowhere rather "
+            f"than a check that found nothing"
+        )
+    elif not isinstance(schema_version, str) or not schema_version:
+        c.failures.append(
+            "$.properties.schema_version.const is absent or not a string: the schema under "
+            "test declares no version to compare with the generator's"
+        )
+    else:
+        c.sites += 1
+        if schema_version != gen_version:
+            c.failures.append(
+                f"the schema under test declares version {schema_version!r} and its generator "
+                f"({gen_source}) declares {gen_version!r}. THE ARTIFACT IS NOT THE DOCUMENT "
+                f"THE GENERATOR BUILDS. S42 passes on this state -- all three identifiers in "
+                f"the artifact agree with each other and are simply one version behind -- so "
+                f"every instance validates against a shape that has moved. Rerun "
+                f"src/step8b_schema.py and rewrite the artifacts together"
+            )
+    # AND THE SAME COMPARISON ONE LEVEL DOWN. The constant clause above catches
+    # "the version moved and the artifact did not". It does NOT catch "the SHAPE
+    # moved and the version did not" -- both sides then read 1.10.0 and agree,
+    # while the artifact is still not the document the generator builds. That is
+    # E2's own class one level down, and publishing it as a limit would be
+    # writing down a gap that costs a dict comparison to close.
+    shape_status, shape_diffs = _schema_shape_difference(ev.root)
+    if shape_status == "compared":
+        c.sites += 1
+        if shape_diffs:
+            c.failures.append(
+                f"the schema under test differs from the document its generator builds at "
+                f"{len(shape_diffs)} path(s) (first 12 shown): {shape_diffs}. THE VERSION "
+                f"CONSTANT CANNOT CATCH THIS -- both sides read {schema_version!r} -- so the "
+                f"artifact is a shape that has moved under an unchanged identifier. Rerun "
+                f"src/step8b_schema.py and rewrite the artifacts together"
+            )
+    else:
+        c.failures.append(
+            f"the generator's document could not be built for comparison ({shape_status}): "
+            f"the shape clause reached nothing, and a clause that looked nowhere is not a "
+            f"clause that found nothing"
+        )
+    c.coverage = c.sites
+    c.notes.append(
+        f"generator version {gen_version!r} read from {gen_source}; artifact version "
+        f"{schema_version!r} read from $.properties.schema_version.const of the schema under "
+        f"test. S42 compares the artifact's three identifiers WITH EACH OTHER; this compares "
+        f"the artifact WITH THE GENERATOR, and neither subsumes the other. TWO CLAUSES: the "
+        f"version constant, and the SHAPE ({shape_status}, {len(shape_diffs)} differing "
+        f"path(s)), excluding only {GENERATOR_PROVENANCE_KEY}, which differs on every run by "
+        f"design"
+    )
+    checks.append(c)
+
+    # S45 -- THE DECLARED TYPE FIXTURE (Human Lead ruling, 2026-08-24).
+    #
+    #        THE RULING'S SECOND HALF: "every check has passed over SENTINEL
+    #        values, so the movement branch has never held a measured number --
+    #        which is why neither the schema nor the validator caught this until
+    #        an arm published one. A BRANCH NO FIXTURE OCCUPIES IS NOT COVERED."
+    #
+    #        -999.0 satisfies an endpoint slot through the reserved-value branch
+    #        and NEVER through the numeric one, so a placeholder full of
+    #        sentinels exercises no endpoint type at all. The fixture is the
+    #        occupant. This check is what keeps it occupied.
+    #
+    #        THREE CLAUSES, and the third is the one with force:
+    #          1. a fixture appears only in a placeholder;
+    #          2. a fixture's endpoints are real, ordered, and not sentinels;
+    #          3. a PLACEHOLDER carries at least one fixture whose statistic is
+    #             `movements` and whose endpoints are NEGATIVE -- the branch the
+    #             ruling names. Without clause 3 a placeholder that quietly
+    #             reverted to all-sentinels would pass clauses 1 and 2 vacuously,
+    #             which is the state this check exists to end.
+    c = Check(
+        "S45",
+        "declared type fixtures occupy the endpoint branch they exist to cover: placeholder "
+        "only, real ordered endpoints, and at least one real NEGATIVE movement in a "
+        "placeholder file",
+    )
+    s45_negative_movements = 0
+    for path, ci in _type_fixture_cis(inst):
+        c.sites += 1
+        lower, upper = ci.get("lower"), ci.get("upper")
+        if not is_placeholder:
+            c.failures.append(
+                f"{path} declares is_type_fixture in a file whose `placeholder` flag is "
+                f"false. A fixture is an illustrative value, not a measurement, and a "
+                f"placeholder value surviving into a published file is the failure mode the "
+                f"whole sentinel scheme exists to prevent"
+            )
+        for name, value in (("lower", lower), ("upper", upper)):
+            if not isinstance(value, (int, float)) or isinstance(value, bool):
+                c.failures.append(f"{path}.{name} = {value!r} is not a number")
+            elif value in (SENTINEL_COUNT, SENTINEL_PERCENT):
+                c.failures.append(
+                    f"{path}.{name} = {value!r} is the sentinel. A FIXTURE THAT HOLDS THE "
+                    f"SENTINEL COVERS NOTHING: the sentinel satisfies an endpoint slot "
+                    f"through the reserved-value branch and never through the numeric one, "
+                    f"so the endpoint type is not exercised by it"
+                )
+        if isinstance(lower, (int, float)) and isinstance(upper, (int, float)) \
+                and not isinstance(lower, bool) and not isinstance(upper, bool):
+            if lower > upper:
+                c.failures.append(f"{path}: lower {lower!r} is above upper {upper!r}")
+            if ci.get("statistic") == "movements" and lower < 0 and upper < 0:
+                s45_negative_movements += 1
+    if is_placeholder and s45_negative_movements == 0:
+        c.failures.append(
+            "this placeholder carries NO declared type fixture with a real negative movement "
+            "interval. A BRANCH NO FIXTURE OCCUPIES IS NOT COVERED: the `movements` endpoint "
+            "branch of $defs/ci admits negatives and nothing in this file exercises it, which "
+            "is exactly the state in which the percent/pp mistyping survived five reviews "
+            "(Human Lead ruling, 2026-08-24)"
+        )
+    c.coverage = c.sites
+    c.notes.append(
+        f"{c.sites} declared type fixture(s) examined, of which {s45_negative_movements} "
+        f"carry a real negative `movements` interval; file placeholder flag is "
+        f"{is_placeholder}"
+    )
+    if not is_placeholder and c.sites == 0:
+        c.declared_empty = (
+            "this file is flagged as real data, and a type fixture may not appear in one. "
+            "Nought fixtures here is the required state rather than an unexamined one: every "
+            "node in the file was walked for the marker"
+        )
+    checks.append(c)
+
     _declare_scope_emptiness(inst, checks)
     return checks
+
+
+def _generator_module() -> tuple:
+    """src/step8b_schema.py as a module object, and where it was found.
+
+    Looked up in sys.modules first: the generator imports this module at load
+    time, so when a run is started AS the generator it is `__main__` here, and a
+    fresh `import step8b_schema` would build a SECOND module object -- a second
+    copy of the constant, which is the defect this check exists to catch, one
+    level down. Falls back to a real import for the ordinary case, where the
+    validator is run on its own.
+    """
+    for name, mod in list(sys.modules.items()):
+        f = getattr(mod, "__file__", None)
+        if f and os.path.basename(f) == "step8b_schema.py" \
+                and isinstance(getattr(mod, "SCHEMA_VERSION", None), str):
+            return mod, f"sys.modules[{name!r}]"
+    try:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import step8b_schema as _gen
+        return _gen, "src/step8b_schema.py (imported)"
+    except Exception as exc:                                   # pragma: no cover
+        return None, f"import of src/step8b_schema.py failed: {exc!r}"
+
+
+def _generator_schema_version() -> tuple:
+    """The generator's SCHEMA_VERSION constant, and where it was read."""
+    mod, where = _generator_module()
+    if mod is None:
+        return None, where
+    return mod.SCHEMA_VERSION, f"{where}.SCHEMA_VERSION"
+
+
+# The provenance block, which differs on every run by design -- a generator hash
+# and a timestamp -- and is therefore excluded from the shape comparison. It is
+# the ONLY exclusion, named here rather than buried in the comparison, because an
+# exclusion list that grows quietly is how a shape check stops seeing anything.
+GENERATOR_PROVENANCE_KEY = "x-generated-by"
+
+
+def _schema_shape_difference(artifact: dict) -> tuple:
+    """Where the artifact's SHAPE differs from the document the generator builds.
+
+    Returns (status, differing_paths). `status` is one of `compared`,
+    `unreachable`. A shape difference under an UNCHANGED version is E2's own
+    class one level down: the version constant agrees, so the constant clause of
+    S44 passes, and the artifact is still not the document the generator builds.
+    """
+    mod, _where = _generator_module()
+    if mod is None or not hasattr(mod, "build_schema"):
+        return "unreachable", []
+    try:
+        built = mod.build_schema({})
+    except Exception as exc:                                   # pragma: no cover
+        return f"unreachable: build_schema raised {exc!r}", []
+    a = {k: v for k, v in artifact.items() if k != GENERATOR_PROVENANCE_KEY}
+    b = {k: v for k, v in built.items() if k != GENERATOR_PROVENANCE_KEY}
+    diffs: list[str] = []
+
+    def _cmp(x: Any, y: Any, path: str) -> None:
+        if len(diffs) >= 12:
+            return
+        if isinstance(x, dict) and isinstance(y, dict):
+            for k in sorted(set(x) | set(y)):
+                if k not in x:
+                    diffs.append(f"{path}.{k}: absent from the artifact")
+                elif k not in y:
+                    diffs.append(f"{path}.{k}: absent from the generator's document")
+                else:
+                    _cmp(x[k], y[k], f"{path}.{k}")
+        elif isinstance(x, list) and isinstance(y, list):
+            if len(x) != len(y):
+                diffs.append(f"{path}: {len(x)} item(s) in the artifact, {len(y)} built")
+            else:
+                for i, (xi, yi) in enumerate(zip(x, y)):
+                    _cmp(xi, yi, f"{path}[{i}]")
+        elif x != y:
+            diffs.append(f"{path}: artifact {x!r} != built {y!r}")
+
+    _cmp(a, b, "$")
+    return "compared", diffs
 
 
 # Which block each check's sites come from. Used only when a check found NO

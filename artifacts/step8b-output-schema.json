@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:season2-study:step8b-output-schema:1.9.0",
+  "$id": "urn:season2-study:step8b-output-schema:1.10.0",
   "title": "Season 2 abandonment study -- Step 16 results schema",
   "description": "The single output schema. Steps 9 through 13 write into it DIRECTLY, each ARM into its own file, and STEP 16 RENDERS FROM THE MERGED DOCUMENT that Step 13b builds from those files after the Human Lead has diffed the dual pairs (decisions/0107). Both kinds of file are instances of this one schema; $.document_scope says which kind a file is, and it is the first thing to read. There is no conversion layer: a conversion layer is a second definition of every figure. Validate with src/step8b_validate.py, which implements the JSON Schema subset used here plus the cross-field checks the schema language cannot express.",
   "type": "object",
@@ -29,10 +29,10 @@
   ],
   "properties": {
     "schema_version": {
-      "const": "1.9.0"
+      "const": "1.10.0"
     },
     "schema_id": {
-      "const": "urn:season2-study:step8b-output-schema:1.9.0"
+      "const": "urn:season2-study:step8b-output-schema:1.10.0"
     },
     "placeholder": {
       "type": "boolean",
@@ -46,7 +46,8 @@
         "banner",
         "is_placeholder",
         "do_not_publish",
-        "every_measurement_slot_is_a_sentinel"
+        "every_measurement_slot_is_a_sentinel_or_a_declared_type_fixture",
+        "type_fixture_count"
       ],
       "properties": {
         "banner": {
@@ -58,8 +59,12 @@
         "do_not_publish": {
           "const": true
         },
-        "every_measurement_slot_is_a_sentinel": {
+        "every_measurement_slot_is_a_sentinel_or_a_declared_type_fixture": {
           "const": true
+        },
+        "type_fixture_count": {
+          "type": "integer",
+          "minimum": 1
         },
         "how_to_tell": {
           "type": "string"
@@ -471,6 +476,9 @@
           "const": "PLACEHOLDER — NOT A MEASUREMENT"
         },
         "rule": {
+          "type": "string"
+        },
+        "type_fixture_rule": {
           "type": "string"
         }
       }
@@ -1678,7 +1686,14 @@
   "then": {
     "required": [
       "placeholder_notice"
-    ]
+    ],
+    "properties": {
+      "sentinels": {
+        "required": [
+          "type_fixture_rule"
+        ]
+      }
+    }
   },
   "else": {
     "not": {
@@ -1689,14 +1704,14 @@
   },
   "x-generated-by": {
     "generator": "src/step8b_schema.py",
-    "generator_sha256_12": "9fe2e8822afa",
-    "generated_at_utc": "2026-08-20T18:30:57Z",
-    "build_tag": "step8b/a/2026-08-20",
-    "git_head_short": "03da73b = HEAD WHEN THIS FILE WAS GENERATED, which is NOT the commit that ships it: the file is written before it is committed, so the shipping commit is this one's child and has no id yet. The link runs the other way -- the shipping commit's diff contains this file, and the run record under logs/step8b/ carries a per-path content digest recomputable with `git cat-file blob <commit>:<path> | shasum -a 256`",
+    "generator_sha256_12": "dabdb9d1dcc3",
+    "generated_at_utc": "2026-08-24T18:10:08Z",
+    "build_tag": "step8b/a/2026-08-24",
+    "git_head_short": "8c6b78c = HEAD WHEN THIS FILE WAS GENERATED, which is NOT the commit that ships it: the file is written before it is committed, so the shipping commit is this one's child and has no id yet. The link runs the other way -- the shipping commit's diff contains this file, and the run record under logs/step8b/ carries a per-path content digest recomputable with `git cat-file blob <commit>:<path> | shasum -a 256`",
     "host_step": "Step 8b, output schema",
     "written_by": "Analytics Engineer, instance a",
     "validator": "src/step8b_validate.py",
-    "validator_sha256_12": "ada5966d3825",
+    "validator_sha256_12": "c5dd43875155",
     "selftest": "src/step8b_selftest.py",
     "note": "This schema is generated. Correct it in the generator and rewrite both artifacts together; do not hand-edit either file."
   },
@@ -1730,6 +1745,18 @@
     },
     "pp": {
       "description": "A quantity in percentage points; may be zero or negative.  [measurement slot: -999.0 in a placeholder]",
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "const": -999.0
+        }
+      ],
+      "x-measurement": true
+    },
+    "ci_endpoint": {
+      "description": "A confidence-interval endpoint, BEFORE the typing that follows its statistic. THE TYPE IS NARROWED CONDITIONALLY IN $defs/ci: a LEVEL interval's endpoints are percentages on [0, 100] ($defs/percent) and a MOVEMENT interval's are percentage-point differences that may be negative ($defs/pp). `percent` was NOT widened to admit negatives: that would let a LEVEL interval carry a negative endpoint, which is not a possible measurement, and would trade a defect that fails loudly for one that cannot fail at all (Human Lead ruling, 2026-08-24).  [measurement slot: -999.0 in a placeholder, EXCEPT in a declared type fixture]",
       "anyOf": [
         {
           "type": "number"
@@ -1986,7 +2013,7 @@
     },
     "ci": {
       "type": "object",
-      "description": "A confidence interval. THE BOOTSTRAP IS FIXED IN ALL FOUR OF ITS ELEMENTS -- 10,000 resamples, account level for the outcome shares, seed 20260818 (decisions/0103), and the statistic BOTH levels and paired movements (decisions/0118) -- and EVERY INTERVAL RECORDS ITS SEED, RESAMPLE COUNT, RESAMPLING UNIT AND STATISTIC AT THE POINT OF USE. They are written here as well as referenced, because the ruling says at the point of use and a reference is not that; check S23 asserts the inline values against the referenced registry entry, so the redundancy is checked rather than trusted. An interval is ONE of the two objects and says which; check S41 asserts that BOTH appear, PER (PRODUCING STEP, ARM), because a run that emits only one is INCOMPLETE rather than differently designed -- and the owner of an interval is a step and an arm together, since in the merged document one arm label covers several steps. ONE STEP IS EXEMPT AND THE EXEMPTION IS NAMED HERE RATHER THAN LEFT TO BE DISCOVERED: a Step 12 file mandates intervals nowhere (see $defs.ci_or_absence), so a Step 12 file carrying no interval declares that emptiness rather than failing to fill it. Human Lead ruling, 2026-08-19. THE EXEMPTION IS FROM PRODUCING INTERVALS, NOT FROM PRODUCING THEM COMPLETELY: a step that HAS published an interval owes both objects like any other, because it is then manufacturing nothing.",
+      "description": "A confidence interval. THE BOOTSTRAP IS FIXED IN ALL FOUR OF ITS ELEMENTS -- 10,000 resamples, account level for the outcome shares, seed 20260818 (decisions/0103), and the statistic BOTH levels and paired movements (decisions/0118) -- and EVERY INTERVAL RECORDS ITS SEED, RESAMPLE COUNT, RESAMPLING UNIT AND STATISTIC AT THE POINT OF USE. They are written here as well as referenced, because the ruling says at the point of use and a reference is not that; check S23 asserts the inline values against the referenced registry entry, so the redundancy is checked rather than trusted. An interval is ONE of the two objects and says which; check S41 asserts that BOTH appear, PER (PRODUCING STEP, ARM), because a run that emits only one is INCOMPLETE rather than differently designed -- and the owner of an interval is a step and an arm together, since in the merged document one arm label covers several steps. ONE STEP IS EXEMPT AND THE EXEMPTION IS NAMED HERE RATHER THAN LEFT TO BE DISCOVERED: a Step 12 file mandates intervals nowhere (see $defs.ci_or_absence), so a Step 12 file carrying no interval declares that emptiness rather than failing to fill it. Human Lead ruling, 2026-08-19. THE EXEMPTION IS FROM PRODUCING INTERVALS, NOT FROM PRODUCING THEM COMPLETELY: a step that HAS published an interval owes both objects like any other, because it is then manufacturing nothing. AN ENDPOINT'S TYPE FOLLOWS ITS STATISTIC (Human Lead ruling, 2026-08-24): a `levels` interval's endpoints are PERCENTAGES on [0, 100] and a `movements` interval's are PERCENTAGE-POINT DIFFERENCES, which may be negative. The conditional in `allOf` below is that rule; $defs/percent was NOT widened to admit negatives, because that would let a level interval carry a negative endpoint and would trade a defect that fails loudly for one that cannot fail at all. The statistic field is therefore LOAD-BEARING ON THE TYPE and not only on the reading: an interval that mislabels itself is now rejected by the endpoint constraint wherever the two forms disagree in sign or magnitude.",
       "additionalProperties": false,
       "required": [
         "level_pct",
@@ -2005,10 +2032,10 @@
           "type": "number"
         },
         "lower": {
-          "$ref": "#/$defs/percent"
+          "$ref": "#/$defs/ci_endpoint"
         },
         "upper": {
-          "$ref": "#/$defs/percent"
+          "$ref": "#/$defs/ci_endpoint"
         },
         "method": {
           "type": "string"
@@ -2092,12 +2119,50 @@
             }
           }
         },
+        "is_type_fixture": {
+          "const": true,
+          "description": "TRUE on an interval whose endpoints carry a real illustrative value instead of the sentinel, so that the endpoint type this interval's statistic selects is exercised by a fixture rather than described in prose. Placeholder files only; check S45."
+        },
         "note": {
           "type": "string",
           "description": "A note from the writer.  [writer text: carries the placeholder prefix in a placeholder]",
           "x-writer-text": true
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "statistic"
+            ],
+            "properties": {
+              "statistic": {
+                "const": "movements"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "lower": {
+                "$ref": "#/$defs/pp"
+              },
+              "upper": {
+                "$ref": "#/$defs/pp"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "lower": {
+                "$ref": "#/$defs/percent"
+              },
+              "upper": {
+                "$ref": "#/$defs/percent"
+              }
+            }
+          }
+        }
+      ]
     },
     "ci_or_absence": {
       "description": "A confidence interval, or an explicit record that there is none. Added at v1.1.0 against reviewer-engineering's F3: the bootstrap ruling closes the 'no settings exist yet' case, but a CI is still legitimately absent where the spec does not ask the writing step for one -- Step 12 lists every candidate cut and mandates intervals nowhere, and Step 13's per-arm sensitivity series is a series of shares, not of intervals. Requiring a CI everywhere would require more than the spec asks; omitting the slot would make 'not asked for' look like 'forgotten'.",
