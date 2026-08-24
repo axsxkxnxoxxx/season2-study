@@ -1352,6 +1352,14 @@ def restamp_md_0124(report):
     return cells_marked
 
 
+# THE LAYER SEQUENCE, DEFINED ONCE. main() runs it and so does the ordering guard in
+# src/step9_b_13_register_0124.py, which re-runs this script's comparison read-only. A second
+# copy of this tuple in the consumer would be a second definition of the pipeline itself, and
+# it would drift the first time a layer is added here -- leaving the guard silently checking a
+# producer that is no longer the one that runs.
+LAYERS = (stamp_headline, stamp_headline_0124, stamp_working, stamp_md, restamp_md_0124)
+
+
 def main():
     report = {
         "run": "Step 9, arm b -- STAMP the superseded premiere figures",
@@ -1378,11 +1386,7 @@ def main():
     # second and owns the adopted arm. The two regions are DISJOINT and strip_stamps() removes
     # either token, so neither layer can consume or duplicate the other's marks. The .md
     # correction runs last because it rewrites a sentence the 0123 layer wrote.
-    n = stamp_headline(report)
-    n += stamp_headline_0124(report)
-    n += stamp_working(report)
-    n += stamp_md(report)
-    n += restamp_md_0124(report)
+    n = sum(layer(report) for layer in LAYERS)
     report["total_stamp_sites_written"] = n
     report["layers"] = {
         "0123": "the premiere-clock unit error -- the W91_s2_premiere region",

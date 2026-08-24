@@ -44,6 +44,28 @@ Neither instance sees the other's work, asks about it, or reads its output folde
 
 Any divergence is either a bug or an ambiguity in the spec. Report it. Do not reconcile it.
 
+## A shared control emits arm-scoped output
+
+***THE ARMS ARE DIRECTED TO RUN `src/check_surfaces.py`, AND IT PRINTS EVERY SURFACE'S PATHS.***
+Recorded 2026-08-24 (`0126`), raised by arm `b` against itself the same day it was ruled on for the
+`git log` case. ***NO SCOPING AN ARM CONTROLS CAN AVOID A CONTROL IT IS ORDERED TO RUN.***
+
+**An arm runs it as `STEP_ARM=<arm> python3 src/check_surfaces.py`** and sees **its own paths, every
+shared surface, and the counts and exit code in full**; other arms' paths print as `<withheld>` with
+their number reported. ***THE COVERAGE NUMBER AND THE EXIT CODE ARE NEVER REDUCED — nothing is excluded
+from the CHECK, only from the PRINTING.*** **Suppressing the count would substitute this control's own
+founding defect for a leak.** **Unset prints everything: that is the Human Lead's view. Any other value
+REFUSES TO RUN rather than guessing a scope.**
+
+***THREE CHANNELS, THREE RULINGS, EACH FOUND ONLY WHEN IT FIRED:*** `0123` scoped **how an arm looks**,
+`0125` §5d scoped **what a properly-scoped log returns**, `0126` scopes **what a shared control emits.**
+***The generalisation is not "close these three" — the isolation rule is a property of EVERY path into
+an arm's context, and the list of those paths is not known in advance.***
+
+**And the standing instruction survives the mode**, because a mode must be switched on: **if a shared
+control puts another arm's paths in front of you, YOU HAVE NOT BREACHED — report it and do not read
+them.**
+
 ## Commit messages never carry cross-arm content
 
 ***A COMMIT MESSAGE IS A SURFACE AN ARM CAN READ WHILE PERFECTLY OBEYING THE ISOLATION RULE.***

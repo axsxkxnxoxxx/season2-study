@@ -17,6 +17,7 @@ Both halves of the control, per CLAUDE.md:
 Exit code 1 if either half fails. Zero API calls; reads only.
 """
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -74,6 +75,90 @@ DECLARE_PATH = re.compile(DECLARE_JSON_PATH, re.I)
 
 CONTEXT = 2   # MARK's window: a marker may wrap onto the line above or below. The SUCCESSOR
 #             rule deliberately does NOT use this window -- it runs on the emitting line (B7).
+
+
+# ============================================================ 0126: ARM-SCOPED OUTPUT
+# Human Lead ruling, 2026-08-24, raised by arm b against itself.
+#
+# THIS CONTROL IS A LEAK VECTOR AND THE ARMS CANNOT SCOPE IT. They are DIRECTED to run it, and
+# it prints every surface's paths -- including the other arm's. 0123 scoped the search PATTERN;
+# 0125 SS5d scoped what a properly-scoped `git log` RETURNS; this scopes WHAT A SHARED CONTROL
+# EMITS. All three exist because an arm is forbidden to re-measure what it is told, and every
+# channel that tells it something has to be closed separately.
+#
+# THE COVERAGE NUMBER STAYS WHOLE. An arm must still be able to tell a clean result from a
+# looked-nowhere one, so counts and the exit code are never reduced -- only PATHS are withheld,
+# and their number is reported. Suppressing the count as well would substitute this control's
+# own founding defect for a leak.
+#
+# Set STEP_ARM=a or STEP_ARM=b. Unset -- the Human Lead's own runs -- prints everything.
+STEP_ARM = os.environ.get("STEP_ARM", "").strip().lower() or None
+if STEP_ARM not in (None, "a", "b"):
+    sys.exit(f"STEP_ARM={STEP_ARM!r} is not 'a' or 'b'. Refusing to run rather than guess a scope.")
+
+# A path belongs to an arm only on these explicit forms. Anything else is SHARED and shown to
+# everyone. Deliberately not a loose /a/ or -a match: `artifacts/step8-invariants-a.json` is
+# arm a's, but `processed/step2/frame.csv` is nobody's and must stay visible.
+_ARM_PAT = re.compile(r"(?:[-_/])(a|b)(?:\d*)(?:[./_]|$)")
+
+
+def arm_of(path):
+    """'a', 'b' or None (shared). Named forms only."""
+    m = _ARM_PAT.search(str(path).replace("\\", "/"))
+    return m.group(1) if m else None
+
+
+_WITHHELD = {"a": 0, "b": 0}
+
+
+def visible(path):
+    """False iff STEP_ARM is set and this path belongs to the OTHER arm. Counts the withholding."""
+    if STEP_ARM is None:
+        return True
+    owner = arm_of(path)
+    if owner is None or owner == STEP_ARM:
+        return True
+    _WITHHELD[owner] += 1
+    return False
+
+
+def show(path):
+    """The path as this run may print it."""
+    return str(path) if visible(path) else f"<withheld: arm {arm_of(path)} path>"
+
+
+def withheld_report():
+    n = sum(_WITHHELD.values())
+    if STEP_ARM is None:
+        return "STEP_ARM unset -- every path printed in full (Human Lead view)."
+    return (f"STEP_ARM={STEP_ARM}: {n} path(s) belonging to another arm were WITHHELD from this "
+            f"output ({_WITHHELD}). THE COUNTS AND THE EXIT CODE ABOVE ARE WHOLE -- nothing was "
+            f"excluded from the CHECK, only from the PRINTING. If you needed one of those paths, "
+            f"you needed the other arm's work: report it, do not seek it.")
+
+
+def _selftest_arm_scope():
+    """The scoper must withhold what it claims to, and must NOT withhold shared or own paths."""
+    global STEP_ARM
+    assert arm_of("artifacts/step9-headline-a.json") == "a"
+    assert arm_of("artifacts/step9-headline-corrected-2026-08-21-b.json") == "b"
+    assert arm_of("src/step9_b_2_bootstrap.py") == "b"
+    assert arm_of("processed/step9/a/measured.json") == "a"
+    assert arm_of("artifacts/step7-liveness-a2.json") == "a"
+    # SHARED must never be attributed to an arm
+    for shared in ("task-sheet.md", "CLAUDE.md", "processed/step2/frame.csv",
+                   "src/check_surfaces.py", "src/step7_register.py",
+                   "processed/step5/adopted_rule.json"):
+        assert arm_of(shared) is None, f"{shared} was attributed to arm {arm_of(shared)}"
+    keep = STEP_ARM
+    try:
+        STEP_ARM = "b"; _WITHHELD.update(a=0, b=0)
+        assert visible("artifacts/step9-headline-corrected-2026-08-21-b.json") is True
+        assert visible("task-sheet.md") is True
+        assert visible("artifacts/step9-headline-a.json") is False
+        assert _WITHHELD["a"] == 1, "a withheld path was not counted"
+    finally:
+        STEP_ARM = keep; _WITHHELD.update(a=0, b=0)
 
 
 def near(x, target):
@@ -771,7 +856,7 @@ if __name__ == "__main__":
     if not neg:
         print("  none\n")
     for s, f, where, val, what, line in neg:
-        print(f"  [{s}] {f} {where}: {val}  ({what})")
+        print(f"  [{s}] {show(f)} {where}: {val}  ({what})")
         if line:
             print(f"        {line}")
     print()
@@ -784,7 +869,7 @@ if __name__ == "__main__":
     if READ_FAILURES:
         print("READ/PARSE FAILURES -- a file the control could not look at is NOT a clean file:")
         for f, why in READ_FAILURES:
-            print(f"  {f}: {why}")
+            print(f"  {show(f)}: {why}")
         print()
 
     print("PHRASE HALF -- withdrawn CLAIMS, which the numeric halves cannot see (0061):")
@@ -800,11 +885,12 @@ if __name__ == "__main__":
     if not phrase_hits:
         print("  none\n")
     for surface, f, where, phrase, why, text in phrase_hits:
-        print(f"  [{surface}] {f} {where}: {phrase!r}")
+        print(f"  [{surface}] {show(f)} {where}: {phrase!r}")
         print(f"        {why}")
         print(f"        {text}")
     print()
 
+    _selftest_arm_scope()
     _selftest_statistic_matcher()
     stat_fails, stat_cov = scan_statistic_declaration()
     print("BOOTSTRAP STATISTIC -- 0118, closing reviewer-engineering's E11 (surfaces 2 and 3):")
@@ -863,7 +949,7 @@ if __name__ == "__main__":
     if missing_d:
         for n in sorted(missing_d):
             print(f"  MISSING decisions/{n}* -- cited in {len(missing_d[n])} file(s): "
-                  f"{sorted(missing_d[n])[:3]}")
+                  f"{[show(x) for x in sorted(missing_d[n])[:3]]}")
     else:
         print("  none unresolved")
     print()
@@ -892,7 +978,7 @@ if __name__ == "__main__":
     print()
     print(f"WHOLLY SUPERSEDED FILES exempted by explicit allowlist ({len(allowed)}), reason each:")
     for f, why in sorted(allowed):
-        print(f"  {f}\n      {why}")
+        print(f"  {show(f)}\n      {why}")
     print("  (the OPERATIVE bb-{a,b} deliverables are NOT exemptible -- that is B2)")
     print()
     # 0062: LEGITIMATE was imported and printed and never consulted -- a fourth docstring
@@ -916,6 +1002,8 @@ if __name__ == "__main__":
 
     if (neg or missing or miss_in or phrase_hits or READ_FAILURES or legit_conflicts
             or missing_d or s8_dead or stat_fails):
+        print("\n" + withheld_report())
         print("\nFAIL")
         sys.exit(1)
+    print("\n" + withheld_report())
     print("\nPASS -- all halves, all EIGHT surfaces.")

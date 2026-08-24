@@ -28,7 +28,9 @@ Run:  python3 src/step9_b_13_register_0124.py
 import json
 import os
 import re
+import shutil
 import sys
+import tempfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "src"))
@@ -53,6 +55,205 @@ TOL = 5e-5
 NUM = re.compile(r"(?<![\w.])(-?\d{1,3}(?:,\d{3})*(?:\.\d+)?|-?\d+\.\d+)(?![\w])")
 
 
+# ===========================================================================================
+# *** THE ORDERING GUARD. Human Lead ruling, 2026-08-24. ***
+#
+#   WHERE ONE ARTIFACT IS GENERATED FROM ANOTHER'S OUTPUT, THE CONSUMER MUST BE ABLE TO
+#   DETECT THAT THE PRODUCER IS STALE.
+#
+#   A PIPELINE ORDER THAT IS CORRECT ONLY WHEN RUN IN ORDER IS NOT A CONTROL.
+#
+# THE GROUND, and it is measured rather than hypothetical. This generator takes its .md-only
+# rows from the numbers sitting INSIDE cells that src/step9_b_6_stamp_superseded.py marked.
+# Those marks are CONDITIONAL -- decided by comparing the committed artifact against the
+# corrected emission -- so a change to the CORRECTED side ALONE re-partitions them. When
+# decisions/0125 moved the corrected emission, this generator re-ran and the stamper did not:
+# two W108 started-and-left CI widths were newly superseded, sat in cells the stale mark set
+# did not mark, and were therefore NEITHER marked NOR registered. The register was short by
+# two rows and its run printed a clean count.
+#
+# THAT IS THE EMPTY-RESULT-EQUALS-CLEAN-RESULT CLASS, LIVING IN THE DEPENDENCY BETWEEN TWO
+# SCRIPTS RATHER THAN INSIDE ONE. A register short by two rows is indistinguishable from a
+# correct one on a passing run, because the missing rows are missing from the very output that
+# would report them. No amount of checking INSIDE this file can see it: the defect is that the
+# input was produced against a world that has since moved.
+#
+# SO THE CONSUMER RE-RUNS THE PRODUCER'S COMPARISON READ-ONLY AND HARD-STOPS ON DISAGREEMENT.
+# Read-only: every layer of the stamper is run against COPIES in a scratch directory, with the
+# module's own output paths repointed at them, and nothing under artifacts/ or processed/ is
+# written. The comparison is not reimplemented here -- THE PRODUCER'S OWN CODE IS CALLED -- so
+# there is no second definition of it to drift (CLAUDE.md: one definition per figure).
+#
+# IT FAILS LOUDLY, NOT WITH A WARNING. A stale producer is not a degraded result; it is a
+# result whose correctness cannot be known, and the register's job is to be the thing that can
+# be trusted.
+# ===========================================================================================
+
+PRODUCER_STALENESS_RULE = (
+    "WHERE ONE ARTIFACT IS GENERATED FROM ANOTHER'S OUTPUT, THE CONSUMER MUST BE ABLE TO "
+    "DETECT THAT THE PRODUCER IS STALE. A PIPELINE ORDER THAT IS CORRECT ONLY WHEN RUN IN "
+    "ORDER IS NOT A CONTROL. Human Lead ruling, 2026-08-24."
+)
+
+STAMPER = "src/step9_b_6_stamp_superseded.py"
+PRODUCER_OUTPUTS = ("COMMITTED_HEADLINE", "COMMITTED_MD", "COMMITTED_WORKING")
+PRODUCER_INPUTS = PRODUCER_OUTPUTS + ("CORRECTED_HEADLINE", "CORRECTED_MD", "CORRECTED_WORKING")
+
+
+def rerun_stamper_read_only(overrides=None):
+    """Run EVERY layer of the stamper on copies. Returns (regenerated_text, its run report).
+
+    Nothing in the real tree is written. The six paths the stamper reads and the three it
+    writes are copied into a scratch directory and the module globals are repointed at the
+    copies; M.ROOT is left alone because the only thing read through it -- the emitted
+    corrected headline the 0124 stamps point at -- is never written.
+
+    `overrides` substitutes a different file for one of those inputs. It exists so the
+    reproduction can drive this guard with the pre-0125 committed .md; it is not used by
+    the generator itself.
+    """
+    overrides = overrides or {}
+    saved = {n: getattr(M, n) for n in PRODUCER_INPUTS}
+    tmp = tempfile.mkdtemp(prefix="step9b-ordering-guard-")
+    try:
+        for n in PRODUCER_INPUTS:
+            source = overrides.get(n, saved[n])
+            dst = os.path.join(tmp, n.lower() + os.path.splitext(source)[1])
+            shutil.copyfile(source, dst)
+            setattr(M, n, dst)
+        # M.LAYERS, NOT A LIST RETYPED HERE. A copy of the producer's layer sequence in the
+        # consumer is a second definition of the pipeline, and it drifts the first time a
+        # layer is added there -- leaving this guard checking a producer that no longer runs.
+        rep = {}
+        for layer in M.LAYERS:
+            try:
+                layer(rep)
+            except SystemExit as e:
+                # ATTRIBUTED, so the reader is not left guessing which script stopped. A hard
+                # stop from one of the producer's OWN guards is a different fault from
+                # staleness and is not relabelled as one -- it is passed through, named.
+                raise SystemExit(
+                    "HARD STOP inside the ordering guard's READ-ONLY re-run of %s, layer %s. "
+                    "This is the PRODUCER's own guard firing, not a staleness finding; the "
+                    "register wrote nothing. Its message follows.\n\n%s"
+                    % (STAMPER, layer.__name__, e))
+        return {n: open(getattr(M, n)).read() for n in PRODUCER_OUTPUTS}, rep
+    finally:
+        for n, v in saved.items():
+            setattr(M, n, v)
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+def md_mark_cells(text):
+    """(base_lines, {(base_line_index, cell_index)}) -- the 0124 layer's output removed.
+
+    Keyed on the position in the STRIPPED file, not the raw one, because the stamp blocks the
+    layer inserts shift raw line numbers whenever the mark set moves -- which is exactly the
+    case this guard exists to compare.
+    """
+    lines = text.split("\n")
+    base, marks, cells_seen = [], set(), 0
+    i = 0
+    while i < len(lines):
+        if M.MD_TOKEN_0124 in lines[i]:
+            i += 1
+            if i < len(lines) and lines[i].strip() == "":
+                i += 1
+            continue
+        ln = lines[i]
+        if ln.startswith("|"):
+            parts = ln.split("|")
+            cells_seen += len(parts)
+            for k, c in enumerate(parts):
+                if M.MD_ROW_MARK_0124 in c:
+                    marks.add((len(base), k))
+        base.append(ln.replace(M.MD_ROW_MARK_0124, ""))
+        i += 1
+    return base, marks, cells_seen
+
+
+def stamped_leaves(text):
+    """Every string leaf of a stamped JSON, by path -- the JSON half of the mark set."""
+    return {p: v for p, v in M.leaves(json.loads(text), "$") if isinstance(v, str)}
+
+
+def assert_producer_not_stale(overrides=None):
+    """HARD STOP unless every mark on disk is what the stamper's comparison produces NOW."""
+    regen, rep = rerun_stamper_read_only(overrides)
+    saved = {n: getattr(M, n) for n in PRODUCER_OUTPUTS}
+    disk = {n: open((overrides or {}).get(n, saved[n])).read() for n in PRODUCER_OUTPUTS}
+
+    base_d, marks_d, cells_d = md_mark_cells(disk["COMMITTED_MD"])
+    base_r, marks_r, cells_r = md_mark_cells(regen["COMMITTED_MD"])
+
+    faults = []
+    if base_d != base_r:
+        diff = [i for i in range(max(len(base_d), len(base_r)))
+                if base_d[i:i + 1] != base_r[i:i + 1]]
+        faults.append("the two files differ OUTSIDE the 0124 layer, at %d stripped line(s) "
+                      "%s -- the mark sets are not comparable" % (len(diff), diff[:5]))
+        marks_d = marks_r = set()
+
+    # *** THE COMPARISON. A mark on disk was written by comparing two files; this recomputes
+    # *** that comparison against those files AS THEY STAND NOW. A cell in `missing` is a
+    # *** figure the current comparison calls superseded and the disk does not mark -- the
+    # *** 0125 shape, and the one that is SILENT here, because an unmarked cell contributes
+    # *** no number to `inside` and so produces no row and no complaint. A cell in
+    # *** `superfluous` is a mark asserting a defect that is no longer there. BOTH are a
+    # *** stale producer. See PRODUCER_STALENESS_RULE above.
+    def show(cells, side):
+        out = []
+        for li, ci in sorted(cells):
+            cell = side[li].split("|")[ci].strip()
+            out.append("stripped line %d, column %d: %r" % (li + 1, ci, cell[:70]))
+        return out
+
+    missing = marks_r - marks_d
+    superfluous = marks_d - marks_r
+    if missing:
+        faults.append(".md CELLS THE COMPARISON MARKS NOW AND THE FILE ON DISK DOES NOT (%d) "
+                      "-- these figures are superseded, unmarked, and therefore UNREGISTERED:"
+                      "\n      %s" % (len(missing), "\n      ".join(show(missing, base_r))))
+    if superfluous:
+        faults.append(".md CELLS MARKED ON DISK THAT THE COMPARISON NO LONGER MARKS (%d) -- "
+                      "each asserts a defect that is not there:\n      %s"
+                      % (len(superfluous), "\n      ".join(show(superfluous, base_d))))
+
+    json_compared = 0
+    for n in ("COMMITTED_HEADLINE", "COMMITTED_WORKING"):
+        d, r = stamped_leaves(disk[n]), stamped_leaves(regen[n])
+        json_compared += len(d)
+        moved = sorted(p for p in set(d) | set(r) if d.get(p) != r.get(p))
+        if moved:
+            faults.append("STAMP TEXT ON DISK DIFFERS FROM WHAT THE COMPARISON PRODUCES NOW "
+                          "at %d string leaf/leaves of %s -- the field lists a stamp names are "
+                          "the JSON half of the same conditional mark set: %s"
+                          % (len(moved), saved[n].split("season2-study/")[-1], moved[:6]))
+
+    # A GUARD THAT EXAMINES ZERO CELLS PASSES TRIVIALLY (decisions/0123 SS3). Coverage is
+    # asserted non-zero and PRINTED, so a clean result cannot be confused with an empty one.
+    if cells_d == 0 or cells_r == 0 or json_compared == 0:
+        sys.exit("HARD STOP: the ordering guard compared %d .md cells on disk, %d regenerated "
+                 "and %d JSON string leaves. A guard that looked at nothing reports that it "
+                 "found nothing, which is not the same value." % (cells_d, cells_r, json_compared))
+
+    coverage = {
+        "md_table_cells_compared_on_disk": cells_d,
+        "md_table_cells_compared_regenerated": cells_r,
+        "md_marked_cells_on_disk": len(marks_d),
+        "md_marked_cells_the_comparison_produces_now": len(marks_r),
+        "json_string_leaves_compared": json_compared,
+        "producer_protected_cells_compared": rep["headline_md_0124"]["protected_cells_compared"],
+        "producer_numeric_leaves_examined": rep["headline_0124"]["numeric_leaves_examined_in_region"],
+    }
+    if faults:
+        sys.exit("HARD STOP: THE PRODUCER IS STALE.\n\n  %s\n\n  %s\n\n  Fix: re-run %s, "
+                 "then re-run this generator. Coverage of the check that found it: %s"
+                 % (PRODUCER_STALENESS_RULE, "\n\n  ".join(faults), STAMPER,
+                    json.dumps(coverage, sort_keys=True)))
+    return coverage
+
+
 def json_numbers(path):
     out = []
 
@@ -70,7 +271,12 @@ def json_numbers(path):
 
 
 def moved_json_values():
-    """The 29 adopted-arm numeric leaves whose value differs from the corrected emission."""
+    """The adopted-arm numeric leaves whose value differs from the corrected emission.
+
+    The count is MEASURED and printed at the end of each run, not stated here: a number
+    typed into a docstring is measured at one instant and read forever, which is the
+    staleness the guard above exists to catch one file further along.
+    """
     old = json.load(open(M.COMMITTED_HEADLINE))
     new = json.load(open(M.CORRECTED_HEADLINE))
     fin = [i for i, a in enumerate(old["arms"]) if a["clock_origin"] == "s2_finale"]
@@ -111,7 +317,14 @@ def unmarked_json_numbers(path, marked_paths):
             if M.is_number(v) and p not in marked_paths]
 
 
-def main():
+def derive_rows():
+    """The register rows, DERIVED AND NOT WRITTEN.
+
+    Split out from main() so the reproduction in src/step9_b_17_ordering_repro.py can measure
+    what a STALE mark set costs -- the count of rows this returns under the pre-0125 .md
+    against the count under the current one. The shortfall is the thing the ordering guard
+    exists to make visible, and it is measured rather than described.
+    """
     jvals = moved_json_values()
     json_pool = {v for v, _ in jvals}
     inside, outside = marked_md_numbers()
@@ -167,6 +380,27 @@ def main():
             collisions.append(v)
             continue
         rows[(FRAG, v)] = WHY
+
+    return {"rows": rows, "dropped_inert": dropped_inert,
+            "excluded_integers": excluded_integers, "collisions": collisions,
+            "indistinguishable": indistinguishable, "jvals": jvals,
+            "inside": inside, "outside": outside}
+
+
+def main():
+    # THE ORDERING GUARD RUNS FIRST AND NOTHING IS WRITTEN UNTIL IT PASSES. Every row below is
+    # derived from the stamper's mark set; deriving them from a stale one is the 0125 failure.
+    cov = assert_producer_not_stale()
+    print("ordering guard: the marks on disk are what %s's comparison produces NOW." % STAMPER)
+    for k in sorted(cov):
+        print("  %-46s %d" % (k, cov[k]))
+    print("")
+
+    d = derive_rows()
+    rows, dropped_inert = d["rows"], d["dropped_inert"]
+    excluded_integers, collisions = d["excluded_integers"], d["collisions"]
+    indistinguishable, jvals = d["indistinguishable"], d["jvals"]
+    inside, outside = d["inside"], d["outside"]
 
     src = open(REGISTER).read()
     body = [BEGIN,
