@@ -113,6 +113,41 @@ TOKEN_0124 = "[SUPERSEDED 2026-08-23 :: step9-b resampling frame and draw order"
 TOKENS = (TOKEN, TOKEN_0124)
 SEP = " || "
 
+# ---------------------------------------------------------------------------
+# *** THE MARK SET IS NOT STABLE. Human Lead ruling, 2026-08-24. ***
+#
+# The ruling generalises a premise of its own that this arm disproved by measurement. The
+# premise: the 0124 stamps point at a PATH and not at a VALUE, so moving the corrected emission
+# cannot move them. TRUE OF THE JSON STAMPS, whose text is a field list. FALSE OF THE .md CELL
+# MARKS, which are written CONDITIONALLY on the cell differing from the corrected emission and
+# therefore RE-PARTITION when the corrected values move.
+#
+#     A CONDITIONAL MARK IS A FUNCTION OF TWO FILES. WHEN EITHER MOVES, THE MARK SET MOVES.
+#     ANY MARK WRITTEN BY COMPARISON MUST BE RECOMPUTED WHEN EITHER SIDE CHANGES.
+#
+# Measured on this build: decisions/0125's re-emission of the corrected figures left two W108
+# started-and-left CI WIDTHS newly differing and UNMARKED, and one W108 ratio COINCIDING again
+# and still MARKED -- three cells, moving in BOTH directions, from a change to the OTHER file
+# alone and none to this one. A stamp asserting something untrue is worse than no stamp
+# (decisions/0124 SS5b), and a superfluous mark asserts a defect that is not there.
+#
+# SO, FOR ANYONE MOVING EITHER SIDE: re-running this script is not housekeeping that follows a
+# change to the corrected emission, it is PART of that change. The rule is restated at each of
+# the FOUR branches below where a mark is decided by comparison -- a rule recorded away from the
+# branch is a rule the code does not read, which is how `denominator_pairs` was excluded by name
+# and twelve figures published unmarked.
+# ---------------------------------------------------------------------------
+CONDITIONAL_MARK_RULE = (
+    "A CONDITIONAL MARK IS A FUNCTION OF TWO FILES. WHEN EITHER MOVES, THE MARK SET MOVES. "
+    "Any mark written by comparison must be recomputed when either side changes. Human Lead "
+    "ruling, 2026-08-24. The .md cell marks in this file are decided by comparing the committed "
+    "artifact with the corrected emission, so a change to the CORRECTED emission alone "
+    "re-partitions them: decisions/0125's re-emission newly superseded two W108 "
+    "started-and-left CI widths and made one W108 ratio mark superfluous, with no edit to the "
+    "committed file at all."
+)
+
+
 THE_ERROR = (
     "Produced under a defective T0 vector: src/step9_b_1_compute.py divided a "
     "datetime64[us, UTC] column by 10 ** 9, so every premiere-anchored T0 in this arm was "
@@ -477,6 +512,10 @@ def stamp_headline(report):
                 # the figure; it is this script's own output. Comparing the
                 # stamped text would mark every slot it has ever written and
                 # grow the marks on every rerun.
+                # *** A CONDITIONAL MARK IS A FUNCTION OF TWO FILES: WHEN EITHER MOVES, THE
+                # *** MARK SET MOVES. The mark below is decided HERE, by comparison with the
+                # *** corrected emission -- so it must be RECOMPUTED whenever EITHER side
+                # *** changes, not only this one. See CONDITIONAL_MARK_RULE above.
                 base = strip_stamps(val) if isinstance(val, str) else val
                 gone = path not in new_leaves
                 moved = (not gone) and new_leaves[path] != base
@@ -685,6 +724,10 @@ def stamp_headline_0124(report):
                 if fam is None and not ci:
                     unclaimed.append(path)
                     continue
+                # *** A CONDITIONAL MARK IS A FUNCTION OF TWO FILES: WHEN EITHER MOVES, THE
+                # *** MARK SET MOVES. The mark below is decided HERE, by comparison with the
+                # *** corrected emission -- so it must be RECOMPUTED whenever EITHER side
+                # *** changes, not only this one. See CONDITIONAL_MARK_RULE above.
                 moved = path not in new_leaves or new_leaves[path] != val
                 if fam is not None:
                     family_cov[fam] += 1
@@ -840,6 +883,10 @@ def stamp_working(report):
         if "_superseded" in path:
             continue
         region = in_region(path)
+        # *** A CONDITIONAL MARK IS A FUNCTION OF TWO FILES: WHEN EITHER MOVES, THE
+        # *** MARK SET MOVES. The mark below is decided HERE, by comparison with the
+        # *** corrected emission -- so it must be RECOMPUTED whenever EITHER side
+        # *** changes, not only this one. See CONDITIONAL_MARK_RULE above.
         gone = path not in new_leaves
         moved = (not gone) and new_leaves[path] != val
         if not region:
@@ -1231,6 +1278,12 @@ def restamp_md_0124(report):
                      "table has columns %s. Every column must be declared either CI or "
                      "protected; an unclassified column is neither marked nor policed."
                      % (sig, sorted(rule["ci"] | rule["protected"]), sorted(inner)))
+        # *** A CONDITIONAL MARK IS A FUNCTION OF TWO FILES: WHEN EITHER MOVES, THE MARK
+        # *** SET MOVES. THIS IS THE BRANCH WHERE THAT WAS MEASURED. `a` is the committed
+        # *** cell and `b` is the corrected emission's; a mark is written iff they differ,
+        # *** so a change to `b` ALONE re-partitions the marks in `a`'s file -- in BOTH
+        # *** directions, newly-superseded and newly-superfluous alike. RECOMPUTE ON EITHER
+        # *** SIDE'S CHANGE. See CONDITIONAL_MARK_RULE above.
         differing = {k for k in range(len(a)) if a[k].strip() != b[k].strip()}
         protected_compared += len(rule["protected"])
         moved_protected = sorted(differing & rule["protected"])
@@ -1308,6 +1361,7 @@ def main():
         "generator": "src/step9_b_6_stamp_superseded.py",
         "generator_sha256_12": sha12(os.path.abspath(__file__)),
         "the_unit_error": THE_ERROR,
+        "the_mark_set_is_not_stable": CONDITIONAL_MARK_RULE,
         "adopts": "nothing",
         "api_calls": 0,
         "stamps_are_negative_only": ("no stamp restates a corrected figure; each names what is "

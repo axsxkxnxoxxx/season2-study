@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
-"""Step 9, arm `b` -- RE-TAKE the pairing evidence on the weights that decisions/0124 produced.
+"""Step 9, arm `b` -- RE-TAKE the pairing evidence on the weights the current ruling produced.
 
 decisions/0124 SS5: "Also to be re-established after any rerun: arm b's own pairing evidence --
 it verified all 12 movements paired BY REPRODUCING PUBLISHED ENDPOINTS FROM THE RECORDED
-WEIGHTS, and those weights change."
+WEIGHTS, and those weights change." It applies to EVERY rerun that moves the draw, so it applies
+again under decisions/0125, which fixed the draw MECHANISM one level below decisions/0124 and
+moved the weights a second time. This file names no ruling in its assertions: it reads the
+weights the bootstrap actually recorded and checks their digest against the bootstrap's own, so
+it re-establishes the claim on whatever draw is current rather than on a draw it was told about.
 
 THE CLAIM UNDER TEST. Each of the 12 paired movements is the percentile interval of
 `filtered - unfiltered` differenced INSIDE each replicate -- the same account weight row
@@ -67,7 +71,7 @@ stage2 = json.load(open(os.path.join(WORK, "stage2_bootstrap.json")))
 doc = json.load(open(ART))
 
 w("=" * 94)
-w("STEP 9, ARM b -- PAIRING EVIDENCE, RE-TAKEN ON THE decisions/0124 WEIGHTS")
+w("STEP 9, ARM b -- PAIRING EVIDENCE, RE-TAKEN ON THE CURRENT WEIGHTS (decisions/0124, 0125)")
 w("=" * 94)
 w("")
 w("weights read from : processed/step9/b/boot_weights.npz  (the matrix that was drawn, not a")
@@ -154,11 +158,19 @@ w("    THE PROBE. The unfiltered term is taken from a DIFFERENT replicate set (a
 w("    draw on the same frame, seed %d), so `filtered - unfiltered` is a difference of two"
   % (SEED + 1))
 w("    independently resampled quantities rather than a paired delta. Everything else is")
-w("    identical: same frame, same counts, same B, same percentiles. If the comparison in")
-w("    section 1 could not tell these apart, it would not be evidence of pairing at all.")
+w("    identical: same frame, same counts, same B, same percentiles, AND THE SAME DRAW")
+w("    MECHANISM -- decisions/0125's `integers`-and-count, at a different seed. The probe used")
+w("    `multinomial` while the bootstrap used it too; when decisions/0125 changed the")
+w("    bootstrap's sampler, leaving the probe on the old one would have made it differ from the")
+w("    published draw in TWO ways -- seed AND sampler -- and a probe that varies two things")
+w("    cannot show which one it is sensitive to. If the comparison in section 1 could not tell")
+w("    these apart, it would not be evidence of pairing at all.")
 w("")
 rng2 = np.random.default_rng(SEED + 1)
-W2 = rng2.multinomial(N_FRAME, np.full(N_FRAME, 1.0 / N_FRAME), size=B).astype(np.float64)
+_ix2 = rng2.integers(0, N_FRAME, size=(B, N_FRAME))
+_off2 = (np.arange(B) * N_FRAME)[:, None]
+W2 = np.bincount((_ix2 + _off2).ravel(),
+                 minlength=B * N_FRAME).reshape(B, N_FRAME).astype(np.float64)
 w("%-16s %-6s %-17s %12s %12s %10s %10s"
   % ("arm", "pop", "state", "paired w", "unpaired w", "ratio", "rejected"))
 rejected = 0

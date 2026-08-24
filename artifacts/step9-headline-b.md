@@ -167,10 +167,10 @@ THE SECOND HEADLINE, at Netflix's own 91-day reporting window, so the result is 
 | arm | population | outcome | 95% CI, **MOVEMENT** | width | level width | ratio |
 | :--- | :--- | :--- | :--- | ---: | ---: | ---: |
 | W108_s2_finale__step9__r6 | APPLY | never started | [-0.2986, -0.2011] pp ·**SUPERSEDED-0124** | 0.0975 pp ·**SUPERSEDED-0124** | 1.1262 pp ·**SUPERSEDED-0124** | **12×** ·**SUPERSEDED-0124** |
-| W108_s2_finale__step9__r6 | APPLY | started and left | [-0.0272, -0.0048] pp ·**SUPERSEDED-0124** | 0.0224 pp | 0.7449 pp ·**SUPERSEDED-0124** | **33×** ·**SUPERSEDED-0124** |
+| W108_s2_finale__step9__r6 | APPLY | started and left | [-0.0272, -0.0048] pp ·**SUPERSEDED-0124** | 0.0224 pp ·**SUPERSEDED-0124** | 0.7449 pp ·**SUPERSEDED-0124** | **33×** |
 | W108_s2_finale__step9__r6 | APPLY | continued | [+0.2165, +0.3146] pp ·**SUPERSEDED-0124** | 0.0981 pp ·**SUPERSEDED-0124** | 1.4433 pp ·**SUPERSEDED-0124** | **15×** ·**SUPERSEDED-0124** |
 | W108_s2_finale__step9__r6 | DERIV | never started | [+0.0031, +0.0054] pp | 0.0023 pp | 0.7639 pp ·**SUPERSEDED-0124** | **337×** ·**SUPERSEDED-0124** |
-| W108_s2_finale__step9__r6 | DERIV | started and left | [-0.0763, -0.0444] pp ·**SUPERSEDED-0124** | 0.0318 pp | 0.9621 pp ·**SUPERSEDED-0124** | **30×** |
+| W108_s2_finale__step9__r6 | DERIV | started and left | [-0.0763, -0.0444] pp ·**SUPERSEDED-0124** | 0.0318 pp ·**SUPERSEDED-0124** | 0.9621 pp ·**SUPERSEDED-0124** | **30×** |
 | W108_s2_finale__step9__r6 | DERIV | continued | [+0.0412, +0.0709] pp ·**SUPERSEDED-0124** | 0.0297 pp ·**SUPERSEDED-0124** | 1.2416 pp ·**SUPERSEDED-0124** | **42×** ·**SUPERSEDED-0124** |
 | W091_s2_premiere__step9__r6 | APPLY | never started | [-0.0318, -0.0103] pp | 0.0215 pp | 1.9029 pp | **89×** ·**SUPERSEDED** |
 | W091_s2_premiere__step9__r6 | APPLY | started and left | [-0.0302, -0.0130] pp | 0.0172 pp | 0.5437 pp | **32×** ·**SUPERSEDED** |

@@ -687,13 +687,22 @@ doc = {
             "resampling_unit": "account", "producing_arm": ARM,
             "spec_status": "fixed_in_spec",
             "fields_considered": ["B", "seed", "resampling_unit", "statistics",
-                                  "resampling_frame", "draw_order"],
+                                  "resampling_frame", "draw_order", "draw_mechanism"],
             "fields_fixed_in_spec": ["B", "seed", "resampling_unit", "statistics",
-                                     "resampling_frame", "draw_order"],
+                                     "resampling_frame", "draw_order", "draw_mechanism"],
             "fields_not_fixed_in_spec": [],
-            "note": ("ALL SIX ELEMENTS ARE FIXED BY THE SPEC AND NONE IS THIS ARM'S CHOICE -- "
+            "note": ("ALL SEVEN ELEMENTS ARE FIXED BY THE SPEC AND NONE IS THIS ARM'S CHOICE -- "
                      "decisions/0103 for B, the seed and the unit, decisions/0118 for the "
-                     "statistic, decisions/0124 for the FRAME and the DRAW ORDER. The frame is "
+                     "statistic, decisions/0124 for the FRAME and the DRAW ORDER, decisions/0125 "
+                     "for the DRAW MECHANISM. THE MECHANISM IS THE GENERATOR "
+                     "numpy.random.default_rng, THE CALL rng.integers(0, n_frame, size=(m, "
+                     "n_frame)), AND WEIGHTS FORMED BY COUNTING THE DRAWN INDICES -- those four "
+                     "things and nothing else; the CHUNKING is not a spec element, because CHUNK "
+                     "200, CHUNK 500 and a single call give identical arrays under one seed. "
+                     "This arm previously drew with `multinomial`, which satisfied decisions/0124 "
+                     "literally and STILL produced a different replicate set, since the two "
+                     "samplers consume the stream differently: the distribution was right either "
+                     "way and the realisation was not the same. The frame is "
                      "every account with at least one pair in the position-4 output (%d), built "
                      "once and drawn for every quantity regardless of how much it contributes; "
                      "the draw order is one RNG seeded once per file, its stream consumed "
@@ -705,7 +714,8 @@ doc = {
                      "seed is what makes the two arms comparable: without it a difference "
                      "between them could be sampling noise rather than a divergence. The seed "
                      "VALUE is arbitrary; its FIXITY is the point -- and an unfixed draw order "
-                     "makes a fixed seed decorative, which is why decisions/0124 fixes it."
+                     "or an unfixed mechanism makes a fixed seed decorative, which is why "
+                     "decisions/0124 fixes the one and decisions/0125 the other."
                      % (BOOT_DESIGN["resampling_frame_n"],
                         BOOT_DESIGN["quantities_sharing_the_replicate_set"],
                         BOOT_DESIGN["replicate_set_digest_sha256_12"])),
@@ -737,7 +747,7 @@ doc = {
     "spec_choices_made_by_step_8b": tpl["spec_choices_made_by_step_8b"],
     "known_limits_of_this_schema": tpl["known_limits_of_this_schema"],
     "notes": dict(tpl["notes"], **{
-        "step9_b_resampling_frame_and_draw_order": (
+        "step9_b_resampling_frame_draw_order_and_draw_mechanism": (
             "THE FRAME IS %d ACCOUNTS -- every account with at least one pair in the POSITION-4 "
             "output, built ONCE, and DRAWN FOR EVERY QUANTITY regardless of how much it "
             "contributes (decisions/0124). It is NOT the contributing subset: accounts the "
@@ -751,6 +761,13 @@ doc = {
             "(digest %s) -- NOT re-seeded per group, because a per-group restart pairs a "
             "between-setting movement only WITHIN a group and Step 13 varies W across eight "
             "arms. "
+            "THE DRAW MECHANISM IS THE GENERATOR numpy.random.default_rng, THE CALL "
+            "rng.integers(0, n_frame, size=(m, n_frame)), AND WEIGHTS FORMED BY COUNTING THE "
+            "DRAWN INDICES (decisions/0125) -- four things, and the chunking is not one of them, "
+            "since CHUNK 200, CHUNK 500 and a single call give identical arrays under one seed. "
+            "It is named because satisfying the draw ORDER does not determine the draw: this arm "
+            "drew with `multinomial` under one module-scope RNG seeded once, which met "
+            "decisions/0124 in full and still produced a different replicate set. "
             "THE FRAME DECLARATION DESCRIBES THE DRAW AND NOT THE SUPPORT (decisions/0124 "
             "SS4(1)): membership is %d at every arm and on both populations, while the "
             "contributing subset is %d on APPLY and %d on DERIV and moves with W, because "

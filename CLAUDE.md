@@ -44,6 +44,30 @@ Neither instance sees the other's work, asks about it, or reads its output folde
 
 Any divergence is either a bug or an ambiguity in the spec. Report it. Do not reconcile it.
 
+## Commit messages never carry cross-arm content
+
+***A COMMIT MESSAGE IS A SURFACE AN ARM CAN READ WHILE PERFECTLY OBEYING THE ISOLATION RULE.***
+Recorded 2026-08-24 (`0125` §5d), found by arm `b` reporting it against itself.
+
+An arm ran `git log -- src/step9_b_2_bootstrap.py` — **correctly path-scoped to its own namespace** —
+and the message it returned carried **the other arm's exit codes and check counts.** ***PATH-SCOPING
+CANNOT PREVENT THAT.*** `0123` scoped the search **pattern**; this scopes **what a properly-scoped
+search is allowed to return.** ***A rule that constrains only HOW AN ARM LOOKS cannot reach what the
+repository puts in front of it.***
+
+**So: a commit message STATES WHAT CHANGED AND CITES THE DECISION ENTRY.** ***Cross-arm content — one
+arm's counts, exit codes, findings or figures — goes in `decisions/`, which passes through the Human
+Lead's diff, and NEVER into the log.***
+
+***HISTORY IS NOT REWRITTEN.*** **Messages before 2026-08-24 carry cross-arm content**, and **an arm
+that meets it REPORTS RATHER THAN READS.** **Arm `b` did exactly that — it measured the figure itself
+rather than adopting the one in the message, and the two did not agree.** ***That is the required
+behaviour, not a lapse.***
+
+**This is the same shape as `## Cross-arm characterisations never enter a launch instruction`, one
+surface out:** that rule closed the prompt, **this one closes the log.** **Both exist because an arm
+is structurally forbidden to re-measure what it is told.**
+
 ## Cross-arm characterisations never enter a launch instruction
 
 **`## Dual implementation` says neither instance sees the other's work. A LAUNCH INSTRUCTION IS A WAY

@@ -63,6 +63,23 @@ THIRD AUTHORISED RERUN, 2026-08-23 (Human Lead rulings of that date, on decision
   the adopted arm moves, and `verify_against_previous()` below establishes that leaf by leaf
   instead of asserting it.
 
+FOURTH AUTHORISED RERUN, 2026-08-24 (Human Lead ruling of that date, on decisions/0125).
+  THE DRAW MECHANISM IS FIXED and this arm did not use it. decisions/0124 fixed the frame and
+  the draw order and this arm satisfied both LITERALLY -- one RNG at module scope, seeded once,
+  one call, the resulting matrix shared by every group -- AND STILL DREW A DIFFERENT REPLICATE
+  SET, because `integers` and `multinomial` are different samplers over the same distribution
+  and consume the stream differently. The spec now names four things and only four: the
+  generator, the seed, the call `rng.integers(0, n_frame, size=(m, n_frame))`, and that weights
+  are formed by COUNTING THE DRAWN INDICES. The chunking is deliberately not specified.
+  THE EMISSION IS IN PLACE, at the same three paths, on decisions/0124's collapse ruling. There
+  is no fourth file and no new supersession layer: ground 2 WIDENS to name decisions/0125
+  alongside decisions/0124 rather than becoming a ground 3, because it is the same object -- the
+  replicate set -- moving for a second reason.
+  ONLY CI ENDPOINTS AND CI-DERIVED RATIOS MOVE, and `verify_against_previous()` establishes that
+  leaf by leaf against the emission this one replaces, at the same path, rather than asserting
+  it. The values that emission carried are reachable only as
+  `5393430:artifacts/step9-headline-corrected-2026-08-21-b.json`.
+
 Run:  python3 src/step9_b_7_emit_corrected.py
 """
 
@@ -92,16 +109,26 @@ WHAT = ("THIS EMISSION SUPERSEDES %s, %s and %s ON TWO INDEPENDENT GROUNDS FOUND
         "PASS, and the two have DIFFERENT SCOPES. "
         "GROUND 1, decisions/0123 -- THE PREMIERE-CLOCK UNIT ERROR. It reaches the "
         "PREMIERE-ANCHORED 91-day arm and only that arm: every figure of that arm is superseded. "
-        "GROUND 2, decisions/0124 -- THE RESAMPLING FRAME AND THE DRAW ORDER. It reaches EVERY "
-        "CONFIDENCE INTERVAL IN THE FILE, on BOTH arms, INCLUDING the adopted W108_s2_finale "
-        "arm, whose CI endpoints are therefore superseded too. "
+        "GROUND 2, decisions/0124 AND decisions/0125 -- THE RESAMPLING FRAME, THE DRAW ORDER "
+        "AND THE DRAW MECHANISM. It reaches EVERY CONFIDENCE INTERVAL IN THE FILE, on BOTH "
+        "arms, INCLUDING the adopted W108_s2_finale arm, whose CI endpoints are therefore "
+        "superseded too. decisions/0125 is one level below decisions/0124: this arm satisfied "
+        "the draw ORDER literally -- one RNG at module scope, seeded once, one call, the matrix "
+        "shared by every group -- and STILL drew a different replicate set, because `integers` "
+        "and `multinomial` are different samplers over the same distribution and consume the "
+        "stream differently. "
         "NOTHING ELSE OF THE ADOPTED ARM MOVES: every point estimate, numerator, denominator, "
         "bound floor and ceiling, width, sub-interval, ceiling, three-ceiling sum, excess and "
         "pair count is not bootstrap-dependent, and each was verified unchanged leaf by leaf "
         "against the previous corrected emission. "
-        "THE READER GETS TWO GENERATIONS AND NOT THREE: the stamped originals, and this one "
-        "corrected emission naming both causes. It is a COLLAPSE, ruled by the Human Lead on "
-        "2026-08-23, of what would otherwise have been a second supersession layer."
+        "THE READER GETS TWO GENERATIONS AND NOT FOUR: the stamped originals, and this one "
+        "corrected emission naming every cause. It is a COLLAPSE, ruled by the Human Lead on "
+        "2026-08-23 and re-applied on 2026-08-24, of what would otherwise have been a second "
+        "and then a third supersession layer. The values this path carried before the "
+        "decisions/0125 re-emission are reachable, and only reachable, as "
+        "`5393430:artifacts/step9-headline-corrected-2026-08-21-b.json` -- a bare path plus a "
+        "hash resolves only until something else occupies the path, and an in-place "
+        "re-emission is now the normal case rather than the exception (decisions/0125 SS6)."
         % (SUPERSEDED_HEADLINE, SUPERSEDED_MD, SUPERSEDED_WORKING))
 
 WHY_FRAME = (
@@ -120,7 +147,19 @@ WHY_FRAME = (
     "was wrong and that the spec named neither; the ruling chose between them. The before and "
     "after are MEASURED, not asserted, in src/step9_b_9_frame_repro.py -- the RNG construction "
     "site is located by parsing the module and the frames are recomputed from the masks -- run "
-    "record logs/step9_b_frame_repro.txt.")
+    "record logs/step9_b_frame_repro.txt. "
+    "decisions/0125 THEN FIXED THE DRAW MECHANISM ONE LEVEL LOWER, because satisfying the draw "
+    "order does not determine the draw. THE SPEC NAMES FOUR THINGS AND ONLY FOUR: the generator "
+    "numpy.random.default_rng, the seed 20260818, the call rng.integers(0, n_frame, size=(m, "
+    "n_frame)), and that WEIGHTS ARE FORMED BY COUNTING THE DRAWN INDICES. THIS ARM DREW WITH "
+    "`multinomial` UNDER ONE MODULE-SCOPE RNG SEEDED ONCE -- decisions/0124 in full -- AND "
+    "STILL DREW A DIFFERENT REPLICATE SET: same seed, same frame, same B, different draws, "
+    "because the two samplers consume the stream differently. The distribution was right in "
+    "both; the realisation was not the same. THE CHUNKING IS NOT A SPEC ELEMENT (decisions/0125 "
+    "SS3): CHUNK 200, CHUNK 500 and a single call give identical arrays under one seed, and a "
+    "spec element earns its place by determining the output. The mechanism's before and after "
+    "are MEASURED against the committed source, read from git, in "
+    "src/step9_b_15_mechanism_repro.py -- run record logs/step9_b_mechanism_repro.txt.")
 
 WHY = ("src/step9_b_1_compute.py converted the premiere-anchored T0 column to epoch seconds "
        "with prem.astype('int64') // 10 ** 9. The column's dtype is datetime64[us, UTC], so "
@@ -370,24 +409,32 @@ def verify_against_previous(prev_path, new_doc, label, require_all_families=True
             if ignore_prefixes else "None. Every leaf of both files was compared."),
         "leaves_absent_here_paths": lost,
         "leaves_added_here_numeric_paths": [p for p in added if _numeric(b[p])],
+        # DERIVED FROM THE MEASUREMENT, NOT TYPED BESIDE IT. This sentence described the
+        # decisions/0124 structural change and would have survived into a rerun that made no
+        # structural change at all -- a stale claim sitting directly above the live counts that
+        # contradict it, which is the failure src/step9_b_9_frame_repro.py already hit once.
         "what_the_added_and_absent_leaves_are": (
             "A COMPARISON THAT WALKS ONLY THE INTERSECTION CANNOT SEE A FIGURE THAT DISAPPEARS, "
-            "so they are counted here rather than left out. In this emission they are ONE "
-            "STRUCTURAL CHANGE plus this run's own added records. THE STRUCTURAL CHANGE: "
-            "`account_totals_of_the_populations.<arm>.<population>` used to hold ONE account "
-            "number and now holds THREE -- `resampling_frame` (the DRAW, 2,481), `contributing` "
-            "(the SUPPORT, which is the number the single slot used to hold) and "
-            "`drawn_contributing_zero` (their difference). decisions/0124 SS4(1) requires it: one "
-            "slot cannot carry two account totals that differ, and the old slot's value is "
-            "preserved unchanged as `contributing`. NO FIGURE MOVED; a figure was disambiguated "
-            "and two were added beside it."),
+            "so they are counted here rather than left out. MEASURED THIS RUN: %d leaf/leaves "
+            "present in the previous emission and absent here, %d present here and absent from "
+            "it. %s"
+            % (len(lost), len(added),
+               ("NEITHER SET IS EMPTY, so both are listed above by path and the reader can see "
+                "which figures changed shape."
+                if (lost and added) else
+                "NO LEAF WAS LOST AND NONE WAS ADDED: this emission has the same shape as the "
+                "one it replaces, and every difference between them is a value at a path both "
+                "files carry."
+                if not (lost or added) else
+                "One side is empty and the other is not; the non-empty side is listed above by "
+                "path, and a one-sided difference is a change of shape rather than of value."))),
         "what_the_moved_strings_are": (
             "PROSE AND PROVENANCE, not figures. They are (i) interval notes and `quantity` "
             "sentences that RESTATE a CI width inside their text, which moves when the endpoint "
             "does; (ii) `denominator_definition`, which prints the account-clustered sampling "
             "width; (iii) the generator sha, timestamp and git head; and (iv) the frame and "
-            "draw-order text this rerun adds at the point of use. Every numeric leaf they "
-            "restate is itself in the moved-endpoint list above."),
+            "draw-order and draw-mechanism text this rerun adds at the point of use. Every "
+            "numeric leaf they restate is itself in the moved-endpoint list above."),
         "not_established_here": (
             "This compares THIS FILE against ITS OWN PREVIOUS EMISSION. It says nothing about "
             "the other arm, which this arm does not see, and nothing about the stamped "

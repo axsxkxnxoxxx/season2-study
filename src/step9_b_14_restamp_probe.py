@@ -6,6 +6,8 @@ figure, or it may DISARM the row that looks for it. The second is indistinguisha
 first on a clean run, so it is probed rather than asserted:
 
   A. a superseded W108 CI value REINTRODUCED unmarked must drive exit 1  -> the row is live
+  D. the two rows THIS RE-STAMP created -- the W108 started-and-left CI widths, which the
+     0125 re-emission newly superseded -- fire the same way                 -> the new rows are live
   B. STRIPPING a 0124 stamp must drive exit 1 at exactly the fields it named, in the JSON and
      in the .md alike                                                    -> the mark is what silences it
   C. the untouched tree must drive exit 0                                -> no false positive
@@ -125,6 +127,27 @@ def main():
                     [r for r in rows if "step9-headline-b.md" in r][:2]))
         open(MD, "w").write(orig_md)
 
+        # D -- THE ROWS THIS RERUN CREATED, probed rather than assumed.
+        #
+        # decisions/0125's re-emission moved the corrected figures, which RE-PARTITIONED this
+        # file's conditional marks: two W108 started-and-left CI WIDTHS became superseded and
+        # were unmarked, and one ratio coincided again and was over-marked. A CONDITIONAL MARK
+        # IS A FUNCTION OF TWO FILES -- see CONDITIONAL_MARK_RULE in the stamper.
+        #
+        # Marking them also made them REGISTRABLE: src/step9_b_13_register_0124.py takes its
+        # .md-only rows from the numbers inside MARKED cells, so before the re-stamp these two
+        # were neither marked nor registered -- unmarked AND unpoliced, the "passed because it
+        # never looked" shape. A clean run proves nothing about a row that does not exist, so
+        # the two new rows are shown FIRING on a fresh, unmarked occurrence.
+        newly = [w for w in (0.0224, 0.0318)]
+        open(MD, "w").write(orig_md + "\nPROBE D, restored below: "
+                            + " and ".join("%.4f pp" % w for w in newly) + "\n")
+        code, rows = run_check()
+        hit = [r for r in rows if "PROBE" in r or "step9-headline-b.md" in r]
+        out.append(("D  %s reintroduced unmarked in the .md (rows created by THIS re-stamp)"
+                    % ", ".join("%.4f" % w for w in newly), code, len(rows), hit[:2]))
+        open(MD, "w").write(orig_md)
+
         code, rows = run_check()
         out.append(("C' restored tree", code, len(rows), rows[:1]))
     finally:
@@ -137,7 +160,7 @@ def main():
         for s in sample:
             print("        %s" % s[:150])
     print("\nrestored: %s" % ("byte-identical, both files" if before == after else "MISMATCH %s %s" % (before, after)))
-    expect = [0, 1, 1, 1, 0, 0]
+    expect = [0, 1, 1, 1, 0, 1, 0]
     got = [c for _, c, _, _ in out]
     print("expected exit sequence %s, got %s -- %s"
           % (expect, got, "AS SPECIFIED" if expect == got else "*** NOT AS SPECIFIED ***"))

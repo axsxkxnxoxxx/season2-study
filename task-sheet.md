@@ -993,6 +993,21 @@ outputs.
 
 ---
 
+- ***THE DRAW MECHANISM IS FIXED*** (`0125`). **`0124` fixed the frame and the draw order; an arm
+  satisfied that LITERALLY and STILL drew a different replicate set, because `integers` and
+  `multinomial` are different samplers over the same distribution and consume the stream differently.**
+  ***THE SPEC NAMES FOUR THINGS AND ONLY FOUR:*** **the generator `numpy.random.default_rng`; the seed
+  `20260818`; the call `rng.integers(0, n_frame, size=(m, n_frame))`; and that WEIGHTS ARE FORMED BY
+  COUNTING THE DRAWN INDICES.** ***THE CHUNKING IS DELIBERATELY NOT SPECIFIED*** — measured, `CHUNK`
+  200, `CHUNK` 500 and a single call give **identical** arrays under one seed. ***A SPEC ELEMENT EARNS
+  ITS PLACE BY DETERMINING THE OUTPUT***; one that does not is **a second thing to keep in sync for
+  nothing** and **makes the spec look complete where completeness does not matter.**
+  ***THE TEST OF COMPLETENESS IS BIT-IDENTICAL REPLICATE SETS, RUN RATHER THAN ASSUMED.*** **`0103`
+  fixed the seed and the statistic survived beneath it; `0118` the statistic and the frame survived;
+  `0124` the frame and the MECHANISM survived.** ***A SPEC IS COMPLETE WHEN TWO IMPLEMENTATIONS PRODUCE
+  IDENTICAL OUTPUT, NOT WHEN IT HAS NAMED EVERYTHING ITS AUTHOR THOUGHT OF — the remaining freedom is
+  INVISIBLE until two implementations trip over it.*** **Any reference to a re-emitted artifact is
+  written COMMIT-QUALIFIED (`<commit>:<path>`) from the start; the pattern is ROUTINE.**
 - ***THE RESAMPLING FRAME AND THE DRAW ORDER ARE FIXED*** (`0124`). **`0103` and `0118` fixed `B`, the
   seed, the unit and the statistic and LEFT THESE TWO OPEN; an unfixed draw order makes the fixed seed
   DECORATIVE** — two arms used seed `20260818` and drew different replicate sets, **which is the failure

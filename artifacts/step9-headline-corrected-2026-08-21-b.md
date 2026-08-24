@@ -4,11 +4,11 @@
 
 > **Ground 1 — `decisions/0123`, the premiere-clock unit error.** It reaches the **premiere-anchored 91-day arm and only that arm**, where every figure is superseded. `src/step9_b_1_compute.py` converted the premiere-anchored `T0` column to epoch seconds with `// 10 ** 9` against a `datetime64[us, UTC]` dtype, so every value was epoch-**seconds ÷ 1000** — a 1970 date. The superseded figures were correctly computed from that vector and are **kept and marked at each point of use** in the file above, because the record of what the defect produced is the evidence for the finding.
 
-> **Ground 2 — `decisions/0124`, the resampling frame and the draw order.** It reaches **every confidence interval in this file, on both arms, including the adopted `W108_s2_finale` arm**, whose CI endpoints are therefore superseded too. decisions/0124 fixed the two bootstrap elements decisions/0103 and decisions/0118 had left open. THE FRAME is every account with at least one pair in the POSITION-4 output, built ONCE, and drawn for every quantity regardless of how much it contributes -- NOT the contributing subset, because accounts the censoring rule excludes are part of the population the uncertainty is about, and drawing only contributors conditions the variance on the censoring outcome and treats survivorship as fixed. THE DRAW ORDER is ONE RNG, SEEDED ONCE PER FILE, its stream consumed continuously, with every quantity evaluated against THE SAME REPLICATE SET, not re-seeded per group -- because a per-group restart pairs a between-setting movement only WITHIN a group, and Step 13 varies W across eight arms. THIS ARM DID NEITHER: it built the frame per mask, 2,422 accounts on APPLY and 2,402 on DERIV, and constructed the RNG inside the per-group function. Both of this arm's mechanisms solved the order-independence hazard and decisions/0124 SS3 records that neither was wrong and that the spec named neither; the ruling chose between them. The before and after are MEASURED, not asserted, in src/step9_b_9_frame_repro.py -- the RNG construction site is located by parsing the module and the frames are recomputed from the masks -- run record logs/step9_b_frame_repro.txt.
+> **Ground 2 — `decisions/0124`, the resampling frame and the draw order.** It reaches **every confidence interval in this file, on both arms, including the adopted `W108_s2_finale` arm**, whose CI endpoints are therefore superseded too. decisions/0124 fixed the two bootstrap elements decisions/0103 and decisions/0118 had left open. THE FRAME is every account with at least one pair in the POSITION-4 output, built ONCE, and drawn for every quantity regardless of how much it contributes -- NOT the contributing subset, because accounts the censoring rule excludes are part of the population the uncertainty is about, and drawing only contributors conditions the variance on the censoring outcome and treats survivorship as fixed. THE DRAW ORDER is ONE RNG, SEEDED ONCE PER FILE, its stream consumed continuously, with every quantity evaluated against THE SAME REPLICATE SET, not re-seeded per group -- because a per-group restart pairs a between-setting movement only WITHIN a group, and Step 13 varies W across eight arms. THIS ARM DID NEITHER: it built the frame per mask, 2,422 accounts on APPLY and 2,402 on DERIV, and constructed the RNG inside the per-group function. Both of this arm's mechanisms solved the order-independence hazard and decisions/0124 SS3 records that neither was wrong and that the spec named neither; the ruling chose between them. The before and after are MEASURED, not asserted, in src/step9_b_9_frame_repro.py -- the RNG construction site is located by parsing the module and the frames are recomputed from the masks -- run record logs/step9_b_frame_repro.txt. decisions/0125 THEN FIXED THE DRAW MECHANISM ONE LEVEL LOWER, because satisfying the draw order does not determine the draw. THE SPEC NAMES FOUR THINGS AND ONLY FOUR: the generator numpy.random.default_rng, the seed 20260818, the call rng.integers(0, n_frame, size=(m, n_frame)), and that WEIGHTS ARE FORMED BY COUNTING THE DRAWN INDICES. THIS ARM DREW WITH `multinomial` UNDER ONE MODULE-SCOPE RNG SEEDED ONCE -- decisions/0124 in full -- AND STILL DREW A DIFFERENT REPLICATE SET: same seed, same frame, same B, different draws, because the two samplers consume the stream differently. The distribution was right in both; the realisation was not the same. THE CHUNKING IS NOT A SPEC ELEMENT (decisions/0125 SS3): CHUNK 200, CHUNK 500 and a single call give identical arrays under one seed, and a spec element earns its place by determining the output. The mechanism's before and after are MEASURED against the committed source, read from git, in src/step9_b_15_mechanism_repro.py -- run record logs/step9_b_mechanism_repro.txt.
 
 > **What moved, and what did not.** **The CI endpoints, and the ratios whose denominator is a CI width. Nothing else.** Every point estimate, numerator, denominator, bound floor and ceiling, width, sub-interval, ceiling, three-ceiling sum, excess and pair count is **not bootstrap-dependent** and is **unchanged**. That is **established leaf by leaf** against the previous emission at this path, not asserted; the counts are in the JSON half at `$.notes.step9_b_leaf_verification_of_this_emission`. **The adopted arm moving is expected under `decisions/0124` §5 and is reported rather than left to pass as noise.**
 
-> **Provenance.** Promoted from `processed/step9/b/preview/step9-headline-b.md` (sha256:12 `a96624e33327`) by `src/step9_b_7_emit_corrected.py` (sha256:12 `1a7159f94d21`) at 2026-08-23T19:36:59Z, git `eba1735`. **The promotion appended this header and section 10 and changed no figure and no sentence of the body.** The body itself was regenerated by this arm's pipeline under `decisions/0124`; it was not edited.
+> **Provenance.** Promoted from `processed/step9/b/preview/step9-headline-b.md` (sha256:12 `bb36cb9626e5`) by `src/step9_b_7_emit_corrected.py` (sha256:12 `40854173bd3a`) at 2026-08-24T16:44:40Z, git `5393430`. **The promotion appended this header and section 10 and changed no figure and no sentence of the body.** The body itself was regenerated by this arm's pipeline under `decisions/0124`; it was not edited.
 
 > **SIGNED OFF BY THE PRODUCING ARM. This arm attests that every figure in this file was produced by its own pipeline at the settings recorded beside it, and that this emission is byte-identical in every measurement to processed/step9/b/preview/, which is what this arm's corrected run wrote. No figure in this file was hand-entered and none was edited after emission.**
 
@@ -26,7 +26,7 @@
 | **Step** | 9, headline result — chained, dual implementation |
 | **Arm** | `b` (`data-scientist-b`) |
 | **Build** | `step9/b/2026-08-20` |
-| **Generated** | 2026-08-23T19:28:13Z by `src/step9_b_3_emit.py` (sha256:12 `025033adb5c5`) |
+| **Generated** | 2026-08-24T16:44:33Z by `src/step9_b_3_emit.py` (sha256:12 `8d6ad8195375`) |
 | **Schema** | `1.9.0`, `urn:season2-study:step8b-output-schema:1.9.0` |
 | **Adopted rule revision** | 6, **READ not typed** from `processed/step5/adopted_rule.json`, key `_SUPERSEDED_FIGURES_CORRECTED_2026_08_13.approved_rule_revision_6`, sha256:12 `2e878460bd55` |
 | **API calls** | 0 |
@@ -61,9 +61,9 @@ THE ADOPTED ARM. T0 = max(S2 finale air date, first-pass S1 completion date) -- 
 
 | outcome | share (post-liveness) | pairs | 95% CI, **LEVEL** | width | horizon |
 | :--- | ---: | ---: | :--- | ---: | ---: |
-| never started | **16.7231%** | 32,769 | [16.1842%, 17.2900%] | 1.1059 pp | 108 d |
-| started and left | **9.7177%** | 19,042 | [9.3395%, 10.1047%] | 0.7652 pp | 199 d |
-| continued | **73.5592%** | 144,140 | [72.8438%, 74.2632%] | 1.4193 pp | 199 d |
+| never started | **16.7231%** | 32,769 | [16.1771%, 17.2999%] | 1.1228 pp | 108 d |
+| started and left | **9.7177%** | 19,042 | [9.3459%, 10.1043%] | 0.7584 pp | 199 d |
+| continued | **73.5592%** | 144,140 | [72.8447%, 74.2642%] | 1.4195 pp | 199 d |
 
 | bound | floor | ceiling | width | on |
 | :--- | ---: | ---: | ---: | :--- |
@@ -81,9 +81,9 @@ THE ADOPTED ARM. T0 = max(S2 finale air date, first-pass S1 completion date) -- 
 
 | outcome | share (post-liveness) | pairs | 95% CI, **LEVEL** | width | horizon |
 | :--- | ---: | ---: | :--- | ---: | ---: |
-| never started | **6.2096%** | 9,145 | [5.8521%, 6.5981%] | 0.7460 pp | 108 d |
-| started and left | **11.3695%** | 16,744 | [10.8889%, 11.8485%] | 0.9596 pp | 199 d |
-| continued | **82.4208%** | 121,382 | [81.8105%, 83.0341%] | 1.2236 pp | 199 d |
+| never started | **6.2096%** | 9,145 | [5.8446%, 6.6000%] | 0.7554 pp | 108 d |
+| started and left | **11.3695%** | 16,744 | [10.8926%, 11.8582%] | 0.9656 pp | 199 d |
+| continued | **82.4208%** | 121,382 | [81.7935%, 83.0328%] | 1.2393 pp | 199 d |
 
 | bound | floor | ceiling | width | on |
 | :--- | ---: | ---: | ---: | :--- |
@@ -106,9 +106,9 @@ THE SECOND HEADLINE, at Netflix's own 91-day reporting window, so the result is 
 
 | outcome | share (post-liveness) | pairs | 95% CI, **LEVEL** | width | horizon |
 | :--- | ---: | ---: | :--- | ---: | ---: |
-| never started | **18.1507%** | 35,584 | [17.5755%, 18.7539%] | 1.1783 pp | 91 d |
-| started and left | **13.1468%** | 25,774 | [12.6949%, 13.5857%] | 0.8909 pp | 182 d |
-| continued | **68.7026%** | 134,690 | [67.9702%, 69.4262%] | 1.4560 pp | 182 d |
+| never started | **18.1507%** | 35,584 | [17.5632%, 18.7551%] | 1.1919 pp | 91 d |
+| started and left | **13.1468%** | 25,774 | [12.7069%, 13.5897%] | 0.8828 pp | 182 d |
+| continued | **68.7026%** | 134,690 | [67.9508%, 69.4438%] | 1.4930 pp | 182 d |
 
 | bound | floor | ceiling | width | on |
 | :--- | ---: | ---: | ---: | :--- |
@@ -126,9 +126,9 @@ THE SECOND HEADLINE, at Netflix's own 91-day reporting window, so the result is 
 
 | outcome | share (post-liveness) | pairs | 95% CI, **LEVEL** | width | horizon |
 | :--- | ---: | ---: | :--- | ---: | ---: |
-| never started | **7.9974%** | 11,780 | [7.5741%, 8.4548%] | 0.8807 pp | 91 d |
-| started and left | **15.8157%** | 23,296 | [15.2522%, 16.3719%] | 1.1198 pp | 182 d |
-| continued | **76.1869%** | 112,221 | [75.4919%, 76.8737%] | 1.3818 pp | 182 d |
+| never started | **7.9974%** | 11,780 | [7.5591%, 8.4547%] | 0.8956 pp | 91 d |
+| started and left | **15.8157%** | 23,296 | [15.2578%, 16.3841%] | 1.1263 pp | 182 d |
+| continued | **76.1869%** | 112,221 | [75.4778%, 76.8804%] | 1.4026 pp | 182 d |
 
 | bound | floor | ceiling | width | on |
 | :--- | ---: | ---: | ---: | :--- |
@@ -145,9 +145,9 @@ THE SECOND HEADLINE, at Netflix's own 91-day reporting window, so the result is 
 
 ## 3. Both bootstrap objects — and a level is never compared with a movement
 
-**ALL SIX ELEMENTS ARE FIXED BY THE SPEC AND NONE IS THIS ARM'S CHOICE:** `B` = **10,000**, seed = **20260818**, resampling unit = **account**, statistic = **both levels and movements**, and — since `decisions/0124` — the **resampling frame** and the **draw order**. Every interval in this file restates them at the point of use. Values as fixed: `B, draw_order, resampling_frame, resampling_unit, seed, statistics`.
+**ALL 7 ELEMENTS ARE FIXED BY THE SPEC AND NONE IS THIS ARM'S CHOICE:** `B` = **10,000**, seed = **20260818**, resampling unit = **account**, statistic = **both levels and movements**, since `decisions/0124` the **resampling frame** and the **draw order**, and since `decisions/0125` the **draw mechanism**. Every interval in this file restates them at the point of use. Values as fixed: `B, draw_mechanism, draw_order, resampling_frame, resampling_unit, seed, statistics`.
 
-**The frame and the draw order, stated once here and restated at every interval.** THE FRAME IS 2481 ACCOUNTS -- every account with at least one pair in the POSITION-4 output, built ONCE, and DRAWN FOR EVERY QUANTITY regardless of how much it contributes (decisions/0124). It is NOT the contributing subset: accounts the censoring rule excludes are part of the population the uncertainty is about, and drawing only contributors conditions the variance on the censoring outcome and treats survivorship as fixed. At the adopted arm 59 accounts are drawn and contribute zero on APPLY and 79 on DERIV; every one of them held position-4 pairs and every one of those pairs was removed by D10. THE DRAW ORDER IS ONE RNG, SEEDED ONCE PER FILE, its stream consumed CONTINUOUSLY, with all 24 intervals in this file evaluated against THE SAME REPLICATE SET (digest 6742eb76f042c88c) -- NOT re-seeded per group, because a per-group restart pairs a between-setting movement only WITHIN a group and Step 13 varies W across eight arms. THE FRAME DECLARATION DESCRIBES THE DRAW AND NOT THE SUPPORT (decisions/0124 SS4(1)): membership is 2481 at every arm and on both populations, while the contributing subset is 2422 on APPLY and 2402 on DERIV and moves with W, because keep_d10 contains max(W, 91). ONE FRAME SERVES BOTH POPULATIONS here, since the position-4 DERIV rows are a subset of the position-4 APPLY rows; decisions/0124 SS4(2)'s constraint -- that an APPLY-minus-DERIV delta cannot be paired at the account level where the two populations have different frames -- is recorded, and NO SUCH DELTA IS PUBLISHED IN THIS FILE.
+**The frame, the draw order and the draw mechanism, stated once here and restated at every interval.** THE FRAME IS 2481 ACCOUNTS -- every account with at least one pair in the POSITION-4 output, built ONCE, and DRAWN FOR EVERY QUANTITY regardless of how much it contributes (decisions/0124). It is NOT the contributing subset: accounts the censoring rule excludes are part of the population the uncertainty is about, and drawing only contributors conditions the variance on the censoring outcome and treats survivorship as fixed. At the adopted arm 59 accounts are drawn and contribute zero on APPLY and 79 on DERIV; every one of them held position-4 pairs and every one of those pairs was removed by D10. THE DRAW ORDER IS ONE RNG, SEEDED ONCE PER FILE, its stream consumed CONTINUOUSLY, with all 24 intervals in this file evaluated against THE SAME REPLICATE SET (digest cbff58df8b711d40) -- NOT re-seeded per group, because a per-group restart pairs a between-setting movement only WITHIN a group and Step 13 varies W across eight arms. THE DRAW MECHANISM IS THE GENERATOR numpy.random.default_rng, THE CALL rng.integers(0, n_frame, size=(m, n_frame)), AND WEIGHTS FORMED BY COUNTING THE DRAWN INDICES (decisions/0125) -- four things, and the chunking is not one of them, since CHUNK 200, CHUNK 500 and a single call give identical arrays under one seed. It is named because satisfying the draw ORDER does not determine the draw: this arm drew with `multinomial` under one module-scope RNG seeded once, which met decisions/0124 in full and still produced a different replicate set. THE FRAME DECLARATION DESCRIBES THE DRAW AND NOT THE SUPPORT (decisions/0124 SS4(1)): membership is 2481 at every arm and on both populations, while the contributing subset is 2422 on APPLY and 2402 on DERIV and moves with W, because keep_d10 contains max(W, 91). ONE FRAME SERVES BOTH POPULATIONS here, since the position-4 DERIV rows are a subset of the position-4 APPLY rows; decisions/0124 SS4(2)'s constraint -- that an APPLY-minus-DERIV delta cannot be paired at the account level where the two populations have different frames -- is recorded, and NO SUCH DELTA IS PUBLISHED IN THIS FILE.
 
 **ACCOUNT LEVEL because pairs are not independent** — one account contributes many, and pair-level resampling understates the interval.
 
@@ -155,18 +155,18 @@ THE SECOND HEADLINE, at Netflix's own 91-day reporting window, so the result is 
 
 | arm | population | outcome | 95% CI, **MOVEMENT** | width | level width | ratio |
 | :--- | :--- | :--- | :--- | ---: | ---: | ---: |
-| W108_s2_finale__step9__r6 | APPLY | never started | [-0.2990, -0.2001] pp | 0.0989 pp | 1.1059 pp | **11×** |
-| W108_s2_finale__step9__r6 | APPLY | started and left | [-0.0273, -0.0049] pp | 0.0224 pp | 0.7652 pp | **34×** |
-| W108_s2_finale__step9__r6 | APPLY | continued | [+0.2159, +0.3138] pp | 0.0979 pp | 1.4193 pp | **14×** |
-| W108_s2_finale__step9__r6 | DERIV | never started | [+0.0031, +0.0054] pp | 0.0023 pp | 0.7460 pp | **329×** |
-| W108_s2_finale__step9__r6 | DERIV | started and left | [-0.0764, -0.0446] pp | 0.0318 pp | 0.9596 pp | **30×** |
-| W108_s2_finale__step9__r6 | DERIV | continued | [+0.0415, +0.0710] pp | 0.0295 pp | 1.2236 pp | **41×** |
-| W091_s2_premiere__step9__r6 | APPLY | never started | [-0.2621, -0.1722] pp | 0.0898 pp | 1.1783 pp | **13×** |
-| W091_s2_premiere__step9__r6 | APPLY | started and left | [-0.0070, +0.0134] pp | 0.0205 pp | 0.8909 pp | **44×** |
-| W091_s2_premiere__step9__r6 | APPLY | continued | [+0.1715, +0.2554] pp | 0.0839 pp | 1.4560 pp | **17×** |
-| W091_s2_premiere__step9__r6 | DERIV | never started | [+0.0028, +0.0053] pp | 0.0025 pp | 0.8807 pp | **350×** |
-| W091_s2_premiere__step9__r6 | DERIV | started and left | [-0.0558, -0.0296] pp | 0.0261 pp | 1.1198 pp | **43×** |
-| W091_s2_premiere__step9__r6 | DERIV | continued | [+0.0268, +0.0505] pp | 0.0237 pp | 1.3818 pp | **58×** |
+| W108_s2_finale__step9__r6 | APPLY | never started | [-0.2991, -0.2004] pp | 0.0987 pp | 1.1228 pp | **11×** |
+| W108_s2_finale__step9__r6 | APPLY | started and left | [-0.0275, -0.0048] pp | 0.0228 pp | 0.7584 pp | **33×** |
+| W108_s2_finale__step9__r6 | APPLY | continued | [+0.2155, +0.3146] pp | 0.0992 pp | 1.4195 pp | **14×** |
+| W108_s2_finale__step9__r6 | DERIV | never started | [+0.0031, +0.0054] pp | 0.0023 pp | 0.7554 pp | **329×** |
+| W108_s2_finale__step9__r6 | DERIV | started and left | [-0.0766, -0.0445] pp | 0.0321 pp | 0.9656 pp | **30×** |
+| W108_s2_finale__step9__r6 | DERIV | continued | [+0.0413, +0.0713] pp | 0.0300 pp | 1.2393 pp | **41×** |
+| W091_s2_premiere__step9__r6 | APPLY | never started | [-0.2624, -0.1726] pp | 0.0898 pp | 1.1919 pp | **13×** |
+| W091_s2_premiere__step9__r6 | APPLY | started and left | [-0.0072, +0.0133] pp | 0.0205 pp | 0.8828 pp | **43×** |
+| W091_s2_premiere__step9__r6 | APPLY | continued | [+0.1718, +0.2557] pp | 0.0839 pp | 1.4930 pp | **18×** |
+| W091_s2_premiere__step9__r6 | DERIV | never started | [+0.0028, +0.0053] pp | 0.0025 pp | 0.8956 pp | **355×** |
+| W091_s2_premiere__step9__r6 | DERIV | started and left | [-0.0557, -0.0296] pp | 0.0262 pp | 1.1263 pp | **43×** |
+| W091_s2_premiere__step9__r6 | DERIV | continued | [+0.0268, +0.0504] pp | 0.0236 pp | 1.4026 pp | **59×** |
 
 ***A LEVEL AND A MOVEMENT ARE NEVER COMPARED TO EACH OTHER.*** The level and the movement on one quantity differ by up to an order of magnitude, so a reader who is not told which one they are reading is wrong by that much. **Both objects are labelled at the point of use and neither is presented as *the* design.**
 
@@ -222,18 +222,18 @@ THE SECOND HEADLINE, at Netflix's own 91-day reporting window, so the result is 
 
 | arm | population | quantity | ratio |
 | :--- | :--- | :--- | ---: |
-| W108_s2_finale__step9__r6 | APPLY | never started | 0.2777 |
-| W108_s2_finale__step9__r6 | APPLY | started and left | 0.5270 |
-| W108_s2_finale__step9__r6 | APPLY | started and left sub interval | 0.1256 |
+| W108_s2_finale__step9__r6 | APPLY | never started | 0.2735 |
+| W108_s2_finale__step9__r6 | APPLY | started and left | 0.5317 |
+| W108_s2_finale__step9__r6 | APPLY | started and left sub interval | 0.1267 |
 | W108_s2_finale__step9__r6 | DERIV | never started | 0.0000 |
-| W108_s2_finale__step9__r6 | DERIV | started and left | 0.1329 |
-| W108_s2_finale__step9__r6 | DERIV | started and left sub interval | 0.1329 |
-| W091_s2_premiere__step9__r6 | APPLY | never started | 0.2300 |
-| W091_s2_premiere__step9__r6 | APPLY | started and left | 0.3881 |
-| W091_s2_premiere__step9__r6 | APPLY | started and left sub interval | 0.0839 |
+| W108_s2_finale__step9__r6 | DERIV | started and left | 0.1321 |
+| W108_s2_finale__step9__r6 | DERIV | started and left sub interval | 0.1321 |
+| W091_s2_premiere__step9__r6 | APPLY | never started | 0.2274 |
+| W091_s2_premiere__step9__r6 | APPLY | started and left | 0.3917 |
+| W091_s2_premiere__step9__r6 | APPLY | started and left sub interval | 0.0847 |
 | W091_s2_premiere__step9__r6 | DERIV | never started | 0.0000 |
-| W091_s2_premiere__step9__r6 | DERIV | started and left | 0.0891 |
-| W091_s2_premiere__step9__r6 | DERIV | started and left sub interval | 0.0891 |
+| W091_s2_premiere__step9__r6 | DERIV | started and left | 0.0886 |
+| W091_s2_premiere__step9__r6 | DERIV | started and left sub interval | 0.0886 |
 
 ## 7. `$.arm_grid_days` is NOT this arm's block
 
@@ -279,7 +279,7 @@ Values as filled: `[38, 46, 77, 91, 107, 108, 150, 213]`.
 
 ### Resolved in this emission
 
-- **`b-boot-1`.** THE RESAMPLING FRAME AND THE DRAW ORDER, corrected under decisions/0124. decisions/0124 fixed the two bootstrap elements decisions/0103 and decisions/0118 had left open. THE FRAME is every account with at least one pair in the POSITION-4 output, built ONCE, and drawn for every quantity regardless of how much it contributes -- NOT the contributing subset, because accounts the censoring rule excludes are part of the population the uncertainty is about, and drawing only contributors conditions the variance on the censoring outcome and treats survivorship as fixed. THE DRAW ORDER is ONE RNG, SEEDED ONCE PER FILE, its stream consumed continuously, with every quantity evaluated against THE SAME REPLICATE SET, not re-seeded per group -- because a per-group restart pairs a between-setting movement only WITHIN a group, and Step 13 varies W across eight arms. THIS ARM DID NEITHER: it built the frame per mask, 2,422 accounts on APPLY and 2,402 on DERIV, and constructed the RNG inside the per-group function. Both of this arm's mechanisms solved the order-independence hazard and decisions/0124 SS3 records that neither was wrong and that the spec named neither; the ruling chose between them. The before and after are MEASURED, not asserted, in src/step9_b_9_frame_repro.py -- the RNG construction site is located by parsing the module and the frames are recomputed from the masks -- run record logs/step9_b_frame_repro.txt. WHAT MOVED: the CI endpoints, and only the CI endpoints. All 24 intervals in this file moved -- 48 endpoints -- including the adopted W108_s2_finale arm's, which is expected under a ruling that changes the draw for every quantity in the file and is REPORTED here rather than left to pass as noise. Verified leaf by leaf against the previous corrected emission: the counts are in $.notes.step9_b_leaf_verification_of_this_emission.
+- **`b-boot-1`.** THE RESAMPLING FRAME AND THE DRAW ORDER, corrected under decisions/0124. decisions/0124 fixed the two bootstrap elements decisions/0103 and decisions/0118 had left open. THE FRAME is every account with at least one pair in the POSITION-4 output, built ONCE, and drawn for every quantity regardless of how much it contributes -- NOT the contributing subset, because accounts the censoring rule excludes are part of the population the uncertainty is about, and drawing only contributors conditions the variance on the censoring outcome and treats survivorship as fixed. THE DRAW ORDER is ONE RNG, SEEDED ONCE PER FILE, its stream consumed continuously, with every quantity evaluated against THE SAME REPLICATE SET, not re-seeded per group -- because a per-group restart pairs a between-setting movement only WITHIN a group, and Step 13 varies W across eight arms. THIS ARM DID NEITHER: it built the frame per mask, 2,422 accounts on APPLY and 2,402 on DERIV, and constructed the RNG inside the per-group function. Both of this arm's mechanisms solved the order-independence hazard and decisions/0124 SS3 records that neither was wrong and that the spec named neither; the ruling chose between them. The before and after are MEASURED, not asserted, in src/step9_b_9_frame_repro.py -- the RNG construction site is located by parsing the module and the frames are recomputed from the masks -- run record logs/step9_b_frame_repro.txt. decisions/0125 THEN FIXED THE DRAW MECHANISM ONE LEVEL LOWER, because satisfying the draw order does not determine the draw. THE SPEC NAMES FOUR THINGS AND ONLY FOUR: the generator numpy.random.default_rng, the seed 20260818, the call rng.integers(0, n_frame, size=(m, n_frame)), and that WEIGHTS ARE FORMED BY COUNTING THE DRAWN INDICES. THIS ARM DREW WITH `multinomial` UNDER ONE MODULE-SCOPE RNG SEEDED ONCE -- decisions/0124 in full -- AND STILL DREW A DIFFERENT REPLICATE SET: same seed, same frame, same B, different draws, because the two samplers consume the stream differently. The distribution was right in both; the realisation was not the same. THE CHUNKING IS NOT A SPEC ELEMENT (decisions/0125 SS3): CHUNK 200, CHUNK 500 and a single call give identical arrays under one seed, and a spec element earns its place by determining the output. The mechanism's before and after are MEASURED against the committed source, read from git, in src/step9_b_15_mechanism_repro.py -- run record logs/step9_b_mechanism_repro.txt. WHAT MOVED: the CI endpoints, and only the CI endpoints. All 24 intervals in this file moved -- 48 endpoints -- including the adopted W108_s2_finale arm's, which is expected under a ruling that changes the draw for every quantity in the file and is REPORTED here rather than left to pass as noise. Verified leaf by leaf against the previous corrected emission: the counts are in $.notes.step9_b_leaf_verification_of_this_emission.
 
 - **`b-emit-1`.** A WARRANT THIS EMISSION NOW CARRIES. The previous corrected emission stated, at $.arms[1].note and in section 9 of the .md, that the un-re-censored row set was 'CHECKED rather than assumed: T0 prime <= T0 holds for every pair' -- after the boolean that checked it, t0_is_earlier_or_equal_for_every_pair, had been removed as vacuous. A CLAIM OF HAVING CHECKED IS EITHER TRUE OR IT IS REMOVED, so on the Human Lead's ruling of 2026-08-21 this arm RECOMPUTED IT rather than softening the sentence. The check is T0PRIME-ORDER, src/step9_b_0_clock.py::verify_t0_prime_order; it runs in this pipeline, it RAISES, and the sentence now names it, states what each part compares and gives its coverage. IT IS NOT THE REMOVED BOOLEAN RESTORED: the bare inequality is true for the wrong reason on a collapsed T0' and cannot fail, so part 1 reconstructs T0' from the frame's own date STRINGS, which the epoch conversion never touches. DEMONSTRATED FAILING ON THE DEFECTIVE VECTOR at logs/step9_b_premiere_clock_repro.txt section 5 -- part 1 rejects it on 155,556 of 278,452 pairs, while part 2 run alone on that same vector passes, which is the whole of the case that part 1 is what makes the replacement failable. NO FIGURE IN THIS EMISSION MOVED: the recomputation added a check and rewrote three prose fields, and every numeric leaf is unchanged.
 

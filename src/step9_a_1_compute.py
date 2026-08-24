@@ -294,14 +294,73 @@ K = C.shape[1]
 
 rng = np.random.default_rng(SEED)
 sums = np.empty((B_RESAMPLES, K), dtype=np.float64)
+# THE REPLICATE SET IS RETAINED AND EMITTED (decisions/0125). Until 0125 this loop counted its
+# drawn indices, multiplied, and kept nothing, so there was nothing for the completeness test to
+# compare. Retaining it is ADDITIVE: `w` below is the same expression evaluated the same way,
+# and no figure this script writes depends on the retention.
+boot_w = np.empty((B_RESAMPLES, n_acc), dtype=np.uint16)
 CHUNK = 200
 offsets = (np.arange(CHUNK, dtype=np.int64) * n_acc)[:, None]
 for start in range(0, B_RESAMPLES, CHUNK):
     m = min(CHUNK, B_RESAMPLES - start)
     idx = rng.integers(0, n_acc, size=(m, n_acc), dtype=np.int64)
-    w = np.bincount((idx + offsets[:m]).ravel(),
-                    minlength=m * n_acc).reshape(m, n_acc).astype(np.float64)
+    wi = np.bincount((idx + offsets[:m]).ravel(),
+                     minlength=m * n_acc).reshape(m, n_acc)
+    w = wi.astype(np.float64)
+    boot_w[start:start + m] = wi
+    # uint16 is a STORAGE choice, not a rounding one; assert it lossless rather than assume it.
+    assert np.array_equal(boot_w[start:start + m].astype(np.float64), w)
     sums[start:start + m] = w @ C
+assert (boot_w.sum(axis=1, dtype=np.int64) == n_acc).all()
+
+np.savez_compressed(
+    os.path.join(OUT, "boot_weights.npz"),
+    weights=boot_w,
+    n_frame=np.int64(n_acc), B=np.int64(B_RESAMPLES), seed=np.int64(SEED),
+    frame_accounts=frame_accounts.astype(np.int64))
+# The columns the replicate set is applied to, so the emitted weights can be checked against the
+# published endpoints without any script redefining C.
+np.savez_compressed(os.path.join(OUT, "boot_columns.npz"), C=C, cols=np.array(COLS))
+
+_src = os.path.abspath(__file__)
+_wpath = os.path.join(OUT, "boot_weights.npz")
+
+
+def sha256_file(path):
+    h = hashlib.sha256()
+    with open(path, "rb") as fh:
+        for chunk in iter(lambda: fh.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+with open(os.path.join(OUT, "boot_weights_manifest.json"), "w") as fh:
+    json.dump({
+        "generated_by": _src,
+        "generated_by_sha256": sha256_file(_src),
+        "generated_at_utc": __import__("datetime").datetime.now(
+            __import__("datetime").timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "decision": "0125",
+        "path": _wpath,
+        "shape": list(boot_w.shape),
+        "dtype_emitted": str(boot_w.dtype),
+        "dtype_in_pipeline": "float64 (the emitted uint16 is asserted lossless per chunk)",
+        "digest_sha256_of_matrix_bytes_C_order_uint16": hashlib.sha256(
+            np.ascontiguousarray(boot_w).tobytes()).hexdigest(),
+        "digest_sha256_of_npz_file": sha256_file(_wpath),
+        "n_frame": int(n_acc),
+        "B": int(B_RESAMPLES),
+        "seed": int(SEED),
+        "generator": "numpy.random.default_rng",
+        "call": "rng.integers(0, n_frame, size=(m, n_frame))",
+        "weights_formed_by": "counting the drawn account indices",
+        "chunk_used_here": CHUNK,
+        "chunk_is_not_specified": ("decisions/0125 SS3: chunking does not determine the draw and "
+                                   "is deliberately unspecified; recorded here as a fact about "
+                                   "this run, not as a spec element"),
+        "numpy_version": np.__version__,
+        "row_sums_all_equal_n_frame": True,
+    }, fh, indent=1)
 
 colidx = {c: i for i, c in enumerate(COLS)}
 LO, HI = (100 - CI_LEVEL) / 2, 100 - (100 - CI_LEVEL) / 2

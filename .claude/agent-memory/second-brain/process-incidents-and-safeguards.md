@@ -134,3 +134,21 @@ replicate sets, **24 CI endpoints differing under one fixed seed** (`0123`).
 - **One arm is obliged to rerun; the cost is a SECOND supersession layer on a file that is itself a
   correction. The rerun was not authorised with the ruling.**
 
+## `0125` — the draw mechanism, and what four rulings in a row show
+
+**`0124` fixed the frame and draw order; an arm implemented it LITERALLY and still drew a different
+replicate set** — `integers` and `multinomial` are different samplers over one distribution. **The spec
+now names the generator, the seed, `rng.integers(0, n_frame, size=(m, n_frame))`, and that weights are
+formed by COUNTING drawn indices. Nothing else.**
+
+- ***The chunking came OUT on measurement*** — 200, 500 and one call give identical arrays.
+  ***A spec element earns its place by determining the output;*** one that does not is a second thing
+  to keep in sync for nothing **and makes the spec look complete where completeness does not matter.**
+- ***THE PATTERN:*** `0103` seed → statistic survived; `0118` statistic → frame survived; `0124` frame
+  → mechanism survived. ***A spec is complete when two implementations produce identical output, not
+  when its author runs out of things to name.*** **The remaining freedom is invisible until two
+  implementations trip over it — which is why the dual control is NOT redundancy.**
+- **Completeness is TESTED: two replicate sets compared element-wise, result reported either way.**
+- **Commit-qualified references are ROUTINE** — each in-place re-emission leaves values reachable only
+  as `<commit>:<path>`.
+

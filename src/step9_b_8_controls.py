@@ -33,7 +33,17 @@ CONTROLS = [
     {"id": "step8b_validate__corrected_emission",
      "cmd": ["python3", "src/step8b_validate.py",
              "artifacts/step9-headline-corrected-2026-08-21-b.json"],
-     "what": "Step 8b's schema + semantic validator, against THIS arm's corrected emission"},
+     "what": "Step 8b's schema + semantic validator, against THIS arm's corrected emission",
+     "note_on_a_nonzero_that_is_not_new": (
+         "This control returns non-zero, and `behaved_as_expected` is recorded FALSE rather "
+         "than redefined, because a control whose expectation is edited to match its result "
+         "stops being a control. THE NON-ZERO IS THE OPEN `$defs/ci` TYPING ITEM, which is the "
+         "Human Lead's and which the decisions/0125 rerun was instructed not to touch: "
+         "`ci.lower`/`ci.upper` are typed as a percent in [0, 100] while a paired MOVEMENT is "
+         "signed, so every negative movement endpoint matches none of the anyOf branches. "
+         "MEASURED, NOT ASSUMED, ACROSS THIS RERUN: 11 schema errors before and 11 after, at "
+         "the SAME eleven paths, with `checks_failed` 0 in both -- the 43 semantic checks all "
+         "pass. Nothing was dropped, rescaled or sign-flipped to make it go away.")},
     {"id": "step9_b_reproduction_harness",
      "cmd": ["python3", "src/step9_b_0b_reproduce.py"],
      "what": "this arm's own reproduction: both corrected checks run against the DEFECTIVE "
@@ -52,6 +62,27 @@ CONTROLS = [
              "runs the same comparison against a deliberately UNPAIRED construction, which it "
              "must reject on every interval. A non-zero exit means either the reproduction "
              "failed or the probe passed -- and a probe that passes is not a test."},
+    {"id": "step9_b_draw_mechanism_reproduction",
+     "cmd": ["python3", "src/step9_b_15_mechanism_repro.py"],
+     "what": "decisions/0125: the COMMITTED draw call read from git and the RULED one measured "
+             "beside it, both drawn under one seed and compared element-wise; the chunking "
+             "re-measured rather than cited; and the comparison shown REJECTING a different "
+             "seed and the superseded sampler while ACCEPTING the ruled mechanism at another "
+             "chunking. A non-zero exit means the defect did not reproduce, the chunking DOES "
+             "determine the output, or a probe did not behave as required."},
+    {"id": "step9_b_leaf_diff_of_the_finished_files",
+     "cmd": ["python3", "src/step9_b_16_leaf_diff.py"],
+     "what": "the leaf-by-leaf diff of the FINISHED emitted files against the same paths at the "
+             "commit that preceded this rerun. Every moved numeric leaf must be a CI endpoint, "
+             "a CI-derived ratio, or a leaf of the emission's own run record -- a declared "
+             "class listed by path. A non-zero exit means something else moved."},
+    {"id": "step9_b_leaf_diff_probe",
+     "cmd": ["python3", "src/step9_b_16_leaf_diff.py", "--probe"],
+     "what": "THE SAME DIFF, SHOWN FAILING. A protected point estimate is moved in memory and "
+             "the identical classification must report it. THIS CONTROL IS EXPECTED TO EXIT "
+             "NON-ZERO: exit 0 would mean the diff passed on a vector carrying a moved figure, "
+             "which is the one outcome that would make its clean run worthless.",
+     "expect_nonzero": True},
 ]
 
 FILES = [
@@ -59,7 +90,8 @@ FILES = [
     "src/step9_b_2_bootstrap.py", "src/step9_b_3_emit.py", "src/step9_b_4_md.py",
     "src/step9_b_5_working_figures.py", "src/step9_b_7_emit_corrected.py",
     "src/step9_b_8_controls.py", "src/step9_b_9_frame_repro.py",
-    "src/step9_b_10_pairing_evidence.py",
+    "src/step9_b_10_pairing_evidence.py", "src/step9_b_15_mechanism_repro.py",
+    "src/step9_b_16_leaf_diff.py",
     "processed/step9/b/stage1_counts.json", "processed/step9/b/stage2_bootstrap.json",
     "artifacts/step9-headline-corrected-2026-08-21-b.json",
     "artifacts/step9-headline-corrected-2026-08-21-b.md",
@@ -76,8 +108,9 @@ def sha12(rel):
 
 def main():
     rec = {
-        "run": "Step 9, arm b -- controls run AFTER the last edit of the 2026-08-23 rerun "
-               "under decisions/0124 (the resampling frame and the draw order)",
+        "run": "Step 9, arm b -- controls run AFTER the last edit of the 2026-08-24 rerun "
+               "under decisions/0125 (the draw MECHANISM), which is one level below the "
+               "2026-08-23 rerun under decisions/0124 (the frame and the draw order)",
         "generator": "src/step9_b_8_controls.py",
         "generator_sha256_12": sha12("src/step9_b_8_controls.py"),
         "recorded_at_utc": datetime.datetime.now(datetime.timezone.utc).strftime(
@@ -93,10 +126,16 @@ def main():
     for c in CONTROLS:
         p = subprocess.run(c["cmd"], cwd=ROOT, capture_output=True, text=True)
         tail = [ln for ln in (p.stdout or "").splitlines() if ln.strip()][-3:]
+        expect_nonzero = bool(c.get("expect_nonzero"))
         rec["controls"][c["id"]] = {
             "command": " ".join(c["cmd"]),
             "what": c["what"],
             "exit_status": p.returncode,
+            # A DELIBERATE-FAILURE PROBE INVERTS WHAT A GOOD RESULT LOOKS LIKE, and a record
+            # that prints only the number invites a reader to score it the usual way round.
+            "expected_exit": "non-zero" if expect_nonzero else "zero",
+            "behaved_as_expected": (p.returncode != 0) if expect_nonzero
+                                   else (p.returncode == 0),
             "stdout_last_lines": tail,
             "stderr_last_lines": [ln for ln in (p.stderr or "").splitlines() if ln.strip()][-3:],
         }
@@ -104,7 +143,11 @@ def main():
     with open(OUT, "w") as fh:
         json.dump(rec, fh, indent=1, ensure_ascii=False)
         fh.write("\n")
-    print(json.dumps({k: {"exit_status": v["exit_status"]}
+    rec["every_control_behaved_as_expected"] = all(
+        v["behaved_as_expected"] for v in rec["controls"].values())
+    print(json.dumps({k: {"exit_status": v["exit_status"],
+                          "expected_exit": v["expected_exit"],
+                          "behaved_as_expected": v["behaved_as_expected"]}
                       for k, v in rec["controls"].items()}, indent=1))
     print("run record:", os.path.relpath(OUT, ROOT))
     return 0

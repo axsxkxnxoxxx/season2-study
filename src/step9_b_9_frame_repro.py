@@ -8,6 +8,14 @@ decisions/0124, Human Lead, 2026-08-23:
     SEEDED ONCE PER FILE, its stream consumed CONTINUOUSLY, with every quantity evaluated
     against THE SAME REPLICATE SET.  NOT re-seeded per group.
 
+AND decisions/0125, one level lower, 2026-08-24: THE DRAW MECHANISM is `numpy.random.default_rng`,
+the call `rng.integers(0, n_frame, size=(m, n_frame))`, and WEIGHTS FORMED BY COUNTING THE DRAWN
+INDICES.  This script's `RULED` columns therefore draw the way decisions/0125 names, which is NOT
+how they drew when this script was first written -- the reproduction of the FRAME and the DRAW
+ORDER is unaffected, because the point estimates and the pair totals it asserts are not
+bootstrap-dependent, and the mechanism's own before/after is reproduced separately in
+src/step9_b_15_mechanism_repro.py against the commit that carried `multinomial`.
+
 WHAT THIS SCRIPT IS FOR.  A correction that only shows the fixed state cannot be checked: a
 reader has no way to tell whether the defect was there.  So section 1 MEASURES THE PRE-RULING
 MECHANISM -- the RNG construction sites are located by parsing the module rather than quoting it,
@@ -79,6 +87,17 @@ def digest(a):
     return hashlib.sha256(np.ascontiguousarray(a, dtype=np.int64).tobytes()).hexdigest()[:16]
 
 
+def ruled_draw(rng, n, b=B):
+    """decisions/0125 SS1: draw ACCOUNT INDICES with `integers`, form weights by COUNTING them.
+
+    The chunking is NOT a spec element (decisions/0125 SS3) and this helper takes the whole
+    matrix in one call, which the mechanism reproduction shows gives an identical array.
+    """
+    idx = rng.integers(0, n, size=(b, n))
+    off = (np.arange(b) * n)[:, None]
+    return np.bincount((idx + off).ravel(), minlength=b * n).reshape(b, n)
+
+
 # =============================================================================================
 # inputs
 # =============================================================================================
@@ -137,7 +156,7 @@ def intervals(counts, weights):
 # 1. THE PRE-RULING MECHANISM, MEASURED -- and the corrected one beside it
 # =============================================================================================
 w("=" * 94)
-w("STEP 9, ARM b -- RESAMPLING FRAME AND DRAW ORDER: REPRODUCTION UNDER decisions/0124")
+w("STEP 9, ARM b -- FRAME AND DRAW ORDER: REPRODUCTION UNDER decisions/0124 (mechanism 0125)")
 w("=" * 94)
 w("")
 BASE_SRC = subprocess.check_output(
@@ -158,9 +177,18 @@ w("")
 # 1a. WHERE THE RNG IS CONSTRUCTED. Located by parsing the module, so the finding is a property
 #     of the code rather than of a sentence about it -- and the READING BELOW IS DERIVED FROM
 #     THE MEASUREMENT rather than typed beside it, so it cannot survive the thing it describes.
+# THE DRAW CALL IS LOCATED BY NAME AND THE NAME IS REPORTED, NOT ASSUMED. A first version of
+# this function looked for `multinomial` alone, which was right until decisions/0125 ruled the
+# mechanism to be `integers`; a checker that recognises only one sampler would then have
+# hard-stopped on the CORRECT module and reported the fix as missing. It now collects every
+# sampler call it knows about AND SAYS WHICH, so the reading below is derived from what is in
+# the source rather than from what this script expected to find.
+SAMPLERS = ("multinomial", "integers", "choice")
+
+
 def rng_sites(src):
     tree = ast.parse(src)
-    infn, mod, mult = [], [], []
+    infn, mod, draws = [], [], []
     for node in ast.walk(tree):
         if isinstance(node, ast.FunctionDef):
             for sub in ast.walk(node):
@@ -168,47 +196,60 @@ def rng_sites(src):
                         and sub.func.attr == "default_rng"):
                     infn.append((node.name, sub.lineno))
         if (isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
-                and node.func.attr == "multinomial"):
-            mult.append(node.lineno)
+                and node.func.attr in SAMPLERS
+                and isinstance(node.func.value, ast.Name)
+                and node.func.value.id.lower() in ("rng", "rng_cur", "rng2")):
+            draws.append((node.func.attr, node.lineno))
     infn_lines = {ln for _, ln in infn}
     for node in ast.walk(tree):
         if (isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
                 and node.func.attr == "default_rng" and node.lineno not in infn_lines):
             mod.append(node.lineno)
-    return infn, mod, mult
+    return infn, mod, draws
 
 
 w("1a. WHERE THE RNG IS CONSTRUCTED  (located by ast.walk over each module, not by grep)")
-w("    %-8s %-16s %-16s %-18s %s"
-  % ("source", "module-level", "inside-a-def", "multinomial calls", "satisfies 0124"))
+w("    %-8s %-14s %-16s %-30s %s"
+  % ("source", "module-level", "inside-a-def", "sampler call(s), BY NAME", "satisfies 0124"))
 rng_state = {}
 for label, src in (("BEFORE", BASE_SRC), ("AFTER", open(BOOTSTRAP_SRC).read())):
-    infn, mod, mult = rng_sites(src)
-    ok = (len(mod) == 1 and len(infn) == 0 and len(mult) == 1)
-    rng_state[label] = (len(mod), len(infn), len(mult), ok)
-    w("    %-8s %-16d %-16s %-18s %s"
+    infn, mod, draws = rng_sites(src)
+    names = sorted({nm for nm, _ in draws})
+    # decisions/0124 is a claim about the RNG CONSTRUCTION SITES, not about which sampler is
+    # called, so the mechanism is REPORTED here and asserted in section 2d against 0125.
+    ok = (len(mod) == 1 and len(infn) == 0 and len(draws) >= 1)
+    rng_state[label] = (len(mod), len(infn), len(draws), names, ok)
+    w("    %-8s %-14d %-16s %-30s %s"
       % (label, len(mod),
          "%d %s" % (len(infn), ", ".join("`%s`@%d" % t for t in infn)) if infn else "0",
-         "%d @ %s" % (len(mult), mult), "YES" if ok else "NO"))
-_mb, _ib, _ub, _okb = rng_state["BEFORE"]
-_ma, _ia, _ua, _oka = rng_state["AFTER"]
+         "%d: %s" % (len(draws), ", ".join("`%s`@%d" % t for t in draws)),
+         "YES" if ok else "NO"))
+_mb, _ib, _ub, _nb, _okb = rng_state["BEFORE"]
+_ma, _ia, _ua, _na, _oka = rng_state["AFTER"]
+if _na != ["integers"]:
+    sys.exit("HARD STOP: the working-tree module's sampler is %s, not `integers`. "
+             "decisions/0125 SS1 names the call `rng.integers(0, n_frame, size=(m, n_frame))` "
+             "and nothing below should be read as if the ruled mechanism were in place." % _na)
 if _okb:
     sys.exit("HARD STOP: the BASE revision already satisfies decisions/0124's draw order. This "
              "script's `before` is then not the mechanism the ruling describes, and the "
              "reproduction would be of nothing. Check BASE_REV.")
 if not _oka:
     sys.exit("HARD STOP: the working-tree module does NOT satisfy decisions/0124's draw order "
-             "-- %d module-level RNG(s), %d inside a def, %d multinomial call(s). The fix is "
+             "-- %d module-level RNG(s), %d inside a def, %d sampler call(s) %s. The fix is "
              "not in place and nothing below should be read as if it were."
-             % (_ma, _ia, _ua))
+             % (_ma, _ia, _ua, _na))
 w("    READING, DERIVED FROM THE ROW ABOVE AND NOT TYPED BESIDE IT:")
 w("      BEFORE -- %d RNG construction(s) inside a per-group function and %d at module level, so"
   % (_ib, _mb))
 w("                the stream was RESTARTED ONCE PER GROUP and each group consumed it from its")
 w("                start. decisions/0124 requires ONE RNG SEEDED ONCE PER FILE: NOT SATISFIED.")
-w("      AFTER  -- %d at module level, %d inside a def, %d multinomial call: one RNG, seeded"
-  % (_ma, _ia, _ua))
-w("                once per file, one draw, and every quantity evaluated against it. SATISFIED.")
+w("      AFTER  -- %d at module level, %d inside a def, %d %s call(s): one RNG, seeded once"
+  % (_ma, _ia, _ua, "/".join(_na)))
+w("                per file, its stream consumed continuously, and every quantity evaluated")
+w("                against the one replicate set. SATISFIED. The sampler is `integers`, which")
+w("                is decisions/0125's ruled mechanism; the BEFORE column shows `%s`."
+  % "/".join(_nb))
 w("")
 
 # 1b. THE CURRENT FRAME, per group, recomputed from the masks.
@@ -310,11 +351,16 @@ w("             pairs was removed by D10. They could have contributed and did no
 w("             decisions/0124 SS2's ground for drawing them.")
 w("")
 
-w("2d. THE DRAW ORDER -- one RNG, seeded once, one replicate set for every quantity")
+w("2d. THE DRAW ORDER AND THE DRAW MECHANISM -- one RNG, seeded once, one replicate set for")
+w("    every quantity, drawing account indices with `integers` and counting them")
 rng = np.random.default_rng(SEED)
-Wt = rng.multinomial(n_frame, np.full(n_frame, 1.0 / n_frame), size=B)
+Wt = ruled_draw(rng, n_frame)
 w("    RNG constructed : once, at module scope, seed %d" % SEED)
-w("    multinomial     : one call, shape (%d, %d), digest %s" % (B, n_frame, digest(Wt)))
+w("    mechanism       : rng.integers(0, %d, size=(m, %d)), weights by COUNTING the drawn"
+  % (n_frame, n_frame))
+w("                      indices (decisions/0125 SS1). Row totals all equal n_frame : %s"
+  % bool((Wt.sum(axis=1) == n_frame).all()))
+w("    draw            : shape (%d, %d), digest %s" % (B, n_frame, digest(Wt)))
 w("    quantities evaluated against it : %d groups x 6 intervals = %d intervals, %d endpoints"
   % (len(GROUPS), len(GROUPS) * 6, len(GROUPS) * 12))
 w("    every group shares this one replicate set : True (there is only one)")
@@ -326,6 +372,10 @@ Wf = Wt.astype(np.float64)
 # =============================================================================================
 w("-" * 94)
 w("3. THE CHANGE, DEMONSTRATED -- both designs run, all 24 intervals")
+w("   `cur` is the BASE REVISION's design in full: per-mask frame, RNG re-seeded per group, and")
+w("   its own `multinomial` sampler. `new` is the RULED design in full: the position-4 frame,")
+w("   one shared replicate set, and decisions/0125's `integers` mechanism. The columns differ by")
+w("   THREE spec elements, not two, and no line below attributes the movement to one of them.")
 w("-" * 94)
 w("")
 w("%-16s %-6s %-9s %-17s %10s %10s %10s %10s" %
@@ -344,6 +394,7 @@ for arm, pop in GROUPS:
     excl = z[nl][idx]
     cc = np.zeros((n_cur, 3, 2), dtype=np.float64)
     np.add.at(cc, (upos, st, excl.astype(np.int64)), 1.0)
+    # the base revision's own sampler, kept: this column reproduces what it DID.
     rng_cur = np.random.default_rng(SEED)
     w_cur = rng_cur.multinomial(n_cur, np.full(n_cur, 1.0 / n_cur), size=B).astype(np.float64)
     cur = intervals(cc, w_cur)
@@ -376,8 +427,9 @@ w("    point estimates that move         : 0  (asserted per group, atol=0, rtol=
 w("    per-account pair totals that move : 0  (asserted per group, atol=0, rtol=0)")
 w("")
 w("    NOTE, REPORTED RATHER THAN LET PASS: the ADOPTED arm W108_s2_finale is among the")
-w("    intervals that move. That is expected under decisions/0124 -- the ruling changes the")
-w("    draw for every quantity in the file, not only the premiere arm -- and it is not a defect.")
+w("    intervals that move. That is expected under decisions/0124 AND decisions/0125 -- both")
+w("    rulings change the draw for every quantity in the file, not only the premiere arm -- and")
+w("    it is not a defect.")
 w("")
 w("=" * 94)
 w("END. Adopts nothing. Zero API calls. Counts only; pairs.npz was read and not published.")

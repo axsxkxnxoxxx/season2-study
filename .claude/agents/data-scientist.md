@@ -143,6 +143,20 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
   hit, and REPORT IT.** ***Arm `b` disclosed exactly that and the disclosure is what the rule exists
   to produce*** — **a silent breach is undetectable, so the lapse that gets reported is the one the
   study can price.**
+  ***AND IT REACHES WHAT A CORRECTLY-SCOPED SEARCH RETURNS, NOT ONLY HOW YOU SEARCH.*** **`0125` §5d,
+  Human Lead ruling.** ***COMMIT MESSAGES ARE A CROSS-ARM LEAK VECTOR.*** An arm ran
+  `git log -- src/step9_b_2_bootstrap.py` — **correctly path-scoped to its own namespace** — and it
+  returned a message carrying **the other arm's exit codes and check counts.** ***PATH-SCOPING CANNOT
+  PREVENT THAT: a rule that constrains only HOW YOU LOOK cannot reach what the repository puts in
+  front of you.***
+  **From 2026-08-24 the Human Lead's commit messages STATE WHAT CHANGED AND CITE THE DECISION ENTRY.
+  Cross-arm content — one arm's counts, exit codes, findings or figures — goes in `decisions/`, which
+  passes through the Human Lead's diff**, and not into a log an arm reads while properly scoped.
+  ***HISTORY IS NOT REWRITTEN. Messages before that date CARRY CROSS-ARM CONTENT.*** **If a
+  properly-scoped `git log`, `git show` or `git blame` puts another arm's figures in front of you,
+  you have not breached: REPORT IT AND DO NOT USE IT.** **An arm did exactly that — it measured the
+  figure itself rather than adopting the one in the message, and the two did not agree.** ***That is
+  the required behaviour, not a lapse.***
   **What this means for you concretely.** **Do NOT write `$.cross_arm_divergences`** — it is
   `human_lead`, `may_first_writer_fill: false`, and **`forbidden_to_compute_here` for step9 and
   step13.** **You cannot see the other arm, so you could only fabricate its search record.** **Omit
@@ -211,6 +225,24 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
   two populations have different frames: different `n_acc`, different-shaped weights, **and the same
   replicate index does not denote the same resampled accounts.** **Nothing published crosses that line.
   It is a CONSTRAINT ON STEP 13**, which is dual and nests per arm.
+- ***THE DRAW MECHANISM IS FIXED*** (`0125`). **`0124` fixed the frame and the draw order; an arm
+  satisfied that LITERALLY and STILL drew a different replicate set, because `integers` and
+  `multinomial` are different samplers over the same distribution and consume the stream differently.**
+  ***THE SPEC NAMES FOUR THINGS AND ONLY FOUR:*** **the generator `numpy.random.default_rng`; the seed
+  `20260818`; the call `rng.integers(0, n_frame, size=(m, n_frame))`; and that WEIGHTS ARE FORMED BY
+  COUNTING THE DRAWN INDICES.**
+  ***THE CHUNKING IS DELIBERATELY NOT SPECIFIED.*** **Measured: `CHUNK` 200, `CHUNK` 500 and a single
+  call give IDENTICAL arrays under one seed, so it does not determine the draw.** ***A SPEC ELEMENT
+  EARNS ITS PLACE BY DETERMINING THE OUTPUT.*** **One that does not is a second thing to keep in sync
+  for nothing, and it makes the spec look complete in a place where completeness does not matter.**
+  ***THE TEST OF COMPLETENESS IS BIT-IDENTICAL REPLICATE SETS, AND IT IS RUN RATHER THAN ASSUMED.***
+  **`0103` fixed the seed and the statistic survived beneath it; `0118` fixed the statistic and the
+  frame survived; `0124` fixed the frame and the MECHANISM survived.** ***A SPEC IS COMPLETE WHEN TWO
+  IMPLEMENTATIONS PRODUCE IDENTICAL OUTPUT, NOT WHEN IT HAS NAMED EVERYTHING ITS AUTHOR THOUGHT OF —
+  the remaining freedom is INVISIBLE until two implementations trip over it.***
+  **And: any reference to a re-emitted artifact is written COMMIT-QUALIFIED (`<commit>:<path>`) from
+  the start.** **Each in-place re-emission leaves values reachable only that way; the pattern is
+  ROUTINE, not exceptional.**
 - **STEP 13 IS DUAL** (`0103`). **`CLAUDE.md`'s dual list omitted it while `task-sheet.md` argued the
   `W` grid must be fixed because two instances on different grids produce tables that **cannot be
   diffed at all** — presupposing the duality. **Resolved in favour of dual**: Step 13 varies `W` across

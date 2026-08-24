@@ -134,15 +134,17 @@ for i, a in enumerate(d["arms"]):
 w("## 3. Both bootstrap objects — and a level is never compared with a movement")
 w("")
 bs = d["bootstrap_settings"]["b_default"]
-w("**ALL SIX ELEMENTS ARE FIXED BY THE SPEC AND NONE IS THIS ARM'S CHOICE:** `B` = **%s**, "
-  "seed = **%d**, resampling unit = **%s**, statistic = **both %s**, and — since "
-  "`decisions/0124` — the **resampling frame** and the **draw order**. Every interval in this "
-  "file restates them at the point of use. Values as fixed: `%s`."
-  % (format(bs["B"], ","), bs["seed"], bs["resampling_unit"], " and ".join(bs["statistics"]),
-     ", ".join(sorted(bs["fields_fixed_in_spec"]))))
+w("**ALL %d ELEMENTS ARE FIXED BY THE SPEC AND NONE IS THIS ARM'S CHOICE:** `B` = **%s**, "
+  "seed = **%d**, resampling unit = **%s**, statistic = **both %s**, since `decisions/0124` the "
+  "**resampling frame** and the **draw order**, and since `decisions/0125` the **draw "
+  "mechanism**. Every interval in this file restates them at the point of use. Values as "
+  "fixed: `%s`."
+  % (len(bs["fields_fixed_in_spec"]), format(bs["B"], ","), bs["seed"], bs["resampling_unit"],
+     " and ".join(bs["statistics"]), ", ".join(sorted(bs["fields_fixed_in_spec"]))))
 w("")
-_bd = d["notes"]["step9_b_resampling_frame_and_draw_order"]
-w("**The frame and the draw order, stated once here and restated at every interval.** %s" % _bd)
+_bd = d["notes"]["step9_b_resampling_frame_draw_order_and_draw_mechanism"]
+w("**The frame, the draw order and the draw mechanism, stated once here and restated at every "
+  "interval.** %s" % _bd)
 w("")
 w("**ACCOUNT LEVEL because pairs are not independent** — one account contributes many, and "
   "pair-level resampling understates the interval.")

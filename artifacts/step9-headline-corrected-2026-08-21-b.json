@@ -4,10 +4,10 @@
   "placeholder": false,
   "generated_by": {
     "generator": "src/step9_b_3_emit.py",
-    "generator_sha256_12": "025033adb5c5",
-    "generated_at_utc": "2026-08-23T19:28:13Z",
+    "generator_sha256_12": "8d6ad8195375",
+    "generated_at_utc": "2026-08-24T16:44:33Z",
     "build_tag": "step9/b/2026-08-20",
-    "git_head_short": "eba1735",
+    "git_head_short": "5393430",
     "host_step": "Step 9, headline result",
     "written_by": "Data Scientist, arm b",
     "inputs": [
@@ -153,7 +153,8 @@
         "resampling_unit",
         "statistics",
         "resampling_frame",
-        "draw_order"
+        "draw_order",
+        "draw_mechanism"
       ],
       "fields_fixed_in_spec": [
         "B",
@@ -161,10 +162,11 @@
         "resampling_unit",
         "statistics",
         "resampling_frame",
-        "draw_order"
+        "draw_order",
+        "draw_mechanism"
       ],
       "fields_not_fixed_in_spec": [],
-      "note": "ALL SIX ELEMENTS ARE FIXED BY THE SPEC AND NONE IS THIS ARM'S CHOICE -- decisions/0103 for B, the seed and the unit, decisions/0118 for the statistic, decisions/0124 for the FRAME and the DRAW ORDER. The frame is every account with at least one pair in the position-4 output (2481), built once and drawn for every quantity regardless of how much it contributes; the draw order is one RNG seeded once per file, its stream consumed continuously, with all 24 intervals in this file evaluated against ONE replicate set (digest 6742eb76f042c88c). THE FRAME FIELD DESCRIBES THE DRAW AND NOT THE SUPPORT (decisions/0124 SS4(1)): membership is arm-independent, the contributing subset is not, because keep_d10 contains max(W, 91) -- the per-population contributing counts are stated at each interval. The fixed seed is what makes the two arms comparable: without it a difference between them could be sampling noise rather than a divergence. The seed VALUE is arbitrary; its FIXITY is the point -- and an unfixed draw order makes a fixed seed decorative, which is why decisions/0124 fixes it."
+      "note": "ALL SEVEN ELEMENTS ARE FIXED BY THE SPEC AND NONE IS THIS ARM'S CHOICE -- decisions/0103 for B, the seed and the unit, decisions/0118 for the statistic, decisions/0124 for the FRAME and the DRAW ORDER, decisions/0125 for the DRAW MECHANISM. THE MECHANISM IS THE GENERATOR numpy.random.default_rng, THE CALL rng.integers(0, n_frame, size=(m, n_frame)), AND WEIGHTS FORMED BY COUNTING THE DRAWN INDICES -- those four things and nothing else; the CHUNKING is not a spec element, because CHUNK 200, CHUNK 500 and a single call give identical arrays under one seed. This arm previously drew with `multinomial`, which satisfied decisions/0124 literally and STILL produced a different replicate set, since the two samplers consume the stream differently: the distribution was right either way and the realisation was not the same. The frame is every account with at least one pair in the position-4 output (2481), built once and drawn for every quantity regardless of how much it contributes; the draw order is one RNG seeded once per file, its stream consumed continuously, with all 24 intervals in this file evaluated against ONE replicate set (digest cbff58df8b711d40). THE FRAME FIELD DESCRIBES THE DRAW AND NOT THE SUPPORT (decisions/0124 SS4(1)): membership is arm-independent, the contributing subset is not, because keep_d10 contains max(W, 91) -- the per-population contributing counts are stated at each interval. The fixed seed is what makes the two arms comparable: without it a difference between them could be sampling noise rather than a divergence. The seed VALUE is arbitrary; its FIXITY is the point -- and an unfixed draw order or an unfixed mechanism makes a fixed seed decorative, which is why decisions/0124 fixes the one and decisions/0125 the other."
     }
   },
   "step_duality": {
@@ -197,13 +199,13 @@
   "declared_intervals": [
     {
       "interval_id": "movement_W108_s2_finale_APPLY_never_started_b",
-      "quantity": "A PAIRED MOVEMENT: the change in the never started share caused by the liveness filter at the W108_s2_finale arm on APPLY -- the post-liveness level minus the position-5 level -- resampled as a paired delta inside each replicate, so the same account weights produce both terms. IT IS NOT A LEVEL AND IS NEVER COMPARED WITH ONE: the corresponding level interval is 1.1059 pp wide and this movement is 0.0989 pp wide.",
+      "quantity": "A PAIRED MOVEMENT: the change in the never started share caused by the liveness filter at the W108_s2_finale arm on APPLY -- the post-liveness level minus the position-5 level -- resampled as a paired delta inside each replicate, so the same account weights produce both terms. IT IS NOT A LEVEL AND IS NEVER COMPARED WITH ONE: the corresponding level interval is 1.1228 pp wide and this movement is 0.0987 pp wide.",
       "produced_by_step": "step9",
       "producing_arm": "b",
       "ci": {
         "level_pct": 95,
-        "lower": -0.2989613235321539,
-        "upper": -0.20008853970071297,
+        "lower": -0.29914388154577215,
+        "upper": -0.2004493104582326,
         "method": "percentile_bootstrap",
         "bootstrap_ref": "b_default",
         "B": 10000,
@@ -218,13 +220,13 @@
     },
     {
       "interval_id": "movement_W108_s2_finale_APPLY_started_and_left_b",
-      "quantity": "A PAIRED MOVEMENT: the change in the started and left share caused by the liveness filter at the W108_s2_finale arm on APPLY -- the post-liveness level minus the position-5 level -- resampled as a paired delta inside each replicate, so the same account weights produce both terms. IT IS NOT A LEVEL AND IS NEVER COMPARED WITH ONE: the corresponding level interval is 0.7652 pp wide and this movement is 0.0224 pp wide.",
+      "quantity": "A PAIRED MOVEMENT: the change in the started and left share caused by the liveness filter at the W108_s2_finale arm on APPLY -- the post-liveness level minus the position-5 level -- resampled as a paired delta inside each replicate, so the same account weights produce both terms. IT IS NOT A LEVEL AND IS NEVER COMPARED WITH ONE: the corresponding level interval is 0.7584 pp wide and this movement is 0.0228 pp wide.",
       "produced_by_step": "step9",
       "producing_arm": "b",
       "ci": {
         "level_pct": 95,
-        "lower": -0.027267780833095934,
-        "upper": -0.004866030653569637,
+        "lower": -0.02752275121757517,
+        "upper": -0.004766797249868749,
         "method": "percentile_bootstrap",
         "bootstrap_ref": "b_default",
         "B": 10000,
@@ -239,13 +241,13 @@
     },
     {
       "interval_id": "movement_W108_s2_finale_APPLY_continued_b",
-      "quantity": "A PAIRED MOVEMENT: the change in the continued share caused by the liveness filter at the W108_s2_finale arm on APPLY -- the post-liveness level minus the position-5 level -- resampled as a paired delta inside each replicate, so the same account weights produce both terms. IT IS NOT A LEVEL AND IS NEVER COMPARED WITH ONE: the corresponding level interval is 1.4193 pp wide and this movement is 0.0979 pp wide.",
+      "quantity": "A PAIRED MOVEMENT: the change in the continued share caused by the liveness filter at the W108_s2_finale arm on APPLY -- the post-liveness level minus the position-5 level -- resampled as a paired delta inside each replicate, so the same account weights produce both terms. IT IS NOT A LEVEL AND IS NEVER COMPARED WITH ONE: the corresponding level interval is 1.4195 pp wide and this movement is 0.0992 pp wide.",
       "produced_by_step": "step9",
       "producing_arm": "b",
       "ci": {
         "level_pct": 95,
-        "lower": 0.21586653466857192,
-        "upper": 0.31378693541644864,
+        "lower": 0.21547110535644548,
+        "upper": 0.31464180017049403,
         "method": "percentile_bootstrap",
         "bootstrap_ref": "b_default",
         "B": 10000,
@@ -260,13 +262,13 @@
     },
     {
       "interval_id": "movement_W108_s2_finale_DERIV_never_started_b",
-      "quantity": "A PAIRED MOVEMENT: the change in the never started share caused by the liveness filter at the W108_s2_finale arm on DERIV -- the post-liveness level minus the position-5 level -- resampled as a paired delta inside each replicate, so the same account weights produce both terms. IT IS NOT A LEVEL AND IS NEVER COMPARED WITH ONE: the corresponding level interval is 0.7460 pp wide and this movement is 0.0023 pp wide.",
+      "quantity": "A PAIRED MOVEMENT: the change in the never started share caused by the liveness filter at the W108_s2_finale arm on DERIV -- the post-liveness level minus the position-5 level -- resampled as a paired delta inside each replicate, so the same account weights produce both terms. IT IS NOT A LEVEL AND IS NEVER COMPARED WITH ONE: the corresponding level interval is 0.7554 pp wide and this movement is 0.0023 pp wide.",
       "produced_by_step": "step9",
       "producing_arm": "b",
       "ci": {
         "level_pct": 95,
-        "lower": 0.0031127132816251234,
-        "upper": 0.005380931284474144,
+        "lower": 0.0030974940359243417,
+        "upper": 0.005393806656860889,
         "method": "percentile_bootstrap",
         "bootstrap_ref": "b_default",
         "B": 10000,
@@ -281,13 +283,13 @@
     },
     {
       "interval_id": "movement_W108_s2_finale_DERIV_started_and_left_b",
-      "quantity": "A PAIRED MOVEMENT: the change in the started and left share caused by the liveness filter at the W108_s2_finale arm on DERIV -- the post-liveness level minus the position-5 level -- resampled as a paired delta inside each replicate, so the same account weights produce both terms. IT IS NOT A LEVEL AND IS NEVER COMPARED WITH ONE: the corresponding level interval is 0.9596 pp wide and this movement is 0.0318 pp wide.",
+      "quantity": "A PAIRED MOVEMENT: the change in the started and left share caused by the liveness filter at the W108_s2_finale arm on DERIV -- the post-liveness level minus the position-5 level -- resampled as a paired delta inside each replicate, so the same account weights produce both terms. IT IS NOT A LEVEL AND IS NEVER COMPARED WITH ONE: the corresponding level interval is 0.9656 pp wide and this movement is 0.0321 pp wide.",
       "produced_by_step": "step9",
       "producing_arm": "b",
       "ci": {
         "level_pct": 95,
-        "lower": -0.0763542129081908,
-        "upper": -0.04460168626373289,
+        "lower": -0.07657470621155271,
+        "upper": -0.0444984924417742,
         "method": "percentile_bootstrap",
         "bootstrap_ref": "b_default",
         "B": 10000,
@@ -302,13 +304,13 @@
     },
     {
       "interval_id": "movement_W108_s2_finale_DERIV_continued_b",
-      "quantity": "A PAIRED MOVEMENT: the change in the continued share caused by the liveness filter at the W108_s2_finale arm on DERIV -- the post-liveness level minus the position-5 level -- resampled as a paired delta inside each replicate, so the same account weights produce both terms. IT IS NOT A LEVEL AND IS NEVER COMPARED WITH ONE: the corresponding level interval is 1.2236 pp wide and this movement is 0.0295 pp wide.",
+      "quantity": "A PAIRED MOVEMENT: the change in the continued share caused by the liveness filter at the W108_s2_finale arm on DERIV -- the post-liveness level minus the position-5 level -- resampled as a paired delta inside each replicate, so the same account weights produce both terms. IT IS NOT A LEVEL AND IS NEVER COMPARED WITH ONE: the corresponding level interval is 1.2393 pp wide and this movement is 0.0300 pp wide.",
       "produced_by_step": "step9",
       "producing_arm": "b",
       "ci": {
         "level_pct": 95,
-        "lower": 0.04149620349956109,
-        "upper": 0.07098620312621369,
+        "lower": 0.04129339541695352,
+        "upper": 0.07127541223875865,
         "method": "percentile_bootstrap",
         "bootstrap_ref": "b_default",
         "B": 10000,
@@ -323,13 +325,13 @@
     },
     {
       "interval_id": "movement_W91_s2_premiere_APPLY_never_started_b",
-      "quantity": "A PAIRED MOVEMENT: the change in the never started share caused by the liveness filter at the W91_s2_premiere arm on APPLY -- the post-liveness level minus the position-5 level -- resampled as a paired delta inside each replicate, so the same account weights produce both terms. IT IS NOT A LEVEL AND IS NEVER COMPARED WITH ONE: the corresponding level interval is 1.1783 pp wide and this movement is 0.0898 pp wide.",
+      "quantity": "A PAIRED MOVEMENT: the change in the never started share caused by the liveness filter at the W91_s2_premiere arm on APPLY -- the post-liveness level minus the position-5 level -- resampled as a paired delta inside each replicate, so the same account weights produce both terms. IT IS NOT A LEVEL AND IS NEVER COMPARED WITH ONE: the corresponding level interval is 1.1919 pp wide and this movement is 0.0898 pp wide.",
       "produced_by_step": "step9",
       "producing_arm": "b",
       "ci": {
         "level_pct": 95,
-        "lower": -0.26205602682236195,
-        "upper": -0.17222798771722198,
+        "lower": -0.2623646560942885,
+        "upper": -0.17257556719035003,
         "method": "percentile_bootstrap",
         "bootstrap_ref": "b_default",
         "B": 10000,
@@ -344,13 +346,13 @@
     },
     {
       "interval_id": "movement_W91_s2_premiere_APPLY_started_and_left_b",
-      "quantity": "A PAIRED MOVEMENT: the change in the started and left share caused by the liveness filter at the W91_s2_premiere arm on APPLY -- the post-liveness level minus the position-5 level -- resampled as a paired delta inside each replicate, so the same account weights produce both terms. IT IS NOT A LEVEL AND IS NEVER COMPARED WITH ONE: the corresponding level interval is 0.8909 pp wide and this movement is 0.0205 pp wide.",
+      "quantity": "A PAIRED MOVEMENT: the change in the started and left share caused by the liveness filter at the W91_s2_premiere arm on APPLY -- the post-liveness level minus the position-5 level -- resampled as a paired delta inside each replicate, so the same account weights produce both terms. IT IS NOT A LEVEL AND IS NEVER COMPARED WITH ONE: the corresponding level interval is 0.8828 pp wide and this movement is 0.0205 pp wide.",
       "produced_by_step": "step9",
       "producing_arm": "b",
       "ci": {
         "level_pct": 95,
-        "lower": -0.00703781357425286,
-        "upper": 0.013438708341565285,
+        "lower": -0.007190508280401619,
+        "upper": 0.013307614281392908,
         "method": "percentile_bootstrap",
         "bootstrap_ref": "b_default",
         "B": 10000,
@@ -365,13 +367,13 @@
     },
     {
       "interval_id": "movement_W91_s2_premiere_APPLY_continued_b",
-      "quantity": "A PAIRED MOVEMENT: the change in the continued share caused by the liveness filter at the W91_s2_premiere arm on APPLY -- the post-liveness level minus the position-5 level -- resampled as a paired delta inside each replicate, so the same account weights produce both terms. IT IS NOT A LEVEL AND IS NEVER COMPARED WITH ONE: the corresponding level interval is 1.4560 pp wide and this movement is 0.0839 pp wide.",
+      "quantity": "A PAIRED MOVEMENT: the change in the continued share caused by the liveness filter at the W91_s2_premiere arm on APPLY -- the post-liveness level minus the position-5 level -- resampled as a paired delta inside each replicate, so the same account weights produce both terms. IT IS NOT A LEVEL AND IS NEVER COMPARED WITH ONE: the corresponding level interval is 1.4930 pp wide and this movement is 0.0839 pp wide.",
       "produced_by_step": "step9",
       "producing_arm": "b",
       "ci": {
         "level_pct": 95,
-        "lower": 0.17151739456363976,
-        "upper": 0.25541270232510555,
+        "lower": 0.17182843808864517,
+        "upper": 0.25569737104031276,
         "method": "percentile_bootstrap",
         "bootstrap_ref": "b_default",
         "B": 10000,
@@ -386,13 +388,13 @@
     },
     {
       "interval_id": "movement_W91_s2_premiere_DERIV_never_started_b",
-      "quantity": "A PAIRED MOVEMENT: the change in the never started share caused by the liveness filter at the W91_s2_premiere arm on DERIV -- the post-liveness level minus the position-5 level -- resampled as a paired delta inside each replicate, so the same account weights produce both terms. IT IS NOT A LEVEL AND IS NEVER COMPARED WITH ONE: the corresponding level interval is 0.8807 pp wide and this movement is 0.0025 pp wide.",
+      "quantity": "A PAIRED MOVEMENT: the change in the never started share caused by the liveness filter at the W91_s2_premiere arm on DERIV -- the post-liveness level minus the position-5 level -- resampled as a paired delta inside each replicate, so the same account weights produce both terms. IT IS NOT A LEVEL AND IS NEVER COMPARED WITH ONE: the corresponding level interval is 0.8956 pp wide and this movement is 0.0025 pp wide.",
       "produced_by_step": "step9",
       "producing_arm": "b",
       "ci": {
         "level_pct": 95,
-        "lower": 0.002807016687370023,
-        "upper": 0.005326625462885514,
+        "lower": 0.0027967951221778975,
+        "upper": 0.005320511956195473,
         "method": "percentile_bootstrap",
         "bootstrap_ref": "b_default",
         "B": 10000,
@@ -407,13 +409,13 @@
     },
     {
       "interval_id": "movement_W91_s2_premiere_DERIV_started_and_left_b",
-      "quantity": "A PAIRED MOVEMENT: the change in the started and left share caused by the liveness filter at the W91_s2_premiere arm on DERIV -- the post-liveness level minus the position-5 level -- resampled as a paired delta inside each replicate, so the same account weights produce both terms. IT IS NOT A LEVEL AND IS NEVER COMPARED WITH ONE: the corresponding level interval is 1.1198 pp wide and this movement is 0.0261 pp wide.",
+      "quantity": "A PAIRED MOVEMENT: the change in the started and left share caused by the liveness filter at the W91_s2_premiere arm on DERIV -- the post-liveness level minus the position-5 level -- resampled as a paired delta inside each replicate, so the same account weights produce both terms. IT IS NOT A LEVEL AND IS NEVER COMPARED WITH ONE: the corresponding level interval is 1.1263 pp wide and this movement is 0.0262 pp wide.",
       "produced_by_step": "step9",
       "producing_arm": "b",
       "ci": {
         "level_pct": 95,
-        "lower": -0.055790412181759085,
-        "upper": -0.029645899916037617,
+        "lower": -0.05574789697421036,
+        "upper": -0.02959704784609847,
         "method": "percentile_bootstrap",
         "bootstrap_ref": "b_default",
         "B": 10000,
@@ -428,13 +430,13 @@
     },
     {
       "interval_id": "movement_W91_s2_premiere_DERIV_continued_b",
-      "quantity": "A PAIRED MOVEMENT: the change in the continued share caused by the liveness filter at the W91_s2_premiere arm on DERIV -- the post-liveness level minus the position-5 level -- resampled as a paired delta inside each replicate, so the same account weights produce both terms. IT IS NOT A LEVEL AND IS NEVER COMPARED WITH ONE: the corresponding level interval is 1.3818 pp wide and this movement is 0.0237 pp wide.",
+      "quantity": "A PAIRED MOVEMENT: the change in the continued share caused by the liveness filter at the W91_s2_premiere arm on DERIV -- the post-liveness level minus the position-5 level -- resampled as a paired delta inside each replicate, so the same account weights produce both terms. IT IS NOT A LEVEL AND IS NEVER COMPARED WITH ONE: the corresponding level interval is 1.4026 pp wide and this movement is 0.0236 pp wide.",
       "produced_by_step": "step9",
       "producing_arm": "b",
       "ci": {
         "level_pct": 95,
-        "lower": 0.026793809125102187,
-        "upper": 0.05051674241193353,
+        "lower": 0.02681463384586529,
+        "upper": 0.050435592468162226,
         "method": "percentile_bootstrap",
         "bootstrap_ref": "b_default",
         "B": 10000,
@@ -991,8 +993,8 @@
                     "on_population_label": "post-liveness (position 7)",
                     "ci": {
                       "level_pct": 95,
-                      "lower": 16.184160148410744,
-                      "upper": 17.290048360886512,
+                      "lower": 16.177053918851378,
+                      "upper": 17.29988254243974,
                       "method": "percentile_bootstrap",
                       "bootstrap_ref": "b_default",
                       "B": 10000,
@@ -1015,8 +1017,8 @@
                     "on_population_label": "post-liveness (position 7)",
                     "ci": {
                       "level_pct": 95,
-                      "lower": 9.339495623241275,
-                      "upper": 10.104672687808979,
+                      "lower": 9.345874452170936,
+                      "upper": 10.10427505976518,
                       "method": "percentile_bootstrap",
                       "bootstrap_ref": "b_default",
                       "B": 10000,
@@ -1039,8 +1041,8 @@
                     "on_population_label": "post-liveness (position 7)",
                     "ci": {
                       "level_pct": 95,
-                      "lower": 72.8438239062488,
-                      "upper": 74.26317346884234,
+                      "lower": 72.84472440062683,
+                      "upper": 74.26420571503024,
                       "method": "percentile_bootstrap",
                       "bootstrap_ref": "b_default",
                       "B": 10000,
@@ -1235,27 +1237,27 @@
                 },
                 "bound_over_sampling_width_ratios": {
                   "never_started": {
-                    "value": 0.277730083746098,
+                    "value": 0.2735398968394284,
                     "convention_label": "arm_b_convention",
                     "convention_definition": "arm_b_convention: the DENOMINATOR is the width of the 95% percentile bootstrap interval on the corresponding POST-LIVENESS LEVEL for the same outcome state, same arm and same population, resampled at the ACCOUNT level with B = 10,000 and seed 20260818. Named rather than assumed, so one arm's denominator cannot silently become the other's.",
                     "numerator_definition": "never-started bound width in percentage points",
-                    "denominator_definition": "account-clustered 95% sampling width of the post-liveness never_started level on APPLY at this arm: 1.105888 pp",
+                    "denominator_definition": "account-clustered 95% sampling width of the post-liveness never_started level on APPLY at this arm: 1.122829 pp",
                     "reconciled_with_other_arm": false
                   },
                   "started_and_left": {
-                    "value": 0.5269973832882177,
+                    "value": 0.5317062074336862,
                     "convention_label": "arm_b_convention",
                     "convention_definition": "arm_b_convention: the DENOMINATOR is the width of the 95% percentile bootstrap interval on the corresponding POST-LIVENESS LEVEL for the same outcome state, same arm and same population, resampled at the ACCOUNT level with B = 10,000 and seed 20260818. Named rather than assumed, so one arm's denominator cannot silently become the other's.",
                     "numerator_definition": "started-and-left bound width in percentage points",
-                    "denominator_definition": "account-clustered 95% sampling width of the post-liveness started_and_left level on APPLY at this arm: 0.765177 pp",
+                    "denominator_definition": "account-clustered 95% sampling width of the post-liveness started_and_left level on APPLY at this arm: 0.758401 pp",
                     "reconciled_with_other_arm": false
                   },
                   "started_and_left_sub_interval": {
-                    "value": 0.12560215061976623,
+                    "value": 0.1267244302710822,
                     "convention_label": "arm_b_convention",
                     "convention_definition": "arm_b_convention: the DENOMINATOR is the width of the 95% percentile bootstrap interval on the corresponding POST-LIVENESS LEVEL for the same outcome state, same arm and same population, resampled at the ACCOUNT level with B = 10,000 and seed 20260818. Named rather than assumed, so one arm's denominator cannot silently become the other's.",
                     "numerator_definition": "started-and-left conditional sub-interval width in percentage points",
-                    "denominator_definition": "account-clustered 95% sampling width of the post-liveness started_and_left level on APPLY at this arm: 0.765177 pp",
+                    "denominator_definition": "account-clustered 95% sampling width of the post-liveness started_and_left level on APPLY at this arm: 0.758401 pp",
                     "reconciled_with_other_arm": false
                   }
                 },
@@ -1296,8 +1298,8 @@
                     "on_population_label": "post-liveness (position 7)",
                     "ci": {
                       "level_pct": 95,
-                      "lower": 5.852100991560908,
-                      "upper": 6.598070981755354,
+                      "lower": 5.844629217270695,
+                      "upper": 6.599979924454471,
                       "method": "percentile_bootstrap",
                       "bootstrap_ref": "b_default",
                       "B": 10000,
@@ -1320,8 +1322,8 @@
                     "on_population_label": "post-liveness (position 7)",
                     "ci": {
                       "level_pct": 95,
-                      "lower": 10.888867927592925,
-                      "upper": 11.8484531523991,
+                      "lower": 10.892637518825087,
+                      "upper": 11.858232999215636,
                       "method": "percentile_bootstrap",
                       "bootstrap_ref": "b_default",
                       "B": 10000,
@@ -1344,8 +1346,8 @@
                     "on_population_label": "post-liveness (position 7)",
                     "ci": {
                       "level_pct": 95,
-                      "lower": 81.81047572710169,
-                      "upper": 83.03408389813154,
+                      "lower": 81.7935057986491,
+                      "upper": 83.03278272689668,
                       "method": "percentile_bootstrap",
                       "bootstrap_ref": "b_default",
                       "B": 10000,
@@ -1544,23 +1546,23 @@
                     "convention_label": "arm_b_convention",
                     "convention_definition": "arm_b_convention: the DENOMINATOR is the width of the 95% percentile bootstrap interval on the corresponding POST-LIVENESS LEVEL for the same outcome state, same arm and same population, resampled at the ACCOUNT level with B = 10,000 and seed 20260818. Named rather than assumed, so one arm's denominator cannot silently become the other's.",
                     "numerator_definition": "never-started bound width in percentage points",
-                    "denominator_definition": "account-clustered 95% sampling width of the post-liveness never_started level on DERIV at this arm: 0.745970 pp",
+                    "denominator_definition": "account-clustered 95% sampling width of the post-liveness never_started level on DERIV at this arm: 0.755351 pp",
                     "reconciled_with_other_arm": false
                   },
                   "started_and_left": {
-                    "value": 0.1329429199736855,
+                    "value": 0.1321154296390668,
                     "convention_label": "arm_b_convention",
                     "convention_definition": "arm_b_convention: the DENOMINATOR is the width of the 95% percentile bootstrap interval on the corresponding POST-LIVENESS LEVEL for the same outcome state, same arm and same population, resampled at the ACCOUNT level with B = 10,000 and seed 20260818. Named rather than assumed, so one arm's denominator cannot silently become the other's.",
                     "numerator_definition": "started-and-left bound width in percentage points",
-                    "denominator_definition": "account-clustered 95% sampling width of the post-liveness started_and_left level on DERIV at this arm: 0.959585 pp",
+                    "denominator_definition": "account-clustered 95% sampling width of the post-liveness started_and_left level on DERIV at this arm: 0.965595 pp",
                     "reconciled_with_other_arm": false
                   },
                   "started_and_left_sub_interval": {
-                    "value": 0.1329429199736855,
+                    "value": 0.1321154296390668,
                     "convention_label": "arm_b_convention",
                     "convention_definition": "arm_b_convention: the DENOMINATOR is the width of the 95% percentile bootstrap interval on the corresponding POST-LIVENESS LEVEL for the same outcome state, same arm and same population, resampled at the ACCOUNT level with B = 10,000 and seed 20260818. Named rather than assumed, so one arm's denominator cannot silently become the other's.",
                     "numerator_definition": "started-and-left conditional sub-interval width in percentage points",
-                    "denominator_definition": "account-clustered 95% sampling width of the post-liveness started_and_left level on DERIV at this arm: 0.959585 pp",
+                    "denominator_definition": "account-clustered 95% sampling width of the post-liveness started_and_left level on DERIV at this arm: 0.965595 pp",
                     "reconciled_with_other_arm": false
                   }
                 },
@@ -1905,8 +1907,8 @@
                     "on_population_label": "post-liveness (position 7)",
                     "ci": {
                       "level_pct": 95,
-                      "lower": 17.57552975806716,
-                      "upper": 18.75387447143896,
+                      "lower": 17.56317545938883,
+                      "upper": 18.755071379173657,
                       "method": "percentile_bootstrap",
                       "bootstrap_ref": "b_default",
                       "B": 10000,
@@ -1929,8 +1931,8 @@
                     "on_population_label": "post-liveness (position 7)",
                     "ci": {
                       "level_pct": 95,
-                      "lower": 12.69486599988789,
-                      "upper": 13.585743539643763,
+                      "lower": 12.706933974588594,
+                      "upper": 13.589725230251275,
                       "method": "percentile_bootstrap",
                       "bootstrap_ref": "b_default",
                       "B": 10000,
@@ -1953,8 +1955,8 @@
                     "on_population_label": "post-liveness (position 7)",
                     "ci": {
                       "level_pct": 95,
-                      "lower": 67.97015035166652,
-                      "upper": 69.42617919117933,
+                      "lower": 67.95076593438155,
+                      "upper": 69.44377396222168,
                       "method": "percentile_bootstrap",
                       "bootstrap_ref": "b_default",
                       "B": 10000,
@@ -2149,27 +2151,27 @@
                 },
                 "bound_over_sampling_width_ratios": {
                   "never_started": {
-                    "value": 0.23001283285790355,
+                    "value": 0.22739771242333978,
                     "convention_label": "arm_b_convention",
                     "convention_definition": "arm_b_convention: the DENOMINATOR is the width of the 95% percentile bootstrap interval on the corresponding POST-LIVENESS LEVEL for the same outcome state, same arm and same population, resampled at the ACCOUNT level with B = 10,000 and seed 20260818. Named rather than assumed, so one arm's denominator cannot silently become the other's.",
                     "numerator_definition": "never-started bound width in percentage points",
-                    "denominator_definition": "account-clustered 95% sampling width of the post-liveness never_started level on APPLY at this arm: 1.178345 pp",
+                    "denominator_definition": "account-clustered 95% sampling width of the post-liveness never_started level on APPLY at this arm: 1.191896 pp",
                     "reconciled_with_other_arm": false
                   },
                   "started_and_left": {
-                    "value": 0.38813974685719116,
+                    "value": 0.39169507008996474,
                     "convention_label": "arm_b_convention",
                     "convention_definition": "arm_b_convention: the DENOMINATOR is the width of the 95% percentile bootstrap interval on the corresponding POST-LIVENESS LEVEL for the same outcome state, same arm and same population, resampled at the ACCOUNT level with B = 10,000 and seed 20260818. Named rather than assumed, so one arm's denominator cannot silently become the other's.",
                     "numerator_definition": "started-and-left bound width in percentage points",
-                    "denominator_definition": "account-clustered 95% sampling width of the post-liveness started_and_left level on APPLY at this arm: 0.890878 pp",
+                    "denominator_definition": "account-clustered 95% sampling width of the post-liveness started_and_left level on APPLY at this arm: 0.882791 pp",
                     "reconciled_with_other_arm": false
                   },
                   "started_and_left_sub_interval": {
-                    "value": 0.08390668057060005,
+                    "value": 0.08467525779886141,
                     "convention_label": "arm_b_convention",
                     "convention_definition": "arm_b_convention: the DENOMINATOR is the width of the 95% percentile bootstrap interval on the corresponding POST-LIVENESS LEVEL for the same outcome state, same arm and same population, resampled at the ACCOUNT level with B = 10,000 and seed 20260818. Named rather than assumed, so one arm's denominator cannot silently become the other's.",
                     "numerator_definition": "started-and-left conditional sub-interval width in percentage points",
-                    "denominator_definition": "account-clustered 95% sampling width of the post-liveness started_and_left level on APPLY at this arm: 0.890878 pp",
+                    "denominator_definition": "account-clustered 95% sampling width of the post-liveness started_and_left level on APPLY at this arm: 0.882791 pp",
                     "reconciled_with_other_arm": false
                   }
                 },
@@ -2209,8 +2211,8 @@
                     "on_population_label": "post-liveness (position 7)",
                     "ci": {
                       "level_pct": 95,
-                      "lower": 7.574088834728869,
-                      "upper": 8.454801127219957,
+                      "lower": 7.5591019485901105,
+                      "upper": 8.454743632602103,
                       "method": "percentile_bootstrap",
                       "bootstrap_ref": "b_default",
                       "B": 10000,
@@ -2233,8 +2235,8 @@
                     "on_population_label": "post-liveness (position 7)",
                     "ci": {
                       "level_pct": 95,
-                      "lower": 15.252192253921285,
-                      "upper": 16.371946815745765,
+                      "lower": 15.25778892900843,
+                      "upper": 16.38410602386946,
                       "method": "percentile_bootstrap",
                       "bootstrap_ref": "b_default",
                       "B": 10000,
@@ -2257,8 +2259,8 @@
                     "on_population_label": "post-liveness (position 7)",
                     "ci": {
                       "level_pct": 95,
-                      "lower": 75.49191407008308,
-                      "upper": 76.87370952437954,
+                      "lower": 75.47778053556034,
+                      "upper": 76.88038651782452,
                       "method": "percentile_bootstrap",
                       "bootstrap_ref": "b_default",
                       "B": 10000,
@@ -2457,23 +2459,23 @@
                     "convention_label": "arm_b_convention",
                     "convention_definition": "arm_b_convention: the DENOMINATOR is the width of the 95% percentile bootstrap interval on the corresponding POST-LIVENESS LEVEL for the same outcome state, same arm and same population, resampled at the ACCOUNT level with B = 10,000 and seed 20260818. Named rather than assumed, so one arm's denominator cannot silently become the other's.",
                     "numerator_definition": "never-started bound width in percentage points",
-                    "denominator_definition": "account-clustered 95% sampling width of the post-liveness never_started level on DERIV at this arm: 0.880712 pp",
+                    "denominator_definition": "account-clustered 95% sampling width of the post-liveness never_started level on DERIV at this arm: 0.895642 pp",
                     "reconciled_with_other_arm": false
                   },
                   "started_and_left": {
-                    "value": 0.08908106710360279,
+                    "value": 0.08856203258972946,
                     "convention_label": "arm_b_convention",
                     "convention_definition": "arm_b_convention: the DENOMINATOR is the width of the 95% percentile bootstrap interval on the corresponding POST-LIVENESS LEVEL for the same outcome state, same arm and same population, resampled at the ACCOUNT level with B = 10,000 and seed 20260818. Named rather than assumed, so one arm's denominator cannot silently become the other's.",
                     "numerator_definition": "started-and-left bound width in percentage points",
-                    "denominator_definition": "account-clustered 95% sampling width of the post-liveness started_and_left level on DERIV at this arm: 1.119755 pp",
+                    "denominator_definition": "account-clustered 95% sampling width of the post-liveness started_and_left level on DERIV at this arm: 1.126317 pp",
                     "reconciled_with_other_arm": false
                   },
                   "started_and_left_sub_interval": {
-                    "value": 0.08908106710360279,
+                    "value": 0.08856203258972946,
                     "convention_label": "arm_b_convention",
                     "convention_definition": "arm_b_convention: the DENOMINATOR is the width of the 95% percentile bootstrap interval on the corresponding POST-LIVENESS LEVEL for the same outcome state, same arm and same population, resampled at the ACCOUNT level with B = 10,000 and seed 20260818. Named rather than assumed, so one arm's denominator cannot silently become the other's.",
                     "numerator_definition": "started-and-left conditional sub-interval width in percentage points",
-                    "denominator_definition": "account-clustered 95% sampling width of the post-liveness started_and_left level on DERIV at this arm: 1.119755 pp",
+                    "denominator_definition": "account-clustered 95% sampling width of the post-liveness started_and_left level on DERIV at this arm: 1.126317 pp",
                     "reconciled_with_other_arm": false
                   }
                 },
@@ -2788,23 +2790,23 @@
     "step_13s_non_headline_outputs_are_per_arm": "d3_prime, tested_ranges, conclusions_surviving, conclusions_not_surviving, d2_recomputed_inside_this_arm and action_type_counts each nest under by_producing_arm, exactly as the headline does. Step 13 is dual, so one slot would have been one slot where two arms write -- and the merge would have had to drop an arm or reconcile them.",
     "one_file_per_arm": "Each arm writes its own document and no arm writes into a document another arm writes into (decisions/0107). A DUAL STEP IS DIFFED BETWEEN TWO ARM FILES, BY THE HUMAN LEAD, BEFORE THE MERGE. The merged reader-facing document is Step 13b's, owned by the Human Lead, and it is the only document that holds both arms and the only one carrying cross_arm_divergences and limitations. Read $.document_scope first: it says which kind of file this is.",
     "where_the_two_conventions_are_held": "Where the two arms legitimately differ -- the bound over sampling width ratios use two conventions and are REPORTED, NOT RECONCILED -- the MERGED document holds both, under arms.a and arms.b. One slot per figure would force a reconciliation the spec forbids in the merged document; in a single arm's file it forces nothing, because there is no second arm's figure in it.",
-    "step9_b_resampling_frame_and_draw_order": "THE FRAME IS 2481 ACCOUNTS -- every account with at least one pair in the POSITION-4 output, built ONCE, and DRAWN FOR EVERY QUANTITY regardless of how much it contributes (decisions/0124). It is NOT the contributing subset: accounts the censoring rule excludes are part of the population the uncertainty is about, and drawing only contributors conditions the variance on the censoring outcome and treats survivorship as fixed. At the adopted arm 59 accounts are drawn and contribute zero on APPLY and 79 on DERIV; every one of them held position-4 pairs and every one of those pairs was removed by D10. THE DRAW ORDER IS ONE RNG, SEEDED ONCE PER FILE, its stream consumed CONTINUOUSLY, with all 24 intervals in this file evaluated against THE SAME REPLICATE SET (digest 6742eb76f042c88c) -- NOT re-seeded per group, because a per-group restart pairs a between-setting movement only WITHIN a group and Step 13 varies W across eight arms. THE FRAME DECLARATION DESCRIBES THE DRAW AND NOT THE SUPPORT (decisions/0124 SS4(1)): membership is 2481 at every arm and on both populations, while the contributing subset is 2422 on APPLY and 2402 on DERIV and moves with W, because keep_d10 contains max(W, 91). ONE FRAME SERVES BOTH POPULATIONS here, since the position-4 DERIV rows are a subset of the position-4 APPLY rows; decisions/0124 SS4(2)'s constraint -- that an APPLY-minus-DERIV delta cannot be paired at the account level where the two populations have different frames -- is recorded, and NO SUCH DELTA IS PUBLISHED IN THIS FILE.",
+    "step9_b_resampling_frame_draw_order_and_draw_mechanism": "THE FRAME IS 2481 ACCOUNTS -- every account with at least one pair in the POSITION-4 output, built ONCE, and DRAWN FOR EVERY QUANTITY regardless of how much it contributes (decisions/0124). It is NOT the contributing subset: accounts the censoring rule excludes are part of the population the uncertainty is about, and drawing only contributors conditions the variance on the censoring outcome and treats survivorship as fixed. At the adopted arm 59 accounts are drawn and contribute zero on APPLY and 79 on DERIV; every one of them held position-4 pairs and every one of those pairs was removed by D10. THE DRAW ORDER IS ONE RNG, SEEDED ONCE PER FILE, its stream consumed CONTINUOUSLY, with all 24 intervals in this file evaluated against THE SAME REPLICATE SET (digest cbff58df8b711d40) -- NOT re-seeded per group, because a per-group restart pairs a between-setting movement only WITHIN a group and Step 13 varies W across eight arms. THE DRAW MECHANISM IS THE GENERATOR numpy.random.default_rng, THE CALL rng.integers(0, n_frame, size=(m, n_frame)), AND WEIGHTS FORMED BY COUNTING THE DRAWN INDICES (decisions/0125) -- four things, and the chunking is not one of them, since CHUNK 200, CHUNK 500 and a single call give identical arrays under one seed. It is named because satisfying the draw ORDER does not determine the draw: this arm drew with `multinomial` under one module-scope RNG seeded once, which met decisions/0124 in full and still produced a different replicate set. THE FRAME DECLARATION DESCRIBES THE DRAW AND NOT THE SUPPORT (decisions/0124 SS4(1)): membership is 2481 at every arm and on both populations, while the contributing subset is 2422 on APPLY and 2402 on DERIV and moves with W, because keep_d10 contains max(W, 91). ONE FRAME SERVES BOTH POPULATIONS here, since the position-4 DERIV rows are a subset of the position-4 APPLY rows; decisions/0124 SS4(2)'s constraint -- that an APPLY-minus-DERIV delta cannot be paired at the account level where the two populations have different frames -- is recorded, and NO SUCH DELTA IS PUBLISHED IN THIS FILE.",
     "step9_b_arm_grid_days_is_not_this_arms_block": "$.arm_grid_days IS STEP 13's BLOCK. It is required at the root of every file and block_ownership marks it may_first_writer_fill, so THIS ARM FILLED IT AS FIRST WRITER AND IT IS NOT ITS OWN. The eight values are COPIED from the Human Lead's ruling at decisions/0075; they are not a measurement taken here and Step 9 varies nothing across them. Step 13 is dual, so a value neither of its arms wrote must be visible as such at the diff rather than inferred.",
     "step9_b_which_step8_namespace_was_consumed": "task-sheet.md says CONSUME STEP 8's OUTPUT and does not name which of Step 8's two arms supplies the pair-level tables. This arm read both approved waterfall artifacts for every consumed figure and processed/step8/a/ plus src/step8_a_lib.py for the pair-level arrays and the rule implementation. The unnamed choice is a spec gap, reported and not reconciled.",
     "step9_b_no_show_bound_interval_is_published_here": "Every interval in this file is an outcome-share quantity, whose binding cluster is the ACCOUNT, so every one of them says `account` and none inherits it silently. NO WINDOW-W PERCENTILE INTERVAL IS DECLARED: W's binding cluster is the SHOW and account-level resampling would understate it, and Step 6 is an approved gate whose instruction is 'Complete; do not re-derive'. There is therefore no unit disagreement to report in this file, and that is stated rather than left to be inferred from an absence.",
     "step9_b_d4_and_d9_publish_alongside": "The Step 9 instruction says to report the S3-without-S2 bound (D4) and the split-artifact bound (D9) ALONGSIDE the liveness bound, while decisions/0114 E8 forbids an arm file to write $.channel_classes at all. Both are followed here: the block carries the absence idiom, and the ALONGSIDE relation survives in $.scope_qualifiers, which records that the bound is covering with respect to insertion-dormancy exhaustively and OPEN ONLY ACROSS D4 AND D9. The tension is REPORTED, NOT RECONCILED.",
-    "step9_b_this_emission_supersedes": "THIS EMISSION SUPERSEDES artifacts/step9-headline-b.json, artifacts/step9-headline-b.md and artifacts/step9-working-figures-b.json ON TWO INDEPENDENT GROUNDS FOUND IN ONE STEP 9 PASS, and the two have DIFFERENT SCOPES. GROUND 1, decisions/0123 -- THE PREMIERE-CLOCK UNIT ERROR. It reaches the PREMIERE-ANCHORED 91-day arm and only that arm: every figure of that arm is superseded. GROUND 2, decisions/0124 -- THE RESAMPLING FRAME AND THE DRAW ORDER. It reaches EVERY CONFIDENCE INTERVAL IN THE FILE, on BOTH arms, INCLUDING the adopted W108_s2_finale arm, whose CI endpoints are therefore superseded too. NOTHING ELSE OF THE ADOPTED ARM MOVES: every point estimate, numerator, denominator, bound floor and ceiling, width, sub-interval, ceiling, three-ceiling sum, excess and pair count is not bootstrap-dependent, and each was verified unchanged leaf by leaf against the previous corrected emission. THE READER GETS TWO GENERATIONS AND NOT THREE: the stamped originals, and this one corrected emission naming both causes. It is a COLLAPSE, ruled by the Human Lead on 2026-08-23, of what would otherwise have been a second supersession layer.",
+    "step9_b_this_emission_supersedes": "THIS EMISSION SUPERSEDES artifacts/step9-headline-b.json, artifacts/step9-headline-b.md and artifacts/step9-working-figures-b.json ON TWO INDEPENDENT GROUNDS FOUND IN ONE STEP 9 PASS, and the two have DIFFERENT SCOPES. GROUND 1, decisions/0123 -- THE PREMIERE-CLOCK UNIT ERROR. It reaches the PREMIERE-ANCHORED 91-day arm and only that arm: every figure of that arm is superseded. GROUND 2, decisions/0124 AND decisions/0125 -- THE RESAMPLING FRAME, THE DRAW ORDER AND THE DRAW MECHANISM. It reaches EVERY CONFIDENCE INTERVAL IN THE FILE, on BOTH arms, INCLUDING the adopted W108_s2_finale arm, whose CI endpoints are therefore superseded too. decisions/0125 is one level below decisions/0124: this arm satisfied the draw ORDER literally -- one RNG at module scope, seeded once, one call, the matrix shared by every group -- and STILL drew a different replicate set, because `integers` and `multinomial` are different samplers over the same distribution and consume the stream differently. NOTHING ELSE OF THE ADOPTED ARM MOVES: every point estimate, numerator, denominator, bound floor and ceiling, width, sub-interval, ceiling, three-ceiling sum, excess and pair count is not bootstrap-dependent, and each was verified unchanged leaf by leaf against the previous corrected emission. THE READER GETS TWO GENERATIONS AND NOT FOUR: the stamped originals, and this one corrected emission naming every cause. It is a COLLAPSE, ruled by the Human Lead on 2026-08-23 and re-applied on 2026-08-24, of what would otherwise have been a second and then a third supersession layer. The values this path carried before the decisions/0125 re-emission are reachable, and only reachable, as `5393430:artifacts/step9-headline-corrected-2026-08-21-b.json` -- a bare path plus a hash resolves only until something else occupies the path, and an in-place re-emission is now the normal case rather than the exception (decisions/0125 SS6).",
     "step9_b_why_it_supersedes": "src/step9_b_1_compute.py converted the premiere-anchored T0 column to epoch seconds with prem.astype('int64') // 10 ** 9. The column's dtype is datetime64[us, UTC], so its integer view is MICROseconds; dividing by 10 ** 9 produced epoch-seconds / 1000 -- a 1970 date -- for every pair, in every entry, on both populations. The superseded figures were CORRECTLY COMPUTED from that vector and are kept, marked at each point of use, as the record of what the defect produced. src/step9_b_0_clock.py now reads the resolution off the dtype and cross-checks the cast elementwise; an unrecognised resolution is a hard stop, not a default.",
-    "step9_b_emission_provenance": "PROMOTED from processed/step9/b/preview/step9-headline-b.json (sha256:12 9e0db543db21) into artifacts/ by src/step9_b_7_emit_corrected.py (sha256:12 1a7159f94d21) at 2026-08-23T19:36:59Z, git eba1735. The promotion added the $.notes keys prefixed step9_b_this_emission / step9_b_why_it_supersedes / step9_b_emission / step9_b_arm_signature / step9_b_not_a_second_arm_file / step9_b_where_the_instance_value_lives / step9_b_open_defect_ / step9_b_resolved_defect_, and REWROTE EXACTLY ONE EXISTING LEAF -- $.document_scope.note, to carry this document's instance value, additively, with the source text surviving inside the new one and the addition asserted to be additive. NOTHING ELSE CHANGED; every measurement is leaf-for-leaf identical to that source and the promotion asserts it numerically rather than claiming it. $.generated_by still names the generator that computed the figures, which is not this script.",
+    "step9_b_emission_provenance": "PROMOTED from processed/step9/b/preview/step9-headline-b.json (sha256:12 0b552a18447a) into artifacts/ by src/step9_b_7_emit_corrected.py (sha256:12 40854173bd3a) at 2026-08-24T16:44:40Z, git 5393430. The promotion added the $.notes keys prefixed step9_b_this_emission / step9_b_why_it_supersedes / step9_b_emission / step9_b_arm_signature / step9_b_not_a_second_arm_file / step9_b_where_the_instance_value_lives / step9_b_open_defect_ / step9_b_resolved_defect_, and REWROTE EXACTLY ONE EXISTING LEAF -- $.document_scope.note, to carry this document's instance value, additively, with the source text surviving inside the new one and the addition asserted to be additive. NOTHING ELSE CHANGED; every measurement is leaf-for-leaf identical to that source and the promotion asserts it numerically rather than claiming it. $.generated_by still names the generator that computed the figures, which is not this script.",
     "step9_b_arm_signature": "SIGNED OFF BY THE PRODUCING ARM. This arm attests that every figure in this file was produced by its own pipeline at the settings recorded beside it, and that this emission is byte-identical in every measurement to processed/step9/b/preview/, which is what this arm's corrected run wrote. No figure in this file was hand-entered and none was edited after emission.",
     "step9_b_not_a_second_arm_file": "THIS IS NOT A SECOND ARM FILE. It is arm b's corrected emission of arm b's own document, and $.document_scope.arm is 'b' in both it and the file it supersedes. A merge that globbed artifacts/step9-headline-*.json on the arm field alone would pick up BOTH and could read them as two arms. THIS DOCUMENT THEREFORE CARRIES A DISTINCT INSTANCE VALUE -- 'DOCUMENT INSTANCE: step9-b-corrected-2026-08-21', at $.document_scope.note -- so the superseded file and this one are DISTINGUISHABLE rather than interchangeable. THAT IS ALL IT DOES: it makes the two tellable apart and states nothing about which a merge takes. The merge's input contract is Step 13b's, and Step 13b is the Human Lead's; an arm does not decide what the merge reads. Human Lead ruling 2, 2026-08-21.",
     "step9_b_where_the_instance_value_lives": "$.document_scope carries additionalProperties: false in artifacts/step8b-output-schema.json, and its permitted keys are role, producing_step, arm, merge, also_written_by_steps, isolation_rule, note and source. A NEW KEY WOULD FAIL THE SCHEMA, and the schema is Step 8b's rather than this arm's to widen, so the instance value is carried in the permitted free-text slot -- $.document_scope.note -- with a fixed leading token 'DOCUMENT INSTANCE: ' so it can be matched exactly rather than read out of prose. REPORTED as a constraint this emission worked within, not as a preference.",
-    "step9_b_why_it_supersedes_ground_2_frame_and_draw_order": "decisions/0124 fixed the two bootstrap elements decisions/0103 and decisions/0118 had left open. THE FRAME is every account with at least one pair in the POSITION-4 output, built ONCE, and drawn for every quantity regardless of how much it contributes -- NOT the contributing subset, because accounts the censoring rule excludes are part of the population the uncertainty is about, and drawing only contributors conditions the variance on the censoring outcome and treats survivorship as fixed. THE DRAW ORDER is ONE RNG, SEEDED ONCE PER FILE, its stream consumed continuously, with every quantity evaluated against THE SAME REPLICATE SET, not re-seeded per group -- because a per-group restart pairs a between-setting movement only WITHIN a group, and Step 13 varies W across eight arms. THIS ARM DID NEITHER: it built the frame per mask, 2,422 accounts on APPLY and 2,402 on DERIV, and constructed the RNG inside the per-group function. Both of this arm's mechanisms solved the order-independence hazard and decisions/0124 SS3 records that neither was wrong and that the spec named neither; the ruling chose between them. The before and after are MEASURED, not asserted, in src/step9_b_9_frame_repro.py -- the RNG construction site is located by parsing the module and the frames are recomputed from the masks -- run record logs/step9_b_frame_repro.txt.",
-    "step9_b_leaf_verification_of_this_emission": "decisions/0124 SS5 says the CI ENDPOINTS ONLY move in this rerun. THAT IS CHECKED HERE, NOT ASSERTED: this emission was compared leaf for leaf against the emission it replaces at this same path (artifacts/step9-headline-corrected-2026-08-21-b.json, sha256:12 c125cf13865f, generated 2026-08-21T21:56:18Z). 2015 leaves compared, of which 571 are numeric; 58 numeric leaves moved -- 48 CI endpoints and 10 ratios whose DENOMINATOR is an account-clustered CI width and which therefore move with the endpoints by construction (CLAUDE.md, derived figures, item 4). 0 moved that are neither, and a single one would have been a hard stop. 332 protected numeric leaves were examined across 10 named families -- point estimates, numerators, denominators, population sizes, bound floors and ceilings, widths, the conditional sub-interval, the three-ceiling sum and its excess, pair counts and account counts -- and 0 of them moved; a family matching zero leaves is a hard stop, so the check cannot pass by looking nowhere. 43 string leaves moved: interval notes and `quantity` sentences that restate a width, `denominator_definition`, the frame and draw-order text added at the point of use, and the generator sha, timestamp and git head.",
+    "step9_b_why_it_supersedes_ground_2_frame_and_draw_order": "decisions/0124 fixed the two bootstrap elements decisions/0103 and decisions/0118 had left open. THE FRAME is every account with at least one pair in the POSITION-4 output, built ONCE, and drawn for every quantity regardless of how much it contributes -- NOT the contributing subset, because accounts the censoring rule excludes are part of the population the uncertainty is about, and drawing only contributors conditions the variance on the censoring outcome and treats survivorship as fixed. THE DRAW ORDER is ONE RNG, SEEDED ONCE PER FILE, its stream consumed continuously, with every quantity evaluated against THE SAME REPLICATE SET, not re-seeded per group -- because a per-group restart pairs a between-setting movement only WITHIN a group, and Step 13 varies W across eight arms. THIS ARM DID NEITHER: it built the frame per mask, 2,422 accounts on APPLY and 2,402 on DERIV, and constructed the RNG inside the per-group function. Both of this arm's mechanisms solved the order-independence hazard and decisions/0124 SS3 records that neither was wrong and that the spec named neither; the ruling chose between them. The before and after are MEASURED, not asserted, in src/step9_b_9_frame_repro.py -- the RNG construction site is located by parsing the module and the frames are recomputed from the masks -- run record logs/step9_b_frame_repro.txt. decisions/0125 THEN FIXED THE DRAW MECHANISM ONE LEVEL LOWER, because satisfying the draw order does not determine the draw. THE SPEC NAMES FOUR THINGS AND ONLY FOUR: the generator numpy.random.default_rng, the seed 20260818, the call rng.integers(0, n_frame, size=(m, n_frame)), and that WEIGHTS ARE FORMED BY COUNTING THE DRAWN INDICES. THIS ARM DREW WITH `multinomial` UNDER ONE MODULE-SCOPE RNG SEEDED ONCE -- decisions/0124 in full -- AND STILL DREW A DIFFERENT REPLICATE SET: same seed, same frame, same B, different draws, because the two samplers consume the stream differently. The distribution was right in both; the realisation was not the same. THE CHUNKING IS NOT A SPEC ELEMENT (decisions/0125 SS3): CHUNK 200, CHUNK 500 and a single call give identical arrays under one seed, and a spec element earns its place by determining the output. The mechanism's before and after are MEASURED against the committed source, read from git, in src/step9_b_15_mechanism_repro.py -- run record logs/step9_b_mechanism_repro.txt.",
+    "step9_b_leaf_verification_of_this_emission": "decisions/0124 SS5 says the CI ENDPOINTS ONLY move in this rerun. THAT IS CHECKED HERE, NOT ASSERTED: this emission was compared leaf for leaf against the emission it replaces at this same path (artifacts/step9-headline-corrected-2026-08-21-b.json, sha256:12 6be487227e80, generated 2026-08-23T19:28:13Z). 2020 leaves compared, of which 571 are numeric; 58 numeric leaves moved -- 48 CI endpoints and 10 ratios whose DENOMINATOR is an account-clustered CI width and which therefore move with the endpoints by construction (CLAUDE.md, derived figures, item 4). 0 moved that are neither, and a single one would have been a hard stop. 332 protected numeric leaves were examined across 10 named families -- point estimates, numerators, denominators, population sizes, bound floors and ceilings, widths, the conditional sub-interval, the three-ceiling sum and its excess, pair counts and account counts -- and 0 of them moved; a family matching zero leaves is a hard stop, so the check cannot pass by looking nowhere. 32 string leaves moved: interval notes and `quantity` sentences that restate a width, `denominator_definition`, the frame and draw-order text added at the point of use, and the generator sha, timestamp and git head.",
     "step9_b_the_adopted_arm_moved_too": "STATED RATHER THAN LEFT TO PASS AS NOISE. decisions/0124 changes the DRAW for every quantity in this file, so the ADOPTED W108_s2_finale arm's CI endpoints move as well as the premiere arm's. That is expected under decisions/0124 SS5 -- which scopes the rerun at 12 level intervals and 12 paired movements, 48 endpoints, across 2 arm settings x 2 populations x 3 states -- and it is NOT a defect. NOTHING ELSE OF THE ADOPTED ARM MOVES, and $.notes.step9_b_leaf_verification_of_this_emission gives the counts that establish it.",
     "step9_b_open_defect_b_stamp_1": "THE STAMPS ON THE SUPERSEDED ORIGINALS NAME ONE GROUND AND THERE ARE NOW TWO. src/step9_b_6_stamp_superseded.py marked the premiere-anchored arm of artifacts/step9-headline-b.json and its two companions, and recorded that the adopted W108_s2_finale arm was NOT superseded. Under decisions/0124 the adopted arm's CI ENDPOINTS in those files are superseded too, on the second ground, and their stamps do not say so. THIS EMISSION DOES NOT FIX IT: the stamped originals were ruled SETTLED by the Human Lead on 2026-08-23 and this arm does not touch them; and a deliverable is corrected by rerunning its producing arm, never by hand-editing a sentence into it. REPORTED rather than repaired, and reported HERE because this file is where a reader of those originals is sent. It moves no number in this emission.",
     "step9_b_open_defect_how_to_read_these": "This arm's own defects in this arm's own files, published with the figures rather than held back. It moves no number in this emission.",
-    "step9_b_resolved_defect_b_boot_1": "THE RESAMPLING FRAME AND THE DRAW ORDER, corrected under decisions/0124. decisions/0124 fixed the two bootstrap elements decisions/0103 and decisions/0118 had left open. THE FRAME is every account with at least one pair in the POSITION-4 output, built ONCE, and drawn for every quantity regardless of how much it contributes -- NOT the contributing subset, because accounts the censoring rule excludes are part of the population the uncertainty is about, and drawing only contributors conditions the variance on the censoring outcome and treats survivorship as fixed. THE DRAW ORDER is ONE RNG, SEEDED ONCE PER FILE, its stream consumed continuously, with every quantity evaluated against THE SAME REPLICATE SET, not re-seeded per group -- because a per-group restart pairs a between-setting movement only WITHIN a group, and Step 13 varies W across eight arms. THIS ARM DID NEITHER: it built the frame per mask, 2,422 accounts on APPLY and 2,402 on DERIV, and constructed the RNG inside the per-group function. Both of this arm's mechanisms solved the order-independence hazard and decisions/0124 SS3 records that neither was wrong and that the spec named neither; the ruling chose between them. The before and after are MEASURED, not asserted, in src/step9_b_9_frame_repro.py -- the RNG construction site is located by parsing the module and the frames are recomputed from the masks -- run record logs/step9_b_frame_repro.txt. WHAT MOVED: the CI endpoints, and only the CI endpoints. All 24 intervals in this file moved -- 48 endpoints -- including the adopted W108_s2_finale arm's, which is expected under a ruling that changes the draw for every quantity in the file and is REPORTED here rather than left to pass as noise. Verified leaf by leaf against the previous corrected emission: the counts are in $.notes.step9_b_leaf_verification_of_this_emission.",
+    "step9_b_resolved_defect_b_boot_1": "THE RESAMPLING FRAME AND THE DRAW ORDER, corrected under decisions/0124. decisions/0124 fixed the two bootstrap elements decisions/0103 and decisions/0118 had left open. THE FRAME is every account with at least one pair in the POSITION-4 output, built ONCE, and drawn for every quantity regardless of how much it contributes -- NOT the contributing subset, because accounts the censoring rule excludes are part of the population the uncertainty is about, and drawing only contributors conditions the variance on the censoring outcome and treats survivorship as fixed. THE DRAW ORDER is ONE RNG, SEEDED ONCE PER FILE, its stream consumed continuously, with every quantity evaluated against THE SAME REPLICATE SET, not re-seeded per group -- because a per-group restart pairs a between-setting movement only WITHIN a group, and Step 13 varies W across eight arms. THIS ARM DID NEITHER: it built the frame per mask, 2,422 accounts on APPLY and 2,402 on DERIV, and constructed the RNG inside the per-group function. Both of this arm's mechanisms solved the order-independence hazard and decisions/0124 SS3 records that neither was wrong and that the spec named neither; the ruling chose between them. The before and after are MEASURED, not asserted, in src/step9_b_9_frame_repro.py -- the RNG construction site is located by parsing the module and the frames are recomputed from the masks -- run record logs/step9_b_frame_repro.txt. decisions/0125 THEN FIXED THE DRAW MECHANISM ONE LEVEL LOWER, because satisfying the draw order does not determine the draw. THE SPEC NAMES FOUR THINGS AND ONLY FOUR: the generator numpy.random.default_rng, the seed 20260818, the call rng.integers(0, n_frame, size=(m, n_frame)), and that WEIGHTS ARE FORMED BY COUNTING THE DRAWN INDICES. THIS ARM DREW WITH `multinomial` UNDER ONE MODULE-SCOPE RNG SEEDED ONCE -- decisions/0124 in full -- AND STILL DREW A DIFFERENT REPLICATE SET: same seed, same frame, same B, different draws, because the two samplers consume the stream differently. The distribution was right in both; the realisation was not the same. THE CHUNKING IS NOT A SPEC ELEMENT (decisions/0125 SS3): CHUNK 200, CHUNK 500 and a single call give identical arrays under one seed, and a spec element earns its place by determining the output. The mechanism's before and after are MEASURED against the committed source, read from git, in src/step9_b_15_mechanism_repro.py -- run record logs/step9_b_mechanism_repro.txt. WHAT MOVED: the CI endpoints, and only the CI endpoints. All 24 intervals in this file moved -- 48 endpoints -- including the adopted W108_s2_finale arm's, which is expected under a ruling that changes the draw for every quantity in the file and is REPORTED here rather than left to pass as noise. Verified leaf by leaf against the previous corrected emission: the counts are in $.notes.step9_b_leaf_verification_of_this_emission.",
     "step9_b_resolved_defect_b_md_1": "A TYPED COUNT IN THE .md, NOW MEASURED. src/step9_b_4_md.py asserted 'Six of the twelve movements this arm measured have negative endpoints' as a literal. It was true of the figures it described but could not follow them if they moved -- and decisions/0124 moved every movement endpoint in this file, which is exactly the case the defect was reserved for. The sentence now COUNTS the negative-endpoint movements off the emitted $.declared_intervals rather than asserting a number, and says that it does. It was carried as open in the previous emission because an arm does not widen the scope of an authorised rerun on its own; this rerun is the one that moves the figures the sentence describes.",
     "step9_b_resolved_defect_b_emit_1": "A WARRANT THIS EMISSION NOW CARRIES. The previous corrected emission stated, at $.arms[1].note and in section 9 of the .md, that the un-re-censored row set was 'CHECKED rather than assumed: T0 prime <= T0 holds for every pair' -- after the boolean that checked it, t0_is_earlier_or_equal_for_every_pair, had been removed as vacuous. A CLAIM OF HAVING CHECKED IS EITHER TRUE OR IT IS REMOVED, so on the Human Lead's ruling of 2026-08-21 this arm RECOMPUTED IT rather than softening the sentence. The check is T0PRIME-ORDER, src/step9_b_0_clock.py::verify_t0_prime_order; it runs in this pipeline, it RAISES, and the sentence now names it, states what each part compares and gives its coverage. IT IS NOT THE REMOVED BOOLEAN RESTORED: the bare inequality is true for the wrong reason on a collapsed T0' and cannot fail, so part 1 reconstructs T0' from the frame's own date STRINGS, which the epoch conversion never touches. DEMONSTRATED FAILING ON THE DEFECTIVE VECTOR at logs/step9_b_premiere_clock_repro.txt section 5 -- part 1 rejects it on 155,556 of 278,452 pairs, while part 2 run alone on that same vector passes, which is the whole of the case that part 1 is what makes the replacement failable. NO FIGURE IN THIS EMISSION MOVED: the recomputation added a check and rewrote three prose fields, and every numeric leaf is unchanged."
   }

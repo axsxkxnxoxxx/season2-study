@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-"""Step 9, arm b -- generate the 0124 register rows for the marked originals.
+"""Step 9, arm b -- generate the register rows for the marked originals (0124, then 0125).
+
+THE ROWS ARE MEASURED, SO THEY FOLLOW THE RULING WITHOUT BEING TOLD ABOUT IT. Every value is the
+difference between the marked original and WHATEVER THE CORRECTED EMISSION CURRENTLY HOLDS, so
+when decisions/0125 moved the corrected CI endpoints a second time this generator re-derived the
+set rather than needing an edit: two values fell under the control's 5e-5 tolerance and one rose
+above it. The block name still says 0124 because renaming a marker orphans the block it
+delimits; the reason text names both rulings.
 
 WHY. CLAUDE.md: "Register every superseded value the move creates, not just the one that
 prompted the correction." decisions/0124 supersedes the adopted arm's CI endpoints inside
@@ -38,8 +45,9 @@ END = "# <<< STEP9-B 0124 ROWS"
 FRAG = "artifacts/step9-headline-b"
 
 WHY = ("arm b W108_s2_finale CI endpoint or CI-derived figure, produced under the per-mask "
-       "frame and per-group re-seed that decisions/0124 fixed against; corrected value in "
-       "step9-headline-corrected-2026-08-21-b (0124)")
+       "frame and per-group re-seed that decisions/0124 fixed against AND the `multinomial` "
+       "draw mechanism that decisions/0125 fixed against; corrected value in "
+       "step9-headline-corrected-2026-08-21-b (0124, 0125)")
 
 TOL = 5e-5
 NUM = re.compile(r"(?<![\w.])(-?\d{1,3}(?:,\d{3})*(?:\.\d+)?|-?\d+\.\d+)(?![\w])")
