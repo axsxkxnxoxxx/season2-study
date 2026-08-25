@@ -5,8 +5,8 @@
   "step": 9,
   "arm": "a",
   "generator": "src/step9_a_4_working_figures.py",
-  "generator_sha256_12": "ec567ea40fa1",
-  "generated_at_utc": "2026-08-25T18:22:44Z",
+  "generator_sha256_12": "cd66884aec05",
+  "generated_at_utc": "2026-08-25T18:45:25Z",
   "api_calls_made": {
    "value": 0,
    "key": "$.api_calls"
@@ -20,6 +20,37 @@
   "working_file_mtime_utc": "2026-08-24T16:35:54Z",
   "produced_by_script": "src/step9_a_1_compute.py",
   "produced_by_script_sha256_12": "bafa1fe1c810",
+  "produced_by_script_sha256_12_provenance": {
+   "decision": "0129 ruling 3",
+   "what_is_verified": "that src/step9_a_1_compute.py, as it stands on disk NOW, is the script that wrote processed/step9/a/measured.json -- COMPARED, not assumed.",
+   "recorded_by_the_producer_at_write_time": true,
+   "recorded_in": "processed/step9/a/boot_weights_manifest.json",
+   "recorded_key": "$.generated_by_sha256",
+   "recorded_in_the_same_run_that_wrote": "processed/step9/a/measured.json",
+   "recorded_sha256_12": "bafa1fe1c810",
+   "live_sha256_12": "bafa1fe1c810",
+   "compared_by": "src/step9_a_4_working_figures.py :: provenance_gate()",
+   "on_disagreement": "HARD STOP. SystemExit before anything is written; the artifact is not re-emitted and the stale claim is never published.",
+   "absent_record_is": "a HARD STOP, never a default",
+   "same_run_corroboration": {
+    "checked": [
+     "n_frame vs bootstrap_settings.frame_accounts",
+     "B vs bootstrap_settings.B",
+     "seed vs bootstrap_settings.seed"
+    ],
+    "method": "compared against the values in the source they were derived from, not against a plausibility range (decisions/0123 SS3)",
+    "agreed": true
+   },
+   "frame_support_inputs_still_current": {
+    "checked": [
+     "processed/step9/a/boot_columns.npz",
+     "processed/step9/a/boot_weights.npz",
+     "processed/step9/a/measured.json"
+    ],
+    "agreed": true
+   },
+   "shown_rejecting_by": "src/step9_a_8_provenance_negctl.py"
+  },
   "step": {
    "value": 9,
    "key": "$.step"
@@ -79,6 +110,14 @@
   "frame_support_file_mtime_utc": "2026-08-25T18:10:38Z",
   "frame_support_produced_by_script": "src/step9_a_7_frame_support.py",
   "frame_support_produced_by_script_sha256_12": "ca0ecd81da2e",
+  "frame_support_produced_by_script_sha256_12_provenance": {
+   "decision": "0129 ruling 3",
+   "verified": false,
+   "status": "UNVERIFIED_ASSERTION -- hashed live here, not recorded at write time",
+   "why": "src/step9_a_7_frame_support.py records its PATH into frame_support.json but not its own HASH, so there is nothing to compare the live hash against. The field above therefore carries the same defect 0129 names, on the second producer: it goes false if that script is edited without re-running it, and this file cannot tell.",
+   "not_fixed_here_because": "recording it means editing that script and re-running it, which rewrites frame_support.json and moves two leaves this file publishes -- frame_support_file_sha256_12 and frame_support_file_mtime_utc. The run instruction is that nothing published moves, so this is REPORTED rather than done.",
+   "what_is_checked_instead": "P3 of the gate: the input hashes frame_support.json itself recorded still match those files live, so the file is current with respect to its inputs even though its producer is unverified."
+  },
   "why_two_source_files": "The frame's SUPPORT (decisions/0124 constraint (i)) is a property of the emitted column matrix rather than of the replicate set, so it was measured after stage 1 and written to its own file. Both are gitignored, so both need rescuing here.",
   "reading_key": "Every figure below is an object {value, key}. `key` is the JSON path in the working file named above; `value` is byte-for-byte what is at that path. Figures copied from the frame-support file carry a `file` field naming it, so the two sources cannot be confused for one."
  },
@@ -1491,6 +1530,12 @@
    "severity": "carried text, not this arm's measurement",
    "where": "$.import_gate.step8_published.right_censoring_two_lines_*.direction_on_the_headline",
    "what": "Prose copied from Step 8's artifact sits inside this arm's working output. It is Step 8's claim, not a measurement of this arm, and it is not transcribed into this extract."
+  },
+  {
+   "id": "A-WF-7",
+   "severity": "provenance -- one of two producers is still unverified",
+   "where": "$.source.frame_support_produced_by_script_sha256_12",
+   "what": "This arm found and fixed, under decisions/0129 ruling 3, a hash that asserted which script produced measured.json while nothing checked the assertion was current. The SAME defect remains on the second source file: src/step9_a_7_frame_support.py does not record its own hash at write time, so the field above is hashed live and cannot be compared. It is published marked UNVERIFIED. The fix requires editing and re-running that script, which moves two published leaves, so it awaits authorisation."
   }
  ],
  "sign_off": {

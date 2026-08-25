@@ -14,7 +14,7 @@ Neither run re-draws the bootstrap. Both read processed/step9/a/measured.json, w
 written by either.
 
 Run record goes to logs/ (CLAUDE.md, "Where a check's CODE lives, and where its OUTPUT lives"):
-    python3 src/step9_a_6_signblind_negctl.py
+    STEP_ARM=a python3 src/step9_a_6_signblind_negctl.py
 """
 import datetime as dt
 import json
@@ -25,6 +25,13 @@ import tempfile
 
 ROOT = "/Users/alyanashantel/Documents/season2-study"
 EMIT = os.path.join(ROOT, "src", "step9_a_2_emit.py")
+
+# decisions/0129 ruling 1: a control that invokes another process must PASS STEP_ARM THROUGH
+# rather than drop it, or the isolation channel reopens one level down. Inheritance carried it
+# when the operator remembered to set it; this makes it explicit and supplies this arm's own
+# value when they did not, so the child can never run un-scoped.
+CHILD_ENV = dict(os.environ)
+CHILD_ENV.setdefault("STEP_ARM", "a")
 
 SKIP_ANCHOR = ("declared = []\n"
                "for spec, pop, outcome, lo, hi in MOVEMENTS:\n"
@@ -57,7 +64,8 @@ with tempfile.TemporaryDirectory() as tmp:
                              "control would overwrite the real deliverable.")
         path = os.path.join(tmp, label + ".py")
         open(path, "w").write(prog)
-        r = subprocess.run([sys.executable, path], capture_output=True, text=True, cwd=ROOT)
+        r = subprocess.run([sys.executable, path], capture_output=True, text=True, cwd=ROOT,
+                           env=CHILD_ENV)
         tail = [ln for ln in r.stdout.splitlines() if "paired movements measured" in ln]
         results[label] = {
             "exit_code": r.returncode,
@@ -76,6 +84,7 @@ record = {
     "arm": "a", "step": "step9",
     "ran_at_utc": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
     "runs_examined": 2,
+    "step_arm_passed_to_children": CHILD_ENV.get("STEP_ARM"),
     "what_a_pass_means": ("the guard exits 0 on the emitter as it stands and NON-ZERO when the "
                           "withdrawn sign filter is reintroduced. A control that only observed "
                           "the passing run could not tell a working guard from one that cannot "

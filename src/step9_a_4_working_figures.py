@@ -23,6 +23,13 @@ another file.
 It does NOT read processed/step9/b/, any other arm's namespace, or pairs.npz -- and no emitted
 field is derived from any of them. Counts and account totals only; no pair-level rows.
 
+A PROVENANCE GATE runs before anything is written (decisions/0129 ruling 3): the hash this file
+publishes for the stage-1 producer is COMPARED against the hash that producer recorded itself, at
+write time, in the same run that wrote measured.json -- and a disagreement is a hard stop, not a
+note. Before it, the hash was taken live and published as an assertion nothing could check, which
+is false the moment the producer is edited without a stage-1 rerun. The gate is shown REJECTING a
+stale producer, not merely passing on a current one, by src/step9_a_8_provenance_negctl.py.
+
 Output: artifacts/step9-working-figures-a.json
 """
 
@@ -59,6 +66,129 @@ def sha256_of(path):
 def mtime_of(path):
     return dt.datetime.fromtimestamp(os.path.getmtime(path), dt.timezone.utc)\
         .strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+# ---------------------------------------------------------------------------------------------
+# PROVENANCE GATE -- decisions/0129 ruling 3. COMPARE, DO NOT ASSUME.
+# ---------------------------------------------------------------------------------------------
+# WHAT WAS WRONG. `source.produced_by_script_sha256_12` was hashed LIVE from the producer at
+# transcription time and published as the assertion "this script produced measured.json". That
+# assertion goes false the instant the producer is edited without a stage-1 rerun, and NOTHING
+# CHECKED IT. That is the class 0129 names: a claim whose mechanism cannot deliver it.
+#
+# WHY NO STAGE-1 RERUN IS NEEDED TO INSTALL THE FIX. The producer ALREADY records its own hash
+# AT WRITE TIME -- src/step9_a_1_compute.py hashes its own source and writes it to
+# boot_weights_manifest.json, in the same execution that writes measured.json (the manifest is
+# written first, both unconditionally, one process). The recorded half of the ruling therefore
+# already exists on disk. What was missing was the COMPARISON, and the comparison is here.
+#
+# THE GATE HAS THREE PARTS AND EVERY ONE OF THEM HARD-STOPS:
+#   P1  recorded producer hash (write time)  ==  live hash of the producer now
+#   P2  the manifest's {n_frame, B, seed}    ==  measured.json's {frame_accounts, B, seed}
+#       -- corroboration that the two stage-1 outputs come from ONE run, checked against the
+#          source the values were derived from rather than against a plausibility range
+#          (decisions/0123 SS3: a range test cannot tell a wrong value from a right one)
+#   P3  frame_support.json's recorded input hashes == those files live
+#       -- the second source file's currency w.r.t. its own inputs
+#
+# An ABSENT record is a HARD STOP, never a pass: if the manifest or a key were missing, falling
+# back to publishing the live hash would restore the assumption this gate replaces.
+#
+# LIMIT, STATED BECAUSE IT IS NOT COVERED: src/step9_a_7_frame_support.py records its PATH into
+# frame_support.json but not its own HASH, so `frame_support_produced_by_script_sha256_12` cannot
+# be verified the way P1 verifies the stage-1 producer. Recording it requires editing that script
+# and re-running it, which moves published leaves (that file's hash and mtime), so it is reported
+# and NOT done here. The field is published marked UNVERIFIED rather than silently asserted.
+PRODUCER_MANIFEST_REL = "processed/step9/a/boot_weights_manifest.json"
+PRODUCER_MANIFEST = os.path.join(ROOT, PRODUCER_MANIFEST_REL)
+COMPUTE = os.path.join(ROOT, COMPUTE_REL)
+
+
+def _stop(msg):
+    raise SystemExit("PROVENANCE GATE (decisions/0129): HARD STOP.\n" + msg
+                     + "\nNOTHING WAS WRITTEN to " + OUT)
+
+
+def provenance_gate():
+    """Compare the producer hash RECORDED AT WRITE TIME against the live one. Hard-stop on
+    disagreement. Returns the record that is published alongside the figure it licenses."""
+    if not os.path.exists(PRODUCER_MANIFEST):
+        _stop("  No recorded producer hash: " + PRODUCER_MANIFEST_REL + " does not exist.\n"
+              "  An absent record is not a pass -- without it the published producer hash would "
+              "be an assumption again.")
+    man = json.load(open(PRODUCER_MANIFEST))
+    for k in ("generated_by", "generated_by_sha256", "n_frame", "B", "seed"):
+        if k not in man:
+            _stop("  " + PRODUCER_MANIFEST_REL + " has no key `" + k + "`.")
+    if os.path.realpath(man["generated_by"]) != os.path.realpath(COMPUTE):
+        _stop("  The recorded producer is not the script this extract names.\n"
+              "    recorded: " + man["generated_by"] + "\n    named   : " + COMPUTE)
+
+    # ---- P1 -------------------------------------------------------------------------------
+    recorded, live = man["generated_by_sha256"], sha256_of(COMPUTE)
+    if recorded != live:
+        _stop("  STALE PRODUCER.\n"
+              "    recorded at write time by " + COMPUTE_REL + ": " + recorded + "\n"
+              "    live on disk now                          : " + live + "\n"
+              "  " + COMPUTE_REL + " has been edited since it wrote " + SRC_REL + ". Publishing "
+              "the live hash would assert that the EDITED script produced the un-rerun working "
+              "file.\n  Restore the producer, or re-run stage 1 -- which is a separate "
+              "authorisation, because it re-draws the bootstrap and moves CI endpoints.")
+
+    # ---- P2 -------------------------------------------------------------------------------
+    bs = M["bootstrap_settings"]
+    pairs = [("n_frame", man["n_frame"], "frame_accounts", bs["frame_accounts"]),
+             ("B", man["B"], "B", bs["B"]),
+             ("seed", man["seed"], "seed", bs["seed"])]
+    bad = [(a, x, b, y) for a, x, b, y in pairs if x != y]
+    if bad:
+        _stop("  The two stage-1 outputs disagree, so they are not from one run:\n"
+              + "\n".join("    manifest.%s = %r  but  measured.json.bootstrap_settings.%s = %r"
+                          % t for t in bad))
+
+    # ---- P3 -------------------------------------------------------------------------------
+    fs_inputs = FS["read_from"]
+    stale = []
+    for rel, rec12 in sorted(fs_inputs.items()):
+        path = os.path.join(ROOT, rel)
+        if not os.path.exists(path):
+            stale.append((rel, rec12, "MISSING"))
+        elif sha256_of(path)[:12] != rec12:
+            stale.append((rel, rec12, sha256_of(path)[:12]))
+    if stale:
+        _stop("  " + FRAME_SUPPORT_REL + " was built from inputs that have since changed:\n"
+              + "\n".join("    %s recorded %s, live %s" % t for t in stale))
+
+    return {
+        "decision": "0129 ruling 3",
+        "what_is_verified": ("that src/step9_a_1_compute.py, as it stands on disk NOW, is the "
+                             "script that wrote processed/step9/a/measured.json -- COMPARED, "
+                             "not assumed."),
+        "recorded_by_the_producer_at_write_time": True,
+        "recorded_in": PRODUCER_MANIFEST_REL,
+        "recorded_key": "$.generated_by_sha256",
+        "recorded_in_the_same_run_that_wrote": SRC_REL,
+        "recorded_sha256_12": recorded[:12],
+        "live_sha256_12": live[:12],
+        "compared_by": GENERATOR_REL + " :: provenance_gate()",
+        "on_disagreement": ("HARD STOP. SystemExit before anything is written; the artifact is "
+                            "not re-emitted and the stale claim is never published."),
+        "absent_record_is": "a HARD STOP, never a default",
+        "same_run_corroboration": {
+            "checked": ["n_frame vs bootstrap_settings.frame_accounts",
+                        "B vs bootstrap_settings.B", "seed vs bootstrap_settings.seed"],
+            "method": ("compared against the values in the source they were derived from, not "
+                       "against a plausibility range (decisions/0123 SS3)"),
+            "agreed": True,
+        },
+        "frame_support_inputs_still_current": {
+            "checked": sorted(fs_inputs), "agreed": True,
+        },
+        "shown_rejecting_by": "src/step9_a_8_provenance_negctl.py",
+    }
+
+
+PROVENANCE = provenance_gate()
 
 
 def get(path):
@@ -435,6 +565,18 @@ defects = [
                  "is Step 8's claim, not a measurement of this arm, and it is not transcribed "
                  "into this extract."),
     },
+    {
+        "id": "A-WF-7",
+        "severity": "provenance -- one of two producers is still unverified",
+        "where": "$.source.frame_support_produced_by_script_sha256_12",
+        "what": ("This arm found and fixed, under decisions/0129 ruling 3, a hash that asserted "
+                 "which script produced measured.json while nothing checked the assertion was "
+                 "current. The SAME defect remains on the second source file: "
+                 "src/step9_a_7_frame_support.py does not record its own hash at write time, so "
+                 "the field above is hashed live and cannot be compared. It is published marked "
+                 "UNVERIFIED. The fix requires editing and re-running that script, which moves "
+                 "two published leaves, so it awaits authorisation."),
+    },
 ]
 
 # ---------------------------------------------------------------------------------------------
@@ -469,6 +611,10 @@ doc = {
         "working_file_mtime_utc": mtime_of(SRC),
         "produced_by_script": COMPUTE_REL,
         "produced_by_script_sha256_12": sha256_of(os.path.join(ROOT, COMPUTE_REL))[:12],
+        # decisions/0129 ruling 3: the line above is no longer an assertion. It is licensed by
+        # the gate below, which compared it against the hash the producer recorded AT WRITE TIME
+        # and would have hard-stopped this run on disagreement.
+        "produced_by_script_sha256_12_provenance": PROVENANCE,
         "step": fig("step"), "instance": fig("instance"), "stage": fig("stage"),
         "tau_pull_utc": fig("tau_pull_utc"), "H_days": fig("H_days"),
         "step8_inputs_consumed": {k: {"value": v, "key": f"$.consumed_from_step8.{k}"}
@@ -479,6 +625,26 @@ doc = {
         "frame_support_produced_by_script": FRAME_SUPPORT_SCRIPT_REL,
         "frame_support_produced_by_script_sha256_12":
             sha256_of(os.path.join(ROOT, FRAME_SUPPORT_SCRIPT_REL))[:12],
+        "frame_support_produced_by_script_sha256_12_provenance": {
+            "decision": "0129 ruling 3",
+            "verified": False,
+            "status": "UNVERIFIED_ASSERTION -- hashed live here, not recorded at write time",
+            "why": ("src/step9_a_7_frame_support.py records its PATH into frame_support.json "
+                    "but not its own HASH, so there is nothing to compare the live hash "
+                    "against. The field above therefore carries the same defect 0129 names, on "
+                    "the second producer: it goes false if that script is edited without "
+                    "re-running it, and this file cannot tell."),
+            "not_fixed_here_because": ("recording it means editing that script and re-running "
+                                       "it, which rewrites frame_support.json and moves two "
+                                       "leaves this file publishes -- frame_support_file_"
+                                       "sha256_12 and frame_support_file_mtime_utc. The run "
+                                       "instruction is that nothing published moves, so this is "
+                                       "REPORTED rather than done."),
+            "what_is_checked_instead": ("P3 of the gate: the input hashes frame_support.json "
+                                        "itself recorded still match those files live, so the "
+                                        "file is current with respect to its inputs even though "
+                                        "its producer is unverified."),
+        },
         "why_two_source_files": (
             "The frame's SUPPORT (decisions/0124 constraint (i)) is a property of the emitted "
             "column matrix rather than of the replicate set, so it was measured after stage 1 "
