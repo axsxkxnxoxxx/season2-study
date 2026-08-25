@@ -1,6 +1,6 @@
 # Step 9 — Headline result. ARM `a`.
 
-**Build** `step9/a/2026-08-20`, generated `2026-08-20T19:36:39Z` by `src/step9_a_2_emit.py` (sha256-12 `5ddad64fc8d4`). Machine-readable form: `artifacts/step9-headline-a.json`, written into Step 8b's schema `urn:season2-study:step8b-output-schema:1.9.0` and checked against it with `src/step8b_validate.py` before this file was written. The control's own output is a run record, not a finding of this arm's, and it is at `logs/step9/a_validate.json`.
+**Build** `step9/a/2026-08-20`, generated `2026-08-25T17:05:50Z` by `src/step9_a_2_emit.py` (sha256-12 `5ddad64fc8d4`). Machine-readable form: `artifacts/step9-headline-a.json`, written into Step 8b's schema `urn:season2-study:step8b-output-schema:1.10.0` and checked against it with `src/step8b_validate.py` before this file was written. The control's own output is a run record, not a finding of this arm's, and it is at `logs/step9/a_validate.json`.
 
 **This is ONE ARM of a dual step.** It has not read the other arm's file or output folder, has not diffed anything, and carries no cross-arm block. `$.cross_arm_divergences` and `$.limitations` are omitted; they are the Human Lead's. The diff between the two arms is the dual control and it is the Human Lead's to run.
 

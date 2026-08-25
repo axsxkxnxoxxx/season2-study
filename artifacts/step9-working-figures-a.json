@@ -6,7 +6,7 @@
   "arm": "a",
   "generator": "src/step9_a_4_working_figures.py",
   "generator_sha256_12": "3c0c864490d2",
-  "generated_at_utc": "2026-08-21T19:57:16Z",
+  "generated_at_utc": "2026-08-25T17:06:41Z",
   "api_calls_made": {
    "value": 0,
    "key": "$.api_calls"
@@ -17,9 +17,9 @@
   "working_file": "processed/step9/a/measured.json",
   "working_file_sha256": "8c4762379afb7414c918e156711d7dbb0d4095efc0d0662ea83f8330767ecd45",
   "working_file_sha256_12": "8c4762379afb",
-  "working_file_mtime_utc": "2026-08-20T19:28:14Z",
+  "working_file_mtime_utc": "2026-08-24T16:35:54Z",
   "produced_by_script": "src/step9_a_1_compute.py",
-  "produced_by_script_sha256_12": "09110720b26d",
+  "produced_by_script_sha256_12": "bafa1fe1c810",
   "step": {
    "value": 9,
    "key": "$.step"

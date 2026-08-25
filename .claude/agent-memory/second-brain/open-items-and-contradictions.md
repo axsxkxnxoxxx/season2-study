@@ -1507,7 +1507,7 @@ Verified after the Step 6 gate:
 - **Carried, not closed:** ***the table-under-test class, THIRD occurrence*** — `S42` reads all three
   version identifiers from the file under test, so it catches disagreement and **can never catch a
   schema uniformly one version behind its generator.** **Each occurrence arrived inside the fix for a
-  prior finding.** To close before the next version bump.
+~~prior finding.** To close before the next version bump.~~ ***CLOSED 2026-08-24 by `S44` (`0126`), which compares the artifact against the GENERATOR's imported constant and against `build_schema()`'s shape — the two states `S42` could never see. Struck by `0127`.***
 
 Related: [[glossary-terms-and-thresholds]], [[gate-step1-outcome-definition]],
 [[gate-step5-contamination]], [[population-chain-steps-2-3-4]], [[decision-log-step18]],

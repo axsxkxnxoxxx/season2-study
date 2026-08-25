@@ -993,6 +993,16 @@ outputs.
 
 ---
 
+- ***A CI ENDPOINT'S TYPE FOLLOWS ITS STATISTIC*** (`0126`, propagated by `0127`). **A LEVEL endpoint
+  is a PERCENTAGE** — `[0, 100]`, and **a negative one is not a possible measurement.** **A MOVEMENT
+  endpoint is a PERCENTAGE-POINT DIFFERENCE: it can be zero and IT CAN BE NEGATIVE**, negative wherever
+  the liveness filter LOWERS the share. **`$defs.pp` for movements, `$defs.percent` for levels.**
+  ***NEVER DROP AN INTERVAL BECAUSE ITS SIGN WILL NOT FIT — that is cherry-picking by sign.*** **It is
+  what happened before this was written down:** an arm computed **eighteen** movements, could not write
+  the six with negative endpoints, **published nine of eighteen** — **because the distinction lived ONLY
+  in the schema, and a writer reads its own definition file and this one, not the schema's `$defs`.**
+  ***THE FACT EXISTED ONLY WHERE A WRITER DOES NOT READ.*** **A figure that will not fit the slot you
+  are given is a defect to REPORT, never a figure to drop.**
 - ***THE DRAW MECHANISM IS FIXED*** (`0125`). **`0124` fixed the frame and the draw order; an arm
   satisfied that LITERALLY and STILL drew a different replicate set, because `integers` and
   `multinomial` are different samplers over the same distribution and consume the stream differently.**

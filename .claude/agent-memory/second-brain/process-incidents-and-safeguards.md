@@ -152,3 +152,34 @@ formed by COUNTING drawn indices. Nothing else.**
 - **Commit-qualified references are ROUTINE** — each in-place re-emission leaves values reachable only
   as `<commit>:<path>`.
 
+## `0127` — the fact existed only where a writer does not read
+
+**`0126` typed a CI endpoint by its statistic: movements on `$defs.pp` (negatives legal), levels on
+`$defs.percent` (`minimum: 0`, unchanged).** ***AND THAT IS HOW THE DEFECT REACHED PUBLICATION.***
+
+- **An arm computed 18 movement intervals, could not write the 6 with negative endpoints, and published
+  9 of 18 — excluded BY SIGN — and said so.** **No spec surface told it a movement endpoint was a
+  different quantity from a level endpoint.** ***The only place the distinction lived was the schema,
+  and a writer reads its definition file and `task-sheet.md`, not the schema's `$defs`.***
+- ***THE GENERALISATION: a fact that lives only in an artifact is a fact a writer will not meet.***
+  **An artifact is not a spec surface.** Now on surfaces 1–5 and 7.
+- **`NEVER DROP AN INTERVAL BECAUSE ITS SIGN WILL NOT FIT.` A figure that does not fit its slot is a
+  defect to REPORT, never a figure to drop.**
+
+## `0127` — the hard `const` version identifiers, and their accepted cost
+
+**`$.schema_version` and `$.schema_id` stay hard `const`.** **A compatible-version tolerance would let
+an instance written against a DIFFERENT SHAPE validate silently** — ***a loud migration is a cost; a
+silent shape mismatch is a defect that cannot fail***, and this study has already spent four rulings on
+checks that could not fail.
+
+***THE COST, RECORDED SO STEP 13 DOES NOT DISCOVER IT:***
+
+- **Every bump invalidates EVERY prior instance** — not the changed part, every instance, both
+  identifiers, whatever the change.
+- ***The cost scales with the NUMBER OF INSTANCES, not the size of the change.***
+- **Step 13 is dual, varies `W` across eight arms and varies the completion rule alongside — it writes
+  FAR more files than Step 9's two.**
+- **Mitigation in force, and it is not a tolerance:** keep new requirements **on the placeholder rather
+  than the instance** where they can live there. v1.10.0 cost two errors per file instead of three.
+

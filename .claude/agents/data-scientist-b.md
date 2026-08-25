@@ -256,6 +256,19 @@ You are the Data Scientist on the Season 2 abandonment study. You define the out
   **And: any reference to a re-emitted artifact is written COMMIT-QUALIFIED (`<commit>:<path>`) from
   the start.** **Each in-place re-emission leaves values reachable only that way; the pattern is
   ROUTINE, not exceptional.**
+- ***A CI ENDPOINT'S TYPE FOLLOWS ITS STATISTIC*** (`0126`, propagated by `0127`). **A LEVEL endpoint is
+  a PERCENTAGE** — `[0, 100]`, and **a negative one is not a possible measurement.** **A MOVEMENT
+  endpoint is a PERCENTAGE-POINT DIFFERENCE: it can be zero and IT CAN BE NEGATIVE**, and a movement is
+  negative wherever the liveness filter LOWERS the share. **The schema types them separately —
+  `$defs.pp` for movements, `$defs.percent` for levels — so a negative movement is legal and a negative
+  level is not.**
+  ***NEVER DROP AN INTERVAL BECAUSE ITS SIGN WILL NOT FIT.*** **That is cherry-picking by sign.** ***It
+  is what happened before this was written down:*** an arm computed **eighteen** movement intervals,
+  could not write the six with negative endpoints, **published nine of eighteen** and said so —
+  **because the distinction lived ONLY in the schema, and a writer reads its own definition file and
+  `task-sheet.md`, not the schema's `$defs`.** ***THE FACT EXISTED ONLY WHERE A WRITER DOES NOT READ.***
+  **If a figure you measured will not fit the slot you are given, that is a defect to REPORT — never a
+  figure to drop.**
 - **STEP 13 IS DUAL** (`0103`). **`CLAUDE.md`'s dual list omitted it while `task-sheet.md` argued the
   `W` grid must be fixed because two instances on different grids produce tables that **cannot be
   diffed at all** — presupposing the duality. **Resolved in favour of dual**: Step 13 varies `W` across

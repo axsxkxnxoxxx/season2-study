@@ -1,13 +1,13 @@
 {
- "schema_version": "1.9.0",
- "schema_id": "urn:season2-study:step8b-output-schema:1.9.0",
+ "schema_version": "1.10.0",
+ "schema_id": "urn:season2-study:step8b-output-schema:1.10.0",
  "placeholder": false,
  "generated_by": {
   "generator": "src/step9_a_2_emit.py",
   "generator_sha256_12": "5ddad64fc8d4",
-  "generated_at_utc": "2026-08-20T19:36:39Z",
+  "generated_at_utc": "2026-08-25T17:05:50Z",
   "build_tag": "step9/a/2026-08-20",
-  "git_head_short": "45e2bdd",
+  "git_head_short": "3e8653e",
   "host_step": "Step 9, headline result",
   "written_by": "Data Scientist, instance a",
   "inputs": [
@@ -30,7 +30,8 @@
   "count": -999,
   "percent": -999.0,
   "string_prefix": "PLACEHOLDER \u2014 NOT A MEASUREMENT",
-  "rule": "Structure is real, measurements are sentinels. Identifiers, keys, enum values, booleans, refs, definitions and the provenance block are written as they would really appear, so every branch can be built against. Every slot the schema marks x-measurement holds -999 or -999.0, and every slot it marks x-writer-text carries the string prefix. Both are reserved: neither may appear in a file whose `placeholder` flag is false, which is what stops a leftover placeholder value surviving into a published file."
+  "type_fixture_rule": "THE ONE DECLARED EXCEPTION, and it is declared here rather than left in a check's source (Human Lead ruling, 2026-08-24). An interval marked `is_type_fixture` carries REAL endpoints instead of the sentinel, because -999.0 satisfies an endpoint slot through the reserved-value branch and never through the numeric one -- so a sentinel endpoint exercises no type, and the percent/pp mistyping in $defs/ci survived five reviews behind one. A fixture may appear ONLY in a file whose `placeholder` flag is true, its values are given no special treatment by the schema, and check S45 requires a placeholder to carry at least one real NEGATIVE movement endpoint. -99.9 and -9.9 percentage points are the values used: real to the validator, impossible as a measurement of this study.",
+  "rule": "Structure is real, measurements are sentinels. Identifiers, keys, enum values, booleans, refs, definitions and the provenance block are written as they would really appear, so every branch can be built against. Every slot the schema marks x-measurement holds -999 or -999.0 -- except a declared type fixture, for which see `type_fixture_rule` -- and every slot it marks x-writer-text carries the string prefix. Both are reserved: neither may appear in a file whose `placeholder` flag is false, which is what stops a leftover placeholder value surviving into a published file."
  },
  "arm_key": {
   "fields": [
@@ -3619,6 +3620,7 @@
   "no_conversion_layer": "Steps 9 through 13 write into this file directly. There is no intermediate format and no translation step, because a conversion layer is a second definition of every figure it touches.",
   "one_definition_per_figure": "Where a figure would otherwise appear twice, this schema references it: the scope qualifier is defined once under $.scope_qualifiers and referenced from every bound, and bootstrap settings are defined once under $.bootstrap_settings and referenced from every interval.",
   "bootstrap_is_fixed": "ALL FOUR ELEMENTS ARE FIXED BY THE SPEC: the resample count, the seed, the resampling unit for the outcome shares (decisions/0103) and the statistic (decisions/0118). They are stated at $.bootstrap_spec, restated at every interval, and checked against each other. THE STATISTIC IS BOTH LEVELS AND PAIRED MOVEMENTS: a run produces both objects, the registry holds the pair, and each interval says which of the two it is. A level and a movement are never compared to each other.",
+  "a_ci_endpoints_type_follows_its_statistic": "v1.10.0, Human Lead ruling 2026-08-24, AND A WRITER OF STEPS 9 THROUGH 13 NEEDS IT. A `levels` interval's endpoints are PERCENTAGES on [0, 100]. A `movements` interval's endpoints are PERCENTAGE-POINT DIFFERENCES and MAY BE NEGATIVE -- a paired movement is a difference between two configurations of one share, and the sign is the direction. The two forms are the same field under different types, selected by $.declared_intervals[].ci.statistic, so THE STATISTIC LABEL IS LOAD-BEARING ON THE TYPE and not only on the reading. $defs/percent was NOT widened to admit negatives: that would let a level interval carry a negative endpoint, which is not a possible measurement, and would trade a defect that fails loudly for one that cannot fail at all. The movement branch is occupied in this file by a DECLARED TYPE FIXTURE -- see $.sentinels.type_fixture_rule -- because every check in every build before this one passed over sentinel endpoints, and a branch no fixture occupies is not covered.",
   "which_steps_are_dual": "Steps 9 and 13 are dual and nest their payloads per producing arm. Steps 10, 11 and 12 are single-arm and write one payload under `sole`. Which of the two a block used is a field, not something a consumer has to infer from the keys.",
   "an_arm_entry_is_one_steps_measurement": "An arm entry is identified by (W_days, clock_origin, producing_step, adopted_rule_revision). Step 9's W = 108 and Step 13's W = 108 are different measurements of one setting and both appear, as separate entries; so are two runs at one setting under different rule revisions. The revision is READ from the adopted-rule file and $.adopted_rule_revision says which file and key. An entry carries the blocks its own producing step publishes and no others; $.block_ownership names each block's publisher, and a block missing from an entry is not a gap -- it is in the entry of the step that publishes it.",
   "step_13s_non_headline_outputs_are_per_arm": "d3_prime, tested_ranges, conclusions_surviving, conclusions_not_surviving, d2_recomputed_inside_this_arm and action_type_counts each nest under by_producing_arm, exactly as the headline does. Step 13 is dual, so one slot would have been one slot where two arms write -- and the merge would have had to drop an arm or reconcile them.",

@@ -10,7 +10,7 @@
   "adopts": "nothing",
   "api_calls": 0,
   "generated_by": "src/step9_b_5_working_figures.py",
-  "generated_at_utc": "2026-08-24T16:44:33Z",
+  "generated_at_utc": "2026-08-25T17:07:51Z",
   "sources": [
     {
       "path": "processed/step9/b/stage1_counts.json",
@@ -1002,7 +1002,7 @@
     "leaf_verification_against_the_previous_emission_at_this_path": {
       "status": "VERIFIED",
       "compared_against": "artifacts/step9-working-figures-corrected-2026-08-21-b.json",
-      "compared_against_sha256_12": "d32a0e055d56",
+      "compared_against_sha256_12": "c6105eec5865",
       "compared_against_generated_at_utc": null,
       "leaves_in_previous": 570,
       "leaves_in_this_emission": 570,
@@ -1079,10 +1079,9 @@
       "protected_families_matching_no_leaf_note": "NAMED, NOT PASSED OVER. A family with no leaf in this document is a family this document does not carry -- the working-figures extract holds a different selection of figures from the headline -- and it is listed so the coverage is readable rather than inferred from a total. Every family matching zero would be a hard stop.",
       "protected_numeric_leaves_examined": 4,
       "protected_numeric_leaves_moved": 0,
-      "string_leaves_moved": 2,
+      "string_leaves_moved": 1,
       "string_leaves_moved_paths": [
-        "$.generated_at_utc",
-        "$.sources[1].sha256_12"
+        "$.generated_at_utc"
       ],
       "leaves_present_in_the_previous_emission_and_absent_here": 0,
       "leaves_present_here_and_absent_from_the_previous_emission": 0,
@@ -1098,11 +1097,11 @@
     },
     "arm_signature": "SIGNED OFF BY THE PRODUCING ARM. This arm attests that every figure in this file was produced by its own pipeline at the settings recorded beside it, and that this emission is byte-identical in every measurement to processed/step9/b/preview/, which is what this arm's corrected run wrote. No figure in this file was hand-entered and none was edited after emission.",
     "promoted_from": "processed/step9/b/preview/step9-working-figures-b.json",
-    "promoted_from_sha256_12": "f51283a45400",
+    "promoted_from_sha256_12": "7f5b82b78fc6",
     "promoted_by": "src/step9_b_7_emit_corrected.py",
     "promoted_by_sha256_12": "40854173bd3a",
-    "promoted_at_utc": "2026-08-24T16:44:40Z",
-    "git_head_short": "5393430",
+    "promoted_at_utc": "2026-08-25T17:08:12Z",
+    "git_head_short": "3e8653e",
     "promotion_changed_no_measurement": "asserted numerically, not claimed: every leaf of the source is present here with the same value, and the only added key is this one.",
     "open_defects_in_this_emission": {
       "b-stamp-1": "THE STAMPS ON THE SUPERSEDED ORIGINALS NAME ONE GROUND AND THERE ARE NOW TWO. src/step9_b_6_stamp_superseded.py marked the premiere-anchored arm of artifacts/step9-headline-b.json and its two companions, and recorded that the adopted W108_s2_finale arm was NOT superseded. Under decisions/0124 the adopted arm's CI ENDPOINTS in those files are superseded too, on the second ground, and their stamps do not say so. THIS EMISSION DOES NOT FIX IT: the stamped originals were ruled SETTLED by the Human Lead on 2026-08-23 and this arm does not touch them; and a deliverable is corrected by rerunning its producing arm, never by hand-editing a sentence into it. REPORTED rather than repaired, and reported HERE because this file is where a reader of those originals is sent. It moves no number in this emission.",
