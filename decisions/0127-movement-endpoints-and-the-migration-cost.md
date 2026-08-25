@@ -114,6 +114,117 @@ INDEPENDENTLY, REPORTED IT, AND NEITHER USED IT*** — each measured its own fil
 returning the Human Lead's cross-arm diff record; a pre-2026-08-24 message stating the other arm's exit
 code; and a filter-scoped `ls` where a pattern-scoped one was required. ***Every one was volunteered.***
 
+## 4b. ***AN ACCOMMODATION IS A DEBT THAT COMES DUE WHEN THE CONSTRAINT IS LIFTED***
+
+**Human Lead ruling, 2026-08-25: arm `a` completes to all eighteen. Authorised rerun, separate from the
+migration.** **Publish all eighteen; REWRITE the nine notes rather than supplementing them** — *"a note
+claiming a constraint that no longer exists is not corrected by adding a second sentence beside it."*
+**Two matching `.md` lines go with them. `BUILD_TAG` bumps, because this is an authorised emission.**
+**Arm `b` is not rerun: it already publishes all twelve of its own.**
+
+***THE SKIP WAS CORRECT WHEN WRITTEN.*** The schema could not hold a negative endpoint; the arm
+measured eighteen movements, could publish nine, and **said so plainly rather than quietly dropping
+them.** ***That was the right behaviour under the constraint that existed.***
+
+> ***A WRITER'S CORRECT WORKAROUND FOR A SCHEMA LIMIT BECOMES A DEFECT THE MOMENT THE LIMIT IS LIFTED,
+> AND NOTHING CONNECTS THE TWO.***
+>
+> **The ruling changed the schema. The artifact kept the accommodation.**
+
+***THIS IS `0093`'s WINDOW WITH A SPECIFIC MECHANISM.*** `0093` says a ruling is not closed until the
+artifacts carry it, and the mechanism it named was that **arms only rewrite their deliverables on a
+run.** ***This is narrower and worse:*** the accommodation is **not stale text an arm would refresh on
+its next run** — **it is working code doing exactly what it was built to do**, and a rerun under the
+old instruction would have **faithfully reproduced it.** ***The skip does not decay. It has to be
+removed.***
+
+> ***EVERY ACCOMMODATION FOR A CONSTRAINT IS A DEBT THAT COMES DUE WHEN THE CONSTRAINT IS REMOVED, AND
+> NO CONTROL LOOKS FOR ACCOMMODATIONS WHOSE REASON HAS EXPIRED.***
+
+**Nothing in this study can find one.** The numeric halves see **wrong figures**; `WITHDRAWN_PHRASES`
+sees **withdrawn claims**; `S44` sees a **stale artifact against its generator**. ***An accommodation is
+none of those: the code is correct, the figures it publishes are correct, and the note explaining the
+omission was TRUE WHEN WRITTEN.*** **What is wrong is the RELATIONSHIP between a workaround and a
+constraint that no longer exists — and that relationship is recorded nowhere.**
+
+**The two halves of the debt, and the second is why the first is not enough:**
+
+1. **The BEHAVIOUR** — nine measurements withheld **by sign**, for a reason that expired at v1.10.0.
+2. ***THE CLAIM*** — nine published notes asserting those intervals *"have NO representation in this
+   schema, because a CI endpoint is typed as a percentage on [0, 100]"*, ***which is now false, and
+   false in the artifact a reader consults***. **A reader who trusted it would conclude the study
+   cannot express a negative movement.**
+
+***AND IT WAS FOUND BY THE ARM THAT WROTE IT, AGAINST ITS OWN WORK, IN A RUN AUTHORISED FOR SOMETHING
+ELSE.*** **Not by a control, because no control looks for this.**
+
+**The practical consequence, and it is not closed by this entry:** ***when a constraint is lifted, the
+accommodations made for it must be enumerated and revisited*** — **and the only party who can enumerate
+them is the arm that made them.** **A ruling that removes a limit should ask its writers what they did
+to live with it.**
+
+## 4c. The rerun ran — and the accommodation was wider than the ruling named
+
+**18 of 18 movement intervals published, 9 carrying a negative endpoint. `BUILD_TAG` bumped. Validator
+exit 0, 45 checks, 0 failed.** ***The nine already-published intervals did not move:*** 153 leaves
+compared **matched by `interval_id`, because array indices shift when nine entries become eighteen and
+an index-keyed diff would have reported false movement.** **824 numeric leaves outside
+`$.declared_intervals`: 0 moved.**
+
+***THE ACCOMMODATION HAD MORE SITES THAN THE RULING ENUMERATED, WHICH IS §4b's POINT MADE AGAINST §4b.***
+The ruling said **nine notes and two `.md` lines**. The arm found **three more**, and says so:
+
+1. ***A TENTH JSON SITE*** of the same false claim, in `spec_choices_this_arm_made[4]`. **"Had I treated
+   'nine notes' literally, this one would have stayed live."**
+2. **Divergence `D1` was REMOVED, not reworded** — *"a section headed 'Divergences … REPORTED, NOT
+   RECONCILED' cannot honestly hold an entry saying there is none."* D2–D4 renumbered.
+3. ***A TABLE COLUMN THAT WOULD HAVE LIED AFTER THE FIX.*** The `.md`'s `in JSON` column was computed
+   from **sign, not presence**, and would have printed `† no` beside nine intervals now in the file.
+   **It reads membership out of `$.declared_intervals` now.**
+
+***AN ENUMERATION OF ACCOMMODATION SITES MADE BY ANYONE BUT THE WRITER IS AN UNDERCOUNT.***
+
+## 4d. ***THE VALIDATOR CANNOT DETECT A WITHHELD INTERVAL***
+
+**The arm proved this against its own earlier build.** Re-running the emitter with the sign filter
+reintroduced emits **9 of 18** — and `step8b_validate.py` returns ***`ok: true, checks_failed: 0`***.
+
+> ***THE NINE-OF-EIGHTEEN FILE VALIDATED EXACTLY AS CLEANLY AS THE EIGHTEEN-OF-EIGHTEEN ONE.***
+
+**`S41` requires both statistics to APPEAR. Nothing asserts that every MEASURED interval was
+published.** ***A schema can check what is in a file. It cannot check what a writer decided to leave
+out*** — and this is the second time that gap has published a defect: **the sentinel branch that
+exercised no type** (`0126`) and now **the interval that was never emitted.**
+
+**The arm added an emitter guard** — `SIGN-BLIND EMISSION FAILED: 18 movements measured, 9 published` —
+**and, because a guard that only ever passes is not a guard, a control showing it REJECT**
+(`src/step9_a_6_signblind_negctl.py`, deriving the mutated emitter **in memory** rather than copying it
+to disk; unmutated exit 0, mutated exit 1).
+
+**And the original skip was one-sided in a way its own note did not say:** `lo < 0 or hi < 0` dropped an
+interval whose **upper endpoint was positive**. One of the nine ***straddled zero***. **The note said
+they "have a negative endpoint"** — ***withholding an interval that CONTAINS zero is a materially
+different claim from withholding a wholly negative one.***
+
+## 4e. ***A FOURTH CHANNEL: THE SHARED SCRATCHPAD***
+
+***The session scratchpad directory pre-existed and contained the OTHER ARM's files*** — five of them,
+dated 2026-08-21. **An `ls -la` of the arm's own working directory returned those FILENAMES into its
+context.** **It opened none, moved its snapshot into a subdirectory, used only that, and reported.**
+
+> ***NO SCOPING THE ARM CONTROLS WOULD HAVE CLOSED THIS, BECAUSE IT DID NOT CHOOSE THE DIRECTORY'S
+> CONTENTS.***
+
+| | rule | closes |
+| :--- | :--- | :--- |
+| `0123` | search patterns arm-scoped **in the pattern** | how an arm **looks** |
+| `0125` §5d | commit messages carry no cross-arm content | what a **log** returns |
+| `0126` | a shared control emits arm-scoped output | what a **shared control** emits |
+| ***`0127` §4e*** | ***NOT YET RULED*** | ***what a SHARED WORKING DIRECTORY contains*** |
+
+***`0126` SAID THE LIST OF CHANNELS IS NOT KNOWN IN ADVANCE. THIS IS THE FOURTH, AND IT WAS FOUND THE
+SAME WAY AS THE OTHER THREE — BY AN ARM REPORTING IT AGAINST ITSELF.*** **Not ruled here.**
+
 ## 5. Scope
 
 - **No figure moves. This entry adds no control and changes no measurement.**

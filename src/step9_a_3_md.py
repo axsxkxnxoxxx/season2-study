@@ -2,8 +2,8 @@
 
 Generated from artifacts/step9-headline-a.json and processed/step9/a/measured.json. Nothing is
 typed: every figure below is read from the emitted arm file, so the .md and the .json cannot
-disagree. The one thing the .md carries that the .json cannot is the NINE paired-movement
-intervals with a negative endpoint, which $defs.percent has no representation for.
+disagree. Every paired movement this arm measured is in both, whatever its sign: a movement
+endpoint is a percentage-point difference and is typed $defs.pp, which admits negatives.
 """
 import json
 import os
@@ -15,6 +15,9 @@ M = json.load(open(os.path.join(ROOT, "processed", "step9", "a", "measured.json"
 OUT = os.path.join(ROOT, "artifacts", "step9-headline-a.md")
 
 ARMS = {a["arm_id"]: a for a in J["arms"]}
+# Presence in the JSON is READ from the emitted file, never inferred from an interval's sign.
+DECLARED_MV = {d["interval_id"]: d["ci"] for d in J["declared_intervals"]
+               if d["ci"]["statistic"] == "movements"}
 KEYS = ["W108_s2_finale", "W091_s2_finale", "W091_s2_premiere"]
 TITLE = {"W108_s2_finale": "PRIMARY HEADLINE — W = 108 d, finale-anchored",
          "W091_s2_finale": "SUPPORTING — W = 91 d, finale-anchored",
@@ -271,11 +274,15 @@ w("**A LEVEL AND A MOVEMENT ARE NEVER COMPARED TO EACH OTHER.** The movement bel
 w("")
 w("### All eighteen paired movements")
 w("")
-w("**Nine of these cannot be written into the JSON.** `$defs.percent` types a CI endpoint as a "
-  "percentage on [0, 100] and a paired movement is SIGNED, so an interval with a negative "
-  "endpoint has no legal representation in the schema. The nine with non-negative endpoints are "
-  "in `$.declared_intervals`; all eighteen are here. Marked **†** where the JSON cannot carry "
-  "it. **This is reported, not reconciled** — no figure was clamped, re-signed or dropped.")
+w(f"**All {len(DECLARED_MV)} are in the JSON, and sign does not govern publication.** A CI "
+  "endpoint's type follows its statistic: a MOVEMENT endpoint is a percentage-point difference, "
+  "typed `$defs.pp`, which may be zero and may be negative — and it is negative wherever the "
+  "liveness filter LOWERS the share. A LEVEL endpoint is a percentage on [0, 100], typed "
+  "`$defs.percent`, where a negative value is not a possible measurement. "
+  f"{sum(1 for c in DECLARED_MV.values() if c['lower'] < 0 or c['upper'] < 0)} of the "
+  f"{len(DECLARED_MV)} carry a negative endpoint. **Nothing was dropped by sign, clamped or "
+  "re-signed.** The `in JSON` column is read from `$.declared_intervals` rather than inferred "
+  "from the sign, so this table cannot claim a presence the file does not have.")
 w("")
 w("| Arm | Population | Outcome | Movement (point) | 95% CI, MOVEMENT | in JSON |")
 w("| :--- | :--- | :--- | ---: | :--- | :---: |")
@@ -284,24 +291,15 @@ for key in KEYS:
         for o in OUTS:
             b = M["bootstrap"][f"{key}|{pop}|{o}"]
             mv = b["movement"]
-            ok = mv["lower"] >= 0 and mv["upper"] >= 0
+            in_json = f"liveness_movement__{key}__{pop}__{o}__a" in DECLARED_MV
             w(f"| {key} | {pop} | {NAME[o]} | {b['point_movement']:+.4f} pp | "
-              f"[{mv['lower']:+.4f}, {mv['upper']:+.4f}] pp | {'yes' if ok else '† no'} |")
+              f"[{mv['lower']:+.4f}, {mv['upper']:+.4f}] pp | {'yes' if in_json else 'NO' } |")
 w("")
 
 # ------------------------------------------------------------------ divergences
 w("## 5. Divergences between the spec and what this arm could write — REPORTED, NOT RECONCILED")
 w("")
-w("**D1. The schema cannot represent a signed interval, and the spec fixes a signed statistic.** "
-  "`decisions/0118` fixes the statistic as BOTH levels and paired movements, and check S41 "
-  "requires both to appear per (producing step, arm). A paired movement is a difference of two "
-  "shares and is signed; `$defs.percent`, which types `ci.lower` and `ci.upper`, admits only "
-  "[0, 100] (or the placeholder sentinel). Nine of this arm's eighteen movement intervals have a "
-  "negative endpoint and are therefore unwritable. S41 is satisfied by the nine that happen to "
-  "be non-negative — which means **the control passes for an arithmetic accident**, not because "
-  "the file is complete.")
-w("")
-w("**D2. `both arms run on the same right-censored population, max(W, 91) + H` has two readings "
+w("**D1. `both arms run on the same right-censored population, max(W, 91) + H` has two readings "
   "at the premiere-anchored arm**, and they differ by a measured amount. Reading (a), taken "
   "here: the 91-day arm runs on the primary arm's position-5 row set, censored at "
   "max(108, 91) + 91 = 199 d. Reading (b): D10 re-derived at W = 91, censoring at 182 d. "
@@ -321,13 +319,13 @@ w("  **And the difference is the W term, not the origin.** The premiere-anchored
   "reach, and that term does not move with the origin. A reader would reasonably have expected "
   "the origin to matter here; it does not, and that is measured rather than assumed.")
 w("")
-w("**D3. The spec fixes four bootstrap elements and not the resampling FRAME or the DRAW "
+w("**D2. The spec fixes four bootstrap elements and not the resampling FRAME or the DRAW "
   "ORDER.** Two arms that draw from different account sets, or consume one seeded generator in "
   "a different order, produce different intervals from the same fixed seed — which is the "
   "failure fixing the seed exists to prevent. This arm's choice is named in "
   "`$.arms[0].headline.APPLY.by_producing_arm.arms.a.spec_choices_this_arm_made`.")
 w("")
-w("**D4. `arm_grid_days` is owned by Step 13, required at the top level, and was filled by "
+w("**D3. `arm_grid_days` is owned by Step 13, required at the top level, and was filled by "
   "this file as first writer.** See §6.")
 w("")
 

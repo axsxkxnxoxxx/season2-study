@@ -1,6 +1,6 @@
 # Step 9 — Headline result. ARM `a`.
 
-**Build** `step9/a/2026-08-20`, generated `2026-08-25T17:05:50Z` by `src/step9_a_2_emit.py` (sha256-12 `5ddad64fc8d4`). Machine-readable form: `artifacts/step9-headline-a.json`, written into Step 8b's schema `urn:season2-study:step8b-output-schema:1.10.0` and checked against it with `src/step8b_validate.py` before this file was written. The control's own output is a run record, not a finding of this arm's, and it is at `logs/step9/a_validate.json`.
+**Build** `step9/a/2026-08-25`, generated `2026-08-25T17:25:27Z` by `src/step9_a_2_emit.py` (sha256-12 `25edfe333c57`). Machine-readable form: `artifacts/step9-headline-a.json`, written into Step 8b's schema `urn:season2-study:step8b-output-schema:1.10.0` and checked against it with `src/step8b_validate.py` before this file was written. The control's own output is a run record, not a finding of this arm's, and it is at `logs/step9/a_validate.json`.
 
 **This is ONE ARM of a dual step.** It has not read the other arm's file or output folder, has not diffed anything, and carries no cross-arm block. `$.cross_arm_divergences` and `$.limitations` are omitted; they are the Human Lead's. The diff between the two arms is the dual control and it is the Human Lead's to run.
 
@@ -189,40 +189,38 @@ So of the +1.4276 pp between the primary headline and the Netflix arm, +0.3944 p
 
 ### All eighteen paired movements
 
-**Nine of these cannot be written into the JSON.** `$defs.percent` types a CI endpoint as a percentage on [0, 100] and a paired movement is SIGNED, so an interval with a negative endpoint has no legal representation in the schema. The nine with non-negative endpoints are in `$.declared_intervals`; all eighteen are here. Marked **†** where the JSON cannot carry it. **This is reported, not reconciled** — no figure was clamped, re-signed or dropped.
+**All 18 are in the JSON, and sign does not govern publication.** A CI endpoint's type follows its statistic: a MOVEMENT endpoint is a percentage-point difference, typed `$defs.pp`, which may be zero and may be negative — and it is negative wherever the liveness filter LOWERS the share. A LEVEL endpoint is a percentage on [0, 100], typed `$defs.percent`, where a negative value is not a possible measurement. 9 of the 18 carry a negative endpoint. **Nothing was dropped by sign, clamped or re-signed.** The `in JSON` column is read from `$.declared_intervals` rather than inferred from the sign, so this table cannot claim a presence the file does not have.
 
 | Arm | Population | Outcome | Movement (point) | 95% CI, MOVEMENT | in JSON |
 | :--- | :--- | :--- | ---: | :--- | :---: |
-| W108_s2_finale | APPLY | Never started | -0.2474 pp | [-0.2991, -0.2004] pp | † no |
-| W108_s2_finale | APPLY | Started and left | -0.0156 pp | [-0.0275, -0.0048] pp | † no |
+| W108_s2_finale | APPLY | Never started | -0.2474 pp | [-0.2991, -0.2004] pp | yes |
+| W108_s2_finale | APPLY | Started and left | -0.0156 pp | [-0.0275, -0.0048] pp | yes |
 | W108_s2_finale | APPLY | Continued | +0.2630 pp | [+0.2155, +0.3146] pp | yes |
 | W108_s2_finale | DERIV | Never started | +0.0042 pp | [+0.0031, +0.0054] pp | yes |
-| W108_s2_finale | DERIV | Started and left | -0.0595 pp | [-0.0766, -0.0445] pp | † no |
+| W108_s2_finale | DERIV | Started and left | -0.0595 pp | [-0.0766, -0.0445] pp | yes |
 | W108_s2_finale | DERIV | Continued | +0.0554 pp | [+0.0413, +0.0713] pp | yes |
-| W091_s2_finale | APPLY | Never started | -0.2342 pp | [-0.2843, -0.1886] pp | † no |
-| W091_s2_finale | APPLY | Started and left | -0.0122 pp | [-0.0235, -0.0020] pp | † no |
+| W091_s2_finale | APPLY | Never started | -0.2342 pp | [-0.2843, -0.1886] pp | yes |
+| W091_s2_finale | APPLY | Started and left | -0.0122 pp | [-0.0235, -0.0020] pp | yes |
 | W091_s2_finale | APPLY | Continued | +0.2463 pp | [+0.2010, +0.2966] pp | yes |
 | W091_s2_finale | DERIV | Never started | +0.0040 pp | [+0.0029, +0.0053] pp | yes |
-| W091_s2_finale | DERIV | Started and left | -0.0534 pp | [-0.0696, -0.0392] pp | † no |
+| W091_s2_finale | DERIV | Started and left | -0.0534 pp | [-0.0696, -0.0392] pp | yes |
 | W091_s2_finale | DERIV | Continued | +0.0493 pp | [+0.0363, +0.0643] pp | yes |
-| W091_s2_premiere | APPLY | Never started | -0.2151 pp | [-0.2624, -0.1726] pp | † no |
-| W091_s2_premiere | APPLY | Started and left | +0.0034 pp | [-0.0072, +0.0133] pp | † no |
+| W091_s2_premiere | APPLY | Never started | -0.2151 pp | [-0.2624, -0.1726] pp | yes |
+| W091_s2_premiere | APPLY | Started and left | +0.0034 pp | [-0.0072, +0.0133] pp | yes |
 | W091_s2_premiere | APPLY | Continued | +0.2117 pp | [+0.1718, +0.2557] pp | yes |
 | W091_s2_premiere | DERIV | Never started | +0.0040 pp | [+0.0028, +0.0053] pp | yes |
-| W091_s2_premiere | DERIV | Started and left | -0.0417 pp | [-0.0557, -0.0296] pp | † no |
+| W091_s2_premiere | DERIV | Started and left | -0.0417 pp | [-0.0557, -0.0296] pp | yes |
 | W091_s2_premiere | DERIV | Continued | +0.0377 pp | [+0.0268, +0.0504] pp | yes |
 
 ## 5. Divergences between the spec and what this arm could write — REPORTED, NOT RECONCILED
 
-**D1. The schema cannot represent a signed interval, and the spec fixes a signed statistic.** `decisions/0118` fixes the statistic as BOTH levels and paired movements, and check S41 requires both to appear per (producing step, arm). A paired movement is a difference of two shares and is signed; `$defs.percent`, which types `ci.lower` and `ci.upper`, admits only [0, 100] (or the placeholder sentinel). Nine of this arm's eighteen movement intervals have a negative endpoint and are therefore unwritable. S41 is satisfied by the nine that happen to be non-negative — which means **the control passes for an arithmetic accident**, not because the file is complete.
-
-**D2. `both arms run on the same right-censored population, max(W, 91) + H` has two readings at the premiere-anchored arm**, and they differ by a measured amount. Reading (a), taken here: the 91-day arm runs on the primary arm's position-5 row set, censored at max(108, 91) + 91 = 199 d. Reading (b): D10 re-derived at W = 91, censoring at 182 d. Measured: (b) is a strict superset — 197,007 against 196,654 on APPLY and 147,685 against 147,370 on DERIV, with 0 pairs in (a) and not in (b). The choice moves 353 pairs on APPLY and 315 on DERIV.
+**D1. `both arms run on the same right-censored population, max(W, 91) + H` has two readings at the premiere-anchored arm**, and they differ by a measured amount. Reading (a), taken here: the 91-day arm runs on the primary arm's position-5 row set, censored at max(108, 91) + 91 = 199 d. Reading (b): D10 re-derived at W = 91, censoring at 182 d. Measured: (b) is a strict superset — 197,007 against 196,654 on APPLY and 147,685 against 147,370 on DERIV, with 0 pairs in (a) and not in (b). The choice moves 353 pairs on APPLY and 315 on DERIV.
 
   **And the difference is the W term, not the origin.** The premiere-anchored and finale-anchored censoring sets at W = 91 are **identical, measured on both populations** — because the Step 2 frame caps the S2 finale at 2025-12-31, which is earlier than the binding cutoff, so T0's `max()` is decided by the S1 completion date on every pair the cutoff can reach, and that term does not move with the origin. A reader would reasonably have expected the origin to matter here; it does not, and that is measured rather than assumed.
 
-**D3. The spec fixes four bootstrap elements and not the resampling FRAME or the DRAW ORDER.** Two arms that draw from different account sets, or consume one seeded generator in a different order, produce different intervals from the same fixed seed — which is the failure fixing the seed exists to prevent. This arm's choice is named in `$.arms[0].headline.APPLY.by_producing_arm.arms.a.spec_choices_this_arm_made`.
+**D2. The spec fixes four bootstrap elements and not the resampling FRAME or the DRAW ORDER.** Two arms that draw from different account sets, or consume one seeded generator in a different order, produce different intervals from the same fixed seed — which is the failure fixing the seed exists to prevent. This arm's choice is named in `$.arms[0].headline.APPLY.by_producing_arm.arms.a.spec_choices_this_arm_made`.
 
-**D4. `arm_grid_days` is owned by Step 13, required at the top level, and was filled by this file as first writer.** See §6.
+**D3. `arm_grid_days` is owned by Step 13, required at the top level, and was filled by this file as first writer.** See §6.
 
 ## 6. `arm_grid_days` — filled here, and NOT this arm's block
 
@@ -247,4 +245,4 @@ So of the +1.4276 pp between the primary headline and the Netflix arm, +0.3944 p
 
 **This deliverable asserts this arm's own figures, its own inputs and its own limits, and nothing else.** It carries no statement about the other arm, about other steps or gates, about the state of any shared control, or about the disk state of any surface this arm does not own. Those are measured at an instant and would be published forever. **The validator's check counts and exit status are a control's output, not this arm's measurement**, and they are in `logs/step9/a_validate.json` and in this arm's report to the Human Lead — not here.
 
-*Every count in this file was measured on build `step9/a/2026-08-20`. Step 8's figures carry Step 8's build tag, `a/2026-08-17-0096`, which is recorded in `processed/step9/a/measured.json` together with the sha256-12 of every file consumed.*
+*Every count in this file was measured on build `step9/a/2026-08-25`. Step 8's figures carry Step 8's build tag, `a/2026-08-17-0096`, which is recorded in `processed/step9/a/measured.json` together with the sha256-12 of every file consumed.*

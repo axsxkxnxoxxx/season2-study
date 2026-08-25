@@ -4,10 +4,10 @@
  "placeholder": false,
  "generated_by": {
   "generator": "src/step9_a_2_emit.py",
-  "generator_sha256_12": "5ddad64fc8d4",
-  "generated_at_utc": "2026-08-25T17:05:50Z",
-  "build_tag": "step9/a/2026-08-20",
-  "git_head_short": "3e8653e",
+  "generator_sha256_12": "25edfe333c57",
+  "generated_at_utc": "2026-08-25T17:25:27Z",
+  "build_tag": "step9/a/2026-08-25",
+  "git_head_short": "3c71e40",
   "host_step": "Step 9, headline result",
   "written_by": "Data Scientist, instance a",
   "inputs": [
@@ -190,6 +190,48 @@
  },
  "declared_intervals": [
   {
+   "interval_id": "liveness_movement__W108_s2_finale__APPLY__never_started__a",
+   "quantity": "A PAIRED MOVEMENT: the never started share on APPLY at this arm, post-liveness MINUS its outcome-conditional position-5 value, resampled as one paired delta on the same accounts rather than as two independent levels. It is what the liveness filter does to this share.",
+   "produced_by_step": "step9",
+   "producing_arm": "a",
+   "ci": {
+    "level_pct": 95,
+    "lower": -0.299144,
+    "upper": -0.200449,
+    "method": "percentile_bootstrap",
+    "bootstrap_ref": "a_default",
+    "B": 10000,
+    "seed": 20260818,
+    "statistic": "movements",
+    "resampling_unit": "account",
+    "quantity_class": "outcome_shares",
+    "note": "A MOVEMENT, not a level. It is roughly an order of magnitude narrower than the level of the same share, so the two must never be compared with each other."
+   },
+   "note": "One of the two objects the spec fixes (decisions/0118). A MOVEMENT IS A PERCENTAGE-POINT DIFFERENCE, NOT A LEVEL: it may be zero and it may be NEGATIVE, and it is negative wherever the liveness filter LOWERS this share. Its endpoints are typed $defs.pp for that reason, while a level's are typed $defs.percent on [0, 100]. All 18 of this arm's paired movements are published here whatever their sign; 9 carry a negative endpoint, and none was dropped, clamped or re-signed.",
+   "source": "decisions/0118; decisions/0126; decisions/0103 \u00a71"
+  },
+  {
+   "interval_id": "liveness_movement__W108_s2_finale__APPLY__started_and_left__a",
+   "quantity": "A PAIRED MOVEMENT: the started and left share on APPLY at this arm, post-liveness MINUS its outcome-conditional position-5 value, resampled as one paired delta on the same accounts rather than as two independent levels. It is what the liveness filter does to this share.",
+   "produced_by_step": "step9",
+   "producing_arm": "a",
+   "ci": {
+    "level_pct": 95,
+    "lower": -0.027523,
+    "upper": -0.004767,
+    "method": "percentile_bootstrap",
+    "bootstrap_ref": "a_default",
+    "B": 10000,
+    "seed": 20260818,
+    "statistic": "movements",
+    "resampling_unit": "account",
+    "quantity_class": "outcome_shares",
+    "note": "A MOVEMENT, not a level. It is roughly an order of magnitude narrower than the level of the same share, so the two must never be compared with each other."
+   },
+   "note": "One of the two objects the spec fixes (decisions/0118). A MOVEMENT IS A PERCENTAGE-POINT DIFFERENCE, NOT A LEVEL: it may be zero and it may be NEGATIVE, and it is negative wherever the liveness filter LOWERS this share. Its endpoints are typed $defs.pp for that reason, while a level's are typed $defs.percent on [0, 100]. All 18 of this arm's paired movements are published here whatever their sign; 9 carry a negative endpoint, and none was dropped, clamped or re-signed.",
+   "source": "decisions/0118; decisions/0126; decisions/0103 \u00a71"
+  },
+  {
    "interval_id": "liveness_movement__W108_s2_finale__APPLY__continued__a",
    "quantity": "A PAIRED MOVEMENT: the continued share on APPLY at this arm, post-liveness MINUS its outcome-conditional position-5 value, resampled as one paired delta on the same accounts rather than as two independent levels. It is what the liveness filter does to this share.",
    "produced_by_step": "step9",
@@ -207,8 +249,8 @@
     "quantity_class": "outcome_shares",
     "note": "A MOVEMENT, not a level. It is roughly an order of magnitude narrower than the level of the same share, so the two must never be compared with each other."
    },
-   "note": "One of the two objects the spec fixes (decisions/0118). NINE of this arm's eighteen movements have a negative endpoint and have NO representation in this schema, because a CI endpoint is typed as a percentage on [0, 100]; they are published in the .md deliverable and reported to the Human Lead.",
-   "source": "decisions/0118; decisions/0103 \u00a71"
+   "note": "One of the two objects the spec fixes (decisions/0118). A MOVEMENT IS A PERCENTAGE-POINT DIFFERENCE, NOT A LEVEL: it may be zero and it may be NEGATIVE, and it is negative wherever the liveness filter LOWERS this share. Its endpoints are typed $defs.pp for that reason, while a level's are typed $defs.percent on [0, 100]. All 18 of this arm's paired movements are published here whatever their sign; 9 carry a negative endpoint, and none was dropped, clamped or re-signed.",
+   "source": "decisions/0118; decisions/0126; decisions/0103 \u00a71"
   },
   {
    "interval_id": "liveness_movement__W108_s2_finale__DERIV__never_started__a",
@@ -228,8 +270,29 @@
     "quantity_class": "outcome_shares",
     "note": "A MOVEMENT, not a level. It is roughly an order of magnitude narrower than the level of the same share, so the two must never be compared with each other."
    },
-   "note": "One of the two objects the spec fixes (decisions/0118). NINE of this arm's eighteen movements have a negative endpoint and have NO representation in this schema, because a CI endpoint is typed as a percentage on [0, 100]; they are published in the .md deliverable and reported to the Human Lead.",
-   "source": "decisions/0118; decisions/0103 \u00a71"
+   "note": "One of the two objects the spec fixes (decisions/0118). A MOVEMENT IS A PERCENTAGE-POINT DIFFERENCE, NOT A LEVEL: it may be zero and it may be NEGATIVE, and it is negative wherever the liveness filter LOWERS this share. Its endpoints are typed $defs.pp for that reason, while a level's are typed $defs.percent on [0, 100]. All 18 of this arm's paired movements are published here whatever their sign; 9 carry a negative endpoint, and none was dropped, clamped or re-signed.",
+   "source": "decisions/0118; decisions/0126; decisions/0103 \u00a71"
+  },
+  {
+   "interval_id": "liveness_movement__W108_s2_finale__DERIV__started_and_left__a",
+   "quantity": "A PAIRED MOVEMENT: the started and left share on DERIV at this arm, post-liveness MINUS its outcome-conditional position-5 value, resampled as one paired delta on the same accounts rather than as two independent levels. It is what the liveness filter does to this share.",
+   "produced_by_step": "step9",
+   "producing_arm": "a",
+   "ci": {
+    "level_pct": 95,
+    "lower": -0.076575,
+    "upper": -0.044498,
+    "method": "percentile_bootstrap",
+    "bootstrap_ref": "a_default",
+    "B": 10000,
+    "seed": 20260818,
+    "statistic": "movements",
+    "resampling_unit": "account",
+    "quantity_class": "outcome_shares",
+    "note": "A MOVEMENT, not a level. It is roughly an order of magnitude narrower than the level of the same share, so the two must never be compared with each other."
+   },
+   "note": "One of the two objects the spec fixes (decisions/0118). A MOVEMENT IS A PERCENTAGE-POINT DIFFERENCE, NOT A LEVEL: it may be zero and it may be NEGATIVE, and it is negative wherever the liveness filter LOWERS this share. Its endpoints are typed $defs.pp for that reason, while a level's are typed $defs.percent on [0, 100]. All 18 of this arm's paired movements are published here whatever their sign; 9 carry a negative endpoint, and none was dropped, clamped or re-signed.",
+   "source": "decisions/0118; decisions/0126; decisions/0103 \u00a71"
   },
   {
    "interval_id": "liveness_movement__W108_s2_finale__DERIV__continued__a",
@@ -249,8 +312,50 @@
     "quantity_class": "outcome_shares",
     "note": "A MOVEMENT, not a level. It is roughly an order of magnitude narrower than the level of the same share, so the two must never be compared with each other."
    },
-   "note": "One of the two objects the spec fixes (decisions/0118). NINE of this arm's eighteen movements have a negative endpoint and have NO representation in this schema, because a CI endpoint is typed as a percentage on [0, 100]; they are published in the .md deliverable and reported to the Human Lead.",
-   "source": "decisions/0118; decisions/0103 \u00a71"
+   "note": "One of the two objects the spec fixes (decisions/0118). A MOVEMENT IS A PERCENTAGE-POINT DIFFERENCE, NOT A LEVEL: it may be zero and it may be NEGATIVE, and it is negative wherever the liveness filter LOWERS this share. Its endpoints are typed $defs.pp for that reason, while a level's are typed $defs.percent on [0, 100]. All 18 of this arm's paired movements are published here whatever their sign; 9 carry a negative endpoint, and none was dropped, clamped or re-signed.",
+   "source": "decisions/0118; decisions/0126; decisions/0103 \u00a71"
+  },
+  {
+   "interval_id": "liveness_movement__W091_s2_finale__APPLY__never_started__a",
+   "quantity": "A PAIRED MOVEMENT: the never started share on APPLY at this arm, post-liveness MINUS its outcome-conditional position-5 value, resampled as one paired delta on the same accounts rather than as two independent levels. It is what the liveness filter does to this share.",
+   "produced_by_step": "step9",
+   "producing_arm": "a",
+   "ci": {
+    "level_pct": 95,
+    "lower": -0.284305,
+    "upper": -0.188586,
+    "method": "percentile_bootstrap",
+    "bootstrap_ref": "a_default",
+    "B": 10000,
+    "seed": 20260818,
+    "statistic": "movements",
+    "resampling_unit": "account",
+    "quantity_class": "outcome_shares",
+    "note": "A MOVEMENT, not a level. It is roughly an order of magnitude narrower than the level of the same share, so the two must never be compared with each other."
+   },
+   "note": "One of the two objects the spec fixes (decisions/0118). A MOVEMENT IS A PERCENTAGE-POINT DIFFERENCE, NOT A LEVEL: it may be zero and it may be NEGATIVE, and it is negative wherever the liveness filter LOWERS this share. Its endpoints are typed $defs.pp for that reason, while a level's are typed $defs.percent on [0, 100]. All 18 of this arm's paired movements are published here whatever their sign; 9 carry a negative endpoint, and none was dropped, clamped or re-signed.",
+   "source": "decisions/0118; decisions/0126; decisions/0103 \u00a71"
+  },
+  {
+   "interval_id": "liveness_movement__W091_s2_finale__APPLY__started_and_left__a",
+   "quantity": "A PAIRED MOVEMENT: the started and left share on APPLY at this arm, post-liveness MINUS its outcome-conditional position-5 value, resampled as one paired delta on the same accounts rather than as two independent levels. It is what the liveness filter does to this share.",
+   "produced_by_step": "step9",
+   "producing_arm": "a",
+   "ci": {
+    "level_pct": 95,
+    "lower": -0.023489,
+    "upper": -0.002046,
+    "method": "percentile_bootstrap",
+    "bootstrap_ref": "a_default",
+    "B": 10000,
+    "seed": 20260818,
+    "statistic": "movements",
+    "resampling_unit": "account",
+    "quantity_class": "outcome_shares",
+    "note": "A MOVEMENT, not a level. It is roughly an order of magnitude narrower than the level of the same share, so the two must never be compared with each other."
+   },
+   "note": "One of the two objects the spec fixes (decisions/0118). A MOVEMENT IS A PERCENTAGE-POINT DIFFERENCE, NOT A LEVEL: it may be zero and it may be NEGATIVE, and it is negative wherever the liveness filter LOWERS this share. Its endpoints are typed $defs.pp for that reason, while a level's are typed $defs.percent on [0, 100]. All 18 of this arm's paired movements are published here whatever their sign; 9 carry a negative endpoint, and none was dropped, clamped or re-signed.",
+   "source": "decisions/0118; decisions/0126; decisions/0103 \u00a71"
   },
   {
    "interval_id": "liveness_movement__W091_s2_finale__APPLY__continued__a",
@@ -270,8 +375,8 @@
     "quantity_class": "outcome_shares",
     "note": "A MOVEMENT, not a level. It is roughly an order of magnitude narrower than the level of the same share, so the two must never be compared with each other."
    },
-   "note": "One of the two objects the spec fixes (decisions/0118). NINE of this arm's eighteen movements have a negative endpoint and have NO representation in this schema, because a CI endpoint is typed as a percentage on [0, 100]; they are published in the .md deliverable and reported to the Human Lead.",
-   "source": "decisions/0118; decisions/0103 \u00a71"
+   "note": "One of the two objects the spec fixes (decisions/0118). A MOVEMENT IS A PERCENTAGE-POINT DIFFERENCE, NOT A LEVEL: it may be zero and it may be NEGATIVE, and it is negative wherever the liveness filter LOWERS this share. Its endpoints are typed $defs.pp for that reason, while a level's are typed $defs.percent on [0, 100]. All 18 of this arm's paired movements are published here whatever their sign; 9 carry a negative endpoint, and none was dropped, clamped or re-signed.",
+   "source": "decisions/0118; decisions/0126; decisions/0103 \u00a71"
   },
   {
    "interval_id": "liveness_movement__W091_s2_finale__DERIV__never_started__a",
@@ -291,8 +396,29 @@
     "quantity_class": "outcome_shares",
     "note": "A MOVEMENT, not a level. It is roughly an order of magnitude narrower than the level of the same share, so the two must never be compared with each other."
    },
-   "note": "One of the two objects the spec fixes (decisions/0118). NINE of this arm's eighteen movements have a negative endpoint and have NO representation in this schema, because a CI endpoint is typed as a percentage on [0, 100]; they are published in the .md deliverable and reported to the Human Lead.",
-   "source": "decisions/0118; decisions/0103 \u00a71"
+   "note": "One of the two objects the spec fixes (decisions/0118). A MOVEMENT IS A PERCENTAGE-POINT DIFFERENCE, NOT A LEVEL: it may be zero and it may be NEGATIVE, and it is negative wherever the liveness filter LOWERS this share. Its endpoints are typed $defs.pp for that reason, while a level's are typed $defs.percent on [0, 100]. All 18 of this arm's paired movements are published here whatever their sign; 9 carry a negative endpoint, and none was dropped, clamped or re-signed.",
+   "source": "decisions/0118; decisions/0126; decisions/0103 \u00a71"
+  },
+  {
+   "interval_id": "liveness_movement__W091_s2_finale__DERIV__started_and_left__a",
+   "quantity": "A PAIRED MOVEMENT: the started and left share on DERIV at this arm, post-liveness MINUS its outcome-conditional position-5 value, resampled as one paired delta on the same accounts rather than as two independent levels. It is what the liveness filter does to this share.",
+   "produced_by_step": "step9",
+   "producing_arm": "a",
+   "ci": {
+    "level_pct": 95,
+    "lower": -0.069562,
+    "upper": -0.039223,
+    "method": "percentile_bootstrap",
+    "bootstrap_ref": "a_default",
+    "B": 10000,
+    "seed": 20260818,
+    "statistic": "movements",
+    "resampling_unit": "account",
+    "quantity_class": "outcome_shares",
+    "note": "A MOVEMENT, not a level. It is roughly an order of magnitude narrower than the level of the same share, so the two must never be compared with each other."
+   },
+   "note": "One of the two objects the spec fixes (decisions/0118). A MOVEMENT IS A PERCENTAGE-POINT DIFFERENCE, NOT A LEVEL: it may be zero and it may be NEGATIVE, and it is negative wherever the liveness filter LOWERS this share. Its endpoints are typed $defs.pp for that reason, while a level's are typed $defs.percent on [0, 100]. All 18 of this arm's paired movements are published here whatever their sign; 9 carry a negative endpoint, and none was dropped, clamped or re-signed.",
+   "source": "decisions/0118; decisions/0126; decisions/0103 \u00a71"
   },
   {
    "interval_id": "liveness_movement__W091_s2_finale__DERIV__continued__a",
@@ -312,8 +438,50 @@
     "quantity_class": "outcome_shares",
     "note": "A MOVEMENT, not a level. It is roughly an order of magnitude narrower than the level of the same share, so the two must never be compared with each other."
    },
-   "note": "One of the two objects the spec fixes (decisions/0118). NINE of this arm's eighteen movements have a negative endpoint and have NO representation in this schema, because a CI endpoint is typed as a percentage on [0, 100]; they are published in the .md deliverable and reported to the Human Lead.",
-   "source": "decisions/0118; decisions/0103 \u00a71"
+   "note": "One of the two objects the spec fixes (decisions/0118). A MOVEMENT IS A PERCENTAGE-POINT DIFFERENCE, NOT A LEVEL: it may be zero and it may be NEGATIVE, and it is negative wherever the liveness filter LOWERS this share. Its endpoints are typed $defs.pp for that reason, while a level's are typed $defs.percent on [0, 100]. All 18 of this arm's paired movements are published here whatever their sign; 9 carry a negative endpoint, and none was dropped, clamped or re-signed.",
+   "source": "decisions/0118; decisions/0126; decisions/0103 \u00a71"
+  },
+  {
+   "interval_id": "liveness_movement__W091_s2_premiere__APPLY__never_started__a",
+   "quantity": "A PAIRED MOVEMENT: the never started share on APPLY at this arm, post-liveness MINUS its outcome-conditional position-5 value, resampled as one paired delta on the same accounts rather than as two independent levels. It is what the liveness filter does to this share.",
+   "produced_by_step": "step9",
+   "producing_arm": "a",
+   "ci": {
+    "level_pct": 95,
+    "lower": -0.262365,
+    "upper": -0.172576,
+    "method": "percentile_bootstrap",
+    "bootstrap_ref": "a_default",
+    "B": 10000,
+    "seed": 20260818,
+    "statistic": "movements",
+    "resampling_unit": "account",
+    "quantity_class": "outcome_shares",
+    "note": "A MOVEMENT, not a level. It is roughly an order of magnitude narrower than the level of the same share, so the two must never be compared with each other."
+   },
+   "note": "One of the two objects the spec fixes (decisions/0118). A MOVEMENT IS A PERCENTAGE-POINT DIFFERENCE, NOT A LEVEL: it may be zero and it may be NEGATIVE, and it is negative wherever the liveness filter LOWERS this share. Its endpoints are typed $defs.pp for that reason, while a level's are typed $defs.percent on [0, 100]. All 18 of this arm's paired movements are published here whatever their sign; 9 carry a negative endpoint, and none was dropped, clamped or re-signed.",
+   "source": "decisions/0118; decisions/0126; decisions/0103 \u00a71"
+  },
+  {
+   "interval_id": "liveness_movement__W091_s2_premiere__APPLY__started_and_left__a",
+   "quantity": "A PAIRED MOVEMENT: the started and left share on APPLY at this arm, post-liveness MINUS its outcome-conditional position-5 value, resampled as one paired delta on the same accounts rather than as two independent levels. It is what the liveness filter does to this share.",
+   "produced_by_step": "step9",
+   "producing_arm": "a",
+   "ci": {
+    "level_pct": 95,
+    "lower": -0.007191,
+    "upper": 0.013308,
+    "method": "percentile_bootstrap",
+    "bootstrap_ref": "a_default",
+    "B": 10000,
+    "seed": 20260818,
+    "statistic": "movements",
+    "resampling_unit": "account",
+    "quantity_class": "outcome_shares",
+    "note": "A MOVEMENT, not a level. It is roughly an order of magnitude narrower than the level of the same share, so the two must never be compared with each other."
+   },
+   "note": "One of the two objects the spec fixes (decisions/0118). A MOVEMENT IS A PERCENTAGE-POINT DIFFERENCE, NOT A LEVEL: it may be zero and it may be NEGATIVE, and it is negative wherever the liveness filter LOWERS this share. Its endpoints are typed $defs.pp for that reason, while a level's are typed $defs.percent on [0, 100]. All 18 of this arm's paired movements are published here whatever their sign; 9 carry a negative endpoint, and none was dropped, clamped or re-signed.",
+   "source": "decisions/0118; decisions/0126; decisions/0103 \u00a71"
   },
   {
    "interval_id": "liveness_movement__W091_s2_premiere__APPLY__continued__a",
@@ -333,8 +501,8 @@
     "quantity_class": "outcome_shares",
     "note": "A MOVEMENT, not a level. It is roughly an order of magnitude narrower than the level of the same share, so the two must never be compared with each other."
    },
-   "note": "One of the two objects the spec fixes (decisions/0118). NINE of this arm's eighteen movements have a negative endpoint and have NO representation in this schema, because a CI endpoint is typed as a percentage on [0, 100]; they are published in the .md deliverable and reported to the Human Lead.",
-   "source": "decisions/0118; decisions/0103 \u00a71"
+   "note": "One of the two objects the spec fixes (decisions/0118). A MOVEMENT IS A PERCENTAGE-POINT DIFFERENCE, NOT A LEVEL: it may be zero and it may be NEGATIVE, and it is negative wherever the liveness filter LOWERS this share. Its endpoints are typed $defs.pp for that reason, while a level's are typed $defs.percent on [0, 100]. All 18 of this arm's paired movements are published here whatever their sign; 9 carry a negative endpoint, and none was dropped, clamped or re-signed.",
+   "source": "decisions/0118; decisions/0126; decisions/0103 \u00a71"
   },
   {
    "interval_id": "liveness_movement__W091_s2_premiere__DERIV__never_started__a",
@@ -354,8 +522,29 @@
     "quantity_class": "outcome_shares",
     "note": "A MOVEMENT, not a level. It is roughly an order of magnitude narrower than the level of the same share, so the two must never be compared with each other."
    },
-   "note": "One of the two objects the spec fixes (decisions/0118). NINE of this arm's eighteen movements have a negative endpoint and have NO representation in this schema, because a CI endpoint is typed as a percentage on [0, 100]; they are published in the .md deliverable and reported to the Human Lead.",
-   "source": "decisions/0118; decisions/0103 \u00a71"
+   "note": "One of the two objects the spec fixes (decisions/0118). A MOVEMENT IS A PERCENTAGE-POINT DIFFERENCE, NOT A LEVEL: it may be zero and it may be NEGATIVE, and it is negative wherever the liveness filter LOWERS this share. Its endpoints are typed $defs.pp for that reason, while a level's are typed $defs.percent on [0, 100]. All 18 of this arm's paired movements are published here whatever their sign; 9 carry a negative endpoint, and none was dropped, clamped or re-signed.",
+   "source": "decisions/0118; decisions/0126; decisions/0103 \u00a71"
+  },
+  {
+   "interval_id": "liveness_movement__W091_s2_premiere__DERIV__started_and_left__a",
+   "quantity": "A PAIRED MOVEMENT: the started and left share on DERIV at this arm, post-liveness MINUS its outcome-conditional position-5 value, resampled as one paired delta on the same accounts rather than as two independent levels. It is what the liveness filter does to this share.",
+   "produced_by_step": "step9",
+   "producing_arm": "a",
+   "ci": {
+    "level_pct": 95,
+    "lower": -0.055748,
+    "upper": -0.029597,
+    "method": "percentile_bootstrap",
+    "bootstrap_ref": "a_default",
+    "B": 10000,
+    "seed": 20260818,
+    "statistic": "movements",
+    "resampling_unit": "account",
+    "quantity_class": "outcome_shares",
+    "note": "A MOVEMENT, not a level. It is roughly an order of magnitude narrower than the level of the same share, so the two must never be compared with each other."
+   },
+   "note": "One of the two objects the spec fixes (decisions/0118). A MOVEMENT IS A PERCENTAGE-POINT DIFFERENCE, NOT A LEVEL: it may be zero and it may be NEGATIVE, and it is negative wherever the liveness filter LOWERS this share. Its endpoints are typed $defs.pp for that reason, while a level's are typed $defs.percent on [0, 100]. All 18 of this arm's paired movements are published here whatever their sign; 9 carry a negative endpoint, and none was dropped, clamped or re-signed.",
+   "source": "decisions/0118; decisions/0126; decisions/0103 \u00a71"
   },
   {
    "interval_id": "liveness_movement__W091_s2_premiere__DERIV__continued__a",
@@ -375,8 +564,8 @@
     "quantity_class": "outcome_shares",
     "note": "A MOVEMENT, not a level. It is roughly an order of magnitude narrower than the level of the same share, so the two must never be compared with each other."
    },
-   "note": "One of the two objects the spec fixes (decisions/0118). NINE of this arm's eighteen movements have a negative endpoint and have NO representation in this schema, because a CI endpoint is typed as a percentage on [0, 100]; they are published in the .md deliverable and reported to the Human Lead.",
-   "source": "decisions/0118; decisions/0103 \u00a71"
+   "note": "One of the two objects the spec fixes (decisions/0118). A MOVEMENT IS A PERCENTAGE-POINT DIFFERENCE, NOT A LEVEL: it may be zero and it may be NEGATIVE, and it is negative wherever the liveness filter LOWERS this share. Its endpoints are typed $defs.pp for that reason, while a level's are typed $defs.percent on [0, 100]. All 18 of this arm's paired movements are published here whatever their sign; 9 carry a negative endpoint, and none was dropped, clamped or re-signed.",
+   "source": "decisions/0118; decisions/0126; decisions/0103 \u00a71"
   }
  ],
  "block_ownership": {
@@ -1202,7 +1391,7 @@
          "WHICH TWO CONFIGURATIONS THE PAIRED MOVEMENT IS BETWEEN IS THE WRITER'S TO STATE, and the schema says so. This arm's movement is POST-LIVENESS (position 7) MINUS the outcome-conditional POSITION-5 view of the same share, on the same population and arm, resampled as one paired delta -- that is, what the liveness filter does to the headline. If ruled otherwise the movements change meaning entirely; the levels do not move.",
          "'BOTH ARMS RUN ON THE SAME RIGHT-CENSORED POPULATION, max(W, 91) + H' HAS TWO READINGS AT THE PREMIERE-ANCHORED ARM, and this arm took the first. Reading (a): the 91-day arm is measured on the primary arm's position-5 row set, censored at max(108, 91) + 91 = 199 d. Reading (b): D10 is re-derived at W = 91, censoring at 182 d. MEASURED, not assumed: reading (b) is a strict superset -- 197,007 against 196,654 on APPLY and 147,685 against 147,370 on DERIV, with 0 pairs in (a) and not in (b) -- so the choice moves 353 and 315 pairs. AND THE DIFFERENCE IS THE W TERM, NOT THE ORIGIN: the premiere-anchored and finale-anchored censoring sets at W = 91 are IDENTICAL, because the Step 2 frame caps the S2 finale at 2025-12-31, earlier than the binding cutoff, so T0's max() is decided by the S1 completion date on every pair the cutoff can reach and that term does not move with the origin. Reported, not reconciled.",
          "THIS FILE FILLS $.arm_grid_days, WHICH IT DOES NOT OWN. The block's owner is step13 and the schema requires it at the top level, so as first writer this arm filled it with the eight values the Human Lead ruled at decisions/0075 -- 38 / 46 / 77 / 91 / 107 / 108 / 150 / 213. IT IS NOT THIS ARM'S FIGURE: it is transcribed from that ruling, not measured here, and Step 13 is dual, so a value neither of Step 13's arms wrote must be visible as such at the diff rather than inferred.",
-         "NINE OF THIS ARM'S EIGHTEEN PAIRED-MOVEMENT INTERVALS CANNOT BE WRITTEN INTO THIS SCHEMA. $defs.percent bounds a CI endpoint to [0, 100] and a paired movement is SIGNED, so an interval such as the APPLY never-started movement [-0.2991, -0.2004] pp has no legal representation. The nine whose endpoints are non-negative are published in $.declared_intervals; ALL EIGHTEEN, with their signs, are in the .md deliverable beside this file and in processed/step9/a/measured.json. This is reported to the Human Lead and NOT reconciled: the arm did not drop the statistic, and it did not clamp or re-sign a number to make it fit.",
+         "SIGN DOES NOT GOVERN PUBLICATION: ALL 18 OF THIS ARM'S PAIRED-MOVEMENT INTERVALS ARE IN $.declared_intervals, AND 9 OF THEM CARRY A NEGATIVE ENDPOINT. A CI endpoint's type follows its statistic: a MOVEMENT endpoint is a percentage-point difference, typed $defs.pp, which may be zero and may be negative, and it is negative wherever the liveness filter LOWERS the share; a LEVEL endpoint is a percentage on [0, 100], typed $defs.percent, where a negative value is not a possible measurement. No interval was dropped by sign, clamped or re-signed. If the two endpoint types were ever collapsed into one, this arm would either have to withhold 9 measurements or publish a level that cannot exist.",
          "ONE NOTE OF STEP 8b's WAS DROPPED RATHER THAN CARRIED OR REWRITTEN. $.notes is Step 8b's structural block, carried verbatim here, and its `reading_a_placeholder` entry reads \"Check $.placeholder before reading anything else. This file's flag is true.\" That is FALSE in a real file. Rewriting it would put this arm's words inside another step's block; carrying it would publish a false sentence. It is omitted, and the omission is named here so it is visible at the diff rather than inferred from a missing key.",
          "THE THIRD ARM IS A SUPPORTING MEASUREMENT, NOT A THIRD HEADLINE. The spec asks Step 9 for the headline at W and again at 91 days on the premiere origin. This file also carries the finale-anchored 91-day arm, so that the premiere arm's movement can be split into a window part and an origin part rather than read as one. It is labelled in_arm_grid and not primary, and every figure in it is Step 8's at that arm, reproduced here and agreeing exactly."
         ]

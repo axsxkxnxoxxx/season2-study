@@ -31,7 +31,7 @@ B = MEAS["bootstrap_settings"]["B"]
 SEED = MEAS["bootstrap_settings"]["seed"]
 BREF = "a_default"
 REV = G._read_adopted_rule_revision()
-BUILD_TAG = "step9/a/2026-08-20"
+BUILD_TAG = "step9/a/2026-08-25"
 ARM_GRID = [38, 46, 77, 91, 107, 108, 150, 213]
 
 SRC_S8 = "decisions/0070 rulings 1 and 7; consumed from processed/step8/a/, build " \
@@ -385,6 +385,18 @@ def ratios_block(arm_key, pop, m, bounds):
     }
 
 
+# Every paired movement this arm measured, in the order it is published. Built here rather than
+# at the emission site below because SPEC_CHOICES states how many of them carry a negative
+# endpoint, and a typed count would be a second definition of a figure this file computes.
+MOVEMENTS = [(spec, pop, outcome,
+              r6(MEAS["bootstrap"][f"{spec['key']}|{pop}|{outcome}"]["movement"]["lower"]),
+              r6(MEAS["bootstrap"][f"{spec['key']}|{pop}|{outcome}"]["movement"]["upper"]))
+             for spec in ARMS_SPEC
+             for pop in ("APPLY", "DERIV")
+             for outcome in ("never_started", "started_and_left", "continued")]
+N_MOVEMENTS = len(MOVEMENTS)
+N_MOVEMENTS_NEGATIVE = sum(1 for *_x, lo, hi in MOVEMENTS if lo < 0 or hi < 0)
+
 SPEC_CHOICES = [
     "THE BOOTSTRAP'S RESAMPLING FRAME AND DRAW ORDER ARE NOT FIXED BY THE SPEC. decisions/0103 "
     "and 0118 fix B, the seed, the unit and the statistic, and say nothing about WHICH accounts "
@@ -421,14 +433,15 @@ SPEC_CHOICES = [
     "and Step 13 is dual, so a value neither of Step 13's arms wrote must be visible as such at "
     "the diff rather than inferred.",
 
-    "NINE OF THIS ARM'S EIGHTEEN PAIRED-MOVEMENT INTERVALS CANNOT BE WRITTEN INTO THIS SCHEMA. "
-    "$defs.percent bounds a CI endpoint to [0, 100] and a paired movement is SIGNED, so an "
-    "interval such as the APPLY never-started movement [-0.2991, -0.2004] pp has no legal "
-    "representation. The nine whose endpoints are non-negative are published in "
-    "$.declared_intervals; ALL EIGHTEEN, with their signs, are in the .md deliverable beside "
-    "this file and in processed/step9/a/measured.json. This is reported to the Human Lead and "
-    "NOT reconciled: the arm did not drop the statistic, and it did not clamp or re-sign a "
-    "number to make it fit.",
+    f"SIGN DOES NOT GOVERN PUBLICATION: ALL {N_MOVEMENTS} OF THIS ARM'S PAIRED-MOVEMENT "
+    f"INTERVALS ARE IN $.declared_intervals, AND {N_MOVEMENTS_NEGATIVE} OF THEM CARRY A "
+    f"NEGATIVE ENDPOINT. A CI endpoint's type follows its statistic: a MOVEMENT endpoint is a "
+    f"percentage-point difference, typed $defs.pp, which may be zero and may be negative, and "
+    f"it is negative wherever the liveness filter LOWERS the share; a LEVEL endpoint is a "
+    f"percentage on [0, 100], typed $defs.percent, where a negative value is not a possible "
+    f"measurement. No interval was dropped by sign, clamped or re-signed. If the two endpoint "
+    f"types were ever collapsed into one, this arm would either have to withhold "
+    f"{N_MOVEMENTS_NEGATIVE} measurements or publish a level that cannot exist.",
 
     "ONE NOTE OF STEP 8b's WAS DROPPED RATHER THAN CARRIED OR REWRITTEN. $.notes is Step 8b's "
     "structural block, carried verbatim here, and its `reading_a_placeholder` entry reads "
@@ -618,38 +631,33 @@ for spec in ARMS_SPEC:
 # declared intervals: the paired movements that this schema can represent
 # ---------------------------------------------------------------------------------------------
 declared = []
-not_representable = []
-for spec in ARMS_SPEC:
-    for pop in ("APPLY", "DERIV"):
-        for outcome in ("never_started", "started_and_left", "continued"):
-            mv = MEAS["bootstrap"][f"{spec['key']}|{pop}|{outcome}"]["movement"]
-            lo, hi = r6(mv["lower"]), r6(mv["upper"])
-            iid = f"liveness_movement__{spec['key']}__{pop}__{outcome}__{ARM}"
-            if lo < 0 or hi < 0:
-                not_representable.append((iid, lo, hi))
-                continue
-            declared.append({
-                "interval_id": iid,
-                "quantity": (
-                    f"A PAIRED MOVEMENT: the {outcome.replace('_', ' ')} share on {pop} at this "
-                    f"arm, post-liveness MINUS its outcome-conditional position-5 value, "
-                    f"resampled as one paired delta on the same accounts rather than as two "
-                    f"independent levels. It is what the liveness filter does to this share."),
-                "produced_by_step": STEP, "producing_arm": ARM,
-                "ci": {"level_pct": 95, "lower": lo, "upper": hi,
-                       "method": "percentile_bootstrap", "bootstrap_ref": BREF, "B": B,
-                       "seed": SEED, "statistic": "movements", "resampling_unit": "account",
-                       "quantity_class": "outcome_shares",
-                       "note": ("A MOVEMENT, not a level. It is roughly an order of magnitude "
-                                "narrower than the level of the same share, so the two must "
-                                "never be compared with each other.")},
-                "note": (
-                    "One of the two objects the spec fixes (decisions/0118). NINE of this arm's "
-                    "eighteen movements have a negative endpoint and have NO representation in "
-                    "this schema, because a CI endpoint is typed as a percentage on [0, 100]; "
-                    "they are published in the .md deliverable and reported to the Human Lead."),
-                "source": "decisions/0118; decisions/0103 §1",
-            })
+for spec, pop, outcome, lo, hi in MOVEMENTS:
+    iid = f"liveness_movement__{spec['key']}__{pop}__{outcome}__{ARM}"
+    declared.append({
+        "interval_id": iid,
+        "quantity": (
+            f"A PAIRED MOVEMENT: the {outcome.replace('_', ' ')} share on {pop} at this "
+            f"arm, post-liveness MINUS its outcome-conditional position-5 value, "
+            f"resampled as one paired delta on the same accounts rather than as two "
+            f"independent levels. It is what the liveness filter does to this share."),
+        "produced_by_step": STEP, "producing_arm": ARM,
+        "ci": {"level_pct": 95, "lower": lo, "upper": hi,
+               "method": "percentile_bootstrap", "bootstrap_ref": BREF, "B": B,
+               "seed": SEED, "statistic": "movements", "resampling_unit": "account",
+               "quantity_class": "outcome_shares",
+               "note": ("A MOVEMENT, not a level. It is roughly an order of magnitude "
+                        "narrower than the level of the same share, so the two must "
+                        "never be compared with each other.")},
+        "note": (
+            f"One of the two objects the spec fixes (decisions/0118). A MOVEMENT IS A "
+            f"PERCENTAGE-POINT DIFFERENCE, NOT A LEVEL: it may be zero and it may be "
+            f"NEGATIVE, and it is negative wherever the liveness filter LOWERS this share. "
+            f"Its endpoints are typed $defs.pp for that reason, while a level's are typed "
+            f"$defs.percent on [0, 100]. All {N_MOVEMENTS} of this arm's paired movements "
+            f"are published here whatever their sign; {N_MOVEMENTS_NEGATIVE} carry a "
+            f"negative endpoint, and none was dropped, clamped or re-signed."),
+        "source": "decisions/0118; decisions/0126; decisions/0103 §1",
+    })
 
 # ---------------------------------------------------------------------------------------------
 # the document
@@ -746,8 +754,17 @@ for c in report["semantic_checks"]:
         print("  ", c["id"], c["status"], c["title"])
         for f in c["failures"][:6]:
             print("      -", f)
-print("movements not representable in the schema:", len(not_representable))
-for iid, lo, hi in not_representable:
-    print("   ", iid, [lo, hi])
+_mv_declared = [d for d in declared if d["ci"]["statistic"] == "movements"]
+_mv_negative = [d for d in _mv_declared
+                if d["ci"]["lower"] < 0 or d["ci"]["upper"] < 0]
+print("paired movements measured:", N_MOVEMENTS,
+      "| published in $.declared_intervals:", len(_mv_declared),
+      "| of those, carrying a negative endpoint:", len(_mv_negative))
+if len(_mv_declared) != N_MOVEMENTS:
+    raise SystemExit(f"SIGN-BLIND EMISSION FAILED: {N_MOVEMENTS} movements measured, "
+                     f"{len(_mv_declared)} published. No interval may be withheld.")
+for d in _mv_negative:
+    print("    negative endpoint, published:", d["interval_id"],
+          [d["ci"]["lower"], d["ci"]["upper"]])
 with open(os.path.join(ROOT, "logs", "step9", "a_validate.json"), "w") as fh:
     json.dump(report, fh, indent=1)
