@@ -44,6 +44,29 @@ Neither instance sees the other's work, asks about it, or reads its output folde
 
 Any divergence is either a bug or an ambiguity in the spec. Report it. Do not reconcile it.
 
+## The scratch workspace is arm-scoped
+
+***THE SHARED SCRATCHPAD WAS THE FOURTH ISOLATION CHANNEL.*** Recorded 2026-08-25 (`0128`), found by an
+arm reporting it against itself. **An arm ran `ls -la` on its own working directory and the other arm's
+filenames came back.** It opened none and disclosed. ***THE ARM DID NOT CHOOSE THAT DIRECTORY'S
+CONTENTS, so no scoping it controls could have closed the channel*** — the fix is the Human Lead's.
+
+**Each arm writes only to `<scratchpad>/arm_<arm>/`, and an `ls` of that directory returns only its own
+files.** **The workspace is PARTITIONED, not policed by instruction** — a rule telling an arm not to
+look at what is in front of it is the weakest form of this fix and the one the other three channels
+each had to replace.
+
+| | rule | closes |
+| :--- | :--- | :--- |
+| `0123` | search patterns arm-scoped **in the pattern** | how an arm **looks** |
+| `0125` §5d | commit messages carry no cross-arm content | what a **log** returns |
+| `0126` | a shared control emits arm-scoped output | what a **shared control** emits |
+| ***`0128`*** | **the scratch workspace is partitioned** | ***what a WORKSPACE contains*** |
+
+***ALL FOUR WERE FOUND THE SAME WAY — BY AN ARM REPORTING AGAINST ITSELF, AFTER THE CHANNEL HAD ALREADY
+FIRED.*** **None was predicted. The list is STILL not known in advance**, and the right posture is that
+**a fifth exists and has not fired yet.**
+
 ## A shared control emits arm-scoped output
 
 ***THE ARMS ARE DIRECTED TO RUN `src/check_surfaces.py`, AND IT PRINTS EVERY SURFACE'S PATHS.***
