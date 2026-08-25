@@ -596,7 +596,24 @@ def main():
         "moved; a family matching zero leaves is a hard stop, so the check cannot pass by "
         "looking nowhere. %d string leaves moved: interval notes and `quantity` sentences that "
         "restate a width, `denominator_definition`, the frame and draw-order text added at the "
-        "point of use, and the generator sha, timestamp and git head."
+        "point of use, and the generator sha, timestamp and git head. "
+        "AND THE COMPARISON IS NOT THE WHOLE FILE, WHICH IS SAID RATHER THAN LEFT TO BE "
+        "INFERRED FROM A TOTAL: %d leaf/leaves are present here and absent from the emission "
+        "compared against, and %d are present there and absent here. A leaf that exists in one "
+        "file and not the other is not `unchanged`, and a comparison that walks only the "
+        "intersection cannot see it. Where this emission ADDS leaves they are the twelve "
+        "position-5 level intervals published under the Human Lead's ruling 1 of 2026-08-25 -- "
+        "see $.notes.step9_b_twelve_intervals_were_withheld_by_default -- and "
+        "src/step9_b_20_publication_verify.py classifies every added leaf by path and hard-stops "
+        "on one outside that class. THE `ABSENT HERE` COUNT IS A REPORT ARTIFACT AND NOT A LOSS, "
+        "AND IT IS NAMED SO NOBODY TAKES IT AT FACE VALUE: this check must run INSIDE the "
+        "emitter, because its own result is embedded in the document and it cannot compare a "
+        "document that already contains it -- so it compares the document PART-WAY THROUGH "
+        "CONSTRUCTION, before these very $.notes.step9_b_* records are appended, and each one "
+        "therefore looks absent. Every path it lists is one of them. The FINISHED bytes are "
+        "compared separately, on disk and against a named commit, by "
+        "src/step9_b_16_leaf_diff.py and src/step9_b_20_publication_verify.py, and both report "
+        "ZERO lost."
         % (leafver.get("compared_against"), leafver.get("compared_against_sha256_12"),
            leafver.get("compared_against_generated_at_utc"),
            leafver.get("leaves_compared", 0), leafver.get("numeric_leaves_compared", 0),
@@ -607,7 +624,9 @@ def main():
            leafver.get("protected_numeric_leaves_examined", 0),
            len(leafver.get("protected_families", {})),
            leafver.get("protected_numeric_leaves_moved", 0),
-           leafver.get("string_leaves_moved", 0))
+           leafver.get("string_leaves_moved", 0),
+           leafver.get("leaves_present_here_and_absent_from_the_previous_emission", 0),
+           leafver.get("leaves_present_in_the_previous_emission_and_absent_here", 0))
         if leafver.get("status") == "VERIFIED" else
         "NOT ESTABLISHED. " + leafver.get("note", ""))
     notes["step9_b_the_adopted_arm_moved_too"] = (

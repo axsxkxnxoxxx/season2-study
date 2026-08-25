@@ -12,6 +12,9 @@ import hashlib
 ROOT = "/Users/alyanashantel/Documents/season2-study"
 J = json.load(open(os.path.join(ROOT, "artifacts", "step9-headline-a.json")))
 M = json.load(open(os.path.join(ROOT, "processed", "step9", "a", "measured.json")))
+# decisions/0124 constraint (i). The frame's SUPPORT, measured by stage 7 and read here; the
+# table below is a rendering of that one measurement, not a second definition of it.
+FS = json.load(open(os.path.join(ROOT, "processed", "step9", "a", "frame_support.json")))
 OUT = os.path.join(ROOT, "artifacts", "step9-headline-a.md")
 
 ARMS = {a["arm_id"]: a for a in J["arms"]}
@@ -249,13 +252,45 @@ bs = J["bootstrap_settings"]["a_default"]
 w(f"**B = {bs['B']:,} · seed {bs['seed']} · resampling unit ACCOUNT · statistic BOTH levels and "
   f"paired movements.** All four fixed by the spec (`decisions/0103`, `decisions/0118`) and "
   f"identical for both arms; this arm records no choice on any of them. Every interval in the "
-  f"JSON restates all four at its point of use.")
+  f"JSON restates all four at its point of use. **Three more elements are fixed and are not in "
+  f"that line** — the resampling frame, the draw order and the draw mechanism — and they are "
+  f"below.")
 w("")
 w(f"**Account level, not pair level**: pairs are not independent — one account contributes many "
-  f"— so pair-level resampling would understate every width above. The resampling frame is the "
-  f"**{M['bootstrap_settings']['frame_accounts']:,} accounts** contributing at least one pair to "
-  f"the position-4 output; one frame and one draw serve the whole file, which is what makes "
-  f"every movement below genuinely PAIRED.")
+  f"— so pair-level resampling would understate every width above. The frame, the draw order and "
+  f"the draw mechanism are **fixed by the spec** (`decisions/0124`, `decisions/0125`) and this "
+  f"arm records no choice on any of them. The frame is every account with at least one pair in "
+  f"the **position-4** output — **{FS['frame_membership_accounts']:,} accounts** — built once "
+  f"and drawn for every quantity regardless of how much it contributes; one generator, seeded "
+  f"once for the file and consumed continuously, which is what makes every movement below "
+  f"genuinely PAIRED.")
+w("")
+w(f"**The frame is arm-independent in its MEMBERSHIP and not in its SUPPORT, and the difference "
+  f"is measured, not asserted.** The same **{FS['frame_membership_accounts']:,}** accounts are "
+  f"DRAWN at every arm, because positions 1 to 4 do not contain `W`. The **contributing** subset "
+  f"moves with the arm, because the censoring rule carries `max(W, 91)`. Accounts that are drawn "
+  f"and contribute nothing are **part of the population the uncertainty is about** and are not "
+  f"dropped: drawing only contributors would condition the variance on the censoring outcome and "
+  f"treat survivorship as fixed.")
+w("")
+w("| Arm | Population | Frame membership (drawn) | Contributing at position 5 | Drawn, contributing 0 | Contributing at position 7 |")
+w("| :--- | :--- | ---: | ---: | ---: | ---: |")
+for _k in KEYS:
+    for _p in ("APPLY", "DERIV"):
+        _s5 = FS["support"][f"{_k}|{_p}|p5"]
+        _s7 = FS["support"][f"{_k}|{_p}|p7"]
+        w(f"| {_k} | {_p} | {_s5['frame_membership_accounts']:,} | "
+          f"{_s5['contributing_accounts']:,} | {_s5['drawn_and_contributing_zero']:,} | "
+          f"{_s7['contributing_accounts']:,} |")
+w("")
+w(f"Measured by `src/step9_a_7_frame_support.py`, which checks each count by summing the same "
+  f"column over the accounts it marks as contributing and requiring the total to equal the "
+  f"population size this arm published for that arm and population — a set-membership test "
+  f"against the source, not a range test, because a range test cannot fail on a mis-keyed "
+  f"column. Its negative control offers one arm's column as another's wherever the two published "
+  f"sizes differ and requires the equality to break: "
+  f"{FS['negative_control']['rejected']}/{FS['negative_control']['discriminating_substitutions']}"
+  f" rejected.")
 w("")
 w("**No interval in this file is show-clustered**, because this arm computes no show-bound "
   "quantity: `W` was derived at Step 6 and is not re-derived here. Every interval declares "
@@ -319,13 +354,15 @@ w("  **And the difference is the W term, not the origin.** The premiere-anchored
   "reach, and that term does not move with the origin. A reader would reasonably have expected "
   "the origin to matter here; it does not, and that is measured rather than assumed.")
 w("")
-w("**D2. The spec fixes four bootstrap elements and not the resampling FRAME or the DRAW "
-  "ORDER.** Two arms that draw from different account sets, or consume one seeded generator in "
-  "a different order, produce different intervals from the same fixed seed — which is the "
-  "failure fixing the seed exists to prevent. This arm's choice is named in "
-  "`$.arms[0].headline.APPLY.by_producing_arm.arms.a.spec_choices_this_arm_made`.")
-w("")
-w("**D3. `arm_grid_days` is owned by Step 13, required at the top level, and was filled by "
+# THE FRAME/DRAW-ORDER ENTRY IS REMOVED, NOT REWORDED. It said the spec fixes four bootstrap
+# elements and leaves the frame and the draw order open; decisions/0124 and decisions/0125 fixed
+# all three of the frame, the draw order and the mechanism, so there is no divergence left to
+# report. A section headed REPORTED, NOT RECONCILED cannot hold an entry saying there is none --
+# an entry that reports nothing reads as a live divergence to anyone scanning the headings. What
+# this arm complies with is stated in §4 and in
+# $.arms[0].headline.APPLY.by_producing_arm.arms.a.spec_choices_this_arm_made, which is where a
+# compliance belongs.
+w("**D2. `arm_grid_days` is owned by Step 13, required at the top level, and was filled by "
   "this file as first writer.** See §6.")
 w("")
 

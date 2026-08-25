@@ -7,12 +7,16 @@ exactly one place and are not recoverable from a clone. A transcription assemble
 party was discarded unsigned (`0092` -- a transcription is not an attestation), so the producing
 arm emits its own figures.
 
-THIS SCRIPT COMPUTES NOTHING. It opens exactly one input --
+THIS SCRIPT COMPUTES NOTHING. It opens two inputs --
 
     processed/step9/a/measured.json
+    processed/step9/a/frame_support.json   (decisions/0124 constraint (i), added 2026-08-25)
 
--- and copies values out of it, attaching to every figure the JSON path it was copied from, so a
-reader can go and check rather than trust. Where the ruling asks for a field this arm's working
+-- and copies values out of them, attaching to every figure the JSON path it was copied from and,
+for the second file, the file name too, so a reader can go and check rather than trust. The second
+input exists because the frame's SUPPORT is a property of the emitted column matrix rather than of
+the replicate set, so it was measured after stage 1 and written to its own file; it is gitignored
+like the first, so it needs rescuing for the same reason. Where the ruling asks for a field this arm's working
 output does not contain, the field is emitted as an explicit ABSENT record, never filled from
 another file.
 
@@ -30,12 +34,22 @@ import datetime as dt
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC_REL = "processed/step9/a/measured.json"
 SRC = os.path.join(ROOT, SRC_REL)
+# A SECOND INPUT, ADDED FOR decisions/0124 CONSTRAINT (i). The frame's SUPPORT was measured
+# after stage 1 -- it is a property of the emitted column matrix, not of the replicate set -- so
+# it lives in its own gitignored file rather than in measured.json. The rescue reason is
+# identical: without this, the per-arm contributing-account counts exist only on this machine.
+# The contract is unchanged in kind: this script still COMPUTES NOTHING and still attaches the
+# source key to every figure; it now names two source files instead of one.
+FRAME_SUPPORT_REL = "processed/step9/a/frame_support.json"
+FRAME_SUPPORT = os.path.join(ROOT, FRAME_SUPPORT_REL)
 OUT = os.path.join(ROOT, "artifacts", "step9-working-figures-a.json")
 
 GENERATOR_REL = "src/step9_a_4_working_figures.py"
 COMPUTE_REL = "src/step9_a_1_compute.py"
 
 M = json.load(open(SRC))
+FS = json.load(open(FRAME_SUPPORT))
+FRAME_SUPPORT_SCRIPT_REL = "src/step9_a_7_frame_support.py"
 
 
 def sha256_of(path):
@@ -226,10 +240,91 @@ t0_movement = {
 # bootstrap settings (settings and one account total; the INTERVALS are deliberately not copied)
 # ---------------------------------------------------------------------------------------------
 bs = "bootstrap_settings"
+
+
+def fs_fig(path):
+    """A figure copied out of the SECOND source file, labelled with its key and its file."""
+    node = FS
+    for part in path.split("."):
+        node = node[part]
+    return {"value": node, "key": "$." + path, "file": FRAME_SUPPORT_REL}
+
+
 bootstrap = {
     "settings": {k: fig(f"{bs}.{k}") for k in (
         "B", "seed", "resampling_unit", "statistics", "frame_accounts",
         "frame_definition", "movement_configurations", "ci_level_pct", "method")},
+    # decisions/0124 constraint (i). The stage-1 `frame_definition` string above says the frame
+    # is arm-independent WITHOUT saying whether it describes the DRAW or the SUPPORT, which is
+    # the claim 0124 was written to stop. It is copied unchanged, because this file transcribes
+    # rather than edits its source, and the correction is recorded here beside it.
+    "frame_definition_wording_superseded": {
+        "applies_to": f"$.{bs}.frame_definition, transcribed above",
+        "superseded_by": "decisions/0124 constraint (i)",
+        "what_is_wrong_with_it": (
+            "It declares the frame arm-independent and does not say that the claim describes "
+            "the DRAW and not the SUPPORT. Membership is arm-independent; the contributing "
+            "subset is not, because the censoring rule carries max(W, 91)."),
+        "no_figure_moves": (
+            "The frame itself is unchanged and no published interval depends on the wording. "
+            "The string is stale, not the draw."),
+        "corrected_wording_is_at": (
+            "artifacts/step9-headline-a.json $.bootstrap_settings.a_default.note and "
+            "$.arms[0].headline.APPLY.by_producing_arm.arms.a.spec_choices_this_arm_made[0]; "
+            "artifacts/step9-headline-a.md SS4"),
+        "why_the_source_string_still_reads_the_old_way": (
+            "Correcting it at source means re-running stage 1, which re-runs the bootstrap. "
+            "The Human Lead directed that the bootstrap not be re-run for an emission and "
+            "control change, so the stage-1 string is PENDING A RERUN and is named here rather "
+            "than left to be read as current."),
+    },
+    "frame_support": {
+        "what_this_is": (
+            "decisions/0124 constraint (i), measured. MEMBERSHIP is who is DRAWN -- every "
+            "account with at least one pair in the position-4 output, built once and drawn for "
+            "every quantity regardless of how much it contributes. SUPPORT is who CONTRIBUTES "
+            "to a given quantity. A frame that is arm-independent in membership is not "
+            "arm-independent in support, and before this block this arm published no per-arm "
+            "contributing-account count at all."),
+        "measured_by": FRAME_SUPPORT_SCRIPT_REL,
+        "measured_from": (
+            "processed/step9/a/boot_columns.npz -- the same column matrix the published "
+            "intervals were computed from. THE BOOTSTRAP WAS NOT RE-RUN: the support is a "
+            "property of the columns, not of the replicate set."),
+        "frame_membership_accounts": fs_fig("frame_membership_accounts"),
+        "membership_is_constant_across_arms": fs_fig("membership_is_constant_across_arms"),
+        "support_moves_across_arms_on_position_5":
+            fs_fig("support_moves_across_arms_on_position_5"),
+        "per_arm_per_population": {
+            k: {"contributing_accounts": fs_fig(f"support.{k}.contributing_accounts"),
+                "drawn_and_contributing_zero":
+                    fs_fig(f"support.{k}.drawn_and_contributing_zero"),
+                "pairs_in_this_population": fs_fig(f"support.{k}.pairs_in_this_population"),
+                "checked_against_published_n":
+                    fs_fig(f"support.{k}.checked_against_published_n")}
+            for k in FS["support"]},
+        "pairs_in_this_population_is_not_a_second_slot": (
+            "`pairs_in_this_population` is what the check OBSERVED -- the column summed over the "
+            "accounts it marks as contributing -- and `checked_against_published_n` is what it "
+            "was checked AGAINST. Both are printed so the equality is auditable rather than "
+            "asserted. NEITHER IS A SLOT FOR THE POPULATION SIZE: that figure is Step 8's, it "
+            "lives at this file's `arms.<arm>.<population>.n_position_5` and "
+            "`n_post_liveness`, and the checker READ it from there rather than from a typed "
+            "constant (decisions/0123 SS6d)."),
+        "how_each_count_was_checked": (
+            "Set membership against the source, not a range test: the same column is summed "
+            "over the accounts it marks as contributing and the total must equal the population "
+            "size this arm published for that arm and population. A range test on an account "
+            "count cannot fail on a mis-keyed column, and a precondition that cannot fail on "
+            "the vector it polices is not a check (decisions/0123 SS3)."),
+        "negative_control": {
+            "what": fs_fig("negative_control.what"),
+            "discriminating_substitutions":
+                fs_fig("negative_control.discriminating_substitutions"),
+            "rejected": fs_fig("negative_control.rejected"),
+            "ok": fs_fig("negative_control.ok"),
+        },
+    },
     "intervals_not_copied_here": {
         "status": "PRESENT_IN_WORKING_OUTPUT_BUT_DELIBERATELY_NOT_RE-EMITTED",
         "where_they_are_in_the_working_output": (
@@ -363,8 +458,9 @@ doc = {
         if os.path.exists(os.path.join(ROOT, GENERATOR_REL)) else None,
         "generated_at_utc": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "api_calls_made": fig("api_calls"),
-        "method": ("Mechanical copy out of one input file, with the source key attached to every "
-                   "figure. No arithmetic is performed on any transcribed value."),
+        "method": ("Mechanical copy out of the two input files named under `source`, with the "
+                   "source key attached to every figure. No arithmetic is performed on any "
+                   "transcribed value."),
     },
     "source": {
         "working_file": SRC_REL,
@@ -377,9 +473,20 @@ doc = {
         "tau_pull_utc": fig("tau_pull_utc"), "H_days": fig("H_days"),
         "step8_inputs_consumed": {k: {"value": v, "key": f"$.consumed_from_step8.{k}"}
                                   for k, v in get("consumed_from_step8").items()},
-        "reading_key": ("Every figure below is an object {value, key}. `key` is the JSON path in "
-                        "the working file named above; `value` is byte-for-byte what is at that "
-                        "path."),
+        "frame_support_file": FRAME_SUPPORT_REL,
+        "frame_support_file_sha256_12": sha256_of(FRAME_SUPPORT)[:12],
+        "frame_support_file_mtime_utc": mtime_of(FRAME_SUPPORT),
+        "frame_support_produced_by_script": FRAME_SUPPORT_SCRIPT_REL,
+        "frame_support_produced_by_script_sha256_12":
+            sha256_of(os.path.join(ROOT, FRAME_SUPPORT_SCRIPT_REL))[:12],
+        "why_two_source_files": (
+            "The frame's SUPPORT (decisions/0124 constraint (i)) is a property of the emitted "
+            "column matrix rather than of the replicate set, so it was measured after stage 1 "
+            "and written to its own file. Both are gitignored, so both need rescuing here."),
+        "reading_key": ("Every figure below is an object {value, key}. `key` is the JSON path "
+                        "in the working file named above; `value` is byte-for-byte what is at "
+                        "that path. Figures copied from the frame-support file carry a `file` "
+                        "field naming it, so the two sources cannot be confused for one."),
     },
     "isolation_and_privacy": {
         "pairs_npz_read": False,

@@ -5,13 +5,13 @@
   "step": 9,
   "arm": "a",
   "generator": "src/step9_a_4_working_figures.py",
-  "generator_sha256_12": "3c0c864490d2",
-  "generated_at_utc": "2026-08-25T17:26:26Z",
+  "generator_sha256_12": "ec567ea40fa1",
+  "generated_at_utc": "2026-08-25T18:22:44Z",
   "api_calls_made": {
    "value": 0,
    "key": "$.api_calls"
   },
-  "method": "Mechanical copy out of one input file, with the source key attached to every figure. No arithmetic is performed on any transcribed value."
+  "method": "Mechanical copy out of the two input files named under `source`, with the source key attached to every figure. No arithmetic is performed on any transcribed value."
  },
  "source": {
   "working_file": "processed/step9/a/measured.json",
@@ -74,7 +74,13 @@
     "key": "$.consumed_from_step8.step8_a_lib.py"
    }
   },
-  "reading_key": "Every figure below is an object {value, key}. `key` is the JSON path in the working file named above; `value` is byte-for-byte what is at that path."
+  "frame_support_file": "processed/step9/a/frame_support.json",
+  "frame_support_file_sha256_12": "f23f8c4e82d1",
+  "frame_support_file_mtime_utc": "2026-08-25T18:10:38Z",
+  "frame_support_produced_by_script": "src/step9_a_7_frame_support.py",
+  "frame_support_produced_by_script_sha256_12": "ca0ecd81da2e",
+  "why_two_source_files": "The frame's SUPPORT (decisions/0124 constraint (i)) is a property of the emitted column matrix rather than of the replicate set, so it was measured after stage 1 and written to its own file. Both are gitignored, so both need rescuing here.",
+  "reading_key": "Every figure below is an object {value, key}. `key` is the JSON path in the working file named above; `value` is byte-for-byte what is at that path. Figures copied from the frame-support file carry a `file` field naming it, so the two sources cannot be confused for one."
  },
  "isolation_and_privacy": {
   "pairs_npz_read": false,
@@ -1086,6 +1092,327 @@
    "method": {
     "value": "percentile_bootstrap",
     "key": "$.bootstrap_settings.method"
+   }
+  },
+  "frame_definition_wording_superseded": {
+   "applies_to": "$.bootstrap_settings.frame_definition, transcribed above",
+   "superseded_by": "decisions/0124 constraint (i)",
+   "what_is_wrong_with_it": "It declares the frame arm-independent and does not say that the claim describes the DRAW and not the SUPPORT. Membership is arm-independent; the contributing subset is not, because the censoring rule carries max(W, 91).",
+   "no_figure_moves": "The frame itself is unchanged and no published interval depends on the wording. The string is stale, not the draw.",
+   "corrected_wording_is_at": "artifacts/step9-headline-a.json $.bootstrap_settings.a_default.note and $.arms[0].headline.APPLY.by_producing_arm.arms.a.spec_choices_this_arm_made[0]; artifacts/step9-headline-a.md SS4",
+   "why_the_source_string_still_reads_the_old_way": "Correcting it at source means re-running stage 1, which re-runs the bootstrap. The Human Lead directed that the bootstrap not be re-run for an emission and control change, so the stage-1 string is PENDING A RERUN and is named here rather than left to be read as current."
+  },
+  "frame_support": {
+   "what_this_is": "decisions/0124 constraint (i), measured. MEMBERSHIP is who is DRAWN -- every account with at least one pair in the position-4 output, built once and drawn for every quantity regardless of how much it contributes. SUPPORT is who CONTRIBUTES to a given quantity. A frame that is arm-independent in membership is not arm-independent in support, and before this block this arm published no per-arm contributing-account count at all.",
+   "measured_by": "src/step9_a_7_frame_support.py",
+   "measured_from": "processed/step9/a/boot_columns.npz -- the same column matrix the published intervals were computed from. THE BOOTSTRAP WAS NOT RE-RUN: the support is a property of the columns, not of the replicate set.",
+   "frame_membership_accounts": {
+    "value": 2481,
+    "key": "$.frame_membership_accounts",
+    "file": "processed/step9/a/frame_support.json"
+   },
+   "membership_is_constant_across_arms": {
+    "value": true,
+    "key": "$.membership_is_constant_across_arms",
+    "file": "processed/step9/a/frame_support.json"
+   },
+   "support_moves_across_arms_on_position_5": {
+    "value": {
+     "APPLY": true,
+     "DERIV": true
+    },
+    "key": "$.support_moves_across_arms_on_position_5",
+    "file": "processed/step9/a/frame_support.json"
+   },
+   "per_arm_per_population": {
+    "W108_s2_finale|APPLY|p5": {
+     "contributing_accounts": {
+      "value": 2422,
+      "key": "$.support.W108_s2_finale|APPLY|p5.contributing_accounts",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "drawn_and_contributing_zero": {
+      "value": 59,
+      "key": "$.support.W108_s2_finale|APPLY|p5.drawn_and_contributing_zero",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "pairs_in_this_population": {
+      "value": 196654,
+      "key": "$.support.W108_s2_finale|APPLY|p5.pairs_in_this_population",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "checked_against_published_n": {
+      "value": 196654,
+      "key": "$.support.W108_s2_finale|APPLY|p5.checked_against_published_n",
+      "file": "processed/step9/a/frame_support.json"
+     }
+    },
+    "W108_s2_finale|APPLY|p7": {
+     "contributing_accounts": {
+      "value": 2421,
+      "key": "$.support.W108_s2_finale|APPLY|p7.contributing_accounts",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "drawn_and_contributing_zero": {
+      "value": 60,
+      "key": "$.support.W108_s2_finale|APPLY|p7.drawn_and_contributing_zero",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "pairs_in_this_population": {
+      "value": 195951,
+      "key": "$.support.W108_s2_finale|APPLY|p7.pairs_in_this_population",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "checked_against_published_n": {
+      "value": 195951,
+      "key": "$.support.W108_s2_finale|APPLY|p7.checked_against_published_n",
+      "file": "processed/step9/a/frame_support.json"
+     }
+    },
+    "W108_s2_finale|DERIV|p5": {
+     "contributing_accounts": {
+      "value": 2402,
+      "key": "$.support.W108_s2_finale|DERIV|p5.contributing_accounts",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "drawn_and_contributing_zero": {
+      "value": 79,
+      "key": "$.support.W108_s2_finale|DERIV|p5.drawn_and_contributing_zero",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "pairs_in_this_population": {
+      "value": 147370,
+      "key": "$.support.W108_s2_finale|DERIV|p5.pairs_in_this_population",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "checked_against_published_n": {
+      "value": 147370,
+      "key": "$.support.W108_s2_finale|DERIV|p5.checked_against_published_n",
+      "file": "processed/step9/a/frame_support.json"
+     }
+    },
+    "W108_s2_finale|DERIV|p7": {
+     "contributing_accounts": {
+      "value": 2401,
+      "key": "$.support.W108_s2_finale|DERIV|p7.contributing_accounts",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "drawn_and_contributing_zero": {
+      "value": 80,
+      "key": "$.support.W108_s2_finale|DERIV|p7.drawn_and_contributing_zero",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "pairs_in_this_population": {
+      "value": 147271,
+      "key": "$.support.W108_s2_finale|DERIV|p7.pairs_in_this_population",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "checked_against_published_n": {
+      "value": 147271,
+      "key": "$.support.W108_s2_finale|DERIV|p7.checked_against_published_n",
+      "file": "processed/step9/a/frame_support.json"
+     }
+    },
+    "W091_s2_finale|APPLY|p5": {
+     "contributing_accounts": {
+      "value": 2423,
+      "key": "$.support.W091_s2_finale|APPLY|p5.contributing_accounts",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "drawn_and_contributing_zero": {
+      "value": 58,
+      "key": "$.support.W091_s2_finale|APPLY|p5.drawn_and_contributing_zero",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "pairs_in_this_population": {
+      "value": 197007,
+      "key": "$.support.W091_s2_finale|APPLY|p5.pairs_in_this_population",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "checked_against_published_n": {
+      "value": 197007,
+      "key": "$.support.W091_s2_finale|APPLY|p5.checked_against_published_n",
+      "file": "processed/step9/a/frame_support.json"
+     }
+    },
+    "W091_s2_finale|APPLY|p7": {
+     "contributing_accounts": {
+      "value": 2422,
+      "key": "$.support.W091_s2_finale|APPLY|p7.contributing_accounts",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "drawn_and_contributing_zero": {
+      "value": 59,
+      "key": "$.support.W091_s2_finale|APPLY|p7.drawn_and_contributing_zero",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "pairs_in_this_population": {
+      "value": 196343,
+      "key": "$.support.W091_s2_finale|APPLY|p7.pairs_in_this_population",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "checked_against_published_n": {
+      "value": 196343,
+      "key": "$.support.W091_s2_finale|APPLY|p7.checked_against_published_n",
+      "file": "processed/step9/a/frame_support.json"
+     }
+    },
+    "W091_s2_finale|DERIV|p5": {
+     "contributing_accounts": {
+      "value": 2407,
+      "key": "$.support.W091_s2_finale|DERIV|p5.contributing_accounts",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "drawn_and_contributing_zero": {
+      "value": 74,
+      "key": "$.support.W091_s2_finale|DERIV|p5.drawn_and_contributing_zero",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "pairs_in_this_population": {
+      "value": 147685,
+      "key": "$.support.W091_s2_finale|DERIV|p5.pairs_in_this_population",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "checked_against_published_n": {
+      "value": 147685,
+      "key": "$.support.W091_s2_finale|DERIV|p5.checked_against_published_n",
+      "file": "processed/step9/a/frame_support.json"
+     }
+    },
+    "W091_s2_finale|DERIV|p7": {
+     "contributing_accounts": {
+      "value": 2406,
+      "key": "$.support.W091_s2_finale|DERIV|p7.contributing_accounts",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "drawn_and_contributing_zero": {
+      "value": 75,
+      "key": "$.support.W091_s2_finale|DERIV|p7.drawn_and_contributing_zero",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "pairs_in_this_population": {
+      "value": 147596,
+      "key": "$.support.W091_s2_finale|DERIV|p7.pairs_in_this_population",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "checked_against_published_n": {
+      "value": 147596,
+      "key": "$.support.W091_s2_finale|DERIV|p7.checked_against_published_n",
+      "file": "processed/step9/a/frame_support.json"
+     }
+    },
+    "W091_s2_premiere|APPLY|p5": {
+     "contributing_accounts": {
+      "value": 2422,
+      "key": "$.support.W091_s2_premiere|APPLY|p5.contributing_accounts",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "drawn_and_contributing_zero": {
+      "value": 59,
+      "key": "$.support.W091_s2_premiere|APPLY|p5.drawn_and_contributing_zero",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "pairs_in_this_population": {
+      "value": 196654,
+      "key": "$.support.W091_s2_premiere|APPLY|p5.pairs_in_this_population",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "checked_against_published_n": {
+      "value": 196654,
+      "key": "$.support.W091_s2_premiere|APPLY|p5.checked_against_published_n",
+      "file": "processed/step9/a/frame_support.json"
+     }
+    },
+    "W091_s2_premiere|APPLY|p7": {
+     "contributing_accounts": {
+      "value": 2421,
+      "key": "$.support.W091_s2_premiere|APPLY|p7.contributing_accounts",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "drawn_and_contributing_zero": {
+      "value": 60,
+      "key": "$.support.W091_s2_premiere|APPLY|p7.drawn_and_contributing_zero",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "pairs_in_this_population": {
+      "value": 196048,
+      "key": "$.support.W091_s2_premiere|APPLY|p7.pairs_in_this_population",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "checked_against_published_n": {
+      "value": 196048,
+      "key": "$.support.W091_s2_premiere|APPLY|p7.checked_against_published_n",
+      "file": "processed/step9/a/frame_support.json"
+     }
+    },
+    "W091_s2_premiere|DERIV|p5": {
+     "contributing_accounts": {
+      "value": 2402,
+      "key": "$.support.W091_s2_premiere|DERIV|p5.contributing_accounts",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "drawn_and_contributing_zero": {
+      "value": 79,
+      "key": "$.support.W091_s2_premiere|DERIV|p5.drawn_and_contributing_zero",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "pairs_in_this_population": {
+      "value": 147370,
+      "key": "$.support.W091_s2_premiere|DERIV|p5.pairs_in_this_population",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "checked_against_published_n": {
+      "value": 147370,
+      "key": "$.support.W091_s2_premiere|DERIV|p5.checked_against_published_n",
+      "file": "processed/step9/a/frame_support.json"
+     }
+    },
+    "W091_s2_premiere|DERIV|p7": {
+     "contributing_accounts": {
+      "value": 2401,
+      "key": "$.support.W091_s2_premiere|DERIV|p7.contributing_accounts",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "drawn_and_contributing_zero": {
+      "value": 80,
+      "key": "$.support.W091_s2_premiere|DERIV|p7.drawn_and_contributing_zero",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "pairs_in_this_population": {
+      "value": 147297,
+      "key": "$.support.W091_s2_premiere|DERIV|p7.pairs_in_this_population",
+      "file": "processed/step9/a/frame_support.json"
+     },
+     "checked_against_published_n": {
+      "value": 147297,
+      "key": "$.support.W091_s2_premiere|DERIV|p7.checked_against_published_n",
+      "file": "processed/step9/a/frame_support.json"
+     }
+    }
+   },
+   "pairs_in_this_population_is_not_a_second_slot": "`pairs_in_this_population` is what the check OBSERVED -- the column summed over the accounts it marks as contributing -- and `checked_against_published_n` is what it was checked AGAINST. Both are printed so the equality is auditable rather than asserted. NEITHER IS A SLOT FOR THE POPULATION SIZE: that figure is Step 8's, it lives at this file's `arms.<arm>.<population>.n_position_5` and `n_post_liveness`, and the checker READ it from there rather than from a typed constant (decisions/0123 SS6d).",
+   "how_each_count_was_checked": "Set membership against the source, not a range test: the same column is summed over the accounts it marks as contributing and the total must equal the population size this arm published for that arm and population. A range test on an account count cannot fail on a mis-keyed column, and a precondition that cannot fail on the vector it polices is not a check (decisions/0123 SS3).",
+   "negative_control": {
+    "what": {
+     "value": "one arm's column offered as another's wherever the two published population sizes differ",
+     "key": "$.negative_control.what",
+     "file": "processed/step9/a/frame_support.json"
+    },
+    "discriminating_substitutions": {
+     "value": 10,
+     "key": "$.negative_control.discriminating_substitutions",
+     "file": "processed/step9/a/frame_support.json"
+    },
+    "rejected": {
+     "value": 10,
+     "key": "$.negative_control.rejected",
+     "file": "processed/step9/a/frame_support.json"
+    },
+    "ok": {
+     "value": true,
+     "key": "$.negative_control.ok",
+     "file": "processed/step9/a/frame_support.json"
+    }
    }
   },
   "intervals_not_copied_here": {

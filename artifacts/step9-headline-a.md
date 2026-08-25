@@ -1,6 +1,6 @@
 # Step 9 — Headline result. ARM `a`.
 
-**Build** `step9/a/2026-08-25`, generated `2026-08-25T17:25:27Z` by `src/step9_a_2_emit.py` (sha256-12 `25edfe333c57`). Machine-readable form: `artifacts/step9-headline-a.json`, written into Step 8b's schema `urn:season2-study:step8b-output-schema:1.10.0` and checked against it with `src/step8b_validate.py` before this file was written. The control's own output is a run record, not a finding of this arm's, and it is at `logs/step9/a_validate.json`.
+**Build** `step9/a/2026-08-25`, generated `2026-08-25T18:19:21Z` by `src/step9_a_2_emit.py` (sha256-12 `289c548c2c40`). Machine-readable form: `artifacts/step9-headline-a.json`, written into Step 8b's schema `urn:season2-study:step8b-output-schema:1.10.0` and checked against it with `src/step8b_validate.py` before this file was written. The control's own output is a run record, not a finding of this arm's, and it is at `logs/step9/a_validate.json`.
 
 **This is ONE ARM of a dual step.** It has not read the other arm's file or output folder, has not diffed anything, and carries no cross-arm block. `$.cross_arm_divergences` and `$.limitations` are omitted; they are the Human Lead's. The diff between the two arms is the dual control and it is the Human Lead's to run.
 
@@ -179,9 +179,22 @@ So of the +1.4276 pp between the primary headline and the Netflix arm, +0.3944 p
 
 ## 4. The bootstrap, and both of its objects
 
-**B = 10,000 · seed 20260818 · resampling unit ACCOUNT · statistic BOTH levels and paired movements.** All four fixed by the spec (`decisions/0103`, `decisions/0118`) and identical for both arms; this arm records no choice on any of them. Every interval in the JSON restates all four at its point of use.
+**B = 10,000 · seed 20260818 · resampling unit ACCOUNT · statistic BOTH levels and paired movements.** All four fixed by the spec (`decisions/0103`, `decisions/0118`) and identical for both arms; this arm records no choice on any of them. Every interval in the JSON restates all four at its point of use. **Three more elements are fixed and are not in that line** — the resampling frame, the draw order and the draw mechanism — and they are below.
 
-**Account level, not pair level**: pairs are not independent — one account contributes many — so pair-level resampling would understate every width above. The resampling frame is the **2,481 accounts** contributing at least one pair to the position-4 output; one frame and one draw serve the whole file, which is what makes every movement below genuinely PAIRED.
+**Account level, not pair level**: pairs are not independent — one account contributes many — so pair-level resampling would understate every width above. The frame, the draw order and the draw mechanism are **fixed by the spec** (`decisions/0124`, `decisions/0125`) and this arm records no choice on any of them. The frame is every account with at least one pair in the **position-4** output — **2,481 accounts** — built once and drawn for every quantity regardless of how much it contributes; one generator, seeded once for the file and consumed continuously, which is what makes every movement below genuinely PAIRED.
+
+**The frame is arm-independent in its MEMBERSHIP and not in its SUPPORT, and the difference is measured, not asserted.** The same **2,481** accounts are DRAWN at every arm, because positions 1 to 4 do not contain `W`. The **contributing** subset moves with the arm, because the censoring rule carries `max(W, 91)`. Accounts that are drawn and contribute nothing are **part of the population the uncertainty is about** and are not dropped: drawing only contributors would condition the variance on the censoring outcome and treat survivorship as fixed.
+
+| Arm | Population | Frame membership (drawn) | Contributing at position 5 | Drawn, contributing 0 | Contributing at position 7 |
+| :--- | :--- | ---: | ---: | ---: | ---: |
+| W108_s2_finale | APPLY | 2,481 | 2,422 | 59 | 2,421 |
+| W108_s2_finale | DERIV | 2,481 | 2,402 | 79 | 2,401 |
+| W091_s2_finale | APPLY | 2,481 | 2,423 | 58 | 2,422 |
+| W091_s2_finale | DERIV | 2,481 | 2,407 | 74 | 2,406 |
+| W091_s2_premiere | APPLY | 2,481 | 2,422 | 59 | 2,421 |
+| W091_s2_premiere | DERIV | 2,481 | 2,402 | 79 | 2,401 |
+
+Measured by `src/step9_a_7_frame_support.py`, which checks each count by summing the same column over the accounts it marks as contributing and requiring the total to equal the population size this arm published for that arm and population — a set-membership test against the source, not a range test, because a range test cannot fail on a mis-keyed column. Its negative control offers one arm's column as another's wherever the two published sizes differ and requires the equality to break: 10/10 rejected.
 
 **No interval in this file is show-clustered**, because this arm computes no show-bound quantity: `W` was derived at Step 6 and is not re-derived here. Every interval declares `quantity_class: outcome_shares` and `resampling_unit: account`, which is the binding cluster the record states for that class, so there is no unit disagreement to report.
 
@@ -218,9 +231,7 @@ So of the +1.4276 pp between the primary headline and the Netflix arm, +0.3944 p
 
   **And the difference is the W term, not the origin.** The premiere-anchored and finale-anchored censoring sets at W = 91 are **identical, measured on both populations** — because the Step 2 frame caps the S2 finale at 2025-12-31, which is earlier than the binding cutoff, so T0's `max()` is decided by the S1 completion date on every pair the cutoff can reach, and that term does not move with the origin. A reader would reasonably have expected the origin to matter here; it does not, and that is measured rather than assumed.
 
-**D2. The spec fixes four bootstrap elements and not the resampling FRAME or the DRAW ORDER.** Two arms that draw from different account sets, or consume one seeded generator in a different order, produce different intervals from the same fixed seed — which is the failure fixing the seed exists to prevent. This arm's choice is named in `$.arms[0].headline.APPLY.by_producing_arm.arms.a.spec_choices_this_arm_made`.
-
-**D3. `arm_grid_days` is owned by Step 13, required at the top level, and was filled by this file as first writer.** See §6.
+**D2. `arm_grid_days` is owned by Step 13, required at the top level, and was filled by this file as first writer.** See §6.
 
 ## 6. `arm_grid_days` — filled here, and NOT this arm's block
 

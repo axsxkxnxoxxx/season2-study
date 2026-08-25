@@ -4,10 +4,10 @@
  "placeholder": false,
  "generated_by": {
   "generator": "src/step9_a_2_emit.py",
-  "generator_sha256_12": "25edfe333c57",
-  "generated_at_utc": "2026-08-25T17:25:27Z",
+  "generator_sha256_12": "289c548c2c40",
+  "generated_at_utc": "2026-08-25T18:19:21Z",
   "build_tag": "step9/a/2026-08-25",
-  "git_head_short": "3c71e40",
+  "git_head_short": "9530a26",
   "host_step": "Step 9, headline result",
   "written_by": "Data Scientist, instance a",
   "inputs": [
@@ -149,16 +149,22 @@
     "B",
     "seed",
     "resampling_unit",
-    "statistics"
+    "statistics",
+    "resampling_frame",
+    "draw_order",
+    "draw_mechanism"
    ],
    "fields_fixed_in_spec": [
     "B",
     "seed",
     "resampling_unit",
-    "statistics"
+    "statistics",
+    "resampling_frame",
+    "draw_order",
+    "draw_mechanism"
    ],
    "fields_not_fixed_in_spec": [],
-   "note": "All four elements are fixed by the spec and identical for both arms -- decisions/0103 for B, the seed and the unit, decisions/0118 for the statistic. This entry records no per-arm choice on any of them. What the spec does NOT fix, and this arm therefore chose, is the resampling FRAME and the draw order; that choice is named in spec_choices_this_arm_made at the primary arm."
+   "note": "Every element is fixed by the spec and identical for both arms -- decisions/0103 for B, the seed and the unit, decisions/0118 for the statistic, decisions/0124 for the resampling frame and the draw order, decisions/0125 for the draw mechanism. THIS ENTRY RECORDS NO PER-ARM CHOICE ON ANY OF THEM. THE FRAME IS ARM-INDEPENDENT IN ITS MEMBERSHIP AND NOT IN ITS SUPPORT, and this sentence describes the DRAW: the same 2,481 accounts are drawn at every arm in this file, because the position-4 output does not contain W. The CONTRIBUTING subset does move with the arm, because the censoring rule carries max(W, 91): at position 5, over W108_s2_finale / W091_s2_finale / W091_s2_premiere, it is 2,422 / 2,423 / 2,422 on APPLY and 2,402 / 2,407 / 2,402 on DERIV. Accounts that are drawn and contribute nothing are part of the population the uncertainty is about and are not dropped from the frame; the per-arm, per-population table is in this arm's .md and in artifacts/step9-working-figures-a.json, measured by src/step9_a_7_frame_support.py."
   }
  },
  "step_duality": {
@@ -1387,7 +1393,7 @@
          }
         },
         "spec_choices_this_arm_made": [
-         "THE BOOTSTRAP'S RESAMPLING FRAME AND DRAW ORDER ARE NOT FIXED BY THE SPEC. decisions/0103 and 0118 fix B, the seed, the unit and the statistic, and say nothing about WHICH accounts are drawn from or in what order the draws are consumed. This arm used ONE frame and ONE draw for the whole file -- the 2,481 accounts contributing at least one pair to the position-4 output, which is arm-independent because positions 1 to 4 do not contain W -- so that every paired movement is paired and no interval depends on the order the intervals were computed in. If ruled otherwise, every interval in this file moves, and two arms that chose differently would diverge on sampling noise alone, which is exactly what fixing the seed exists to prevent.",
+         "THE FRAME, THE DRAW ORDER AND THE DRAW MECHANISM ARE FIXED BY THE SPEC, and this arm records no choice on any of them: decisions/0124 fixes the resampling frame and the draw order, decisions/0125 fixes the mechanism. WHAT THIS ARM COMPLIES WITH, STATED SO THE DIFF CAN SEE IT: the frame is every account with at least one pair in the POSITION-4 output, built once and drawn for every quantity regardless of how much it contributes -- 2,481 accounts; one generator seeded once per file, its stream consumed continuously and never re-seeded per group, so every quantity is evaluated against the same replicate set; and the draw is numpy.random.default_rng at seed 20260818 calling rng.integers(0, n_frame, size=(m, n_frame)), with the weights formed by counting the drawn indices. WHAT THE SPEC LEAVES OPEN, AND IS THIS ARM'S CHOICE, IS THE CHUNKING AND ONE KEYWORD. decisions/0125 SS3 deliberately does not specify the chunk, on the ground that a spec element earns its place by determining the output; this arm used 200, and the replicate-set selftest redraws at a different chunk and gets a bit-identical matrix, so the choice is measured inert rather than assumed to be. THIS ARM ALSO PASSES `dtype=np.int64` TO rng.integers, WHICH THE CALL 0125 NAMES DOES NOT CARRY. It is a deviation from the named mechanism, it is measured inert on this build -- a redraw at the same seed without the keyword is bit-identical -- and it is REPORTED AND LEFT VISIBLE rather than quietly conformed, because 0125's own point is that an inert-looking mechanism difference is the thing that survived three successive fixings of this spec.",
          "WHICH TWO CONFIGURATIONS THE PAIRED MOVEMENT IS BETWEEN IS THE WRITER'S TO STATE, and the schema says so. This arm's movement is POST-LIVENESS (position 7) MINUS the outcome-conditional POSITION-5 view of the same share, on the same population and arm, resampled as one paired delta -- that is, what the liveness filter does to the headline. If ruled otherwise the movements change meaning entirely; the levels do not move.",
          "'BOTH ARMS RUN ON THE SAME RIGHT-CENSORED POPULATION, max(W, 91) + H' HAS TWO READINGS AT THE PREMIERE-ANCHORED ARM, and this arm took the first. Reading (a): the 91-day arm is measured on the primary arm's position-5 row set, censored at max(108, 91) + 91 = 199 d. Reading (b): D10 is re-derived at W = 91, censoring at 182 d. MEASURED, not assumed: reading (b) is a strict superset -- 197,007 against 196,654 on APPLY and 147,685 against 147,370 on DERIV, with 0 pairs in (a) and not in (b) -- so the choice moves 353 and 315 pairs. AND THE DIFFERENCE IS THE W TERM, NOT THE ORIGIN: the premiere-anchored and finale-anchored censoring sets at W = 91 are IDENTICAL, because the Step 2 frame caps the S2 finale at 2025-12-31, earlier than the binding cutoff, so T0's max() is decided by the S1 completion date on every pair the cutoff can reach and that term does not move with the origin. Reported, not reconciled.",
          "THIS FILE FILLS $.arm_grid_days, WHICH IT DOES NOT OWN. The block's owner is step13 and the schema requires it at the top level, so as first writer this arm filled it with the eight values the Human Lead ruled at decisions/0075 -- 38 / 46 / 77 / 91 / 107 / 108 / 150 / 213. IT IS NOT THIS ARM'S FIGURE: it is transcribed from that ruling, not measured here, and Step 13 is dual, so a value neither of Step 13's arms wrote must be visible as such at the diff rather than inferred.",

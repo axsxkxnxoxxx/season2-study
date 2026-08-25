@@ -20,6 +20,10 @@ import step8b_schema as G                      # noqa: E402  (the adopted-rule R
 from step8b_validate import validate_file      # noqa: E402
 
 MEAS = json.load(open(os.path.join(ROOT, "processed", "step9", "a", "measured.json")))
+# decisions/0124 constraint (i): the frame's SUPPORT, measured per arm and per population by
+# stage 7. Read, never typed -- the numbers below are this file's only statement of them and a
+# typed constant would be a second definition of a figure another script measured.
+FSUP = json.load(open(os.path.join(ROOT, "processed", "step9", "a", "frame_support.json")))
 TMPL = json.load(open(os.path.join(ROOT, "artifacts", "step8b-placeholder-arm-file.json")))
 S8ARMS = json.load(open(os.path.join(ROOT, "processed", "step8", "a", "arms.json")))
 S8POS = json.load(open(os.path.join(ROOT, "processed", "step8", "a", "positions.json")))
@@ -397,16 +401,40 @@ MOVEMENTS = [(spec, pop, outcome,
 N_MOVEMENTS = len(MOVEMENTS)
 N_MOVEMENTS_NEGATIVE = sum(1 for *_x, lo, hi in MOVEMENTS if lo < 0 or hi < 0)
 
+# The frame's MEMBERSHIP and its SUPPORT, read from stage 7 rather than typed. decisions/0124
+# constraint (i): membership is arm-independent, support is not, and a field that declares the
+# frame arm-independent without saying which of the two it means is the claim 0124 was written
+# to stop.
+FRAME_MEMBERSHIP = FSUP["frame_membership_accounts"]
+SUPPORT_P5 = {pop: [FSUP["support"][f"{s['key']}|{pop}|p5"]["contributing_accounts"]
+                    for s in ARMS_SPEC] for pop in ("APPLY", "DERIV")}
+SUPPORT_ARM_ORDER = " / ".join(s["key"] for s in ARMS_SPEC)
+
+
+def _series(pop):
+    return " / ".join(f"{n:,}" for n in SUPPORT_P5[pop])
+
+
 SPEC_CHOICES = [
-    "THE BOOTSTRAP'S RESAMPLING FRAME AND DRAW ORDER ARE NOT FIXED BY THE SPEC. decisions/0103 "
-    "and 0118 fix B, the seed, the unit and the statistic, and say nothing about WHICH accounts "
-    "are drawn from or in what order the draws are consumed. This arm used ONE frame and ONE "
-    "draw for the whole file -- the 2,481 accounts contributing at least one pair to the "
-    "position-4 output, which is arm-independent because positions 1 to 4 do not contain W -- "
-    "so that every paired movement is paired and no interval depends on the order the intervals "
-    "were computed in. If ruled otherwise, every interval in this file moves, and two arms that "
-    "chose differently would diverge on sampling noise alone, which is exactly what fixing the "
-    "seed exists to prevent.",
+    "THE FRAME, THE DRAW ORDER AND THE DRAW MECHANISM ARE FIXED BY THE SPEC, and this arm "
+    "records no choice on any of them: decisions/0124 fixes the resampling frame and the draw "
+    "order, decisions/0125 fixes the mechanism. WHAT THIS ARM COMPLIES WITH, STATED SO THE DIFF "
+    "CAN SEE IT: the frame is every account with at least one pair in the POSITION-4 output, "
+    f"built once and drawn for every quantity regardless of how much it contributes -- "
+    f"{FRAME_MEMBERSHIP:,} accounts; one generator seeded once per file, its stream consumed "
+    "continuously and never re-seeded per group, so every quantity is evaluated against the "
+    "same replicate set; and the draw is numpy.random.default_rng at seed 20260818 calling "
+    "rng.integers(0, n_frame, size=(m, n_frame)), with the weights formed by counting the drawn "
+    "indices. WHAT THE SPEC LEAVES OPEN, AND IS THIS ARM'S CHOICE, IS THE CHUNKING AND ONE "
+    "KEYWORD. decisions/0125 SS3 deliberately does not specify the chunk, on the ground that a "
+    "spec element earns its place by determining the output; this arm used 200, and the "
+    "replicate-set selftest redraws at a different chunk and gets a bit-identical matrix, so "
+    "the choice is measured inert rather than assumed to be. THIS ARM ALSO PASSES "
+    "`dtype=np.int64` TO rng.integers, WHICH THE CALL 0125 NAMES DOES NOT CARRY. It is a "
+    "deviation from the named mechanism, it is measured inert on this build -- a redraw at the "
+    "same seed without the keyword is bit-identical -- and it is REPORTED AND LEFT VISIBLE "
+    "rather than quietly conformed, because 0125's own point is that an inert-looking mechanism "
+    "difference is the thing that survived three successive fixings of this spec.",
 
     "WHICH TWO CONFIGURATIONS THE PAIRED MOVEMENT IS BETWEEN IS THE WRITER'S TO STATE, and the "
     "schema says so. This arm's movement is POST-LIVENESS (position 7) MINUS the "
@@ -711,15 +739,31 @@ inst = {
         BREF: {
             "B": B, "seed": SEED, "statistics": ["levels", "movements"],
             "resampling_unit": "account", "producing_arm": ARM, "spec_status": "fixed_in_spec",
-            "fields_considered": ["B", "seed", "resampling_unit", "statistics"],
-            "fields_fixed_in_spec": ["B", "seed", "resampling_unit", "statistics"],
+            # SEVEN ELEMENTS, NOT FOUR. decisions/0124 fixed the resampling frame and the draw
+            # order and decisions/0125 fixed the draw mechanism; a universe that still names
+            # only four leaves three fixed elements out of the record entirely, and the
+            # partition then holds over a universe this writer chose. The schema's own anchor
+            # says a fifth element may be added and none of the original four may be dropped.
+            "fields_considered": ["B", "seed", "resampling_unit", "statistics",
+                                  "resampling_frame", "draw_order", "draw_mechanism"],
+            "fields_fixed_in_spec": ["B", "seed", "resampling_unit", "statistics",
+                                     "resampling_frame", "draw_order", "draw_mechanism"],
             "fields_not_fixed_in_spec": [],
-            "note": ("All four elements are fixed by the spec and identical for both arms -- "
+            "note": ("Every element is fixed by the spec and identical for both arms -- "
                      "decisions/0103 for B, the seed and the unit, decisions/0118 for the "
-                     "statistic. This entry records no per-arm choice on any of them. What the "
-                     "spec does NOT fix, and this arm therefore chose, is the resampling FRAME "
-                     "and the draw order; that choice is named in "
-                     "spec_choices_this_arm_made at the primary arm."),
+                     "statistic, decisions/0124 for the resampling frame and the draw order, "
+                     "decisions/0125 for the draw mechanism. THIS ENTRY RECORDS NO PER-ARM "
+                     "CHOICE ON ANY OF THEM. THE FRAME IS ARM-INDEPENDENT IN ITS MEMBERSHIP AND "
+                     "NOT IN ITS SUPPORT, and this sentence describes the DRAW: the same "
+                     f"{FRAME_MEMBERSHIP:,} accounts are drawn at every arm in this file, "
+                     "because the position-4 output does not contain W. The CONTRIBUTING subset "
+                     "does move with the arm, because the censoring rule carries max(W, 91): at "
+                     f"position 5, over {SUPPORT_ARM_ORDER}, it is {_series('APPLY')} on APPLY "
+                     f"and {_series('DERIV')} on DERIV. Accounts that are drawn and contribute "
+                     "nothing are part of the population the uncertainty is about and are not "
+                     "dropped from the frame; the per-arm, per-population table is in this "
+                     "arm's .md and in artifacts/step9-working-figures-a.json, measured by "
+                     "src/step9_a_7_frame_support.py."),
         }},
     "step_duality": TMPL["step_duality"],
     "declared_intervals": declared,

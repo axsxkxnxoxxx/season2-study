@@ -147,6 +147,61 @@ doing its work.**
 *"not arm-scoping, it is a substring"*; an `ls | grep -c` returning a **count** spanning both arms,
 *"which is more than nothing"*; and one arm confirming it ran **no `git log` at all**.
 
+## 3c. The audit's findings were ruled and closed — and closing them found more
+
+**Both arms fixed their own only. Verified: no published figure moved in either.**
+
+***THE TWELVE ARE PUBLISHED.*** `$.declared_intervals` 12 → **24**. **The slot was the only one
+available** — every `bounds` definition is `additionalProperties: false` with no CI slot, so *a bound
+cannot hold its own sampling interval* — **and the append is at the END deliberately**, because the
+stamper resolves committed indices into the corrected emission and interleaving would have re-pointed
+both supersession layers. **The finding is in the file:** *"NO DECISION TO WITHHOLD THEM WAS EVER MADE
+OR WRITTEN… A WITHDRAWAL LEAVES A TRACE AND A DEFAULT LEAVES NONE."* **A guard now counts the 36
+measured intervals and requires each in the document, shown rejecting a mutated emitter.**
+
+***THE OVERRIDE RULE IS A CONTROL, NOT A JUDGEMENT.*** Three tests — **self-reference**,
+**self-contradiction**, **spec text** — with **682 string leaves scanned, 14 tripped, 3 overridden, 10
+kept, 1 kept-and-reported**, and ***a leaf that trips and carries no verdict is a HARD STOP.***
+**`0127` §3's miss is recorded in the file: the migration verified that string byte-identical at the
+same path and never asked whether it was TRUE.** ***Moved and true are different questions.***
+
+***AND IT FOUND A FOURTH INHERITED LEAF THE RULING DID NOT NAME*** — `spec_choices_made_by_step_8b[25]`,
+also carrying the four-element count. **Verdict `KEEP_AND_REPORT`, and the distinction is not
+ownership** — both blocks are `step8b`'s — ***it is NOTE versus RECORD***: **a dated record of another
+step's reasoning was true when written, and rewriting it would falsify Step 8b's record of its own
+choice.** **The exemption is one path wide, carries its reason, and WITHDRAWS ITSELF — the emitter
+hard-stops if that leaf ever comes to agree.**
+
+***THE ACCOMMODATION IN THE VERIFIER IS OUT, AND SO IS EVERY OTHER TYPED COUNT IN THAT FILE.*** The
+selftest now derives its anchor from **what the arm MEASURED** rather than from the publication, so
+**a withholding fails on coverage rather than on a constant someone must remember to update** — the
+same class the audit was called to find, closed in the instrument that missed it. **Exit 0, 12/12,
+72/72 bit-exact.** **Both typed population constants became reads**, one of them **beyond the letter of
+the ruling and flagged as such**: *"leaving one typed literal beside a corrected one leaves a second
+definition in place for the first consumer that reaches for it."*
+
+***THE SUPPORT IS MEASURED*** — membership 2,481 at every arm, contributing 2,422 / 2,402 / 2,423 /
+2,407 / 2,422 / 2,402 — **read from the matrix the published intervals came from, with a set-membership
+precondition and 10/10 discriminating substitutions rejected.**
+
+### ***`0128` PREDICTED A FIFTH CHANNEL. IT FIRED THE SAME DAY.***
+
+**An arm disclosed `git status --porcelain` at the repository root returning the other arm's paths.**
+***"`git status` is a shared control whose output no arm-side scoping can constrain"*** — **the `0126`
+class, and `0126` closed only `check_surfaces.py`.** **A second arm disclosed the same command with a
+bare directory scope.** ***And one arm found the `0126` channel inside its OWN control***, which ran
+`check_surfaces.py` **without `STEP_ARM`** and captured the other arm's paths into its process.
+
+> **`0128` §1 said the right posture is that a fifth exists and has not fired yet, and that an arm's
+> disclosure would be what finds it.** ***Both halves held, within the day.*** **NOT RULED HERE.**
+
+**Two `0092` boundary cases, both flagged rather than assumed:** an arm **hand-edited an approved gate's
+artifact** to place a knowingly-historical note, being the producing arm on a step that must not be
+re-run; and an arm **declined to correct a string** because the file publishes a live hash asserting
+which script produced it — *"editing without a stage-1 rerun would make the provenance claim false."*
+**It proposes the structural fix: have the producer record its own hash at write time so the two can be
+compared rather than assumed.**
+
 ## 4. Scope
 
 - **No figure moves. No artifact is corrected by this entry.**

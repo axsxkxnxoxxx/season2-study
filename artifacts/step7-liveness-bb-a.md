@@ -221,6 +221,21 @@ All six paired account-clustered 95% intervals (B = 4,000, seed 20260813, accoun
 their pairs) exclude zero — on APPLY, never-started `[−0.2995, −0.2010]`, started-and-left
 `[−0.0272, −0.0046]`.
 
+> **KNOWINGLY HISTORICAL, not a defect and not a live setting: the `B = 4,000` and seed `20260813`
+> in the paragraph above.** Human Lead ruling, 2026-08-25, on this arm's own query. **Step 7's
+> bootstrap PREDATES `decisions/0103`**, which later fixed the resample count, the seed and the
+> resampling unit — and, with `decisions/0118`, the statistic — identically for both arms, for the
+> steps downstream of it. **Step 7 is an approved gate (`decisions/0064`) and these intervals were
+> correct under the spec in force when they were computed.** They are **not re-run, not superseded
+> and not restated** here; the settings that replaced them are in the decision entries named above,
+> which is the one place they live.
+>
+> **It is recorded because silence would be read two ways, both wrong:** that these are the study's
+> current bootstrap settings, or that they were checked against the later ruling and found to agree.
+> **Neither. They are earlier.** **Do not compare an interval on this page with one computed under
+> `0103` and `0118`** — they rest on a different resample count and a different seed, so a difference
+> between them is a settings difference and not a finding.
+
 **Note the DERIV never-started share RISES while no never-started pair is excluded.** That is pure
 denominator movement, and it is the clearest available illustration of why an endpoint must be
 computed on the same population as its estimand.

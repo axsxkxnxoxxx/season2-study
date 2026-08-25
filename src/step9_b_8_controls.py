@@ -29,21 +29,33 @@ OUT = os.path.join(ROOT, "logs", "step9_b_controls_after_rerun.json")
 CONTROLS = [
     {"id": "check_surfaces",
      "cmd": ["python3", "src/check_surfaces.py"],
-     "what": "the shared propagation control, all eight surfaces, both halves"},
+     # ARM-SCOPED OUTPUT (decisions/0126). A SHARED CONTROL'S OUTPUT IS THE THIRD CROSS-ARM
+     # CHANNEL: check_surfaces.py prints every surface's paths, including the other arm's, and
+     # no scoping this arm controls can prevent that. STEP_ARM makes it print `<withheld>` for
+     # paths belonging to another arm and report their number. THE COVERAGE AND THE EXIT CODE
+     # ARE NEVER REDUCED -- nothing is excluded from the check, only from the printing. This
+     # control captured the subprocess's stdout WITHOUT the variable set, which put the other
+     # arm's paths into this arm's process; corrected here and reported.
+     "env": {"STEP_ARM": "b"},
+     "what": "the shared propagation control, all eight surfaces, both halves, run with "
+             "STEP_ARM=b so another arm's paths are withheld from this arm's output "
+             "(decisions/0126)"},
     {"id": "step8b_validate__corrected_emission",
      "cmd": ["python3", "src/step8b_validate.py",
              "artifacts/step9-headline-corrected-2026-08-21-b.json"],
      "what": "Step 8b's schema + semantic validator, against THIS arm's corrected emission",
-     "note_on_a_nonzero_that_is_not_new": (
-         "This control returns non-zero, and `behaved_as_expected` is recorded FALSE rather "
-         "than redefined, because a control whose expectation is edited to match its result "
-         "stops being a control. THE NON-ZERO IS THE OPEN `$defs/ci` TYPING ITEM, which is the "
-         "Human Lead's and which the decisions/0125 rerun was instructed not to touch: "
-         "`ci.lower`/`ci.upper` are typed as a percent in [0, 100] while a paired MOVEMENT is "
-         "signed, so every negative movement endpoint matches none of the anyOf branches. "
-         "MEASURED, NOT ASSUMED, ACROSS THIS RERUN: 11 schema errors before and 11 after, at "
-         "the SAME eleven paths, with `checks_failed` 0 in both -- the 43 semantic checks all "
-         "pass. Nothing was dropped, rescaled or sign-flipped to make it go away.")},
+     "note_on_the_expectation": (
+         "THIS EXPECTATION CHANGED BECAUSE THE WORLD DID, AND THE OLD ONE IS RECORDED SO THE "
+         "CHANGE IS NOT SILENT. Until schema v1.10.0 this control returned NON-ZERO and "
+         "`behaved_as_expected` was recorded FALSE rather than redefined, because a control "
+         "whose expectation is edited to match its result stops being a control. The non-zero "
+         "was the `$defs/ci` typing item: `ci.lower`/`ci.upper` were typed as a percent on "
+         "[0, 100] while a paired MOVEMENT is signed, so every negative movement endpoint "
+         "matched none of the anyOf branches. decisions/0126 typed a CI endpoint BY ITS "
+         "STATISTIC -- movements on $defs/pp, levels on $defs/percent -- and decisions/0127 "
+         "recorded the migration. The item is CLOSED, not worked around: nothing was dropped, "
+         "rescaled or sign-flipped, and the expectation is now zero because the defect is "
+         "gone rather than because the bar moved.")},
     {"id": "step9_b_reproduction_harness",
      "cmd": ["python3", "src/step9_b_0b_reproduce.py"],
      "what": "this arm's own reproduction: both corrected checks run against the DEFECTIVE "
@@ -76,6 +88,25 @@ CONTROLS = [
              "commit that preceded this rerun. Every moved numeric leaf must be a CI endpoint, "
              "a CI-derived ratio, or a leaf of the emission's own run record -- a declared "
              "class listed by path. A non-zero exit means something else moved."},
+    {"id": "step9_b_ordering_guard_rejection_probe",
+     "cmd": ["python3", "src/step9_b_17_ordering_repro.py"],
+     "what": "the ORDERING GUARD driven to failure on the condition that actually fired, "
+             "constructed in both directions, and then shown PASSING on the current tree with "
+             "its coverage printed. A guard shown only passing has not been shown to "
+             "discriminate. A non-zero exit means it failed to reject, or passed vacuously."},
+    {"id": "step9_b_three_rulings_reproduction_after",
+     "cmd": ["python3", "src/step9_b_19_ruling_repro.py", "--after"],
+     "what": "the three findings ruled 2026-08-25, re-measured in the CORRECTED state: all 24 "
+             "position-5 level endpoints reachable in the artifacts, the three inherited leaves "
+             "rewritten and the one that looks like a fourth kept, no typed NPOP literal -- and "
+             "the new population read driven to failure on four wrong sources and accepted on "
+             "the real one."},
+    {"id": "step9_b_nothing_already_published_moved",
+     "cmd": ["python3", "src/step9_b_20_publication_verify.py"],
+     "what": "the 2026-08-25 emission compared leaf by leaf and BY CLASS against the same three "
+             "paths at HEAD. Every numeric leaf must be unchanged, nothing lost, every added "
+             "leaf inside a licensed class, and all three stamped originals byte-identical. A "
+             "non-zero exit means a published figure moved."},
     {"id": "step9_b_leaf_diff_probe",
      "cmd": ["python3", "src/step9_b_16_leaf_diff.py", "--probe"],
      "what": "THE SAME DIFF, SHOWN FAILING. A protected point estimate is moved in memory and "
@@ -91,7 +122,8 @@ FILES = [
     "src/step9_b_5_working_figures.py", "src/step9_b_7_emit_corrected.py",
     "src/step9_b_8_controls.py", "src/step9_b_9_frame_repro.py",
     "src/step9_b_10_pairing_evidence.py", "src/step9_b_15_mechanism_repro.py",
-    "src/step9_b_16_leaf_diff.py",
+    "src/step9_b_16_leaf_diff.py", "src/step9_b_17_ordering_repro.py",
+    "src/step9_b_19_ruling_repro.py", "src/step9_b_20_publication_verify.py",
     "processed/step9/b/stage1_counts.json", "processed/step9/b/stage2_bootstrap.json",
     "artifacts/step9-headline-corrected-2026-08-21-b.json",
     "artifacts/step9-headline-corrected-2026-08-21-b.md",
@@ -108,9 +140,12 @@ def sha12(rel):
 
 def main():
     rec = {
-        "run": "Step 9, arm b -- controls run AFTER the last edit of the 2026-08-24 rerun "
-               "under decisions/0125 (the draw MECHANISM), which is one level below the "
-               "2026-08-23 rerun under decisions/0124 (the frame and the draw order)",
+        "run": "Step 9, arm b -- controls run AFTER the last edit of the 2026-08-25 emission "
+               "under the Human Lead's three rulings of that date: publish the twelve "
+               "position-5 level intervals that were measured and never emitted, rewrite the "
+               "three inherited placeholder leaves that are false in a non-placeholder file, "
+               "and turn the typed population constant into a read. AN EMISSION CHANGE: no "
+               "bootstrap was re-run and no figure recomputed",
         "generator": "src/step9_b_8_controls.py",
         "generator_sha256_12": sha12("src/step9_b_8_controls.py"),
         "recorded_at_utc": datetime.datetime.now(datetime.timezone.utc).strftime(
@@ -124,7 +159,9 @@ def main():
         "controls": {},
     }
     for c in CONTROLS:
-        p = subprocess.run(c["cmd"], cwd=ROOT, capture_output=True, text=True)
+        env = dict(os.environ)
+        env.update(c.get("env") or {})
+        p = subprocess.run(c["cmd"], cwd=ROOT, capture_output=True, text=True, env=env)
         tail = [ln for ln in (p.stdout or "").splitlines() if ln.strip()][-3:]
         expect_nonzero = bool(c.get("expect_nonzero"))
         rec["controls"][c["id"]] = {
@@ -134,6 +171,7 @@ def main():
             # A DELIBERATE-FAILURE PROBE INVERTS WHAT A GOOD RESULT LOOKS LIKE, and a record
             # that prints only the number invites a reader to score it the usual way round.
             "expected_exit": "non-zero" if expect_nonzero else "zero",
+            "env_overrides": c.get("env") or {},
             "behaved_as_expected": (p.returncode != 0) if expect_nonzero
                                    else (p.returncode == 0),
             "stdout_last_lines": tail,

@@ -153,12 +153,14 @@ w("**PAIRED MOVEMENTS**, the second object: the change in each share caused by t
   "filter — post-liveness level minus position-5 level — differenced **inside each replicate**, "
   "so the same account weights produce both terms.")
 w("")
-w("| arm | population | outcome | 95% CI, **MOVEMENT** | width | level width | ratio |")
+w("| arm | population | outcome | 95% CI, **MOVEMENT** | width | post-liveness level width | ratio |")
 w("| :--- | :--- | :--- | :--- | ---: | ---: | ---: |")
-for e in d["declared_intervals"]:
-    key = e["interval_id"].split("movement_")[1]
-    armk, rest = key.rsplit("_b", 1)[0], None
-    parts = e["interval_id"].split("_")
+# FILTERED BY STATISTIC, NOT BY POSITION IN THE ARRAY. $.declared_intervals now carries two
+# families -- the paired movements and, since the Human Lead's ruling 1 of 2026-08-25, the
+# twelve POSITION-5 LEVELS -- and a loop that assumed every entry was a movement would have
+# raised on the first level entry rather than rendering the wrong thing. It is the statistic
+# that says which family an interval belongs to; the id is a label.
+for e in [x for x in d["declared_intervals"] if x["ci"]["statistic"] == "movements"]:
     ci = e["ci"]
     # recover the level width from the arm payload
     for a in d["arms"]:
@@ -190,6 +192,47 @@ w("**A property of these measurements, stated because it bears on how they may b
   "filter lowers a share. %d of the %d movements this arm measured have negative endpoints** "
   "— counted off the emitted intervals in this file, not asserted. A movement is not a "
   "percentage and must not be rendered as one." % (len(_neg), len(_mv)))
+w("")
+# ------------------------------------------------------------------------------------------
+# THE TWELVE POSITION-5 LEVELS. Human Lead ruling 1, 2026-08-25. Rendered from the emitted
+# JSON like everything else here: nothing is retyped, so the two halves cannot disagree.
+# ------------------------------------------------------------------------------------------
+_p5 = [x for x in d["declared_intervals"]
+       if x["ci"]["statistic"] == "levels" and x["interval_id"].startswith("level_position5_")]
+w("**LEVELS ON THE POSITION-5 ROW SET — the sampling uncertainty on the population the bounds "
+  "above are on.** The confidence intervals in section 2 are levels on the **post-liveness** "
+  "row set, and every bound in section 2 is on the **position-5** row set. **These %d are the "
+  "only intervals in this file on the bounds' own population.** They were measured on every "
+  "build of this arm and reached no artifact until 2026-08-25; **no decision to withhold them "
+  "was ever made or written — the withholding was a DEFAULT, not a choice, and that is why "
+  "nothing could see it.**" % len(_p5))
+w("")
+w("| arm | population | outcome | 95% CI, **LEVEL, position 5** | width | "
+  "post-liveness level, same state | on |")
+w("| :--- | :--- | :--- | :--- | ---: | :--- | :--- |")
+for a in d["arms"]:
+    setting = "W108_s2_finale" if a["clock_origin"] == "s2_finale" else "W91_s2_premiere"
+    for pop in ("APPLY", "DERIV"):
+        for st in ("never_started", "started_and_left", "continued"):
+            iid = "level_position5_%s_%s_%s_b" % (setting, pop, st)
+            e = [x for x in _p5 if x["interval_id"] == iid]
+            if len(e) != 1:
+                raise SystemExit("HARD STOP: %s appears %d times in $.declared_intervals; the "
+                                 ".md renders one row per measured interval and cannot render "
+                                 "a row it cannot find exactly once." % (iid, len(e)))
+            ci = e[0]["ci"]
+            sh = pl(a, pop)["shares"][st]["ci"]
+            w("| %s | %s | %s | [%.4f%%, %.4f%%] | %.4f pp | [%.4f%%, %.4f%%] | position 5, n = %s |"
+              % (a["arm_id"], pop, st.replace("_", " "), ci["lower"], ci["upper"],
+                 ci["upper"] - ci["lower"], sh["lower"], sh["upper"],
+                 format(a["headline"][pop]["n_position_5"], ",")))
+w("")
+w("***THE TWO LEVEL COLUMNS ARE THE SAME STATISTIC ON DIFFERENT POPULATIONS AND ARE NOT ONE "
+  "FIGURE.*** The left is on position 5, which is what every bound in section 2 is on; the "
+  "right is on the post-liveness row set, which is what every published share is on. **On "
+  "`DERIV` the never-started point estimate lies outside its own bound**, and that is a "
+  "consequence of this difference and not of an error — the position-5 interval is the "
+  "sampling uncertainty on the side of it the bound describes.")
 w("")
 w("**Every interval here is an outcome-share quantity, whose binding cluster is the ACCOUNT**, "
   "so every one of them says `account` and none inherits it silently. **No window-`W` "
