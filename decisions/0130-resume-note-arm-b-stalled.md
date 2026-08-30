@@ -85,3 +85,57 @@ is declared is worth more than a continuation that is guessed.***
   **`0128` predicted a fifth and was right within the day; there is no reason to think five is the
   number.**
 - **Zero API calls. STEP 10 NOT BEGUN.**
+
+---
+
+## 6. ***PAUSE NOTE — appended 2026-08-30. THE PROJECT IS PAUSED.***
+
+**Appended by Human Lead instruction.** ~~Six of arm `b`'s files uncommitted and untouched~~
+***NO LONGER TRUE AS OF `4a176d0`*** — see below. **The header row's `Stopped at` is superseded by this
+section; nothing else in §§1–5 is.**
+
+### 6a. What moved, and what did not
+
+**Arm `b`'s six files are COMMITTED at `4a176d0`** — four modified, two new — **exactly as they stood.**
+***They were not run, not opened, not tidied.*** **The commit preserves them and asserts nothing about
+them**, and its message says so in the terms `0130` was written in: *not verified, not wired, enumeration
+not confirmed, reproduction not run.*
+
+***COMMITTING IS NOT ATTESTING.*** **§§2 and 3 stand unchanged and still govern**: files parsing and
+controls passing is not the same as the ruling being satisfied, and **no other party may close arm `b`'s
+half.** The only thing that changed is that the work is now **preserved** rather than **at risk in a
+working tree.**
+
+### 6b. Paused as of 2026-08-30, at this `HEAD`, with **STEP 10 NOT BEGUN**
+
+**The pause point is `4a176d0` plus this entry.** **Step 10 has not been started**, and the standing
+prohibition on beginning it is unchanged by the pause.
+
+### 6c. ***THE THREE CARRIED ITEMS***
+
+1. ***ARM `b`'s UNFINISHED HALF OF `0129` RULING 3.*** **The provenance fix is adopted on arm `a` and
+   attested; on arm `b` it is unreported.** **What is on disk is partial work of unknown extent** — §2's
+   list of what is *not* established is the live list. **Closed only by arm `b` resuming and reporting.**
+
+2. ***ARM `a`'s SECOND PRODUCER RECORDS ITS PATH BUT NOT ITS HASH.*** `src/step9_a_7_frame_support.py`.
+   ***FIXING IT MOVES TWO PUBLISHED LEAVES***, which is why it was not fixed in the same pass — **it is
+   a deliverable change and therefore a rerun, not an edit** (`0092`). ***AWAITING A RULING.***
+
+3. ***THE DIFF NEEDS REDOING.*** **Arm `b` published twelve intervals it had previously withheld and arm
+   `a` completed to all eighteen, rewriting nine notes.** ***THOSE HAVE NEVER BEEN COMPARED.*** **The
+   diff on the record predates both**, so **the cross-arm state is currently unknown rather than
+   agreed** — and an unrun diff is not a clean one. ***The diff is the Human Lead's and no agent
+   performs it***, so it is carried here as a Human Lead item, not an agent task.
+
+### 6d. What resuming looks like
+
+***RESUME ARM `b` FIRST. EVERYTHING ELSE IS DOWNSTREAM OF IT.***
+
+**Item 3 cannot be run before item 1**, because a diff taken while one arm's half of a live ruling is
+unreported would compare **a settled arm against an unsettled one** and would have to be taken again.
+**Item 2 is a rerun of arm `a` that will move two published leaves**, so ruling on it *after* arm `b`
+reports keeps the two arms' deliverables moving in a known order rather than crossing.
+
+**So: §4's seven-item report, from arm `b`, in its own words. Then item 2's ruling. Then the diff.**
+***And the diff is taken over BOTH arms as they then stand, not patched forward from the one on the
+record.***
