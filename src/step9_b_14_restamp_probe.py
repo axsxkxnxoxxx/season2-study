@@ -43,7 +43,16 @@ def sha(p):
 
 
 def run_check():
-    r = subprocess.run([sys.executable, CHECK], cwd=ROOT, capture_output=True, text=True)
+    # STEP_ARM IS PASSED THROUGH, NOT DROPPED (decisions/0126; Human Lead ruling 1, 2026-08-25).
+    # A CONTROL THAT INVOKES ANOTHER CONTROL IS THE CHANNEL REOPENING ONE LEVEL DOWN: this
+    # function CAPTURES check_surfaces.py's stdout, so without the variable the shared control
+    # prints every surface's paths -- including another arm's -- straight into this arm's
+    # process. No scoping of the search pattern can prevent that, because the scoping that
+    # matters here is the callee's.
+    env = dict(os.environ)
+    env["STEP_ARM"] = "b"
+    r = subprocess.run([sys.executable, CHECK], cwd=ROOT, capture_output=True, text=True,
+                       env=env)
     body = r.stdout.split("NEGATIVE HALF")[1].split("SURFACE 8")[0] if "NEGATIVE HALF" in r.stdout else ""
     rows = [ln.strip() for ln in body.split("\n") if ln.strip().startswith("[")]
     return r.returncode, rows

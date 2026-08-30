@@ -88,6 +88,32 @@ if dig != recorded:
 w("MATCH -- these are the weights that produced the published endpoints.")
 w("")
 
+# THE PRODUCER'S IDENTITY IS COMPARED, NOT ASSUMED (Human Lead ruling 3, 2026-08-25).
+# The digest above establishes that these weights are the ones the bootstrap STAGE recorded. It
+# says nothing about whether the SCRIPT that drew them is still the script on disk: a producer
+# edited and not re-run leaves an output whose stated origin no longer exists in that form, and
+# until this block was written every consumer in this arm went on exiting 0 in that state. An
+# artifact asserting which script produced it, where nothing checks the assertion is current, is
+# a claim its mechanism cannot deliver. NO DEFAULT: an absent field is a hard stop, because an
+# absent claim and a stale one are different defects and neither is a pass.
+for _k in ("source_file", "source_sha256_12"):
+    if _k not in z.files:
+        sys.exit("HARD STOP: processed/step9/b/boot_weights.npz carries no `%s`, so the matrix "
+                 "does not state what produced it and this script cannot compare it." % _k)
+_PROD = str(z["source_file"])
+_CLAIMED = str(z["source_sha256_12"])
+_ONDISK = hashlib.sha256(open(os.path.join(ROOT, _PROD), "rb").read()).hexdigest()[:12]
+w("producer named by the matrix : %s" % _PROD)
+w("producer hash it recorded    : %s" % _CLAIMED)
+w("producer hash on disk now    : %s" % _ONDISK)
+if _CLAIMED != _ONDISK:
+    sys.exit("HARD STOP: %s has changed since it wrote these weights (recorded %s, on disk %s). "
+             "The reproduction below would then establish a claim about a matrix that the "
+             "current producer does not produce. Re-run the producer -- do not re-label the "
+             "output." % (_PROD, _CLAIMED, _ONDISK))
+w("MATCH -- the script that drew these weights is the script on disk.")
+w("")
+
 
 def recompute(counts):
     agg = (WEIGHTS @ counts.reshape(N_FRAME, 6)).reshape(B, 3, 2)

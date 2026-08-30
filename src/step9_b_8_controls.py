@@ -107,6 +107,29 @@ CONTROLS = [
              "paths at HEAD. Every numeric leaf must be unchanged, nothing lost, every added "
              "leaf inside a licensed class, and all three stamped originals byte-identical. A "
              "non-zero exit means a published figure moved."},
+    {"id": "step9_b_provenance_verify",
+     "cmd": ["python3", "src/step9_b_21_provenance_verify.py"],
+     "what": "Human Lead ruling 3, 2026-08-25: every recorded producer identity in this arm's "
+             "own outputs COMPARED against the file it names -- the emitter and promoter hashes "
+             "in both headlines, the bootstrap's hash inside the weight matrix, the consumed "
+             "stage files, the declared Step 8 inputs and the adopted rule, and the .md's "
+             "restatement of the .json's claim. Nothing is typed: producer path and hash are "
+             "both read out of the claiming file. A non-zero exit means a published file names "
+             "a producer that no longer hashes to the recorded value."},
+    {"id": "step9_b_provenance_verify_probe",
+     "cmd": ["python3", "src/step9_b_21_provenance_verify.py", "--probe"],
+     "what": "THE SAME COMPARISON, DRIVEN TO FAILURE, in memory. Each mode is driven on the "
+             "vector its own claim polices: CURRENT must reject a mutated producer, HISTORICAL "
+             "must SURVIVE one and reject a fabricated hash. The script scores its own probes, "
+             "so ZERO means every probe behaved as required and non-zero means one did not."},
+    {"id": "step9_b_stale_producer_reproduction",
+     "cmd": ["python3", "src/step9_b_22_stale_producer_repro.py"],
+     "what": "the stale-producer defect reproduced END TO END on disk, both directions: two "
+             "producers edited and NOT re-run, five unchanged consumers plus the two hardened "
+             "ones recovered at a pinned pre-fix revision all ACCEPTING, then the hardened "
+             "consumers and the verifier REJECTING the identical state. It restores every "
+             "mutated source and re-hashes it. Zero means both directions held and the tree is "
+             "byte-identical; non-zero means a direction failed or the tree was left changed."},
     {"id": "step9_b_leaf_diff_probe",
      "cmd": ["python3", "src/step9_b_16_leaf_diff.py", "--probe"],
      "what": "THE SAME DIFF, SHOWN FAILING. A protected point estimate is moved in memory and "
@@ -124,6 +147,8 @@ FILES = [
     "src/step9_b_10_pairing_evidence.py", "src/step9_b_15_mechanism_repro.py",
     "src/step9_b_16_leaf_diff.py", "src/step9_b_17_ordering_repro.py",
     "src/step9_b_19_ruling_repro.py", "src/step9_b_20_publication_verify.py",
+    "src/step9_b_21_provenance_verify.py", "src/step9_b_22_stale_producer_repro.py",
+    "src/step9_b_14_restamp_probe.py",
     "processed/step9/b/stage1_counts.json", "processed/step9/b/stage2_bootstrap.json",
     "artifacts/step9-headline-corrected-2026-08-21-b.json",
     "artifacts/step9-headline-corrected-2026-08-21-b.md",
@@ -140,12 +165,13 @@ def sha12(rel):
 
 def main():
     rec = {
-        "run": "Step 9, arm b -- controls run AFTER the last edit of the 2026-08-25 emission "
-               "under the Human Lead's three rulings of that date: publish the twelve "
-               "position-5 level intervals that were measured and never emitted, rewrite the "
-               "three inherited placeholder leaves that are false in a non-placeholder file, "
-               "and turn the typed population constant into a read. AN EMISSION CHANGE: no "
-               "bootstrap was re-run and no figure recomputed",
+        "run": "Step 9, arm b -- controls run AFTER the last edit made under the Human Lead's "
+               "ruling of 2026-08-25 (decisions/0129) adopting the PROVENANCE FIX for this "
+               "arm's own pipeline: every recorded producer identity is now compared against "
+               "the file it names and fails on disagreement, the defect is reproduced in both "
+               "directions on disk, and the STEP_ARM pass-through is closed in the second "
+               "control that had dropped it. A TOOLING CHANGE ONLY: NO bootstrap was re-run, no "
+               "emitter was re-run, no artifact was rewritten and no figure moved",
         "generator": "src/step9_b_8_controls.py",
         "generator_sha256_12": sha12("src/step9_b_8_controls.py"),
         "recorded_at_utc": datetime.datetime.now(datetime.timezone.utc).strftime(

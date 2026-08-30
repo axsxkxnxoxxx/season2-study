@@ -125,6 +125,24 @@ if int(z["B"]) != B or int(z["seed"]) != SEED:
              "seed=%d. This reproduction would then be of a different design."
              % (int(z["B"]), int(z["seed"]), B, SEED))
 
+# THE PRODUCER'S IDENTITY IS COMPARED, NOT ASSUMED (Human Lead ruling 3, 2026-08-25). This file
+# prints the working-tree hash of src/step9_b_2_bootstrap.py four lines below and, until this
+# block existed, never compared it against the hash the matrix itself records. It could
+# therefore print "source AFTER: <h>" for a source that had been edited after the draw, on a
+# matrix drawn by different bytes -- a stale producer accepted silently.
+for _k in ("source_file", "source_sha256_12"):
+    if _k not in z.files:
+        sys.exit("HARD STOP: processed/step9/b/boot_weights.npz carries no `%s`, so the matrix "
+                 "does not state what produced it and this script cannot compare it." % _k)
+_CLAIMED = str(z["source_sha256_12"])
+_ONDISK = sha12(os.path.join(ROOT, str(z["source_file"])))
+if _CLAIMED != _ONDISK:
+    sys.exit("HARD STOP: %s has changed since it drew this matrix (recorded %s, on disk %s). "
+             "The n_frame read below, and every comparison built on it, would then describe a "
+             "draw the current source does not make. Re-run the producer -- that is a separate "
+             "authorisation, and re-labelling is not an alternative to it."
+             % (str(z["source_file"]), _CLAIMED, _ONDISK))
+
 w("=" * 94)
 w("STEP 9, ARM b -- THE DRAW MECHANISM: REPRODUCTION UNDER decisions/0125")
 w("=" * 94)
